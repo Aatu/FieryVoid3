@@ -1,0 +1,18 @@
+const create = (width, height, debug) => {
+  const canvas = document.createElement("canvas");
+  canvas.width = width;
+  canvas.height = height;
+  canvas.style.zIndex = 1000;
+  canvas.style.position = "absolute";
+  canvas.style.border = "1px solid red";
+
+  if (debug) {
+    document.body.appendChild(canvas);
+  }
+
+  return canvas;
+};
+
+export default {
+  create
+};
