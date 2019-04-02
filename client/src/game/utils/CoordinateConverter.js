@@ -43,7 +43,7 @@ class CoordinateConverter {
   }
 
   getHexHeightViewport() {
-    return window.HexagonMath.getHexHeight() / this.zoom;
+    return HexagonMath.getHexHeight() / this.zoom;
   }
 
   getHexDistance() {

@@ -1,6 +1,6 @@
 import * as React from "react";
 import GameSceneComponent from "./GameSceneComponent";
-import Game from "../source/Game";
+import Game from "../Game";
 
 class GameComponent extends React.Component {
   constructor(props) {

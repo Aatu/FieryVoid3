@@ -1,4 +1,4 @@
-import shipObjects from "../../model/ship/ships";
+import * as shipObjects from "../ships";
 
 const buildShipArray = iconsAsObject => {
   return Object.keys(iconsAsObject).map(key => iconsAsObject[key]);

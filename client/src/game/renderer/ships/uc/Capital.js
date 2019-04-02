@@ -1,4 +1,5 @@
-import ShipObject from "./ShipObject";
+import ShipObject from "../ShipObject";
+import * as THREE from "three";
 
 class Capital extends ShipObject {
   constructor(ship, scene) {

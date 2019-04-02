@@ -12,32 +12,34 @@ class EWIconContainer {
     this.scene = scene;
     this.zoomScale = 1;
     this.shipIconContainer = iconContainer;
+    this.gamedata = null;
   }
 
   consumeGamedata(gamedata) {
+    this.gamedata = gamedata;
     this.ewIcons.forEach(function(ewIcon) {
       ewIcon.used = false;
     });
 
     gamedata.ships.forEach(ship => {
       gamedata.ships.forEach(target => {
-        this.createOrUpdateOEW(ship, target, ew.getOffensiveEW(ship, target));
+        this.createOrUpdateOEW(ship, target, ship.ew.getOffensiveEW(target));
         this.createOrUpdateOEW(
           ship,
           target,
-          ew.getOffensiveEW(ship, target, "DIST"),
+          ship.ew.getOffensiveEW(target, "DIST"),
           "DIST"
         );
         this.createOrUpdateOEW(
           ship,
           target,
-          ew.getOffensiveEW(ship, target, "SDEW"),
+          ship.ew.getOffensiveEW(target, "SDEW"),
           "SDEW"
         );
         this.createOrUpdateOEW(
           ship,
           target,
-          ew.getOffensiveEW(ship, target, "SOEW"),
+          ship.ew.getOffensiveEW(target, "SOEW"),
           "SOEW"
         );
       });
@@ -63,24 +65,24 @@ class EWIconContainer {
       }
     });
 
-    gamedata.ships.forEach(function(target) {
-      this.createOrUpdateOEW(ship, target, ew.getOffensiveEW(ship, target));
+    this.gamedata.ships.forEach(function(target) {
+      this.createOrUpdateOEW(ship, target, ship.ew.getOffensiveEW(target));
       this.createOrUpdateOEW(
         ship,
         target,
-        ew.getOffensiveEW(ship, target, "DIST"),
+        ship.ew.getOffensiveEW(target, "DIST"),
         "DIST"
       );
       this.createOrUpdateOEW(
         ship,
         target,
-        ew.getOffensiveEW(ship, target, "SDEW"),
+        ship.ew.getOffensiveEW(target, "SDEW"),
         "SDEW"
       );
       this.createOrUpdateOEW(
         ship,
         target,
-        ew.getOffensiveEW(ship, target, "SOEW"),
+        ship.ew.getOffensiveEW(target, "SOEW"),
         "SOEW"
       );
     });
@@ -215,7 +217,7 @@ class EWIconContainer {
   getColor(ship, type) {
     switch (type) {
       case "OEW":
-        return gamedata.isMyOrTeamOneShip(ship)
+        return this.gamedata.isMyOrTeamOneShip(ship)
           ? COLOR_OEW_FRIENDLY
           : COLOR_OEW_ENEMY;
       case "DIST":

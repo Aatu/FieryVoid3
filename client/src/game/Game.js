@@ -30,7 +30,7 @@ class Game {
     const width = this.sceneElement.offsetWidth;
     const height = this.sceneElement.offsetHeight;
 
-    console.log(widht, height);
+    console.log(width, height);
   }
 }
 
