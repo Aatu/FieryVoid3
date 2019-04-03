@@ -16,6 +16,7 @@ const starVertexShader = `
     varying float textureN;
     void main()
     {
+    
         float elapsedTime = gameTime - activationGameTime;
 
         if (elapsedTime < 0.0) {
@@ -32,7 +33,6 @@ const starVertexShader = `
             currentOpacity = opacity + (sineAmplitude * 0.5 * sin(gameTime/sineFrequency) + sineAmplitude);
         }
 
-
         if ( currentOpacity > 0.0 && elapsedTime >= 0.0)
         {
             vColor = vec4( color, currentOpacity );
@@ -48,6 +48,7 @@ const starVertexShader = `
 
         gl_PointSize = clamp(size + (sizeChange * elapsedTime), 0.0, 1024.0);
         gl_Position = projectionMatrix * modelViewMatrix * vec4( modPos, 1.0 );
+        
     }
 `;
 

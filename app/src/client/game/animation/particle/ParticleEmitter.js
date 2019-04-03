@@ -7,7 +7,7 @@ import {
 } from "../../renderer/shader";
 
 const texture = new THREE.TextureLoader().load(
-  "img/effect/effectTextures1024.png"
+  "/img/effect/effectTextures1024.png"
 );
 
 class ParticleEmitter extends Animation {

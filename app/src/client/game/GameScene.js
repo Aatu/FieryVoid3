@@ -119,6 +119,13 @@ class GameScene {
     this.cameraAngle = newAngle;
   }
 
+  scroll(delta) {
+    this.moveCamera({
+      x: delta.x * (1 / this.zoom),
+      y: delta.y * (1 / this.zoom)
+    });
+  }
+
   moveCamera(position) {
     if (!this.initialized) {
       return;
@@ -215,8 +222,8 @@ class GameScene {
     if (this.zoomTarget && this.zoomTarget !== this.zoom) {
       var change = (this.zoomTarget - this.zoom) * 0.1;
       if (
-        Math.abs(change) < 0.0001 ||
-        (this.zoomTarget === 1 && Math.abs(change) < 0.0001)
+        Math.abs(change) < 0.00001 ||
+        (this.zoomTarget === 1 && Math.abs(change) < 0.00001)
       ) {
         this.zoomCamera(this.zoomTarget, true);
       } else {

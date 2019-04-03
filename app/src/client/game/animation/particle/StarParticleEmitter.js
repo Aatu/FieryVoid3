@@ -4,7 +4,7 @@ import StarParticle from "./StarParticle";
 import { starVertexShader, starFragmentShader } from "../../renderer/shader";
 
 const texture = new THREE.TextureLoader().load(
-  "img/effect/effectTextures1024.png"
+  "/img/effect/effectTextures1024.png"
 );
 
 class StarParticleEmitter extends Animation {

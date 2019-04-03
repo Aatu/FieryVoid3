@@ -56,7 +56,6 @@ class Game {
       return;
     }
 
-    console.log("mouseUp", position);
     const gamePos = this.coordinateConverter.fromViewPortToGame(position);
     const entities = this.coordinateConverter.getEntitiesIntersected(position);
     const hexPos = this.coordinateConverter.fromGameToHex(gamePos, true);
@@ -69,7 +68,7 @@ class Game {
   }
 
   onDrag(position, delta) {
-    this.gameScene.moveCamera(delta);
+    this.gameScene.scroll(delta);
   }
 
   onMouseMove(position) {
@@ -91,8 +90,6 @@ class Game {
     const dimensions = this.getDimensions();
     this.coordinateConverter.onResize(dimensions);
     this.gameScene.onResize(dimensions);
-
-    console.log(dimensions);
   }
 
   getDimensions() {
