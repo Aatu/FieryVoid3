@@ -1,4 +1,3 @@
-const SERVER_URL = "localhost";
-const SERVER_PORT = 4000;
+const SERVER_URL = "http://localhost:4000";
 
-export { SERVER_URL, SERVER_PORT };
+export { SERVER_URL };
