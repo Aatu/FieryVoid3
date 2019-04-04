@@ -2,39 +2,53 @@ import express from "express";
 import session from "express-session";
 import bodyParser from "body-parser";
 import passport from "passport";
-import {Strategy as LocalStrategy} from 'passport-local';
+import LocalStrategy from "passport-local";
 import UserService from "./services/UserService";
 
 const app = express();
 const port = 4000;
 
 app.use(express.static("public"));
-app.use(session({ secret: "cats" }));
+app.use(
+  session({
+    secret: "keyboard cat",
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: true }
+  })
+);
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(passport.initialize());
 app.use(passport.session());
 
 const userService = new UserService();
 
-passport.use(new LocalStrategy(
-    (username, password, done) => {
-        try {
-            const user = userService.getUserByUsername(username);
-            if (!user) {
-                return done(null, false, { message: 'Incorrect username.' });
-            }
+passport.use(
+  new LocalStrategy((username, password, done) => {
+    try {
+      const user = userService.getUserByUsername(username);
+      if (!user) {
+        return done(null, false, { message: "Incorrect username." });
+      }
 
-            if (!user.checkPassword(password)) {
-                return done(null, false, { message: 'Incorrect password.' });
-              }
+      if (!user.checkPassword(password)) {
+        return done(null, false, { message: "Incorrect password." });
+      }
 
-              return done(null, user);
-        } catch (error) {
-            return done(error)
-        }
-        
-      })
-  );
+      return done(null, user);
+    } catch (error) {
+      return done(error);
+    }
+  })
+);
+
+app.post(
+  "/login",
+  passport.authenticate("local", {
+    successRedirect: "/",
+    failureRedirect: "/login"
+  })
+);
 
 app.get("/", (req, res) => res.send("Hello World!"));
 

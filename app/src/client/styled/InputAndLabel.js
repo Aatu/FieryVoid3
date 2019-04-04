@@ -1,0 +1,76 @@
+import * as React from "react";
+import styled from "styled-components";
+import { Section, colors } from ".";
+
+class InputAndLabel extends React.Component {
+  render() {
+    const {
+      id,
+      label,
+      type,
+      value,
+      placeholder,
+      onKeyDown,
+      onChange,
+      error,
+      ...rest
+    } = this.props;
+
+    return (
+      <Container>
+        <Section>
+          <Label htmlFor={id}>{label}</Label>
+          <Input
+            id={id}
+            type={type || "text"}
+            value={value}
+            placeholder={placeholder}
+            onKeyDown={onKeyDown}
+            onChange={onChange}
+            tabIndex="0"
+            {...rest}
+          />
+        </Section>
+        <Error>{error}</Error>
+      </Container>
+    );
+  }
+}
+
+const Error = styled(Section)`
+  color: ${colors.textDanger};
+  font-size: 10px;
+  margin-top: 2px;
+  height: 11px;
+  overflow: hidden;
+  font-family: bookman;
+  text-transform: uppercase;
+`;
+
+const Container = styled.div`
+  width: 100%;
+  display: flex;
+  padding: 10px;
+  flex-direction: column;
+`;
+
+const Label = styled.span`
+  display: flex;
+  width: calc(50% - 10px);
+  color: #deebff;
+  font-family: arial;
+  font-size: 14px;
+  align-items: center;
+`;
+
+const Input = styled.input`
+  width: calc(50% - 10px);
+  color: #0a3340;
+  background-color: white;
+  padding: 3px 6px;
+  font-size: 14px;
+  border: 1px solid #04161c;
+  border-radius: 3px;
+`;
+
+export { InputAndLabel };
