@@ -52,7 +52,8 @@ class GameSceneComponent extends React.Component {
     const { game } = this.props;
 
     window.addEventListener("resize", this.onResize);
-    window.addEventListener("wheel", this.onWheel);
+    this.canvasRef.current.addEventListener("wheel", this.onWheel);
+    window.addEventListener("touchstart", this.onTouchStart);
     document.addEventListener("keydown", this.onKeyDown.bind(this), false);
     document.addEventListener("keyup", this.onKeyUp.bind(this), false);
 
@@ -63,10 +64,19 @@ class GameSceneComponent extends React.Component {
     document.removeEventListener("keydown", this.onKeyDown.bind(this), false);
     document.removeEventListener("keyup", this.onKeyUp.bind(this), false);
     window.removeEventListener("resize", this.onResize);
-    window.removeEventListener("wheel", this.onWheel);
+    this.canvasRef.current.removeEventListener("wheel", this.onWheel);
+    window.removeEventListener("touchstart", this.onTouchStart);
+  }
+
+  onTouchStart = event => {
+    event.stopPropagation();
+    event.preventDefault();
+
   }
 
   onWheel = event => {
+    event.stopImmediatePropagation();
+    event.preventDefault();
     const { game } = this.props;
     const delta = Math.sign(event.deltaY);
     game.onMouseWheel(delta);
