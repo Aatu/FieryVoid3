@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import { Provider } from "react-redux";
-import Home from "./client/view/home";
-import Game from "./client/view/game";
-import Login from "./client/view/login";
-import getStore from "./client/state/store";
+import Home from "./view/home";
+import Game from "./view/game";
+import Login from "./view/login";
+import getStore from "./state/store";
 
 const store = getStore();
 
