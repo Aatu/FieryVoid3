@@ -1,16 +1,55 @@
 import axios from "axios";
 import { SERVER_URL } from "../config";
 
+const axiosConfig = {
+  withCredentials: true,
+  headers: {
+    "Content-Type": "application/json"
+  }
+};
+
 export const login = async (username, password) => {
   try {
-    const response = await axios.post(`${SERVER_URL}/login`, {
-      username,
-      password
-    });
-    console.log(response);
+    return await axios.post(
+      `${SERVER_URL}/login`,
+      {
+        username,
+        password
+      },
+      axiosConfig
+    );
   } catch (error) {
-    console.log("login error", error);
+    throw error.response;
   }
+};
 
-  console.log("api login", username, password);
+export const register = async (username, password) => {
+  try {
+    return await axios.post(
+      `${SERVER_URL}/register`,
+      {
+        username,
+        password
+      },
+      axiosConfig
+    );
+  } catch (error) {
+    throw error.response;
+  }
+};
+
+export const getCurrentUser = async () => {
+  try {
+    return await axios.get(`${SERVER_URL}/user`, axiosConfig);
+  } catch (error) {
+    throw error.response;
+  }
+};
+
+export const logout = async () => {
+  try {
+    return await axios.get(`${SERVER_URL}/logout`, axiosConfig);
+  } catch (error) {
+    throw error.response;
+  }
 };

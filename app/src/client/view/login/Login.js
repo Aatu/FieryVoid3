@@ -1,4 +1,5 @@
 import * as React from "react";
+import { Redirect } from "react-router-dom";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { connect } from "react-redux";
@@ -13,27 +14,30 @@ import {
   Section,
   Link
 } from "../../styled";
-import { user } from "../../api";
 
 class Login extends React.Component {
   onSubmit = async (values, { setSubmitting }) => {
-    console.log("Hi?");
+    const { dispatchGetCurrentUser } = this.props;
     await loginUser(values.username, values.password);
+    console.log("user logged in!");
+    await dispatchGetCurrentUser();
     setSubmitting(false);
   };
 
   render() {
+    const { user, location } = this.props;
+
+    if (user) {
+      return <Redirect to={{ pathname: "/", state: { from: location } }} />;
+    }
+
     return (
       <Formik
         initialValues={{ username: "", password: "" }}
         onSubmit={this.onSubmit}
         validationSchema={Yup.object().shape({
-          username: Yup.string()
-            //.min(2, "Username must be atleast 2 characters")
-            .required("Required"),
-          password: Yup.string()
-            //.min(16, "Password must be atleast 16 characters")
-            .required("Required")
+          username: Yup.string().required("Required"),
+          password: Yup.string().required("Required")
         })}
       >
         {props => {
@@ -41,7 +45,6 @@ class Login extends React.Component {
             values,
             touched,
             errors,
-            dirty,
             isSubmitting,
             handleChange,
             handleBlur,
@@ -78,11 +81,7 @@ class Login extends React.Component {
                 <Button
                   buttonStyle="button-grey"
                   type="submit"
-                  disabled={
-                    Object.keys(values).some(key => values[key] === "") ||
-                    isSubmitting ||
-                    Object.entries(errors).length !== 0
-                  }
+                  disabled={isSubmitting || Object.entries(errors).length !== 0}
                 >
                   Login
                 </Button>
@@ -103,7 +102,9 @@ class Login extends React.Component {
 
 export default connect(
   ({ user }) => ({
-    user
+    user: user.current
   }),
-  { getCurrentUser }
+  dispatch => ({
+    dispatchGetCurrentUser: getCurrentUser(dispatch)
+  })
 )(Login);

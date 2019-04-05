@@ -18,5 +18,6 @@ export { TooltipHeader } from "./Tooltip";
 export { TooltipEntry } from "./Tooltip";
 export { Button } from "./Button";
 export { Link } from "./Link";
+export { Error } from "./Error";
 
 export { colors };

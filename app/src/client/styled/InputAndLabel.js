@@ -1,6 +1,7 @@
 import * as React from "react";
 import styled from "styled-components";
-import { Section, colors } from ".";
+import { Section } from ".";
+import { Error } from "./Error";
 
 class InputAndLabel extends React.Component {
   render() {
@@ -36,16 +37,6 @@ class InputAndLabel extends React.Component {
     );
   }
 }
-
-const Error = styled(Section)`
-  color: ${colors.textDanger};
-  font-size: 10px;
-  margin-top: 2px;
-  height: 11px;
-  overflow: hidden;
-  font-family: bookman;
-  text-transform: uppercase;
-`;
 
 const Container = styled.div`
   width: 100%;

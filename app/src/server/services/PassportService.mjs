@@ -1,0 +1,51 @@
+import passport from "passport";
+import LocalStrategy from "passport-local";
+import User from "../../model/User";
+
+class PassportService {
+  constructor(userService) {
+    this.userService = userService;
+  }
+
+  init(app) {
+    app.use(passport.initialize());
+    app.use(passport.session());
+
+    passport.serializeUser((user, done) => {
+      console.log("serializeUser");
+      console.log(user);
+      done(null, user.serialize());
+    });
+
+    passport.deserializeUser((user, done) => {
+      console.log("deserializeUser");
+      console.log(user);
+      done(null, user ? new User().deserialize(user) : null);
+    });
+
+    passport.use(
+      new LocalStrategy(async (username, password, done) => {
+        try {
+          const user = await this.userService.getUserByUsername(username);
+          if (!user) {
+            return done(null, false, { message: "Incorrect username." });
+          }
+
+          if (!(await this.userService.checkPassword(password))) {
+            return done(null, false, { message: "Incorrect password." });
+          }
+
+          return done(null, user);
+        } catch (error) {
+          return done(error);
+        }
+      })
+    );
+  }
+
+  authenticate() {
+    return passport.authenticate("local");
+  }
+}
+
+export default PassportService;
