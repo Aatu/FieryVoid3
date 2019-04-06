@@ -1,11 +1,10 @@
 import { user } from "../../api";
 import User from "../../../model/User";
 
-export const getCurrentUser = dispatch => () =>
-  dispatch({
-    type: "GET_CURRENT_USER",
-    payload: user.getCurrentUser()
-  });
+export const getCurrentUser = () => ({
+  type: "GET_CURRENT_USER",
+  payload: user.getCurrentUser()
+});
 
 const initialState = { current: undefined };
 

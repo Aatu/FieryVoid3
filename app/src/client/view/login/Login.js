@@ -17,10 +17,10 @@ import {
 
 class Login extends React.Component {
   onSubmit = async (values, { setSubmitting }) => {
-    const { dispatchGetCurrentUser } = this.props;
+    const { getCurrentUser } = this.props;
     await loginUser(values.username, values.password);
     console.log("user logged in!");
-    await dispatchGetCurrentUser();
+    await getCurrentUser();
     setSubmitting(false);
   };
 
@@ -104,7 +104,7 @@ export default connect(
   ({ user }) => ({
     user: user.current
   }),
-  dispatch => ({
-    dispatchGetCurrentUser: getCurrentUser(dispatch)
-  })
+  {
+    getCurrentUser
+  }
 )(Login);

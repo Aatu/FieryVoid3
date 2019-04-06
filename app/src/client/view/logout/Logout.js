@@ -7,9 +7,9 @@ import { logout as logoutUser } from "../../api/user";
 
 class Logout extends React.Component {
   componentDidMount = async () => {
-    const { dispatchGetCurrentUser } = this.props;
+    const { getCurrentUser } = this.props;
     await logoutUser();
-    await dispatchGetCurrentUser();
+    await getCurrentUser();
   };
 
   render() {
@@ -31,7 +31,5 @@ export default connect(
   ({ user }) => ({
     user: user.current
   }),
-  dispatch => ({
-    dispatchGetCurrentUser: getCurrentUser(dispatch)
-  })
+  { getCurrentUser }
 )(Logout);

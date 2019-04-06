@@ -7,7 +7,7 @@ import { getCurrentUser } from "./state/ducks/user";
 
 const store = getStore();
 
-getCurrentUser(store.dispatch)();
+store.dispatch(getCurrentUser());
 
 class App extends Component {
   render() {

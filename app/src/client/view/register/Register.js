@@ -23,7 +23,7 @@ class Register extends React.Component {
     };
   }
   onSubmit = async (values, { setSubmitting }) => {
-    const { dispatchGetCurrentUser } = this.props;
+    const { getCurrentUser } = this.props;
     this.setState({ error: null });
 
     let { username, password } = values;
@@ -33,7 +33,7 @@ class Register extends React.Component {
     try {
       await registerUser(username, password);
       await loginUser(username, password);
-      await dispatchGetCurrentUser();
+      await getCurrentUser();
     } catch (error) {
       this.setState({ error: error.data });
     }
@@ -132,7 +132,5 @@ export default connect(
   ({ user }) => ({
     user: user.current
   }),
-  dispatch => ({
-    dispatchGetCurrentUser: getCurrentUser(dispatch)
-  })
+  { getCurrentUser }
 )(Register);
