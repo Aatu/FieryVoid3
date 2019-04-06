@@ -10,8 +10,8 @@ CREATE TABLE `user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-DROP TABLE IF EXISTS `fire_order`;
-CREATE TABLE `fire_order` (
+DROP TABLE IF EXISTS `ship_fire`;
+CREATE TABLE `ship_fire` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `game_id` int(11) NOT NULL,
   `type` varchar(45) NOT NULL DEFAULT 'normal',
@@ -20,8 +20,8 @@ CREATE TABLE `fire_order` (
   `weapon_id` int(11) NOT NULL DEFAULT '0',
   `target_system_id` int(11) DEFAULT NULL,
   `turn` int(11) NOT NULL DEFAULT '0',
-  `payload` JSON DEFAULT '{}',
-  CHECK (JSON_VALID(`payload`)),
+  `data` JSON DEFAULT '{}',
+  CHECK (JSON_VALID(`data`)),
   PRIMARY KEY (`id`),
   KEY (`game_id`),
   KEY (`ship_id`),
@@ -34,20 +34,20 @@ CREATE TABLE `game` (
   `name` text,
   `turn` int(11) DEFAULT NULL,
   `phase` int(11) DEFAULT NULL,
-  `active_ship` JSON DEFAULT '[]',
-  `settings` JSON DEFAULT '{}',
+  `active_ships` JSON DEFAULT '[]',
+  `data` JSON DEFAULT '{}',
   `creator_id` int(11) DEFAULT NULL,
   `status` ENUM('lobby','active','finished') DEFAULT 'lobby',
-  CHECK (JSON_VALID(`settings`)),
-  CHECK (JSON_VALID(`active_ship`)),
+  CHECK (JSON_VALID(`data`)),
+  CHECK (JSON_VALID(`active_ships`)),
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `game_active_player`;
-CREATE TABLE `game` (
+CREATE TABLE `game_active_player` (
   `game_id` int(11) NOT NULL,
-  `player_id` int(11) NOT NULL,
-  PRIMARY KEY (`game_id`, `player_id`)
+  `user_id` int(11) NOT NULL,
+  PRIMARY KEY (`game_id`, `user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `game_player`;
@@ -55,14 +55,14 @@ CREATE TABLE `game_player` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `game_id` int(11) NOT NULL,
   `user_id` int(11) DEFAULT NULL,
-  `last_activity` datetime DEFAULT NULL
+  `last_activity` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `ship`;
 CREATE TABLE `ship` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `owner_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
   `game_id` int(11) NOT NULL,
   `name` varchar(200) NOT NULL,
   `ship_class` varchar(45) NOT NULL,
@@ -74,7 +74,8 @@ DROP TABLE IF EXISTS `ship_movement`;
 CREATE TABLE `ship_movement` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `ship_id` int(11) NOT NULL,
-  `game_id` int(11) NOT NULL DEFAULT '0',
+  `game_id` int(11) NOT NULL,
+  `turn` int (11) NOT NULL, 
   `data` JSON DEFAULT '{}',
   CHECK (JSON_VALID(`data`)),
   PRIMARY KEY (`id`)
@@ -88,7 +89,7 @@ CREATE TABLE `game_ship_data` (
   `phase` int(11) NOT NULL,
   `data` JSON DEFAULT '{}',
   CHECK (JSON_VALID(`data`)),
-  PRIMARY KEY (`game_id`,`turn`,`ship_id`)
+  PRIMARY KEY (`game_id`,`turn`,`ship_id`, `phase`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `game_system_data`;
@@ -100,5 +101,5 @@ CREATE TABLE `game_system_data` (
   `phase` int(11) NOT NULL,
   `data` JSON DEFAULT '{}',
   CHECK (JSON_VALID(`data`)),
-  PRIMARY KEY (`game_id`,`turn`,`ship_id`, `system_id`)
+  PRIMARY KEY (`game_id`,`turn`,`ship_id`, `phase`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

@@ -104,7 +104,4 @@ class Offset {
   }
 }
 
-if (typeof window.hexagon === "undefined") window.hexagon = {};
-window.hexagon.Offset = Offset;
-
 export default Offset;

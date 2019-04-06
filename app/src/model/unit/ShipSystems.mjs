@@ -3,7 +3,11 @@ class ShipSystems {
     this.ship = ship;
   }
 
-  consumeGameData() {}
+  deserialize(data) {}
+
+  serialize() {
+    return {};
+  }
 }
 
 export default ShipSystems;

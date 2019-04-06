@@ -148,7 +148,4 @@ class Cube {
   }
 }
 
-if (typeof window.hexagon === "undefined") window.hexagon = {};
-window.hexagon.Cube = Cube;
-
-export default window.hexagon.Cube;
+export default Cube;

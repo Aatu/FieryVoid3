@@ -1,4 +1,4 @@
-class ShipPlayer {
+class ShipFire {
   constructor() {}
 
   deserialize(data) {}
@@ -8,4 +8,4 @@ class ShipPlayer {
   }
 }
 
-export default ShipPlayer;
+export default ShipFire;

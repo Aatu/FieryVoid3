@@ -5,6 +5,8 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import UserService from "./services/UserService";
 import PassportService from "./services/PassportService";
+import GameDataService from "./services/GameDataService";
+
 import * as errors from "./errors";
 
 const app = express();
@@ -31,6 +33,8 @@ const userService = new UserService();
 const passportService = new PassportService(userService);
 passportService.init(app);
 
+const gameDataService = new GameDataService();
+
 //app.use(express.static("public"));
 
 app.post("/login", passportService.authenticate(), (req, res) => {
@@ -53,6 +57,10 @@ app.get("/logout", function(req, res) {
 
 app.get("/user", function(req, res) {
   res.status(200).json(req.user);
+});
+
+app.get("/newGame", function(req, res) {
+  gameDataService.test();
 });
 
 app.use(function(error, req, res, next) {

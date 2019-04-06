@@ -2,20 +2,37 @@ import ShipSystems from "./ShipSystems.mjs";
 import ShipEW from "./ShipEW.mjs";
 import ShipPlayer from "./ShipPlayer.mjs";
 import ShipMovement from "./ShipMovement";
+import ships from "./ships";
 
 class Ship {
-  constructor() {
-    this.systems = new ShipSystems(this);
-    this.ew = new ShipEW(this);
-    this.player = new ShipPlayer(this);
-    this.movement = new ShipMovement(this);
+  constructor(data = {}) {
+    this.deserialize(data);
   }
 
   getHexPosition() {}
 
-  deserialize() {}
+  deserialize(data) {
+    this.id = data.id || null;
+    this.gameId = data.gameId || null;
+    this.name = data.name || "Unnamed ship " + data.id;
+    this.shipClass = this.constructor.name;
+    this.systems = new ShipSystems(this).deserialize(data.systems);
+    this.player = new ShipPlayer(this).deserialize(data.player);
+    this.movement = new ShipMovement(this).deserialize(data.movement);
+    this.ew = new ShipEW(this);
+  }
 
-  serialize() {}
+  serialize() {
+    return {
+      id: this.id,
+      gameId: this.gameId,
+      name: this.name,
+      shipClass: this.shipClass,
+      systems: this.systems.serialize(),
+      player: this.player.serialize(),
+      movement: this.movement.serialize()
+    };
+  }
 
   isDestroyed() {
     return false;
