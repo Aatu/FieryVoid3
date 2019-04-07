@@ -1,6 +1,6 @@
 import { movementTypes } from ".";
-import hexagon from "../../../../model/hexagon";
-import { addToHexFacing } from "../../../../model/utils/math";
+import hexagon from "../hexagon";
+import { addToHexFacing } from "../utils/math";
 
 class MovementOrder {
   constructor(
@@ -105,5 +105,4 @@ class MovementOrder {
   }
 }
 
-window.MovementOrder = MovementOrder;
 export default MovementOrder;

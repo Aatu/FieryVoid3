@@ -2,7 +2,6 @@ import ShipSystems from "./ShipSystems.mjs";
 import ShipEW from "./ShipEW.mjs";
 import ShipPlayer from "./ShipPlayer.mjs";
 import ShipMovement from "./ShipMovement";
-import ships from "./ships";
 
 class Ship {
   constructor(data = {}) {

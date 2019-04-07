@@ -1,5 +1,5 @@
-import hexagon from "../../../../model/hexagon";
-import { addToHexFacing } from "../../../../model/utils/math";
+import hexagon from "../hexagon";
+import { addToHexFacing } from "../utils/math";
 
 import {
   MovementOrder,

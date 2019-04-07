@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "axios": "^0.18.0",
+    "esm": "^3.2.22",
     "formik": "^1.5.2",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
@@ -21,7 +22,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "ava",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -34,6 +35,16 @@
     "not op_mini all"
   ],
   "devDependencies": {
+    "ava": "^1.4.1",
     "redux-devtools-extension": "^2.13.8"
+  },
+  "ava": {
+    "require": [
+      "esm"
+    ],
+    "babel": false,
+    "extensions": [
+      "mjs"
+    ]
   }
 }

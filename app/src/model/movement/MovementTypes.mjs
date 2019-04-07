@@ -8,5 +8,4 @@ const movementTypes = {
   ROLL: "roll"
 };
 
-window.movementTypes = movementTypes;
 export default movementTypes;

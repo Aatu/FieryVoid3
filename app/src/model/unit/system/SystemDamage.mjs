@@ -1,0 +1,60 @@
+import DamageEntry from "./DamageEntry";
+import CriticalEntry from "./CriticalEntry";
+
+class SystemDamage {
+  constructor(system) {
+    this.system = system;
+    this.entries = [];
+    this.criticals = [];
+  }
+
+  serialize() {
+    return {
+      entries: this.entries.map(entry => entry.serialize()),
+      criticals: this.criticals.map(entry => entry.serialize())
+    };
+  }
+
+  deserialize(data) {
+    this.entries = data.entries
+      ? data.entries.map(entry => new DamageEntry().deserialize(entry))
+      : [];
+
+    this.criticals = data.criticals
+      ? data.criticals.map(entry => new CriticalEntry().deserialize(entry))
+      : [];
+
+    return this;
+  }
+
+  addDamage(damage) {
+    this.entries.push(damage);
+  }
+
+  addCritical(critical) {
+    this.criticals.push(new CriticalEntry(critical));
+  }
+
+  hasCritical(name) {
+    return this.criticals.some(crit => crit.is(name));
+  }
+
+  getTotalDamage() {
+    return this.entries.reduce((acc, entry) => acc + entry.getDamage(), 0);
+  }
+
+  isDestroyed() {
+    return this.getTotalDamage() >= this.system.hitpoints;
+  }
+
+  advanceTurn() {
+    this.entries = this.entries
+      .map(entry => entry.advanceTurn())
+      .filter(Boolean);
+    this.criticals = this.criticals
+      .map(entry => entry.advanceTurn())
+      .filter(Boolean);
+  }
+}
+
+export default SystemDamage;

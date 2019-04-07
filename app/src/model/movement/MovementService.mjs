@@ -2,8 +2,8 @@ import { MovementOrder } from ".";
 import { movementTypes } from ".";
 import { MovementResolver } from ".";
 import { OverChannelResolver } from ".";
-import hexagon from "../../../../model/hexagon";
-import { addToHexFacing } from "../../../../model/utils/math";
+import hexagon from "../hexagon";
+import { addToHexFacing } from "../utils/math";
 
 class MovementService {
   constructor() {
@@ -290,5 +290,4 @@ class MovementService {
   }
 }
 
-window.MovementService = MovementService;
 export default MovementService;
