@@ -10,22 +10,17 @@ CREATE TABLE `user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-DROP TABLE IF EXISTS `ship_fire`;
-CREATE TABLE `ship_fire` (
+DROP TABLE IF EXISTS `game_event`;
+CREATE TABLE `game_event` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `game_id` int(11) NOT NULL,
   `type` varchar(45) NOT NULL DEFAULT 'normal',
   `ship_id` int(11) NOT NULL DEFAULT '0',
-  `target_id` int(11) NOT NULL DEFAULT '0',
-  `weapon_id` int(11) NOT NULL DEFAULT '0',
-  `target_system_id` int(11) DEFAULT NULL,
   `turn` int(11) NOT NULL DEFAULT '0',
   `data` JSON DEFAULT '{}',
   CHECK (JSON_VALID(`data`)),
   PRIMARY KEY (`id`),
-  KEY (`game_id`),
-  KEY (`ship_id`),
-  KEY (`weapon_id`)
+  KEY (`game_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `game`;

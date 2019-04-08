@@ -1,16 +1,22 @@
 import SystemDamage from "./SystemDamage";
+import SystemPower from "./SystemPower";
 
 class ShipSystem {
-  constructor(id, hitpoints, armor) {
-    this.id = id;
-    this.hitpoints = hitpoints;
-    this.armor = armor;
+  constructor(args = {}) {
+    this.id = args.id;
+    this.hitpoints = args.hitpoints;
+    this.armor = args.armor;
     this.strategies = [];
     this.damage = new SystemDamage(this);
+    this.power = new SystemPower(this);
   }
 
   isDestroyed() {
     return this.damage.isDestroyed();
+  }
+
+  isDisabled() {
+    return this.power.isOffline() || this.isDestroyed();
   }
 
   getTotalDamage() {
@@ -29,9 +35,7 @@ class ShipSystem {
     return this.damage.hasCritical(name);
   }
 
-  callHandler(name, payload = {}) {
-    let response = {};
-
+  callHandler(name, payload = {}, response = undefined) {
     this.strategies.forEach(strategy => {
       response = strategy.callHandler(name, this, payload, response);
     });
@@ -41,17 +45,20 @@ class ShipSystem {
 
   deserialize(data = {}) {
     this.damage.deserialize(data.damage);
+    this.power.deserialize(data.power);
     return this;
   }
 
   serialize() {
     return {
-      damage: this.damage.serialize()
+      damage: this.damage.serialize(),
+      power: this.power.serialize()
     };
   }
 
   advanceTurn() {
     this.damage.advanceTurn();
+    this.power.advanceTurn();
     this.callHandler("advanceTurn");
   }
 }

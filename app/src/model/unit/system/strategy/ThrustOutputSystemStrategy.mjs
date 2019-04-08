@@ -1,0 +1,57 @@
+import ShipSystemStrategy from "./ShipSystemStrategy.mjs";
+import {
+  OutputReduced2,
+  OutputReduced4,
+  OutputReduced6,
+  OutputReduced8
+} from "../criticals";
+
+class ThrustOutputSystemStrategy extends ShipSystemStrategy {
+  constructor(output) {
+    super();
+
+    this.output = output || 0;
+  }
+
+  getThrustOutput(system, payload, previousResponse = 0) {
+    if (system.isDisabled()) {
+      return previousResponse;
+    }
+
+    let output = this.output;
+
+    if (system.hasCritical(OutputReduced2)) {
+      output -= 2;
+    }
+
+    if (system.hasCritical(OutputReduced4)) {
+      output -= 4;
+    }
+
+    if (system.hasCritical(OutputReduced6)) {
+      output -= 6;
+    }
+
+    if (system.hasCritical(OutputReduced8)) {
+      output -= 8;
+    }
+
+    if (output < 0) {
+      output = 0;
+    }
+
+    return previousResponse + output;
+  }
+
+  getPossibleCriticals(system, payload, previousResponse = []) {
+    return [
+      ...previousResponse,
+      { weight: 10, className: OutputReduced2 },
+      { weight: 7, className: OutputReduced4 },
+      { weight: 3, className: OutputReduced6 },
+      { weight: 1, className: OutputReduced8 }
+    ];
+  }
+}
+
+export default ThrustOutputSystemStrategy;
