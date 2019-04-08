@@ -1,4 +1,5 @@
 import { movementTypes } from ".";
+import { addToHexFacing } from "../utils/math.mjs";
 
 class RequiredThrust {
   constructor(ship, move) {
@@ -114,8 +115,8 @@ class RequiredThrust {
   requireSpeed(ship, move) {
     const facing = move.facing;
     const direction = move.value;
-    const actualDirection = window.mathlib.addToHexFacing(
-      window.mathlib.addToHexFacing(direction, -facing),
+    const actualDirection = addToHexFacing(
+      addToHexFacing(direction, -facing),
       3
     );
 

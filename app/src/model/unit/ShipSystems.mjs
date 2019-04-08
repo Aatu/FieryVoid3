@@ -46,6 +46,8 @@ class ShipSystems {
         system.deserialize(systemData.data);
       }
     });
+
+    return this;
   }
 
   serialize() {

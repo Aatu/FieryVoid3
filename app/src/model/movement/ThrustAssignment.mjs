@@ -1,21 +1,17 @@
+import { FirstThrustIgnored, EfficiencyHalved } from "../unit/system/criticals";
+
 class ThrustAssignment {
   constructor(thruster) {
     this.thruster = thruster;
 
-    this.directions = [].concat(thruster.direction);
+    this.directions = [].concat(thruster.callHandler("getThrustDirection"));
     this.paid = 0;
     this.channeled = 0;
-    this.capacity = thruster.output;
+    this.capacity = thruster.callHandler("getThrustChannel");
 
-    this.firstIgnored = window.shipManager.criticals.hasCritical(
-      thruster,
-      "FirstThrustIgnored"
-    );
+    this.firstIgnored = thruster.hasCritical(FirstThrustIgnored);
 
-    this.halfEfficiency = window.shipManager.criticals.hasCritical(
-      thruster,
-      "HalfEfficiency"
-    );
+    this.halfEfficiency = thruster.hasCritical(EfficiencyHalved);
 
     this.damaged = this.firstIgnored || this.halfEfficiency;
   }

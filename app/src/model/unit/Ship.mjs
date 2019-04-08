@@ -10,15 +10,19 @@ class Ship {
 
   getHexPosition() {}
 
-  deserialize(data) {
+  deserialize(data = {}) {
     this.id = data.id || null;
     this.gameId = data.gameId || null;
     this.name = data.name || "Unnamed ship " + data.id;
     this.shipClass = this.constructor.name;
+    this.accelcost = data.accelcost || 1;
+
     this.systems = new ShipSystems(this).deserialize(data.systems);
     this.player = new ShipPlayer(this).deserialize(data.player);
     this.movement = new ShipMovement(this).deserialize(data.movement);
     this.ew = new ShipEW(this);
+
+    return this;
   }
 
   serialize() {

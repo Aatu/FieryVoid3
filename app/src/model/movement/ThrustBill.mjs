@@ -5,8 +5,9 @@ class ThrustBill {
     this.ship = ship;
     this.movement = movement.map(move => move.clone());
     this.thrusters = ship.systems
-      .filter(system => system.thruster)
-      .filter(system => !system.isDestroyed())
+      .getSystems()
+      .filter(system => system.callHandler("isThruster", null, false))
+      .filter(system => !system.isDisabled())
       .map(thruster => new ThrustAssignment(thruster));
 
     this.buildRequiredThrust(this.movement);
