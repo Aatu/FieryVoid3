@@ -1,45 +1,63 @@
 import test from "ava";
 import ThrustAssignment from "../../model/movement/ThrustAssignment.mjs";
+import ThrustBill from "../../model/movement/ThrustBill.mjs";
+import MovementOrder from "../../model/movement/MovementOrder.mjs";
+import hexagon from "../../model/hexagon";
+import Thruster from "../../model/unit/system/thruster/Thruster.mjs";
+import Ship from "../../model/unit/Ship.mjs";
 
-/*
-const getThruster = (direction = 0, output = 3, criticals = []) => ({
-  direction,
-  output,
-  criticals
+import {
+  FirstThrustIgnored,
+  EfficiencyHalved
+} from "../../model/unit/system/criticals";
+
+let id = 0;
+
+const getThruster = (direction = 0, output = 3, criticals = []) => {
+  id++;
+
+  const thruster = new Thruster(
+    { id, hitpoints: 10, armor: 3 },
+    output,
+    direction
+  );
+  criticals.forEach(crit => thruster.addCritical(new crit()));
+  return thruster;
+};
+
+test("isDirection", test => {
+  const thrustAssignment = new ThrustAssignment(getThruster(0, 6));
+  test.true(thrustAssignment.isDirection(0));
+  test.false(thrustAssignment.isDirection(3));
 });
 
-test("isDirection", () => {
+test("getDamageLevel", test => {
   const thrustAssignment = new ThrustAssignment(getThruster(0, 6));
-  expect(thrustAssignment.isDirection(0)).toBe(true);
-  expect(thrustAssignment.isDirection(3)).toBe(false);
-});
-
-test("getDamageLevel", () => {
-  const thrustAssignment = new ThrustAssignment(getThruster(0, 6));
-  expect(thrustAssignment.getDamageLevel()).toBe(0);
+  test.deepEqual(thrustAssignment.getDamageLevel(), 0);
 
   const thrustAssignment2 = new ThrustAssignment(
-    getThruster(0, 6, ["FirstThrustIgnored"])
+    getThruster(0, 6, [FirstThrustIgnored])
   );
 
-  expect(thrustAssignment2.getDamageLevel()).toBe(1);
+  test.deepEqual(thrustAssignment2.getDamageLevel(), 1);
   thrustAssignment2.channel(1);
-  expect(thrustAssignment2.getDamageLevel()).toBe(0);
+  test.deepEqual(thrustAssignment2.getDamageLevel(), 0);
 
   const thrustAssignment3 = new ThrustAssignment(
-    getThruster(0, 6, ["HalfEfficiency"])
+    getThruster(0, 6, [EfficiencyHalved])
   );
-  expect(thrustAssignment3.getDamageLevel()).toBe(2);
+  test.deepEqual(thrustAssignment3.getDamageLevel(), 2);
 
   const thrustAssignment4 = new ThrustAssignment(
-    getThruster(0, 6, ["HalfEfficiency", "FirstThrustIgnored"])
+    getThruster(0, 6, [EfficiencyHalved, FirstThrustIgnored])
   );
-  expect(thrustAssignment4.getDamageLevel()).toBe(3);
+
+  test.deepEqual(thrustAssignment4.getDamageLevel(), 3);
   thrustAssignment4.channel(1);
-  expect(thrustAssignment4.getDamageLevel()).toBe(2);
+  test.deepEqual(thrustAssignment4.getDamageLevel(), 2);
 });
 
-test("getCost, no damage, no overthrust", () => {
+test("getCost, no damage, no overthrust", test => {
   const thrustAssignment = new ThrustAssignment(getThruster(0, 6));
   const {
     capacity,
@@ -48,20 +66,20 @@ test("getCost, no damage, no overthrust", () => {
     costMultiplier
   } = thrustAssignment.getThrustCapacity();
 
-  expect(capacity).toBe(6);
-  expect(overCapacity).toBe(6);
-  expect(extraCost).toBe(0);
-  expect(costMultiplier).toBe(1);
+  test.deepEqual(capacity, 6);
+  test.deepEqual(overCapacity, 6);
+  test.deepEqual(extraCost, 0);
+  test.deepEqual(costMultiplier, 1);
 });
 
-test("channel wihtout overthrusting", () => {
+test("channel wihtout overthrusting", test => {
   const thrustAssignment = new ThrustAssignment(getThruster(0, 6));
 
   const { channeled, overChanneled, cost } = thrustAssignment.channel(3);
 
-  expect(channeled).toBe(3);
-  expect(overChanneled).toBe(0);
-  expect(cost).toBe(3);
+  test.deepEqual(channeled, 3);
+  test.deepEqual(overChanneled, 0);
+  test.deepEqual(cost, 3);
 
   const {
     capacity,
@@ -70,20 +88,20 @@ test("channel wihtout overthrusting", () => {
     costMultiplier
   } = thrustAssignment.getThrustCapacity();
 
-  expect(capacity).toBe(3);
-  expect(overCapacity).toBe(6);
-  expect(extraCost).toBe(0);
-  expect(costMultiplier).toBe(1);
+  test.deepEqual(capacity, 3);
+  test.deepEqual(overCapacity, 6);
+  test.deepEqual(extraCost, 0);
+  test.deepEqual(costMultiplier, 1);
 });
 
-test("overchannel a lot", () => {
+test("overchannel a lot", test => {
   const thrustAssignment = new ThrustAssignment(getThruster(0, 6));
 
   const { channeled, overChanneled, cost } = thrustAssignment.overChannel(9);
 
-  expect(channeled).toBe(6);
-  expect(overChanneled).toBe(3);
-  expect(cost).toBe(9);
+  test.deepEqual(channeled, 6);
+  test.deepEqual(overChanneled, 3);
+  test.deepEqual(cost, 9);
 
   const {
     capacity,
@@ -92,20 +110,20 @@ test("overchannel a lot", () => {
     costMultiplier
   } = thrustAssignment.getThrustCapacity();
 
-  expect(capacity).toBe(0);
-  expect(overCapacity).toBe(3);
-  expect(extraCost).toBe(0);
-  expect(costMultiplier).toBe(1);
+  test.deepEqual(capacity, 0);
+  test.deepEqual(overCapacity, 3);
+  test.deepEqual(extraCost, 0);
+  test.deepEqual(costMultiplier, 1);
 });
 
-test("channel more than capacity", () => {
+test("channel more than capacity", test => {
   const thrustAssignment = new ThrustAssignment(getThruster(0, 6));
 
   const { channeled, overChanneled, cost } = thrustAssignment.channel(9);
 
-  expect(channeled).toBe(6);
-  expect(overChanneled).toBe(0);
-  expect(cost).toBe(6);
+  test.deepEqual(channeled, 6);
+  test.deepEqual(overChanneled, 0);
+  test.deepEqual(cost, 6);
 
   const {
     capacity,
@@ -114,20 +132,20 @@ test("channel more than capacity", () => {
     costMultiplier
   } = thrustAssignment.getThrustCapacity();
 
-  expect(capacity).toBe(0);
-  expect(overCapacity).toBe(6);
-  expect(extraCost).toBe(0);
-  expect(costMultiplier).toBe(1);
+  test.deepEqual(capacity, 0);
+  test.deepEqual(overCapacity, 6);
+  test.deepEqual(extraCost, 0);
+  test.deepEqual(costMultiplier, 1);
 });
 
-test("over channel more than capacity", () => {
+test("over channel more than capacity", test => {
   const thrustAssignment = new ThrustAssignment(getThruster(0, 6));
 
   const { channeled, overChanneled, cost } = thrustAssignment.overChannel(19);
 
-  expect(channeled).toBe(6);
-  expect(overChanneled).toBe(6);
-  expect(cost).toBe(12);
+  test.deepEqual(channeled, 6);
+  test.deepEqual(overChanneled, 6);
+  test.deepEqual(cost, 12);
 
   const {
     capacity,
@@ -136,15 +154,15 @@ test("over channel more than capacity", () => {
     costMultiplier
   } = thrustAssignment.getThrustCapacity();
 
-  expect(capacity).toBe(0);
-  expect(overCapacity).toBe(0);
-  expect(extraCost).toBe(0);
-  expect(costMultiplier).toBe(1);
+  test.deepEqual(capacity, 0);
+  test.deepEqual(overCapacity, 0);
+  test.deepEqual(extraCost, 0);
+  test.deepEqual(costMultiplier, 1);
 });
 
-test("capacity with damaged thruster correct", () => {
+test("capacity with damaged thruster correct", test => {
   const thrustAssignment = new ThrustAssignment(
-    getThruster(0, 6, ["FirstThrustIgnored"])
+    getThruster(0, 6, [FirstThrustIgnored])
   );
 
   const {
@@ -154,22 +172,22 @@ test("capacity with damaged thruster correct", () => {
     costMultiplier
   } = thrustAssignment.getThrustCapacity();
 
-  expect(capacity).toBe(6);
-  expect(overCapacity).toBe(0);
-  expect(extraCost).toBe(1);
-  expect(costMultiplier).toBe(1);
+  test.deepEqual(capacity, 6);
+  test.deepEqual(overCapacity, 0);
+  test.deepEqual(extraCost, 1);
+  test.deepEqual(costMultiplier, 1);
 });
 
-test("channel with first thrust ignored thruster", () => {
+test("channel with first thrust ignored thruster", test => {
   const thrustAssignment = new ThrustAssignment(
-    getThruster(0, 6, ["FirstThrustIgnored"])
+    getThruster(0, 6, [FirstThrustIgnored])
   );
 
   const { channeled, overChanneled, cost } = thrustAssignment.channel(2);
 
-  expect(channeled).toBe(2);
-  expect(overChanneled).toBe(0);
-  expect(cost).toBe(3);
+  test.deepEqual(channeled, 2);
+  test.deepEqual(overChanneled, 0);
+  test.deepEqual(cost, 3);
 
   const {
     capacity,
@@ -178,23 +196,23 @@ test("channel with first thrust ignored thruster", () => {
     costMultiplier
   } = thrustAssignment.getThrustCapacity();
 
-  expect(capacity).toBe(4);
-  expect(overCapacity).toBe(0);
-  expect(extraCost).toBe(0);
-  expect(costMultiplier).toBe(1);
+  test.deepEqual(capacity, 4);
+  test.deepEqual(overCapacity, 0);
+  test.deepEqual(extraCost, 0);
+  test.deepEqual(costMultiplier, 1);
 });
 
-test("second channel with first thrust ignored causes no extra cost", () => {
+test("second channel with first thrust ignored causes no extra cost", test => {
   const thrustAssignment = new ThrustAssignment(
-    getThruster(0, 6, ["FirstThrustIgnored"])
+    getThruster(0, 6, [FirstThrustIgnored])
   );
 
   thrustAssignment.channel(2);
   const { channeled, overChanneled, cost } = thrustAssignment.channel(2);
 
-  expect(channeled).toBe(2);
-  expect(overChanneled).toBe(0);
-  expect(cost).toBe(2);
+  test.deepEqual(channeled, 2);
+  test.deepEqual(overChanneled, 0);
+  test.deepEqual(cost, 2);
 
   const {
     capacity,
@@ -203,22 +221,22 @@ test("second channel with first thrust ignored causes no extra cost", () => {
     costMultiplier
   } = thrustAssignment.getThrustCapacity();
 
-  expect(capacity).toBe(2);
-  expect(overCapacity).toBe(0);
-  expect(extraCost).toBe(0);
-  expect(costMultiplier).toBe(1);
+  test.deepEqual(capacity, 2);
+  test.deepEqual(overCapacity, 0);
+  test.deepEqual(extraCost, 0);
+  test.deepEqual(costMultiplier, 1);
 });
 
-test("half efficiency doubles the cost", () => {
+test("half efficiency doubles the cost", test => {
   const thrustAssignment = new ThrustAssignment(
-    getThruster(0, 6, ["HalfEfficiency"])
+    getThruster(0, 6, [EfficiencyHalved])
   );
 
   const { channeled, overChanneled, cost } = thrustAssignment.channel(4);
 
-  expect(channeled).toBe(4);
-  expect(overChanneled).toBe(0);
-  expect(cost).toBe(8);
+  test.deepEqual(channeled, 4);
+  test.deepEqual(overChanneled, 0);
+  test.deepEqual(cost, 8);
 
   const {
     capacity,
@@ -227,22 +245,22 @@ test("half efficiency doubles the cost", () => {
     costMultiplier
   } = thrustAssignment.getThrustCapacity();
 
-  expect(capacity).toBe(2);
-  expect(overCapacity).toBe(0);
-  expect(extraCost).toBe(0);
-  expect(costMultiplier).toBe(2);
+  test.deepEqual(capacity, 2);
+  test.deepEqual(overCapacity, 0);
+  test.deepEqual(extraCost, 0);
+  test.deepEqual(costMultiplier, 2);
 });
 
-test("half efficiency and first thrust ignores combine properly", () => {
+test("half efficiency and first thrust ignores combine properly", test => {
   const thrustAssignment = new ThrustAssignment(
-    getThruster(0, 6, ["HalfEfficiency", "FirstThrustIgnored"])
+    getThruster(0, 6, [EfficiencyHalved, FirstThrustIgnored])
   );
 
   const { channeled, overChanneled, cost } = thrustAssignment.channel(4);
 
-  expect(channeled).toBe(4);
-  expect(overChanneled).toBe(0);
-  expect(cost).toBe(9);
+  test.deepEqual(channeled, 4);
+  test.deepEqual(overChanneled, 0);
+  test.deepEqual(cost, 9);
 
   const {
     capacity,
@@ -251,23 +269,23 @@ test("half efficiency and first thrust ignores combine properly", () => {
     costMultiplier
   } = thrustAssignment.getThrustCapacity();
 
-  expect(capacity).toBe(2);
-  expect(overCapacity).toBe(0);
-  expect(extraCost).toBe(0);
-  expect(costMultiplier).toBe(2);
+  test.deepEqual(capacity, 2);
+  test.deepEqual(overCapacity, 0);
+  test.deepEqual(extraCost, 0);
+  test.deepEqual(costMultiplier, 2);
 });
 
-test("half efficiency and first thrust ignored counts first only once", () => {
+test("half efficiency and first thrust ignored counts first only once", test => {
   const thrustAssignment = new ThrustAssignment(
-    getThruster(0, 6, ["HalfEfficiency", "FirstThrustIgnored"])
+    getThruster(0, 6, [EfficiencyHalved, FirstThrustIgnored])
   );
 
   thrustAssignment.channel(2);
   const { channeled, overChanneled, cost } = thrustAssignment.channel(4);
 
-  expect(channeled).toBe(4);
-  expect(overChanneled).toBe(0);
-  expect(cost).toBe(8);
+  test.deepEqual(channeled, 4);
+  test.deepEqual(overChanneled, 0);
+  test.deepEqual(cost, 8);
 
   const {
     capacity,
@@ -276,19 +294,19 @@ test("half efficiency and first thrust ignored counts first only once", () => {
     costMultiplier
   } = thrustAssignment.getThrustCapacity();
 
-  expect(capacity).toBe(0);
-  expect(overCapacity).toBe(0);
-  expect(extraCost).toBe(0);
-  expect(costMultiplier).toBe(2);
+  test.deepEqual(capacity, 0);
+  test.deepEqual(overCapacity, 0);
+  test.deepEqual(extraCost, 0);
+  test.deepEqual(costMultiplier, 2);
 });
 
-test("undoing channel works and returns refund", () => {
+test("undoing channel works and returns refund", test => {
   const thrustAssignment = new ThrustAssignment(getThruster(0, 6));
 
   thrustAssignment.channel(2);
   const { refund } = thrustAssignment.undoChannel(2);
 
-  expect(refund).toBe(2);
+  test.deepEqual(refund, 2);
 
   const {
     capacity,
@@ -297,34 +315,33 @@ test("undoing channel works and returns refund", () => {
     costMultiplier
   } = thrustAssignment.getThrustCapacity();
 
-  expect(capacity).toBe(6);
-  expect(overCapacity).toBe(6);
-  expect(extraCost).toBe(0);
-  expect(costMultiplier).toBe(1);
+  test.deepEqual(capacity, 6);
+  test.deepEqual(overCapacity, 6);
+  test.deepEqual(extraCost, 0);
+  test.deepEqual(costMultiplier, 1);
 });
 
-test("undoing throws if trying to undo more than channeled", () => {
+test("undoing throws if trying to undo more than channeled", test => {
   const thrustAssignment = new ThrustAssignment(getThruster(0, 6));
 
   thrustAssignment.channel(2);
-  expect(() => thrustAssignment.undoChannel(4)).toThrow(
-    "Can not undo channel more than channeled"
-  );
+  const error = test.throws(() => thrustAssignment.undoChannel(4));
+  test.is(error.message, "Can not undo channel more than channeled");
 });
 
-test("undoing channel refunds first thrust ignored", () => {
+test("undoing channel refunds first thrust ignored", test => {
   const thrustAssignment = new ThrustAssignment(
-    getThruster(0, 6, ["FirstThrustIgnored"])
+    getThruster(0, 6, [FirstThrustIgnored])
   );
 
   thrustAssignment.channel(2);
   const { refund } = thrustAssignment.undoChannel(1);
 
-  expect(refund).toBe(1);
+  test.deepEqual(refund, 1);
 
   const { refund: refund2 } = thrustAssignment.undoChannel(1);
 
-  expect(refund2).toBe(2);
+  test.deepEqual(refund2, 2);
 
   const {
     capacity,
@@ -333,26 +350,26 @@ test("undoing channel refunds first thrust ignored", () => {
     costMultiplier
   } = thrustAssignment.getThrustCapacity();
 
-  expect(capacity).toBe(6);
-  expect(overCapacity).toBe(0);
-  expect(extraCost).toBe(1);
-  expect(costMultiplier).toBe(1);
+  test.deepEqual(capacity, 6);
+  test.deepEqual(overCapacity, 0);
+  test.deepEqual(extraCost, 1);
+  test.deepEqual(costMultiplier, 1);
 });
 
-test("undoing channel refunds first thrust ignored with damage level 3", () => {
+test("undoing channel refunds first thrust ignored with damage level 3", test => {
   const thrustAssignment = new ThrustAssignment(
-    getThruster(0, 6, ["FirstThrustIgnored", "HalfEfficiency"])
+    getThruster(0, 6, [FirstThrustIgnored, EfficiencyHalved])
   );
 
   const { cost } = thrustAssignment.channel(2);
-  expect(cost).toBe(5);
+  test.deepEqual(cost, 5);
   const { refund } = thrustAssignment.undoChannel(1);
 
-  expect(refund).toBe(2);
+  test.deepEqual(refund, 2);
 
   const { refund: refund2 } = thrustAssignment.undoChannel(1);
 
-  expect(refund2).toBe(3);
+  test.deepEqual(refund2, 3);
 
   const {
     capacity,
@@ -361,29 +378,27 @@ test("undoing channel refunds first thrust ignored with damage level 3", () => {
     costMultiplier
   } = thrustAssignment.getThrustCapacity();
 
-  expect(capacity).toBe(6);
-  expect(overCapacity).toBe(0);
-  expect(extraCost).toBe(1);
-  expect(costMultiplier).toBe(2);
+  test.deepEqual(capacity, 6);
+  test.deepEqual(overCapacity, 0);
+  test.deepEqual(extraCost, 1);
+  test.deepEqual(costMultiplier, 2);
 });
 
-test("Channel cost should be right", () => {
+test("Channel cost should be right", test => {
   const thrustAssignment1 = new ThrustAssignment(
-    getThruster(0, 6, ["FirstThrustIgnored"])
+    getThruster(0, 6, [FirstThrustIgnored])
   );
   const thrustAssignment2 = new ThrustAssignment(
-    getThruster(0, 6, ["HalfEfficiency"])
+    getThruster(0, 6, [EfficiencyHalved])
   );
   const thrustAssignment3 = new ThrustAssignment(
-    getThruster(0, 6, ["FirstThrustIgnored", "HalfEfficiency"])
+    getThruster(0, 6, [FirstThrustIgnored, EfficiencyHalved])
   );
 
-  expect(thrustAssignment1.channel(2).cost).toBe(3);
-  expect(thrustAssignment1.channel(2).cost).toBe(2);
-  expect(thrustAssignment2.channel(2).cost).toBe(4);
-  expect(thrustAssignment2.channel(2).cost).toBe(4);
-  expect(thrustAssignment3.channel(2).cost).toBe(5);
-  expect(thrustAssignment3.channel(2).cost).toBe(4);
+  test.deepEqual(thrustAssignment1.channel(2).cost, 3);
+  test.deepEqual(thrustAssignment1.channel(2).cost, 2);
+  test.deepEqual(thrustAssignment2.channel(2).cost, 4);
+  test.deepEqual(thrustAssignment2.channel(2).cost, 4);
+  test.deepEqual(thrustAssignment3.channel(2).cost, 5);
+  test.deepEqual(thrustAssignment3.channel(2).cost, 4);
 });
-
-*/
