@@ -27,7 +27,7 @@ class OverChannelResolver {
   track(fulfilments) {
     fulfilments.forEach(fulfilment => {
       const thruster = this.thrusters.find(
-        thruster => thruster.thruster === fulfilment.thruster
+        thruster => thruster.thruster.id === fulfilment.thrusterId
       );
 
       thruster.channeled += fulfilment.amount;

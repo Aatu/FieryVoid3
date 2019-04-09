@@ -22,6 +22,20 @@ class PowerEntry {
   setAmount(amount) {
     this.amount = amount;
   }
+
+  serialize() {
+    return {
+      type: this.type,
+      amount: this.amount
+    }
+  }
+
+  deserialize(data){
+    this.type = data.type;
+    this.amount = data.amount || 0;
+
+    return this;
+  }
 }
 
 export { POWER_TYPE_OFFLINE, POWER_TYPE_BOOST };

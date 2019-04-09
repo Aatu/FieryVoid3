@@ -1,10 +1,15 @@
+import MovementOrder from "../movement/MovementOrder.mjs"
 class ShipMovement {
-  constructor() {}
+  constructor() {
+    this.moves = [];
+  }
 
-  deserialize(data) {}
+  deserialize(data = []) {
+    this.moves = data.map(moveData => new MovementOrder().deserialize(moveData));
+  }
 
   serialize() {
-    return {};
+    return this.moves.map(move => move.serialize());
   }
 }
 

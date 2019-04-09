@@ -5,6 +5,7 @@ import ShipMovement from "./ShipMovement";
 
 class Ship {
   constructor(data = {}) {
+    this.systems = new ShipSystems(this);
     this.deserialize(data);
   }
 
@@ -17,7 +18,7 @@ class Ship {
     this.shipClass = this.constructor.name;
     this.accelcost = data.accelcost || 1;
 
-    this.systems = new ShipSystems(this).deserialize(data.systems);
+    this.systems.deserialize(data.systems);
     this.player = new ShipPlayer(this).deserialize(data.player);
     this.movement = new ShipMovement(this).deserialize(data.movement);
     this.ew = new ShipEW(this);
@@ -32,8 +33,8 @@ class Ship {
       name: this.name,
       shipClass: this.shipClass,
       systems: this.systems.serialize(),
-      player: this.player.serialize(),
-      movement: this.movement.serialize()
+      //player: this.player.serialize(),
+      //movement: this.movement.serialize()
     };
   }
 

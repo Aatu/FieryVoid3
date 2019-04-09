@@ -1,6 +1,7 @@
 import { movementTypes } from ".";
 import hexagon from "../hexagon";
 import { addToHexFacing } from "../utils/math";
+import RequiredThrust from "./RequiredThrust.mjs";
 
 class MovementOrder {
   constructor(
@@ -43,6 +44,21 @@ class MovementOrder {
         ? this.requiredThrust.serialize()
         : null
     };
+  }
+
+  deserialize(data) {
+
+    this.id = data.id;
+    this.type = data.type;
+    this.position = new hexagon.Offset(data.position);
+    this.target = data.target;
+    this.facing = data.facing;
+    this.rolled = data.rolled;
+    this.turn = data.turn;
+    this.value = data.value;
+    this.requiredThrust = requiredThrust;
+
+    return this;
   }
 
   isSpeed() {

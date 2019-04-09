@@ -32,32 +32,17 @@ class RequiredThrust {
   }
 
   serialize() {
-    const fullfilments = {
-      0: [],
-      1: [],
-      2: [],
-      3: [],
-      4: [],
-      5: [],
-      6: []
-    };
-
-    Object.keys(this.fullfilments).forEach(direction => {
-      const entryArray = this.fullfilments[direction].map(fulfilment => {
-        return {
-          amount: fulfilment.amount,
-          thrusterId: fulfilment.thruster.id
-        };
-      });
-
-      fullfilments[direction] = entryArray;
-    });
-
     return {
       requirements: this.requirements,
-      fullfilments
+      fullfilments: this.fullfilments
     };
   }
+
+  deserialize(data) {
+    this.requirements = data.requirements;
+    this.fullfilments = data.fullfilments;
+    return this;
+  } 
 
   getTotalAmountRequired() {
     return Object.keys(this.requirements).reduce((total, direction) => {
@@ -81,7 +66,7 @@ class RequiredThrust {
   }
 
   fulfill(direction, amount, thruster) {
-    this.fullfilments[direction].push({ amount, thruster });
+    this.fullfilments[direction].push({ amount, thrusterId: thruster.id });
     if (this.requirements[direction] < this.getFulfilledAmount(direction)) {
       throw new Error("Fulfilled too much!");
     }

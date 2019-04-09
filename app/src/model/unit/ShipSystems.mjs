@@ -41,7 +41,7 @@ class ShipSystems {
 
   deserialize(data = []) {
     data.forEach(systemData => {
-      const system = this.getSystemById(systemData.id);
+      const system = this.getSystemById(systemData.systemId);
       if (system) {
         system.deserialize(systemData.data);
       }
@@ -51,7 +51,7 @@ class ShipSystems {
   }
 
   serialize() {
-    return this.systems.map(system => ({
+    return this.systemsAsArray.map(system => ({
       shipId: this.ship.id,
       systemId: system.id,
       data: system.serialize()

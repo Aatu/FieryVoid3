@@ -1,10 +1,6 @@
 import test from "ava";
 import ThrustAssignment from "../../model/movement/ThrustAssignment.mjs";
-import ThrustBill from "../../model/movement/ThrustBill.mjs";
-import MovementOrder from "../../model/movement/MovementOrder.mjs";
-import hexagon from "../../model/hexagon";
 import Thruster from "../../model/unit/system/thruster/Thruster.mjs";
-import Ship from "../../model/unit/Ship.mjs";
 
 import {
   FirstThrustIgnored,
