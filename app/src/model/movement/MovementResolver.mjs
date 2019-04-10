@@ -20,12 +20,12 @@ class MovementResolver {
       const newMovement = bill.getMoves();
 
       const initialOverChannel = new OverChannelResolver(
-        this.movementService.getThrusters(this.ship),
-        this.movementService.getThisTurnMovement(this.ship)
+        this.ship.movement.getThrusters(),
+        this.ship.movement.getMovement()
       ).getAmountOverChanneled();
 
       const newOverChannel = new OverChannelResolver(
-        this.movementService.getThrusters(this.ship),
+        this.ship.movement.getThrusters(),
         newMovement
       ).getAmountOverChanneled();
 
@@ -39,7 +39,7 @@ class MovementResolver {
       */
 
       if (commit) {
-        this.movementService.replaceTurnMovement(this.ship, newMovement);
+        this.ship.movement.replaceMovement(newMovement);
         this.movementService.shipMovementChanged(this.ship);
       }
       return {
@@ -60,14 +60,14 @@ class MovementResolver {
   }
 
   roll(commit = true) {
-    let rollMove = this.movementService.getRollMove(this.ship);
+    let rollMove = this.ship.movement.getRollMove();
 
-    const endMove = this.movementService.getLastEndMove(this.ship);
+    const endMove = this.ship.movement.getFirstMove();
 
-    let movements = this.movementService.getThisTurnMovement(this.ship);
+    let movements = this.ship.movement.getMovement();
 
     if (rollMove) {
-      movements = movements.filter(move => move !== rollMove);
+      movements = movements.filter(move => !move.isRoll());
     } else {
       rollMove = new MovementOrder(
         null,
@@ -88,7 +88,7 @@ class MovementResolver {
 
     const bill = new ThrustBill(
       this.ship,
-      this.movementService.getTotalProducedThrust(this.ship),
+      this.ship.movement.getThrustOutput(),
       movements
     );
 
@@ -100,17 +100,12 @@ class MovementResolver {
   }
 
   evade(step, commit = true) {
-    let evadeMove = this.movementService.getEvadeMove(this.ship);
+    let evadeMove = this.ship.movement.getEvadeMove();
 
-    const endMove = this.movementService.getLastEndMove(this.ship);
+    const endMove = this.ship.movement.getFirstMove();
 
     if (evadeMove) {
-      evadeMove = evadeMove.clone();
-
-      if (
-        evadeMove.value + step >
-        this.movementService.getMaximumEvasion(this.ship)
-      ) {
+      if (evadeMove.value + step > this.ship.movement.getMaxEvasion()) {
         return false;
       }
 
@@ -135,13 +130,13 @@ class MovementResolver {
       );
     }
 
-    const playerAdded = this.movementService
-      .getThisTurnMovement(this.ship)
+    const playerAdded = this.ship.movement
+      .getMovement()
       .filter(
         move => move.isPlayerAdded() && !move.isRoll() && !move.isEvade()
       );
-    const nonPlayerAdded = this.movementService
-      .getThisTurnMovement(this.ship)
+    const nonPlayerAdded = this.ship.movement
+      .getMovement()
       .filter(move => !move.isPlayerAdded() || move.isRoll());
 
     const movements =
@@ -151,7 +146,7 @@ class MovementResolver {
 
     const bill = new ThrustBill(
       this.ship,
-      this.movementService.getTotalProducedThrust(this.ship),
+      this.ship.movement.getThrustOutput(),
       movements
     );
 
@@ -163,7 +158,7 @@ class MovementResolver {
   }
 
   pivot(pivotDirection, commit = true) {
-    const lastMove = this.movementService.getMostRecentMove(this.ship);
+    const lastMove = this.ship.movement.getLastMove();
     const pivotMove = new MovementOrder(
       null,
       movementTypes.PIVOT,
@@ -175,7 +170,7 @@ class MovementResolver {
       pivotDirection
     );
 
-    const movements = this.movementService.getThisTurnMovement(this.ship);
+    const movements = this.ship.movement.getMovement();
 
     if (lastMove.isPivot() && lastMove.value !== pivotDirection) {
       movements.pop();
@@ -185,7 +180,7 @@ class MovementResolver {
 
     const bill = new ThrustBill(
       this.ship,
-      this.movementService.getTotalProducedThrust(this.ship),
+      this.ship.movement.getThrustOutput(),
       movements
     );
 
@@ -197,7 +192,7 @@ class MovementResolver {
   }
 
   thrust(direction, commit = true) {
-    const lastMove = this.movementService.getMostRecentMove(this.ship);
+    const lastMove = this.ship.movement.getLastMove();
 
     const thrustMove = new MovementOrder(
       null,
@@ -210,7 +205,7 @@ class MovementResolver {
       direction
     );
 
-    let movements = this.movementService.getThisTurnMovement(this.ship);
+    let movements = this.ship.movement.getMovement();
     const opposite = this.getOpposite(movements, thrustMove);
     if (opposite) {
       movements = movements.filter(move => move !== opposite);
@@ -220,7 +215,7 @@ class MovementResolver {
 
     const bill = new ThrustBill(
       this.ship,
-      this.movementService.getTotalProducedThrust(this.ship),
+      this.ship.movement.getThrustOutput(),
       movements
     );
 
@@ -244,8 +239,8 @@ class MovementResolver {
 
     const bill = new ThrustBill(
       this.ship,
-      this.movementService.getTotalProducedThrust(this.ship),
-      this.movementService.getThisTurnMovement(this.ship)
+      this.ship.movement.getThrustOutput(),
+      this.ship.movement.getMovement()
     );
 
     return this.billAndPay(bill, true);

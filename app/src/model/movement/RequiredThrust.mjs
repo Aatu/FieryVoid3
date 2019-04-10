@@ -14,20 +14,22 @@ class RequiredThrust {
       6: []
     };
 
-    switch (move.type) {
-      case movementTypes.SPEED:
-        this.requireSpeed(ship, move);
-        break;
-      case movementTypes.PIVOT:
-        this.requirePivot(ship);
-        break;
-      case movementTypes.ROLL:
-        this.requireRoll(ship);
-        break;
-      case movementTypes.EVADE:
-        this.requireEvade(ship, move);
-        break;
-      default:
+    if (move) {
+      switch (move.type) {
+        case movementTypes.SPEED:
+          this.requireSpeed(ship, move);
+          break;
+        case movementTypes.PIVOT:
+          this.requirePivot(ship);
+          break;
+        case movementTypes.ROLL:
+          this.requireRoll(ship);
+          break;
+        case movementTypes.EVADE:
+          this.requireEvade(ship, move);
+          break;
+        default:
+      }
     }
   }
 
@@ -42,7 +44,7 @@ class RequiredThrust {
     this.requirements = data.requirements;
     this.fullfilments = data.fullfilments;
     return this;
-  } 
+  }
 
   getTotalAmountRequired() {
     return Object.keys(this.requirements).reduce((total, direction) => {

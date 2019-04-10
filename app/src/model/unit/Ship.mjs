@@ -9,7 +9,9 @@ class Ship {
     this.deserialize(data);
   }
 
-  getHexPosition() {}
+  getHexPosition() {
+    return this.movement.getLastMove().position;
+  }
 
   deserialize(data = {}) {
     this.id = data.id || null;
@@ -17,6 +19,9 @@ class Ship {
     this.name = data.name || "Unnamed ship " + data.id;
     this.shipClass = this.constructor.name;
     this.accelcost = data.accelcost || 1;
+    this.rollcost = data.rollcost || 1;
+    this.pivotcost = data.pivotcost || 1;
+    this.evasioncost = data.evasioncost || 1;
 
     this.systems.deserialize(data.systems);
     this.player = new ShipPlayer(this).deserialize(data.player);
@@ -32,7 +37,7 @@ class Ship {
       gameId: this.gameId,
       name: this.name,
       shipClass: this.shipClass,
-      systems: this.systems.serialize(),
+      systems: this.systems.serialize()
       //player: this.player.serialize(),
       //movement: this.movement.serialize()
     };

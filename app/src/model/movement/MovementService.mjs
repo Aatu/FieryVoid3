@@ -10,97 +10,21 @@ class MovementService {
     this.gamedata = null;
   }
 
-  getCurrentMovementVector(ship) {
-    const moves = this.getThisTurnMovement(ship);
-    return moves.reduce((vector, move) => {
-      if (move.isDeploy() || move.isEnd()) {
-        return move.target;
-      } else if (move.isSpeed()) {
-        return vector.add(move.target);
-      }
-
-      return vector;
-    }, new hexagon.Offset(0, 0));
-  }
-
   update(gamedata, phaseStrategy) {
     this.gamedata = gamedata;
     this.phaseStrategy = phaseStrategy;
-  }
 
-  replaceTurnMovement(ship, newMovement) {
-    ship.movement = [
-      ...ship.movement.filter(
-        move =>
-          move.turn !== this.gamedata.turn ||
-          (move.turn === this.gamedata.turn && !move.isPlayerAdded())
-      ),
-      ...newMovement.filter(move => move.isPlayerAdded())
-    ];
-  }
-
-  getDeployMove(ship) {
-    return ship.movement.find(move => move.type === "deploy");
-  }
-
-  getMostRecentMove(ship) {
-    const move = ship.movement
-      .slice()
-      .reverse()
-      .find(move => move.turn === this.gamedata.turn);
-    if (move) {
-      return move;
-    }
-
-    return ship.movement[ship.movement.length - 1];
+    return this;
   }
 
   isMoved(ship, turn) {
     const end = this.getLastEndMove(ship);
 
-    if (!end || !end.isEnd()) {
+    if (!end) {
       return false;
     }
 
     return end.turn === turn;
-  }
-
-  getLastEndMove(ship) {
-    let end = ship.movement
-      .slice()
-      .reverse()
-      .find(move => move.isEnd());
-
-    if (!end) {
-      end = this.getDeployMove(ship);
-    }
-
-    if (!end) {
-      end = ship.movement[0];
-    }
-
-    return end;
-  }
-
-  getLastTurnEndMove(ship) {
-    let end = ship.movement
-      .slice()
-      .reverse()
-      .find(move => move.isEnd() && move.turn === this.turn - 1);
-
-    if (!end) {
-      end = this.getDeployMove(ship);
-    }
-
-    if (!end) {
-      end = ship.movement[0];
-    }
-
-    return end;
-  }
-
-  getAllMovesOfTurn(ship) {
-    return ship.movement.filter(move => move.turn === this.gamedata.turn);
   }
 
   getShipsInSameHex(ship, hex) {
@@ -114,10 +38,10 @@ class MovementService {
   }
 
   deploy(ship, pos) {
-    let deployMove = this.getDeployMove(ship);
+    let deployMove = ship.movement.getDeployMove();
 
     if (!deployMove) {
-      const lastMove = this.getMostRecentMove(ship);
+      const lastMove = ship.movement.getLastMove();
       deployMove = new MovementOrder(
         -1,
         movementTypes.DEPLOY,
@@ -127,9 +51,10 @@ class MovementService {
         lastMove.rolled,
         this.gamedata.turn
       );
-      ship.movement.push(deployMove);
+      ship.movement.addMovement(deployMove);
     } else {
       deployMove.position = pos;
+      ship.movement.replaceDeployMove(deployMove);
     }
   }
 
@@ -144,59 +69,16 @@ class MovementService {
     deployMove.facing = newfacing;
   }
 
-  getEvadeMove(ship) {
-    return this.getThisTurnMovement(ship).find(move => move.isEvade());
-  }
-
-  getRollMove(ship) {
-    return this.getThisTurnMovement(ship).find(move => move.isRoll());
-  }
-
   getEvasion(ship) {
     const evadeMove = this.getEvadeMove(ship);
     return evadeMove ? evadeMove.value : 0;
   }
 
-  getMaximumEvasion(ship) {
-    const max = ship.systems
-      .filter(system => !system.isDestroyed() && system.maxEvasion > 0)
-      .reduce((total, system) => total + system.maxEvasion, 0);
-
-    return max;
-  }
-
   getOverChannel(ship) {
     return new OverChannelResolver(
       this.getThrusters(ship),
-      this.getThisTurnMovement(ship)
+      ship.movement.getMovement()
     ).getAmountOverChanneled();
-  }
-
-  getTotalProducedThrust(ship) {
-    if (ship.flight) {
-      return ship.freethrust;
-    }
-
-    return ship.systems
-      .filter(system => system.outputType === "thrust")
-      .filter(system => !system.isDestroyed())
-      .reduce((accumulated, system) => {
-        var crits = system.hasCritical(system, "swtargetheld");
-        return accumulated + system.getOutput(ship, system) - crits;
-      }, 0);
-  }
-
-  getRemainingEngineThrust(ship) {
-    return this.getTotalProducedThrust(ship) - this.getUsedEngineThrust(ship);
-  }
-
-  getUsedEngineThrust(ship) {
-    return this.getThisTurnMovement(ship)
-      .filter(move => move.requiredThrust)
-      .reduce(
-        (total, move) => total + move.requiredThrust.getTotalAmountRequired(),
-        0
-      );
   }
 
   getPositionAtStartOfTurn(ship, currentTurn) {
@@ -214,15 +96,6 @@ class MovementService {
     }
 
     return new hexagon.Offset(move.position);
-  }
-
-  getThisTurnMovement(ship) {
-    return ship.movement.filter(
-      move =>
-        move.turn === this.gamedata.turn ||
-        (move.isEnd() && move.turn === this.gamedata.turn - 1) ||
-        move.isDeploy()
-    );
   }
 
   shipMovementChanged(ship) {
@@ -281,12 +154,6 @@ class MovementService {
 
   evade(ship, step) {
     return new MovementResolver(ship, this, this.gamedata.turn).evade(step);
-  }
-
-  getThrusters(ship) {
-    return ship.systems
-      .filter(system => system.thruster)
-      .filter(system => !system.isDestroyed());
   }
 }
 

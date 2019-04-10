@@ -30,6 +30,11 @@ class MovementOrder {
     this.requiredThrust = requiredThrust;
   }
 
+  setRequiredThrust(req) {
+    this.requiredThrust = req;
+    return this;
+  }
+
   serialize() {
     return {
       id: this.id,
@@ -47,7 +52,6 @@ class MovementOrder {
   }
 
   deserialize(data) {
-
     this.id = data.id;
     this.type = data.type;
     this.position = new hexagon.Offset(data.position);

@@ -303,8 +303,8 @@ class ThrustBill {
   }
 
   buildRequiredThrust(movement) {
-    movement.forEach(
-      move => (move.requiredThrust = new RequiredThrust(this.ship, move))
+    movement.forEach(move =>
+      move.setRequiredThrust(new RequiredThrust(this.ship, move))
     );
   }
 

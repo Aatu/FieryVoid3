@@ -1,0 +1,391 @@
+import test from "ava";
+import MovementService from "../../model/movement/MovementService";
+import movementTypes from "../../model/movement/movementTypes";
+import MovementOrder from "../../model/movement/MovementOrder";
+import hexagon from "../../model/hexagon";
+import Ship from "../../model/unit/Ship.mjs";
+
+import Thruster from "../../model/unit/system/thruster/Thruster.mjs";
+import Engine from "../../model/unit/system/engine/Engine.mjs";
+import Reactor from "../../model/unit/system/reactor/Reactor.mjs";
+import DamageEntry from "../../model/unit/system/DamageEntry.mjs";
+import ManeuveringThruster from "../../model/unit/system/thruster/ManeuveringThruster.mjs";
+
+const startMove = new MovementOrder(
+  -1,
+  movementTypes.START,
+  new hexagon.Offset(-32, 5),
+  new hexagon.Offset(3, 2),
+  0,
+  false,
+  999
+);
+
+const deployMove = new MovementOrder(
+  -1,
+  movementTypes.DEPLOY,
+  new hexagon.Offset(0, 0),
+  startMove.target,
+  startMove.facing,
+  startMove.rolled,
+  999
+);
+
+const getMovementService = () =>
+  new MovementService().update(
+    { turn: 999 },
+    { onShipMovementChanged: () => null }
+  );
+
+const constructShip = (id = 123) => {
+  let ship = new Ship({
+    id,
+    accelcost: 3,
+    rollcost: 3,
+    pivotcost: 3,
+    evasioncost: 3
+  });
+  ship.systems.addPrimarySystem([
+    new Thruster({ id: 1, hitpoints: 10, armor: 3 }, 5, 0),
+    new Thruster({ id: 2, hitpoints: 10, armor: 3 }, 5, 0),
+    new Thruster({ id: 8, hitpoints: 10, armor: 3 }, 5, [1, 2]),
+    new Thruster({ id: 9, hitpoints: 10, armor: 3 }, 5, [4, 5]),
+    new Thruster({ id: 3, hitpoints: 10, armor: 3 }, 5, 3),
+    new Thruster({ id: 4, hitpoints: 10, armor: 3 }, 5, 3),
+    new ManeuveringThruster({ id: 10, hitpoints: 10, armor: 3 }, 6, 3),
+    new Engine({ id: 5, hitpoints: 10, armor: 3 }, 12, 6, 2),
+    new Engine({ id: 6, hitpoints: 10, armor: 3 }, 12, 6, 2),
+    new Reactor({ id: 7, hitpoints: 10, armor: 3 }, 20)
+  ]);
+
+  ship.movement.addMovement(startMove);
+  return ship;
+};
+
+const constructDeployedShip = id => {
+  const ship = constructShip(id);
+  ship.movement.addMovement(deployMove);
+  return ship;
+};
+
+const compareMovements = (test, moves1, moves2) => {
+  test.deepEqual(
+    moves1.map(move => move.clone().setRequiredThrust(null)),
+    moves2.map(move => move.clone().setRequiredThrust(null))
+  );
+};
+
+test("Ship can be deployed", test => {
+  const movementService = getMovementService();
+  const ship = constructShip();
+
+  const pos = new hexagon.Offset(10, 40);
+
+  movementService.deploy(ship, pos);
+  test.deepEqual(ship.movement.getMovement(), [
+    startMove,
+    new MovementOrder(
+      -1,
+      movementTypes.DEPLOY,
+      pos,
+      startMove.target,
+      startMove.facing,
+      startMove.rolled,
+      999
+    )
+  ]);
+
+  const pos2 = new hexagon.Offset(2, 3);
+  movementService.deploy(ship, pos2);
+  test.deepEqual(ship.movement.getMovement(), [
+    startMove,
+    new MovementOrder(
+      -1,
+      movementTypes.DEPLOY,
+      pos2,
+      startMove.target,
+      startMove.facing,
+      startMove.rolled,
+      999
+    )
+  ]);
+});
+
+test("Ship can thrust", test => {
+  const movementService = getMovementService();
+  const ship = constructDeployedShip();
+
+  test.true(movementService.canThrust(ship, 0).result);
+  test.true(movementService.canThrust(ship, 1).result);
+  test.true(movementService.canThrust(ship, 2).result);
+  test.true(movementService.canThrust(ship, 3).result);
+  test.true(movementService.canThrust(ship, 4).result);
+  test.true(movementService.canThrust(ship, 5).result);
+});
+
+test("Ship can not thrust with destroyed thruster", test => {
+  const movementService = getMovementService();
+  const ship = constructDeployedShip();
+
+  ship.systems.getSystemById(9).addDamage(new DamageEntry(50));
+
+  test.is(ship.movement.getThrusters().length, 6);
+  test.is(ship.movement.getMovement().length, 2);
+
+  test.true(movementService.canThrust(ship, 0).result);
+
+  test.false(movementService.canThrust(ship, 1));
+  test.false(movementService.canThrust(ship, 2));
+  test.is(ship.movement.getThrusters().length, 6);
+  test.is(ship.movement.getMovement().length, 2);
+  test.true(movementService.canThrust(ship, 3).result);
+  test.true(movementService.canThrust(ship, 4).result);
+  test.true(movementService.canThrust(ship, 5).result);
+});
+
+test("Ship will thrust", test => {
+  const movementService = getMovementService();
+  const ship = constructDeployedShip();
+
+  movementService.thrust(ship, 3);
+  movementService.thrust(ship, 3);
+  compareMovements(test, ship.movement.getMovement(), [
+    startMove,
+    deployMove,
+    new MovementOrder(
+      null,
+      movementTypes.SPEED,
+      deployMove.position,
+      new hexagon.Offset(-1, 0),
+      deployMove.facing,
+      deployMove.rolled,
+      999,
+      3
+    ),
+    new MovementOrder(
+      null,
+      movementTypes.SPEED,
+      deployMove.position,
+      new hexagon.Offset(-1, 0),
+      deployMove.facing,
+      deployMove.rolled,
+      999,
+      3
+    )
+  ]);
+});
+
+test("Ship can not thrust unlimited amount", test => {
+  const movementService = getMovementService();
+  const ship = constructDeployedShip();
+
+  movementService.thrust(ship, 1);
+  movementService.thrust(ship, 1);
+  movementService.thrust(ship, 1);
+
+  const error = test.throws(() => movementService.thrust(ship, 1));
+  test.is(
+    error.message,
+    "Tried to commit move that was not legal. Check legality first!"
+  );
+});
+
+test("Opposite thrusts will cancel each other out", test => {
+  const movementService = getMovementService();
+  const ship = constructDeployedShip();
+
+  movementService.thrust(ship, 3);
+  movementService.thrust(ship, 0);
+  compareMovements(test, ship.movement.getMovement(), [startMove, deployMove]);
+});
+
+test("Ship can pivot", test => {
+  const movementService = getMovementService();
+  const ship = constructDeployedShip();
+
+  test.true(movementService.canPivot(ship, -1).result);
+  test.true(movementService.canPivot(ship, 1).result);
+});
+
+test("Ship will pivot", test => {
+  const movementService = getMovementService();
+  const ship = constructDeployedShip();
+
+  movementService.pivot(ship, 1);
+  compareMovements(test, ship.movement.getMovement(), [
+    startMove,
+    deployMove,
+    new MovementOrder(
+      null,
+      movementTypes.PIVOT,
+      deployMove.position,
+      new hexagon.Offset(0, 0),
+      1,
+      deployMove.rolled,
+      999,
+      1
+    )
+  ]);
+});
+
+test("Two consecutive opposite pivots will cancel each other", test => {
+  const movementService = getMovementService();
+  const ship = constructDeployedShip();
+
+  movementService.pivot(ship, 1);
+  movementService.pivot(ship, -1);
+  compareMovements(test, ship.movement.getMovement(), [startMove, deployMove]);
+});
+
+test("Pivots with something in between will not cancel", test => {
+  const movementService = getMovementService();
+  const ship = constructDeployedShip();
+
+  movementService.pivot(ship, 1);
+  movementService.thrust(ship, 2);
+  movementService.pivot(ship, -1);
+  compareMovements(test, ship.movement.getMovement(), [
+    startMove,
+    deployMove,
+    new MovementOrder(
+      null,
+      movementTypes.PIVOT,
+      deployMove.position,
+      new hexagon.Offset(0, 0),
+      1,
+      deployMove.rolled,
+      999,
+      1
+    ),
+    new MovementOrder(
+      null,
+      movementTypes.SPEED,
+      deployMove.position,
+      new hexagon.Offset(0, -1),
+      1,
+      deployMove.rolled,
+      999,
+      2
+    ),
+    new MovementOrder(
+      null,
+      movementTypes.PIVOT,
+      deployMove.position,
+      new hexagon.Offset(0, 0),
+      0,
+      deployMove.rolled,
+      999,
+      -1
+    )
+  ]);
+});
+
+test("Ship can roll", test => {
+  const movementService = getMovementService();
+  const ship = constructDeployedShip();
+
+  test.true(movementService.canRoll(ship).result);
+});
+
+test("Ship will roll", test => {
+  const movementService = getMovementService();
+  const ship = constructDeployedShip();
+
+  movementService.roll(ship);
+  compareMovements(test, ship.movement.getMovement(), [
+    startMove,
+    deployMove,
+    new MovementOrder(
+      null,
+      movementTypes.ROLL,
+      deployMove.position,
+      new hexagon.Offset(0, 0),
+      deployMove.facing,
+      deployMove.rolled,
+      999,
+      true
+    )
+  ]);
+});
+
+test("Ship rolling twice does cancels each other out", test => {
+  const movementService = getMovementService();
+  const ship = constructDeployedShip();
+
+  movementService.roll(ship);
+  movementService.roll(ship);
+  compareMovements(test, ship.movement.getMovement(), [startMove, deployMove]);
+});
+
+test("Ship can evade", test => {
+  const movementService = getMovementService();
+  const ship = constructDeployedShip();
+
+  test.true(movementService.canEvade(ship).result);
+});
+
+test("Ship will evade", test => {
+  const movementService = getMovementService();
+  const ship = constructDeployedShip();
+
+  movementService.evade(ship, 1);
+  movementService.evade(ship, 1);
+  movementService.evade(ship, 1);
+  compareMovements(test, ship.movement.getMovement(), [
+    startMove,
+    deployMove,
+    new MovementOrder(
+      null,
+      movementTypes.EVADE,
+      deployMove.position,
+      new hexagon.Offset(0, 0),
+      deployMove.facing,
+      deployMove.rolled,
+      999,
+      3
+    )
+  ]);
+});
+
+test("Evasion is limited by ship capabilities", test => {
+  const movementService = getMovementService();
+  const ship = constructDeployedShip();
+
+  movementService.evade(ship, 1);
+  movementService.evade(ship, 1);
+  movementService.evade(ship, 1);
+  test.false(movementService.canEvade(ship, 1));
+
+  compareMovements(test, ship.movement.getMovement(), [
+    startMove,
+    deployMove,
+    new MovementOrder(
+      null,
+      movementTypes.EVADE,
+      deployMove.position,
+      new hexagon.Offset(0, 0),
+      deployMove.facing,
+      deployMove.rolled,
+      999,
+      3
+    )
+  ]);
+});
+
+test("Can not evade negative amount", test => {
+  const movementService = getMovementService();
+  const ship = constructDeployedShip();
+  test.false(movementService.canEvade(ship, -1));
+});
+
+test("Evasion cancels itself", test => {
+  const movementService = getMovementService();
+  const ship = constructDeployedShip();
+
+  movementService.evade(ship, 1);
+  movementService.evade(ship, 1);
+  movementService.evade(ship, -1);
+  movementService.evade(ship, -1);
+
+  compareMovements(test, ship.movement.getMovement(), [startMove, deployMove]);
+});
