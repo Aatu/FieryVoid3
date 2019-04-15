@@ -6,7 +6,7 @@ class ShipMovement {
   }
 
   addMovement(move) {
-    this.moves.push(move);
+    this.moves.push(move.clone());
   }
 
   getMovement() {
@@ -69,6 +69,8 @@ class ShipMovement {
       ...this.moves.filter(move => !move.isPlayerAdded()),
       ...newMovement.filter(move => move.isPlayerAdded())
     ];
+
+    this.moves = this.moves.map(move => move.clone());
   }
 
   getLastEndMove() {

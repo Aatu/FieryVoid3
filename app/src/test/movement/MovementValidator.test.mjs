@@ -1,5 +1,5 @@
-/*
 import test from "ava";
+import MovementValidator from "../../server/services/validation/MovementValidator";
 import MovementService from "../../model/movement/MovementService";
 import movementTypes from "../../model/movement/movementTypes";
 import MovementOrder from "../../model/movement/MovementOrder";
@@ -11,6 +11,11 @@ import Engine from "../../model/unit/system/engine/Engine.mjs";
 import Reactor from "../../model/unit/system/reactor/Reactor.mjs";
 import DamageEntry from "../../model/unit/system/DamageEntry.mjs";
 import ManeuveringThruster from "../../model/unit/system/thruster/ManeuveringThruster.mjs";
+
+import {
+  FirstThrustIgnored,
+  EfficiencyHalved
+} from "../../model/unit/system/criticals";
 
 const startMove = new MovementOrder(
   -1,
@@ -76,23 +81,161 @@ const compareMovements = (test, moves1, moves2) => {
   );
 };
 
-test("Ship can be deployed", test => {
+test("Valid movement", test => {
+  const ship = constructDeployedShip();
   const movementService = getMovementService();
-  const ship = constructShip();
 
-  const pos = new hexagon.Offset(10, 40);
+  movementService.roll(ship);
+  movementService.evade(ship, 1);
+  movementService.evade(ship, 1);
+  movementService.pivot(ship, 1);
+  movementService.thrust(ship, 1);
+  movementService.thrust(ship, 1);
+  movementService.thrust(ship, 1);
+  movementService.thrust(ship, 1);
 
-  movementService.deploy(ship, pos);
-  test.deepEqual(ship.movement.getMovement(), [
-    startMove,
-    new MovementOrder(
-      -1,
-      movementTypes.DEPLOY,
-      pos,
-      startMove.target,
-      startMove.facing,
-      startMove.rolled,
-      999
-    )
-  ]);
-  */
+  const validator = new MovementValidator(ship, 999, deployMove);
+  test.true(validator.validate());
+});
+
+test("Ship accelcost has been tampered", test => {
+  const ship = constructDeployedShip();
+  const movementService = getMovementService();
+
+  ship.accelcost = 1;
+  movementService.roll(ship);
+  movementService.evade(ship, 1);
+  movementService.evade(ship, 1);
+  movementService.pivot(ship, 1);
+  movementService.thrust(ship, 1);
+  movementService.thrust(ship, 1);
+  movementService.thrust(ship, 1);
+  movementService.thrust(ship, 1);
+  ship.accelcost = 3;
+
+  const validator = new MovementValidator(ship, 999, deployMove);
+  const error = test.throws(() => validator.validate());
+  test.is(error.message, "Requirements are not correct.");
+});
+
+test("Ship pivotcost has been tampered", test => {
+  const ship = constructDeployedShip();
+  const movementService = getMovementService();
+
+  ship.pivotcost = 1;
+  movementService.roll(ship);
+  movementService.evade(ship, 1);
+  movementService.evade(ship, 1);
+  movementService.pivot(ship, 1);
+  movementService.thrust(ship, 1);
+  movementService.thrust(ship, 1);
+  movementService.thrust(ship, 1);
+  movementService.thrust(ship, 1);
+  ship.pivotcost = 3;
+
+  const validator = new MovementValidator(ship, 999, deployMove);
+  const error = test.throws(() => validator.validate());
+  test.is(error.message, "Requirements are not correct.");
+});
+
+test("Ship rollcost has been tampered", test => {
+  const ship = constructDeployedShip();
+  const movementService = getMovementService();
+
+  ship.rollcost = 0;
+  movementService.roll(ship);
+  movementService.evade(ship, 1);
+  movementService.evade(ship, 1);
+  movementService.pivot(ship, 1);
+  movementService.thrust(ship, 1);
+  movementService.thrust(ship, 1);
+  movementService.thrust(ship, 1);
+  movementService.thrust(ship, 1);
+  ship.rollcost = 3;
+
+  const validator = new MovementValidator(ship, 999, deployMove);
+  const error = test.throws(() => validator.validate());
+  test.is(error.message, "Requirements are not correct.");
+});
+
+test("Ship evasioncost has been tampered", test => {
+  const ship = constructDeployedShip();
+  const movementService = getMovementService();
+
+  ship.evasioncost = 0;
+  movementService.roll(ship);
+  movementService.evade(ship, 1);
+  movementService.evade(ship, 1);
+  movementService.pivot(ship, 1);
+  movementService.thrust(ship, 1);
+  movementService.thrust(ship, 1);
+  movementService.thrust(ship, 1);
+  movementService.thrust(ship, 1);
+  ship.evasioncost = 3;
+
+  const validator = new MovementValidator(ship, 999, deployMove);
+  const error = test.throws(() => validator.validate());
+  test.is(error.message, "Requirements are not correct.");
+});
+
+test("Destroyed thruster has been used", test => {
+  const ship = constructDeployedShip();
+  const movementService = getMovementService();
+
+  movementService.roll(ship);
+  movementService.evade(ship, 1);
+  movementService.evade(ship, 1);
+  movementService.pivot(ship, 1);
+  movementService.thrust(ship, 1);
+  movementService.thrust(ship, 1);
+  movementService.thrust(ship, 1);
+  movementService.thrust(ship, 1);
+
+  const thruster = ship.systems.getSystemById(4);
+  thruster.addDamage(new DamageEntry(20));
+
+  const validator = new MovementValidator(ship, 999, deployMove);
+  const error = test.throws(() => validator.validate());
+  test.is(error.message, "Thruster id '4' is disabled");
+});
+
+test("Thruster critical has been ignored", test => {
+  const ship = constructDeployedShip();
+  const movementService = getMovementService();
+
+  movementService.roll(ship);
+  movementService.evade(ship, 1);
+  movementService.evade(ship, 1);
+  movementService.pivot(ship, 1);
+  movementService.thrust(ship, 1);
+  movementService.thrust(ship, 1);
+  movementService.thrust(ship, 1);
+  movementService.thrust(ship, 1);
+
+  const thruster = ship.systems.getSystemById(4);
+  thruster.addCritical(new EfficiencyHalved());
+
+  const validator = new MovementValidator(ship, 999, deployMove);
+  const error = test.throws(() => validator.validate());
+  test.is(error.message, "Insufficient engine power: required 29 produced: 24");
+});
+
+test("Ship tries to teleport", test => {
+  const ship = constructDeployedShip();
+  const movementService = getMovementService();
+
+  movementService.roll(ship);
+  movementService.evade(ship, 1);
+  movementService.evade(ship, 1);
+  movementService.pivot(ship, 1);
+  movementService.thrust(ship, 1);
+  movementService.thrust(ship, 1);
+  movementService.thrust(ship, 1);
+  movementService.thrust(ship, 1);
+
+  ship.movement.moves[3].position = new hexagon.Offset(10, -4);
+
+  const validator = new MovementValidator(ship, 999, deployMove);
+  const error = test.throws(() => validator.validate());
+  test.is(error.message, "Evade movement is constructed wrong");
+});

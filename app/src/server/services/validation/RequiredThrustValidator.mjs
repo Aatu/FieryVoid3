@@ -9,10 +9,14 @@ class RequiredThrustValidator {
   }
 
   validateRequirementsAreCorrect(requiredThrust) {
-    return (
-      JSON.stringify(this.requirement.requirements) ===
+    if (
+      JSON.stringify(this.requirement.requirements) !==
       JSON.stringify(requiredThrust.requirements)
-    );
+    ) {
+      throw new InvalidGameDataError(`Requirements are not correct.`);
+    }
+
+    return true;
   }
 
   getThrustChanneledBy(thruster, requiredThrust) {

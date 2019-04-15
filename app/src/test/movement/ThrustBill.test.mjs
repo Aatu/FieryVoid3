@@ -1,8 +1,10 @@
 import test from "ava";
 import ThrustBill from "../../model/movement/ThrustBill.mjs";
 import MovementOrder from "../../model/movement/MovementOrder.mjs";
+import movementTypes from "../../model/movement/movementTypes.mjs";
 import hexagon from "../../model/hexagon";
 import Thruster from "../../model/unit/system/thruster/Thruster.mjs";
+import ManeuveringThruster from "../../model/unit/system/thruster/ManeuveringThruster.mjs";
 import Ship from "../../model/unit/Ship.mjs";
 
 import {
@@ -11,6 +13,18 @@ import {
 } from "../../model/unit/system/criticals";
 
 let id = 0;
+
+const getManouveringThruster = (output = 3, evasion = 0, criticals = []) => {
+  id++;
+
+  const thruster = new ManeuveringThruster(
+    { id, hitpoints: 10, armor: 3 },
+    output,
+    evasion
+  );
+  criticals.forEach(crit => thruster.addCritical(new crit()));
+  return thruster;
+};
 
 const getThruster = (direction = 0, output = 3, criticals = []) => {
   id++;
@@ -282,3 +296,35 @@ const expectDirectionsEqualForRequiredThrust = (
     test.deepEqual(entry.amount, equal[i])
   );
 };
+
+test("It uses manouveringThrusters correctly", test => {
+  ship = new Ship({ accelcost: 3, rollcost: 3, pivotcost: 3, evasioncost: 3 });
+  ship.systems.addPrimarySystem([getManouveringThruster(6, 3)]);
+
+  const moves = [
+    new MovementOrder(
+      null,
+      movementTypes.ROLL,
+      new hexagon.Offset(0, 0),
+      new hexagon.Offset(0, 0),
+      0,
+      true,
+      999,
+      true
+    ),
+    new MovementOrder(
+      null,
+      movementTypes.ROLL,
+      new hexagon.Offset(0, 0),
+      new hexagon.Offset(0, 0),
+      0,
+      true,
+      999,
+      1
+    )
+  ];
+
+  const bill = new ThrustBill(ship, 10, moves);
+  test.true(bill.pay());
+  bill.getMoves();
+});

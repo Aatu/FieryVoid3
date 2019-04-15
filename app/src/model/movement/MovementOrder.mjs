@@ -19,6 +19,10 @@ class MovementOrder {
       throw new Error("MovementOrder requires position as offset hexagon");
     }
 
+    if (!(target instanceof hexagon.Offset)) {
+      throw new Error("MovementOrder requires target as offset hexagon");
+    }
+
     this.id = id;
     this.type = type;
     this.position = position;
@@ -55,7 +59,7 @@ class MovementOrder {
     this.id = data.id;
     this.type = data.type;
     this.position = new hexagon.Offset(data.position);
-    this.target = data.target;
+    this.target = new hexagon.Offset(data.target);
     this.facing = data.facing;
     this.rolled = data.rolled;
     this.turn = data.turn;
@@ -63,6 +67,18 @@ class MovementOrder {
     this.requiredThrust = requiredThrust;
 
     return this;
+  }
+
+  equals(move) {
+    return (
+      this.type === move.type &&
+      this.position.equals(move.position) &&
+      this.target.equals(move.target) &&
+      this.facing === move.facing &&
+      this.rolled === move.rolled &&
+      this.turn === move.turn &&
+      this.value === move.value
+    );
   }
 
   isSpeed() {

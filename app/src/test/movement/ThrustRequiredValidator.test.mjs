@@ -231,77 +231,88 @@ test("Requirements are correct", test => {
   const validator = new RequiredThrustValidator(ship, move);
   test.true(validator.validateRequirementsAreCorrect(requiredThrust));
 });
-/*
 
-<?php
+test("Requirements are wrong", test => {
+  const ship = constructDeployedShip();
+  ship.accelcost = 10;
+  const move = new MovementOrder(
+    1,
+    movementTypes.SPEED,
+    new hexagon.Offset(0, 0),
+    new hexagon.Offset(1, 0),
+    0,
+    false,
+    999,
+    0
+  );
 
-require_once '../TestBase.php';
+  let requiredThrust = new RequiredThrust(ship, move);
+  requiredThrust.requirements[3] = 0;
+  requiredThrust = new RequiredThrust().deserialize(requiredThrust.serialize());
 
-class RequiredThrustTest extends TestBase
-{
-    public function testMovementValidationMoveRequirementIsWrong()
-    {
-        $this->expectException(MovementValidationException::class);
+  const validator = new RequiredThrustValidator(ship, move);
 
-        $required = new RequiredThrust([
-            'fullfilments' => [3 => [["thrusterId" => 1, "amount" => 2], ["thrusterId" => 2, "amount" => 2]]],
-            'requirements' => [3 => 2],
-        ]);
+  const error = test.throws(() =>
+    validator.validateRequirementsAreCorrect(requiredThrust)
+  );
+  test.is(error.message, "Requirements are not correct.");
+});
 
-        $move = new MovementOrder(1, "speed", new OffsetCoordinate(0, 0), new OffsetCoordinate(1, 0), 0, false, 1, 0);
+test("Requirements are wrong (too much!)", test => {
+  const ship = constructDeployedShip();
+  ship.accelcost = 10;
+  const move = new MovementOrder(
+    1,
+    movementTypes.SPEED,
+    new hexagon.Offset(0, 0),
+    new hexagon.Offset(1, 0),
+    0,
+    false,
+    999,
+    0
+  );
 
-        $ship = new BaseShip(1, 1, "testship", 1);
-        $ship->accelcost = 4;
+  let requiredThrust = new RequiredThrust(ship, move);
+  requiredThrust.requirements[4] = 5;
+  requiredThrust = new RequiredThrust().deserialize(requiredThrust.serialize());
 
-        $this->assertTrue($required->validateRequirementsAreCorrect($ship, $move));
-    }
+  const validator = new RequiredThrustValidator(ship, move);
+  const error = test.throws(() =>
+    validator.validateRequirementsAreCorrect(requiredThrust)
+  );
+  test.is(error.message, "Requirements are not correct.");
+});
 
- 
-    public function testMovementValidationMoveRequirementIsWrong2()
-    {
-        $this->expectException(MovementValidationException::class);
+test("Wrong thruster", test => {
+  const ship = constructDeployedShip();
+  ship.accelcost = 10;
+  const move = new MovementOrder(
+    1,
+    movementTypes.SPEED,
+    new hexagon.Offset(0, 0),
+    new hexagon.Offset(1, 0),
+    0,
+    false,
+    999,
+    0
+  );
 
-        $required = new RequiredThrust([
-            'fullfilments' => [3 => [["thrusterId" => 1, "amount" => 2], ["thrusterId" => 2, "amount" => 2]]],
-            'requirements' => [6 => 4],
-        ]);
+  const thruster1 = ship.systems.getSystemById(3);
+  const thruster2 = ship.systems.getSystemById(1);
 
-        $move = new MovementOrder(1, "speed", new OffsetCoordinate(0, 0), new OffsetCoordinate(1, 0), 0, false, 1, 0);
+  let requiredThrust = new RequiredThrust(ship, move);
+  requiredThrust = new RequiredThrust().deserialize(requiredThrust.serialize());
 
-        $ship = new BaseShip(1, 1, "testship", 1);
-        $ship->accelcost = 4;
+  requiredThrust.fulfill(3, 5, thruster1);
+  requiredThrust.fulfill(3, 5, thruster2);
 
-        $this->assertTrue($required->validateRequirementsAreCorrect($ship, $move));
-    }
-
-
-    public function testMovementValidationTryingToPayWithWrongThruster()
-    {
-        $this->expectException(MovementValidationException::class);
-
-        $required = new RequiredThrust([
-            'fullfilments' => [3 => [["thrusterId" => 1, "amount" => 2], ["thrusterId" => 2, "amount" => 2]]],
-            'requirements' => [3 => 4],
-        ]);
-
-        $thruster1 = new Thruster(3, 8, 0, 2, 3);
-        $thruster1->id = 1;
-
-        $thruster2 = new Thruster(3, 8, 0, 2, [1, 2]);
-        $thruster2->id = 2;
-
-        $thrusters = [
-            $thruster1, $thruster2,
-        ];
-
-        $move = new MovementOrder(1, "speed", new OffsetCoordinate(0, 0), new OffsetCoordinate(1, 0), 0, false, 1, 0);
-
-        $ship = new BaseShip(1, 1, "testship", 1);
-        $ship->accelcost = 4;
-
-        $required->setThrusters($thrusters);
-    }
-
-}
-
-*/
+  const validator = new RequiredThrustValidator(ship, move);
+  test.true(validator.validateRequirementsAreCorrect(requiredThrust));
+  test.is(validator.getThrustChanneledBy(thruster1, requiredThrust), 5);
+  test.is(validator.getThrustChanneledBy(thruster2, requiredThrust), 5);
+  test.true(validator.isPaid(requiredThrust));
+  const error = test.throws(() =>
+    validator.ensureThrustersAreValid(requiredThrust)
+  );
+  test.is(error.message, "Thruster id 1 is not direction 3. Instead is 0");
+});

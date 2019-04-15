@@ -129,12 +129,20 @@ class MovementService {
   }
 
   canPivot(ship, turnDirection) {
+    if (turnDirection !== 1 && turnDirection !== -1) {
+      throw new Error("While pivoting direction must be 1 or -1");
+    }
+
     return new MovementResolver(ship, this, this.gamedata.turn).canPivot(
       turnDirection
     );
   }
 
   pivot(ship, turnDirection) {
+    if (turnDirection !== 1 && turnDirection !== -1) {
+      throw new Error("While pivoting direction must be 1 or -1");
+    }
+
     return new MovementResolver(ship, this, this.gamedata.turn).pivot(
       turnDirection
     );
@@ -149,10 +157,18 @@ class MovementService {
   }
 
   canEvade(ship, step) {
+    if (step !== 1 && step !== -1) {
+      throw new Error("While evading step must be 1 or -1");
+    }
+
     return new MovementResolver(ship, this, this.gamedata.turn).canEvade(step);
   }
 
   evade(ship, step) {
+    if (step !== 1 && step !== -1) {
+      throw new Error("While evading step must be 1 or -1");
+    }
+
     return new MovementResolver(ship, this, this.gamedata.turn).evade(step);
   }
 }

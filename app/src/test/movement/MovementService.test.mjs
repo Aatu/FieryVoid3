@@ -321,7 +321,7 @@ test("Ship can evade", test => {
   const movementService = getMovementService();
   const ship = constructDeployedShip();
 
-  test.true(movementService.canEvade(ship).result);
+  test.true(movementService.canEvade(ship, 1).result);
 });
 
 test("Ship will evade", test => {
