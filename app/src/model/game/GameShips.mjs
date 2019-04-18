@@ -7,7 +7,7 @@ class GameShips {
   }
 
   addShip(ship) {
-    if (this.getShipById(ship.id)) {
+    if (ship.id && this.getShipById(ship.id)) {
       throw new Error("Duplicate ship id added to gamedata");
     }
 
@@ -28,15 +28,11 @@ class GameShips {
   }
 
   serialize() {
-    return {
-      ships: this.ships.map(ship => ship.serialize())
-    };
+    return this.ships.map(ship => ship.serialize());
   }
 
-  deserialize(data = {}) {
-    this.ships = data.ships
-      ? data.ships.map(shipData => createShipObject(shipData))
-      : [];
+  deserialize(ships = []) {
+    this.ships = ships.map(shipData => createShipObject(shipData));
 
     return this;
   }

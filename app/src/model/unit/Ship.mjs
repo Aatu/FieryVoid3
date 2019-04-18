@@ -7,6 +7,15 @@ class Ship {
   constructor(data = {}) {
     this.systems = new ShipSystems(this);
     this.deserialize(data);
+    this.pointCost = 0;
+    this.accelcost = 1;
+    this.rollcost = 1;
+    this.pivotcost = 1;
+    this.evasioncost = 1;
+  }
+
+  getPointCost() {
+    return this.pointCost;
   }
 
   getHexPosition() {
@@ -17,10 +26,7 @@ class Ship {
     this.id = data.id || null;
     this.name = data.name || "Unnamed ship " + data.id;
     this.shipClass = this.constructor.name;
-    this.accelcost = data.accelcost || 1;
-    this.rollcost = data.rollcost || 1;
-    this.pivotcost = data.pivotcost || 1;
-    this.evasioncost = data.evasioncost || 1;
+    this.slotId = data.slotId || null;
 
     this.systems.deserialize(data.systems);
     this.player = new ShipPlayer(this).deserialize(data.player);
@@ -36,6 +42,7 @@ class Ship {
       gameId: this.gameId,
       name: this.name,
       shipClass: this.shipClass,
+      slotId: this.slotId,
       systems: this.systems.serialize(),
       movement: this.movement.serialize(),
       player: this.player.serialize()

@@ -1,6 +1,8 @@
 import GameSlots from "./GameSlots";
 import GameShips from "./GameShips";
 import GameActiveShips from "./GameActiveShips";
+import * as gameStatuses from "./gameStatuses.mjs";
+import * as gamePhases from "./gamePhases.mjs";
 
 class GameData {
   constructor(data) {
@@ -13,6 +15,7 @@ class GameData {
     }
 
     const slots = this.slots.getSlots();
+
     if (slots.length < 2) {
       return "Game has to have atleast two slots";
     }
@@ -39,6 +42,10 @@ class GameData {
 
     if (!slots.some(slot => slot.userId === user.id)) {
       return "Game creator has to occupy atleast one slot";
+    }
+
+    if (slots.some(slot => slot.userId && slot.userId !== user.id)) {
+      return "Other players can not occupy slots at this stage";
     }
   }
 
@@ -76,13 +83,13 @@ class GameData {
     const gameData = data.data || {};
     this.id = data.id || null;
     this.name = data.name;
-    this.phase = data.phase || -2;
+    this.phase = data.phase || gamePhases.DEPLOYMENT;
     this.turn = data.turn || 1;
     this.slots = new GameSlots(this).deserialize(gameData);
     this.ships = new GameShips(this).deserialize(data.ships);
     this.activeShips = new GameActiveShips(this).deserialize(data.activeShips);
     this.creatorId = data.creatorId;
-    this.status = data.status || "lobby";
+    this.status = data.status || gameStatuses.LOBBY;
 
     return this;
   }

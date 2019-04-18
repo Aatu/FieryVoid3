@@ -10,6 +10,8 @@ class TestShip extends Ship {
     this.pivotcost = 3;
     this.evasioncost = 3;
 
+    this.pointCost = 500;
+
     this.systems.addPrimarySystem([
       new systems.Thruster({ id: 1, hitpoints: 10, armor: 3 }, 5, 0),
       new systems.Thruster({ id: 2, hitpoints: 10, armor: 3 }, 5, 0),

@@ -45,12 +45,13 @@ const getMovementService = () =>
 
 const constructShip = (id = 123) => {
   let ship = new Ship({
-    id,
-    accelcost: 3,
-    rollcost: 3,
-    pivotcost: 3,
-    evasioncost: 3
+    id
   });
+
+  ship.accelcost = 3;
+  ship.rollcost = 3;
+  ship.pivotcost = 3;
+  ship.evasioncost = 3;
   ship.systems.addPrimarySystem([
     new Thruster({ id: 1, hitpoints: 10, armor: 3 }, 5, 0),
     new Thruster({ id: 2, hitpoints: 10, armor: 3 }, 5, 0),

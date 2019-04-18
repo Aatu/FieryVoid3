@@ -5,6 +5,14 @@ class GameSlot {
     this.deserialize(data);
   }
 
+  isTaken() {
+    return Boolean(this.userId);
+  }
+
+  takeSlot(user) {
+    this.userId = user.id;
+  }
+
   validate() {
     if (!this.name) {
       return "Slot needs to have a name";
@@ -53,8 +61,9 @@ class GameSlot {
     this.name = data.name;
     this.userId = data.userId || null;
     this.deploymentLocation =
-      data.deploymentLocation || new hexagon.Offset(0, 0);
-    this.deploymentVector = data.deploymentVector || new hexagon.Offset(0, 0);
+      new hexagon.Offset(data.deploymentLocation) || new hexagon.Offset(0, 0);
+    this.deploymentVector =
+      new hexagon.Offset(data.deploymentVector) || new hexagon.Offset(0, 0);
     this.deploymentRadius = data.deploymentRadius || 10;
     this.shipIds = data.shipIds || [];
     this.points = data.points || 0;

@@ -1,7 +1,7 @@
-export default `
-DROP DATABASE IF EXISTS fieryvoidtest;
-CREATE DATABASE fieryvoidtest;
-USE fieryvoidtest;
+export default dbName => `
+DROP DATABASE IF EXISTS fieryvoidtest_${dbName};
+CREATE DATABASE fieryvoidtest_${dbName};
+USE fieryvoidtest_${dbName};
 
 DROP TABLE IF EXISTS user;
 CREATE TABLE user (
@@ -32,7 +32,7 @@ CREATE TABLE game (
   id int(11) NOT NULL AUTO_INCREMENT,
   name text,
   turn int(11) DEFAULT NULL,
-  phase int(11) DEFAULT NULL,
+  phase ENUM('deployment','initial','movement', 'firing') DEFAULT 'deployment',
   active_ships JSON DEFAULT '[]',
   data JSON DEFAULT '{}',
   creator_id int(11) DEFAULT NULL,
@@ -63,6 +63,7 @@ CREATE TABLE ship (
   id int(11) NOT NULL AUTO_INCREMENT,
   user_id int(11) NOT NULL,
   game_id int(11) NOT NULL,
+  slot_id int(11) NOT NULL,
   name varchar(200) NOT NULL,
   ship_class varchar(45) NOT NULL,
   PRIMARY KEY (id),

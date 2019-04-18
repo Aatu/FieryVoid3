@@ -38,9 +38,9 @@ const getThruster = (direction = 0, output = 3, criticals = []) => {
   return thruster;
 };
 
-let ship = new Ship({
-  accelcost: 3
-});
+let ship = new Ship();
+ship.accelcost = 3;
+
 ship.systems.addPrimarySystem([
   getThruster(0, 3),
   getThruster([1, 2], 3),
@@ -121,7 +121,9 @@ test("Returns false if it is clear that there is not enough thrust", test => {
 });
 
 test("it uses thrusters properly", test => {
-  ship = new Ship({ accelcost: 3 });
+  ship = new Ship();
+  ship.accelcost = 3;
+
   ship.systems.addPrimarySystem([
     getThruster(0, 3),
     getThruster(0, 3, [FirstThrustIgnored, EfficiencyHalved])
@@ -135,7 +137,9 @@ test("it uses thrusters properly", test => {
 });
 
 test("it uses thrusters properly, with overthrust", test => {
-  ship = new Ship({ accelcost: 3 });
+  ship = new Ship();
+  ship.accelcost = 3;
+
   ship.systems.addPrimarySystem([
     getThruster(0, 3),
     getThruster(0, 3, [FirstThrustIgnored, EfficiencyHalved])
@@ -149,7 +153,9 @@ test("it uses thrusters properly, with overthrust", test => {
 });
 
 test("It manages to pay a simple manouver", test => {
-  ship = new Ship({ accelcost: 3 });
+  ship = new Ship();
+  ship.accelcost = 3;
+
   ship.systems.addPrimarySystem([getThruster(0, 3), getThruster(3, 3)]);
 
   const moves = [
@@ -162,7 +168,9 @@ test("It manages to pay a simple manouver", test => {
 });
 
 test("It manages to pay a simple manouver with overthrusting", test => {
-  ship = new Ship({ accelcost: 3 });
+  ship = new Ship();
+  ship.accelcost = 3;
+
   ship.systems.addPrimarySystem([getThruster(0, 3), getThruster(3, 3)]);
 
   const moves = [
@@ -176,7 +184,9 @@ test("It manages to pay a simple manouver with overthrusting", test => {
 });
 
 test("It will use damaged thrusters", test => {
-  ship = new Ship({ accelcost: 3 });
+  ship = new Ship();
+  ship.accelcost = 3;
+
   ship.systems.addPrimarySystem([
     getThruster(0, 3),
     getThruster(0, 3, [FirstThrustIgnored]),
@@ -197,7 +207,9 @@ test("It will use damaged thrusters", test => {
 });
 
 test("It gives thrusters in proper order", test => {
-  ship = new Ship({ accelcost: 3 });
+  ship = new Ship();
+  ship.accelcost = 3;
+
   ship.systems.addPrimarySystem([
     getThruster(0, 3),
     getThruster(0, 3, [FirstThrustIgnored]),
@@ -223,7 +235,9 @@ test("It gives thrusters in proper order", test => {
 });
 
 test("It will rather use damaged thrusters than overthrust, if possible", test => {
-  ship = new Ship({ accelcost: 3 });
+  ship = new Ship();
+  ship.accelcost = 3;
+
   ship.systems.addPrimarySystem([
     getThruster(0, 3),
     getThruster(0, 3, [FirstThrustIgnored]),
@@ -246,7 +260,9 @@ test("It will rather use damaged thrusters than overthrust, if possible", test =
 });
 
 test("No budget to reallocate all overthrust", test => {
-  ship = new Ship({ accelcost: 3 });
+  ship = new Ship();
+  ship.accelcost = 3;
+
   ship.systems.addPrimarySystem([
     getThruster(0, 3),
     getThruster(0, 3, [EfficiencyHalved]),
@@ -298,7 +314,13 @@ const expectDirectionsEqualForRequiredThrust = (
 };
 
 test("It uses manouveringThrusters correctly", test => {
-  ship = new Ship({ accelcost: 3, rollcost: 3, pivotcost: 3, evasioncost: 3 });
+  ship = new Ship();
+
+  ship.accelcost = 3;
+  ship.rollcost = 3;
+  ship.pivotcost = 3;
+  ship.evasioncost = 3;
+
   ship.systems.addPrimarySystem([getManouveringThruster(6, 3)]);
 
   const moves = [

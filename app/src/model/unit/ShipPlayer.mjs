@@ -5,6 +5,10 @@ class ShipPlayer {
     this.user = null;
   }
 
+  setUser(user) {
+    this.user = user;
+  }
+
   isUsers(user) {
     return this.user && this.user.id === user.id;
   }

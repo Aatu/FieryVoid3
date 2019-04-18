@@ -6,8 +6,12 @@ class GameSlots {
     this.slots = [];
   }
 
+  getSlotById(id) {
+    return this.slots[id];
+  }
+
   setSlots(slots) {
-    this.slots = slots;
+    slots.forEach(this.addSlot.bind(this));
   }
 
   getSlots() {
@@ -15,7 +19,13 @@ class GameSlots {
   }
 
   addSlot(slot) {
-    this.slots.push(slot);
+    if (slot.id !== null && slot.id !== undefined) {
+      this.slots[slot.id] = slot;
+    } else {
+      const index = this.slots.length;
+      slot.id = index;
+      this.slots.push(slot);
+    }
   }
 
   serialize() {
@@ -26,7 +36,7 @@ class GameSlots {
 
   deserialize(data = {}) {
     this.slots = data.slots
-      ? data.slots.map(slotData => new GameSlot(slotData))
+      ? data.slots.map(slotData => new GameSlot(slotData, this.gameData))
       : [];
 
     return this;

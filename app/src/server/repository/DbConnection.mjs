@@ -20,12 +20,8 @@ class DbConnection {
   async query(conn, query, payload = []) {
     try {
       const response = await conn.query(query, payload);
-      conn.end();
       return response;
     } catch (err) {
-      if (conn) {
-        conn.end();
-      }
       throw err;
     }
   }

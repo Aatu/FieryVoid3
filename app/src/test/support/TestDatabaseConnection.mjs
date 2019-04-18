@@ -2,14 +2,16 @@ import DbConnection from "../../server/repository/DbConnection";
 import createDatabase from "./createDatabase";
 
 class TestDbConnection extends DbConnection {
-  constructor() {
+  constructor(dbName) {
     super({
       host: "localhost",
       user: "root",
       password: "root",
-      database: "fieryvoidtest",
+      database: `fieryvoidtest_${dbName}`,
       connectionLimit: 5
     });
+
+    this.dbName = dbName;
 
     this.createPool = this.createPool({
       host: "localhost",
@@ -30,7 +32,7 @@ class TestDbConnection extends DbConnection {
 
   async resetDatabase() {
     const conn = await this.getCreateConnection();
-    await this.query(conn, createDatabase);
+    await this.query(conn, createDatabase(this.dbName));
   }
 }
 
