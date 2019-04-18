@@ -1,10 +1,22 @@
-class ShipPlayer {
-  constructor() {}
+import User from "../User";
 
-  deserialize(data) {}
+class ShipPlayer {
+  constructor() {
+    this.user = null;
+  }
+
+  isUsers(user) {
+    return this.user && this.user.id === user.id;
+  }
+
+  deserialize(user) {
+    this.user = user ? new User().deserialize(user) : undefined;
+
+    return this;
+  }
 
   serialize() {
-    return {};
+    return this.user ? this.user.serialize() : undefined;
   }
 }
 

@@ -40,9 +40,17 @@ class RequiredThrust {
     };
   }
 
-  deserialize(data) {
-    this.requirements = data.requirements;
-    this.fullfilments = data.fullfilments;
+  deserialize(data = {}) {
+    this.requirements = data.requirements || {};
+    this.fullfilments = data.fullfilments || {
+      0: [],
+      1: [],
+      2: [],
+      3: [],
+      4: [],
+      5: [],
+      6: []
+    };
     return this;
   }
 

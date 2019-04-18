@@ -6,6 +6,18 @@ class GameSlots {
     this.slots = [];
   }
 
+  setSlots(slots) {
+    this.slots = slots;
+  }
+
+  getSlots() {
+    return this.slots;
+  }
+
+  addSlot(slot) {
+    this.slots.push(slot);
+  }
+
   serialize() {
     return {
       slots: this.slots.map(slot => slot.serialize())

@@ -1,4 +1,5 @@
 import * as Uc from "./uc";
+import * as Test from "./test";
 
-const merged = { ...Uc };
+const merged = { ...Uc, ...Test };
 export default merged;

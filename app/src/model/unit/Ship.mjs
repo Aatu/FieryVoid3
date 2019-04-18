@@ -15,7 +15,6 @@ class Ship {
 
   deserialize(data = {}) {
     this.id = data.id || null;
-    this.gameId = data.gameId || null;
     this.name = data.name || "Unnamed ship " + data.id;
     this.shipClass = this.constructor.name;
     this.accelcost = data.accelcost || 1;
@@ -37,9 +36,9 @@ class Ship {
       gameId: this.gameId,
       name: this.name,
       shipClass: this.shipClass,
-      systems: this.systems.serialize()
-      //player: this.player.serialize(),
-      //movement: this.movement.serialize()
+      systems: this.systems.serialize(),
+      movement: this.movement.serialize(),
+      player: this.player.serialize()
     };
   }
 

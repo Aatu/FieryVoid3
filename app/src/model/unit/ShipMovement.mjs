@@ -1,4 +1,6 @@
 import MovementOrder from "../movement/MovementOrder.mjs";
+import hexagon from "../hexagon";
+
 class ShipMovement {
   constructor(ship) {
     this.ship = ship;

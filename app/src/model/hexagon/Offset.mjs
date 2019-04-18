@@ -1,5 +1,24 @@
 import Cube from "./Cube";
 
+const NEIGHBOURS = [
+  [
+    { q: 1, r: 0 },
+    { q: 1, r: -1 },
+    { q: 0, r: -1 },
+    { q: -1, r: 0 },
+    { q: 0, r: 1 },
+    { q: 1, r: 1 }
+  ],
+  [
+    { q: 1, r: 0 },
+    { q: 0, r: -1 },
+    { q: -1, r: -1 },
+    { q: -1, r: 0 },
+    { q: -1, r: 1 },
+    { q: 0, r: 1 }
+  ]
+];
+
 class Offset {
   constructor(q, r) {
     if (q instanceof Offset || (q.q !== undefined && q.r !== undefined)) {
@@ -10,31 +29,12 @@ class Offset {
       this.q = q;
       this.r = r;
     }
-
-    this.neighbours = [
-      [
-        { q: 1, r: 0 },
-        { q: 1, r: -1 },
-        { q: 0, r: -1 },
-        { q: -1, r: 0 },
-        { q: 0, r: 1 },
-        { q: 1, r: 1 }
-      ],
-      [
-        { q: 1, r: 0 },
-        { q: 0, r: -1 },
-        { q: -1, r: -1 },
-        { q: -1, r: 0 },
-        { q: -1, r: 1 },
-        { q: 0, r: 1 }
-      ]
-    ];
   }
 
   getNeighbours() {
     var neighbours = [];
 
-    this.neighbours[this.r & 1].forEach(function(neighbour) {
+    NEIGHBOURS[this.r & 1].forEach(function(neighbour) {
       neighbours.push(this.add(new Offset(neighbour)));
     }, this);
 

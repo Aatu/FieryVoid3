@@ -1,18 +1,12 @@
 import test from "ava";
 import GameData from "../../model/game/GameData";
 import MovementHandler from "../../server/handler/MovementHandler";
-import MovementValidator from "../../server/services/validation/MovementValidator";
 import MovementService from "../../model/movement/MovementService";
 import movementTypes from "../../model/movement/movementTypes";
 import MovementOrder from "../../model/movement/MovementOrder";
 import hexagon from "../../model/hexagon";
-import Ship from "../../model/unit/Ship.mjs";
-
-import Thruster from "../../model/unit/system/thruster/Thruster.mjs";
-import Engine from "../../model/unit/system/engine/Engine.mjs";
-import Reactor from "../../model/unit/system/reactor/Reactor.mjs";
-import DamageEntry from "../../model/unit/system/DamageEntry.mjs";
-import ManeuveringThruster from "../../model/unit/system/thruster/ManeuveringThruster.mjs";
+import TestShip from "../../model/unit/ships/test/TestShip";
+import User from "../../model/User";
 
 import {
   FirstThrustIgnored,
@@ -26,52 +20,33 @@ const startMove = new MovementOrder(
   new hexagon.Offset(3, 2),
   0,
   false,
-  999
+  1
 );
 
 const deployMove = new MovementOrder(
   -1,
   movementTypes.DEPLOY,
-  new hexagon.Offset(0, 0),
+  new hexagon.Offset(5, -5),
   startMove.target,
   startMove.facing,
   startMove.rolled,
-  999
+  1
 );
 
 const getMovementService = () =>
   new MovementService().update(
-    { turn: 999 },
+    { turn: 1 },
     { onShipMovementChanged: () => null }
   );
 
-const constructShip = (id = 123) => {
-  let ship = new Ship({
-    id,
-    accelcost: 3,
-    rollcost: 3,
-    pivotcost: 3,
-    evasioncost: 3
-  });
-  ship.systems.addPrimarySystem([
-    new Thruster({ id: 1, hitpoints: 10, armor: 3 }, 5, 0),
-    new Thruster({ id: 2, hitpoints: 10, armor: 3 }, 5, 0),
-    new Thruster({ id: 8, hitpoints: 10, armor: 3 }, 5, [1, 2]),
-    new Thruster({ id: 9, hitpoints: 10, armor: 3 }, 5, [4, 5]),
-    new Thruster({ id: 3, hitpoints: 10, armor: 3 }, 5, 3),
-    new Thruster({ id: 4, hitpoints: 10, armor: 3 }, 5, 3),
-    new ManeuveringThruster({ id: 10, hitpoints: 10, armor: 3 }, 6, 3),
-    new Engine({ id: 5, hitpoints: 10, armor: 3 }, 12, 6, 2),
-    new Engine({ id: 6, hitpoints: 10, armor: 3 }, 12, 6, 2),
-    new Reactor({ id: 7, hitpoints: 10, armor: 3 }, 20)
-  ]);
-
+const constructShip = (id = 123, player) => {
+  let ship = new TestShip({ id, player });
   ship.movement.addMovement(startMove);
   return ship;
 };
 
-const constructDeployedShip = id => {
-  const ship = constructShip(id);
+const constructDeployedShip = (id, player) => {
+  const ship = constructShip(id, player);
   ship.movement.addMovement(deployMove);
   return ship;
 };
@@ -83,19 +58,81 @@ const compareMovements = (test, moves1, moves2) => {
   );
 };
 
-test("First turn movement is submitted", test => {
+test("Submit movement, but ship is not active", test => {
   const serverGame = new GameData({
-      id: 123,
-      turn: 1,
-      phase: 1,
-      activeShips: [123]
+    id: 123,
+    turn: 1,
+    phase: 1,
+    activeShips: [567]
   });
-  
-  const ship = constructDeployedShip();
+
+  const user = new User(989, "Nönmän");
+  const ship = constructDeployedShip(1, user);
   serverGame.ships.addShip(ship);
 
-  const clientGame = new 
-  const movementService = getMovementService();
+  const clientGame = new GameData().deserialize(serverGame.serialize());
+  test.deepEqual(serverGame.serialize(), clientGame.serialize());
 
   const movementHandler = new MovementHandler();
+
+  const error = test.throws(() =>
+    movementHandler.receiveMoves(
+      serverGame,
+      new GameData().deserialize(clientGame.serialize()),
+      user
+    )
+  );
+  test.is(error.message, "Current user has no active ships");
+});
+
+test("Submit movement", test => {
+  const serverGame = new GameData({
+    id: 123,
+    turn: 1,
+    phase: 1,
+    activeShips: [1, 2]
+  });
+
+  const user = new User(989, "Nönmän");
+  const ship = constructDeployedShip(1, user);
+  const ship2 = constructDeployedShip(2, new User(666, "Bädmän"));
+  serverGame.ships.addShip(ship).addShip(ship2);
+
+  const clientGame = new GameData().deserialize(serverGame.serialize());
+  test.deepEqual(serverGame.serialize(), clientGame.serialize());
+
+  const movementService = getMovementService();
+
+  const movingShip = clientGame.ships.getShipById(1);
+  movementService.roll(movingShip);
+  movementService.evade(movingShip, 1);
+  movementService.evade(movingShip, 1);
+  movementService.pivot(movingShip, 1);
+  movementService.thrust(movingShip, 1);
+  movementService.thrust(movingShip, 1);
+  movementService.thrust(movingShip, 1);
+  movementService.thrust(movingShip, 1);
+
+  const movementHandler = new MovementHandler();
+
+  movementHandler.receiveMoves(
+    serverGame,
+    new GameData().deserialize(clientGame.serialize()),
+    user
+  );
+
+  test.deepEqual(serverGame.ships.getShipById(1).movement.getMovement(), [
+    ...clientGame.ships.getShipById(1).movement.getMovement(),
+    new MovementOrder(
+      null,
+      movementTypes.END,
+      new hexagon.Offset(10, -7),
+      new hexagon.Offset(5, -2),
+      1,
+      true,
+      1
+    )
+  ]);
+
+  test.is(serverGame.ships.getShipById(2).movement.getMovement().length, 2);
 });

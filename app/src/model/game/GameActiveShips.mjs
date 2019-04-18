@@ -4,14 +4,18 @@ class GameActiveShips {
     this.shipsIds = [];
   }
 
-  serialize() {
-    return {
-      shipsIds: this.shipsIds
-    };
+  isActive(ship) {
+    return this.shipsIds.includes(ship.id);
   }
 
-  deserialize(data = {}) {
-    this.shipsIds = data.shipsIds;
+  serialize() {
+    return this.shipsIds;
+  }
+
+  deserialize(data = []) {
+    this.shipsIds = data;
+
+    return this;
   }
 }
 

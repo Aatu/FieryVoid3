@@ -13,13 +13,13 @@ class MovementOrder {
     rolled,
     turn,
     value = 0,
-    requiredThrust = null
+    requiredThrust = undefined
   ) {
-    if (!(position instanceof hexagon.Offset)) {
+    if (position && !(position instanceof hexagon.Offset)) {
       throw new Error("MovementOrder requires position as offset hexagon");
     }
 
-    if (!(target instanceof hexagon.Offset)) {
+    if (target && !(target instanceof hexagon.Offset)) {
       throw new Error("MovementOrder requires target as offset hexagon");
     }
 
@@ -31,7 +31,7 @@ class MovementOrder {
     this.rolled = rolled;
     this.turn = turn;
     this.value = value;
-    this.requiredThrust = requiredThrust;
+    this.requiredThrust = requiredThrust || new RequiredThrust();
   }
 
   setRequiredThrust(req) {
@@ -49,9 +49,7 @@ class MovementOrder {
       rolled: this.rolled,
       turn: this.turn,
       value: this.value,
-      requiredThrust: this.requiredThrust
-        ? this.requiredThrust.serialize()
-        : null
+      requiredThrust: this.requiredThrust.serialize()
     };
   }
 
@@ -64,7 +62,7 @@ class MovementOrder {
     this.rolled = data.rolled;
     this.turn = data.turn;
     this.value = data.value;
-    this.requiredThrust = requiredThrust;
+    this.requiredThrust = new RequiredThrust().deserialize(data.requiredThrust);
 
     return this;
   }

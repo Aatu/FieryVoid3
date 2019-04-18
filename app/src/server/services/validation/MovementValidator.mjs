@@ -36,9 +36,9 @@ class MovementValidator {
 
     return new MovementOrder(
       null,
-      "end",
-      this.startMove.position.add(this.startMove.target).add(vector),
-      this.startMove.target.add(vector),
+      movementTypes.END,
+      this.startMove.position.add(vector),
+      vector,
       lastmove.facing,
       rolled,
       this.turn

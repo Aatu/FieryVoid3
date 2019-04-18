@@ -22,13 +22,13 @@ const constructShip = (id = 123) => {
     new Thruster({ id: 4, hitpoints: 10, armor: 3 }, 5, 3),
     new Engine({ id: 5, hitpoints: 10, armor: 3 }, 12, 6, 2),
     new Engine({ id: 6, hitpoints: 10, armor: 3 }, 12, 6, 2),
-    new Reactor({ id: 7, hitpoints: 10, armor: 3 }, 20),
+    new Reactor({ id: 7, hitpoints: 10, armor: 3 }, 20)
   ]);
 
   return ship;
-}
+};
 
-test("Ship serializes and deserializes nicely", test => {
+test("Ship systems serializes and deserializes nicely", test => {
   let ship = constructShip(73);
 
   ship.systems.getSystemById(1).addCritical(new FirstThrustIgnored());

@@ -7,13 +7,63 @@ class GameData {
     this.deserialize(data);
   }
 
+  validateForGameCreate(user) {
+    if (!this.name) {
+      return "Game needs a name";
+    }
+
+    const slots = this.slots.getSlots();
+    if (slots.length < 2) {
+      return "Game has to have atleast two slots";
+    }
+
+    const teams = {};
+    slots.forEach(slot => (teams[slot.team] = true));
+
+    if (Object.keys(teams).length < 2) {
+      return "Game has to have atleast two teams";
+    }
+
+    let error = undefined;
+
+    slots.find(slot => {
+      const slotError = slot.validate();
+      if (slotError) {
+        error = slotError;
+      }
+    });
+
+    if (error) {
+      return error;
+    }
+
+    if (!slots.some(slot => slot.userId === user.id)) {
+      return "Game creator has to occupy atleast one slot";
+    }
+  }
+
+  getActiveShips() {
+    return this.ships
+      .getShips()
+      .filter(ship => this.activeShips.isActive(ship));
+  }
+
+  getActiveShipsForUser(user) {
+    return this.ships
+      .getShips()
+      .filter(
+        ship => this.activeShips.isActive(ship) && ship.player.isUsers(user)
+      );
+  }
+
   serialize() {
     return {
       id: this.id,
       phase: this.phase,
+      name: this.name,
       turn: this.turn,
       data: {
-        slots: this.slots.serialize()
+        ...this.slots.serialize()
       },
       ships: this.ships.serialize(),
       activeShips: this.activeShips.serialize(),
@@ -25,11 +75,12 @@ class GameData {
   deserialize(data = {}) {
     const gameData = data.data || {};
     this.id = data.id || null;
-    this.phase = data.phase || 0;
+    this.name = data.name;
+    this.phase = data.phase || -2;
     this.turn = data.turn || 1;
     this.slots = new GameSlots(this).deserialize(gameData);
     this.ships = new GameShips(this).deserialize(data.ships);
-    this.activeShips = new GameActiveShips(this).deserialize(data.activeShipa);
+    this.activeShips = new GameActiveShips(this).deserialize(data.activeShips);
     this.creatorId = data.creatorId;
     this.status = data.status || "lobby";
 
