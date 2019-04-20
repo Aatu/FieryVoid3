@@ -1,12 +1,45 @@
 import GameSlots from "./GameSlots";
 import GameShips from "./GameShips";
 import GameActiveShips from "./GameActiveShips";
+import User from "../User";
 import * as gameStatuses from "./gameStatuses.mjs";
 import * as gamePhases from "./gamePhases.mjs";
 
 class GameData {
   constructor(data) {
     this.deserialize(data);
+  }
+
+  setStatus(status) {
+    this.status = status;
+  }
+
+  addPlayer(user) {
+    if (this.players.find(player => player.id === user.id)) {
+      return;
+    }
+
+    this.players.push(user);
+  }
+
+  removePlayer(user) {
+    this.players = this.players.filter(player => player.id !== user.id);
+  }
+
+  isPlayerActive(user) {
+    return this.activePlayerIds.includes(user.id);
+  }
+
+  setPlayerActive(user) {
+    if (this.isPlayerActive(user)) {
+      return;
+    }
+
+    this.activePlayerIds.push(user.id);
+  }
+
+  setPlayerInactive(user) {
+    this.activePlayerIds = this.activePlayerIds.filter(id => id !== user.id);
   }
 
   validateForGameCreate(user) {
@@ -70,12 +103,14 @@ class GameData {
       name: this.name,
       turn: this.turn,
       data: {
+        activePlayerIds: this.activePlayerIds,
         ...this.slots.serialize()
       },
       ships: this.ships.serialize(),
       activeShips: this.activeShips.serialize(),
       creatorId: this.creatorId,
-      status: this.status
+      status: this.status,
+      players: this.players.map(player => player.serialize())
     };
   }
 
@@ -85,6 +120,10 @@ class GameData {
     this.name = data.name;
     this.phase = data.phase || gamePhases.DEPLOYMENT;
     this.turn = data.turn || 1;
+    this.players = data.players
+      ? data.players.map(player => new User().deserialize(player))
+      : [];
+    this.activePlayerIds = gameData.activePlayerIds || [];
     this.slots = new GameSlots(this).deserialize(gameData);
     this.ships = new GameShips(this).deserialize(data.ships);
     this.activeShips = new GameActiveShips(this).deserialize(data.activeShips);

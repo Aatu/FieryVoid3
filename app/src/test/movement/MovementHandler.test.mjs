@@ -46,7 +46,8 @@ const constructShip = (id = 123, player) => {
 };
 
 const constructDeployedShip = (id, player) => {
-  const ship = constructShip(id, player);
+  const ship = constructShip(id);
+  ship.player.setUser(player);
   ship.movement.addMovement(deployMove);
   return ship;
 };

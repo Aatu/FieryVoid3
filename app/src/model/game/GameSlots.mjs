@@ -7,7 +7,7 @@ class GameSlots {
   }
 
   getSlotById(id) {
-    return this.slots[id];
+    return this.slots.find(slot => slot.id === id);
   }
 
   setSlots(slots) {
@@ -19,13 +19,8 @@ class GameSlots {
   }
 
   addSlot(slot) {
-    if (slot.id !== null && slot.id !== undefined) {
-      this.slots[slot.id] = slot;
-    } else {
-      const index = this.slots.length;
-      slot.id = index;
-      this.slots.push(slot);
-    }
+    this.slots.push(slot);
+    return slot;
   }
 
   serialize() {

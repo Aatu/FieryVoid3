@@ -1,4 +1,5 @@
 import GameData from "../../model/game/GameData.mjs";
+import * as gameStatuses from "../../model/game/gameStatuses.mjs";
 import { InvalidGameDataError } from "../errors";
 
 class CreateGameHandler {
@@ -12,8 +13,80 @@ class CreateGameHandler {
     serverGamedata.name = clientGameData.name;
     serverGamedata.creatorId = user.id;
     serverGamedata.slots.setSlots(clientGameData.slots.getSlots());
+    serverGamedata.addPlayer(user);
+    serverGamedata.setPlayerActive(user);
 
     return serverGamedata;
+  }
+
+  removeGame(gameData, user) {
+    if (gameData.status !== gameStatuses.LOBBY) {
+      throw new InvalidGameDataError(
+        "Can not remove game that is not in lobby"
+      );
+    }
+
+    if (
+      gameData.creatorId !== user.id &&
+      !gameData.slots
+        .getSlots()
+        .every(slot => !slot.isTaken() || !slot.isOccupiedBy(user))
+    ) {
+      throw new InvalidGameDataError(
+        "Only game creator or last player can remove game"
+      );
+    }
+
+    gameData.setStatus(gameStatuses.ABANDONED);
+  }
+
+  takeSlot(gameData, slotId, user) {
+    if (gameData.status !== gameStatuses.LOBBY) {
+      throw new InvalidGameDataError("Game status is wrong");
+    }
+
+    const slot = gameData.slots.getSlotById(slotId);
+    if (!slot) {
+      throw new InvalidGameDataError(`Slot id ${slotId} does not exist`);
+    }
+
+    if (slot.isTaken()) {
+      throw new InvalidGameDataError("Slot already taken");
+    }
+
+    slot.takeSlot(user);
+    gameData.addPlayer(user);
+    gameData.setPlayerActive(user);
+  }
+
+  leaveSlot(gameData, slotId, user) {
+    if (gameData.status !== gameStatuses.LOBBY) {
+      throw new InvalidGameDataError("Game status is wrong");
+    }
+
+    const slot = gameData.slots.getSlotById(slotId);
+    if (!slot) {
+      throw new InvalidGameDataError(`Slot id ${slotId} does not exist`);
+    }
+
+    if (!slot.isTaken()) {
+      throw new InvalidGameDataError("Slot is untaken");
+    }
+
+    if (!slot.isOccupiedBy(user)) {
+      throw new InvalidGameDataError("Slot is not occupied by user");
+    }
+
+    slot.leaveSlot(user);
+
+    if (gameData.slots.getSlots().every(slot => !slot.isOccupiedBy(user))) {
+      gameData.removePlayer(user);
+      gameData.setPlayerInactive(user);
+    }
+
+    if (gameData.slots.getSlots().every(slot => !slot.isTaken())) {
+      gameData.setStatus(gameStatuses.ABANDONED);
+    }
   }
 }
 

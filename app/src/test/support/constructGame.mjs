@@ -39,7 +39,7 @@ export const constructLobbyGameWithSlotsTaken = async (
   const gameData = new GameData();
   gameData.name = "Very nice test game";
 
-  gameData.slots.addSlot(
+  const slot1 = gameData.slots.addSlot(
     new GameSlot({
       name: "Great Expanse Protectorate",
       team: 1,
@@ -50,7 +50,7 @@ export const constructLobbyGameWithSlotsTaken = async (
     })
   );
 
-  gameData.slots.addSlot(
+  const slot2 = gameData.slots.addSlot(
     new GameSlot({
       name: "United Colonies",
       team: 2,
@@ -62,7 +62,7 @@ export const constructLobbyGameWithSlotsTaken = async (
   );
 
   const gameId = await controller.createGame(gameData, user1);
-  await controller.takeSlot(gameId, 1, user2);
+  await controller.takeSlot(gameId, slot2.id, user2);
   const newGameData = await controller.getGameData(gameId);
 
   return newGameData;

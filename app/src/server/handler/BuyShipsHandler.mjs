@@ -1,6 +1,6 @@
 import { InvalidGameDataError } from "../errors";
-import Ship from "../../model/unit/Ship.mjs";
 import createShipObject from "../../model/unit/createShipObject.mjs";
+import uuidv4 from "uuid/v4";
 
 class BuyShipsHandler {
   buyShips(gameData, slotId, ships, user) {
@@ -11,7 +11,7 @@ class BuyShipsHandler {
       throw new InvalidGameDataError(`Slot not found with index ${slotId}`);
     }
 
-    if (slot.userId !== user.id) {
+    if (!slot.isOccupiedBy(user)) {
       throw new InvalidGameDataError("Slot taken by other user");
     }
 
@@ -26,11 +26,23 @@ class BuyShipsHandler {
     }
 
     ships.forEach(ship => {
+      ship.id = uuidv4();
       ship.slotId = slot.id;
       ship.gameId = gameData.id;
       ship.player.setUser(user);
+      slot.addShip(ship);
       gameData.ships.addShip(ship);
     });
+
+    slot.setBought();
+
+    if (
+      gameData.slots
+        .getSlots()
+        .every(slot => !slot.isOccupiedBy(user) || slot.isBought())
+    ) {
+      gameData.setPlayerInactive(user);
+    }
   }
 }
 

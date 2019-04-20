@@ -1,8 +1,14 @@
 import hexagon from "../hexagon";
+import uuidv4 from "uuid/v4";
 
 class GameSlot {
   constructor(data = {}) {
+    this.id = uuidv4();
     this.deserialize(data);
+  }
+
+  addShip(ship) {
+    this.shipIds.push(ship.id);
   }
 
   isTaken() {
@@ -11,6 +17,26 @@ class GameSlot {
 
   takeSlot(user) {
     this.userId = user.id;
+  }
+
+  leaveSlot(user) {
+    if (this.userId !== user.id) {
+      throw Error("Trying to leave slot that is not occupied by player");
+    }
+
+    this.userId = null;
+  }
+
+  isOccupiedBy(user) {
+    return this.userId === user.id;
+  }
+
+  setBought() {
+    this.bought = true;
+  }
+
+  isBought() {
+    return this.bought;
   }
 
   validate() {
@@ -52,12 +78,13 @@ class GameSlot {
       deploymentVector: this.deploymentVector,
       points: this.points,
       shipIds: this.shipIds,
-      team: this.team
+      team: this.team,
+      bought: this.bought
     };
   }
 
   deserialize(data = {}) {
-    this.id = data.id;
+    this.id = data.id || this.id;
     this.name = data.name;
     this.userId = data.userId || null;
     this.deploymentLocation =
@@ -67,6 +94,7 @@ class GameSlot {
     this.deploymentRadius = data.deploymentRadius || 10;
     this.shipIds = data.shipIds || [];
     this.points = data.points || 0;
+    this.bought = data.bought || false;
     this.team = data.team || 1;
 
     return this;

@@ -6,7 +6,7 @@ import GameData from "../../model/game/GameData.mjs";
 import GameSlot from "../../model/game/GameSlot.mjs";
 import hexagon from "../../model/hexagon";
 
-test.serial("Create game", async test => {
+test.serial("Create game successfull", async test => {
   const db = new TestDatabaseConnection("create_game");
   await db.resetDatabase();
 
@@ -45,6 +45,8 @@ test.serial("Create game", async test => {
   test.is(newGameData.id, gameId);
   test.is(newGameData.slots.getSlots().length, 2);
   test.deepEqual(newGameData.slots.serialize(), gameData.slots.serialize());
+  test.true(newGameData.players.some(player => player.id === user.id));
+  test.true(newGameData.isPlayerActive(user));
 });
 
 test("Create game, user is not in a slot", async test => {

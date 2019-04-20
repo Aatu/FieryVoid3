@@ -23,13 +23,14 @@ class Ship {
   }
 
   deserialize(data = {}) {
+    const shipData = data.shipData || {};
     this.id = data.id || null;
     this.name = data.name || "Unnamed ship " + data.id;
     this.shipClass = this.constructor.name;
     this.slotId = data.slotId || null;
 
-    this.systems.deserialize(data.systems);
-    this.player = new ShipPlayer(this).deserialize(data.player);
+    this.systems.deserialize(shipData.systems);
+    this.player = new ShipPlayer(this).deserialize(shipData.player);
     this.movement = new ShipMovement(this).deserialize(data.movement);
     this.ew = new ShipEW(this);
 
@@ -43,9 +44,11 @@ class Ship {
       name: this.name,
       shipClass: this.shipClass,
       slotId: this.slotId,
-      systems: this.systems.serialize(),
       movement: this.movement.serialize(),
-      player: this.player.serialize()
+      shipData: {
+        systems: this.systems.serialize(),
+        player: this.player.serialize()
+      }
     };
   }
 

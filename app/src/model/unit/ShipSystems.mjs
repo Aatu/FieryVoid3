@@ -52,7 +52,6 @@ class ShipSystems {
 
   serialize() {
     return this.systemsAsArray.map(system => ({
-      shipId: this.ship.id,
       systemId: system.id,
       data: system.serialize()
     }));

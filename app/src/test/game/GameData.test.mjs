@@ -41,7 +41,8 @@ const getMovementService = () =>
   );
 
 const constructShip = (id = 123, user) => {
-  let ship = new TestShip({ id, player: user });
+  let ship = new TestShip({ id });
+  ship.player.setUser(user);
   ship.movement.addMovement(startMove);
   return ship;
 };
