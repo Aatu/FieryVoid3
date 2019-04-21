@@ -22,6 +22,10 @@ class ShipMovement {
   }
 
   getLastMove() {
+    if (this.moves.length === 0) {
+      return null;
+    }
+
     return this.moves[this.moves.length - 1].clone();
   }
 

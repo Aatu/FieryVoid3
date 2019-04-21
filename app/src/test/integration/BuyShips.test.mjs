@@ -2,11 +2,9 @@ import test from "ava";
 import GameController from "../../server/controller/GameController.mjs";
 import TestDatabaseConnection from "../support/TestDatabaseConnection.mjs";
 import User from "../../model/User";
-import GameData from "../../model/game/GameData.mjs";
-import GameSlot from "../../model/game/GameSlot.mjs";
-import hexagon from "../../model/hexagon";
 import { constructLobbyGameWithSlotsTaken } from "../support/constructGame.mjs";
 import TestShip from "../../model/unit/ships/test/TestShip";
+import hexagon from "../../model/hexagon";
 
 test.serial("Buy ships for first player", async test => {
   const db = new TestDatabaseConnection("buy_ships");
@@ -154,4 +152,93 @@ test.serial("Buy ships for both players", async test => {
   test.true(
     newGameData.slots.getSlotById(slot2.id).shipIds.includes(biliyaz.id)
   );
+
+  test.is(newGameData.status, "active");
+  test.is(newGameData.phase, "deployment");
+  test.true(newGameData.isPlayerActive(user));
+  test.true(newGameData.isPlayerActive(user2));
+
+  test.deepEqual(biliyaz.getHexPosition(), new hexagon.Offset(30, 0));
+  test.deepEqual(achilles.getHexPosition(), new hexagon.Offset(-30, 0));
+  test.deepEqual(eclipse.getHexPosition(), new hexagon.Offset(-30, 1));
+});
+
+test.serial("Try to buy too expensive ships", async test => {
+  const db = new TestDatabaseConnection("buy_ships");
+  await db.resetDatabase();
+  const controller = new GameController(db);
+
+  const user = new User(1, "Nönmän");
+  const user2 = new User(2, "Bädmän");
+
+  const gameData = await constructLobbyGameWithSlotsTaken(
+    user,
+    user2,
+    controller
+  );
+  const slot1 = gameData.slots.getSlots()[0];
+
+  const error = await test.throwsAsync(() =>
+    controller.buyShips(
+      gameData.id,
+      slot1.id,
+      [
+        new TestShip({ name: "UCS 1" }).serialize(),
+        new TestShip({ name: "UCS 2" }).serialize(),
+        new TestShip({ name: "UCS 3" }).serialize(),
+        new TestShip({ name: "UCS 4" }).serialize(),
+        new TestShip({ name: "UCS 5" }).serialize(),
+        new TestShip({ name: "UCS 6" }).serialize(),
+        new TestShip({ name: "UCS 7" }).serialize(),
+        new TestShip({ name: "UCS 8" }).serialize(),
+        new TestShip({ name: "UCS 9" }).serialize(),
+        new TestShip({ name: "UCS 10" }).serialize(),
+        new TestShip({ name: "UCS 11" }).serialize(),
+        new TestShip({ name: "UCS 12" }).serialize(),
+        new TestShip({ name: "UCS 13" }).serialize()
+      ],
+      user
+    )
+  );
+  test.is(
+    error.message,
+    "Ships cost 6500 points, but slot has only 3000 points"
+  );
+});
+
+test.serial("Try to buy ships for wrong slot", async test => {
+  const db = new TestDatabaseConnection("buy_ships");
+  await db.resetDatabase();
+  const controller = new GameController(db);
+
+  const user = new User(1, "Nönmän");
+  const user2 = new User(2, "Bädmän");
+
+  const gameData = await constructLobbyGameWithSlotsTaken(
+    user,
+    user2,
+    controller
+  );
+  const slot1 = gameData.slots.getSlots()[0];
+  const slot2 = gameData.slots.getSlots()[1];
+
+  await controller.buyShips(
+    gameData.id,
+    slot1.id,
+    [
+      new TestShip({ name: "UCS Achilles" }).serialize(),
+      new TestShip({ name: "UCS Eclipse" }).serialize()
+    ],
+    user
+  );
+
+  const error = await test.throwsAsync(() =>
+    controller.buyShips(
+      gameData.id,
+      slot1.id,
+      [new TestShip({ name: "GEPS Biliyaz" }).serialize()],
+      user2
+    )
+  );
+  test.is(error.message, "Slot taken by other user");
 });

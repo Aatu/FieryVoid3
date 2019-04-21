@@ -72,14 +72,14 @@ class Cube {
     var neighbours = [];
 
     this.neighbours.forEach(function(neighbour) {
-      neighbours.push(this.add(neighbour));
+      neighbours.push(this.add(new Cube(neighbour)));
     }, this);
 
     return neighbours;
   }
 
-  moveToDirection(direction) {
-    return this.add(this.neighbours[direction]);
+  moveToDirection(direction, steps = 1) {
+    return this.add(new Cube(this.neighbours[direction]).scale(steps));
   }
 
   add(cube) {
@@ -106,6 +106,10 @@ class Cube {
     return this.x === cube.x && this.y === cube.y && this.z === cube.z;
   }
 
+  clone() {
+    return new Cube(this);
+  }
+
   getFacing(neighbour) {
     var index = -1;
 
@@ -121,6 +125,32 @@ class Cube {
     });
 
     return index;
+  }
+
+  ring(radius) {
+    const results = [];
+
+    if (radius === 0) {
+      return results;
+    }
+
+    let cube = this.moveToDirection(4, radius);
+    for (let i = 0; i < 6; i++) {
+      for (let j = 0; j < radius; j++) {
+        results.push(cube);
+        cube = cube.moveToDirection(i);
+      }
+    }
+
+    return results;
+  }
+
+  spiral(radius) {
+    let results = [this.clone()];
+    for (let k = 1; k <= radius; k++) {
+      results = results.concat(this.ring(k));
+    }
+    return results;
   }
 
   toOffset() {

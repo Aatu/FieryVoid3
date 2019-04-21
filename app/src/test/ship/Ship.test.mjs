@@ -4,7 +4,7 @@ import movementTypes from "../../model/movement/movementTypes";
 import MovementOrder from "../../model/movement/MovementOrder";
 import hexagon from "../../model/hexagon";
 import TestShip from "../../model/unit/ships/test/TestShip";
-import createShipObject from "../../model/unit/createShipObject";
+import { createShipObject } from "../../model/unit/createShipObject";
 import DamageEntry from "../../model/unit/system/DamageEntry.mjs";
 import User from "../../model/User";
 

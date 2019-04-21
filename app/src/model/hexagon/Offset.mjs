@@ -59,9 +59,9 @@ class Offset {
       .toOffset();
   }
 
-  moveToDirection(direction) {
+  moveToDirection(direction, steps) {
     return this.toCube()
-      .moveToDirection(direction)
+      .moveToDirection(direction, steps)
       .toOffset();
   }
 
@@ -77,6 +77,22 @@ class Offset {
 
   distanceTo(target) {
     return this.toCube().distanceTo(target.toCube());
+  }
+
+  ring(radius) {
+    return this.toCube()
+      .ring(radius)
+      .map(cube => cube.toOffset());
+  }
+
+  spiral(radius) {
+    return this.toCube()
+      .spiral(radius)
+      .map(cube => cube.toOffset());
+  }
+
+  clone() {
+    return new Offset(this);
   }
 
   toCube() {

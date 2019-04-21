@@ -1,9 +1,22 @@
 import { InvalidGameDataError } from "../errors";
-import createShipObject from "../../model/unit/createShipObject.mjs";
+import {
+  createShipObject,
+  createBareShipObject
+} from "../../model/unit/createShipObject.mjs";
+import * as gameStatuses from "../../model/game/gameStatuses.mjs";
+import * as gamePhases from "../../model/game/gamePhases.mjs";
+import MovementOrder from "../../model/movement/MovementOrder.mjs";
+import MovementTypes from "../../model/movement/MovementTypes.mjs";
 import uuidv4 from "uuid/v4";
 
 class BuyShipsHandler {
   buyShips(gameData, slotId, ships, user) {
+    if (gameData.status !== gameStatuses.LOBBY) {
+      throw new InvalidGameDataError(
+        "Can not buy ships if game status is not 'lobby'"
+      );
+    }
+
     const slot = gameData.slots.getSlotById(slotId);
     ships = ships.map(createShipObject);
 
@@ -13,6 +26,10 @@ class BuyShipsHandler {
 
     if (!slot.isOccupiedBy(user)) {
       throw new InvalidGameDataError("Slot taken by other user");
+    }
+
+    if (slot.isBought()) {
+      throw new InvalidGameDataError("Slot already bought");
     }
 
     const totalCost = ships.reduce((acc, ship) => acc + ship.getPointCost(), 0);
@@ -25,14 +42,7 @@ class BuyShipsHandler {
       );
     }
 
-    ships.forEach(ship => {
-      ship.id = uuidv4();
-      ship.slotId = slot.id;
-      ship.gameId = gameData.id;
-      ship.player.setUser(user);
-      slot.addShip(ship);
-      gameData.ships.addShip(ship);
-    });
+    ships.forEach(ship => this.initializeShip(ship, gameData, slot, user));
 
     slot.setBought();
 
@@ -43,6 +53,59 @@ class BuyShipsHandler {
     ) {
       gameData.setPlayerInactive(user);
     }
+
+    if (gameData.slots.getSlots().every(slot => slot.isBought())) {
+      this.advance(gameData);
+    }
+  }
+
+  initializeShip(ship, gameData, slot, user) {
+    const serverShip = createBareShipObject(ship.serialize());
+    serverShip.name = ship.name;
+    serverShip.id = uuidv4();
+    serverShip.slotId = slot.id;
+    serverShip.gameId = gameData.id;
+    serverShip.player.setUser(user);
+
+    serverShip.movement.addMovement(this.getStartPosition(gameData, slot));
+
+    slot.addShip(serverShip);
+    gameData.ships.addShip(serverShip);
+  }
+
+  getStartPosition(gameData, slot) {
+    let position = null;
+
+    while (!position) {
+      position = slot.deploymentLocation
+        .spiral(slot.deploymentRadius)
+        .find(pos =>
+          gameData.ships.getShips().every(ship => {
+            const shipPos = ship.getHexPosition();
+            return !shipPos || !shipPos.equals(pos);
+          })
+        );
+
+      if (!position) {
+        slot.deploymentRadius++;
+      }
+    }
+
+    return new MovementOrder(
+      uuidv4(),
+      MovementTypes.START,
+      position,
+      slot.deploymentVector,
+      slot.facing,
+      false,
+      gameData.turn
+    );
+  }
+
+  advance(gameData) {
+    gameData.players.forEach(player => gameData.setPlayerActive(player));
+    gameData.setStatus(gameStatuses.ACTIVE);
+    gameData.setPhase(gamePhases.DEPLOYMENT);
   }
 }
 

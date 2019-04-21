@@ -19,7 +19,12 @@ class Ship {
   }
 
   getHexPosition() {
-    return this.movement.getLastMove().position;
+    const lastMove = this.movement.getLastMove();
+    if (!lastMove) {
+      return null;
+    }
+
+    return lastMove.position;
   }
 
   deserialize(data = {}) {

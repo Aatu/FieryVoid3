@@ -14,6 +14,10 @@ class GameData {
     this.status = status;
   }
 
+  setPhase(phase) {
+    this.phase = phase;
+  }
+
   addPlayer(user) {
     if (this.players.find(player => player.id === user.id)) {
       return;

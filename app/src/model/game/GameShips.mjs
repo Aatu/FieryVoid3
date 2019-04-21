@@ -1,4 +1,4 @@
-import createShipObject from "../unit/createShipObject";
+import { createShipObject } from "../unit/createShipObject";
 
 class GameShips {
   constructor(gameData) {

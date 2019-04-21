@@ -79,7 +79,8 @@ class GameSlot {
       points: this.points,
       shipIds: this.shipIds,
       team: this.team,
-      bought: this.bought
+      bought: this.bought,
+      facing: this.facing
     };
   }
 
@@ -91,11 +92,12 @@ class GameSlot {
       new hexagon.Offset(data.deploymentLocation) || new hexagon.Offset(0, 0);
     this.deploymentVector =
       new hexagon.Offset(data.deploymentVector) || new hexagon.Offset(0, 0);
-    this.deploymentRadius = data.deploymentRadius || 10;
+    this.deploymentRadius = data.deploymentRadius || 2;
     this.shipIds = data.shipIds || [];
     this.points = data.points || 0;
     this.bought = data.bought || false;
     this.team = data.team || 1;
+    this.facing = data.facing || 0;
 
     return this;
   }

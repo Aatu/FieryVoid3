@@ -24,9 +24,12 @@ class GameDataRepository {
       }
 
       const shipData = await this.getShipDataForGame(conn, id, turn, phase);
+      const movementData = await this.getMovementForGame(conn, id, turn);
 
       const ships = await this.getShipsForGame(conn, id);
-      gameData.ships = ships.map(this.constructShip.bind(this, shipData));
+      gameData.ships = ships.map(
+        this.constructShip.bind(this, shipData, movementData)
+      );
       await conn.end();
 
       return new GameData(gameData);
@@ -38,16 +41,22 @@ class GameDataRepository {
     }
   }
 
-  constructShip(shipData, ship) {
+  constructShip(shipData, movementData, ship) {
     ship.shipData = JSON.parse(
       shipData.find(data => data.shipId === ship.id).data
     );
+
+    ship.movement = movementData
+      .filter(data => data.shipId === ship.id)
+      .map(data => JSON.parse(data.data));
+
     return ship;
   }
 
   async saveShip(conn, gameId, turn, phase, ship) {
     await this.saveShipForGame(conn, gameId, ship);
     await this.saveShipData(conn, gameId, turn, phase, ship);
+    await this.saveShipMovement(conn, gameId, turn, ship);
   }
 
   async saveGame(gameData) {
@@ -76,7 +85,6 @@ class GameDataRepository {
 
       return gameId;
 
-      console.log("ships");
       await this.saveMovementForGame(
         conn,
         serialized.id,
@@ -247,46 +255,40 @@ class GameDataRepository {
   }
 
   async getMovementForGame(conn, id, turn) {
-    return (await this.db.query(
+    return this.db.query(
       conn,
-      `SELECT 
-        id,
-        ship_id as shipId,
-        turn,
-        data,
+      `SELECT  
+        CAST(UuidFromBin(ship_id) as CHAR) as shipId,
+        data
       FROM ship_movement
       WHERE game_id = ? and turn = ?`,
       [id, turn]
-    ))[0];
+    );
   }
 
-  async saveMovementForGame(conn, gameId, data) {
-    return (await this.db.query(
-      conn,
-      `INSERT INTO ship_movement (
-        id,
-        game_id
-        ship_id,
-        turn,
-        data,
-      ) VALUES (
-          ?,?,?,?,?
-      ) ON DUPLICATE KEY UPDATE
-        ship_id = ?,
-        turn = ?,
-        data = ?`,
-      [
-        data.id,
-        gameId,
-        data.shipId,
-        data.turn,
-        data.data,
+  async saveShipMovement(conn, gameId, turn, ship) {
+    if (ship.movement.length === 0) {
+      return;
+    }
 
-        data.shipId,
-        data.turn,
-        data.data
-      ]
-    ))[0];
+    return conn.batch(
+      `INSERT IGNORE INTO ship_movement (
+      id,
+      game_id,
+      ship_id,
+      turn,
+      data
+    ) VALUES (
+      UuidToBin(?),?,UuidToBin(?),?,?
+    )`,
+      ship.movement.map(move => [
+        move.id,
+        gameId,
+        ship.id,
+        turn,
+        JSON.stringify(move)
+      ])
+    );
   }
 
   async getFireForGame(conn, id, turn) {
