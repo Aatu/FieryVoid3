@@ -12,14 +12,10 @@ class PassportService {
     app.use(passport.session());
 
     passport.serializeUser((user, done) => {
-      console.log("serializeUser");
-      console.log(user);
       done(null, user.serialize());
     });
 
     passport.deserializeUser((user, done) => {
-      console.log("deserializeUser");
-      console.log(user);
       done(null, user ? new User().deserialize(user) : null);
     });
 

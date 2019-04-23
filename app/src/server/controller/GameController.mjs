@@ -3,6 +3,7 @@ import GameDataRepository from "../repository/GameDataRepository.mjs";
 import GameData from "../../model/game/GameData";
 import CreateGameHandler from "../handler/CreateGameHandler.mjs";
 import BuyShipsHandler from "../handler/BuyShipsHandler.mjs";
+import GameClients from "./GameClients.mjs";
 
 class GameController {
   constructor(dbConnection) {
@@ -10,9 +11,23 @@ class GameController {
       new GameDataRepository(dbConnection)
     );
 
+    this.gameClients = new GameClients();
+
     this.createGameHandler = new CreateGameHandler();
     this.buyShipsHandler = new BuyShipsHandler();
   }
+
+  async openConnection(connection, user, gameId) {
+    this.gameClients.subscribeToGame(connection, user, gameId);
+    const gameData = await this.gameDataService.loadGame(gameId);
+    this.gameClients.sendGameData(user, gameData);
+  }
+
+  closeConnection(connection, user, gameId) {
+    this.gameClients.unSubscribeFromGame(connection, gameId);
+  }
+
+  async onMessage(message, user, gameId) {}
 
   async createGame(clientGameData, user) {
     clientGameData = new GameData(clientGameData);

@@ -8,6 +8,7 @@ class ShipEW {
 
   getOffensiveEW(ship, target, type) {
     throw new Error("This has reference to gamedata");
+    /*
     type = type || "OEW";
 
     for (var i in ship.EW) {
@@ -17,6 +18,7 @@ class ShipEW {
     }
 
     return 0;
+    */
   }
 }
 

@@ -1,5 +1,7 @@
 class UIState {
-  constructor() {
+  constructor(reduxStore) {
+    this.reduxStore = reduxStore;
+    console.log(this.reduxStore);
     this.state = {
       shipWindows: {},
       weaponList: null,

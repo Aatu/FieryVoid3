@@ -33,14 +33,11 @@ class UserRepository {
   }
 
   async insertUser(username, password) {
-    console.log("INSERTING USER");
     const data = await this.db.query(
       null,
       "insert into user (username, password) values (?, PASSWORD( ? ))",
       [username, password + "molecular-pulsar"]
     );
-    console.log("response");
-    console.log(data);
     return Boolean(data);
   }
 }

@@ -2,6 +2,7 @@ import PhaseDirector from "./phase/PhaseDirector";
 import CoordinateConverter from "./utils/CoordinateConverter";
 import PositionObject from "./utils/PositionObject";
 import GameSettings from "./GameSettings";
+import GameConnector from "./GameConnector";
 
 import GameScene from "./GameScene";
 
@@ -12,6 +13,7 @@ class Game {
     this.uiState = uiState;
     this.phaseDirector = new PhaseDirector(this.uiState);
     this.coordinateConverter = new CoordinateConverter();
+    this.gameConnector = new GameConnector(gameId, this.phaseDirector);
     this.gameScene = new GameScene(
       this.phaseDirector,
       this.coordinateConverter
@@ -26,6 +28,7 @@ class Game {
     this.sceneElement = element;
     this.init = true;
     this.gameScene.init(element, this.getDimensions(), this.gameId);
+    this.gameConnector.connect();
     this.onResize();
   }
 

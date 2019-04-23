@@ -3,6 +3,7 @@ import "express-async-errors";
 import session from "express-session";
 import bodyParser from "body-parser";
 import cors from "cors";
+import expressWs from "express-ws";
 import UserService from "./services/UserService";
 import UserRepository from "./repository/UserRepository";
 import PassportService from "./services/PassportService";
@@ -14,6 +15,8 @@ import * as errors from "./errors";
 
 const app = express();
 const port = 4000;
+
+expressWs(app);
 
 app.use(
   cors({
@@ -72,6 +75,18 @@ app.get("/user", (req, res) => {
 app.post("/game", async (req, res) => {
   const gameId = await gameController.createGame(req.body, req.user);
   res.status(200).json({ gameId });
+});
+
+app.ws("/game/:gameId", (ws, req) => {
+  ws.on("message", msg => {
+    gameController.onMessage(message, req.user, req.params.gameId);
+  });
+
+  ws.on("close", msg => {
+    gameController.closeConnection(ws, req.user, req.params.gameId);
+  });
+
+  gameController.openConnection(ws, req.user, req.params.gameId);
 });
 
 app.use((error, req, res, next) => {

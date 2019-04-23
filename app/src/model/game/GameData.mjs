@@ -66,7 +66,7 @@ class GameData {
 
     let error = undefined;
 
-    slots.find(slot => {
+    slots.forEach(slot => {
       const slotError = slot.validate();
       if (slotError) {
         error = slotError;

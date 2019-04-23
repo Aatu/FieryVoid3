@@ -1,12 +1,5 @@
 import React, { Component } from "react";
-import {
-  Title,
-  InputAndLabel,
-  PanelContainer,
-  Button,
-  Error,
-  Link
-} from "../../styled";
+import { Title, PanelContainer, Button, Link } from "../../styled";
 
 class Home extends Component {
   render() {

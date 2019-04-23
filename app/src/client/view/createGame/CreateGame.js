@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 import GameData from "../../../model/game/GameData";
 import GameSlot from "../../../model/game/GameSlot";
 import hexagon from "../../../model/hexagon";
@@ -13,9 +13,7 @@ import {
   InputAndLabel,
   PanelContainer,
   Button,
-  Error,
-  Link,
-  DarkContainer
+  Link
 } from "../../styled";
 
 const Container = styled(PanelContainer)`

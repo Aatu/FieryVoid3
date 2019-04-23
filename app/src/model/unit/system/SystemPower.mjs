@@ -1,6 +1,6 @@
 import PowerEntry, {
-  POWER_TYPE_OFFLINE,
-  POWER_TYPE_BOOST
+  POWER_TYPE_OFFLINE
+  //POWER_TYPE_BOOST
 } from "./PowerEntry.mjs";
 
 class SystemPower {

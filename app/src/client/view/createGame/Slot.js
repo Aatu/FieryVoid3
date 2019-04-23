@@ -1,22 +1,6 @@
 import React, { Component } from "react";
-import { connect } from "react-redux";
-import styled, { css } from "styled-components";
-import GameData from "../../../model/game/GameData";
-import GameSlot from "../../../model/game/GameSlot";
-import hexagon from "../../../model/hexagon";
-import * as Yup from "yup";
 
-import {
-  Title,
-  InputAndLabel,
-  Container,
-  PanelContainer,
-  Button,
-  Error,
-  Link,
-  DarkContainer,
-  Section
-} from "../../styled";
+import { Title, InputAndLabel, Container, Section } from "../../styled";
 
 class Slot extends Component {
   handleChange() {}

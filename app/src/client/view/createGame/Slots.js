@@ -1,21 +1,8 @@
 import React, { Component } from "react";
-import { connect } from "react-redux";
-import styled, { css } from "styled-components";
-import GameData from "../../../model/game/GameData";
-import GameSlot from "../../../model/game/GameSlot";
-import hexagon from "../../../model/hexagon";
 
 import Slot from "./Slot";
 
-import {
-  Title,
-  InputAndLabel,
-  PanelContainer,
-  Button,
-  Error,
-  Link,
-  DarkContainer
-} from "../../styled";
+import { Title, DarkContainer } from "../../styled";
 
 class Slots extends Component {
   getSlotsByTeams() {
