@@ -1,37 +1,48 @@
-import query from "./query";
 import User from "../../model/User";
 
-export const getUserByUsername = async username => {
-  const data = await query(
-    "select id, username, access_level as accessLevel from user where username = ?",
-    [username]
-  );
-  return data[0] ? new User().deserialize(data[0]) : null;
-};
+class UserRepository {
+  constructor(db) {
+    this.db = db;
+  }
 
-export const getUserById = async id => {
-  const data = await query(
-    "select id, username, access_level as accessLevel from user where id = ?",
-    [id]
-  );
-  return data[0] ? new User().deserialize(data[0]) : null;
-};
+  async getUserByUsername(username) {
+    const data = await this.db.query(
+      null,
+      "select id, username, access_level as accessLevel from user where username = ?",
+      [username]
+    );
+    return data[0] ? new User().deserialize(data[0]) : null;
+  }
 
-export const checkPassword = async (username, password) => {
-  const data = await query(
-    "select * from user where username = ? and password = PASSWORD( ? )",
-    [username, password + "molecular-pulsar"]
-  );
-  return Boolean(data);
-};
+  async getUserById(id) {
+    const data = await this.db.query(
+      null,
+      "select id, username, access_level as accessLevel from user where id = ?",
+      [id]
+    );
+    return data[0] ? new User().deserialize(data[0]) : null;
+  }
 
-export const insertUser = async (username, password) => {
-  console.log("INSERTING USER");
-  const data = await query(
-    "insert into user (username, password) values (?, PASSWORD( ? ))",
-    [username, password + "molecular-pulsar"]
-  );
-  console.log("response");
-  console.log(data);
-  return Boolean(data);
-};
+  async checkPassword(username, password) {
+    const data = await this.db.query(
+      null,
+      "select * from user where username = ? and password = PASSWORD( ? )",
+      [username, password + "molecular-pulsar"]
+    );
+    return Boolean(data);
+  }
+
+  async insertUser(username, password) {
+    console.log("INSERTING USER");
+    const data = await this.db.query(
+      null,
+      "insert into user (username, password) values (?, PASSWORD( ? ))",
+      [username, password + "molecular-pulsar"]
+    );
+    console.log("response");
+    console.log(data);
+    return Boolean(data);
+  }
+}
+
+export default UserRepository;

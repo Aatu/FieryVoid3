@@ -1,5 +1,5 @@
 import ShipObject from "../ShipObject";
-import * as THREE from "three";
+//import * as THREE from "three";
 
 class Gunship extends ShipObject {
   constructor(ship, scene) {

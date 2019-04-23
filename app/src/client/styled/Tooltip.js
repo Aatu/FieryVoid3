@@ -35,9 +35,9 @@ const TooltipHeader = styled.div`
 
 const TooltipEntry = styled.div`
     color: ${props => {
-      if (props.type == "good") {
+      if (props.type === "good") {
         return "#6fc126;";
-      } else if (props.type == "bad") {
+      } else if (props.type === "bad") {
         return "#ff7b3f;";
       } else {
         return "white;";

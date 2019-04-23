@@ -17,7 +17,7 @@ test.serial("Take slot", async test => {
   const gameData = constructLobbyGame(user);
 
   const controller = new GameController(db);
-  const gameId = await controller.createGame(gameData, user);
+  const gameId = await controller.createGame(gameData.serialize(), user);
 
   const slot = gameData.slots.getSlots()[1];
   await controller.takeSlot(gameId, slot.id, user2);
@@ -40,7 +40,7 @@ test.serial("Leave slot", async test => {
   const gameData = constructLobbyGame(user);
 
   const controller = new GameController(db);
-  const gameId = await controller.createGame(gameData, user);
+  const gameId = await controller.createGame(gameData.serialize(), user);
   const slot = gameData.slots.getSlots()[1];
 
   await controller.takeSlot(gameId, slot.id, user2);
@@ -62,7 +62,7 @@ test.serial("Leave the last slot", async test => {
   const gameData = constructLobbyGame(user);
 
   const controller = new GameController(db);
-  const gameId = await controller.createGame(gameData, user);
+  const gameId = await controller.createGame(gameData.serialize(), user);
   const slot = gameData.slots.getSlots()[0];
 
   await controller.leaveSlot(gameId, slot.id, user);
@@ -80,7 +80,7 @@ test.serial("Remove the game as a creator", async test => {
   const gameData = constructLobbyGame(user);
 
   const controller = new GameController(db);
-  const gameId = await controller.createGame(gameData, user);
+  const gameId = await controller.createGame(gameData.serialize(), user);
   await controller.removeGame(gameId, user);
 
   const newGameData = await controller.getGameData(gameId);
@@ -97,7 +97,7 @@ test.serial("Fail to remove game as non creator", async test => {
   const gameData = constructLobbyGame(user);
 
   const controller = new GameController(db);
-  const gameId = await controller.createGame(gameData, user);
+  const gameId = await controller.createGame(gameData.serialize(), user);
 
   const slot2 = gameData.slots.getSlots()[1];
 
@@ -121,7 +121,7 @@ test.serial("Remove game as last player", async test => {
   const gameData = constructLobbyGame(user);
 
   const controller = new GameController(db);
-  const gameId = await controller.createGame(gameData, user);
+  const gameId = await controller.createGame(gameData.serialize(), user);
 
   const slot1 = gameData.slots.getSlots()[0];
   const slot2 = gameData.slots.getSlots()[1];
@@ -144,7 +144,7 @@ test.serial("Take both slots", async test => {
   const gameData = constructLobbyGame(user);
 
   const controller = new GameController(db);
-  const gameId = await controller.createGame(gameData, user);
+  const gameId = await controller.createGame(gameData.serialize(), user);
   const slot = gameData.slots.getSlots()[1];
 
   await controller.takeSlot(gameId, slot.id, user);
@@ -168,7 +168,7 @@ test.serial("Take and leave slot", async test => {
   const gameData = constructLobbyGame(user);
 
   const controller = new GameController(db);
-  const gameId = await controller.createGame(gameData, user);
+  const gameId = await controller.createGame(gameData.serialize(), user);
 
   const slot = gameData.slots.getSlots()[1];
   await controller.takeSlot(gameId, slot.id, user);
@@ -194,7 +194,7 @@ test.serial("Try to take occupied slot", async test => {
   const gameData = constructLobbyGame(user);
 
   const controller = new GameController(db);
-  const gameId = await controller.createGame(gameData, user);
+  const gameId = await controller.createGame(gameData.serialize(), user);
   const slot = gameData.slots.getSlots()[0];
 
   const error = await test.throwsAsync(() =>

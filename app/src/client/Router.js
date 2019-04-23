@@ -6,6 +6,7 @@ import Game from "./view/game";
 import Login from "./view/login";
 import Register from "./view/register";
 import Logout from "./view/logout";
+import CreateGame from "./view/createGame";
 
 const PrivateRoute = ({ component: Component, authed, ...rest }) => {
   return (
@@ -34,6 +35,12 @@ class Routes extends Component {
     return (
       <Router>
         <PrivateRoute authed={Boolean(user)} exact path="/" component={Home} />
+        <PrivateRoute
+          authed={Boolean(user)}
+          exact
+          path="/createGame"
+          component={CreateGame}
+        />
         <Route exact path="/login" component={Login} />
         <Route exact path="/logout" component={Logout} />
         <Route exact path="/register" component={Register} />

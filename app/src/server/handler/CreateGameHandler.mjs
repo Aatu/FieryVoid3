@@ -1,9 +1,13 @@
 import GameData from "../../model/game/GameData.mjs";
 import * as gameStatuses from "../../model/game/gameStatuses.mjs";
-import { InvalidGameDataError } from "../errors";
+import { InvalidGameDataError, UnauthorizedError } from "../errors";
 
 class CreateGameHandler {
   createGame(clientGameData, user) {
+    if (!user) {
+      throw new UnauthorizedError("Not logged in");
+    }
+
     const error = clientGameData.validateForGameCreate(user);
     if (error) {
       throw new InvalidGameDataError(error);

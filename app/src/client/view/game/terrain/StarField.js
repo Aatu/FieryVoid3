@@ -174,8 +174,6 @@ class StarField {
   }
 
   createGasCloud(width, height) {
-    var gas = Math.floor(this.getRandom() * 10 + 10);
-
     var position = {
       x: (this.getRandom() - 0.5) * width,
       y: (this.getRandom() - 0.5) * height

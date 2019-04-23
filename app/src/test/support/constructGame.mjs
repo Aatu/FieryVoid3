@@ -61,7 +61,7 @@ export const constructLobbyGameWithSlotsTaken = async (
     })
   );
 
-  const gameId = await controller.createGame(gameData, user1);
+  const gameId = await controller.createGame(gameData.serialize(), user1);
   await controller.takeSlot(gameId, slot2.id, user2);
   const newGameData = await controller.getGameData(gameId);
 

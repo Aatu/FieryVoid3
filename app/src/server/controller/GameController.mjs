@@ -1,5 +1,6 @@
 import GameDataService from "../services/GameDataService.mjs";
 import GameDataRepository from "../repository/GameDataRepository.mjs";
+import GameData from "../../model/game/GameData";
 import CreateGameHandler from "../handler/CreateGameHandler.mjs";
 import BuyShipsHandler from "../handler/BuyShipsHandler.mjs";
 
@@ -14,6 +15,8 @@ class GameController {
   }
 
   async createGame(clientGameData, user) {
+    clientGameData = new GameData(clientGameData);
+    console.log(user);
     const serverGameData = this.createGameHandler.createGame(
       clientGameData,
       user

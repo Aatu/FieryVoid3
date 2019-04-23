@@ -20,7 +20,7 @@ class InputAndLabel extends React.Component {
     return (
       <Container>
         <Section>
-          <Label htmlFor={id}>{label}</Label>
+          {label && <Label htmlFor={id}>{label}</Label>}
           <Input
             id={id}
             type={type || "text"}
@@ -39,15 +39,17 @@ class InputAndLabel extends React.Component {
 }
 
 const Container = styled.div`
-  width: 100%;
   display: flex;
   padding: 10px;
   flex-direction: column;
+  flex-grow: 1;
+  max-width: calc(50% - 20px);
 `;
 
 const Label = styled.span`
   display: flex;
   width: calc(50% - 10px);
+  max-width: 300px;
   color: #deebff;
   font-family: arial;
   font-size: 14px;

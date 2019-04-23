@@ -1,4 +1,5 @@
 import styled, { css } from "styled-components";
+import { darkBlue } from "./Colors";
 
 const Container = styled.div`
   display: flex;
@@ -7,6 +8,11 @@ const Container = styled.div`
   color: #deebff;
   background-color: #0a3340;
   font-family: arial;
+  margin-bottom: 10px;
+
+  :last-child {
+    margin-bottom: 0;
+  }
 `;
 
 const Backdrop = styled.div`
@@ -42,6 +48,11 @@ const defaultWidth = css`
   width: 500px;
 `;
 
+const DarkContainer = styled(Container)`
+  ${defaultPadding}
+  background-color: ${darkBlue}
+`;
+
 const PanelContainer = styled(Container)`
   ${defaultPadding}
   ${defaultWidth}
@@ -63,5 +74,6 @@ export {
   ContainerRoundedRightSide,
   defaultPadding,
   PanelContainer,
+  DarkContainer,
   Section
 };

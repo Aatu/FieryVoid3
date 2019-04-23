@@ -38,7 +38,7 @@ test.serial("Create game successfull", async test => {
   );
 
   const controller = new GameController(db);
-  const gameId = await controller.createGame(gameData, user);
+  const gameId = await controller.createGame(gameData.serialize(), user);
   test.is(gameId, 1);
   const newGameData = await controller.getGameData(gameId);
 
@@ -81,7 +81,7 @@ test("Create game, user is not in a slot", async test => {
   const controller = new GameController(db);
 
   const error = await test.throwsAsync(() =>
-    controller.createGame(gameData, user)
+    controller.createGame(gameData.serialize(), user)
   );
   test.is(error.message, "Game creator has to occupy atleast one slot");
 });
@@ -107,7 +107,7 @@ test("Create game, only one slot", async test => {
   const controller = new GameController(db);
 
   const error = await test.throwsAsync(() =>
-    controller.createGame(gameData, user)
+    controller.createGame(gameData.serialize(), user)
   );
   test.is(error.message, "Game has to have atleast two slots");
 });
@@ -144,7 +144,7 @@ test("Create game, multiple users in slots", async test => {
   const controller = new GameController(null);
 
   const error = await test.throwsAsync(() =>
-    controller.createGame(gameData, user)
+    controller.createGame(gameData.serialize(), user)
   );
   test.is(error.message, "Other players can not occupy slots at this stage");
 });

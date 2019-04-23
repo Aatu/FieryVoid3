@@ -117,3 +117,7 @@ CREATE TABLE `game_ship_data` (
   CHECK (JSON_VALID(`data`)),
   PRIMARY KEY (`game_id`,`turn`,`ship_id`, `phase`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+INSERT INTO USER (username, password, access_level) VALUES ('player1', '*F6ECD1F80E1654CC7D3491B7C3FCBDE00A9C41DF', 1);
+INSERT INTO USER (username, password, access_level) VALUES ('player2', '*F6ECD1F80E1654CC7D3491B7C3FCBDE00A9C41DF', 1);

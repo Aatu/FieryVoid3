@@ -1,20 +1,21 @@
-import * as userRepository from "../repository/userRepository";
 import Yup from "yup";
 import { InvalidRequestError } from "../errors";
 
 class UserService {
-  constructor() {}
+  constructor(userRepository) {
+    this.userRepository = userRepository;
+  }
 
   getUserByUsername(username) {
-    return userRepository.getUserByUsername(username);
+    return this.userRepository.getUserByUsername(username);
   }
 
   getUserById(id) {
-    return userRepository.getUserByUsername(id);
+    return this.userRepository.getUserByUsername(id);
   }
 
   checkPassword(username, password) {
-    return userRepository.checkPassword(username, password);
+    return this.userRepository.checkPassword(username, password);
   }
 
   async register(data) {
@@ -39,7 +40,7 @@ class UserService {
       return false;
     }
 
-    return userRepository.insertUser(username, password);
+    return this.userRepository.insertUser(username, password);
   }
 }
 

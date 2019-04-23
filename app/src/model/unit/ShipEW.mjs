@@ -12,8 +12,6 @@ class ShipEW {
 
     for (var i in ship.EW) {
       var entry = ship.EW[i];
-      if (entry.turn !== gamedata.turn) continue;
-
       if (entry.type === type && entry.targetid === target.id)
         return entry.amount;
     }

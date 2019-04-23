@@ -8,6 +8,7 @@ export {
   ContainerRoundedRightSide,
   defaultPadding,
   PanelContainer,
+  DarkContainer,
   Section
 } from "./Container";
 export { Title, SubTitle } from "./Title";

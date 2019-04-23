@@ -63,7 +63,7 @@ class GameSlot {
       return "Slot needs to have deploymentVector of type hexagon.Offset";
     }
 
-    if (this.points <= 0) {
+    if (this.points !== parseInt(this.points, 10) || this.points <= 0) {
       return "Slot needs to have points more than 0";
     }
   }
@@ -92,7 +92,7 @@ class GameSlot {
       new hexagon.Offset(data.deploymentLocation) || new hexagon.Offset(0, 0);
     this.deploymentVector =
       new hexagon.Offset(data.deploymentVector) || new hexagon.Offset(0, 0);
-    this.deploymentRadius = data.deploymentRadius || 2;
+    this.deploymentRadius = data.deploymentRadius || 10;
     this.shipIds = data.shipIds || [];
     this.points = data.points || 0;
     this.bought = data.bought || false;

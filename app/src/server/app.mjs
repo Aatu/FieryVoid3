@@ -4,8 +4,11 @@ import session from "express-session";
 import bodyParser from "body-parser";
 import cors from "cors";
 import UserService from "./services/UserService";
+import UserRepository from "./repository/UserRepository";
 import PassportService from "./services/PassportService";
 import GameDataService from "./services/GameDataService";
+import GameController from "./controller/GameController";
+import DbConnection from "./repository/DbConnection";
 
 import * as errors from "./errors";
 
@@ -29,11 +32,18 @@ app.use(
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-const userService = new UserService();
+const dbConnection = new DbConnection({
+  host: "localhost",
+  user: "root",
+  password: "root",
+  database: `fieryvoid`,
+  connectionLimit: 5
+});
+const userService = new UserService(new UserRepository(dbConnection));
 const passportService = new PassportService(userService);
 passportService.init(app);
 
-const gameDataService = new GameDataService();
+const gameController = new GameController(dbConnection);
 
 //app.use(express.static("public"));
 
@@ -50,23 +60,26 @@ app.post("/register", async (req, res) => {
   }
 });
 
-app.get("/logout", function(req, res) {
+app.get("/logout", (req, res) => {
   req.logout();
   res.sendStatus(204);
 });
 
-app.get("/user", function(req, res) {
+app.get("/user", (req, res) => {
   res.status(200).json(req.user);
 });
 
-app.get("/newGame", function(req, res) {
-  gameDataService.test();
+app.post("/game", async (req, res) => {
+  const gameId = await gameController.createGame(req.body, req.user);
+  res.status(200).json({ gameId });
 });
 
-app.use(function(error, req, res, next) {
+app.use((error, req, res, next) => {
   console.error(error);
   if (error instanceof errors.InvalidRequestError) {
     res.sendStatus(400);
+  } else if (error instanceof errors.UnauthorizedError) {
+    res.sendStatus(401);
   } else {
     res.sendStatus(500);
   }

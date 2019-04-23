@@ -1,4 +1,4 @@
-import MovementService from "../movement/MovementService";
+import MovementService from "../../../../model/movement/MovementService";
 import PhaseState from "./PhaseState";
 import ShipIconContainer from "../renderer/icon/ShipIconContainer";
 import EWIconContainer from "../renderer/icon/EWIconContainer";
