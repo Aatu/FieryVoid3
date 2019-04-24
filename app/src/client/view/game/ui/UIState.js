@@ -1,14 +1,39 @@
 class UIState {
-  constructor(reduxStore) {
-    this.reduxStore = reduxStore;
-    console.log(this.reduxStore);
+  constructor() {
     this.state = {
+      lobby: false,
+      gameData: null,
       shipWindows: {},
       weaponList: null,
       systemInfo: null,
       systemInfoMenu: null,
       movementUi: null
     };
+
+    this.updateState();
+  }
+
+  init(setState) {
+    this.setState = setState;
+    this.updateState();
+  }
+
+  updateState() {
+    if (!this.setState) {
+      return;
+    }
+
+    this.setState({ ...this.state });
+  }
+
+  setGameData(gameData) {
+    this.state.gameData = gameData.serialize();
+    this.updateState();
+  }
+
+  setLobby(status) {
+    this.state.lobby = status;
+    this.updateState();
   }
 
   getState() {

@@ -15,13 +15,13 @@ class EWIconContainer {
     this.gamedata = null;
   }
 
-  consumeGamedata(gamedata) {
+  update(gamedata) {
     this.gamedata = gamedata;
     this.ewIcons.forEach(function(ewIcon) {
       ewIcon.used = false;
     });
 
-    gamedata.ships.forEach(ship => {
+    gamedata.ships.getShips().forEach(ship => {
       gamedata.ships.forEach(target => {
         this.createOrUpdateOEW(ship, target, ship.ew.getOffensiveEW(target));
         this.createOrUpdateOEW(

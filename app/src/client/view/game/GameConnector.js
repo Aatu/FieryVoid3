@@ -2,13 +2,17 @@ import { SERVER_WEBSOCKET_URL } from "../../config";
 import GameData from "../../../model/game/GameData.mjs";
 
 class GameConnector {
-  constructor(gameId, phaseDirector) {
+  constructor(gameId) {
     this.gameId = gameId;
-    this.phaseDirector = phaseDirector;
+    this.phaseDirector = null;
     this.webSocket = null;
     this.open = false;
     this.connection = null;
     this.connectionResolve = null;
+  }
+
+  init(phaseDirector) {
+    this.phaseDirector = phaseDirector;
   }
 
   connect(timeout = 0) {
@@ -47,12 +51,11 @@ class GameConnector {
 
   onMessage({ data }) {
     const { type, payload } = JSON.parse(data);
-    console.log("message");
-    console.log(type, payload);
 
     switch (type) {
       case "gameData":
         this.phaseDirector.receiveGameData(new GameData(payload));
+        break;
       default:
         throw new Error(`Unrecognized websocket message type: '${type}'`);
     }

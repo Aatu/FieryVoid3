@@ -14,8 +14,6 @@ const reducer = (state = initialState, action) => {
       const user = action.payload.data
         ? new User().deserialize(action.payload.data)
         : null;
-
-      console.log("GET_CURRENT_USER_FULFILLED", action, user);
       return {
         ...state,
         current: user

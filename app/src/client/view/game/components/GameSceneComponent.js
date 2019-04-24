@@ -153,6 +153,10 @@ class GameSceneComponent extends React.Component {
     game.onKeyUp(event);
   }
 
+  shouldComponentUpdate(nextProps, nextState) {
+    return false;
+  }
+
   render() {
     console.log("Render game scene container");
     return (

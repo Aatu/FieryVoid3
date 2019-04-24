@@ -1,6 +1,6 @@
 const getInterestingStuffInPosition = (payload, shipIconContainer) => {
   const mouseovered = payload.entities.filter(
-    entity => entity instanceof window.ShipObject && !icon.ship.isDestroyed()
+    entity => entity instanceof window.ShipObject && !entity.ship.isDestroyed()
   );
 
   if (mouseovered.length > 0) {
@@ -20,6 +20,10 @@ class PhaseStrategy {
     this.currentlyMouseOveredIds = null;
   }
 
+  onEvent(name, payload) {
+    this.callStrategies(name, payload);
+  }
+
   updateStrategies(gamedata) {
     this.strategies.forEach(strategy => strategy.update(gamedata));
   }
@@ -33,12 +37,16 @@ class PhaseStrategy {
   }
 
   render(coordinateConverter, scene, zoom) {
-    this.animationStrategy.render(coordinateConverter, scene, zoom);
+    this.animationStrategy &&
+      this.animationStrategy.render(coordinateConverter, scene, zoom);
     this.callStrategies("render", { scene, zoom });
   }
 
   update(gamedata) {
     this.updateStrategies(gamedata);
+    this.animationStrategy && this.animationStrategy.update(gamedata);
+
+    return this;
   }
 
   activate() {
@@ -109,7 +117,7 @@ class PhaseStrategy {
 
     if (icons.length === 0 && this.currentlyMouseOveredIds !== null) {
       this.currentlyMouseOveredIds = null;
-      this.callStrategies("mouseOutShips", { ships, payload });
+      this.callStrategies("mouseOutShips", { payload });
       return;
     } else if (icons.length === 0) {
       return;
@@ -124,7 +132,7 @@ class PhaseStrategy {
     }
 
     this.currentlyMouseOveredIds = null;
-    this.callStrategies("mouseOutShips", { ships, payload });
+    this.callStrategies("mouseOutShips", { payload });
 
     this.currentlyMouseOveredIds = mouseOverIds;
 

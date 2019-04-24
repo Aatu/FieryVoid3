@@ -3,20 +3,26 @@ import PhaseState from "./PhaseState";
 import ShipIconContainer from "../renderer/icon/ShipIconContainer";
 import EWIconContainer from "../renderer/icon/EWIconContainer";
 import ShipWindowManager from "../ui/shipWindow/ShipWindowManager";
+import * as gameStatus from "../../../../model/game/gameStatuses";
+//import * as gamePhase from "../../../../model/game/gamePhases";
+
+import LobbyPhaseStrategy from "./phaseStrategy/LobbyPhaseStrategy";
 
 class PhaseDirector {
-  constructor(uiState, coordinateConverter) {
+  constructor(uiState, currentUser, coordinateConverter, gameConnector) {
     this.uiState = uiState;
+    this.currentUser = currentUser;
     this.shipIconContainer = null;
     this.ewIconContainer = null;
     this.timeline = [];
 
-    this.animationStrategy = null;
     this.phaseStrategy = null;
     this.coordinateConverter = coordinateConverter;
     this.shipWindowManager = null;
     this.movementService = new MovementService();
     this.phaseState = new PhaseState();
+    this.gameConnector = gameConnector;
+    this.gameConnector.init(this);
     this.scene = null;
   }
 
@@ -53,7 +59,14 @@ class PhaseDirector {
   }
 
   resolvePhaseStrategy(gameData) {
-    console.log("RESOLVE PHASE STRATEGY");
+    if (gameData.status === gameStatus.LOBBY) {
+      return this.activatePhaseStrategy(
+        LobbyPhaseStrategy,
+        gameData,
+        this.scene
+      );
+    }
+
     if (
       !gameData.isPlayerInGame() ||
       gameData.replay ||
@@ -110,10 +123,9 @@ class PhaseDirector {
   }
 
   activatePhaseStrategy(phaseStrategy, gameData, scene) {
-    this.shipIconContainer.consumegameData(gameData);
+    this.shipIconContainer.update(gameData);
     this.movementService.update(gameData, this);
-    this.animationStrategy.update(gameData);
-    this.ewIconContainer.consumegameData(gameData, this.shipIconContainer);
+    this.ewIconContainer.update(gameData, this.shipIconContainer);
 
     if (this.phaseStrategy && this.phaseStrategy instanceof phaseStrategy) {
       this.phaseStrategy.update(gameData);
@@ -132,7 +144,9 @@ class PhaseDirector {
       shipWindowManager: this.shipWindowManager,
       movementService: this.movementService,
       coordinateConverter: this.coordinateConverter,
-      uiState: this.uiState
+      uiState: this.uiState,
+      currentUser: this.currentUser,
+      gameConnector: this.gameConnector
     })
       .activate()
       .update(gameData);

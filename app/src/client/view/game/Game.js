@@ -7,13 +7,20 @@ import GameConnector from "./GameConnector";
 import GameScene from "./GameScene";
 
 class Game {
-  constructor(gameId, uiState) {
+  constructor(gameId, user, uiState) {
     this.gameId = gameId;
+    this.currentUser = user;
 
     this.uiState = uiState;
-    this.phaseDirector = new PhaseDirector(this.uiState);
     this.coordinateConverter = new CoordinateConverter();
-    this.gameConnector = new GameConnector(gameId, this.phaseDirector);
+
+    this.gameConnector = new GameConnector(gameId);
+    this.phaseDirector = new PhaseDirector(
+      this.uiState,
+      this.currentUser,
+      this.coordinateConverter,
+      this.gameConnector
+    );
     this.gameScene = new GameScene(
       this.phaseDirector,
       this.coordinateConverter

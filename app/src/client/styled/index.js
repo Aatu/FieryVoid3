@@ -9,8 +9,10 @@ export {
   defaultPadding,
   PanelContainer,
   DarkContainer,
-  Section
+  Section,
+  SectionRight
 } from "./Container";
+export { Paragraph, Label, Value } from "./Text";
 export { Title, SubTitle } from "./Title";
 export { Clickable } from "./Clickable";
 export { InputAndLabel } from "./InputAndLabel";

@@ -66,6 +66,11 @@ const Section = styled.div`
   padding: 0;
 `;
 
+const SectionRight = styled(Section)`
+  flex-grow: 1;
+  justify-content: flex-end;
+`;
+
 export {
   Container,
   ContainerRoundedRightBottom,
@@ -75,5 +80,6 @@ export {
   defaultPadding,
   PanelContainer,
   DarkContainer,
-  Section
+  Section,
+  SectionRight
 };

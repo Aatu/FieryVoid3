@@ -15,8 +15,8 @@ class ShipIconContainer {
     this.scene = scene;
   }
 
-  consumeGamedata(gamedata) {
-    gamedata.ships.forEach(ship => {
+  update(gamedata) {
+    gamedata.ships.getShips().forEach(ship => {
       if (!this.hasIcon(ship.id)) {
         this.iconsAsObject[ship.id] = createIcon(ship, this.scene);
       } else {

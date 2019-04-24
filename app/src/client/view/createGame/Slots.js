@@ -33,7 +33,7 @@ class Slots extends Component {
         <DarkContainer key={`team-${team.team}`}>
           <Title>TEAM: {team.team}</Title>
           {team.slots.map(slot => (
-            <Slot key={slot.id} slot={slot} edit={true} />
+            <Slot key={slot.id} slot={slot} {...this.props} />
           ))}
         </DarkContainer>
       );
