@@ -1,7 +1,11 @@
 import * as React from "react";
 import styled from "styled-components";
-import { Tooltip, TooltipHeader, TooltipEntry } from "../common";
-import ShipInfo from "./ShipInfo";
+import {
+  Tooltip,
+  TooltipHeader,
+  TooltipEntry,
+  colors
+} from "../../../../styled";
 
 const InfoHeader = styled(TooltipHeader)`
   font-size: 12px;
@@ -30,67 +34,23 @@ export const Header = styled.span`
   color: white;
 `;
 
-const ShipNameHeader = styled.span`
-  color: #c6e2ff;
+const InfoValue = styled.span`
+  color: ${colors.lightBlue};
 `;
 
 class SystemInfo extends React.Component {
   render() {
-    const { ship, selectedShip, system, boundingBox } = this.props;
-
-    if (system instanceof Ship) {
-      return (
-        <SystemInfoTooltip ship position={getPosition(boundingBox)}>
-          <InfoHeader>
-            <ShipNameHeader>{ship.name}</ShipNameHeader> - {ship.shipClass}
-          </InfoHeader>
-          <ShipInfo ship={ship} />
-        </SystemInfoTooltip>
-      );
-    }
-
+    const { ship, system, element } = this.props;
     return (
-      <SystemInfoTooltip position={getPosition(boundingBox)}>
-        <InfoHeader>{system.displayName}</InfoHeader>
-        {!ship.flight &&
-          getEntry(
-            "Structure",
-            system.maxhealth -
-              damageManager.getDamage(ship, system) +
-              "/" +
-              system.maxhealth
-          )}
-        {!ship.flight &&
-          getEntry("Armor", shipManager.systems.getArmour(ship, system))}
-        {ship.flight && getEntry("Offensive bonus", ship.offensivebonus * 5)}
-
-        {system.firingModes &&
-          getEntry("Firing mode", system.firingModes[system.firingMode])}
-
-        {system.missileArray &&
-          Object.keys(system.missileArray).length > 0 &&
-          getEntry(
-            "Ammo Amount",
-            system.missileArray[system.firingMode].amount
-          )}
-
-        {Object.keys(system.data).map((key, i) =>
-          getEntry(key, system.data[key], "data" + i)
-        )}
-
-        {Object.keys(system.critData).length > 0 && getCriticals(system)}
-
-        {!gamedata.isMyShip(ship) &&
-          gamedata.gamephase == 3 &&
-          gamedata.waiting == false &&
-          gamedata.selectedSystems.length > 0 &&
-          selectedShip &&
-          getCalledShot(ship, selectedShip, system)}
+      <SystemInfoTooltip position={getPosition(element)}>
+        <InfoHeader>{system.getDisplayName()}</InfoHeader>
+        {system.getSystemInfo(ship).map(getEntry)}
       </SystemInfoTooltip>
     );
   }
 }
 
+/*
 const getCalledShot = (ship, selectedShip, system) => {
   if (weaponManager.canCalledshot(ship, system, selectedShip)) {
     return [<InfoHeader key="calledHeader">Called shot</InfoHeader>].concat(
@@ -142,6 +102,8 @@ const getCalledShot = (ship, selectedShip, system) => {
   }
 };
 
+*/
+
 const getCriticals = system =>
   [<InfoHeader key="criticalHeader">Damage</InfoHeader>].concat(
     Object.keys(system.critData).map(i => {
@@ -161,32 +123,36 @@ const getCriticals = system =>
     })
   );
 
-const getEntry = (header, value, key) => {
+const getEntry = ({ header, value }) => {
   if (value.replace) {
     value = value.replace(/<br>/gm, "\n");
   }
 
   return (
-    <Entry key={key}>
+    <Entry key={header}>
       <Header>{header}: </Header>
-      {value}
+      <InfoValue>{value}</InfoValue>
     </Entry>
   );
 };
 
-const getPosition = boundingBox => {
+const getPosition = element => {
+  const boundingBox = element.getBoundingClientRect
+    ? element.getBoundingClientRect()
+    : element.get(0).getBoundingClientRect();
+
   const position = {};
 
   if (boundingBox.top > window.innerHeight / 2) {
-    position.bottom = window.innerHeight - boundingBox.top;
+    position.bottom = 31;
   } else {
-    position.top = boundingBox.top + boundingBox.height;
+    position.top = 31;
   }
 
   if (boundingBox.left > window.innerWidth / 2) {
-    position.right = window.innerWidth - boundingBox.right;
+    position.right = 0;
   } else {
-    position.left = boundingBox.left + boundingBox.width;
+    position.left = 0;
   }
 
   return position;

@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import styled, { css } from "styled-components";
 
 import {
   Title,
@@ -8,8 +9,21 @@ import {
   Label,
   Value,
   SectionRight,
-  Button
+  Button,
+  icons,
+  colors
 } from "../../styled";
+
+const selected = css`
+  box-shadow: 0px 0px 3px 3px rgba(222, 235, 255, 0.5);
+  color: #0a3340;
+  background-color: ${colors.border};
+  border-color: ${colors.blue};
+`;
+
+const SlotContainer = styled(Container)`
+  ${props => (props.selected ? selected : "")}
+`;
 
 class Slot extends Component {
   handleChange() {}
@@ -17,21 +31,29 @@ class Slot extends Component {
   getPlayerName(slot) {
     const { gameData } = this.props;
 
-    console.log(slot.userId, gameData.players);
     const user = gameData.players.find(user => user.id === slot.userId);
     return user.username;
   }
 
-  takeSlot(slot) {
+  leaveSlot(slot) {
     return () => {
-      const { game } = this.props;
-      game.customEvent("takeSlot", slot);
+      const { uiState } = this.props;
+      uiState.customEvent("leaveSlot", slot);
     };
   }
+
+  takeSlot(slot) {
+    return () => {
+      const { uiState } = this.props;
+      uiState.customEvent("takeSlot", slot);
+    };
+  }
+
   render() {
-    const { slot, edit, take } = this.props;
+    const { slot, edit, take, currentUser, selectedSlot } = this.props;
+
     return (
-      <Container>
+      <SlotContainer selected={selectedSlot.id === slot.id}>
         <Section>
           {edit ? (
             <>
@@ -64,11 +86,12 @@ class Slot extends Component {
                 Points: <Value>{slot.points}</Value>
               </Title>
               <SectionRight>
-                {slot.isTaken() && take ? (
+                {slot.isTaken() && (
                   <Title>
                     Player: <Value>{this.getPlayerName(slot)}</Value>
                   </Title>
-                ) : (
+                )}
+                {currentUser && !slot.isTaken() && take && (
                   <Button
                     onClick={this.takeSlot(slot)}
                     type="button"
@@ -76,6 +99,13 @@ class Slot extends Component {
                   >
                     Take slot
                   </Button>
+                )}
+                {take && currentUser && slot.isOccupiedBy(currentUser) && (
+                  <Button
+                    onClick={this.leaveSlot(slot)}
+                    type="button"
+                    icon={icons.X}
+                  />
                 )}
               </SectionRight>
             </>
@@ -135,7 +165,7 @@ class Slot extends Component {
             />
           )}
         </Section>
-      </Container>
+      </SlotContainer>
     );
   }
 }

@@ -11,12 +11,42 @@ class ShipSystem {
     this.power = new SystemPower(this);
   }
 
+  getSystemInfo(ship) {
+    return [
+      {
+        header: "Hitpoints",
+        value: `${this.getRemainingHitpoints()}/${this.hitpoints}`
+      },
+      { header: "Armor", value: `${this.getArmor()}` }
+    ];
+  }
+
+  getDisplayName() {
+    return null;
+  }
+
+  getBackgroundImage() {
+    return null;
+  }
+
+  getIconText() {
+    return null;
+  }
+
   isDestroyed() {
     return this.damage.isDestroyed();
   }
 
   isDisabled() {
     return this.power.isOffline() || this.isDestroyed();
+  }
+
+  getArmor() {
+    return this.armor;
+  }
+
+  getRemainingHitpoints() {
+    return this.hitpoints - this.getTotalDamage();
   }
 
   getTotalDamage() {
@@ -29,6 +59,10 @@ class ShipSystem {
 
   addCritical(critical) {
     this.damage.addCritical(critical);
+  }
+
+  hasAnyCritical() {
+    return this.damage.hasAnyCritical();
   }
 
   hasCritical(name) {

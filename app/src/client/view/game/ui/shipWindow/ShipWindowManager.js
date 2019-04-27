@@ -7,7 +7,7 @@ class ShipWindowManager {
 
   open(ship) {
     this.ships = this.ships.filter(function(otherShip) {
-      return otherShip.user.team !== ship.user.team;
+      return otherShip.player.user !== ship.player.user;
     });
 
     if (!this.ships.includes(ship)) {

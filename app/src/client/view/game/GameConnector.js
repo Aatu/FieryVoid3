@@ -1,5 +1,6 @@
 import { SERVER_WEBSOCKET_URL } from "../../config";
 import GameData from "../../../model/game/GameData.mjs";
+import * as gameMessages from "../../../model/game/gameMessage";
 
 class GameConnector {
   constructor(gameId) {
@@ -26,6 +27,26 @@ class GameConnector {
         this.webSocket.onopen = this.onOpen.bind(this);
       }, timeout);
     });
+  }
+
+  async takeSlot(slotId) {
+    const connection = await this.connection;
+    connection.send(
+      JSON.stringify({
+        type: gameMessages.MESSAGE_TAKE_SLOT,
+        payload: slotId
+      })
+    );
+  }
+
+  async leaveSlot(slotId) {
+    const connection = await this.connection;
+    connection.send(
+      JSON.stringify({
+        type: gameMessages.MESSAGE_LEAVE_SLOT,
+        payload: slotId
+      })
+    );
   }
 
   async disconnect() {

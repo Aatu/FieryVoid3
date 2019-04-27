@@ -1,5 +1,6 @@
 import * as React from "react";
 import styled from "styled-components";
+import SystemInfo from "./SystemInfo";
 
 const HealthBar = styled.div`
   position: absolute;
@@ -111,79 +112,63 @@ const System = styled.div`
 class SystemIcon extends React.Component {
   constructor(props) {
     super(props);
+
+    this.state = {
+      mouseOveredSystem: null
+    };
   }
 
   clickSystem(e) {
     e.stopPropagation();
     e.preventDefault();
 
-    let { system, ship } = this.props;
+    const { uiState, system, ship } = this.props;
 
-    if (gamedata.waiting) return;
-
-    if (
-      shipManager.isDestroyed(ship) ||
-      shipManager.isDestroyed(ship, system) ||
-      shipManager.isAdrift(ship)
-    )
-      return;
-
-    if (
-      (system.weapon && (gamedata.gamephase === 3 && !system.ballistic)) ||
-      (gamedata.gamephase === 1 && system.ballistic)
-    ) {
-      if (gamedata.isMyShip(ship)) {
-        if (weaponManager.isSelectedWeapon(system)) {
-          weaponManager.unSelectWeapon(ship, system);
-        } else {
-          weaponManager.selectWeapon(ship, system);
-        }
-      }
-    }
-
-    if (gamedata.isMyShip(ship)) {
-      webglScene.customEvent("SystemClicked", {
-        ship: ship,
-        system: system,
-        element: e.target
-      });
-    } else {
-      webglScene.customEvent("SystemTargeted", { ship: ship, system: system });
-    }
+    uiState.customEvent("SystemClicked", {
+      ship,
+      system,
+      element: e.target
+    });
   }
 
   onSystemMouseOver(event) {
     event.stopPropagation();
     event.preventDefault();
 
-    let { system, ship } = this.props;
+    let { uiState, system, ship } = this.props;
 
-    webglScene.customEvent("SystemMouseOver", {
-      ship: ship,
-      system: system,
+    uiState.customEvent("SystemMouseOver", {
+      ship,
+      system,
       element: event.target
     });
+
+    this.setState({ mouseOveredSystem: event.target });
   }
 
   onSystemMouseOut(event) {
     event.stopPropagation();
     event.preventDefault();
-    webglScene.customEvent("SystemMouseOut");
+
+    let { uiState } = this.props;
+
+    uiState.customEvent("SystemMouseOut");
+
+    this.setState({ mouseOveredSystem: null });
   }
 
   onContextMenu(e) {
     e.stopPropagation();
     e.preventDefault();
 
-    let { system, ship } = this.props;
+    let { uiState, system, ship } = this.props;
 
-    if (system.weapon) {
-      weaponManager.selectAllWeapons(ship, system);
-    }
+    uiState.customEvent("SystemRightClicked", { system, ship });
   }
 
   render() {
-    let { system, ship, scs, fighter, destroyed, movementService } = this.props;
+    let { uiState, system, ship, scs, destroyed } = this.props;
+    const { mouseOveredSystem } = this.state;
 
     if (getDestroyed(ship, system) || destroyed) {
       return (
@@ -203,102 +188,34 @@ class SystemIcon extends React.Component {
         background={getBackgroundImage(system)}
         offline={isOffline(ship, system)}
         loading={isLoading(system)}
-        selected={isSelected(system)}
+        selected={isSelected(system, uiState)}
         firing={isFiring(ship, system)}
       >
-        <SystemText>{getText(ship, system, movementService)}</SystemText>
-        {!fighter && (
-          <HealthBar
-            scs={scs}
-            health={getStructureLeft(ship, system)}
-            criticals={hasCriticals(system)}
-          />
+        <SystemText>{system.getIconText()}</SystemText>
+        <HealthBar health={getStructureLeft(system)} />
+        {mouseOveredSystem && (
+          <SystemInfo ship={ship} system={system} element={mouseOveredSystem} />
         )}
       </System>
     );
   }
 }
 
-const isFiring = (ship, system) => weaponManager.hasFiringOrder(ship, system);
+const isFiring = (ship, system) => false; //ASK FROM SHIP weaponManager.hasFiringOrder(ship, system);
 
-const isLoading = system => system.weapon && !weaponManager.isLoaded(system);
+const isLoading = system => false; //ASK FROM SYSTEM system.weapon && !weaponManager.isLoaded(system);
 
-const isOffline = (ship, system) => shipManager.power.isOffline(ship, system);
+const isOffline = (ship, system) => system.power.isOffline();
 
-const getStructureLeft = (ship, system) =>
-  ((system.maxhealth - damageManager.getDamage(ship, system)) /
-    system.maxhealth) *
-  100;
+const getStructureLeft = system =>
+  ((system.hitpoints - system.getTotalDamage()) / system.hitpoints) * 100;
 
-const getDestroyed = (ship, system) =>
-  shipManager.systems.isDestroyed(ship, system);
+const getDestroyed = (ship, system) => system.isDestroyed();
 
-const getBackgroundImage = system => {
-  if (system.name == "thruster") {
-    return "./img/systemicons/thruster" + system.direction + ".png";
-  } else if (system.iconPath) {
-    return `./img/systemicons/${system.iconPath}`;
-  } else {
-    return `./img/systemicons/${system.name}.png`;
-  }
-};
+const getBackgroundImage = system => system.getBackgroundImage();
 
-const hasCriticals = system => shipManager.criticals.hasCriticals(system);
+const hasCriticals = system => system.hasAnyCritical();
 
-const isSelected = system => weaponManager.isSelectedWeapon(system);
-
-const getText = (ship, system, movementService) => {
-  if (system.weapon) {
-    const firing = weaponManager.hasFiringOrder(ship, system);
-
-    if (firing && system.canChangeShots) {
-      const fire = weaponManager.getFiringOrder(ship, system);
-      return fire.shots + "/" + system.shots;
-    } else if (!firing) {
-      /*
-            if (system.duoWeapon) {
-                var UI_active = systemwindow.find(".UI").hasClass("active");
-
-                shipWindowManager.addDuoSystem(ship, system, systemwindow);
-
-                if (UI_active) {
-                    systemwindow.find(".UI").addClass("active");
-                }
-            }*/
-
-      let load = weaponManager.getWeaponCurrentLoading(system);
-      let loadingtime = system.loadingtime;
-
-      if (system.normalload > 0) {
-        loadingtime = system.normalload;
-      }
-
-      if (load > loadingtime) {
-        load = loadingtime;
-      }
-
-      let overloadturns = "";
-
-      if (
-        system.overloadturns > 0 &&
-        shipManager.power.isOverloading(ship, system)
-      ) {
-        overloadturns = "(" + system.overloadturns + ")";
-      }
-
-      if (system.overloadshots > 0) {
-        return "S" + system.overloadshots;
-      } else {
-        return load + overloadturns + "/" + loadingtime;
-      }
-    }
-  } else if (system.outputType === "thrust") {
-    return movementService.getRemainingEngineThrust(ship);
-  } else if (system.outputType === "power") {
-    return shipManager.power.getReactorPower(ship, system);
-  } else {
-    return shipManager.systems.getOutput(ship, system);
-  }
-};
+const isSelected = (system, uiState) => uiState.isSelectedSystem(system);
 
 export default SystemIcon;

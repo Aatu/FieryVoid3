@@ -29,14 +29,33 @@ class GameClients {
     return this.games[gameId];
   }
 
-  sendGameData(user, gameData) {
+  sendGameDataAll(gameData) {
+    if (!this.games[gameData.id]) {
+      return;
+    }
+
+    this.games[gameData.id].forEach(subscription =>
+      this.sendGameData(gameData, null, subscription.connection)
+    );
+  }
+
+  sendGameData(gameData, user = null, connection = null) {
     if (!gameData) {
       return;
     }
 
-    const { connection = null } = this.games[gameData.id].find(
-      subscription => subscription.user.id === user.id
-    );
+    if (!user && !connection) {
+      throw new Error("Either connection or user must be given");
+    }
+
+    if (!connection && user) {
+      const game = this.games[gameData.id].find(
+        subscription => subscription.user.id === user.id
+      );
+      if (game.connection) {
+        connection = game.connection;
+      }
+    }
 
     if (connection) {
       connection.send(

@@ -1,4 +1,5 @@
 import * as colors from "./Colors";
+import * as icons from "./icon";
 
 export {
   Container,
@@ -24,3 +25,4 @@ export { Link } from "./Link";
 export { Error } from "./Error";
 
 export { colors };
+export { icons };

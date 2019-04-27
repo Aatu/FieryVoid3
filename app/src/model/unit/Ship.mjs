@@ -12,6 +12,8 @@ class Ship {
     this.rollcost = 1;
     this.pivotcost = 1;
     this.evasioncost = 1;
+
+    this.shipTypeName = "";
   }
 
   getPointCost() {
@@ -30,7 +32,7 @@ class Ship {
   deserialize(data = {}) {
     const shipData = data.shipData || {};
     this.id = data.id || null;
-    this.name = data.name || "Unnamed ship " + data.id;
+    this.name = data.name || "Unnamed ship ";
     this.shipClass = this.constructor.name;
     this.slotId = data.slotId || null;
 

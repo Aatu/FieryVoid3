@@ -6,6 +6,18 @@ class Thruster extends ShipSystem {
     super(args);
     this.strategies = [new ThrustChannelSystemStrategy(channel, direction)];
   }
+
+  getDisplayName() {
+    return "Thruster";
+  }
+
+  getBackgroundImage() {
+    return "/img/system/thruster1.png";
+  }
+
+  getIconText() {
+    return this.callHandler("getThrustChannel");
+  }
 }
 
 export default Thruster;

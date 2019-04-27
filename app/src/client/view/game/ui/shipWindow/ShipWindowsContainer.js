@@ -6,12 +6,13 @@ const ShipWindows = styled.div``;
 
 class ShipWindowsContainer extends React.Component {
   render() {
-    const { ships, movementService } = this.props;
+    const { uiState, ships, movementService } = this.props;
 
     return (
       <ShipWindows>
         {ships.map(ship => (
           <ShipWindow
+            uiState={uiState}
             key={`shipwindow-${ship.id}`}
             ship={ship}
             movementService={movementService}

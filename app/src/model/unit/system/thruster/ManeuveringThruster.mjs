@@ -12,6 +12,18 @@ class ManeuveringThruster extends ShipSystem {
       new AllowsEvasionSystemStrategy(evasion)
     ];
   }
+
+  getDisplayName() {
+    return "Maneuvering Thruster";
+  }
+
+  getBackgroundImage() {
+    return "/img/system/maneuveringThruster.png";
+  }
+
+  getIconText() {
+    return this.callHandler("getThrustChannel");
+  }
 }
 
 export default ManeuveringThruster;

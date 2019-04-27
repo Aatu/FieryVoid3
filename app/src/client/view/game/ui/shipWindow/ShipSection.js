@@ -1,7 +1,7 @@
 import * as React from "react";
 import styled from "styled-components";
 import SystemIcon from "../system/SystemIcon";
-import { Structure } from "../../../object/model/system";
+import * as systemLocation from "../../../../../model/unit/system/systemSection/systemLocation";
 
 const ShipSectionContainer = styled.div`
   display: flex;
@@ -18,7 +18,6 @@ const ShipSectionContainer = styled.div`
   }};
   align-items: end;
   justify-content: space-around;
-  overflow: hidden;
   box-sizing: border-box;
   margin: 2px;
 
@@ -70,31 +69,30 @@ const StructureContainer = styled.div`
 
 class ShipSection extends React.Component {
   render() {
-    const { ship, systems, location, movementService } = this.props;
-
-    const structure = getStructure(systems);
+    const { ship, section, uiState } = this.props;
+    const location = section.location;
+    const structure = section.getStructure();
 
     return (
       <ShipSectionContainer location={location}>
-        {orderSystems(systems, location).map(system => (
+        {orderSystems(section, location).map(system => (
           <SystemIcon
             scs
+            uiState={uiState}
             key={`system-scs-${location}-${ship.id}-${system.id}`}
             system={system}
             ship={ship}
-            movementService={movementService}
           />
         ))}
 
         {structure && (
           <StructureContainer
-            health={getStructureLeft(ship, structure)}
+            health={getStructureLeft(structure)}
             criticals={hasCriticals(structure)}
           >
             <StructureText>
-              {structure.maxhealth - damageManager.getDamage(ship, structure)} /{" "}
-              {structure.maxhealth} A{" "}
-              {shipManager.systems.getArmour(ship, structure)}
+              {structure.getRemainingHitpoints()} / {structure.hitpoints} A{" "}
+              {structure.getArmor()}
             </StructureText>
           </StructureContainer>
         )}
@@ -103,27 +101,38 @@ class ShipSection extends React.Component {
   }
 }
 
-const getStructureLeft = (ship, system) =>
-  ((system.maxhealth - damageManager.getDamage(ship, system)) /
-    system.maxhealth) *
-  100;
+const getStructureLeft = system => {
+  return (system.getRemainingHitpoints() / system.hitpoints) * 100;
+};
 
-const hasCriticals = system => shipManager.criticals.hasCriticals(system);
+const hasCriticals = system => system.hasAnyCritical();
 
-const getStructure = systems =>
-  systems.find(system => system instanceof Structure);
+const orderSystems = (section, location) => {
+  const systems = section.getNonStructureSystems();
 
-const filterStructure = systems =>
-  systems.filter(system => !(system instanceof Structure));
-
-const orderSystems = (systems, location) => {
-  systems = filterStructure(systems);
-
-  if ([4, 41, 41].includes(location)) {
+  if (
+    [
+      systemLocation.SYSTEM_LOCATION_STARBOARD,
+      systemLocation.SYSTEM_LOCATION_STARBOARD_AFT,
+      systemLocation.SYSTEM_LOCATION_STARBOARD_FRONT
+    ].includes(location)
+  ) {
     return orderSystemsThreeWide(systems);
-  } else if ([3, 31, 32].includes(location)) {
+  } else if (
+    [
+      systemLocation.SYSTEM_LOCATION_PORT,
+      systemLocation.SYSTEM_LOCATION_PORT_AFT,
+      systemLocation.SYSTEM_LOCATION_PORT_FRONT
+    ].includes(location)
+  ) {
     return reverseRowsOfThree(orderSystemsThreeWide(systems));
-  } else if ([1, 2, 0].includes(location)) {
+  } else if (
+    [
+      systemLocation.SYSTEM_LOCATION_FRONT,
+      systemLocation.SYSTEM_LOCATION_AFT,
+      systemLocation.SYSTEM_LOCATION_PRIMARY
+    ].includes(location)
+  ) {
     return orderSystemsFourWide(systems);
   } else {
     return orderWide(systems);
@@ -148,10 +157,6 @@ const reverseRowsOfThree = systems => {
 };
 
 const orderWide = systems => {
-  systems = filterStructure(systems);
-
-  let list = [];
-
   if (systems.length === 3) {
     return orderSystemsThreeWide(systems);
   } else if (systems.length === 4) {
@@ -162,8 +167,6 @@ const orderWide = systems => {
 };
 
 const orderSystemsFourWide = systems => {
-  systems = filterStructure(systems);
-
   let list = [];
 
   while (true) {
@@ -209,8 +212,6 @@ const orderSystemsFourWide = systems => {
 };
 
 const orderSystemsThreeWide = systems => {
-  systems = filterStructure(systems);
-
   let list = [];
 
   while (true) {

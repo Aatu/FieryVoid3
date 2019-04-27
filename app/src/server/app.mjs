@@ -78,8 +78,21 @@ app.post("/game", async (req, res) => {
 });
 
 app.ws("/game/:gameId", (ws, req) => {
-  ws.on("message", msg => {
-    gameController.onMessage(message, req.user, req.params.gameId);
+  ws.on("message", message => {
+    try {
+      gameController.onMessage(
+        JSON.parse(message),
+        req.user,
+        req.params.gameId
+      );
+    } catch (error) {
+      console.log("Error on websocket message");
+      console.log(error);
+      ws.send({
+        type: "error",
+        payload: error
+      });
+    }
   });
 
   ws.on("close", msg => {

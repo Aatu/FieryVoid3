@@ -28,7 +28,11 @@ class GameComponent extends React.Component {
     return (
       <>
         <GameSceneComponent game={this.game} />
-        <GameUiComponent game={this.game} uiState={this.state} user={user} />
+        <GameUiComponent
+          game={this.game}
+          uiState={this.state.uiState}
+          user={user}
+        />
       </>
     );
   }

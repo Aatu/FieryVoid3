@@ -39,6 +39,10 @@ class SystemDamage {
     return this.criticals.some(crit => crit.is(name));
   }
 
+  hasAnyCritical() {
+    return this.criticals.length > 0;
+  }
+
   getTotalDamage() {
     return this.entries.reduce((acc, entry) => acc + entry.getDamage(), 0);
   }

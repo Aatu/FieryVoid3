@@ -1,9 +1,11 @@
 import styled, { css } from "styled-components";
+import React from "react";
 
 const text = css`
   display: inline;
   border: none;
   background-color: transparent;
+  color: #deebff;
 
   &:hover,
   &:active {
@@ -36,16 +38,30 @@ const greyButton = css`
   }
 `;
 
+const iconStyle = css`
+  display: flex;
+  border: 0;
+  padding: 3px;
+  font-weight: bold;
+  font-size: 16px;
+  background-color: transparent;
+
+  &:hover,
+  &:active {
+    color: #0a3340;
+  }
+`;
+
 const button = css`
   display: flex;
   text-transform: uppercase;
-  color: #deebff;
-  border: 1px solid #496791;
+  color: #0a3340;
+  border: 1px solid black;
   background-color: #6792ce;
   max-width: 240px;
   justify-content: center;
   box-shadow: 2px 3px 5px 2px rgba(0, 0, 0, 0.5);
-  border-radius: 5px;
+  border-radius: 1px;
   padding: 3px;
   font-weight: bold;
   font-size: 16px;
@@ -58,10 +74,21 @@ const button = css`
   }
 `;
 
-const Button = styled.button`
+const IconContainer = styled.div`
+  width: 25px;
+  height: 25px;
+`;
+
+const ButtonContainer = styled.button`
+  display: flex;
   cursor: pointer;
+  position: relative;
+  margin: 3px 5px;
 
   ${props => {
+    if (props.icon) {
+      return iconStyle;
+    }
     switch (props.buttonStyle) {
       case "text":
         return text;
@@ -72,5 +99,16 @@ const Button = styled.button`
     }
   }}
 `;
+
+const Button = props => (
+  <ButtonContainer {...props}>
+    {props.icon && (
+      <IconContainer>
+        <props.icon color="#deebff" />
+      </IconContainer>
+    )}
+    {props.children}
+  </ButtonContainer>
+);
 
 export { Button };

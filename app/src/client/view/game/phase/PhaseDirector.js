@@ -24,6 +24,7 @@ class PhaseDirector {
     this.gameConnector = gameConnector;
     this.gameConnector.init(this);
     this.scene = null;
+    this.uiState.setPhaseDirector(this);
   }
 
   init(scene) {

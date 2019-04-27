@@ -45,20 +45,12 @@ class Game {
 
   onKeyDown(event) {
     const action = this.gameSettings.matchEvent(event);
-    this.customEvent(action, { up: false });
+    this.uiState.customEvent(action, { up: false });
   }
 
   onKeyUp(event) {
     const action = this.gameSettings.matchEvent(event);
-    this.customEvent(action, { up: true });
-  }
-
-  customEvent(name, payload) {
-    if (!this.init) {
-      return;
-    }
-
-    this.phaseDirector.relayEvent(name, payload);
+    this.uiState.customEvent(action, { up: true });
   }
 
   onMouseUp(position) {

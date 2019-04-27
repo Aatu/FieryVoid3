@@ -1,11 +1,10 @@
 import * as React from "react";
 import styled from "styled-components";
-import ReactDom from "react-dom";
 
-import { Clickable } from "../styled";
+import { Clickable } from "../../../../styled";
 import ShipSection from "./ShipSection";
 import ShipWindowEw from "./ShipWindowEw";
-import FighterList from "./FighterList";
+import Draggable from "react-draggable";
 
 const ShipWindowContainer = styled.div`
   display: flex;
@@ -24,7 +23,6 @@ const ShipWindowContainer = styled.div`
   background-color: #0a3340;
   opacity: 0.95;
   z-index: 10001;
-  overflow: hidden;
   box-shadow: 5px 5px 10px black;
   font-size: 10px;
   color: white;
@@ -50,7 +48,7 @@ const Header = styled.div`
   display: flex;
   align-items: center;
   padding: 0 5px;
-  width: 100%;
+  width: calc(100% - 10px);
   flex-shrink: 0;
 
   span {
@@ -81,7 +79,6 @@ const Column = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: ${props => (props.top ? "space-between" : "center")};
-  overflow: hidden;
 `;
 
 const ShipImage = styled.div`
@@ -100,9 +97,9 @@ const ShipImage = styled.div`
 
 class ShipWindow extends React.Component {
   onShipMouseOver(event) {
-    let { ship } = this.props;
+    let { ship, uiState } = this.props;
 
-    webglScene.customEvent("SystemMouseOver", {
+    uiState.customEvent("SystemMouseOver", {
       ship: ship,
       system: ship,
       element: event.target
@@ -110,25 +107,29 @@ class ShipWindow extends React.Component {
   }
 
   onShipMouseOut() {
-    webglScene.customEvent("SystemMouseOut");
+    let { uiState } = this.props;
+    uiState.customEvent("SystemMouseOut");
   }
 
   componentDidMount() {
+    /*
     const element = jQuery(ReactDom.findDOMNode(this));
     element.draggable();
+    */
   }
 
   close() {
-    webglScene.customEvent("CloseShipWindow", { ship: this.props.ship });
+    let { uiState } = this.props;
+    uiState.closeShipWindow(this.props.ship);
   }
 
   render() {
-    const { ship, movementService } = this.props;
+    const { ship, uiState } = this.props;
 
-    if (ship.flight) {
-      return (
+    return (
+      <Draggable>
         <ShipWindowContainer
-          onClick={shipWindowClicked}
+          onClick={shipWindowClicked.bind(this, uiState)}
           onContextMenu={e => {
             e.preventDefault();
             e.stopPropagation();
@@ -136,139 +137,91 @@ class ShipWindow extends React.Component {
           team={ship.team}
         >
           <Header>
-            <span>{ship.name}</span> {ship.shipClass}
+            <span>{ship.name}</span> {ship.shipTypeName}
             <CloseButton onClick={this.close.bind(this)}>✕</CloseButton>
           </Header>
-          <FighterList ship={ship} />
+          <Column top>
+            <ShipImage
+              img={ship.imagePath}
+              onMouseOver={this.onShipMouseOver.bind(this)}
+              onMouseOut={this.onShipMouseOut.bind(this)}
+            />
+            {ship.systems.sections.getFrontSection().hasSystems() && (
+              <ShipSection
+                uiState={uiState}
+                section={ship.systems.sections.getFrontSection()}
+                ship={ship}
+              />
+            )}
+            <ShipWindowEw ship={ship} />
+          </Column>
+
+          <Column>
+            {ship.systems.sections.getStarboardSection().hasSystems() && (
+              <ShipSection
+                uiState={uiState}
+                ship={ship}
+                section={ship.systems.sections.getStarboardSection()}
+              />
+            )}
+            {ship.systems.sections.getStarboardFrontSection().hasSystems() && (
+              <ShipSection
+                uiState={uiState}
+                ship={ship}
+                section={ship.systems.sections.getStarboardFrontSection()}
+              />
+            )}
+            {ship.systems.sections.getPrimarySection().hasSystems() && (
+              <ShipSection
+                uiState={uiState}
+                ship={ship}
+                section={ship.systems.sections.getPrimarySection()}
+              />
+            )}
+            {ship.systems.sections.getPortSection().hasSystems() && (
+              <ShipSection
+                uiState={uiState}
+                ship={ship}
+                section={ship.systems.sections.getPortSection()}
+              />
+            )}
+            {ship.systems.sections.getPortFrontSection().hasSystems() && (
+              <ShipSection
+                uiState={uiState}
+                ship={ship}
+                section={ship.systems.sections.getPortFrontSection()}
+              />
+            )}
+          </Column>
+          <Column>
+            {ship.systems.sections.getStarboardAftSection().hasSystems() && (
+              <ShipSection
+                uiState={uiState}
+                ship={ship}
+                section={ship.systems.sections.getStarboardAftSection()}
+              />
+            )}
+            {ship.systems.sections.getAftSection().hasSystems() && (
+              <ShipSection
+                uiState={uiState}
+                ship={ship}
+                section={ship.systems.sections.getAftSection()}
+              />
+            )}
+            {ship.systems.sections.getPortAftSection().hasSystems() && (
+              <ShipSection
+                uiState={uiState}
+                ship={ship}
+                section={ship.systems.sections.getPortAftSection()}
+              />
+            )}
+          </Column>
         </ShipWindowContainer>
-      );
-    }
-
-    const systemsByLocation = sortIntoLocations(ship);
-
-    return (
-      <ShipWindowContainer
-        onClick={shipWindowClicked}
-        onContextMenu={e => {
-          e.preventDefault();
-          e.stopPropagation();
-        }}
-        team={ship.team}
-      >
-        <Header>
-          <span>{ship.name}</span> {ship.shipClass}
-          <CloseButton onClick={this.close.bind(this)}>✕</CloseButton>
-        </Header>
-        <Column top>
-          <ShipImage
-            img={ship.imagePath}
-            onMouseOver={this.onShipMouseOver.bind(this)}
-            onMouseOut={this.onShipMouseOut.bind(this)}
-          />
-          {systemsByLocation[1].length > 0 && (
-            <ShipSection
-              location={1}
-              ship={ship}
-              systems={systemsByLocation[1]}
-              movementService={movementService}
-            />
-          )}
-          <ShipWindowEw ship={ship} />
-        </Column>
-
-        <Column>
-          {systemsByLocation[3].length > 0 && (
-            <ShipSection
-              location={3}
-              ship={ship}
-              systems={systemsByLocation[3]}
-              movementService={movementService}
-            />
-          )}
-          {systemsByLocation[31].length > 0 && (
-            <ShipSection
-              location={31}
-              ship={ship}
-              systems={systemsByLocation[31]}
-              movementService={movementService}
-            />
-          )}
-          {systemsByLocation[0].length > 0 && (
-            <ShipSection
-              location={0}
-              ship={ship}
-              systems={systemsByLocation[0]}
-              movementService={movementService}
-            />
-          )}
-          {systemsByLocation[4].length > 0 && (
-            <ShipSection
-              location={4}
-              ship={ship}
-              systems={systemsByLocation[4]}
-              movementService={movementService}
-            />
-          )}
-          {systemsByLocation[41].length > 0 && (
-            <ShipSection
-              location={41}
-              ship={ship}
-              systems={systemsByLocation[41]}
-              movementService={movementService}
-            />
-          )}
-        </Column>
-        <Column>
-          {systemsByLocation[32].length > 0 && (
-            <ShipSection
-              location={32}
-              ship={ship}
-              systems={systemsByLocation[32]}
-              movementService={movementService}
-            />
-          )}
-          {systemsByLocation[2].length > 0 && (
-            <ShipSection
-              location={2}
-              ship={ship}
-              systems={systemsByLocation[2]}
-              movementService={movementService}
-            />
-          )}
-          {systemsByLocation[42].length > 0 && (
-            <ShipSection
-              location={42}
-              ship={ship}
-              systems={systemsByLocation[42]}
-              movementService={movementService}
-            />
-          )}
-        </Column>
-      </ShipWindowContainer>
+      </Draggable>
     );
   }
 }
 
-const shipWindowClicked = () => webglScene.customEvent("CloseSystemInfo");
-const sortIntoLocations = ship => {
-  const locations = {
-    0: [],
-    1: [],
-    2: [],
-    3: [],
-    4: [],
-    5: [],
-    41: [],
-    42: [],
-    31: [],
-    32: []
-  };
-
-  ship.systems.forEach(system => {
-    locations[system.location].push(system);
-  });
-
-  return locations;
-};
+const shipWindowClicked = uiState => uiState.customEvent("CloseSystemInfo");
 
 export default ShipWindow;

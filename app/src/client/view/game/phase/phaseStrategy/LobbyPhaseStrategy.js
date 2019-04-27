@@ -11,10 +11,13 @@ class LobbyPhaseStrategy extends PhaseStrategy {
   }
 
   onEvent(name, payload) {
-    if (name === "takeSlot") {
-      console.log("I would like to take the slot");
-    } else {
-      super.onEvent(name, payload);
+    switch (name) {
+      case "takeSlot":
+        return this.services.gameConnector.takeSlot(payload.id);
+      case "leaveSlot":
+        return this.services.gameConnector.leaveSlot(payload.id);
+      default:
+        return super.onEvent(name, payload);
     }
   }
 
