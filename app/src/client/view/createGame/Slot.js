@@ -50,7 +50,14 @@ class Slot extends Component {
   }
 
   render() {
-    const { slot, edit, take, currentUser, selectedSlot } = this.props;
+    const {
+      slot,
+      edit,
+      take,
+      currentUser,
+      selectedSlot,
+      children
+    } = this.props;
 
     return (
       <SlotContainer selected={selectedSlot.id === slot.id}>
@@ -165,6 +172,7 @@ class Slot extends Component {
             />
           )}
         </Section>
+        {children}
       </SlotContainer>
     );
   }

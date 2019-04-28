@@ -49,6 +49,19 @@ class GameConnector {
     );
   }
 
+  async buyShips(slotId, ships) {
+    const connection = await this.connection;
+    connection.send(
+      JSON.stringify({
+        type: gameMessages.MESSAGE_BUY_SHIPS,
+        payload: {
+          slotId,
+          ships: ships.map(ship => ship.serialize())
+        }
+      })
+    );
+  }
+
   async disconnect() {
     this.open = false;
     (await this.connection).close();

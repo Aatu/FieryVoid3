@@ -6,12 +6,12 @@ class UcRhino extends Ship {
     super(data);
 
     this.shipTypeName = 'Conley Shipyards RX11 "Rhino"';
-
-    this.accelcost = 3;
+    this.shipModel = this.accelcost = 3;
     this.rollcost = 3;
     this.pivotcost = 3;
     this.evasioncost = 3;
 
+    this.shipModel = "Rhino";
     this.pointCost = 500;
 
     this.systems.addFrontSystem([

@@ -98,6 +98,7 @@ const getHexTexture = (canvasSize, lineColor, fillColor, lineWidth) => {
 };
 
 export default {
+  renderHexGrid,
   getHexGridTexture,
   getHexTexture
 };

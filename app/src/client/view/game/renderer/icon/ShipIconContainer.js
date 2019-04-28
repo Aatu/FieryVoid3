@@ -5,20 +5,25 @@ const buildShipArray = iconsAsObject => {
   return Object.keys(iconsAsObject).map(key => iconsAsObject[key]);
 };
 
-const createIcon = (ship, scene) =>
-  new shipObjects[ship.shipModel](ship, scene);
+const createIcon = (ship, scene, currentUser) =>
+  new shipObjects[ship.shipModel](ship, scene, ship.player.is(currentUser));
 
 class ShipIconContainer {
-  constructor(scene) {
+  constructor(scene, currentUser) {
     this.iconsAsObject = {};
     this.iconsAsArray = [];
     this.scene = scene;
+    this.currentUser = currentUser;
   }
 
   update(gamedata) {
     gamedata.ships.getShips().forEach(ship => {
       if (!this.hasIcon(ship.id)) {
-        this.iconsAsObject[ship.id] = createIcon(ship, this.scene);
+        this.iconsAsObject[ship.id] = createIcon(
+          ship,
+          this.scene,
+          this.currentUser
+        );
       } else {
         this.iconsAsObject[ship.id].consumeShipdata(ship);
       }

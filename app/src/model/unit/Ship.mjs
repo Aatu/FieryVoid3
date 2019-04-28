@@ -13,6 +13,7 @@ class Ship {
     this.pivotcost = 1;
     this.evasioncost = 1;
 
+    this.shipModel = null;
     this.shipTypeName = "";
   }
 

@@ -7,7 +7,7 @@ class ShipEW {
   }
 
   getOffensiveEW(ship, target, type) {
-    throw new Error("This has reference to gamedata");
+    return 0;
     /*
     type = type || "OEW";
 
@@ -19,6 +19,14 @@ class ShipEW {
 
     return 0;
     */
+  }
+
+  getDefensiveEW() {
+    return 5;
+  }
+
+  getCCEW() {
+    return 3;
   }
 }
 

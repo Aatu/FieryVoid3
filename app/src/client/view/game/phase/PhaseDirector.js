@@ -29,7 +29,7 @@ class PhaseDirector {
 
   init(scene) {
     this.scene = scene;
-    this.shipIconContainer = new ShipIconContainer(scene, this.movementService);
+    this.shipIconContainer = new ShipIconContainer(scene, this.currentUser);
     this.ewIconContainer = new EWIconContainer(scene, this.shipIconContainer);
     this.shipWindowManager = new ShipWindowManager(
       this.uiState,

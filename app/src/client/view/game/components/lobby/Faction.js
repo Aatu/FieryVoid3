@@ -11,8 +11,9 @@ import ships from "../../../../../model/unit/ships";
 
 class Faction extends Component {
   buyShip(className) {
+    const { buyShip } = this.props;
     return () => {
-      console.log("I would like to buy this", className);
+      buyShip(className);
     };
   }
 

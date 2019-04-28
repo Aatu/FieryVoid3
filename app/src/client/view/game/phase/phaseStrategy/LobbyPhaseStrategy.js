@@ -16,6 +16,11 @@ class LobbyPhaseStrategy extends PhaseStrategy {
         return this.services.gameConnector.takeSlot(payload.id);
       case "leaveSlot":
         return this.services.gameConnector.leaveSlot(payload.id);
+      case "buyShips":
+        return this.services.gameConnector.buyShips(
+          payload.slot.id,
+          payload.ships
+        );
       default:
         return super.onEvent(name, payload);
     }

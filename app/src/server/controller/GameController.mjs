@@ -40,6 +40,13 @@ class GameController {
           return this.takeSlot(gameId, message.payload, user);
         case gameMessages.MESSAGE_LEAVE_SLOT:
           return this.leaveSlot(gameId, message.payload, user);
+        case gameMessages.MESSAGE_BUY_SHIPS:
+          return this.buyShips(
+            gameId,
+            message.payload.slotId,
+            message.payload.ships,
+            user
+          );
         default:
           throw new Error(`Unrecognized message type ${message.type}`);
       }

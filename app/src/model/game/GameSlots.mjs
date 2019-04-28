@@ -6,6 +6,26 @@ class GameSlots {
     this.slots = [];
   }
 
+  getSlotsByTeams() {
+    const teams = [];
+
+    this.slots.forEach(slot => {
+      let team = teams.find(t => t.team === slot.team);
+
+      if (!team) {
+        team = {
+          team: slot.team,
+          slots: [slot]
+        };
+        teams.push(team);
+      } else {
+        team.slots.push(slot);
+      }
+    });
+
+    return teams;
+  }
+
   getSlotById(id) {
     return this.slots.find(slot => slot.id === id);
   }

@@ -11,14 +11,16 @@ import {
   //MovementPathMoved
 } from "../../movement";
 
+import { LineSprite, ShipSelectedSprite, ShipEWSprite } from "../sprite";
+
 const COLOR_MINE = new THREE.Color(160 / 255, 250 / 255, 100 / 255);
 const COLOR_ENEMY = new THREE.Color(255 / 255, 40 / 255, 40 / 255);
 
 class ShipObject {
-  constructor(ship, scene) {
+  constructor(ship, scene, mine) {
     this.shipId = ship.id;
     this.ship = ship;
-    this.mine = ship.player.isMine();
+    this.mine = mine;
 
     this.scene = scene;
     this.mesh = new THREE.Object3D();
@@ -55,7 +57,7 @@ class ShipObject {
 
   consumeShipdata(ship) {
     this.ship = ship;
-    this.consumeMovement(ship.movement);
+    this.consumeMovement(ship);
     this.consumeEW(ship);
   }
 
@@ -65,7 +67,7 @@ class ShipObject {
     }
 
     const opacity = 0.5;
-    this.line = new window.LineSprite(
+    this.line = new LineSprite(
       { x: 0, y: 0, z: 1 },
       { x: 0, y: 0, z: this.defaultHeight },
       1,
@@ -74,7 +76,7 @@ class ShipObject {
     );
     this.mesh.add(this.line.mesh);
 
-    this.shipSideSprite = new window.ShipSelectedSprite(
+    this.shipSideSprite = new ShipSelectedSprite(
       { width: this.sideSpriteSize, height: this.sideSpriteSize },
       0.01,
       opacity
@@ -83,7 +85,7 @@ class ShipObject {
     this.shipSideSprite.setOverlayColorAlpha(1);
     this.mesh.add(this.shipSideSprite.mesh);
 
-    this.shipEWSprite = new window.ShipEWSprite(
+    this.shipEWSprite = new ShipEWSprite(
       { width: this.sideSpriteSize * 1.5, height: this.sideSpriteSize },
       this.defaultHeight
     );
@@ -222,8 +224,8 @@ class ShipObject {
     //console.log("ShipObject.showSideSprite is not yet implemented")
   }
 
-  consumeMovement(movements) {
-    this.movements = movements.filter(function(move) {
+  consumeMovement(ship) {
+    this.movements = ship.movement.getMovement().filter(function(move) {
       return !move.isEvade();
     });
   }

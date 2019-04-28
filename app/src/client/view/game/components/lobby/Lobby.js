@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import styled from "styled-components";
 import GameData from "../../../../../model/game/GameData";
-import Slots from "../../../createGame/Slots";
+import LobbySlots from "./LobbySlots";
 import FleetStore from "./FleetStore";
+import shipClasses from "../../../../../model/unit/ships";
 
 import { Title, PanelContainer, Section } from "../../../../styled";
 
@@ -48,10 +49,37 @@ class Lobby extends Component {
 
   selectSlot() {}
 
+  buyShip(shipClass) {
+    const ship = new shipClasses[shipClass]();
+    const { selectedSlot, ships } = this.state;
+
+    if (!selectedSlot) {
+      return;
+    }
+
+    const totalCost = [...ships, ship].reduce(
+      (acc, ship) => acc + ship.getPointCost(),
+      0
+    );
+
+    if (totalCost > selectedSlot.points) {
+      alert("Too costly");
+      return;
+    }
+
+    this.setState({ ships: [...ships, ship] });
+  }
+
+  onReady() {
+    const { uiState } = this.props;
+    const { selectedSlot, ships } = this.state;
+    uiState.customEvent("buyShips", { slot: selectedSlot, ships });
+  }
+
   render() {
     let { uiState, gameData, currentUser, game } = this.props;
 
-    const { selectedSlot } = this.state;
+    const { selectedSlot, ships } = this.state;
 
     if (!gameData) {
       return null;
@@ -65,18 +93,20 @@ class Lobby extends Component {
           <div>
             <Title>GAME: '{gameData.name}'</Title>
             <Title>Take a slot and buy ships</Title>
-            <Slots
+            <LobbySlots
               gameData={gameData}
               edit={false}
               currentUser={currentUser}
               take={true}
               select={true}
               selectedSlot={selectedSlot}
-              buyShipsSVGComponentTransferFunctionElement
               game={game}
+              ships={ships}
+              uiState={uiState}
+              onReady={this.onReady.bind(this)}
             />
           </div>
-          <FleetStore uiState={uiState} />
+          <FleetStore uiState={uiState} buyShip={this.buyShip.bind(this)} />
         </Section>
       </LobbyContainer>
     );
