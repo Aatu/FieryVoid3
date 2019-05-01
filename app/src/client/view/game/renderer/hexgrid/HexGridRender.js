@@ -50,6 +50,8 @@ class HexGridRenderer {
     this.mesh = new THREE.Mesh(geometry, this.material);
     this.mesh.position.x += HexagonMath.getHexB() / 2;
     this.mesh.name = "hexgrid";
+
+    this.mesh.receiveShadow = true;
     scene.add(this.mesh);
   }
 

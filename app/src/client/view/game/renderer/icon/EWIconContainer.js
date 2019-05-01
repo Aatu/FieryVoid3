@@ -22,7 +22,7 @@ class EWIconContainer {
     });
 
     gamedata.ships.getShips().forEach(ship => {
-      gamedata.ships.forEach(target => {
+      gamedata.ships.getShips().forEach(target => {
         this.createOrUpdateOEW(ship, target, ship.ew.getOffensiveEW(target));
         this.createOrUpdateOEW(
           ship,

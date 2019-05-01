@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import GLTFLoader from "three-gltf-loader";
 import {
   degreeToRadian,
   addToDirection,
@@ -13,6 +14,8 @@ import {
 
 import { LineSprite, ShipSelectedSprite, ShipEWSprite } from "../sprite";
 
+const loader = new GLTFLoader();
+
 const COLOR_MINE = new THREE.Color(160 / 255, 250 / 255, 100 / 255);
 const COLOR_ENEMY = new THREE.Color(255 / 255, 40 / 255, 40 / 255);
 
@@ -24,6 +27,8 @@ class ShipObject {
 
     this.scene = scene;
     this.mesh = new THREE.Object3D();
+    //this.mesh.castShadow = true;
+    //this.mesh.receiveShadow = true;
     this.shipObject = null;
     this.weaponArcs = [];
     this.shipSideSprite = null;
@@ -53,6 +58,10 @@ class ShipObject {
 
   getLoadedPromise() {
     return this.loaded;
+  }
+
+  getLoader() {
+    return loader;
   }
 
   consumeShipdata(ship) {

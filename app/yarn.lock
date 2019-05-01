@@ -9239,9 +9239,9 @@ text-table@0.2.0, text-table@^0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/text-table/-/text-table-0.2.0.tgz#7f5ee823ae805207c00af2df4a84ec3fcfa570b4"
 
-three-gltf-loader@^1.103.0:
-  version "1.103.0"
-  resolved "https://registry.yarnpkg.com/three-gltf-loader/-/three-gltf-loader-1.103.0.tgz#e3fc84f13fa90600200a06f3260a22baeb266d41"
+three-gltf-loader@^1.104.0:
+  version "1.104.0"
+  resolved "https://registry.yarnpkg.com/three-gltf-loader/-/three-gltf-loader-1.104.0.tgz#8786b77e89687e8d8eed60d932c8a89469392500"
 
 three@^0.103.0:
   version "0.103.0"

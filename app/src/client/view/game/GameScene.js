@@ -24,7 +24,7 @@ class GameScene {
     this.zoom = 1;
     this.zoomTarget = this.zoom;
 
-    this.cameraAngle = -500;
+    this.cameraAngle = 0; //-500;
   }
 
   init(element, { width, height }, gameId) {
@@ -69,19 +69,43 @@ class GameScene {
     this.stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
     document.body.appendChild(this.stats.dom);
     */
+    /*
+    const hemiLight = new THREE.HemisphereLight(0xffffff, 0xffffff, 1.6);
+    hemiLight.color.setHSL(0.6, 1, 0.6);
+    hemiLight.groundColor.setHSL(0.095, 1, 0.75);
+    hemiLight.position.set(0, 50, 50);
+    this.scene.add(hemiLight);
+    const hemiLightHelper = new THREE.HemisphereLightHelper(hemiLight, 100);
+    this.scene.add(hemiLightHelper);
+    */
 
-    var directionalLight3 = new THREE.DirectionalLight(0xffffff, 0.9);
-    directionalLight3.position.set(500, -500, 500);
-    this.scene.add(directionalLight3);
-    var directionalLight4 = new THREE.DirectionalLight(0x609dc1, 0.5);
-    directionalLight4.position.set(0, 100, -500);
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 1.0);
+    directionalLight.position.set(0, 1, 0).normalize();
+    directionalLight.castShadow = true;
+    this.scene.add(directionalLight);
+
+    const directionalLight3 = new THREE.DirectionalLight(0xffffff, 1.0);
+    directionalLight3.position.set(0, 1, 1).normalize();
+    directionalLight3.castShadow = true;
+    //this.scene.add(directionalLight3);
+    //this.directionalLight3 = directionalLight3;
+
+    var directionalLight4 = new THREE.DirectionalLight(0x609dc1, 1.0);
+    directionalLight4.position.set(0, -1, 1);
     this.scene.add(directionalLight4);
 
-    this.scene.add(new THREE.AmbientLight(0x000007));
+    /*
+    const helper = new THREE.DirectionalLightHelper(directionalLight4, 5);
+
+    this.scene.add(helper);
+    */
+
+    this.scene.add(new THREE.AmbientLight(0x474747));
     this.renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     this.renderer.setSize(this.width, this.height);
     this.renderer.autoClear = false;
     this.renderer.context.getExtension("OES_standard_derivatives");
+    this.renderer.shadowMapEnabled = true;
 
     element.appendChild(this.renderer.domElement);
 
@@ -194,6 +218,9 @@ class GameScene {
 
     this.animateZoom();
     this.starField.render();
+
+    //this.directionalLight3.position.y += 0.005;
+    //this.directionalLight3.position.y -= 0.05;
 
     //time++
 

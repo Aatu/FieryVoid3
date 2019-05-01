@@ -4,6 +4,7 @@ import * as THREE from "three";
 class Rhino extends ShipObject {
   constructor(ship, scene) {
     super(ship, scene);
+    this.defaultHeight = 50;
     this.sideSpriteSize = 30;
     this.create();
   }
@@ -11,7 +12,17 @@ class Rhino extends ShipObject {
   create() {
     super.create();
 
-    window.Loader.loadObject("img/3d/rhino/rhino.obj", object => {
+    this.getLoader().load("/img/3d/turska/scene.gltf", object => {
+      //return;
+
+      object = object.scene;
+      //object.castShadow = true;
+      //object.receiveShadow = true;
+      //object.children[0].castShadow = true;
+      //object.children[0].receiveShadow = true;
+
+      console.log(object);
+      /*
       window.Loader.loadTexturesAndAssign(
         object.children[0],
         {
@@ -34,9 +45,10 @@ class Rhino extends ShipObject {
         "img/3d/diffuseThruster.png",
         "img/3d/normalThruster.png"
       );
+      */
 
-      object.scale.set(2, 2, 2);
-      this.startRotation = { x: 90, y: 90, z: 0 };
+      //object.scale.set(2, 2, 2);
+      this.startRotation = { x: 0, y: 0, z: 90 };
 
       this.shipObject = object;
       this.setRotation(this.rotation.x, this.rotation.y, this.rotation.z);
