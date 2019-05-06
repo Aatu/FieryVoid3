@@ -6,7 +6,6 @@ const WebglCanvas = styled.div`
   display: flex;
   width: 100%;
   height: 100%;
-  background-image: url(/img/space-picture.jpg);
   background-size: cover;
 `;
 

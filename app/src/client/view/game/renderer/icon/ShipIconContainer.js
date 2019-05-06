@@ -131,6 +131,12 @@ class ShipIconContainer {
     throw new Error("Give movement service!");
     //this.getByShip(ship).showMovementPath(ship, this.movementService);
   }
+
+  render(coordinateConverter, scene, zoom) {
+    this.iconsAsArray.forEach(icon =>
+      icon.render(coordinateConverter, scene, zoom)
+    );
+  }
 }
 
 export default ShipIconContainer;

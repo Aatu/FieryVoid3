@@ -1,0 +1,268 @@
+{
+    "asset" : {
+        "generator" : "Khronos glTF Blender I/O v0.9.4",
+        "version" : "2.0"
+    },
+    "scene" : 0,
+    "scenes" : [
+        {
+            "name" : "Scene",
+            "nodes" : [
+                8
+            ]
+        }
+    ],
+    "nodes" : [
+        {
+            "name" : "fourth",
+            "translation" : [
+                0,
+                9.784481048583984,
+                0
+            ]
+        },
+        {
+            "children" : [
+                0
+            ],
+            "name" : "third",
+            "translation" : [
+                0,
+                9.991474151611328,
+                0
+            ]
+        },
+        {
+            "children" : [
+                1
+            ],
+            "name" : "second",
+            "translation" : [
+                0,
+                10.012767791748047,
+                0
+            ]
+        },
+        {
+            "children" : [
+                2
+            ],
+            "name" : "first",
+            "translation" : [
+                0,
+                9.179402351379395,
+                0
+            ]
+        },
+        {
+            "children" : [
+                3
+            ],
+            "name" : "zero",
+            "translation" : [
+                0,
+                2.8296871185302734,
+                0
+            ]
+        },
+        {
+            "children" : [
+                4
+            ],
+            "name" : "root",
+            "translation" : [
+                0,
+                -1.1472997665405273,
+                0
+            ]
+        },
+        {
+            "name" : "case",
+            "translation" : [
+                0,
+                -0.6876305937767029,
+                0.44799086451530457
+            ]
+        },
+        {
+            "mesh" : 0,
+            "name" : "radiator",
+            "skin" : 0
+        },
+        {
+            "children" : [
+                7,
+                5,
+                6
+            ],
+            "name" : "Armature"
+        }
+    ],
+    "materials" : [
+        {
+            "name" : "Radiator material",
+            "normalTexture" : {
+                "index" : 0,
+                "texCoord" : 0
+            },
+            "pbrMetallicRoughness" : {
+                "baseColorTexture" : {
+                    "index" : 1,
+                    "texCoord" : 0
+                },
+                "metallicFactor" : 0,
+                "roughnessFactor" : 0.5
+            }
+        }
+    ],
+    "meshes" : [
+        {
+            "name" : "mesh",
+            "primitives" : [
+                {
+                    "attributes" : {
+                        "POSITION" : 0,
+                        "NORMAL" : 1,
+                        "TEXCOORD_0" : 2,
+                        "JOINTS_0" : 3,
+                        "WEIGHTS_0" : 4
+                    },
+                    "indices" : 5,
+                    "material" : 0
+                }
+            ]
+        }
+    ],
+    "textures" : [
+        {
+            "source" : 0
+        },
+        {
+            "source" : 1
+        }
+    ],
+    "images" : [
+        {
+            "mimeType" : "image/png",
+            "name" : "10x40sail_normalMap",
+            "uri" : "10x40sail_normalMap.png"
+        },
+        {
+            "mimeType" : "image/png",
+            "name" : "10x40sail_baseColor",
+            "uri" : "10x40sail_baseColor.png"
+        }
+    ],
+    "skins" : [
+        {
+            "inverseBindMatrices" : 6,
+            "joints" : [
+                5,
+                4,
+                3,
+                2,
+                1,
+                0,
+                6
+            ],
+            "name" : "Armature"
+        }
+    ],
+    "accessors" : [
+        {
+            "bufferView" : 0,
+            "componentType" : 5126,
+            "count" : 907,
+            "max" : [
+                0.6543596982955933,
+                40.869483947753906,
+                8.637823104858398
+            ],
+            "min" : [
+                -0.6543596982955933,
+                0,
+                -8.637823104858398
+            ],
+            "type" : "VEC3"
+        },
+        {
+            "bufferView" : 1,
+            "componentType" : 5126,
+            "count" : 907,
+            "type" : "VEC3"
+        },
+        {
+            "bufferView" : 2,
+            "componentType" : 5126,
+            "count" : 907,
+            "type" : "VEC2"
+        },
+        {
+            "bufferView" : 3,
+            "componentType" : 5123,
+            "count" : 907,
+            "type" : "VEC4"
+        },
+        {
+            "bufferView" : 4,
+            "componentType" : 5126,
+            "count" : 907,
+            "type" : "VEC4"
+        },
+        {
+            "bufferView" : 5,
+            "componentType" : 5123,
+            "count" : 1356,
+            "type" : "SCALAR"
+        },
+        {
+            "bufferView" : 6,
+            "componentType" : 5126,
+            "count" : 7,
+            "type" : "MAT4"
+        }
+    ],
+    "bufferViews" : [
+        {
+            "buffer" : 0,
+            "byteLength" : 10884,
+            "byteOffset" : 0
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 10884,
+            "byteOffset" : 10884
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 7256,
+            "byteOffset" : 21768
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 7256,
+            "byteOffset" : 29024
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 14512,
+            "byteOffset" : 36280
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 2712,
+            "byteOffset" : 50792
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 448,
+            "byteOffset" : 53504
+        }
+    ],
+    "buffers" : [
+        {
+            "byteLength" : 53952,
+            "uri" : "scene.bin"
+        }
+    ]
+}

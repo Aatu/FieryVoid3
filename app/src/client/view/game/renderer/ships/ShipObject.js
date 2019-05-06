@@ -1,5 +1,6 @@
 import * as THREE from "three";
-import GLTFLoader from "three-gltf-loader";
+import { loadObject, cloneObject } from "../../utils/objectLoader";
+
 import {
   degreeToRadian,
   addToDirection,
@@ -13,8 +14,6 @@ import {
 } from "../../movement";
 
 import { LineSprite, ShipSelectedSprite, ShipEWSprite } from "../sprite";
-
-const loader = new GLTFLoader();
 
 const COLOR_MINE = new THREE.Color(160 / 255, 250 / 255, 100 / 255);
 const COLOR_ENEMY = new THREE.Color(255 / 255, 40 / 255, 40 / 255);
@@ -58,10 +57,6 @@ class ShipObject {
 
   getLoadedPromise() {
     return this.loaded;
-  }
-
-  getLoader() {
-    return loader;
   }
 
   consumeShipdata(ship) {
@@ -343,6 +338,29 @@ class ShipObject {
     this.hideMovementPath(ship);
     this.movementPath = new MovementPath(ship, movementService, this.scene);
   }
+
+  replaceSocketByName(names, entity) {
+    names = [].concat(names);
+    const toDelete = [];
+    const toAdd = [];
+
+    this.shipObject.children.forEach(child => {
+      if (names.includes(child.name)) {
+        console.log("names included", child.name);
+        toDelete.push(child);
+        const newEntity = cloneObject(entity);
+        newEntity.position.copy(child.position);
+        newEntity.rotation.copy(child.rotation);
+        newEntity.quaternion.copy(child.quaternion);
+        toAdd.push(newEntity);
+      }
+    });
+
+    toDelete.forEach(mesh => this.shipObject.remove(mesh));
+    toAdd.forEach(mesh => this.shipObject.add(mesh));
+  }
+
+  render() {}
 }
 
 export default ShipObject;

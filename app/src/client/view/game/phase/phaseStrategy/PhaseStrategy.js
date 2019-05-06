@@ -39,6 +39,11 @@ class PhaseStrategy {
   render(coordinateConverter, scene, zoom) {
     this.animationStrategy &&
       this.animationStrategy.render(coordinateConverter, scene, zoom);
+
+    const { shipIconContainer } = this.services;
+
+    shipIconContainer &&
+      shipIconContainer.render(coordinateConverter, scene, zoom);
     this.callStrategies("render", { scene, zoom });
   }
 

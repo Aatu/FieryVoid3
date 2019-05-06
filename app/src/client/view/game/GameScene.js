@@ -90,7 +90,8 @@ class GameScene {
     //this.scene.add(directionalLight3);
     //this.directionalLight3 = directionalLight3;
 
-    var directionalLight4 = new THREE.DirectionalLight(0x609dc1, 1.0);
+    //const directionalLight4 = new THREE.DirectionalLight(0x609dc1, 0.5);
+    const directionalLight4 = new THREE.DirectionalLight(0x470000, 0.5);
     directionalLight4.position.set(0, -1, 1);
     this.scene.add(directionalLight4);
 
@@ -100,12 +101,14 @@ class GameScene {
     this.scene.add(helper);
     */
 
-    this.scene.add(new THREE.AmbientLight(0x474747));
+    //this.scene.add(new THREE.AmbientLight(0x474747));
     this.renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     this.renderer.setSize(this.width, this.height);
     this.renderer.autoClear = false;
     this.renderer.context.getExtension("OES_standard_derivatives");
     this.renderer.shadowMapEnabled = true;
+    this.renderer.gammaOutput = true;
+    this.renderer.gammaFactor = 2.2;
 
     element.appendChild(this.renderer.domElement);
 
