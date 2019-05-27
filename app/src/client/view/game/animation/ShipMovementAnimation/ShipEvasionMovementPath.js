@@ -1,3 +1,6 @@
+import * as THREE from "three";
+import { getSeededRandomGenerator } from "../../../../../model/utils/math.mjs";
+
 const getRandomPosition = (maxDistance, getRandom) => ({
   x: getRandom() * maxDistance - maxDistance / 2,
   y: getRandom() * maxDistance - maxDistance / 2
@@ -54,7 +57,7 @@ class ShipEvasionMovementPath {
     this.curves = constructEvasionCurves(
       this.evasion,
       100 / this.evasion,
-      mathlib.getSeededRandomGenerator(seed)
+      getSeededRandomGenerator(seed)
     );
   }
 

@@ -1,4 +1,29 @@
-"use strict";
+import PhaseStrategy from "./PhaseStrategy";
+import {
+  ShowDeploymentAreas,
+  ShowShipObjects,
+  RightClickShowsShipWindow,
+  MouseOverHighlightsShip,
+  MouseOverShowsMovementPath
+} from "../../ui/uiStrategy";
+
+class DeploymentPhaseStrategy extends PhaseStrategy {
+  constructor(services) {
+    super(services);
+
+    this.strategies = [
+      new RightClickShowsShipWindow(),
+      new ShowDeploymentAreas(),
+      new MouseOverHighlightsShip(),
+      new MouseOverShowsMovementPath(),
+      new ShowShipObjects()
+    ];
+  }
+}
+
+export default DeploymentPhaseStrategy;
+
+/*
 
 window.DeploymentPhaseStrategy = (function() {
   function DeploymentPhaseStrategy(coordinateConverter) {
@@ -273,7 +298,7 @@ window.DeploymentPhaseStrategy = (function() {
 
     var icon = getSlotById(ship.slot, deploymentSprites);
     return icon.isValidDeploymentPosition(hex);
-    /*
+
          var slot = deployment.getValidDeploymentArea(ship);
         hexpos = hexgrid.hexCoToPixel(hexpos.x, hexpos.y);
         var deppos = hexgrid.hexCoToPixel(slot.depx, slot.depy);
@@ -297,8 +322,10 @@ window.DeploymentPhaseStrategy = (function() {
             }
         }
         return false;
-        */
+        
   }
 
   return DeploymentPhaseStrategy;
 })();
+
+*/

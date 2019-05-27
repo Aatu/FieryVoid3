@@ -35,12 +35,16 @@ class Lobby extends Component {
     gameData = new GameData(gameData);
 
     if (!prevState.selectedSlot) {
+      const selectedSlot =
+        gameData.slots
+          .getSlots()
+          .find(slot => slot.isOccupiedBy(currentUser)) || null;
+
+      const ships = selectedSlot ? selectedSlot.getShips() : [];
       return {
         ...prevState,
-        selectedSlot:
-          gameData.slots
-            .getSlots()
-            .find(slot => slot.isOccupiedBy(currentUser)) || null
+        selectedSlot,
+        ships
       };
     }
 
@@ -86,6 +90,7 @@ class Lobby extends Component {
     }
 
     gameData = new GameData(gameData);
+    console.log(gameData);
 
     return (
       <LobbyContainer>

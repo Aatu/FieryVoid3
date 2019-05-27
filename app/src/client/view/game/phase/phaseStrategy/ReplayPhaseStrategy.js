@@ -1,4 +1,10 @@
-"use strict";
+import PhaseStrategy from "./PhaseStrategy";
+
+class ReplayPhaseStrategy extends PhaseStrategy {}
+
+export default ReplayPhaseStrategy;
+
+/*
 
 window.ReplayPhaseStrategy = (function() {
   function ReplayPhaseStrategy(coordinateConverter) {
@@ -277,3 +283,5 @@ window.ReplayPhaseStrategy = (function() {
 
   return ReplayPhaseStrategy;
 })();
+
+*/

@@ -30,6 +30,10 @@ class GameData {
     this.players = this.players.filter(player => player.id !== user.id);
   }
 
+  isPlayerInGame(user) {
+    return this.players.find(player => player.id === user.id);
+  }
+
   isPlayerActive(user) {
     return this.activePlayerIds.includes(user.id);
   }

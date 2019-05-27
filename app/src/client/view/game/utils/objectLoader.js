@@ -32,6 +32,12 @@ export const cloneObject = source => {
     clonedMesh.bind(clonedMesh.skeleton, clonedMesh.bindMatrix);
   });
 
+  clone.traverse(node => {
+    if (node.isMesh) {
+      node.material = node.material.clone();
+    }
+  });
+
   return clone;
 };
 
@@ -43,11 +49,12 @@ const parallelTraverse = (a, b, callback) => {
   }
 };
 
-export const loadObject = url => {
+export const loadObject = async url => {
   const cached = entities.find(entity => entity.url === url);
 
   if (cached) {
-    return cached.value;
+    const object = await cached.value;
+    return cloneObject(object);
   }
 
   const entity = {
@@ -61,5 +68,6 @@ export const loadObject = url => {
 
   entities.push(entity);
 
-  return entity.value;
+  const object = await entity.value;
+  return cloneObject(object);
 };

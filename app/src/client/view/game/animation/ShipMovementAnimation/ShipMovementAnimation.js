@@ -1,5 +1,11 @@
+import * as THREE from "three";
 import Animation from "../Animation";
 import ShipEvasionMovementPath from "./ShipEvasionMovementPath";
+import {
+  addToDirection,
+  hexFacingToAngle,
+  getDistanceBetweenDirections
+} from "../../../../../model/utils/math.mjs";
 
 class ShipMovementAnimation extends Animation {
   constructor(
@@ -148,7 +154,7 @@ class ShipMovementAnimation extends Animation {
       totalDone = 1;
     }
 
-    return mathlib.addToDirection(
+    return addToDirection(
       rotation.start,
       rotation.amount * this.easeInOut.getPoint(totalDone).y
     );
@@ -165,7 +171,7 @@ class ShipMovementAnimation extends Animation {
     });
 
     if (pivots.length === 0) {
-      const facing = mathlib.hexFacingToAngle(
+      const facing = hexFacingToAngle(
         this.movementService.getLastTurnEndMove(this.ship).facing
       );
 
@@ -230,14 +236,13 @@ class ShipMovementAnimation extends Animation {
           direction = -1;
         }
 
-        const start = mathlib.hexFacingToAngle(lastFacing);
-        const end = mathlib.hexFacingToAngle(facings[facings.length - 1]);
+        const start = hexFacingToAngle(lastFacing);
+        const end = hexFacingToAngle(facings[facings.length - 1]);
         pivots.push({
           start,
           end,
           amount:
-            mathlib.getDistanceBetweenDirections(start, end, direction) *
-            direction,
+            getDistanceBetweenDirections(start, end, direction) * direction,
           endTime: startTime * pivotStep
         });
 

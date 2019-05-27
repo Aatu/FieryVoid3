@@ -17,14 +17,14 @@ class FleetList extends Component {
   }
 
   render() {
-    const { ships, onReady } = this.props;
+    const { ships, onReady, bought } = this.props;
 
     return (
       <DarkContainer>
         <Section>
           <SubTitle>Current fleet for slot</SubTitle>
           <SectionRight>
-            {ships.length > 0 && (
+            {!bought && ships.length > 0 && (
               <Button buttonStyle="button" onClick={onReady}>
                 Ready
               </Button>

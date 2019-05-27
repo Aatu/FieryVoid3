@@ -2,9 +2,20 @@ import hexagon from "../hexagon";
 import uuidv4 from "uuid/v4";
 
 class GameSlot {
-  constructor(data = {}) {
+  constructor(data = {}, gameData) {
     this.id = uuidv4();
+    this.gameData = gameData;
     this.deserialize(data);
+  }
+
+  getShips() {
+    if (!this.gameData) {
+      return [];
+    }
+
+    return this.gameData.ships
+      .getShips()
+      .filter(ship => this.shipIds.includes(ship.id));
   }
 
   addShip(ship) {

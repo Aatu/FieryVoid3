@@ -33,7 +33,11 @@ class PhaseStrategy {
   }
 
   callStrategies(functionName, payload) {
-    this.strategies.forEach(strategy => strategy[functionName](payload));
+    this.strategies.forEach(strategy => {
+      if (strategy[functionName] && !payload.stopped) {
+        strategy[functionName](payload);
+      }
+    });
   }
 
   render(coordinateConverter, scene, zoom) {
@@ -48,6 +52,8 @@ class PhaseStrategy {
   }
 
   update(gamedata) {
+    const { uiState } = this.services;
+    uiState.setGameData(gamedata);
     this.updateStrategies(gamedata);
     this.animationStrategy && this.animationStrategy.update(gamedata);
 
@@ -91,6 +97,8 @@ class PhaseStrategy {
     if (payload.cancelled) {
       return;
     }
+    console.log("click");
+    console.log(icons);
 
     if (icons.length > 1) {
       this.callStrategies("onShipsClick", {

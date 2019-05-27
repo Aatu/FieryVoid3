@@ -51,6 +51,15 @@ class ShipMovement {
     throw new Error("Ship does not have start move");
   }
 
+  getStartMove() {
+    const start = this.moves.find(move => move.isStart());
+    if (!start) {
+      return null;
+    }
+
+    return start.clone();
+  }
+
   getDeployMove() {
     const deploy = this.moves.find(move => move.isDeploy());
     if (!deploy) {
@@ -90,6 +99,22 @@ class ShipMovement {
     }
 
     return end.clone();
+  }
+
+  getLastEndMoveOrSurrogate() {
+    const end = this.getLastEndMove();
+    if (!end) {
+      const deploy = this.getDeployMove();
+
+      if (!deploy) {
+        const start = this.getStartMove();
+        return start;
+      }
+
+      return deploy;
+    }
+
+    return end;
   }
 
   getEvadeMove() {

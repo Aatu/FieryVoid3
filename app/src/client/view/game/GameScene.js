@@ -3,6 +3,10 @@ import HexGridRenderer from "./renderer/hexgrid/HexGridRender";
 import StarField from "./terrain/StarField";
 import { ZOOM_MAX, ZOOM_MIN } from "./gameConfig";
 
+import { ShipSelectedSprite } from "./renderer/sprite";
+
+window.THREE = THREE;
+
 class GameScene {
   constructor(phaseDirector, coordinateConverter) {
     this.phaseDirector = phaseDirector;
@@ -115,6 +119,7 @@ class GameScene {
     this.initialized = true;
     this.hexGridRenderer.renderHexGrid(this.scene, ZOOM_MIN, ZOOM_MAX);
     this.starField = new StarField(this.starFieldScene, gameId);
+
     this.render();
   }
 

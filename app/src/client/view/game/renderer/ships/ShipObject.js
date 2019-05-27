@@ -52,6 +52,8 @@ class ShipObject {
       this.loadedResolve = resolve;
     });
 
+    this.emissiveReplaced = [];
+
     this.consumeShipdata(this.ship);
   }
 
@@ -327,16 +329,20 @@ class ShipObject {
   }
   */
 
-  hideMovementPath(ship) {
+  hideMovementPath() {
     if (this.movementPath) {
       this.movementPath.remove(this.scene);
       this.movementPath = null;
     }
   }
 
-  showMovementPath(ship, movementService) {
-    this.hideMovementPath(ship);
-    this.movementPath = new MovementPath(ship, movementService, this.scene);
+  showMovementPath(coordinateConverter) {
+    this.hideMovementPath(this.ship);
+    this.movementPath = new MovementPath(
+      this.ship,
+      this.scene,
+      coordinateConverter
+    );
   }
 
   replaceSocketByName(names, entity) {
@@ -346,7 +352,6 @@ class ShipObject {
 
     this.shipObject.children.forEach(child => {
       if (names.includes(child.name)) {
-        console.log("names included", child.name);
         toDelete.push(child);
         const newEntity = cloneObject(entity);
         newEntity.position.copy(child.position);
@@ -358,6 +363,48 @@ class ShipObject {
 
     toDelete.forEach(mesh => this.shipObject.remove(mesh));
     toAdd.forEach(mesh => this.shipObject.add(mesh));
+  }
+
+  replaceEmissive(color) {
+    this.shipObject.traverse(child => {
+      if (!child.isMesh) {
+        return;
+      }
+
+      const replacement = this.emissiveReplaced.find(
+        replacement => replacement.object === child
+      );
+
+      if (!replacement) {
+        this.emissiveReplaced.push({
+          object: child,
+          color: child.material.emissive,
+          map: child.material.emissiveMap
+        });
+      }
+
+      child.material.emissiveMap = null;
+      child.material.emissive = color;
+      child.material.needsUpdate = true;
+    });
+  }
+
+  revertEmissive() {
+    this.shipObject.traverse(child => {
+      if (!child.isMesh) {
+        return;
+      }
+
+      const replacement = this.emissiveReplaced.find(
+        replacement => replacement.object === child
+      );
+
+      if (replacement) {
+        child.material.emissiveMap = replacement.map;
+        child.material.emissive = replacement.color;
+        child.material.needsUpdate = true;
+      }
+    });
   }
 
   render() {}

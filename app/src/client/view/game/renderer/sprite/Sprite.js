@@ -25,7 +25,7 @@ class Sprite {
       opacity: { type: "f", value: 1.0 }
     };
 
-    this.mesh = this.create(this, size, image);
+    this.mesh = this.create(size, image);
   }
 
   hide() {

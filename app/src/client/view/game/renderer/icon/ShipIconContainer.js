@@ -58,6 +58,7 @@ class ShipIconContainer {
       icon.setOverlayColorAlpha(alpha);
     });
   }
+
   getArray() {
     return this.iconsAsArray;
   }
@@ -115,21 +116,6 @@ class ShipIconContainer {
         shipIcon.getLastMovement().position.equals(hex)
       );
     }, this);
-  }
-
-  hideAllMovementPaths(ship) {
-    this.iconsAsArray.forEach(function(icon) {
-      icon.hideMovementPath();
-    });
-  }
-
-  hideMovementPath(ship) {
-    this.getByShip(ship).hideMovementPath();
-  }
-
-  showMovementPath(ship) {
-    throw new Error("Give movement service!");
-    //this.getByShip(ship).showMovementPath(ship, this.movementService);
   }
 
   render(coordinateConverter, scene, zoom) {

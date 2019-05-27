@@ -1,4 +1,10 @@
-"use strict";
+import PhaseStrategy from "./PhaseStrategy";
+
+class ReplayPhaseStrategy extends PhaseStrategy {}
+
+export default ReplayPhaseStrategy;
+
+/*
 
 window.WaitingPhaseStrategy = (function() {
   function WaitingPhaseStrategy(coordinateConverter, phaseState) {
@@ -86,3 +92,4 @@ window.WaitingPhaseStrategy = (function() {
 
   return WaitingPhaseStrategy;
 })();
+*/

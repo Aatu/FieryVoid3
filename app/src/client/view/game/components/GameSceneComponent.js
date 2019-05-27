@@ -101,7 +101,8 @@ class GameSceneComponent extends React.Component {
     const { game } = this.props;
     if (!this.lastDraggingPosition) {
       game.onMouseUp(
-        getMousePositionInObservedElement(event, this.canvasRef.current)
+        getMousePositionInObservedElement(event, this.canvasRef.current),
+        event.button
       );
     }
 
@@ -116,6 +117,9 @@ class GameSceneComponent extends React.Component {
     const { game } = this.props;
 
     if (this.mouseDownPosition === null) {
+      game.onMouseMove(
+        getMousePositionInObservedElement(event, this.canvasRef.current)
+      );
       return;
     }
 
@@ -165,6 +169,10 @@ class GameSceneComponent extends React.Component {
         onMouseUp={this.onMouseUp.bind(this)}
         onMouseMove={this.onMouseMove.bind(this)}
         onKeyUp={this.onKeyUp.bind(this)}
+        onContextMenu={e => {
+          e.preventDefault();
+          e.stopPropagation();
+        }}
       />
     );
   }

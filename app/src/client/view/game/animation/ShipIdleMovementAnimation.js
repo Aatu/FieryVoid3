@@ -1,12 +1,13 @@
+import { hexFacingToAngle } from "../../../../model/utils/math.mjs";
+
 import Animation from "./Animation";
 
 class ShipIdleMovementAnimation extends Animation {
-  constructor(shipIcon, movementService, coordinateConverter) {
+  constructor(shipIcon, coordinateConverter) {
     super();
 
     this.shipIcon = shipIcon;
     this.ship = shipIcon.ship;
-    this.movementService = movementService;
     this.coordinateConverter = coordinateConverter;
 
     this.duration = 0;
@@ -32,13 +33,13 @@ class ShipIdleMovementAnimation extends Animation {
   }
 
   getPosition() {
-    const end = this.movementService.getLastEndMove(this.ship);
+    const end = this.ship.movement.getLastEndMoveOrSurrogate();
     return this.coordinateConverter.fromHexToGame(end.position);
   }
 
   getFacing() {
-    return mathlib.hexFacingToAngle(
-      this.movementService.getLastEndMove(this.ship).facing
+    return hexFacingToAngle(
+      this.ship.movement.getLastEndMoveOrSurrogate().facing
     );
   }
 }

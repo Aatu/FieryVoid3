@@ -12,7 +12,7 @@ class GameUiComponent extends React.Component {
 
     return (
       <>
-        {false && uiState.state.lobby && (
+        {uiState.state.lobby && (
           <Lobby
             uiState={uiState}
             gameData={uiState.state.gameData}

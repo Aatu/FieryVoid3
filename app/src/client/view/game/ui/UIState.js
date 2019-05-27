@@ -6,6 +6,7 @@ class UIState {
     this.shipWindowManager = null;
 
     this.state = {
+      replay: false,
       lobby: false,
       gameData: null,
       shipWindows: null,
@@ -16,6 +17,10 @@ class UIState {
     };
 
     this.updateState();
+  }
+
+  isReplay() {
+    return this.state.replay;
   }
 
   init(setState) {

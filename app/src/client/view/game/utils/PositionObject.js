@@ -1,9 +1,9 @@
 class PositionObject {
-  constructor(view, game, hex, entities = []) {
+  constructor(view, game, hex, entity = null) {
     this.view = view;
     this.game = game;
     this.hex = hex;
-    this.entities = entities;
+    this.entity = entity;
   }
 }
 

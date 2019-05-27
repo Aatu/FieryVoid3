@@ -1,5 +1,5 @@
 import ShipObject from "../ShipObject";
-import { loadObject } from "../../../utils/objectLoader";
+import { loadObject, cloneObject } from "../../../utils/objectLoader";
 import * as THREE from "three";
 
 class Rhino extends ShipObject {
@@ -13,39 +13,7 @@ class Rhino extends ShipObject {
   async create() {
     super.create();
 
-    const object = await loadObject("/img/3d/turska/scene.gltf");
-
-    //object.castShadow = true;
-    //object.receiveShadow = true;
-    //object.children[0].castShadow = true;
-    //object.children[0].receiveShadow = true;
-
-    console.log(object);
-    /*
-      window.Loader.loadTexturesAndAssign(
-        object.children[0],
-        {
-          normalScale: new THREE.Vector2(1, 1),
-          shininess: 10,
-          color: new THREE.Color(1, 1, 1)
-        },
-        "img/3d/rhino/texture.png",
-        "img/3d/rhino/sculptNormal.png"
-      );
-      window.Loader.loadTexturesAndAssign(
-        object.children[1],
-        {},
-        "img/3d/diffuseDoc.png",
-        "img/3d/normalDoc.png"
-      );
-      window.Loader.loadTexturesAndAssign(
-        object.children[2],
-        {},
-        "img/3d/diffuseThruster.png",
-        "img/3d/normalThruster.png"
-      );
-      */
-
+    const object = await loadObject("/img/3d/caliope/scene.gltf");
     //object.scale.set(2, 2, 2);
     this.startRotation = { x: 90, y: 90, z: 0 };
 
@@ -59,7 +27,6 @@ class Rhino extends ShipObject {
       "/img/3d/systems/weapons/conventional/85mmAutoCannon/scene.gltf"
     );
 
-    console.log("autoCannon?", radiator);
     super.replaceSocketByName(
       [
         "engine_pylon_top_front",
@@ -86,18 +53,33 @@ class Rhino extends ShipObject {
       autoCannon
     );
 
-    console.log(this.shipObject);
+    const shipMaterial = this.shipObject.children[0].material;
+
+    shipMaterial.emissive = new THREE.Color(1, 1, 1);
+    shipMaterial.emissiveMap = new THREE.TextureLoader().load(
+      "/img/3d/caliope/emissiveMap.png"
+    );
+    shipMaterial.emissiveMap.flipY = false;
+
+    /*
+    this.shipObject.traverse(o => {
+      if (o.isMesh) {
+        o.material.emissive = new THREE.Color(1, 1, 1);
+        o.material.emissiveMap = new THREE.TextureLoader().load(
+          "/img/3d/caliope/baseColor.png"
+        );
+        o.material.emissiveMap.flipY = false;
+
+
+      }
+    });
+
+    */
+    console.log(object);
   }
 
   render() {
     super.render();
-
-    if (this.shipObject) {
-      //this.shipObject.rotation.x += 0.001;
-      this.shipObject.rotation.y += 0.001;
-      //this.shipObject.rotation.z += 0.001;
-      //this.setFacing(-60);
-    }
   }
 }
 

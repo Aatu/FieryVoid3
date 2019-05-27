@@ -17,6 +17,7 @@ class LobbySlots extends Component {
               return (
                 <Slot key={slot.id} slot={slot} {...this.props}>
                   <FleetList
+                    bought={slot.isBought()}
                     onReady={onReady}
                     uiState={uiState}
                     ships={ships}

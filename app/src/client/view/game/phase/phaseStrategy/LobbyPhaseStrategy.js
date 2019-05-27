@@ -5,7 +5,6 @@ class LobbyPhaseStrategy extends PhaseStrategy {
     super.update(gamedata);
     const { uiState } = this.services;
     uiState.setLobby(true);
-    uiState.setGameData(gamedata);
 
     return this;
   }

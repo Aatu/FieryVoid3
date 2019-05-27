@@ -29,6 +29,8 @@ class Game {
     this.sceneElement = null;
 
     this.init = false;
+
+    this.mouseOvered = null;
   }
 
   initRender(element) {
@@ -53,20 +55,28 @@ class Game {
     this.uiState.customEvent(action, { up: true });
   }
 
-  onMouseUp(position) {
+  onMouseUp(position, button) {
     if (!this.init) {
       return;
     }
 
     const gamePos = this.coordinateConverter.fromViewPortToGame(position);
-    const entities = this.coordinateConverter.getEntitiesIntersected(position);
+    const entity = this.coordinateConverter
+      .getEntitiesIntersected(position)
+      .shift();
     const hexPos = this.coordinateConverter.fromGameToHex(gamePos, true);
 
-    const payload = new PositionObject(position, gamePos, hexPos, entities);
+    const payload = new PositionObject(position, gamePos, hexPos, entity);
 
     console.log(payload.hex);
 
-    this.phaseDirector.relayEvent("ClickEvent", payload);
+    if (button && button === 2 && entity) {
+      this.phaseDirector.relayEvent("shipRightClicked", payload);
+    } else if (entity) {
+      this.phaseDirector.relayEvent("shipClicked", payload);
+    } else {
+      this.phaseDirector.relayEvent("hexClicked", payload);
+    }
   }
 
   onDrag(position, delta) {
@@ -76,12 +86,30 @@ class Game {
   onMouseMove(position) {
     const gamePos = this.coordinateConverter.fromViewPortToGame(position);
     const hexPos = this.coordinateConverter.fromGameToHex(gamePos);
-    const entities = this.coordinateConverter.getEntitiesIntersected(position);
+    const entity = this.coordinateConverter
+      .getEntitiesIntersected(position)
+      .shift();
 
-    this.phaseDirector.relayEvent(
-      "MouseMoveEvent",
-      new PositionObject(position, gamePos, hexPos, entities)
-    );
+    const payload = new PositionObject(position, gamePos, hexPos, entity);
+
+    if (this.mouseOvered && entity && this.mouseOvered != entity) {
+      this.phaseDirector.relayEvent("mouseOutShip", {
+        ...payload,
+        entity: this.mouseOvered
+      });
+
+      this.phaseDirector.relayEvent("mouseOverShip", payload);
+      this.mouseOvered = entity;
+    } else if (this.mouseOvered == null && entity) {
+      this.phaseDirector.relayEvent("mouseOverShip", payload);
+      this.mouseOvered = entity;
+    } else if (this.mouseOvered && !entity) {
+      this.phaseDirector.relayEvent("mouseOutShip", {
+        ...payload,
+        entity: this.mouseOvered
+      });
+      this.mouseOvered = null;
+    }
   }
 
   onResize() {
