@@ -15,7 +15,6 @@ const InfoHeader = styled(TooltipHeader)`
 const ShipTooltipContainer = styled(Tooltip)`
   width: 300px;
   margin-left: -50%;
-  margin-top: 20px;
   text-align: left;
   opacity: 0.8;
   position: relative;
@@ -47,7 +46,11 @@ class ShipTooltip extends React.Component {
   render() {
     const { ship, getPosition, uiState } = this.props;
     return (
-      <GamePositionComponent getPosition={getPosition} uiState={uiState}>
+      <GamePositionComponent
+        getPosition={getPosition}
+        uiState={uiState}
+        marginTop={20}
+      >
         <ShipTooltipContainer>
           <InfoHeader>{ship.name}</InfoHeader>
         </ShipTooltipContainer>
