@@ -1,6 +1,7 @@
 import * as React from "react";
 import Lobby from "./lobby";
 import ShipWindowsContainer from "../ui/shipWindow/ShipWindowsContainer";
+import ShipTooltip from "../ui/shipTooltip";
 
 class GameUiComponent extends React.Component {
   render() {
@@ -27,6 +28,14 @@ class GameUiComponent extends React.Component {
             {...uiState.state.shipWindows}
           />
         )}
+
+        {uiState.state.shipTooltip.map((tooltip, index) => (
+          <ShipTooltip
+            key={`tooltip-ship-${index}`}
+            uiState={uiState}
+            {...tooltip}
+          />
+        ))}
       </>
     );
   }

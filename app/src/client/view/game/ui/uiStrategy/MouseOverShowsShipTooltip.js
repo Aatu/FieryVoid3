@@ -1,19 +1,48 @@
 import UiStrategy from "./UiStrategy";
 
 class MouseOverShowsShipTooltip extends UiStrategy {
+  constructor() {
+    super();
+
+    this.clickedShip = null;
+  }
+
   shipClicked(payload) {
     const { uiState } = this.services;
-    uiState.openShipWindow(payload.entity.ship);
+
+    if (this.clickedShip) {
+      uiState.hideShipTooltip(this.clickedShip);
+    }
+
+    uiState.showShipTooltip(payload.entity.ship, true);
+    this.clickedShip = payload.entity.ship;
+  }
+
+  hexClicked() {
+    if (!this.clickedShip) {
+      return;
+    }
+
+    const { uiState } = this.services;
+    uiState.hideShipTooltip(this.clickedShip);
   }
 
   mouseOverShip(payload) {
+    if (this.clickedShip === payload.entity.ship) {
+      return;
+    }
+
     const { uiState } = this.services;
-    uiState.openShipWindow(payload.entity.ship);
+    uiState.showShipTooltip(payload.entity.ship);
   }
 
   mouseOutShip(payload) {
+    if (this.clickedShip === payload.entity.ship) {
+      return;
+    }
+
     const { uiState } = this.services;
-    uiState.closeShipWindow(payload.entity.ship);
+    uiState.hideShipTooltip(payload.entity.ship);
   }
 }
 

@@ -28,7 +28,6 @@ class PhaseDirector {
     this.gameConnector = gameConnector;
     this.gameConnector.init(this);
     this.scene = null;
-    this.uiState.setPhaseDirector(this);
   }
 
   init(scene) {
@@ -39,6 +38,8 @@ class PhaseDirector {
       this.uiState,
       this.movementService
     );
+
+    this.uiState.setPhaseDirector(this);
   }
 
   receiveGameData(gameData) {
@@ -62,15 +63,12 @@ class PhaseDirector {
     }
 
     this.phaseStrategy.render(coordinateConverter, scene, zoom);
+    this.uiState.render();
   }
 
   resolvePhaseStrategy(gameData) {
     if (gameData.status === gameStatus.LOBBY) {
-      return this.activatePhaseStrategy(
-        LobbyPhaseStrategy,
-        gameData,
-        this.scene
-      );
+      return this.activatePhaseStrategy(LobbyPhaseStrategy, gameData);
     }
 
     if (
@@ -79,33 +77,21 @@ class PhaseDirector {
       this.uiState.isReplay() ||
       gameData.status === gameStatus.FINISHED
     ) {
-      return this.activatePhaseStrategy(
-        ReplayPhaseStrategy,
-        gameData,
-        this.scene
-      );
+      return this.activatePhaseStrategy(ReplayPhaseStrategy, gameData);
     }
 
     if (gameData.phase === gamePhase.DEPLOYMENT) {
-      return this.activatePhaseStrategy(
-        DeploymentPhaseStrategy,
-        gameData,
-        this.scene
-      );
+      return this.activatePhaseStrategy(DeploymentPhaseStrategy, gameData);
     }
 
     if (!gameData.isPlayerActive(this.currentUser)) {
-      return this.activatePhaseStrategy(
-        WaitingPhaseStrategy,
-        gameData,
-        this.scene
-      );
+      return this.activatePhaseStrategy(WaitingPhaseStrategy, gameData);
     }
 
-    return this.activatePhaseStrategy(GamePhaseStrategy, gameData, this.scene);
+    return this.activatePhaseStrategy(GamePhaseStrategy, gameData);
   }
 
-  activatePhaseStrategy(phaseStrategy, gameData, scene) {
+  activatePhaseStrategy(phaseStrategy, gameData) {
     this.shipIconContainer.update(gameData);
     this.movementService.update(gameData, this);
     this.ewIconContainer.update(gameData, this.shipIconContainer);
@@ -119,20 +105,24 @@ class PhaseDirector {
       this.phaseStrategy.deactivate();
     }
 
-    this.phaseStrategy = new phaseStrategy({
+    this.phaseStrategy = new phaseStrategy(this.getServices())
+      .activate()
+      .update(gameData);
+  }
+
+  getServices() {
+    return {
       phaseState: this.phaseState,
       shipIconContainer: this.shipIconContainer,
       ewIconContainer: this.ewIconContainer,
-      scene: scene,
+      scene: this.scene,
       shipWindowManager: this.shipWindowManager,
       movementService: this.movementService,
       coordinateConverter: this.coordinateConverter,
       uiState: this.uiState,
       currentUser: this.currentUser,
       gameConnector: this.gameConnector
-    })
-      .activate()
-      .update(gameData);
+    };
   }
 }
 

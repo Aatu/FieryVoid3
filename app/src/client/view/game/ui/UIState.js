@@ -3,7 +3,10 @@ import ShipWindowManager from "../ui/shipWindow/ShipWindowManager";
 class UIState {
   constructor() {
     this.phaseDirector = null;
+    this.services = null;
     this.shipWindowManager = null;
+
+    this.renderListeners = [];
 
     this.state = {
       replay: false,
@@ -13,7 +16,8 @@ class UIState {
       weaponList: null,
       systemInfo: null,
       systemInfoMenu: null,
-      movementUi: null
+      movementUi: null,
+      shipTooltip: []
     };
 
     this.updateState();
@@ -34,6 +38,7 @@ class UIState {
       this,
       phaseDirector.movementService
     );
+    this.services = phaseDirector.getServices();
   }
 
   customEvent(name, payload) {
@@ -128,8 +133,39 @@ class UIState {
     return false;
   }
 
-  repositionMovementUi(position) {
-    console.error("Moving of movement UI is not supported");
+  showShipTooltip(ship) {
+    const { shipIconContainer, coordinateConverter } = this.services;
+
+    this.hideShipTooltip(ship);
+    this.state.shipTooltip.push({
+      ship,
+      getPosition: () =>
+        coordinateConverter.fromGameToViewPort(
+          shipIconContainer.getByShip(ship).getPosition()
+        )
+    });
+    this.updateState();
+  }
+
+  hideShipTooltip(ship) {
+    this.state.shipTooltip = this.state.shipTooltip.filter(
+      tooltip => tooltip.ship !== ship
+    );
+    this.updateState();
+  }
+
+  render() {
+    this.renderListeners.forEach(listener => listener());
+  }
+
+  subscribeToRender(callBack) {
+    this.renderListeners.push(callBack);
+  }
+
+  unsubscribeFromRender(callBack) {
+    this.renderListeners = this.renderListeners.filter(
+      listener => listener !== callBack
+    );
   }
 }
 
