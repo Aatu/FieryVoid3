@@ -7,6 +7,7 @@ class Rhino extends ShipObject {
     super(ship, scene);
     this.defaultHeight = 50;
     this.sideSpriteSize = 30;
+    this.overlaySpriteSize = 80;
     this.create();
   }
 

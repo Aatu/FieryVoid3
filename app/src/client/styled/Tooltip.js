@@ -48,4 +48,17 @@ const TooltipEntry = styled.div`
     margin-top: ${props => (props.space ? "14px" : "0")};
 `;
 
-export { Tooltip, TooltipHeader, TooltipEntry };
+const TooltipMenu = styled.div`
+  display: flex;
+`;
+
+const TooltipButton = styled.button`
+  border: 1px solid white;
+  width: 40px;
+  height: 40px;
+  background-color: transparent;
+  margin: 3px;
+  cursor: pointer;
+`;
+
+export { Tooltip, TooltipHeader, TooltipEntry, TooltipMenu, TooltipButton };

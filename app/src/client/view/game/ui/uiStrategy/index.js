@@ -7,6 +7,7 @@ import ShowShipObjects from "./ShowShipObjects";
 import RightClickShowsShipWindow from "./RightClickShowsShipWindow";
 import MouseOverShowsShipTooltip from "./MouseOverShowsShipTooltip";
 import MouseOverHighlightsShip from "./MouseOverHighlightsShip";
+import SelectUndeployedShip from "./SelectUndeployedShip";
 
 export {
   MovementPathSelectedShip,
@@ -15,5 +16,7 @@ export {
   ShowShipObjects,
   RightClickShowsShipWindow,
   MouseOverShowsShipTooltip,
-  MouseOverHighlightsShip
+  MouseOverHighlightsShip,
+  SelectUndeployedShip,
+  HighlightSelectedShip
 };

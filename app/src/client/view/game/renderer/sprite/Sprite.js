@@ -1,6 +1,9 @@
 import * as THREE from "three";
 import { spriteFragmentShader, spriteVertexShader } from "../shader";
-import { degreeToRadian } from "../../../../../model/utils/math";
+import {
+  degreeToRadian,
+  radianToDegree
+} from "../../../../../model/utils/math";
 
 const textureLoader = new THREE.TextureLoader();
 const geometries = {};
@@ -71,6 +74,10 @@ class Sprite {
 
   setFacing(facing) {
     this.mesh.rotation.z = -degreeToRadian(facing);
+  }
+
+  getFacing() {
+    return -radianToDegree(this.mesh.rotation.z);
   }
 
   create(size, image) {

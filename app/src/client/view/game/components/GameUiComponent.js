@@ -33,6 +33,7 @@ class GameUiComponent extends React.Component {
           <ShipTooltip
             key={`tooltip-ship-${index}`}
             uiState={uiState}
+            {...uiState.state}
             {...tooltip}
           />
         ))}

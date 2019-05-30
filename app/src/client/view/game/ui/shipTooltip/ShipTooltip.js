@@ -1,6 +1,7 @@
 import * as React from "react";
 import styled from "styled-components";
 import GamePositionComponent from "../GamePositionComponent";
+import ShipTooltipMenu from "./ShipTooltipMenu";
 import {
   Tooltip,
   TooltipHeader,
@@ -44,7 +45,8 @@ const TestDiv = styled.div`
 
 class ShipTooltip extends React.Component {
   render() {
-    const { ship, getPosition, uiState } = this.props;
+    const { ship, getPosition, uiState, ui, ...rest } = this.props;
+
     return (
       <GamePositionComponent
         getPosition={getPosition}
@@ -53,6 +55,8 @@ class ShipTooltip extends React.Component {
       >
         <ShipTooltipContainer>
           <InfoHeader>{ship.name}</InfoHeader>
+
+          {ui && <ShipTooltipMenu uiState={uiState} ship={ship} {...rest} />}
         </ShipTooltipContainer>
       </GamePositionComponent>
     );

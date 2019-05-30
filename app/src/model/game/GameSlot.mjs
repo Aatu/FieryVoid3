@@ -18,6 +18,10 @@ class GameSlot {
       .filter(ship => this.shipIds.includes(ship.id));
   }
 
+  isUsers(user) {
+    return this.userId === user.id;
+  }
+
   addShip(ship) {
     this.shipIds.push(ship.id);
   }

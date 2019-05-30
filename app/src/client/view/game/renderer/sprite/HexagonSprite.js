@@ -20,15 +20,15 @@ const createTexture = () => {
 };
 
 const getStrokeColor = () => {
-  return "rgba(250,110,5,0.50)";
+  return "rgba(255,255,255,0.50)";
 };
 
 const getFillColor = () => {
-  return "rgba(250,110,5,0.15)";
+  return "rgba(255,255,255,0.15)";
 };
 
 class HexagonSprite extends Sprite {
-  constructor(position, z = -2, scale = 1) {
+  constructor(position, z = 0, scale = 1) {
     super(
       null,
       {

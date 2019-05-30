@@ -13,16 +13,20 @@ import {
   //MovementPathMoved
 } from "../../movement";
 
-import { LineSprite, ShipSelectedSprite, ShipEWSprite } from "../sprite";
+import {
+  LineSprite,
+  CircleSprite,
+  ShipEWSprite,
+  DottedCircleSprite
+} from "../sprite";
 
-const COLOR_MINE = new THREE.Color(160 / 255, 250 / 255, 100 / 255);
+const COLOR_MINE = new THREE.Color(39 / 255, 196 / 255, 39 / 255);
 const COLOR_ENEMY = new THREE.Color(255 / 255, 40 / 255, 40 / 255);
 
 class ShipObject {
-  constructor(ship, scene, mine) {
+  constructor(ship, scene) {
     this.shipId = ship.id;
     this.ship = ship;
-    this.mine = mine;
 
     this.scene = scene;
     this.mesh = new THREE.Object3D();
@@ -32,6 +36,7 @@ class ShipObject {
     this.weaponArcs = [];
     this.shipSideSprite = null;
     this.shipEWSprite = null;
+    this.shipSelectedSprite = null;
     this.line = null;
 
     this.defaultHeight = 50;
@@ -63,7 +68,6 @@ class ShipObject {
 
   consumeShipdata(ship) {
     this.ship = ship;
-    this.consumeMovement(ship);
     this.consumeEW(ship);
   }
 
@@ -77,18 +81,29 @@ class ShipObject {
       { x: 0, y: 0, z: 1 },
       { x: 0, y: 0, z: this.defaultHeight },
       1,
-      this.mine ? COLOR_MINE : COLOR_ENEMY,
+      new THREE.Color(1, 1, 1),
       opacity
     );
     this.mesh.add(this.line.mesh);
 
-    this.shipSideSprite = new ShipSelectedSprite(
+    this.shipSelectedSprite = new DottedCircleSprite(
+      { width: this.overlaySpriteSize, height: this.overlaySpriteSize },
+      this.defaultHeight,
+      opacity
+    );
+
+    /*
+    this.shipSelectedSprite.setOverlayColor(COLOR_MINE);
+    this.shipSelectedSprite.setOverlayColorAlpha(1);
+    this.mesh.add(this.shipSelectedSprite.mesh);
+    //shipSelectedSprite.hide();
+    */
+
+    this.shipSideSprite = new CircleSprite(
       { width: this.sideSpriteSize, height: this.sideSpriteSize },
       0.01,
       opacity
     );
-    this.shipSideSprite.setOverlayColor(this.mine ? COLOR_MINE : COLOR_ENEMY);
-    this.shipSideSprite.setOverlayColorAlpha(1);
     this.mesh.add(this.shipSideSprite.mesh);
 
     this.shipEWSprite = new ShipEWSprite(
@@ -142,7 +157,7 @@ class ShipObject {
     }
   }
 
-  getRotation(x, y, z) {
+  getRotation() {
     return this.rotation;
   }
 
@@ -228,12 +243,6 @@ class ShipObject {
 
   setNotMoved(value) {
     //console.log("ShipObject.showSideSprite is not yet implemented")
-  }
-
-  consumeMovement(ship) {
-    this.movements = ship.movement.getMovement().filter(function(move) {
-      return !move.isEvade();
-    });
   }
 
   showWeaponArc(ship, weapon) {
@@ -366,6 +375,10 @@ class ShipObject {
   }
 
   replaceEmissive(color) {
+    if (!this.shipObject) {
+      return;
+    }
+
     this.shipObject.traverse(child => {
       if (!child.isMesh) {
         return;
@@ -390,6 +403,10 @@ class ShipObject {
   }
 
   revertEmissive() {
+    if (!this.shipObject) {
+      return;
+    }
+
     this.shipObject.traverse(child => {
       if (!child.isMesh) {
         return;
@@ -407,7 +424,15 @@ class ShipObject {
     });
   }
 
-  render() {}
+  render() {
+    /*
+    if (this.shipSelectedSprite) {
+      this.shipSelectedSprite.setFacing(
+        this.shipSelectedSprite.getFacing() + 0.7
+      );
+    }
+    */
+  }
 }
 
 export default ShipObject;

@@ -12,6 +12,7 @@ class UIState {
       replay: false,
       lobby: false,
       gameData: null,
+      selectedShip: null,
       shipWindows: null,
       weaponList: null,
       systemInfo: null,
@@ -42,11 +43,27 @@ class UIState {
   }
 
   customEvent(name, payload) {
-    if (!this.init) {
-      return;
-    }
-
     this.phaseDirector.relayEvent(name, payload);
+  }
+
+  selectShip(ship) {
+    this.deselectShip();
+    this.state.selectedShip = ship;
+    this.updateState();
+    this.customEvent("shipSelected", ship);
+  }
+
+  deselectShip() {
+    const ship = this.state.selectedShip;
+    this.state.selectedShip = null;
+    this.updateState();
+    if (ship) {
+      this.customEvent("shipDeselected", ship);
+    }
+  }
+
+  isSelected(ship) {
+    return this.state.selectedShip === ship;
   }
 
   updateState() {
@@ -133,7 +150,7 @@ class UIState {
     return false;
   }
 
-  showShipTooltip(ship) {
+  showShipTooltip(ship, ui = false) {
     const { shipIconContainer, coordinateConverter } = this.services;
 
     this.hideShipTooltip(ship);
@@ -142,7 +159,8 @@ class UIState {
       getPosition: () =>
         coordinateConverter.fromGameToViewPort(
           shipIconContainer.getByShip(ship).getPosition()
-        )
+        ),
+      ui
     });
     this.updateState();
   }

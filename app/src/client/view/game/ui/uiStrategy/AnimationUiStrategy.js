@@ -49,9 +49,10 @@ class AnimationUiStrategy extends UiStrategy {
   render(scene, zoom) {
     this.updateDeltaTime.call(this, this.paused);
     this.updateTotalAnimationTime.call(this, this.paused);
+    const now = Date.now();
     this.animations.forEach(function(animation) {
       animation.render(
-        new Date().getTime(),
+        now,
         this.totalAnimationTime,
         this.lastAnimationTime,
         this.currentDeltaTime,
@@ -106,7 +107,7 @@ class AnimationUiStrategy extends UiStrategy {
   }
 
   updateDeltaTime(paused) {
-    var now = new Date().getTime();
+    const now = Date.now();
 
     if (!this.lastAnimationTime) {
       this.lastAnimationTime = now;

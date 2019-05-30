@@ -13,8 +13,8 @@ const createTexture = () => {
 
   const canvas = abstractCanvas.create(TEXTURE_SIZE, TEXTURE_SIZE);
   const context = canvas.getContext("2d");
-  context.strokeStyle = "rgba(78,220,25,1.0)";
-  context.fillStyle = "rgba(78,220,25,0.5)";
+  context.strokeStyle = "rgba(255,255,255,1.0)";
+  context.fillStyle = "rgba(255,255,255,0.5)";
 
   drawCircleAndFill(
     context,
@@ -28,7 +28,7 @@ const createTexture = () => {
   texture.needsUpdate = true;
 };
 
-class ShipSelectedSprite extends Sprite {
+class CircleSprite extends Sprite {
   constructor(size, z, opacity) {
     super(null, size, z);
 
@@ -39,4 +39,4 @@ class ShipSelectedSprite extends Sprite {
   }
 }
 
-export default ShipSelectedSprite;
+export default CircleSprite;

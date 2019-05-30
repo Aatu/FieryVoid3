@@ -104,6 +104,10 @@ class GameData {
       );
   }
 
+  getShipsForUser(user) {
+    return this.ships.getShips().filter(ship => ship.player.isUsers(user));
+  }
+
   serialize() {
     return {
       id: this.id,

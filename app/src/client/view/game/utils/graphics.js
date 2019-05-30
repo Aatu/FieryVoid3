@@ -75,23 +75,6 @@ const drawHollowCircleAndFill = (canvas, x, y, r, r2, w) => {
   canvas.fill();
 };
 
-const drawDottedCircle = (canvas, x, y, r, r2, segments, gapratio) => {
-  const deg = 360 / segments;
-  const gap = deg * gapratio;
-
-  for (let d = 0; d < 360; d += deg) {
-    this.drawCircleSegment(
-      canvas,
-      x,
-      y,
-      r,
-      r2,
-      mathlib.degreeToRadian(d),
-      mathlib.degreeToRadian(d + deg - gap)
-    );
-  }
-};
-
 const drawCircleSegment = (canvas, x, y, r, r2, s, e) => {
   canvas.beginPath();
   canvas.arc(x, y, r2, s, e, false); // outer (filled)
@@ -105,6 +88,23 @@ const drawCircleSegment = (canvas, x, y, r, r2, s, e) => {
   canvas.closePath();
   canvas.stroke();
   canvas.fill();
+};
+
+const drawDottedCircle = (canvas, x, y, r, r2, segments, gapratio) => {
+  const deg = 360 / segments;
+  const gap = deg * gapratio;
+
+  for (let d = 0; d < 360; d += deg) {
+    drawCircleSegment(
+      canvas,
+      x,
+      y,
+      r,
+      r2,
+      mathlib.degreeToRadian(d),
+      mathlib.degreeToRadian(d + deg - gap)
+    );
+  }
 };
 
 const drawFilledCircle = (canvas, x, y, r1, r2) => {

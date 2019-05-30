@@ -105,9 +105,8 @@ class PhaseDirector {
       this.phaseStrategy.deactivate();
     }
 
-    this.phaseStrategy = new phaseStrategy(this.getServices())
-      .activate()
-      .update(gameData);
+    this.phaseStrategy = new phaseStrategy(this.getServices());
+    this.phaseStrategy.activate().update(gameData);
   }
 
   getServices() {

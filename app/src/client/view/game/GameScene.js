@@ -3,8 +3,6 @@ import HexGridRenderer from "./renderer/hexgrid/HexGridRender";
 import StarField from "./terrain/StarField";
 import { ZOOM_MAX, ZOOM_MIN } from "./gameConfig";
 
-import { ShipSelectedSprite } from "./renderer/sprite";
-
 window.THREE = THREE;
 
 class GameScene {

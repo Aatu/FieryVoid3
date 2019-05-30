@@ -1,54 +1,55 @@
 import UiStrategy from "./UiStrategy";
+import * as THREE from "three";
 
 class HighlightSelectedShip extends UiStrategy {
   constructor() {
     super();
-    this.ship = null;
-    this.lastAnimationTime = null;
-    this.totalTime = 0;
 
-    this.amplitude = 1;
-    this.frequency = 300;
+    this.active = false;
+    this.activeTime = 0;
+    this.icon = null;
+    //currentOpacity = opacity + (sineAmplitude * 0.5 * sin(gameTime/sineFrequency) + sineAmplitude)
   }
 
-  deactivated() {
-    this.reset();
-    this.ship = null;
+  deactivate() {}
+
+  shipSelected(ship) {
+    const { shipIconContainer } = this.services;
+    this.active = true;
+    this.activeTime = 0;
+    this.icon = shipIconContainer.getByShip(ship);
   }
 
-  setShipSelected({ ship }) {
-    this.ship = ship;
+  shipDeselected(ship) {
+    this.active = true;
+    this.activeTime = 0;
+
+    if (this.icon) {
+      this.icon.revertEmissive();
+    }
+    this.icon = null;
   }
 
-  shipDeselected({ ship }) {
-    this.reset();
-    this.ship = null;
-  }
-
-  render({ coordinateConverter, scene, zoom }) {
-    const now = new Date().getTime();
-
-    const delta =
-      this.lastAnimationTime !== null ? now - this.lastAnimationTime : 0;
-
-    this.totalTime += delta;
-
-    this.lastAnimationTime = now;
-
-    if (!this.ship) {
+  render({ delta }) {
+    if (!this.active) {
       return;
     }
 
+    const sineAmplitude = 1;
+    const sineFrequency = 200;
+
     const opacity =
-      this.amplitude * 0.5 * Math.sin(this.totalTime / this.frequency) +
-      this.amplitude;
+      0.5 * Math.sin(this.activeTime / sineFrequency) + sineAmplitude * 0.5;
 
-    this.shipIconContainer.getByShip(this.ship).setSideSpriteOpacity(opacity);
-  }
+    this.icon.replaceEmissive(
+      new THREE.Color(
+        (39 * opacity) / 255,
+        (196 * opacity) / 255,
+        (39 * opacity) / 255
+      )
+    );
 
-  reset() {
-    if (this.ship)
-      this.shipIconContainer.getByShip(this.ship).setSideSpriteOpacity(1);
+    this.activeTime += delta;
   }
 }
 

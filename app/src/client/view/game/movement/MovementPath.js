@@ -4,11 +4,7 @@ import {
   hexFacingToAngle
 } from "../../../../model/utils/math";
 
-import {
-  ShipSelectedSprite,
-  LineSprite,
-  ShipFacingSprite
-} from "../renderer/sprite";
+import { CircleSprite, LineSprite, ShipFacingSprite } from "../renderer/sprite";
 
 class MovementPath {
   constructor(ship, scene, coordinateConverter) {
@@ -89,11 +85,7 @@ class MovementPath {
 
 const createMovementMiddleStep = (position, color, coordinateConverter) => {
   const size = coordinateConverter.getHexDistance() * 0.5;
-  const circle = new ShipSelectedSprite(
-    { width: size, height: size },
-    0.01,
-    1.6
-  );
+  const circle = new CircleSprite({ width: size, height: size }, 0.01, 1.6);
   circle.setPosition(coordinateConverter.fromHexToGame(position));
   circle.setOverlayColor(color);
   circle.setOverlayColorAlpha(1);

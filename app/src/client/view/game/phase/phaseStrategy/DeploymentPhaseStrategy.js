@@ -5,7 +5,9 @@ import {
   RightClickShowsShipWindow,
   MouseOverHighlightsShip,
   MouseOverShowsMovementPath,
-  MouseOverShowsShipTooltip
+  MouseOverShowsShipTooltip,
+  SelectUndeployedShip,
+  HighlightSelectedShip
 } from "../../ui/uiStrategy";
 
 class DeploymentPhaseStrategy extends PhaseStrategy {
@@ -18,7 +20,9 @@ class DeploymentPhaseStrategy extends PhaseStrategy {
       new MouseOverHighlightsShip(),
       new MouseOverShowsMovementPath(),
       new ShowShipObjects(),
-      new MouseOverShowsShipTooltip()
+      new MouseOverShowsShipTooltip(),
+      new SelectUndeployedShip(),
+      new HighlightSelectedShip()
     ];
   }
 }

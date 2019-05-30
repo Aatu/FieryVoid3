@@ -16,6 +16,11 @@ class PhaseStrategy {
   constructor(services) {
     this.services = services;
     this.strategies = [];
+    this.inactive = true;
+
+    this.lastAnimationTime = 0;
+    this.totalAnimationTime = 0;
+    this.currentDeltaTime = 0;
 
     this.currentlyMouseOveredIds = null;
   }
@@ -41,6 +46,9 @@ class PhaseStrategy {
   }
 
   render(coordinateConverter, scene, zoom) {
+    this.updateDeltaTime();
+    this.updateTotalAnimationTime();
+
     this.animationStrategy &&
       this.animationStrategy.render(coordinateConverter, scene, zoom);
 
@@ -48,7 +56,38 @@ class PhaseStrategy {
 
     shipIconContainer &&
       shipIconContainer.render(coordinateConverter, scene, zoom);
-    this.callStrategies("render", { scene, zoom });
+    this.callStrategies("render", {
+      delta: this.currentDeltaTime,
+      total: this.totalAnimationTime,
+      last: this.lastAnimationTime
+    });
+  }
+
+  updateTotalAnimationTime(paused) {
+    if (paused) {
+      return;
+    }
+
+    if (this.goingBack) {
+      this.totalAnimationTime -= this.currentDeltaTime;
+    } else {
+      this.totalAnimationTime += this.currentDeltaTime;
+    }
+  }
+
+  updateDeltaTime(paused) {
+    const now = Date.now();
+
+    if (!this.lastAnimationTime) {
+      this.lastAnimationTime = now;
+      this.currentDeltaTime = 0;
+    }
+
+    if (!paused) {
+      this.currentDeltaTime = now - this.lastAnimationTime;
+    }
+
+    this.lastAnimationTime = now;
   }
 
   update(gamedata) {
@@ -84,78 +123,6 @@ class PhaseStrategy {
 
   onZoomEvent(payload) {
     this.callStrategies("onZoom", payload);
-  }
-
-  onClickEvent(payload) {
-    const icons = getInterestingStuffInPosition(
-      payload,
-      this.services.shipIconContainer
-    );
-
-    this.callStrategies("onClick", payload);
-
-    if (payload.cancelled) {
-      return;
-    }
-    console.log("click");
-    console.log(icons);
-
-    if (icons.length > 1) {
-      this.callStrategies("onShipsClick", {
-        ships: icons.map(icon => icon.ship),
-        payload
-      });
-    } else if (icons.length === 1) {
-      if (payload.button !== 0 && payload.button !== undefined) {
-        this.callStrategies("onShipsRightClick", {
-          ship: icons[0].ship,
-          payload
-        });
-      } else {
-        this.callStrategies("onShipClick", {
-          ships: icons[0].ship,
-          payload
-        });
-      }
-    } else {
-      this.callStrategies("onHexClick", payload);
-    }
-  }
-
-  onMouseMoveEvent(payload) {
-    const icons = getInterestingStuffInPosition(
-      payload,
-      this.services.shipIconContainer
-    );
-
-    if (icons.length === 0 && this.currentlyMouseOveredIds !== null) {
-      this.currentlyMouseOveredIds = null;
-      this.callStrategies("mouseOutShips", { payload });
-      return;
-    } else if (icons.length === 0) {
-      return;
-    }
-
-    var mouseOverIds = icons.reduce(function(value, icon) {
-      return value + icon.shipId;
-    }, "");
-
-    if (mouseOverIds === this.currentlyMouseOveredIds) {
-      return;
-    }
-
-    this.currentlyMouseOveredIds = null;
-    this.callStrategies("mouseOutShips", { payload });
-
-    this.currentlyMouseOveredIds = mouseOverIds;
-
-    var ships = icons.map(icon => icon.ship);
-
-    if (ships.length > 1) {
-      this.callStrategies("mouseOverShips", { ships, payload });
-    } else {
-      this.callStrategies("mouseOverShip", { ship: ships[0], payload });
-    }
   }
 
   changeAnimationStrategy(newAnimationStartegy) {

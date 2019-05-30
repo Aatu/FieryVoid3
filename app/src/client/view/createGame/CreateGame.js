@@ -60,12 +60,10 @@ class CreateGame extends Component {
 
   async createGame() {
     const { gameData } = this.state;
-    console.log("hi");
     try {
       const response = await createGame(gameData);
       gameData.id = response.data.gameId;
       this.setState({ gameData });
-      console.log(gameData);
     } catch (e) {
       console.log(e);
     }
@@ -75,7 +73,6 @@ class CreateGame extends Component {
 
   render() {
     const { gameData, location } = this.state;
-    console.log(gameData);
 
     if (gameData.id) {
       return (

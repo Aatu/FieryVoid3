@@ -17,9 +17,13 @@ export { Paragraph, Label, Value } from "./Text";
 export { Title, SubTitle } from "./Title";
 export { Clickable } from "./Clickable";
 export { InputAndLabel } from "./InputAndLabel";
-export { Tooltip } from "./Tooltip";
-export { TooltipHeader } from "./Tooltip";
-export { TooltipEntry } from "./Tooltip";
+export {
+  Tooltip,
+  TooltipHeader,
+  TooltipEntry,
+  TooltipMenu,
+  TooltipButton
+} from "./Tooltip";
 export { Button } from "./Button";
 export { Link } from "./Link";
 export { Error } from "./Error";

@@ -26,6 +26,16 @@ class GameSlots {
     return teams;
   }
 
+  isUsersTeamSlot(slot, user) {
+    const userSlot = this.slots.find(s => s.userId === user);
+
+    if (!userSlot) {
+      return false;
+    }
+
+    return slot.team === userSlot.team;
+  }
+
   getSlotById(id) {
     return this.slots.find(slot => slot.id === id);
   }
