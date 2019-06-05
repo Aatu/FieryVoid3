@@ -13,7 +13,7 @@ class LobbySlots extends Component {
         <DarkContainer key={`team-${team.team}`}>
           <Title>TEAM: {team.team}</Title>
           {team.slots.map(slot => {
-            if (slot.id === selectedSlot.id) {
+            if (selectedSlot && slot.id === selectedSlot.id) {
               return (
                 <Slot key={slot.id} slot={slot} {...this.props}>
                   <FleetList

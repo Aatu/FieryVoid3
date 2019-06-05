@@ -60,7 +60,7 @@ class Slot extends Component {
     } = this.props;
 
     return (
-      <SlotContainer selected={selectedSlot.id === slot.id}>
+      <SlotContainer selected={selectedSlot && selectedSlot.id === slot.id}>
         <Section>
           {edit ? (
             <>

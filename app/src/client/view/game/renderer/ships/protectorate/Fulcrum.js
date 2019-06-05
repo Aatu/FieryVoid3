@@ -2,7 +2,7 @@ import ShipObject from "../ShipObject";
 import { loadObject, cloneObject } from "../../../utils/objectLoader";
 import * as THREE from "three";
 
-class Rhino extends ShipObject {
+class Fulcrum extends ShipObject {
   constructor(ship, scene) {
     super(ship, scene);
     this.defaultHeight = 50;
@@ -14,7 +14,9 @@ class Rhino extends ShipObject {
   async create() {
     super.create();
 
-    const object = await loadObject("/img/3d/caliope/scene.gltf");
+    const object = await loadObject(
+      "/img/3d/ships/protectorate/fulcrum/scene.gltf"
+    );
     //object.scale.set(2, 2, 2);
     this.startRotation = { x: 90, y: 90, z: 0 };
 
@@ -23,6 +25,7 @@ class Rhino extends ShipObject {
     this.mesh.add(this.shipObject);
     object.position.set(0, 0, this.shipZ);
 
+    /*
     const radiator = await loadObject("/img/3d/radiator/scene.gltf");
     const autoCannon = await loadObject(
       "/img/3d/systems/weapons/conventional/85mmAutoCannon/scene.gltf"
@@ -49,13 +52,33 @@ class Rhino extends ShipObject {
       ],
       autoCannon
     );
+*/
+
+    console.log(this.shipObject);
+
+    //"front_hull_torpedo"
+
+    /*
+
+*/
 
     super.replaceSocketByName(
       [
-        "font_hull_bottom",
-        "font_hull_top",
-        "main_hull_front_left_side",
-        "main_hull_front_right_side"
+        "rear_hull_radiator_left",
+        "rear_hull_radiator_right",
+        "rear_hull_radiator_bottom"
+      ],
+      await loadObject("/img/3d/systems/radiators/5x40mSail/scene.gltf")
+    );
+
+    super.replaceSocketByName(
+      [
+        "front_hull_pdc_bottom",
+        "front_hull_pdc_left",
+        "front_hull_pdc_right",
+        "rear_hull_pdc_top",
+        "rear_hull_pdc_right",
+        "rear_hull_pdc_left"
       ],
       await loadObject(
         "/img/3d/systems/weapons/conventional/30mmPDC/scene.gltf"
@@ -63,33 +86,9 @@ class Rhino extends ShipObject {
     );
 
     super.replaceSocketByName(
-      ["thruster_top", "thruster_right", "thruster_left"],
+      ["thruster"],
       await loadObject("/img/3d/systems/thrusters/5mThruster/scene.gltf")
     );
-
-    const shipMaterial = this.shipObject.children[0].material;
-
-    shipMaterial.emissive = new THREE.Color(1, 1, 1);
-    shipMaterial.emissiveMap = new THREE.TextureLoader().load(
-      "/img/3d/caliope/emissiveMap.png"
-    );
-    shipMaterial.emissiveMap.flipY = false;
-
-    /*
-    this.shipObject.traverse(o => {
-      if (o.isMesh) {
-        o.material.emissive = new THREE.Color(1, 1, 1);
-        o.material.emissiveMap = new THREE.TextureLoader().load(
-          "/img/3d/caliope/baseColor.png"
-        );
-        o.material.emissiveMap.flipY = false;
-
-
-      }
-    });
-
-    */
-    console.log(object);
   }
 
   render() {
@@ -97,8 +96,9 @@ class Rhino extends ShipObject {
 
     if (this.shipObject) {
       this.shipObject.rotation.y += 0.006;
+      this.shipObject.rotation.z += 0.006;
     }
   }
 }
 
-export default Rhino;
+export default Fulcrum;

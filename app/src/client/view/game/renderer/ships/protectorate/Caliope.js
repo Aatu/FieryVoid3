@@ -2,7 +2,7 @@ import ShipObject from "../ShipObject";
 import { loadObject, cloneObject } from "../../../utils/objectLoader";
 import * as THREE from "three";
 
-class Rhino extends ShipObject {
+class Caliope extends ShipObject {
   constructor(ship, scene) {
     super(ship, scene);
     this.defaultHeight = 50;
@@ -101,4 +101,4 @@ class Rhino extends ShipObject {
   }
 }
 
-export default Rhino;
+export default Caliope;

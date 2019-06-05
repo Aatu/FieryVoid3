@@ -5,4 +5,7 @@ class Faction {
   }
 }
 
-export default [new Faction("United Colonies", ["UcRhino"])];
+export default [
+  new Faction("United Colonies", ["UcRhino"]),
+  new Faction("The Expanse Protecorate", ["Caliope", "Fulcrum"])
+];

@@ -75,6 +75,7 @@ class Lobby extends Component {
   }
 
   onReady() {
+    console.log("hi");
     const { uiState } = this.props;
     const { selectedSlot, ships } = this.state;
     uiState.customEvent("buyShips", { slot: selectedSlot, ships });

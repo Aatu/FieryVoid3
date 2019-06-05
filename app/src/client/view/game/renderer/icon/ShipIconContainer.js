@@ -5,8 +5,13 @@ const buildShipArray = iconsAsObject => {
   return Object.keys(iconsAsObject).map(key => iconsAsObject[key]);
 };
 
-const createIcon = (ship, scene, currentUser) =>
-  new shipObjects[ship.shipModel](ship, scene, ship.player.is(currentUser));
+const createIcon = (ship, scene, currentUser) => {
+  return new shipObjects[ship.shipModel](
+    ship,
+    scene,
+    ship.player.is(currentUser)
+  );
+};
 
 class ShipIconContainer {
   constructor(scene, currentUser) {

@@ -29,7 +29,7 @@ class ShipIdleMovementAnimation extends Animation {
 
   render(now, total, last, delta, zoom, back, paused) {
     this.shipIcon.setPosition(this.position);
-    this.shipIcon.setFacing(-this.facing);
+    //this.shipIcon.setFacing(-this.facing);
   }
 
   getPosition() {

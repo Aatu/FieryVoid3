@@ -103,7 +103,7 @@ class GameScene {
     this.scene.add(helper);
     */
 
-    //this.scene.add(new THREE.AmbientLight(0x474747));
+    this.scene.add(new THREE.AmbientLight(0x010101, 0.1));
     this.renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     this.renderer.setSize(this.width, this.height);
     this.renderer.autoClear = false;

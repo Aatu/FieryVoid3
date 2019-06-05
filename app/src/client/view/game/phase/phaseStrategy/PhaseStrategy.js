@@ -107,7 +107,6 @@ class PhaseStrategy {
 
   deactivate() {
     this.inactive = true;
-    this.animationStrategy.deactivate();
     this.callStrategies("deactivate");
 
     return this;

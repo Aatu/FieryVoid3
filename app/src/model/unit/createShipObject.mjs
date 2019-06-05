@@ -6,7 +6,12 @@ export const createShipObject = data => {
     throw new Error("Ship class missing, can not construct a ship");
   }
 
-  return new ships[shipClass](data);
+  try {
+    return new ships[shipClass](data);
+  } catch (e) {
+    console.error(`Unable to construct ship of class "${shipClass}"`);
+    throw e;
+  }
 };
 
 export const createBareShipObject = data => {
@@ -15,5 +20,10 @@ export const createBareShipObject = data => {
     throw new Error("Ship class missing, can not construct a ship");
   }
 
-  return new ships[shipClass]();
+  try {
+    return new ships[shipClass]();
+  } catch (e) {
+    console.error(`Unable to construct plain ship of class "${shipClass}"`);
+    throw e;
+  }
 };

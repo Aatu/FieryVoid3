@@ -21,8 +21,8 @@ class DeploymentPhaseStrategy extends PhaseStrategy {
       new MouseOverShowsMovementPath(),
       new ShowShipObjects(),
       new MouseOverShowsShipTooltip(),
-      new SelectUndeployedShip(),
-      new HighlightSelectedShip()
+      new SelectUndeployedShip()
+      //new HighlightSelectedShip()
     ];
   }
 }

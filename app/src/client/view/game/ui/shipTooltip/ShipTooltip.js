@@ -55,7 +55,7 @@ class ShipTooltip extends React.Component {
       >
         <ShipTooltipContainer>
           <InfoHeader>{ship.name}</InfoHeader>
-
+          Hei! täällä me ollaan!
           {ui && <ShipTooltipMenu uiState={uiState} ship={ship} {...rest} />}
         </ShipTooltipContainer>
       </GamePositionComponent>
