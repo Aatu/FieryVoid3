@@ -16,7 +16,7 @@
     "redux-promise-middleware": "^6.1.0",
     "redux-thunk": "^2.3.0",
     "styled-components": "^4.2.0",
-    "three": "^0.104.0",
+    "three": "^0.105.2",
     "three-gltf-loader": "^1.104.0",
     "yup": "^0.27.0"
   },

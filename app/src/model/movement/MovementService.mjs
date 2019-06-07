@@ -37,6 +37,77 @@ class MovementService {
     );
   }
 
+  getNewEndMove(ship, terrain, coordinateConverter) {
+    const startMove = ship.movement.getLastEndMoveOrSurrogate();
+    const lastMove = ship.movement.getLastMove();
+    const vector = ship.movement.getMovementVector();
+    const rollMove = ship.movement.getRollMove();
+    const rolled = rollMove ? !startMove.rolled : startMove.rolled;
+
+    const positionInGame = coordinateConverter
+      .fromHexToGame(startMove.position)
+      .add(lastMove.positionOffset);
+
+    const vectorInGame = coordinateConverter
+      .fromHexToGame(vector)
+      .add(lastMove.targetOffset);
+
+    const {
+      newPositionHex,
+      newTargetHex,
+      newPositionOffset,
+      newTargetOffset
+    } = this.applyOffset(
+      positionInGame,
+      vectorInGame,
+      terrain,
+      coordinateConverter
+    );
+
+    return new MovementOrder(
+      null,
+      movementTypes.END,
+      newPositionHex,
+      newTargetHex,
+      lastMove.facing,
+      rolled,
+      startMove.turn + 1,
+      0,
+      newPositionOffset,
+      newTargetOffset
+    );
+  }
+
+  applyOffset(positionInGame, vectorInGame, terrain, coordinateConverter) {
+    const gravityVector = terrain.getGravityVector(
+      positionInGame,
+      positionInGame.clone().add(vectorInGame)
+    );
+
+    const vectorInGameWithGravity = vectorInGame.clone().add(gravityVector);
+
+    const newPosition = positionInGame.clone().add(vectorInGameWithGravity);
+    const newPositionHex = coordinateConverter.fromGameToHex(newPosition);
+
+    const newPositionOffset = newPosition
+      .clone()
+      .sub(coordinateConverter.fromHexToGame(newPositionHex));
+
+    const newTargetHex = coordinateConverter.fromGameToHex(
+      vectorInGameWithGravity
+    );
+    const newTargetOffset = vectorInGameWithGravity
+      .clone()
+      .sub(coordinateConverter.fromHexToGame(newTargetHex));
+
+    return {
+      newPositionHex,
+      newTargetHex,
+      newPositionOffset,
+      newTargetOffset
+    };
+  }
+
   deploy(ship, pos) {
     let deployMove = ship.movement.getDeployMove();
 

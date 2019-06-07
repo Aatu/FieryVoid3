@@ -67,10 +67,27 @@ class BuyShipsHandler {
     serverShip.gameId = gameData.id;
     serverShip.player.setUser(user);
 
-    serverShip.movement.addMovement(this.getStartPosition(gameData, slot));
+    const startPosition = this.getStartPosition(gameData, slot);
+    serverShip.movement.addMovement(startPosition);
 
     slot.addShip(serverShip);
     gameData.ships.addShip(serverShip);
+
+    if (slot.isValidShipDeployment(serverShip, startPosition.position)) {
+      serverShip.movement.addMovement(this.getDeployMove(startPosition));
+    }
+  }
+
+  getDeployMove(startMove) {
+    return new MovementOrder(
+      uuidv4(),
+      MovementTypes.DEPLOY,
+      startMove.position,
+      startMove.target,
+      startMove.facing,
+      startMove.rolled,
+      1
+    );
   }
 
   getStartPosition(gameData, slot) {

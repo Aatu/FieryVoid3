@@ -2,6 +2,14 @@ import Offset from "./Offset";
 
 const PRECISION = 4;
 
+const lerp = (a, b, t) => {
+  return a + (b - a) * t;
+};
+
+const cubeLerp = (a, b, t) => {
+  return new Cube(lerp(a.x, b.x, t), lerp(a.y, b.y, t), lerp(a.z, b.z, t));
+};
+
 class Cube {
   constructor(x, y, z) {
     if (
@@ -175,6 +183,21 @@ class Cube {
 
   _formatNumber(number) {
     return parseFloat(number.toFixed(PRECISION));
+  }
+
+  drawLine(target, distance = null) {
+    const n = this.distanceTo(target);
+
+    if (distance === null) {
+      distance = n;
+    }
+
+    const results = [];
+    for (let i = distance; i >= 0; i--) {
+      results.push(cubeLerp(target, this, (1.0 / n) * i).round());
+    }
+
+    return results;
   }
 }
 

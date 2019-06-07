@@ -29,28 +29,6 @@ class ShipMovement {
     return this.moves[this.moves.length - 1].clone();
   }
 
-  getFirstMove() {
-    const end = this.moves.find(move => move.isEnd());
-
-    if (end) {
-      return end.clone();
-    }
-
-    const deploy = this.moves.find(move => move.isDeploy());
-
-    if (deploy) {
-      return deploy.clone();
-    }
-
-    const start = this.moves.find(move => move.isStart());
-
-    if (start) {
-      return start.clone();
-    }
-
-    throw new Error("Ship does not have start move");
-  }
-
   getStartMove() {
     const start = this.moves.find(move => move.isStart());
     if (!start) {

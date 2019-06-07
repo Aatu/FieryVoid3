@@ -15,7 +15,7 @@ class MouseOverShowsMovementPath extends UiStrategy {
   mouseOverShip(payload) {
     const { shipIconContainer, coordinateConverter } = this.services;
     hideAllMovementPaths(shipIconContainer);
-    payload.entity.showMovementPath(coordinateConverter);
+    payload.entity.showMovementPath(coordinateConverter, this.gameData.terrain);
   }
 
   mouseOutShip(payload) {

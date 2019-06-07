@@ -1,4 +1,4 @@
-import * as gameConfig from "../../gameConfig";
+import * as gameConfig from "../gameConfig";
 
 const getHexA = hexSize => {
   if (!hexSize) {

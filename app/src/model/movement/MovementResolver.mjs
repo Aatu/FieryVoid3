@@ -62,7 +62,7 @@ class MovementResolver {
   roll(commit = true) {
     let rollMove = this.ship.movement.getRollMove();
 
-    const endMove = this.ship.movement.getFirstMove();
+    const endMove = this.ship.movement.getLastEndMoveOrSurrogate();
 
     let movements = this.ship.movement.getMovement();
 
@@ -77,7 +77,9 @@ class MovementResolver {
         endMove.facing,
         endMove.rolled,
         this.turn,
-        endMove.rolled ? false : true
+        endMove.rolled ? false : true,
+        endMove.positionOffset,
+        endMove.targetOffset
       );
 
       const playerAdded = movements.filter(move => move.isPlayerAdded());
@@ -102,7 +104,7 @@ class MovementResolver {
   evade(step, commit = true) {
     let evadeMove = this.ship.movement.getEvadeMove();
 
-    const endMove = this.ship.movement.getFirstMove();
+    const endMove = this.ship.movement.getLastEndMoveOrSurrogate();
 
     if (evadeMove) {
       if (evadeMove.value + step > this.ship.movement.getMaxEvasion()) {
@@ -126,7 +128,9 @@ class MovementResolver {
         endMove.facing,
         endMove.rolled,
         this.turn,
-        1
+        1,
+        endMove.positionOffset,
+        endMove.targetOffset
       );
     }
 
@@ -167,7 +171,9 @@ class MovementResolver {
       addToHexFacing(lastMove.facing, pivotDirection),
       lastMove.rolled,
       this.turn,
-      pivotDirection
+      pivotDirection,
+      lastMove.positionOffset,
+      lastMove.targetOffset
     );
 
     const movements = this.ship.movement.getMovement();
@@ -202,7 +208,9 @@ class MovementResolver {
       lastMove.facing,
       lastMove.rolled,
       this.turn,
-      direction
+      direction,
+      lastMove.positionOffset,
+      lastMove.targetOffset
     );
 
     let movements = this.ship.movement.getMovement();

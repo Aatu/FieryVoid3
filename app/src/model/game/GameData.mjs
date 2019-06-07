@@ -1,6 +1,7 @@
 import GameSlots from "./GameSlots";
 import GameShips from "./GameShips";
 import GameActiveShips from "./GameActiveShips";
+import GameTerrain from "./GameTerrain";
 import User from "../User";
 import * as gameStatuses from "./gameStatuses.mjs";
 import * as gamePhases from "./gamePhases.mjs";
@@ -116,7 +117,8 @@ class GameData {
       turn: this.turn,
       data: {
         activePlayerIds: this.activePlayerIds,
-        ...this.slots.serialize()
+        ...this.slots.serialize(),
+        terrain: this.terrain.serialize()
       },
       ships: this.ships.serialize(),
       activeShips: this.activeShips.serialize(),
@@ -141,6 +143,7 @@ class GameData {
     this.activeShips = new GameActiveShips(this).deserialize(data.activeShips);
     this.creatorId = data.creatorId;
     this.status = data.status || gameStatuses.LOBBY;
+    this.terrain = new GameTerrain(this).deserialize(gameData.terrain);
 
     return this;
   }

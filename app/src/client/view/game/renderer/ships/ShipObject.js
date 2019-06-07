@@ -345,12 +345,14 @@ class ShipObject {
     }
   }
 
-  showMovementPath(coordinateConverter) {
+  showMovementPath(coordinateConverter, terrain) {
+    //TODO: Move to a service
     this.hideMovementPath(this.ship);
     this.movementPath = new MovementPath(
       this.ship,
       this.scene,
-      coordinateConverter
+      coordinateConverter,
+      terrain
     );
   }
 

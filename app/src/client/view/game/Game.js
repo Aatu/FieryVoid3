@@ -1,5 +1,5 @@
 import PhaseDirector from "./phase/PhaseDirector";
-import CoordinateConverter from "./utils/CoordinateConverter";
+import CoordinateConverter from "../../../model/utils/CoordinateConverter";
 import PositionObject from "./utils/PositionObject";
 import GameSettings from "./GameSettings";
 import GameConnector from "./GameConnector";
@@ -31,6 +31,7 @@ class Game {
     this.init = false;
 
     this.mouseOvered = null;
+    this.mouseOveredHex = null;
   }
 
   initRender(element) {
@@ -68,7 +69,7 @@ class Game {
 
     const payload = new PositionObject(position, gamePos, hexPos, entity);
 
-    console.log(payload.hex);
+    console.log(payload.hex, payload.game);
 
     if (button && button === 2 && entity) {
       this.phaseDirector.relayEvent("shipRightClicked", payload);
@@ -109,6 +110,20 @@ class Game {
         entity: this.mouseOvered
       });
       this.mouseOvered = null;
+    }
+
+    if (!entity) {
+      if (this.mouseOveredHex && !this.mouseOveredHex.equals(payload.hex)) {
+        this.phaseDirector.relayEvent("mouseOutHex", this.mouseOveredHex);
+        this.phaseDirector.relayEvent("mouseOverHex", payload.hex);
+        this.mouseOveredHex = payload.hex;
+      } else if (!this.mouseOveredHex) {
+        this.phaseDirector.relayEvent("mouseOverHex", payload.hex);
+        this.mouseOveredHex = payload.hex;
+      }
+    } else if (entity && this.mouseOveredHex) {
+      this.phaseDirector.relayEvent("mouseOutHex", this.mouseOveredHex);
+      this.mouseOveredHex = null;
     }
   }
 

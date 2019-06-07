@@ -29,20 +29,7 @@ class MovementValidator {
   }
 
   getNewEndMove() {
-    const lastmove = this.ship.movement.getLastMove();
-    const vector = this.ship.movement.getMovementVector();
-    const rollMove = this.ship.movement.getRollMove();
-    const rolled = rollMove ? !this.startMove.rolled : this.startMove.rolled;
-
-    return new MovementOrder(
-      null,
-      movementTypes.END,
-      this.startMove.position.add(vector),
-      vector,
-      lastmove.facing,
-      rolled,
-      this.turn
-    );
+    throw new Error("Moved to MovementService");
   }
 
   ensureMovesAreFullyPaid(movement) {

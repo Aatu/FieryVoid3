@@ -30,7 +30,6 @@ class ShowShipObjects extends AnimationUiStrategy {
     });
   }
 
-  /*
   shipMovementChanged(ship) {
     const animation = this.animations.find(
       animation => animation.ship === ship
@@ -38,8 +37,6 @@ class ShowShipObjects extends AnimationUiStrategy {
 
     animation.update();
   }
-
-  */
 
   deactivate() {
     const { shipIconContainer } = this.services;

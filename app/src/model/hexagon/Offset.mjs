@@ -118,6 +118,12 @@ class Offset {
 
     return new Cube(x, y, z).round();
   }
+
+  drawLine(target, distance) {
+    return this.toCube()
+      .drawLine(target.toCube(), distance)
+      .map(cube => cube.toOffset());
+  }
 }
 
 export default Offset;

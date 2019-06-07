@@ -1,9 +1,14 @@
 import { InvalidGameDataError } from "../errors";
 import MovementValidator from "../services/validation/MovementValidator";
+import MovementService from "../../model/movement/MovementService";
+import CoordinateConverter from "../../model/utils/CoordinateConverter";
 
 class MovementHandler {
   constructor(gameDataService) {
     this.gameDataService = gameDataService;
+
+    this.movementService = new MovementService();
+    this.coordinateConverter = new CoordinateConverter();
   }
 
   receiveMoves(serverGameData, clientGameData, user) {
@@ -18,13 +23,19 @@ class MovementHandler {
       const validator = new MovementValidator(
         clientShip,
         serverGameData.turn,
-        serverShip.movement.getFirstMove()
+        serverShip.movement.getLastEndMoveOrSurrogate()
       );
 
       validator.validate();
 
       serverShip.movement.replaceMovement(clientShip.movement.getMovement());
-      serverShip.movement.addMovement(validator.getNewEndMove());
+      serverShip.movement.addMovement(
+        this.movementService.getNewEndMove(
+          serverShip,
+          serverGameData.terrain,
+          this.coordinateConverter
+        )
+      );
     });
   }
 }

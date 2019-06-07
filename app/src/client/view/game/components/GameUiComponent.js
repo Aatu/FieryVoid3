@@ -2,6 +2,8 @@ import * as React from "react";
 import Lobby from "./lobby";
 import ShipWindowsContainer from "../ui/shipWindow/ShipWindowsContainer";
 import ShipTooltip from "../ui/shipTooltip";
+import TurnHeader from "../ui/TurnHeader";
+import * as gamePhases from "../../../../model/game/gamePhases";
 
 class GameUiComponent extends React.Component {
   render() {
@@ -37,6 +39,16 @@ class GameUiComponent extends React.Component {
             {...tooltip}
           />
         ))}
+
+        {uiState.state.gameData &&
+          (uiState.state.gameData.phase === gamePhases.GAME ||
+            uiState.state.gameData.phase === gamePhases.DEPLOYMENT) && (
+            <TurnHeader
+              uiState={uiState}
+              gameData={uiState.state.gameData}
+              ready={uiState.state.turnReady}
+            />
+          )}
       </>
     );
   }

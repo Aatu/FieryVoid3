@@ -8,6 +8,10 @@ import RightClickShowsShipWindow from "./RightClickShowsShipWindow";
 import MouseOverShowsShipTooltip from "./MouseOverShowsShipTooltip";
 import MouseOverHighlightsShip from "./MouseOverHighlightsShip";
 import SelectUndeployedShip from "./SelectUndeployedShip";
+import DeployShipOnHexClick from "./DeployShipOnHexClick";
+import AllowSubmittingWhenDeploymentDone from "./AllowSubmittingWhenDeploymentDone";
+import DebugDrawLineFromSelectedShip from "./DebugDrawLineFromSelectedShip";
+import MouseOverShowsNavigationPath from "./MouseOverShowsNavigationPath";
 
 export {
   MovementPathSelectedShip,
@@ -18,5 +22,9 @@ export {
   MouseOverShowsShipTooltip,
   MouseOverHighlightsShip,
   SelectUndeployedShip,
-  HighlightSelectedShip
+  HighlightSelectedShip,
+  DeployShipOnHexClick,
+  AllowSubmittingWhenDeploymentDone,
+  DebugDrawLineFromSelectedShip,
+  MouseOverShowsNavigationPath
 };

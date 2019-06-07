@@ -15,52 +15,15 @@ class Fulcrum extends ShipObject {
     super.create();
 
     const object = await loadObject(
-      "/img/3d/ships/protectorate/fulcrum/scene.gltf"
+      "/img/3d/ships/protectorate/Fulcrum/scene.gltf"
     );
-    //object.scale.set(2, 2, 2);
+
     this.startRotation = { x: 90, y: 90, z: 0 };
 
     this.shipObject = object;
     this.setRotation(this.rotation.x, this.rotation.y, this.rotation.z);
     this.mesh.add(this.shipObject);
     object.position.set(0, 0, this.shipZ);
-
-    /*
-    const radiator = await loadObject("/img/3d/radiator/scene.gltf");
-    const autoCannon = await loadObject(
-      "/img/3d/systems/weapons/conventional/85mmAutoCannon/scene.gltf"
-    );
-
-    super.replaceSocketByName(
-      [
-        "engine_pylon_top_front",
-        "engine_pylon_left_front",
-        "engine_pylon_right_front"
-      ],
-      radiator
-    );
-
-    super.replaceSocketByName(
-      [
-        "engine_pylon_top",
-        "engine_pylon_left",
-        "engine_pylon_right",
-        "main_hull_front_left_bottom",
-        "main_hull_front_left_top",
-        "main_hull_front_right_bottom",
-        "main_hull_front_right_top"
-      ],
-      autoCannon
-    );
-*/
-
-    console.log(this.shipObject);
-
-    //"front_hull_torpedo"
-
-    /*
-
-*/
 
     super.replaceSocketByName(
       [
@@ -89,15 +52,6 @@ class Fulcrum extends ShipObject {
       ["thruster"],
       await loadObject("/img/3d/systems/thrusters/5mThruster/scene.gltf")
     );
-  }
-
-  render() {
-    super.render();
-
-    if (this.shipObject) {
-      this.shipObject.rotation.y += 0.006;
-      this.shipObject.rotation.z += 0.006;
-    }
   }
 }
 

@@ -89,15 +89,6 @@ class Caliope extends ShipObject {
     });
 
     */
-    console.log(object);
-  }
-
-  render() {
-    super.render();
-
-    if (this.shipObject) {
-      this.shipObject.rotation.y += 0.006;
-    }
   }
 }
 

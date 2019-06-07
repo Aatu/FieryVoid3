@@ -26,7 +26,7 @@ const Backdrop = styled.div`
 `;
 
 const ContainerRoundedRightBottom = styled(Container)`
-  border-radius: 0px 0px 0px 30px;
+  border-radius: 0px 0px 30px 0px;
   box-shadow: 5px 5px 10px black;
 `;
 

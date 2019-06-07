@@ -1,6 +1,8 @@
 import GameData from "../../model/game/GameData.mjs";
 import * as gameStatuses from "../../model/game/gameStatuses.mjs";
 import { InvalidGameDataError, UnauthorizedError } from "../errors";
+import Sun from "../../model/terrain/Sun";
+import uuidv4 from "uuid/v4";
 
 class CreateGameHandler {
   createGame(clientGameData, user) {
@@ -19,6 +21,7 @@ class CreateGameHandler {
     serverGamedata.slots.setSlots(clientGameData.slots.getSlots());
     serverGamedata.addPlayer(user);
     serverGamedata.setPlayerActive(user);
+    serverGamedata.terrain.addEntity(new Sun(uuidv4()));
 
     return serverGamedata;
   }

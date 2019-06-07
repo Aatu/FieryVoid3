@@ -18,6 +18,10 @@ class GameSlot {
       .filter(ship => this.shipIds.includes(ship.id));
   }
 
+  includesShip(ship) {
+    return this.shipIds.includes(ship.id);
+  }
+
   isUsers(user) {
     return this.userId === user.id;
   }
@@ -83,6 +87,13 @@ class GameSlot {
     }
   }
 
+  isValidShipDeployment(ship, hex) {
+    return (
+      this.includesShip(ship) &&
+      hex.distanceTo(this.deploymentLocation) <= this.deploymentRadius
+    );
+  }
+
   serialize() {
     return {
       id: this.id,
@@ -107,7 +118,8 @@ class GameSlot {
       new hexagon.Offset(data.deploymentLocation) || new hexagon.Offset(0, 0);
     this.deploymentVector =
       new hexagon.Offset(data.deploymentVector) || new hexagon.Offset(0, 0);
-    this.deploymentRadius = data.deploymentRadius || 10;
+    //this.deploymentRadius = data.deploymentRadius || 10;
+    this.deploymentRadius = 100;
     this.shipIds = data.shipIds || [];
     this.points = data.points || 0;
     this.bought = data.bought || false;

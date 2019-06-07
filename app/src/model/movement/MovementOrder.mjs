@@ -1,3 +1,4 @@
+import THREE from "three";
 import { movementTypes } from ".";
 import hexagon from "../hexagon";
 import { addToHexFacing } from "../utils/math";
@@ -13,6 +14,8 @@ class MovementOrder {
     rolled,
     turn,
     value = 0,
+    positionOffset = new THREE.Vector3(),
+    targetOffset = new THREE.Vector3(),
     requiredThrust = undefined
   ) {
     if (position && !(position instanceof hexagon.Offset)) {
@@ -26,7 +29,9 @@ class MovementOrder {
     this.id = id;
     this.type = type;
     this.position = position;
+    this.positionOffset = positionOffset;
     this.target = target;
+    this.targetOffset = targetOffset;
     this.facing = facing;
     this.rolled = rolled;
     this.turn = turn;
@@ -34,8 +39,27 @@ class MovementOrder {
     this.requiredThrust = requiredThrust || new RequiredThrust();
   }
 
+  setPositionOffset(position) {
+    this.positionOffset = position;
+    return this;
+  }
+
+  setTargetOffset(position) {
+    this.targetOffset = position;
+    return this;
+  }
+
+  setTarget(target) {
+    this.target = hexagon.Offset(target);
+  }
+
   setRequiredThrust(req) {
     this.requiredThrust = req;
+    return this;
+  }
+
+  setId(id) {
+    this.id = id;
     return this;
   }
 
@@ -49,7 +73,9 @@ class MovementOrder {
       rolled: this.rolled,
       turn: this.turn,
       value: this.value,
-      requiredThrust: this.requiredThrust.serialize()
+      requiredThrust: this.requiredThrust.serialize(),
+      positionOffset: { x: this.positionOffset.x, y: this.positionOffset.y },
+      targetOffset: { x: this.targetOffset.x, y: this.targetOffset.y }
     };
   }
 
@@ -64,6 +90,13 @@ class MovementOrder {
     this.value = data.value;
     this.requiredThrust = new RequiredThrust().deserialize(data.requiredThrust);
 
+    this.positionOffset = data.positionOffset
+      ? new THREE.Vector3(data.positionOffset.x, data.positionOffset.y)
+      : new THREE.Vector3();
+    this.targetOffset = data.targetOffset
+      ? new THREE.Vector3(data.targetOffset.x, data.targetOffset.y)
+      : new THREE.Vector3();
+
     return this;
   }
 
@@ -75,7 +108,9 @@ class MovementOrder {
       this.facing === move.facing &&
       this.rolled === move.rolled &&
       this.turn === move.turn &&
-      this.value === move.value
+      this.value === move.value &&
+      this.positionOffset.equals(move.positionOffset) &&
+      this.targetOffset.equals(move.targetOffset)
     );
   }
 
@@ -125,6 +160,8 @@ class MovementOrder {
       this.rolled,
       this.turn,
       this.value,
+      this.positionOffset,
+      this.targetOffset,
       this.requiredThrust
     );
   }

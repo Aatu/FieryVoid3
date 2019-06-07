@@ -1,7 +1,7 @@
 import Sprite from "./Sprite";
 import * as THREE from "three";
 import HexagonTexture from "../hexgrid/HexagonTexture";
-import HexagonMath from "../hexgrid/HexagonMath";
+import HexagonMath from "../../../../../model/utils/HexagonMath";
 
 const TEXTURE_SIZE = 512;
 let TEXTURE = null;

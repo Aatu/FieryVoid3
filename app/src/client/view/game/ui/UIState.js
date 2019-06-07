@@ -18,7 +18,8 @@ class UIState {
       systemInfo: null,
       systemInfoMenu: null,
       movementUi: null,
-      shipTooltip: []
+      shipTooltip: [],
+      turnReady: false
     };
 
     this.updateState();
@@ -30,6 +31,11 @@ class UIState {
 
   init(setState) {
     this.setState = setState;
+    this.updateState();
+  }
+
+  setTurnReady(ready) {
+    this.state.turnReady = ready;
     this.updateState();
   }
 
@@ -60,6 +66,10 @@ class UIState {
     if (ship) {
       this.customEvent("shipDeselected", ship);
     }
+  }
+
+  getSelectedShip() {
+    return this.state.selectedShip;
   }
 
   isSelected(ship) {
@@ -143,6 +153,10 @@ class UIState {
   hideMovementUi() {
     this.state.movementUi = null;
     this.updateState();
+  }
+
+  shipMovementChanged(ship) {
+    this.customEvent("shipMovementChanged", ship);
   }
 
   isSelectedSystem(system) {

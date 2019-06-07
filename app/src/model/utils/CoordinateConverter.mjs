@@ -1,8 +1,8 @@
-import * as THREE from "three";
+import THREE from "three";
 import * as gameConfig from "../gameConfig";
-import hexagon from "../../../../model/hexagon";
-import HexagonMath from "../renderer/hexgrid/HexagonMath";
-import { distance } from "../../../../model/utils/math";
+import hexagon from "../hexagon";
+import HexagonMath from "./HexagonMath";
+import { distance } from "./math";
 
 const getShipIcon = object3d => {
   while (object3d.parent) {
@@ -82,7 +82,7 @@ class CoordinateConverter {
       this.hexlenght * Math.sqrt(3) * (offsetHex.q - 0.5 * (offsetHex.r & 1));
     var y = ((this.hexlenght * 3) / 2) * offsetHex.r;
 
-    return { x: x, y: y, z: 0 };
+    return new THREE.Vector3(x, y, 0);
   }
 
   fromViewPortToGame(pos) {

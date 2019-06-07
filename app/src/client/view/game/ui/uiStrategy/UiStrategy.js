@@ -1,15 +1,15 @@
 class UiStrategy {
   constructor() {
     this.services = null;
-    this.gamedata = null;
+    this.gameData = null;
   }
 
   activate(services) {
     this.services = services;
   }
 
-  update(gamedata) {
-    this.gamedata = gamedata;
+  update(gameData) {
+    this.gameData = gameData;
   }
 
   stopEvent(payload) {

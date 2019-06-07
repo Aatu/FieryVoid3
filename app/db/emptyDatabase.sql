@@ -59,7 +59,7 @@ CREATE TABLE `game` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` text,
   `turn` int(11) DEFAULT NULL,
-  `phase` ENUM('deployment','initial','movement', 'firing') DEFAULT 'deployment',
+  `phase` ENUM('deployment','game') DEFAULT 'deployment',
   `active_ships` JSON DEFAULT '[]',
   `data` JSON DEFAULT '{}',
   `creator_id` int(11) DEFAULT NULL,
@@ -102,6 +102,7 @@ CREATE TABLE `ship_movement` (
   `ship_id` BINARY(16) NOT NULL,
   `game_id` int(11) NOT NULL,
   `turn` int (11) NOT NULL, 
+  `movement_index` int (11) NOT NULL,
   `data` JSON DEFAULT '{}',
   CHECK (JSON_VALID(`data`)),
   PRIMARY KEY (`id`)
@@ -112,7 +113,7 @@ CREATE TABLE `game_ship_data` (
   `game_id` int(11) NOT NULL,
   `ship_id` BINARY(16) NOT NULL,
   `turn` int(11) NOT NULL,
-  `phase` ENUM('deployment','initial','movement', 'firing') DEFAULT 'deployment',
+  `phase` ENUM('deployment','game') DEFAULT 'deployment',
   `data` JSON DEFAULT '{}',
   CHECK (JSON_VALID(`data`)),
   PRIMARY KEY (`game_id`,`turn`,`ship_id`, `phase`)

@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import HexagonMath from "./HexagonMath";
+import HexagonMath from "../../../../../model/utils/HexagonMath";
 import HexagonTexture from "./HexagonTexture";
 
 const HEX_COUNT_WIDTH = 9999;

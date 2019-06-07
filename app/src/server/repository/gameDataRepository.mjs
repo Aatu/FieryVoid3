@@ -261,7 +261,8 @@ class GameDataRepository {
         CAST(UuidFromBin(ship_id) as CHAR) as shipId,
         data
       FROM ship_movement
-      WHERE game_id = ? and turn = ?`,
+      WHERE game_id = ? and turn = ?
+      ORDER BY turn ASC, movement_index ASC`,
       [id, turn]
     );
   }
@@ -277,15 +278,17 @@ class GameDataRepository {
       game_id,
       ship_id,
       turn,
+      movement_index,
       data
     ) VALUES (
-      UuidToBin(?),?,UuidToBin(?),?,?
+      UuidToBin(?),?,UuidToBin(?),?,?,?
     )`,
-      ship.movement.map(move => [
+      ship.movement.map((move, i) => [
         move.id,
         gameId,
         ship.id,
         turn,
+        i,
         JSON.stringify(move)
       ])
     );

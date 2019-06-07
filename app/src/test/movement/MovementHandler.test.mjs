@@ -131,7 +131,7 @@ test("Submit movement", test => {
       new hexagon.Offset(5, -2),
       1,
       true,
-      1
+      2
     )
   ]);
 

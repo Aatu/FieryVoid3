@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { drawCenteredHexagon } from "../../utils/graphics";
 import abstractCanvas from "../../utils/abstractCanvas";
-import HexagonMath from "./HexagonMath";
+import HexagonMath from "../../../../../model/utils/HexagonMath";
 
 const createCanvas = (width, height, debug) => {
   return abstractCanvas.create(width, height, debug);

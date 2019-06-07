@@ -7,10 +7,11 @@ import {
 import { CircleSprite, LineSprite, ShipFacingSprite } from "../renderer/sprite";
 
 class MovementPath {
-  constructor(ship, scene, coordinateConverter) {
+  constructor(ship, scene, coordinateConverter, terrain) {
     this.ship = ship;
     this.scene = scene;
     this.coordinateConverter = coordinateConverter;
+    this.terrain = terrain;
 
     this.color = new THREE.Color(132 / 255, 165 / 255, 206 / 255);
 
@@ -38,10 +39,17 @@ class MovementPath {
     const end = this.ship.movement.getLastEndMoveOrSurrogate();
     const move = this.ship.movement.getLastMove();
     const target = this.ship.movement.getMovementVector();
+    const gravityVector = this.terrain.getGravityVector(end.position);
 
     const startPosition = end.position;
-    const middlePosition = end.position.add(end.target);
-    const finalPosition = end.position.add(end.target).add(target);
+    const middlePosition = end.equals(move)
+      ? startPosition
+      : end.position.add(end.target);
+    const finalPosition = end.equals(move)
+      ? end.position.add(end.target)
+      : end.position.add(end.target).add(target);
+
+    const gravityPosition = finalPosition.add(gravityVector);
 
     const line = createMovementLine(
       startPosition,
@@ -80,6 +88,19 @@ class MovementPath {
     );
     this.scene.add(facing.mesh);
     this.objects.push(facing);
+
+    if (!finalPosition.equals(gravityPosition)) {
+      const line3 = createMovementLine(
+        finalPosition,
+        gravityPosition,
+        new THREE.Color(255 / 255, 0 / 255, 0 / 255),
+        this.coordinateConverter,
+        0.8,
+        30
+      );
+      this.scene.add(line3.mesh);
+      this.objects.push(line3);
+    }
   }
 }
 

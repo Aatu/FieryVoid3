@@ -2,6 +2,7 @@ import MovementService from "../../../../model/movement/MovementService";
 import PhaseState from "./PhaseState";
 import ShipIconContainer from "../renderer/icon/ShipIconContainer";
 import EWIconContainer from "../renderer/icon/EWIconContainer";
+import TerrainRenderer from "../renderer/TerrainRenderer";
 import ShipWindowManager from "../ui/shipWindow/ShipWindowManager";
 import * as gameStatus from "../../../../model/game/gameStatuses";
 import * as gamePhase from "../../../../model/game/gamePhases";
@@ -24,6 +25,7 @@ class PhaseDirector {
     this.coordinateConverter = coordinateConverter;
     this.shipWindowManager = null;
     this.movementService = new MovementService();
+    this.terrainRenderer = null;
     this.phaseState = new PhaseState();
     this.gameConnector = gameConnector;
     this.gameConnector.init(this);
@@ -39,12 +41,15 @@ class PhaseDirector {
       this.movementService
     );
 
+    this.terrainRenderer = new TerrainRenderer(scene);
+
     this.uiState.setPhaseDirector(this);
   }
 
   receiveGameData(gameData) {
     window.gameData = gameData;
     this.resolvePhaseStrategy(gameData);
+    this.terrainRenderer.update(gameData.terrain);
   }
 
   relayEvent(name, payload) {

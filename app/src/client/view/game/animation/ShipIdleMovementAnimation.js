@@ -16,7 +16,7 @@ class ShipIdleMovementAnimation extends Animation {
     this.facing = this.getFacing();
   }
 
-  update(gameData) {
+  update() {
     this.position = this.getPosition();
     this.facing = this.getFacing();
   }
@@ -29,7 +29,7 @@ class ShipIdleMovementAnimation extends Animation {
 
   render(now, total, last, delta, zoom, back, paused) {
     this.shipIcon.setPosition(this.position);
-    //this.shipIcon.setFacing(-this.facing);
+    this.shipIcon.setFacing(-this.facing);
   }
 
   getPosition() {

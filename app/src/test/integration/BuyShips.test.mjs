@@ -5,6 +5,25 @@ import User from "../../model/User";
 import { constructLobbyGameWithSlotsTaken } from "../support/constructGame.mjs";
 import TestShip from "../../model/unit/ships/test/TestShip";
 import hexagon from "../../model/hexagon";
+import MovementOrder from "../../model/movement/MovementOrder";
+import movementTypes from "../../model/movement/movementTypes";
+
+const compareMovements = (test, moves1, moves2) => {
+  test.deepEqual(
+    moves1.map(move =>
+      move
+        .clone()
+        .setRequiredThrust(null)
+        .setId(null)
+    ),
+    moves2.map(move =>
+      move
+        .clone()
+        .setRequiredThrust(null)
+        .setId(null)
+    )
+  );
+};
 
 test.serial("Buy ships for first player", async test => {
   const db = new TestDatabaseConnection("buy_ships");
@@ -161,6 +180,30 @@ test.serial("Buy ships for both players", async test => {
   test.deepEqual(biliyaz.getHexPosition(), new hexagon.Offset(30, 0));
   test.deepEqual(achilles.getHexPosition(), new hexagon.Offset(-30, 0));
   test.deepEqual(eclipse.getHexPosition(), new hexagon.Offset(-30, 1));
+
+  test.is(eclipse.movement.getMovement().length, 2);
+  compareMovements(test, eclipse.movement.getMovement(), [
+    new MovementOrder(
+      null,
+      movementTypes.START,
+      new hexagon.Offset(-30, 1),
+      new hexagon.Offset(30, 0),
+      0,
+      false,
+      1,
+      0
+    ),
+    new MovementOrder(
+      null,
+      movementTypes.DEPLOY,
+      new hexagon.Offset(-30, 1),
+      new hexagon.Offset(30, 0),
+      0,
+      false,
+      1,
+      0
+    )
+  ]);
 });
 
 test.serial("Try to buy too expensive ships", async test => {
