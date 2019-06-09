@@ -79,7 +79,7 @@ class MovementService {
   }
 
   applyOffset(positionInGame, vectorInGame, terrain, coordinateConverter) {
-    const gravityVector = terrain.getGravityVector(
+    const { velocity: gravityVector } = terrain.getGravityVectorForTurn(
       positionInGame,
       positionInGame.clone().add(vectorInGame)
     );

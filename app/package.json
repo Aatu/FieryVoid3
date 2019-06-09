@@ -36,7 +36,7 @@
     "not op_mini all"
   ],
   "devDependencies": {
-    "ava": "^1.4.1",
+    "ava": "^2.0.0",
     "redux-devtools-extension": "^2.13.8"
   },
   "ava": {

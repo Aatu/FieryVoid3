@@ -1,14 +1,14 @@
 import { InvalidGameDataError } from "../errors";
 import MovementValidator from "../services/validation/MovementValidator";
 import MovementService from "../../model/movement/MovementService";
-import CoordinateConverter from "../../model/utils/CoordinateConverter";
+import coordinateConverter from "../../model/utils/CoordinateConverter";
 
 class MovementHandler {
   constructor(gameDataService) {
     this.gameDataService = gameDataService;
 
     this.movementService = new MovementService();
-    this.coordinateConverter = new CoordinateConverter();
+    this.coordinateConverter = coordinateConverter;
   }
 
   receiveMoves(serverGameData, clientGameData, user) {

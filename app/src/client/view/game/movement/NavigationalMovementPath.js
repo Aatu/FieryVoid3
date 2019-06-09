@@ -2,9 +2,10 @@ import * as THREE from "three";
 import { CircleSprite, LineSprite, ShipFacingSprite } from "../renderer/sprite";
 
 class NavigationalMovementPath {
-  constructor(terrain, startMove, turns, coordinateConverter, scene) {
+  constructor(terrain, position, velocity, turns, coordinateConverter, scene) {
     this.terrain = terrain;
-    this.startMove = startMove;
+    this.position = position;
+    this.velocity = velocity;
     this.turns = turns;
     this.coordinateConverter = coordinateConverter;
     this.scene = scene;
@@ -22,29 +23,40 @@ class NavigationalMovementPath {
   }
 
   create() {
-    return;
-    let move = this.startMove;
-
-    let turns = this.turns;
-
-    this.terrain.applyGravityToMove(move, this.coordinateConverter);
-    this.createLine(move.position, move.target);
+    let turns = 1000;
+    let position = this.position;
+    let velocity = this.velocity;
 
     while (turns--) {
-      move = move.clone();
-      move.turn = move.turn + 1;
-      this.terrain.applyGravityToMove(move, this.coordinateConverter);
-      this.createLine(move.position, move.target);
+      const {
+        position: newPosition,
+        velocity: newVelocity
+      } = this.terrain.getGravityVectorForTurn(position, velocity);
+
+      /*
+      console.log(
+        "position",
+        position,
+        "velocity",
+        velocity,
+        "newPosition",
+        newPosition,
+        "newVelocity",
+        newVelocity
+      );
+      */
+      velocity = newVelocity;
+
+      this.createLine(position, newPosition);
+      position = newPosition;
     }
   }
 
-  createLine(position, vector) {
-    const end = position.add(vector);
-
+  createLine(start, end) {
     const line = new LineSprite(
-      this.coordinateConverter.fromHexToGame(position),
-      this.coordinateConverter.fromHexToGame(end),
-      50,
+      start,
+      end,
+      5,
       new THREE.Color(132 / 255, 165 / 255, 206 / 255),
       0.5
     );

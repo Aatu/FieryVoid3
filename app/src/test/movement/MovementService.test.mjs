@@ -6,7 +6,7 @@ import MovementOrder from "../../model/movement/MovementOrder";
 import hexagon from "../../model/hexagon";
 import Ship from "../../model/unit/Ship.mjs";
 import GameTerrain from "../../model/game/GameTerrain";
-import CoordinateConverter from "../../model/utils/CoordinateConverter";
+import coordinateConverter from "../../model/utils/CoordinateConverter";
 
 import Thruster from "../../model/unit/system/thruster/Thruster.mjs";
 import Engine from "../../model/unit/system/engine/Engine.mjs";
@@ -28,7 +28,7 @@ const deployMove = new MovementOrder(
   -1,
   movementTypes.DEPLOY,
   new hexagon.Offset(0, 0),
-  startMove.target,
+  startMove.velocity,
   startMove.facing,
   startMove.rolled,
   999
@@ -425,11 +425,7 @@ test("Get an end move", test => {
   movementService.evade(ship, 1);
   movementService.pivot(ship, 1);
   movementService.thrust(ship, 1);
-  const endMove = movementService.getNewEndMove(
-    ship,
-    new GameTerrain(),
-    new CoordinateConverter()
-  );
+  const endMove = movementService.getNewEndMove(ship, new GameTerrain());
 
   compareMovements(
     test,

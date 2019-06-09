@@ -1,5 +1,5 @@
 import PhaseDirector from "./phase/PhaseDirector";
-import CoordinateConverter from "../../../model/utils/CoordinateConverter";
+import coordinateConverter from "../../../model/utils/CoordinateConverter";
 import PositionObject from "./utils/PositionObject";
 import GameSettings from "./GameSettings";
 import GameConnector from "./GameConnector";
@@ -12,7 +12,7 @@ class Game {
     this.currentUser = user;
 
     this.uiState = uiState;
-    this.coordinateConverter = new CoordinateConverter();
+    this.coordinateConverter = coordinateConverter;
 
     this.gameConnector = new GameConnector(gameId);
     this.phaseDirector = new PhaseDirector(

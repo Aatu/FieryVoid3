@@ -58,7 +58,6 @@ class GameController {
 
   async createGame(clientGameData, user) {
     clientGameData = new GameData(clientGameData);
-    console.log(user);
     const serverGameData = this.createGameHandler.createGame(
       clientGameData,
       user

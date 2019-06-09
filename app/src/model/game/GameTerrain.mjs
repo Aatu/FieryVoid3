@@ -12,18 +12,46 @@ class GameTerrain {
     this.entities.push(entity);
   }
 
-  getGravityVector(start, end, coordinateConverter) {
-    let vector = new THREE.Vector3();
-    this.entities.forEach(entity => {
-      const entityVector = entity.getGravityVector(
-        start,
-        end,
-        coordinateConverter
-      );
+  getGravityVectorForTurn2(position, velocity) {
+    position = position.clone();
+    velocity = velocity.clone();
+    let time = 0;
+    let iterations = 100;
+    const dt = 1 / iterations;
 
-      vector = vector.add(entityVector);
-    });
-    return vector;
+    while (iterations--) {
+      time = 1 - dt * iterations;
+
+      const parentEntity = this.getParentEntity(position, time);
+      const gravityVector = parentEntity.getGravityVector(position);
+
+      position = position.clone().add(velocity.clone().multiplyScalar(dt));
+      velocity = velocity.clone().add(gravityVector.clone().multiplyScalar(dt));
+    }
+
+    return { position, velocity };
+  }
+
+  getGravityVectorForTurn(position, velocity) {
+    let time = 0;
+    let iterations = 10000;
+    const dt = 1 / iterations;
+
+    while (iterations--) {
+      time = 1 - dt * iterations;
+
+      const parentEntity = this.getParentEntity(position, time);
+      const gravityVector = parentEntity.getGravityVector(position);
+
+      position = position.add(velocity.multiplyScalar(dt));
+      velocity = velocity.add(gravityVector.multiplyScalar(dt));
+    }
+
+    return { position, velocity };
+  }
+
+  getParentEntity(position, time) {
+    return this.entities[0];
   }
 
   serialize() {

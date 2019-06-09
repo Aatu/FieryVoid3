@@ -192,8 +192,6 @@ class ShipMovementAnimation extends Animation {
       pivot.duration = pivot.endTime - pivot.startTime;
     });
 
-    console.log(pivots);
-
     return pivots;
   }
 

@@ -47,7 +47,7 @@ test.serial("Create game successfull", async test => {
   test.deepEqual(newGameData.slots.serialize(), gameData.slots.serialize());
   test.true(newGameData.players.some(player => player.id === user.id));
   test.true(newGameData.isPlayerActive(user));
-  test.is(newGameData.terrain.entities[0].gravity, 10);
+  test.is(newGameData.terrain.entities[0].gravity, 1000000000);
 });
 
 test("Create game, user is not in a slot", async test => {

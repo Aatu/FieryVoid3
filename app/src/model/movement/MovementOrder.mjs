@@ -1,4 +1,5 @@
-import THREE from "three";
+import Vector from "../../model/utils/Vector";
+import coordinateConverter from "../../model/utils/CoordinateConverter";
 import { movementTypes } from ".";
 import hexagon from "../hexagon";
 import { addToHexFacing } from "../utils/math";
@@ -9,29 +10,25 @@ class MovementOrder {
     id,
     type,
     position,
-    target,
+    velocity,
     facing,
     rolled,
     turn,
     value = 0,
-    positionOffset = new THREE.Vector3(),
-    targetOffset = new THREE.Vector3(),
     requiredThrust = undefined
   ) {
-    if (position && !(position instanceof hexagon.Offset)) {
-      throw new Error("MovementOrder requires position as offset hexagon");
+    if (position instanceof hexagon.Offset) {
+      position = coordinateConverter.fromHexToGame(position);
     }
 
-    if (target && !(target instanceof hexagon.Offset)) {
-      throw new Error("MovementOrder requires target as offset hexagon");
+    if (velocity instanceof hexagon.Offset) {
+      velocity = coordinateConverter.fromHexToGame(velocity);
     }
 
     this.id = id;
     this.type = type;
     this.position = position;
-    this.positionOffset = positionOffset;
-    this.target = target;
-    this.targetOffset = targetOffset;
+    this.velocity = velocity;
     this.facing = facing;
     this.rolled = rolled;
     this.turn = turn;
@@ -39,18 +36,12 @@ class MovementOrder {
     this.requiredThrust = requiredThrust || new RequiredThrust();
   }
 
-  setPositionOffset(position) {
-    this.positionOffset = position;
-    return this;
+  getHexPosition() {
+    return coordinateConverter.fromGameToHex(this.position);
   }
 
-  setTargetOffset(position) {
-    this.targetOffset = position;
-    return this;
-  }
-
-  setTarget(target) {
-    this.target = hexagon.Offset(target);
+  getHexVelocity() {
+    return coordinateConverter.fromGameToHex(this.velocity);
   }
 
   setRequiredThrust(req) {
@@ -68,34 +59,25 @@ class MovementOrder {
       id: this.id,
       type: this.type,
       position: this.position,
-      target: this.target,
+      velocity: this.velocity,
       facing: this.facing,
       rolled: this.rolled,
       turn: this.turn,
       value: this.value,
-      requiredThrust: this.requiredThrust.serialize(),
-      positionOffset: { x: this.positionOffset.x, y: this.positionOffset.y },
-      targetOffset: { x: this.targetOffset.x, y: this.targetOffset.y }
+      requiredThrust: this.requiredThrust.serialize()
     };
   }
 
   deserialize(data) {
     this.id = data.id;
     this.type = data.type;
-    this.position = new hexagon.Offset(data.position);
-    this.target = new hexagon.Offset(data.target);
+    this.position = new Vector(data.position);
+    this.velocity = new Vector(data.velocity);
     this.facing = data.facing;
     this.rolled = data.rolled;
     this.turn = data.turn;
     this.value = data.value;
     this.requiredThrust = new RequiredThrust().deserialize(data.requiredThrust);
-
-    this.positionOffset = data.positionOffset
-      ? new THREE.Vector3(data.positionOffset.x, data.positionOffset.y)
-      : new THREE.Vector3();
-    this.targetOffset = data.targetOffset
-      ? new THREE.Vector3(data.targetOffset.x, data.targetOffset.y)
-      : new THREE.Vector3();
 
     return this;
   }
@@ -104,13 +86,11 @@ class MovementOrder {
     return (
       this.type === move.type &&
       this.position.equals(move.position) &&
-      this.target.equals(move.target) &&
+      this.velocity.equals(move.velocity) &&
       this.facing === move.facing &&
       this.rolled === move.rolled &&
       this.turn === move.turn &&
-      this.value === move.value &&
-      this.positionOffset.equals(move.positionOffset) &&
-      this.targetOffset.equals(move.targetOffset)
+      this.value === move.value
     );
   }
 
@@ -155,13 +135,11 @@ class MovementOrder {
       this.id,
       this.type,
       this.position,
-      this.target,
+      this.velocity,
       this.facing,
       this.rolled,
       this.turn,
       this.value,
-      this.positionOffset,
-      this.targetOffset,
       this.requiredThrust
     );
   }

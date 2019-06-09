@@ -161,7 +161,6 @@ class GameSceneComponent extends React.Component {
   }
 
   render() {
-    console.log("Render game scene container");
     return (
       <WebglCanvas
         ref={this.canvasRef}

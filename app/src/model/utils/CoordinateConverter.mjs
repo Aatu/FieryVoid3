@@ -1,4 +1,5 @@
 import THREE from "three";
+import Vector from "./Vector";
 import * as gameConfig from "../gameConfig";
 import hexagon from "../hexagon";
 import HexagonMath from "./HexagonMath";
@@ -82,7 +83,7 @@ class CoordinateConverter {
       this.hexlenght * Math.sqrt(3) * (offsetHex.q - 0.5 * (offsetHex.r & 1));
     var y = ((this.hexlenght * 3) / 2) * offsetHex.r;
 
-    return new THREE.Vector3(x, y, 0);
+    return new Vector(x, y, 0);
   }
 
   fromViewPortToGame(pos) {
@@ -153,4 +154,5 @@ class CoordinateConverter {
   }
 }
 
-export default CoordinateConverter;
+const coordinateConverter = new CoordinateConverter();
+export default coordinateConverter;

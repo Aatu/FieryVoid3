@@ -51,7 +51,8 @@ class MouseOverShowsNavigationPath extends UiStrategy {
     const move = ship.movement.getLastEndMoveOrSurrogate();
     this.path = new NavigationalMovementPath(
       this.gameData.terrain,
-      move,
+      coordinateConverter.fromHexToGame(move.position),
+      coordinateConverter.fromHexToGame(move.target),
       100,
       coordinateConverter,
       scene

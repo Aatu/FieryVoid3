@@ -10,7 +10,6 @@ const axiosConfig = {
 
 export const createGame = async gameData => {
   try {
-    console.log("what");
     return axios.post(`${SERVER_URL}/game`, gameData.serialize(), axiosConfig);
   } catch (error) {
     throw error.response;

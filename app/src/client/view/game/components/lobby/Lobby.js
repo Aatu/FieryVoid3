@@ -75,7 +75,6 @@ class Lobby extends Component {
   }
 
   onReady() {
-    console.log("hi");
     const { uiState } = this.props;
     const { selectedSlot, ships } = this.state;
     uiState.customEvent("buyShips", { slot: selectedSlot, ships });
@@ -91,7 +90,6 @@ class Lobby extends Component {
     }
 
     gameData = new GameData(gameData);
-    console.log(gameData);
 
     return (
       <LobbyContainer>
