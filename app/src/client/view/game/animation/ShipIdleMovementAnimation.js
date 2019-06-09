@@ -34,7 +34,7 @@ class ShipIdleMovementAnimation extends Animation {
 
   getPosition() {
     const end = this.ship.movement.getLastEndMoveOrSurrogate();
-    return this.coordinateConverter.fromHexToGame(end.position);
+    return end.position;
   }
 
   getFacing() {

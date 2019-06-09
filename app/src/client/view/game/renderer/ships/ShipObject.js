@@ -345,15 +345,10 @@ class ShipObject {
     }
   }
 
-  showMovementPath(coordinateConverter, terrain) {
+  showMovementPath(terrain) {
     //TODO: Move to a service
     this.hideMovementPath(this.ship);
-    this.movementPath = new MovementPath(
-      this.ship,
-      this.scene,
-      coordinateConverter,
-      terrain
-    );
+    this.movementPath = new MovementPath(this.ship, this.scene, terrain);
   }
 
   replaceSocketByName(names, entity) {

@@ -1,4 +1,5 @@
 import THREE from "three";
+import coordinateConverter from "./CoordinateConverter";
 
 const helperA = new THREE.Vector3();
 const helperB = new THREE.Vector3();
@@ -72,6 +73,12 @@ class Vector {
       Math.floor(this.x),
       Math.floor(this.y),
       Math.floor(this.z)
+    );
+  }
+
+  roundToHexCenter() {
+    return coordinateConverter.fromHexToGame(
+      coordinateConverter.fromGameToHex(this)
     );
   }
 }

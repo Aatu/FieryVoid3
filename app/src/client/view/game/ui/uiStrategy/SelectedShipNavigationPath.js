@@ -1,7 +1,7 @@
 import UiStrategy from "./UiStrategy";
 import NavigationalMovementPath from "../../../game/movement/NavigationalMovementPath";
 
-class MouseOverShowsNavigationPath extends UiStrategy {
+class SelectedShipNavigationPath extends UiStrategy {
   constructor() {
     super();
 
@@ -66,4 +66,4 @@ class MouseOverShowsNavigationPath extends UiStrategy {
   }
 }
 
-export default MouseOverShowsNavigationPath;
+export default SelectedShipNavigationPath;

@@ -3,14 +3,14 @@ import {
   getPointBetweenInDistance,
   hexFacingToAngle
 } from "../../../../model/utils/math";
+import coordinateConverter from "../../../../model/utils/CoordinateConverter";
 
 import { CircleSprite, LineSprite, ShipFacingSprite } from "../renderer/sprite";
 
 class MovementPath {
-  constructor(ship, scene, coordinateConverter, terrain) {
+  constructor(ship, scene, terrain) {
     this.ship = ship;
     this.scene = scene;
-    this.coordinateConverter = coordinateConverter;
     this.terrain = terrain;
 
     this.color = new THREE.Color(132 / 255, 165 / 255, 206 / 255);
@@ -28,13 +28,35 @@ class MovementPath {
   }
 
   create() {
-    const deployMovement = this.ship.movement.getDeployMove(this.ship);
+    const startMove = this.ship.movement.getLastEndMoveOrSurrogate();
+    const lastMove = this.ship.movement.getLastMove();
+
+    const { position } = this.terrain.getGravityVectorForTurn(
+      startMove.position,
+      this.ship.movement.getMovementVector(),
+      startMove.turn
+    );
+
+    const line = createMovementLine(
+      startMove.position.roundToHexCenter(),
+      position.roundToHexCenter(),
+      this.color,
+      0.5
+    );
+
+    this.scene.add(line.mesh);
+    this.objects.push(line);
+
+    const facing = createMovementFacing(
+      lastMove.facing,
+      position.roundToHexCenter(),
+      this.color
+    );
+    this.scene.add(facing.mesh);
+    this.objects.push(facing);
 
     /*
-    if (!deployMovement) {
-      return;
-    }
-    */
+ 
 
     const end = this.ship.movement.getLastEndMoveOrSurrogate();
     const move = this.ship.movement.getLastMove();
@@ -101,6 +123,7 @@ class MovementPath {
       this.scene.add(line3.mesh);
       this.objects.push(line3);
     }
+    */
   }
 }
 
@@ -113,26 +136,17 @@ const createMovementMiddleStep = (position, color, coordinateConverter) => {
   return circle;
 };
 
-const createMovementLine = (
-  position,
-  target,
-  color,
-  coordinateConverter,
-  opacity = 0.8
-) => {
-  const start = coordinateConverter.fromHexToGame(position);
-  const end = coordinateConverter.fromHexToGame(target);
-
+const createMovementLine = (position, target, color, opacity = 0.8) => {
   return new LineSprite(
     getPointBetweenInDistance(
-      start,
-      end,
+      position,
+      target,
       coordinateConverter.getHexDistance() * 0.45,
       true
     ),
     getPointBetweenInDistance(
-      end,
-      start,
+      target,
+      position,
       coordinateConverter.getHexDistance() * 0.45,
       true
     ),
@@ -142,7 +156,7 @@ const createMovementLine = (
   );
 };
 
-const createMovementFacing = (facing, target, color, coordinateConverter) => {
+const createMovementFacing = (facing, target, color) => {
   const size = coordinateConverter.getHexDistance() * 1.5;
   const facingSprite = new ShipFacingSprite(
     { width: size, height: size },
@@ -150,7 +164,7 @@ const createMovementFacing = (facing, target, color, coordinateConverter) => {
     1.6,
     facing
   );
-  facingSprite.setPosition(coordinateConverter.fromHexToGame(target));
+  facingSprite.setPosition(target);
   facingSprite.setOverlayColor(color);
   facingSprite.setOverlayColorAlpha(1);
   facingSprite.setFacing(hexFacingToAngle(facing));

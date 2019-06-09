@@ -11,7 +11,7 @@ import SelectUndeployedShip from "./SelectUndeployedShip";
 import DeployShipOnHexClick from "./DeployShipOnHexClick";
 import AllowSubmittingWhenDeploymentDone from "./AllowSubmittingWhenDeploymentDone";
 import DebugDrawLineFromSelectedShip from "./DebugDrawLineFromSelectedShip";
-import MouseOverShowsNavigationPath from "./MouseOverShowsNavigationPath";
+import SelectedShipNavigationPath from "./SelectedShipNavigationPath";
 
 export {
   MovementPathSelectedShip,
@@ -26,5 +26,5 @@ export {
   DeployShipOnHexClick,
   AllowSubmittingWhenDeploymentDone,
   DebugDrawLineFromSelectedShip,
-  MouseOverShowsNavigationPath
+  SelectedShipNavigationPath
 };
