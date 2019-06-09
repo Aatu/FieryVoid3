@@ -77,9 +77,7 @@ class MovementResolver {
         endMove.facing,
         endMove.rolled,
         this.turn,
-        endMove.rolled ? false : true,
-        endMove.positionOffset,
-        endMove.targetOffset
+        endMove.rolled ? false : true
       );
 
       const playerAdded = movements.filter(move => move.isPlayerAdded());
@@ -128,9 +126,7 @@ class MovementResolver {
         endMove.facing,
         endMove.rolled,
         this.turn,
-        1,
-        endMove.positionOffset,
-        endMove.targetOffset
+        1
       );
     }
 
@@ -171,9 +167,7 @@ class MovementResolver {
       addToHexFacing(lastMove.facing, pivotDirection),
       lastMove.rolled,
       this.turn,
-      pivotDirection,
-      lastMove.positionOffset,
-      lastMove.targetOffset
+      pivotDirection
     );
 
     const movements = this.ship.movement.getMovement();
@@ -208,9 +202,7 @@ class MovementResolver {
       lastMove.facing,
       lastMove.rolled,
       this.turn,
-      direction,
-      lastMove.positionOffset,
-      lastMove.targetOffset
+      direction
     );
 
     let movements = this.ship.movement.getMovement();

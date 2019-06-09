@@ -27,7 +27,7 @@ const deployMove = new MovementOrder(
   -1,
   movementTypes.DEPLOY,
   new hexagon.Offset(5, -5),
-  startMove.target,
+  startMove.velocity,
   startMove.facing,
   startMove.rolled,
   1
@@ -54,8 +54,18 @@ const constructDeployedShip = (id, player) => {
 
 const compareMovements = (test, moves1, moves2) => {
   test.deepEqual(
-    moves1.map(move => move.clone().setRequiredThrust(null)),
-    moves2.map(move => move.clone().setRequiredThrust(null))
+    moves1.map(move =>
+      move
+        .clone()
+        .setRequiredThrust(null)
+        .round()
+    ),
+    moves2.map(move =>
+      move
+        .clone()
+        .setRequiredThrust(null)
+        .round()
+    )
   );
 };
 
@@ -122,18 +132,22 @@ test("Submit movement", test => {
     user
   );
 
-  test.deepEqual(serverGame.ships.getShipById(1).movement.getMovement(), [
-    ...clientGame.ships.getShipById(1).movement.getMovement(),
-    new MovementOrder(
-      null,
-      movementTypes.END,
-      new hexagon.Offset(10, -7),
-      new hexagon.Offset(5, -2),
-      1,
-      true,
-      2
-    )
-  ]);
+  compareMovements(
+    test,
+    serverGame.ships.getShipById(1).movement.getMovement(),
+    [
+      ...clientGame.ships.getShipById(1).movement.getMovement(),
+      new MovementOrder(
+        null,
+        movementTypes.END,
+        new hexagon.Offset(10, -7),
+        new hexagon.Offset(5, -2),
+        1,
+        true,
+        2
+      )
+    ]
+  );
 
   test.is(serverGame.ships.getShipById(2).movement.getMovement().length, 2);
 });

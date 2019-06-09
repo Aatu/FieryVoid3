@@ -27,7 +27,7 @@ class Ship {
       return null;
     }
 
-    return lastMove.position;
+    return lastMove.getHexPosition();
   }
 
   deserialize(data = {}) {

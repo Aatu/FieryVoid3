@@ -3,6 +3,7 @@ import Vector from "../../model/utils/Vector";
 import GameTerrain from "../../model/game/GameTerrain";
 import Sun from "../../model/terrain/Sun";
 
+/*
 test("Get gravity vector", test => {
   const gameTerrain = new GameTerrain();
   gameTerrain.addEntity(new Sun("sunId"));
@@ -18,6 +19,7 @@ test("Get gravity vector", test => {
   test.deepEqual(newPosition, new Vector(10, 10, 0));
   test.deepEqual(newVelocity, new Vector(10, 10, 0));
 });
+*/
 
 test("Sun gravity", test => {
   const sun = new Sun();

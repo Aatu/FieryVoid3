@@ -1,6 +1,6 @@
 import GameTerrainEntity from "./GameTerrainEntity.mjs";
 import hexagon from "../../model/hexagon";
-import THREE from "three";
+import Vector from "../../model/utils/Vector";
 
 class GameTerrain {
   constructor(gameData) {
@@ -32,7 +32,7 @@ class GameTerrain {
     return { position, velocity };
   }
 
-  getGravityVectorForTurn(position, velocity) {
+  getGravityVectorForTurn(position, velocity, turn) {
     let time = 0;
     let iterations = 10000;
     const dt = 1 / iterations;
@@ -40,17 +40,20 @@ class GameTerrain {
     while (iterations--) {
       time = 1 - dt * iterations;
 
-      const parentEntity = this.getParentEntity(position, time);
-      const gravityVector = parentEntity.getGravityVector(position);
+      const parentEntity = this.getParentEntity(position, time, turn);
 
       position = position.add(velocity.multiplyScalar(dt));
-      velocity = velocity.add(gravityVector.multiplyScalar(dt));
+      velocity = parentEntity
+        ? velocity.add(
+            parentEntity.getGravityVector(position).multiplyScalar(dt)
+          )
+        : velocity;
     }
 
-    return { position, velocity };
+    return { position: position.clone(), velocity: velocity.clone() };
   }
 
-  getParentEntity(position, time) {
+  getParentEntity(position, time, turn) {
     return this.entities[0];
   }
 

@@ -66,6 +66,14 @@ class Vector {
   equals(vector) {
     return this.x === vector.x && this.y === vector.y && this.z === vector.z;
   }
+
+  round() {
+    return new Vector(
+      Math.floor(this.x),
+      Math.floor(this.y),
+      Math.floor(this.z)
+    );
+  }
 }
 
 export default Vector;

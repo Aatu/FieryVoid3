@@ -22,8 +22,8 @@ class GameTerrainEntity {
     this.id = data.id || null;
     this.type = data.type || TERRAIN_TYPE_SUN;
     this.gravity = data.gravity || 10;
-    this.position = new Vector(data.position.x, data.position.y);
-    this.target = new Vector(data.target.x, data.target.y);
+    this.position = new Vector(data.position);
+    this.velocity = new Vector(data.velocity);
     this.affectedByGravity = this.type !== TERRAIN_TYPE_SUN;
 
     return this;
@@ -35,7 +35,7 @@ class GameTerrainEntity {
       type: this.type,
       gravity: this.gravity,
       position: this.position,
-      target: this.target
+      velocity: this.velocity
     };
   }
 }

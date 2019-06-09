@@ -1,5 +1,5 @@
 import MovementOrder from "../movement/MovementOrder.mjs";
-import hexagon from "../hexagon";
+import Vector from "../utils/Vector";
 
 class ShipMovement {
   constructor(ship) {
@@ -117,14 +117,14 @@ class ShipMovement {
 
   getMovementVector() {
     return this.moves.reduce((vector, move) => {
-      if (move.isDeploy() || move.isEnd()) {
-        return move.target;
+      if (move.isDeploy() || move.isEnd() || move.isStart()) {
+        return move.velocity;
       } else if (move.isSpeed()) {
-        return vector.add(move.target);
+        return vector.add(move.velocity);
       }
 
       return vector;
-    }, new hexagon.Offset(0, 0));
+    }, new Vector(0, 0));
   }
 
   getThrustOutput() {

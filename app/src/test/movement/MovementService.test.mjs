@@ -1,5 +1,5 @@
 import test from "ava";
-import THREE from "three";
+import Vector from "../../model/utils/Vector";
 import MovementService from "../../model/movement/MovementService";
 import movementTypes from "../../model/movement/movementTypes";
 import MovementOrder from "../../model/movement/MovementOrder";
@@ -93,7 +93,7 @@ test("Ship can be deployed", test => {
       -1,
       movementTypes.DEPLOY,
       pos,
-      startMove.target,
+      startMove.velocity,
       startMove.facing,
       startMove.rolled,
       999
@@ -108,7 +108,7 @@ test("Ship can be deployed", test => {
       -1,
       movementTypes.DEPLOY,
       pos2,
-      startMove.target,
+      startMove.velocity,
       startMove.facing,
       startMove.rolled,
       999
@@ -395,32 +395,10 @@ test("Evasion cancels itself", test => {
   compareMovements(test, ship.movement.getMovement(), [startMove, deployMove]);
 });
 
-test("Offsets are preserved", test => {
-  const movementService = getMovementService();
-  const ship = constructDeployedShip();
-
-  const positionOffset = new THREE.Vector3(10, 10, 0);
-  const targetOffset = new THREE.Vector3(10, 10, 0);
-
-  ship.movement.moves[1].positionOffset = positionOffset;
-  ship.movement.moves[1].targetOffset = targetOffset;
-  movementService.roll(ship);
-  movementService.evade(ship, 1);
-  movementService.pivot(ship, 1);
-  movementService.thrust(ship, 1);
-  test.deepEqual(ship.movement.getLastMove().positionOffset, positionOffset);
-  test.deepEqual(ship.movement.getLastMove().targetOffset, targetOffset);
-});
-
 test("Get an end move", test => {
   const movementService = getMovementService();
   const ship = constructDeployedShip();
 
-  const positionOffset = new THREE.Vector3(5, 5, 0);
-  const targetOffset = new THREE.Vector3(5, 5, 0);
-
-  ship.movement.moves[1].positionOffset = positionOffset;
-  ship.movement.moves[1].targetOffset = targetOffset;
   movementService.roll(ship);
   movementService.evade(ship, 1);
   movementService.pivot(ship, 1);
@@ -429,7 +407,7 @@ test("Get an end move", test => {
 
   compareMovements(
     test,
-    [endMove],
+    [endMove.round()],
     [
       new MovementOrder(
         null,
@@ -439,49 +417,8 @@ test("Get an end move", test => {
         1,
         true,
         1000,
-        0,
-        new THREE.Vector3(10, 10, 0),
-        targetOffset
-      )
-    ]
-  );
-});
-
-test("End move with enough offset to deviate hex", test => {
-  const movementService = getMovementService();
-  const ship = constructDeployedShip();
-
-  const positionOffset = new THREE.Vector3(5, 0, 0);
-  const targetOffset = new THREE.Vector3(20, 0, 0);
-
-  ship.movement.moves[1].positionOffset = positionOffset;
-  ship.movement.moves[1].targetOffset = targetOffset;
-  movementService.roll(ship);
-  movementService.evade(ship, 1);
-  movementService.pivot(ship, 1);
-  movementService.thrust(ship, 1);
-  const endMove = movementService.getNewEndMove(
-    ship,
-    new GameTerrain(),
-    new CoordinateConverter()
-  );
-
-  compareMovements(
-    test,
-    [endMove],
-    [
-      new MovementOrder(
-        null,
-        movementTypes.END,
-        new hexagon.Offset(5, 1),
-        new hexagon.Offset(4, 1),
-        1,
-        true,
-        1000,
-        0,
-        new THREE.Vector3(-18.301270189221952, 0, 0),
-        targetOffset
-      )
+        0
+      ).round()
     ]
   );
 });

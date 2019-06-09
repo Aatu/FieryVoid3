@@ -27,7 +27,7 @@ const deployMove = new MovementOrder(
   -1,
   movementTypes.DEPLOY,
   new hexagon.Offset(0, 0),
-  startMove.target,
+  startMove.velocity,
   startMove.facing,
   startMove.rolled,
   999

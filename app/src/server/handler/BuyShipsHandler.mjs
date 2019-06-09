@@ -73,7 +73,9 @@ class BuyShipsHandler {
     slot.addShip(serverShip);
     gameData.ships.addShip(serverShip);
 
-    if (slot.isValidShipDeployment(serverShip, startPosition.position)) {
+    if (
+      slot.isValidShipDeployment(serverShip, startPosition.getHexPosition())
+    ) {
       serverShip.movement.addMovement(this.getDeployMove(startPosition));
     }
   }
@@ -83,7 +85,7 @@ class BuyShipsHandler {
       uuidv4(),
       MovementTypes.DEPLOY,
       startMove.position,
-      startMove.target,
+      startMove.velocity,
       startMove.facing,
       startMove.rolled,
       1

@@ -118,8 +118,7 @@ class GameSlot {
       new hexagon.Offset(data.deploymentLocation) || new hexagon.Offset(0, 0);
     this.deploymentVector =
       new hexagon.Offset(data.deploymentVector) || new hexagon.Offset(0, 0);
-    //this.deploymentRadius = data.deploymentRadius || 10;
-    this.deploymentRadius = 10000;
+    this.deploymentRadius = data.deploymentRadius || 10;
     this.shipIds = data.shipIds || [];
     this.points = data.points || 0;
     this.bought = data.bought || false;

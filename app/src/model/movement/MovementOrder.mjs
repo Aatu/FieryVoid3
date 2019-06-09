@@ -17,23 +17,41 @@ class MovementOrder {
     value = 0,
     requiredThrust = undefined
   ) {
-    if (position instanceof hexagon.Offset) {
-      position = coordinateConverter.fromHexToGame(position);
-    }
-
-    if (velocity instanceof hexagon.Offset) {
-      velocity = coordinateConverter.fromHexToGame(velocity);
-    }
-
     this.id = id;
     this.type = type;
-    this.position = position;
-    this.velocity = velocity;
     this.facing = facing;
     this.rolled = rolled;
     this.turn = turn;
     this.value = value;
     this.requiredThrust = requiredThrust || new RequiredThrust();
+    this.setPosition(position);
+    this.setVelocity(velocity);
+  }
+
+  round() {
+    const position = this.position.round();
+    const velocity = this.velocity.round();
+
+    const clone = this.clone();
+    clone.setPosition(position);
+    clone.setVelocity(velocity);
+    return clone;
+  }
+
+  setPosition(position) {
+    if (position instanceof hexagon.Offset) {
+      position = coordinateConverter.fromHexToGame(position);
+    }
+
+    this.position = position;
+  }
+
+  setVelocity(velocity) {
+    if (velocity instanceof hexagon.Offset) {
+      velocity = coordinateConverter.fromHexToGame(velocity);
+    }
+
+    this.velocity = velocity;
   }
 
   getHexPosition() {
