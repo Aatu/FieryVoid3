@@ -20,6 +20,11 @@ class AllowSubmittingWhenDeploymentDone extends UiStrategy {
     uiState.shipMovementChanged(ship);
   }
 
+  deactivate() {
+    const { uiState } = this.services;
+    uiState.setTurnReady(false);
+  }
+
   update(gameData) {
     super.update(gameData);
     this.checkDeployment();

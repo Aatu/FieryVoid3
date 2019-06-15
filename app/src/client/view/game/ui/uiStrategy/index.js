@@ -13,6 +13,7 @@ import AllowSubmittingWhenDeploymentDone from "./AllowSubmittingWhenDeploymentDo
 import DebugDrawLineFromSelectedShip from "./DebugDrawLineFromSelectedShip";
 import SelectedShipNavigationPath from "./SelectedShipNavigationPath";
 import SelectedShipDeploymentMovementUi from "./SelectedShipDeploymentMovementUi";
+import ShowWaitingStatus from "./ShowWaitingStatus";
 
 export {
   MovementPathSelectedShip,
@@ -28,5 +29,6 @@ export {
   AllowSubmittingWhenDeploymentDone,
   DebugDrawLineFromSelectedShip,
   SelectedShipNavigationPath,
-  SelectedShipDeploymentMovementUi
+  SelectedShipDeploymentMovementUi,
+  ShowWaitingStatus
 };

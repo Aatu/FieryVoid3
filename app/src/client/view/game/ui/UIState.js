@@ -39,6 +39,11 @@ class UIState {
     this.updateState();
   }
 
+  setWaiting(waiting) {
+    this.state.waiting = waiting;
+    this.updateState();
+  }
+
   setPhaseDirector(phaseDirector) {
     this.phaseDirector = phaseDirector;
     this.shipWindowManager = new ShipWindowManager(
@@ -50,6 +55,10 @@ class UIState {
 
   customEvent(name, payload) {
     this.phaseDirector.relayEvent(name, payload);
+  }
+
+  commitTurn() {
+    this.phaseDirector.commitTurn();
   }
 
   selectShip(ship) {
@@ -176,7 +185,7 @@ class UIState {
     this.updateState();
   }
 
-  showShipMovement(ship, pivotOnly = false) {
+  showShipDeploymentMovement(ship) {
     const {
       shipIconContainer,
       coordinateConverter,
@@ -185,7 +194,7 @@ class UIState {
 
     this.state.shipMovement = {
       ship,
-      pivotOnly,
+      type: "deploy",
       movementService,
       getPosition: () =>
         coordinateConverter.fromGameToViewPort(

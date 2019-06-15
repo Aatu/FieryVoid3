@@ -105,6 +105,18 @@ class GameData {
       );
   }
 
+  isActiveShip(ship) {
+    return this.activeShips.isActive(ship);
+  }
+
+  setActiveShip(ship) {
+    this.activeShips.setActive(ship);
+  }
+
+  setInactiveShip(ship) {
+    this.activeShips.setInactive(ship);
+  }
+
   getShipsForUser(user) {
     return this.ships.getShips().filter(ship => ship.player.isUsers(user));
   }

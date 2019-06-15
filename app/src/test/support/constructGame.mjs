@@ -1,6 +1,7 @@
 import GameData from "../../model/game/GameData.mjs";
 import GameSlot from "../../model/game/GameSlot.mjs";
 import hexagon from "../../model/hexagon";
+import TestShip from "../../model/unit/ships/test/TestShip";
 
 export const constructLobbyGame = user => {
   const gameData = new GameData();
@@ -97,6 +98,38 @@ export const constructDeploymentGame = async (user1, user2, controller) => {
   const gameId = await controller.createGame(gameData, user1);
   await controller.takeSlot(gameId, slot2.id, user2);
   const newGameData = await controller.getGameData(gameId);
+
+  return newGameData;
+};
+
+export const constructShipsBoughtGame = async (user1, user2, controller) => {
+  const gameData = await constructLobbyGameWithSlotsTaken(
+    user1,
+    user2,
+    controller
+  );
+
+  const slot1 = gameData.slots.getSlots()[0];
+  const slot2 = gameData.slots.getSlots()[1];
+
+  await controller.buyShips(
+    gameData.id,
+    slot1.id,
+    [
+      new TestShip({ name: "UCS Achilles" }).serialize(),
+      new TestShip({ name: "UCS Eclipse" }).serialize()
+    ],
+    user1
+  );
+
+  await controller.buyShips(
+    gameData.id,
+    slot2.id,
+    [new TestShip({ name: "GEPS Biliyaz" }).serialize()],
+    user2
+  );
+
+  const newGameData = await controller.getGameData(gameData.id);
 
   return newGameData;
 };

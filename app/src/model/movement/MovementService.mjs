@@ -10,9 +10,9 @@ class MovementService {
     this.gamedata = null;
   }
 
-  update(gamedata, phaseStrategy) {
+  update(gamedata, phaseDirector) {
     this.gamedata = gamedata;
-    this.phaseStrategy = phaseStrategy;
+    this.phaseDirector = phaseDirector;
 
     return this;
   }
@@ -77,20 +77,17 @@ class MovementService {
       );
       ship.movement.addMovement(deployMove);
     } else {
-      deployMove.position = pos;
+      deployMove.setPosition(pos);
       ship.movement.replaceDeployMove(deployMove);
     }
   }
 
-  doDeploymentTurn(ship, right) {
-    var step = 1;
-    if (!right) {
-      step = -1;
-    }
-
-    const deployMove = this.getDeployMove(ship);
+  doDeploymentTurn(ship, step) {
+    const deployMove = ship.movement.getDeployMove();
     const newfacing = addToHexFacing(deployMove.facing, step);
     deployMove.facing = newfacing;
+    ship.movement.replaceDeployMove(deployMove);
+    this.shipMovementChanged(ship);
   }
 
   getOverChannel(ship) {
@@ -118,7 +115,7 @@ class MovementService {
   }
 
   shipMovementChanged(ship) {
-    this.phaseStrategy.onShipMovementChanged({ ship });
+    this.phaseDirector.relayEvent("shipMovementChanged", ship);
   }
 
   canThrust(ship, direction) {

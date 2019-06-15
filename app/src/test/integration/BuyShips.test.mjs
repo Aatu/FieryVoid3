@@ -207,6 +207,10 @@ test.serial("Buy ships for both players", async test => {
       0
     )
   ]);
+
+  test.true(newGameData.isActiveShip(biliyaz));
+  test.true(newGameData.isActiveShip(achilles));
+  test.true(newGameData.isActiveShip(eclipse));
 });
 
 test.serial("Try to buy too expensive ships", async test => {

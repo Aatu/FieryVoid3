@@ -124,6 +124,10 @@ class Offset {
       .drawLine(target.toCube(), distance)
       .map(cube => cube.toOffset());
   }
+
+  toString() {
+    return `(q: ${this.q}, r: ${this.r})`;
+  }
 }
 
 export default Offset;

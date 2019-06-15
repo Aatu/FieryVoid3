@@ -29,6 +29,14 @@ class Vector {
     return new Vector(this.x, this.y, this.z);
   }
 
+  serialize() {
+    return {
+      x: this.x,
+      y: this.y,
+      z: this.z
+    };
+  }
+
   distanceTo(vector) {
     vector = new Vector(vector);
     helperA.set(this.x, this.y, this.z);

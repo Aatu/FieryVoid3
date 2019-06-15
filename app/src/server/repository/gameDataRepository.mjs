@@ -129,6 +129,7 @@ class GameDataRepository {
     ))[0];
 
     response.data = JSON.parse(response.data);
+    response.activeShips = JSON.parse(response.activeShips);
     return response;
   }
 
@@ -187,7 +188,8 @@ class GameDataRepository {
         name,
         ship_class as shipClass
       FROM ship
-      WHERE game_id = ?`,
+      WHERE game_id = ?
+      ORDER by name DESC`,
       [id]
     );
   }
@@ -273,7 +275,7 @@ class GameDataRepository {
     }
 
     return conn.batch(
-      `INSERT IGNORE INTO ship_movement (
+      `INSERT INTO ship_movement (
       id,
       game_id,
       ship_id,
@@ -282,13 +284,14 @@ class GameDataRepository {
       data
     ) VALUES (
       UuidToBin(?),?,UuidToBin(?),?,?,?
-    )`,
+    ) ON DUPLICATE KEY UPDATE data = ?`,
       ship.movement.map((move, i) => [
         move.id,
         gameId,
         ship.id,
         turn,
         i,
+        JSON.stringify(move),
         JSON.stringify(move)
       ])
     );

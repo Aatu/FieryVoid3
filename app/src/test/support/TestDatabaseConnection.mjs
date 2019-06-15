@@ -33,6 +33,8 @@ class TestDbConnection extends DbConnection {
   async resetDatabase() {
     const conn = await this.getCreateConnection();
     await this.query(conn, createDatabase(this.dbName));
+    await conn.end();
+    await this.createPool.end();
   }
 }
 

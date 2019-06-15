@@ -11,6 +11,11 @@ class ShipMovement {
     this.moves.push(move.clone());
   }
 
+  removeMovement(move) {
+    const toDelete = this.moves.find(other => other.equals(move));
+    this.moves = this.moves.filter(other => other !== toDelete);
+  }
+
   getMovement() {
     return this.moves.map(move => move.clone());
   }
@@ -113,6 +118,16 @@ class ShipMovement {
     }
 
     return move.clone();
+  }
+
+  getEvasion() {
+    const move = this.getEvadeMove();
+
+    if (!move) {
+      return 0;
+    }
+
+    return move.value;
   }
 
   getMovementVector() {

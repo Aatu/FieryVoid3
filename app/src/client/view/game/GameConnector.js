@@ -29,6 +29,26 @@ class GameConnector {
     });
   }
 
+  async commitTurn(gameData) {
+    const connection = await this.connection;
+    connection.send(
+      JSON.stringify({
+        type: gameMessages.MESSAGE_COMMIT_TURN,
+        payload: gameData.serialize()
+      })
+    );
+  }
+
+  async commitDeployment(gameData) {
+    const connection = await this.connection;
+    connection.send(
+      JSON.stringify({
+        type: gameMessages.MESSAGE_COMMIT_DEPLOYMENT,
+        payload: gameData.serialize()
+      })
+    );
+  }
+
   async takeSlot(slotId) {
     const connection = await this.connection;
     connection.send(

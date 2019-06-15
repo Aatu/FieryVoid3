@@ -72,6 +72,7 @@ class BuyShipsHandler {
 
     slot.addShip(serverShip);
     gameData.ships.addShip(serverShip);
+    gameData.setActiveShip(serverShip);
 
     if (
       slot.isValidShipDeployment(serverShip, startPosition.getHexPosition())

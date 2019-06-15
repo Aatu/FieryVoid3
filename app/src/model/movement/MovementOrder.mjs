@@ -76,8 +76,8 @@ class MovementOrder {
     return {
       id: this.id,
       type: this.type,
-      position: this.position,
-      velocity: this.velocity,
+      position: this.position.serialize(),
+      velocity: this.velocity.serialize(),
       facing: this.facing,
       rolled: this.rolled,
       turn: this.turn,

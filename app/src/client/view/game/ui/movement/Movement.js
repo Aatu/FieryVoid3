@@ -1,12 +1,6 @@
 import * as React from "react";
 import styled from "styled-components";
 import GamePositionComponent from "../GamePositionComponent";
-import ThrustButton from "./ThrustButton";
-import RevertButton from "./RevertButton";
-import CancelButton from "./CancelButton";
-import PivotButton from "./PivotButton";
-import RollButton from "./RollButton";
-import EvadeButton from "./EvadeButton";
 
 const Container = styled.div`
   opacity: 0.85;
@@ -61,89 +55,46 @@ const OverChannel = styled(Stats)`
 
 class Movement extends React.Component {
   render() {
-    const { ship, movementService, getPosition, uiState } = this.props;
+    const {
+      ship,
+      movementService,
+      getPosition,
+      uiState,
+      children,
+      ui = true
+    } = this.props;
 
-    console.log("hi");
     return (
       <GamePositionComponent getPosition={getPosition} uiState={uiState}>
         <Container id="shipMovementActual">
-          <EnginePower>
-            {`Engine power: ${ship.movement.getRemainingThrustOutput()} / ${ship.movement.getThrustOutput()}`}
-          </EnginePower>
-          {/*
+          {ui && (
+            <>
+              <EnginePower>
+                {`Engine power: ${ship.movement.getRemainingThrustOutput()} / ${ship.movement.getThrustOutput()}`}
+              </EnginePower>
+              {/*
         <Stats>
           <div>{`Acceleration cost: ${ship.accelcost}`}</div>
           <div>{`Pivot cost: ${ship.pivotcost}`}</div>
         </Stats>
        */}
-          <Evasion>
-            <div>{`Over: ${movementService.getOverChannel(ship)}`}</div>
-            <div>{`Evasion: ${movementService.getEvasion(ship)}`}</div>
-            <div>{`Rolling: ${
-              movementService.getRollMove(ship) ? "yes" : "no"
-            }`}</div>
-          </Evasion>
-          {/* 
+              <Evasion>
+                <div>{`Over: ${movementService.getOverChannel(ship)}`}</div>
+                <div>{`Evasion: ${ship.movement.getEvasion(ship)}`}</div>
+                <div>{`Rolling: ${
+                  ship.movement.getRollMove() ? "yes" : "no"
+                }`}</div>
+              </Evasion>
+              {/* 
         <OverChannel>
           <div>{`Evasion cost: ${ship.evasioncost}`}</div>
           <div>{`Roll cost: ${ship.rollcost}`}</div>
         </OverChannel>
         */}
-          <ThrustButton
-            ship={ship}
-            movementService={movementService}
-            direction={0}
-          />
+            </>
+          )}
 
-          <ThrustButton
-            ship={ship}
-            movementService={movementService}
-            direction={1}
-          />
-
-          <ThrustButton
-            ship={ship}
-            movementService={movementService}
-            direction={2}
-          />
-
-          <ThrustButton
-            ship={ship}
-            movementService={movementService}
-            direction={3}
-          />
-
-          <ThrustButton
-            ship={ship}
-            movementService={movementService}
-            direction={4}
-          />
-
-          <ThrustButton
-            ship={ship}
-            movementService={movementService}
-            direction={5}
-          />
-
-          <RevertButton ship={ship} movementService={movementService} />
-
-          <CancelButton ship={ship} movementService={movementService} />
-
-          <PivotButton
-            ship={ship}
-            movementService={movementService}
-            pivotDirection={-1}
-          />
-
-          <PivotButton
-            ship={ship}
-            movementService={movementService}
-            pivotDirection={1}
-          />
-
-          <RollButton ship={ship} movementService={movementService} />
-
-          <EvadeButton ship={ship} movementService={movementService} />
+          {children}
         </Container>
       </GamePositionComponent>
     );

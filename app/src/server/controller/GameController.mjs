@@ -3,8 +3,11 @@ import GameDataRepository from "../repository/GameDataRepository.mjs";
 import GameData from "../../model/game/GameData";
 import CreateGameHandler from "../handler/CreateGameHandler.mjs";
 import BuyShipsHandler from "../handler/BuyShipsHandler.mjs";
+import DeploymentHandler from "../handler/DeploymentHandler.mjs";
+import GameHandler from "../handler/GameHandler.mjs";
 import GameClients from "./GameClients.mjs";
 import * as gameMessages from "../../model/game/gameMessage.mjs";
+import * as gamePhases from "../../model/game/gamePhases.mjs";
 
 class GameController {
   constructor(dbConnection) {
@@ -16,6 +19,8 @@ class GameController {
 
     this.createGameHandler = new CreateGameHandler();
     this.buyShipsHandler = new BuyShipsHandler();
+    this.deploymentHandler = new DeploymentHandler();
+    this.gameHandler = new GameHandler();
   }
 
   async openConnection(connection, user, gameId) {
@@ -47,6 +52,10 @@ class GameController {
             message.payload.ships,
             user
           );
+        case gameMessages.MESSAGE_COMMIT_DEPLOYMENT:
+          return this.commitDeployment(gameId, payload, user);
+        case gameMessages.MESSAGE_COMMIT_TURN:
+          return this.commitTurn(gameId, payload, user);
         default:
           throw new Error(`Unrecognized message type ${message.type}`);
       }
@@ -97,6 +106,26 @@ class GameController {
     this.buyShipsHandler.buyShips(gameData, slotId, ships, user);
     this.gameClients.sendGameDataAll(gameData);
     await this.gameDataService.saveGame(gameData);
+  }
+
+  async commitDeployment(gameId, clientGameData, user) {
+    clientGameData = new GameData(clientGameData);
+    const serverGameData = await this.gameDataService.loadGame(gameId);
+
+    this.deploymentHandler.deploy(serverGameData, clientGameData, user);
+
+    this.gameClients.sendGameDataAll(serverGameData);
+    await this.gameDataService.saveGame(serverGameData);
+  }
+
+  async commitTurn(gameId, clientGameData, user) {
+    clientGameData = new GameData(clientGameData);
+    const serverGameData = await this.gameDataService.loadGame(gameId);
+
+    this.gameHandler.submit(serverGameData, clientGameData, user);
+
+    this.gameClients.sendGameDataAll(serverGameData);
+    await this.gameDataService.saveGame(serverGameData);
   }
 }
 

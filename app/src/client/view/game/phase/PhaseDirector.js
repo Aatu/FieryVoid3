@@ -30,6 +30,8 @@ class PhaseDirector {
     this.gameConnector = gameConnector;
     this.gameConnector.init(this);
     this.scene = null;
+
+    this.gameData = null;
   }
 
   init(scene) {
@@ -48,6 +50,7 @@ class PhaseDirector {
 
   receiveGameData(gameData) {
     window.gameData = gameData;
+    this.gameData = gameData;
     this.resolvePhaseStrategy(gameData);
     this.terrainRenderer.update(gameData.terrain);
   }
@@ -60,6 +63,22 @@ class PhaseDirector {
     this.phaseStrategy.onEvent(name, payload);
     this.shipIconContainer.onEvent(name, payload);
     this.ewIconContainer.onEvent(name, payload);
+  }
+
+  commitTurn() {
+    if (this.gameData.phase === gamePhase.DEPLOYMENT) {
+    }
+
+    switch (this.gameData.phase) {
+      case gamePhase.DEPLOYMENT:
+        this.gameConnector.commitDeployment(this.gameData);
+        break;
+      case gamePhase.GAME:
+      default:
+        this.gameConnector.commitTurn(this.gameData);
+    }
+
+    return this.activatePhaseStrategy(WaitingPhaseStrategy, this.gameData);
   }
 
   render(scene, coordinateConverter, zoom) {

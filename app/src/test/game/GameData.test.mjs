@@ -35,10 +35,7 @@ const deployMove = new MovementOrder(
 );
 
 const getMovementService = () =>
-  new MovementService().update(
-    { turn: 1 },
-    { onShipMovementChanged: () => null }
-  );
+  new MovementService().update({ turn: 1 }, { relayEvent: () => null });
 
 const constructShip = (id = 123, user) => {
   let ship = new TestShip({ id });

@@ -1,19 +1,31 @@
 class GameActiveShips {
   constructor(gameData) {
     this.gameData = gameData;
-    this.shipsIds = [];
+    this.shipIds = [];
   }
 
   isActive(ship) {
-    return this.shipsIds.includes(ship.id);
+    return this.shipIds.includes(ship.id);
+  }
+
+  setActive(ship) {
+    if (this.isActive(ship)) {
+      return;
+    }
+
+    this.shipIds.push(ship.id);
+  }
+
+  setInactive(ship) {
+    this.shipIds = this.shipIds.filter(id => id !== ship.id);
   }
 
   serialize() {
-    return this.shipsIds;
+    return this.shipIds;
   }
 
   deserialize(data = []) {
-    this.shipsIds = data;
+    this.shipIds = data;
 
     return this;
   }

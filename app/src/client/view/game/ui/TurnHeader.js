@@ -27,24 +27,37 @@ const ReadyContainer = styled.div`
 `;
 
 class TurnHeader extends React.PureComponent {
+  onReady() {
+    const { uiState, ready } = this.props;
+
+    if (!ready) {
+      return;
+    }
+
+    uiState.commitTurn();
+  }
+
   render() {
-    const { gameData, ready } = this.props;
+    const { gameData, ready, waiting } = this.props;
     return (
       <TurnHeaderContainer>
         <Section>
           <Title>
             {`TURN: ${gameData.turn}`}{" "}
             {gameData.phase === gamePhases.DEPLOYMENT && "DEPLOYMENT"}
+            {waiting && " Waiting"}
           </Title>
-          <ReadySection>
-            <ReadyContainer ready={ready}>
-              <icons.CheckMark
-                size={30}
-                ready={ready}
-                color={ready ? "#fff" : colors.border}
-              />
-            </ReadyContainer>
-          </ReadySection>
+          {!waiting && (
+            <ReadySection>
+              <ReadyContainer ready={ready} onClick={this.onReady.bind(this)}>
+                <icons.CheckMark
+                  size={30}
+                  ready={ready}
+                  color={ready ? "#fff" : colors.border}
+                />
+              </ReadyContainer>
+            </ReadySection>
+          )}
         </Section>
       </TurnHeaderContainer>
     );

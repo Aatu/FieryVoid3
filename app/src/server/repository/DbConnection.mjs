@@ -31,6 +31,10 @@ class DbConnection {
       throw err;
     }
   }
+
+  async close() {
+    await this.pool.end();
+  }
 }
 
 export default DbConnection;

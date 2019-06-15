@@ -223,19 +223,18 @@ class MovementResolver {
   }
 
   canCancel() {
-    return this.movementService
-      .getThisTurnMovement(this.ship)
-      .some(move => move.isCancellable());
+    return this.ship.movement.getMovement().some(move => move.isCancellable());
   }
 
   cancel() {
-    const toCancel = this.ship.movement[this.ship.movement.length - 1];
+    console.log("cancel");
+    const toCancel = this.ship.movement.getLastMove();
 
     if (!toCancel || !toCancel.isCancellable()) {
       return;
     }
 
-    this.removeMove(toCancel);
+    this.ship.movement.removeMovement(toCancel);
 
     const bill = new ThrustBill(
       this.ship,
@@ -247,26 +246,21 @@ class MovementResolver {
   }
 
   canRevert() {
-    return this.movementService
-      .getThisTurnMovement(this.ship)
-      .some(move => move.isPlayerAdded());
+    return this.ship.movement.getMovement().some(move => move.isPlayerAdded());
   }
 
   revert() {
-    this.movementService
-      .getThisTurnMovement(this.ship)
+    console.log("revert");
+    this.ship.movement
+      .getMovement()
       .filter(move => move.isCancellable() || move.isEvade())
-      .forEach(this.removeMove.bind(this));
+      .forEach(move => this.ship.movement.removeMovement(move));
 
     this.movementService.shipMovementChanged(this.ship);
   }
 
   getOpposite(movements, move) {
     return movements.find(other => other.isOpposite(move));
-  }
-
-  removeMove(move) {
-    this.ship.movement = this.ship.movement.filter(other => other !== move);
   }
 }
 

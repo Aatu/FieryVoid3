@@ -39,7 +39,7 @@ class PhaseStrategy {
 
   callStrategies(functionName, payload) {
     this.strategies.forEach(strategy => {
-      if (strategy[functionName] && !payload.stopped) {
+      if (strategy[functionName] && (!payload || !payload.stopped)) {
         strategy[functionName](payload);
       }
     });
@@ -48,9 +48,6 @@ class PhaseStrategy {
   render(coordinateConverter, scene, zoom) {
     this.updateDeltaTime();
     this.updateTotalAnimationTime();
-
-    this.animationStrategy &&
-      this.animationStrategy.render(coordinateConverter, scene, zoom);
 
     const { shipIconContainer } = this.services;
 
@@ -94,7 +91,6 @@ class PhaseStrategy {
     const { uiState } = this.services;
     uiState.setGameData(gamedata);
     this.updateStrategies(gamedata);
-    this.animationStrategy && this.animationStrategy.update(gamedata);
 
     return this;
   }
@@ -122,23 +118,6 @@ class PhaseStrategy {
 
   onZoomEvent(payload) {
     this.callStrategies("onZoom", payload);
-  }
-
-  changeAnimationStrategy(newAnimationStartegy) {
-    this.animationStrategy && this.animationStrategy.deactivate();
-    this.animationStrategy = newAnimationStartegy;
-    this.animationStrategy.activate();
-  }
-
-  onShipMovementChanged(payload) {
-    var ship = payload.ship;
-    this.shipIconContainer.getByShip(ship).consumeMovement(ship.movement);
-
-    if (this.animationStrategy) {
-      this.animationStrategy.shipMovementChanged(ship);
-    }
-
-    this.callStrategies("shipMovementChanged", { ship });
   }
 }
 
