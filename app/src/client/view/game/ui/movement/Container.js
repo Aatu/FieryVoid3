@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Clickable } from "../styled";
+import { Clickable } from "../../../../styled";
 
 const Container = styled.div`
   position: absolute;

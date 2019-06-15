@@ -1,6 +1,10 @@
 import * as React from "react";
 import styled from "styled-components";
-import { Arrow } from "../icon";
+import { Arrow } from "../../../../styled/icon";
+import {
+  getPointInDirection,
+  hexFacingToAngle
+} from "../../../../../model/utils/math";
 
 import Container from "./Container";
 
@@ -14,12 +18,7 @@ const ButtonContainer = styled(Container)`
 
 class ThrustButton extends React.Component {
   getPosition(direction) {
-    return mathlib.getPointInDirection(
-      150,
-      -mathlib.hexFacingToAngle(direction),
-      0,
-      0
-    );
+    return getPointInDirection(150, -hexFacingToAngle(direction), 0, 0);
   }
 
   canThrust() {
@@ -45,7 +44,7 @@ class ThrustButton extends React.Component {
     return (
       <ButtonContainer
         overChannel={overChannel}
-        direction={mathlib.hexFacingToAngle(direction)}
+        direction={hexFacingToAngle(direction)}
         onClick={this.thrust.bind(this)}
         {...this.getPosition(direction)}
       >

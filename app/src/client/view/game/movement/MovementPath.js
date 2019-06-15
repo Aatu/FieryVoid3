@@ -30,6 +30,8 @@ class MovementPath {
   create() {
     const startMove = this.ship.movement.getLastEndMoveOrSurrogate();
     const lastMove = this.ship.movement.getLastMove();
+    const velocity = this.ship.movement.getMovementVector();
+    const positionWithoutGravity = startMove.position.add(velocity);
 
     const { position } = this.terrain.getGravityVectorForTurn(
       startMove.position,
@@ -37,9 +39,13 @@ class MovementPath {
       startMove.turn
     );
 
+    const start = startMove.position.roundToHexCenter();
+    const middle = positionWithoutGravity.roundToHexCenter();
+    const end = position.roundToHexCenter();
+
     const line = createMovementLine(
-      startMove.position.roundToHexCenter(),
-      position.roundToHexCenter(),
+      start,
+      middle.equals(end) ? end : middle,
       this.color,
       0.5
     );
@@ -47,90 +53,36 @@ class MovementPath {
     this.scene.add(line.mesh);
     this.objects.push(line);
 
-    const facing = createMovementFacing(
-      lastMove.facing,
-      position.roundToHexCenter(),
-      this.color
-    );
-    this.scene.add(facing.mesh);
-    this.objects.push(facing);
-
-    /*
- 
-
-    const end = this.ship.movement.getLastEndMoveOrSurrogate();
-    const move = this.ship.movement.getLastMove();
-    const target = this.ship.movement.getMovementVector();
-    const gravityVector = this.terrain.getGravityVector(end.position);
-
-    const startPosition = end.position;
-    const middlePosition = end.equals(move)
-      ? startPosition
-      : end.position.add(end.target);
-    const finalPosition = end.equals(move)
-      ? end.position.add(end.target)
-      : end.position.add(end.target).add(target);
-
-    const gravityPosition = finalPosition.add(gravityVector);
-
-    const line = createMovementLine(
-      startPosition,
-      middlePosition,
-      this.color,
-      this.coordinateConverter,
-      0.5
-    );
-    this.scene.add(line.mesh);
-    this.objects.push(line);
-
-    if (!middlePosition.equals(finalPosition)) {
-      const middle = createMovementMiddleStep(
-        middlePosition,
+    if (!middle.equals(end)) {
+      const dot = createMovementMiddleStep(
+        middle,
         this.color,
         this.coordinateConverter
       );
-      this.scene.add(middle.mesh);
-      this.objects.push(middle);
+      this.scene.add(dot.mesh);
+      this.objects.push(dot);
+
+      const line2 = createMovementLine(
+        middle,
+        end,
+        new THREE.Color(100 / 255, 100 / 255, 255 / 255),
+        0.5
+      );
+
+      this.scene.add(line2.mesh);
+      this.objects.push(line2);
     }
 
-    const line2 = createMovementLine(
-      middlePosition,
-      finalPosition,
-      this.color,
-      this.coordinateConverter
-    );
-    this.scene.add(line2.mesh);
-    this.objects.push(line2);
-
-    const facing = createMovementFacing(
-      move.facing,
-      finalPosition,
-      this.color,
-      this.coordinateConverter
-    );
+    const facing = createMovementFacing(lastMove.facing, end, this.color);
     this.scene.add(facing.mesh);
     this.objects.push(facing);
-
-    if (!finalPosition.equals(gravityPosition)) {
-      const line3 = createMovementLine(
-        finalPosition,
-        gravityPosition,
-        new THREE.Color(255 / 255, 0 / 255, 0 / 255),
-        this.coordinateConverter,
-        0.8,
-        30
-      );
-      this.scene.add(line3.mesh);
-      this.objects.push(line3);
-    }
-    */
   }
 }
 
-const createMovementMiddleStep = (position, color, coordinateConverter) => {
+const createMovementMiddleStep = (position, color) => {
   const size = coordinateConverter.getHexDistance() * 0.5;
   const circle = new CircleSprite({ width: size, height: size }, 0.01, 1.6);
-  circle.setPosition(coordinateConverter.fromHexToGame(position));
+  circle.setPosition(position);
   circle.setOverlayColor(color);
   circle.setOverlayColorAlpha(1);
   return circle;

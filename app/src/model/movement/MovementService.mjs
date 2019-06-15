@@ -93,14 +93,9 @@ class MovementService {
     deployMove.facing = newfacing;
   }
 
-  getEvasion(ship) {
-    const evadeMove = this.getEvadeMove(ship);
-    return evadeMove ? evadeMove.value : 0;
-  }
-
   getOverChannel(ship) {
     return new OverChannelResolver(
-      this.getThrusters(ship),
+      ship.movement.getThrusters(),
       ship.movement.getMovement()
     ).getAmountOverChanneled();
   }

@@ -1,6 +1,6 @@
 import * as React from "react";
 import styled from "styled-components";
-import { X } from "../icon";
+import { X } from "../../../../styled/icon";
 import Container from "./Container";
 
 const ButtonContainer = styled(Container)`

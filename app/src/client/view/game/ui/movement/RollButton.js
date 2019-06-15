@@ -1,7 +1,7 @@
 import * as React from "react";
 import styled from "styled-components";
-import { Clickable } from "../styled";
-import { Roll } from "../icon";
+import { Clickable } from "../../../../styled";
+import { Roll } from "../../../../styled/icon";
 
 const Container = styled.div`
   position: absolute;

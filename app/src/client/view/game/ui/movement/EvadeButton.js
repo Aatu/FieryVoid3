@@ -1,7 +1,7 @@
 import * as React from "react";
 import styled from "styled-components";
-import { Clickable } from "../styled";
-import { Evade } from "../icon";
+import { Clickable } from "../../../../styled";
+import { Evade } from "../../../../styled/icon";
 
 const Container = styled.div`
   position: absolute;

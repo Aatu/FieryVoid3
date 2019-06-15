@@ -17,7 +17,7 @@ class UIState {
       weaponList: null,
       systemInfo: null,
       systemInfoMenu: null,
-      movementUi: null,
+      shipMovement: null,
       shipTooltip: [],
       turnReady: false
     };
@@ -145,16 +145,6 @@ class UIState {
     this.updateState();
   }
 
-  showMovementUi(args) {
-    this.state.movementUi = args;
-    this.updateState();
-  }
-
-  hideMovementUi() {
-    this.state.movementUi = null;
-    this.updateState();
-  }
-
   shipMovementChanged(ship) {
     this.customEvent("shipMovementChanged", ship);
   }
@@ -183,6 +173,30 @@ class UIState {
     this.state.shipTooltip = this.state.shipTooltip.filter(
       tooltip => tooltip.ship !== ship
     );
+    this.updateState();
+  }
+
+  showShipMovement(ship, pivotOnly = false) {
+    const {
+      shipIconContainer,
+      coordinateConverter,
+      movementService
+    } = this.services;
+
+    this.state.shipMovement = {
+      ship,
+      pivotOnly,
+      movementService,
+      getPosition: () =>
+        coordinateConverter.fromGameToViewPort(
+          shipIconContainer.getByShip(ship).getPosition()
+        )
+    };
+    this.updateState();
+  }
+
+  hideShipMovement() {
+    this.state.shipMovement = null;
     this.updateState();
   }
 

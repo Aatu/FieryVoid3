@@ -3,6 +3,7 @@ import Lobby from "./lobby";
 import ShipWindowsContainer from "../ui/shipWindow/ShipWindowsContainer";
 import ShipTooltip from "../ui/shipTooltip";
 import TurnHeader from "../ui/TurnHeader";
+import Movement from "../ui/movement/Movement";
 import * as gamePhases from "../../../../model/game/gamePhases";
 
 class GameUiComponent extends React.Component {
@@ -13,6 +14,7 @@ class GameUiComponent extends React.Component {
       return null;
     }
 
+    console.log(uiState.state.shipMovement);
     return (
       <>
         {uiState.state.lobby && (
@@ -49,6 +51,10 @@ class GameUiComponent extends React.Component {
               ready={uiState.state.turnReady}
             />
           )}
+
+        {uiState.state.shipMovement && (
+          <Movement {...uiState.state.shipMovement} uiState={uiState} />
+        )}
       </>
     );
   }
