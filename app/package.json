@@ -6,6 +6,7 @@
     "axios": "^0.18.0",
     "esm": "^3.2.22",
     "formik": "^1.5.2",
+    "mathjs": "^6.0.2",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-draggable": "^3.3.0",

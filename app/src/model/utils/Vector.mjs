@@ -72,6 +72,11 @@ class Vector {
     return new Vector(helperA.x, helperA.y, helperA.z);
   }
 
+  length() {
+    helperA.set(this.x, this.y, this.z);
+    return helperA.length();
+  }
+
   equals(vector) {
     return this.x === vector.x && this.y === vector.y && this.z === vector.z;
   }
@@ -91,4 +96,5 @@ class Vector {
   }
 }
 
+window.Vector = Vector;
 export default Vector;
