@@ -39,16 +39,16 @@ class ARKStep {
   }
 
   kx(stage) {
-    return dt * (velocity.x + this.sum(stage, "vx"));
+    return this.dt * (velocity.x + this.sum(stage, "vx"));
   }
 
   kx(stage) {
-    return dt * (velocity.y + sum1(stage, "vy"));
+    return this.dt * (velocity.y + sum1(stage, "vy"));
   }
 
   vx(stage) {
     return (
-      dt *
+      this.dt *
       this.derivativeVelocityX(
         new Vector(
           this.position.x + sum1(stage, "x"),
@@ -60,7 +60,7 @@ class ARKStep {
 
   kx(stage) {
     return (
-      dt *
+      this.dt *
       this.derivativeVelocityY(
         new Vector(
           this.position.x + sum1(stage, "x"),
