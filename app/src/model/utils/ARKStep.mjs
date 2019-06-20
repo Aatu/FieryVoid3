@@ -1,4 +1,5 @@
-import Vector from "../../model/utils/Vector";
+import Vector from "./Vector";
+import THREE from "three";
 
 const a = [
   [0, 0, 0, 0, 0],
@@ -12,11 +13,12 @@ const a = [
 const bs = [16 / 135, 0, 6656 / 12825, 28561 / 56430, -9 / 50, 2 / 55];
 
 const bsx = [25 / 216, 0, 1408 / 2565, 2197 / 4104, -1 / 5, 0];
+
 const getCacheKey = (stage, arkFunction) => arkFunction + stage;
 
 class ARKStep {
-  constructor() {
-    this.cache = {};
+  constructor(position, velocity, parentPosition, parentMass, dt) {
+    this.setValues(position, velocity, parentPosition, parentMass, dt);
   }
 
   derivativeVelocityX(position) {
@@ -39,32 +41,32 @@ class ARKStep {
   }
 
   kx(stage) {
-    return this.dt * (velocity.x + this.sum(stage, "vx"));
+    return this.dt * (this.velocity.x + this.sum(stage, "vx"));
   }
 
-  kx(stage) {
-    return this.dt * (velocity.y + sum1(stage, "vy"));
+  ky(stage) {
+    return this.dt * (this.velocity.y + this.sum(stage, "vy"));
   }
 
-  vx(stage) {
+  kvx(stage) {
     return (
       this.dt *
       this.derivativeVelocityX(
         new Vector(
-          this.position.x + sum1(stage, "x"),
-          this.position.y + sum1(stage, "y")
+          this.position.x + this.sum(stage, "x"),
+          this.position.y + this.sum(stage, "y")
         )
       )
     );
   }
 
-  kx(stage) {
+  kvy(stage) {
     return (
       this.dt *
       this.derivativeVelocityY(
         new Vector(
-          this.position.x + sum1(stage, "x"),
-          this.position.y + sum1(stage, "y")
+          this.position.x + this.sum(stage, "x"),
+          this.position.y + this.sum(stage, "y")
         )
       )
     );
@@ -73,11 +75,11 @@ class ARKStep {
   k(stage, f) {
     const cached = this.findCached(stage, f);
     if (cached !== null) {
-      console.log("cache hit");
+      this.cacheHit++;
       return cached;
     }
 
-    console.log("cache miss");
+    this.cacheMiss++;
     let result = null;
 
     switch (f) {
@@ -88,14 +90,14 @@ class ARKStep {
         result = this.ky(stage);
         break;
       case "vx":
-        result = this.vx(stage);
+        result = this.kvx(stage);
         break;
       case "vy":
-        result = this.vy(stage);
+        result = this.kvy(stage);
         break;
     }
 
-    this.cache(stage, f, result);
+    this.setCache(stage, f, result);
 
     return result;
   }
@@ -105,7 +107,7 @@ class ARKStep {
     return this.cache[key] !== undefined ? this.cache[key] : null;
   }
 
-  cache(stage, f, result) {
+  setCache(stage, f, result) {
     const key = getCacheKey(stage, f);
     this.cache[key] = result;
   }
@@ -117,12 +119,71 @@ class ARKStep {
     this.parentMass = parentMass;
     this.dt = dt;
     this.cache = {};
+    this.cacheHit = 0;
+    this.cacheMiss = 0;
     return this;
   }
 
-  calculate(stage, arkFunction) {
-    return this.k(stage, arkFunction);
+  getAllKs(f) {
+    const result = [];
+    for (let i = 0; i < 6; i++) {
+      result[i] = this.k(i, f);
+    }
+
+    return result;
+  }
+
+  weightedSum(values, k) {
+    return values
+      .map((value, i) => value * k[i])
+      .reduce((accumulator, current) => accumulator + current, 0);
+  }
+
+  subVectors(a, b) {
+    return a.map((valueA, i) => valueA - b[i]);
+  }
+
+  calculate() {
+    const ks = {
+      x: this.getAllKs("x"),
+      y: this.getAllKs("y"),
+      vx: this.getAllKs("vx"),
+      vy: this.getAllKs("vy")
+    };
+
+    const dPosition = new Vector(
+      this.weightedSum(bs, ks.x),
+      this.weightedSum(bs, ks.y)
+    );
+
+    const dVelocity = new Vector(
+      this.weightedSum(bs, ks.vx),
+      this.weightedSum(bs, ks.vy)
+    );
+
+    const error = new THREE.Vector4(
+      this.weightedSum(this.subVectors(bs, bsx), ks.x),
+      this.weightedSum(this.subVectors(bs, bsx), ks.y),
+      this.weightedSum(this.subVectors(bs, bsx), ks.vx),
+      this.weightedSum(this.subVectors(bs, bsx), ks.vy)
+    ).length();
+
+    return { dPosition, dVelocity, error };
+  }
+
+  reportCache() {
+    console.log(
+      "total:",
+      this.cacheHit + this.cacheMiss,
+      "hit ratio:",
+      this.cacheHit / (this.cacheHit + this.cacheMiss),
+      "hit:",
+      this.cacheHit,
+      "miss:",
+      this.cacheMiss
+    );
   }
 }
 
+window.ARKStep = new ARKStep();
 export default ARKStep;

@@ -24,14 +24,18 @@ class NavigationalMovementPath {
 
   create() {
     let turns = 1000;
+    console.log("starting ", turns, " length navigation path");
+    const start = performance.now();
     let position = this.position;
     let velocity = this.velocity;
 
     while (turns--) {
       const {
         position: newPosition,
-        velocity: newVelocity
-      } = this.terrain.getGravityVectorForTurn(position, velocity);
+        velocity: newVelocity,
+        positions,
+        collision
+      } = this.terrain.getGravityVectorForTurn(position, velocity, 1);
 
       /*
       console.log(
@@ -46,23 +50,36 @@ class NavigationalMovementPath {
       );
       */
       velocity = newVelocity;
-
-      this.createLine(position, newPosition);
       position = newPosition;
+      //this.createLine(positions);
+
+      if (collision) {
+        break;
+      }
     }
+
+    console.log("building path took", performance.now() - start, "ms");
   }
 
-  createLine(start, end) {
-    const line = new LineSprite(
-      start,
-      end,
-      5,
-      new THREE.Color(132 / 255, 165 / 255, 206 / 255),
-      0.5
-    );
+  createLine(positions) {
+    //positions.forEach(pos => console.log(pos.toString()));
 
-    this.scene.add(line.mesh);
-    this.objects.push(line);
+    let start = positions.shift();
+
+    positions.forEach(end => {
+      const line = new LineSprite(
+        start,
+        end,
+        5,
+        new THREE.Color(132 / 255, 165 / 255, 206 / 255),
+        0.5
+      );
+
+      this.scene.add(line.mesh);
+      this.objects.push(line);
+
+      start = end;
+    });
   }
 }
 

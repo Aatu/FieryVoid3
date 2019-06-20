@@ -2,24 +2,6 @@ import UiStrategy from "./UiStrategy";
 import * as THREE from "three";
 
 class AllowSubmittingWhenDeploymentDone extends UiStrategy {
-  hexClicked({ hex }) {
-    const { uiState, movementService } = this.services;
-    const ship = uiState.getSelectedShip();
-
-    if (!ship || !this.gameData) {
-      return;
-    }
-
-    const slot = this.gameData.slots.getSlotByShip(ship);
-
-    if (!slot.isValidShipDeployment(ship, hex)) {
-      return;
-    }
-
-    movementService.deploy(ship, hex);
-    uiState.shipMovementChanged(ship);
-  }
-
   deactivate() {
     const { uiState } = this.services;
     uiState.setTurnReady(false);

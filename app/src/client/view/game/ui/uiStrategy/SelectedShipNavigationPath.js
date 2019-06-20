@@ -51,8 +51,8 @@ class SelectedShipNavigationPath extends UiStrategy {
     const move = ship.movement.getLastEndMoveOrSurrogate();
     this.path = new NavigationalMovementPath(
       this.gameData.terrain,
-      coordinateConverter.fromHexToGame(move.position),
-      coordinateConverter.fromHexToGame(move.target),
+      move.position,
+      move.velocity,
       100,
       coordinateConverter,
       scene

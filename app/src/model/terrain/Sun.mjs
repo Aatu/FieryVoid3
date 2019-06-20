@@ -7,7 +7,8 @@ class Sun extends GameTerrainEntity {
       id,
       position: new THREE.Vector3(0, 0, 0),
       target: new THREE.Vector3(0, 0, 0),
-      gravity: 1000000000
+      mass: 1000000000,
+      diameter: 7
     });
   }
 }

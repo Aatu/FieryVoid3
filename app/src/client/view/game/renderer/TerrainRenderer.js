@@ -1,6 +1,8 @@
 import { loadObject } from "../utils/objectLoader";
 import * as THREE from "three";
 
+import HexagonMath from "../../../../model/utils/HexagonMath";
+
 class TerrainRenderer {
   constructor(scene) {
     this.scene = scene;
@@ -14,12 +16,14 @@ class TerrainRenderer {
     this.terrain = terrain;
     console.log("update terrain renderer", terrain);
 
-    if (this.terrainObjects.length === 0) {
-      this.createSun();
-    }
+    this.terrainObjects = this.terrain.getEntities().forEach(entity => ({
+      entity,
+      object: this.createObject(entity)
+    }));
   }
 
-  async createSun() {
+  async createObject(entity) {
+    console.log("hi");
     const object = await loadObject("/img/3d/sphere/scene.gltf");
 
     const material = object.children[0].material;
@@ -27,7 +31,9 @@ class TerrainRenderer {
     material.emissive = new THREE.Color(1, 1, 1);
 
     object.position.set(0, 0, 0);
-    object.scale.set(2, 2, 2);
+    const scale = HexagonMath.getHexWidth() * entity.diameter;
+    console.log("scale", scale);
+    object.scale.set(scale, scale, scale);
     this.scene.add(object);
   }
 

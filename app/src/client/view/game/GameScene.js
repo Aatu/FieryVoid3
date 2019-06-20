@@ -42,7 +42,7 @@ class GameScene {
       (this.zoom * this.width) / 2,
       (this.zoom * this.height) / 2,
       (this.zoom * this.height) / -2,
-      -4000,
+      -40000,
       30000
     );
 
