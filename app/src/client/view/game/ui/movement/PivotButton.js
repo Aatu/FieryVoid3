@@ -4,13 +4,13 @@ import { Pivot } from "../../../../styled/icon";
 import Container from "./Container";
 
 const ButtonContainer = styled(Container)`
-  left: 125px;
-  top: 103px;
+  left: 55px;
+  top: -25px;
 
   ${props =>
     props.pivotDirection === 1
-      ? "left: -175px; transform: rotate(-90deg);"
-      : "transform: rotate(-90deg) scaleY(-1);"}
+      ? "left: -105px;"
+      : "transform: rotate(-180deg) scaleY(-1);"};
 `;
 
 class PivotButton extends React.Component {

@@ -140,6 +140,7 @@ class PhaseDirector {
       this.phaseStrategy.deactivate();
     }
 
+    console.log("phase strategy", phaseStrategy);
     this.phaseStrategy = new phaseStrategy(this.getServices());
     this.phaseStrategy.activate().update(gameData);
   }

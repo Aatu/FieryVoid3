@@ -5,7 +5,7 @@ import Container from "./Container";
 
 const ButtonContainer = styled(Container)`
   left: -175px;
-  top: -153px;
+  top: 103px;
 `;
 
 class CancelButton extends React.Component {
