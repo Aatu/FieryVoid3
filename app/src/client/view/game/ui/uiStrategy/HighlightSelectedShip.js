@@ -11,7 +11,11 @@ class HighlightSelectedShip extends UiStrategy {
     //currentOpacity = opacity + (sineAmplitude * 0.5 * sin(gameTime/sineFrequency) + sineAmplitude)
   }
 
-  deactivate() {}
+  deactivate() {
+    if (this.icon) {
+      this.icon.revertEmissive();
+    }
+  }
 
   shipSelected(ship) {
     const { shipIconContainer } = this.services;

@@ -2,7 +2,7 @@ class OverChannelResolver {
   constructor(thrusters, movement) {
     this.thrusters = thrusters.map(thruster => ({
       channeled: 0,
-      limit: thruster.output,
+      limit: thruster.callHandler("getChannelOutput"),
       thruster: thruster
     }));
 

@@ -100,5 +100,4 @@ class Vector {
   }
 }
 
-window.Vector = Vector;
 export default Vector;

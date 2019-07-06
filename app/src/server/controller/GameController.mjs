@@ -53,9 +53,9 @@ class GameController {
             user
           );
         case gameMessages.MESSAGE_COMMIT_DEPLOYMENT:
-          return this.commitDeployment(gameId, payload, user);
+          return this.commitDeployment(gameId, message.payload, user);
         case gameMessages.MESSAGE_COMMIT_TURN:
-          return this.commitTurn(gameId, payload, user);
+          return this.commitTurn(gameId, message.payload, user);
         default:
           throw new Error(`Unrecognized message type ${message.type}`);
       }

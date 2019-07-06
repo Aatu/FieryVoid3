@@ -1,12 +1,44 @@
 import ShipSystemStrategy from "./ShipSystemStrategy.mjs";
 import { FirstThrustIgnored, EfficiencyHalved } from "../criticals";
 
+const directionsToString = {
+  0: "Thrust forward",
+  3: "Thrust aft",
+  1: "Thrust starboard",
+  2: "Thrust starboard",
+  4: "Thrust port",
+  5: "Thrust port",
+  6: "Pivot, roll and evade"
+};
+
 class ThrustChannelSystemStrategy extends ShipSystemStrategy {
   constructor(output, direction) {
     super();
 
     this.output = output || 0;
     this.direction = direction || 0; // 0, 3, [4,5], [1,2], 6
+  }
+
+  getDirectionString() {
+    if (Array.isArray(this.direction)) {
+      return directionsToString[this.direction[0]];
+    }
+
+    return directionsToString[this.direction];
+  }
+
+  getMessages(system, payload, previousResponse = []) {
+    previousResponse.push({
+      header: "Output",
+      value: this.output
+    });
+
+    previousResponse.push({
+      header: "Manouver(s)",
+      value: this.getDirectionString()
+    });
+
+    return previousResponse;
   }
 
   getThrustChannel(system, payload, previousResponse = 0) {
@@ -27,15 +59,23 @@ class ThrustChannelSystemStrategy extends ShipSystemStrategy {
     return this.direction;
   }
 
-  canChannelAmount(system, amount) {
+  getChannelOutput() {
+    return this.output;
+  }
+
+  getMaxChannelAmount(system) {
     if (
       system.hasCritical(FirstThrustIgnored) ||
       system.hasCritical(EfficiencyHalved)
     ) {
-      return amount <= this.output;
+      return this.output;
     } else {
-      return amount <= this.output * 2;
+      return this.output * 2;
     }
+  }
+
+  canChannelAmount(system, amount) {
+    return amount <= this.getMaxChannelAmount(system);
   }
 
   getChannelCost(system, amount) {

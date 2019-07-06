@@ -26,7 +26,11 @@ class ThrustButton extends React.Component {
     return movementService.canThrust(ship, direction);
   }
 
-  thrust() {
+  thrust(can) {
+    if (!can) {
+      return;
+    }
+
     const { ship, movementService, direction } = this.props;
     return movementService.thrust(ship, direction);
   }
@@ -37,15 +41,12 @@ class ThrustButton extends React.Component {
     const can = this.canThrust();
     const { overChannel } = can;
 
-    if (!can) {
-      return null;
-    }
-
     return (
       <ButtonContainer
         overChannel={overChannel}
+        can={!!can}
         direction={hexFacingToAngle(direction)}
-        onClick={this.thrust.bind(this)}
+        onClick={this.thrust.bind(this, can)}
         {...this.getPosition(direction)}
       >
         <Arrow />

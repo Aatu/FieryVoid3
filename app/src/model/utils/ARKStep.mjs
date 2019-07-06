@@ -185,5 +185,4 @@ class ARKStep {
   }
 }
 
-window.ARKStep = new ARKStep();
 export default ARKStep;

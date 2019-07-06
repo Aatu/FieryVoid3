@@ -163,16 +163,15 @@ class UIState {
     return false;
   }
 
-  showShipTooltip(ship, ui = false) {
-    const { shipIconContainer, coordinateConverter } = this.services;
+  showShipTooltip(icon, ui = false) {
+    const { coordinateConverter } = this.services;
+    const ship = icon.ship;
 
     this.hideShipTooltip(ship);
     this.state.shipTooltip.push({
       ship,
       getPosition: () =>
-        coordinateConverter.fromGameToViewPort(
-          shipIconContainer.getByShip(ship).getPosition()
-        ),
+        coordinateConverter.fromGameToViewPort(icon.getPosition()),
       ui
     });
     this.updateState();
@@ -195,6 +194,25 @@ class UIState {
     this.state.shipMovement = {
       ship,
       type: "deploy",
+      movementService,
+      getPosition: () =>
+        coordinateConverter.fromGameToViewPort(
+          shipIconContainer.getByShip(ship).getPosition()
+        )
+    };
+    this.updateState();
+  }
+
+  showShipMovement(ship) {
+    const {
+      shipIconContainer,
+      coordinateConverter,
+      movementService
+    } = this.services;
+
+    this.state.shipMovement = {
+      ship,
+      type: "game",
       movementService,
       getPosition: () =>
         coordinateConverter.fromGameToViewPort(

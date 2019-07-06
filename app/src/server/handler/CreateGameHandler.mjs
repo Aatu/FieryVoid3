@@ -21,12 +21,16 @@ class CreateGameHandler {
     serverGamedata.slots.setSlots(clientGameData.slots.getSlots());
     serverGamedata.addPlayer(user);
     serverGamedata.setPlayerActive(user);
-    serverGamedata.terrain.addEntity(new Sun(uuidv4()));
+    //serverGamedata.terrain.addEntity(new Sun(uuidv4()));
 
     return serverGamedata;
   }
 
   removeGame(gameData, user) {
+    if (!user) {
+      throw new UnauthorizedError("Not logged in");
+    }
+
     if (gameData.status !== gameStatuses.LOBBY) {
       throw new InvalidGameDataError(
         "Can not remove game that is not in lobby"
@@ -48,6 +52,10 @@ class CreateGameHandler {
   }
 
   takeSlot(gameData, slotId, user) {
+    if (!user) {
+      throw new UnauthorizedError("Not logged in");
+    }
+
     if (gameData.status !== gameStatuses.LOBBY) {
       throw new InvalidGameDataError("Game status is wrong");
     }
@@ -67,6 +75,10 @@ class CreateGameHandler {
   }
 
   leaveSlot(gameData, slotId, user) {
+    if (!user) {
+      throw new UnauthorizedError("Not logged in");
+    }
+
     if (gameData.status !== gameStatuses.LOBBY) {
       throw new InvalidGameDataError("Game status is wrong");
     }

@@ -1,6 +1,6 @@
-import UiStrategy from "./UiStrategy";
+import UiStrategy from "../UiStrategy";
 
-class SelectedShipDeploymentMovementUi extends UiStrategy {
+class SelectedShipMovementUi extends UiStrategy {
   deactivate() {
     const { uiState } = this.services;
     uiState.hideShipMovement();
@@ -11,13 +11,13 @@ class SelectedShipDeploymentMovementUi extends UiStrategy {
     const ship = uiState.getSelectedShip();
 
     if (ship) {
-      uiState.showShipDeploymentMovement(ship, true);
+      uiState.showShipMovement(ship, true);
     }
   }
 
   shipSelected(ship) {
     const { uiState } = this.services;
-    uiState.showShipDeploymentMovement(ship, true);
+    uiState.showShipMovement(ship, true);
   }
 
   shipDeselected() {
@@ -26,4 +26,4 @@ class SelectedShipDeploymentMovementUi extends UiStrategy {
   }
 }
 
-export default SelectedShipDeploymentMovementUi;
+export default SelectedShipMovementUi;

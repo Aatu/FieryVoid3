@@ -21,6 +21,7 @@ class MouseOverShowsMovementPath extends UiStrategy {
   mouseOutShip(payload) {
     const { shipIconContainer } = this.services;
     hideAllMovementPaths(shipIconContainer);
+    console.log("mouseOutShip mousover");
   }
 }
 

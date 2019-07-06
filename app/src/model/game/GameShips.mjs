@@ -19,6 +19,10 @@ class GameShips {
     return this.ships;
   }
 
+  getAliveShips() {
+    return this.ships.filter(ship => !ship.isDestroyed());
+  }
+
   getShipById(id) {
     return this.ships.find(ship => ship.id === id);
   }

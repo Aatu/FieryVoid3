@@ -14,7 +14,7 @@ class MouseOverShowsShipTooltip extends UiStrategy {
       uiState.hideShipTooltip(this.clickedShip);
     }
 
-    uiState.showShipTooltip(payload.entity.ship, true);
+    uiState.showShipTooltip(payload.entity, true);
     this.clickedShip = payload.entity.ship;
   }
 
@@ -34,7 +34,7 @@ class MouseOverShowsShipTooltip extends UiStrategy {
     }
 
     const { uiState } = this.services;
-    uiState.showShipTooltip(payload.entity.ship);
+    uiState.showShipTooltip(payload.entity);
   }
 
   mouseOutShip(payload) {

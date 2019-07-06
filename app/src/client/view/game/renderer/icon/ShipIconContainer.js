@@ -5,12 +5,16 @@ const buildShipArray = iconsAsObject => {
   return Object.keys(iconsAsObject).map(key => iconsAsObject[key]);
 };
 
-const createIcon = (ship, scene, currentUser) => {
-  return new shipObjects[ship.shipModel](
-    ship,
-    scene,
-    ship.player.is(currentUser)
-  );
+const createIcon = (ship, scene) => {
+  return new shipObjects[ship.shipModel](ship, scene);
+};
+
+const createGhostShipIcon = (ship, scene, currentUser) => {
+  const icon = new shipObjects[ship.shipModel](ship, scene);
+  icon.setGhostShip(ship.player.is(currentUser));
+  icon.hide();
+
+  return icon;
 };
 
 class ShipIconContainer {
@@ -19,16 +23,25 @@ class ShipIconContainer {
     this.iconsAsArray = [];
     this.scene = scene;
     this.currentUser = currentUser;
+
+    this.ghostShipIcons = [];
+  }
+
+  getGhostShipIconByShip(ship) {
+    let icon = this.ghostShipIcons.find(icon => icon.ship === ship);
+
+    if (!icon) {
+      icon = createGhostShipIcon(ship, this.scene, this.currentUser);
+      this.ghostShipIcons.push(icon);
+    }
+
+    return icon;
   }
 
   update(gamedata) {
     gamedata.ships.getShips().forEach(ship => {
       if (!this.hasIcon(ship.id)) {
-        this.iconsAsObject[ship.id] = createIcon(
-          ship,
-          this.scene,
-          this.currentUser
-        );
+        this.iconsAsObject[ship.id] = createIcon(ship, this.scene);
       } else {
         this.iconsAsObject[ship.id].consumeShipdata(ship);
       }

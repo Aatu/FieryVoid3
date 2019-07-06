@@ -1,22 +1,23 @@
 import MouseOverShowsMovementPath from "./MouseOverShowsMovementPath";
-import MovementPathSelectedShip from "./MovementPathSelectedShip";
+import SelectedShipMovementPath from "./SelectedShipMovementPath";
 import HighlightSelectedShip from "./HighlightSelectedShip";
-import SelectedShipMovementUi from "./SelectedShipMovementUi";
+import SelectedShipMovementUi from "./movement/SelectedShipMovementUi";
 import ShowDeploymentAreas from "./ShowDeploymentAreas";
 import ShowShipObjects from "./ShowShipObjects";
 import RightClickShowsShipWindow from "./RightClickShowsShipWindow";
 import MouseOverShowsShipTooltip from "./MouseOverShowsShipTooltip";
 import MouseOverHighlightsShip from "./MouseOverHighlightsShip";
-import SelectUndeployedShip from "./SelectUndeployedShip";
-import DeployShipOnHexClick from "./DeployShipOnHexClick";
-import AllowSubmittingWhenDeploymentDone from "./AllowSubmittingWhenDeploymentDone";
+import SelectUndeployedShip from "./deployment/SelectUndeployedShip";
+import DeployShipOnHexClick from "./deployment/DeployShipOnHexClick";
+import AllowSubmittingWhenDeploymentDone from "./deployment/AllowSubmittingWhenDeploymentDone";
 import DebugDrawLineFromSelectedShip from "./DebugDrawLineFromSelectedShip";
 import SelectedShipNavigationPath from "./SelectedShipNavigationPath";
-import SelectedShipDeploymentMovementUi from "./SelectedShipDeploymentMovementUi";
+import SelectedShipDeploymentMovementUi from "./deployment/SelectedShipDeploymentMovementUi";
 import ShowWaitingStatus from "./ShowWaitingStatus";
+import SelectFirstActiveShip from "./SelectFirstActiveShip";
+import AllShipsMovementPaths from "./AllShipsMovementPaths";
 
 export {
-  MovementPathSelectedShip,
   MouseOverShowsMovementPath,
   ShowDeploymentAreas,
   ShowShipObjects,
@@ -30,5 +31,9 @@ export {
   DebugDrawLineFromSelectedShip,
   SelectedShipNavigationPath,
   SelectedShipDeploymentMovementUi,
-  ShowWaitingStatus
+  ShowWaitingStatus,
+  SelectFirstActiveShip,
+  SelectedShipMovementUi,
+  SelectedShipMovementPath,
+  AllShipsMovementPaths
 };

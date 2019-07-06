@@ -8,10 +8,11 @@ import coordinateConverter from "../../../../model/utils/CoordinateConverter";
 import { CircleSprite, LineSprite, ShipFacingSprite } from "../renderer/sprite";
 
 class MovementPath {
-  constructor(ship, scene, terrain) {
+  constructor(ship, scene, terrain, ghost) {
     this.ship = ship;
     this.scene = scene;
     this.terrain = terrain;
+    this.ghost = ghost;
 
     this.color = new THREE.Color(132 / 255, 165 / 255, 206 / 255);
 
@@ -25,6 +26,7 @@ class MovementPath {
       this.scene.remove(object3d.mesh);
       object3d.destroy();
     });
+    this.ghost.hide();
   }
 
   create() {
@@ -73,9 +75,7 @@ class MovementPath {
       this.objects.push(line2);
     }
 
-    const facing = createMovementFacing(lastMove.facing, end, this.color);
-    this.scene.add(facing.mesh);
-    this.objects.push(facing);
+    createMovementFacing(this.ghost, lastMove.facing, end);
   }
 }
 
@@ -108,7 +108,11 @@ const createMovementLine = (position, target, color, opacity = 0.8) => {
   );
 };
 
-const createMovementFacing = (facing, target, color) => {
+const createMovementFacing = (ghost, facing, target) => {
+  ghost.show();
+  ghost.setPosition(target);
+  ghost.setFacing(-hexFacingToAngle(facing));
+  /*
   const size = coordinateConverter.getHexDistance() * 1.5;
   const facingSprite = new ShipFacingSprite(
     { width: size, height: size },
@@ -122,6 +126,7 @@ const createMovementFacing = (facing, target, color) => {
   facingSprite.setFacing(hexFacingToAngle(facing));
 
   return facingSprite;
+  */
 };
 
 export { createMovementLine };

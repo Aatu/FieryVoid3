@@ -13,15 +13,12 @@ class Caliope extends ShipObject {
 
   async create() {
     super.create();
-
     const object = await loadObject("/img/3d/caliope/scene.gltf");
     //object.scale.set(2, 2, 2);
     this.startRotation = { x: 90, y: 90, z: 0 };
 
-    this.shipObject = object;
     this.setRotation(this.rotation.x, this.rotation.y, this.rotation.z);
-    this.mesh.add(this.shipObject);
-    object.position.set(0, 0, this.shipZ);
+    object.position.set(0, 0, this.defaultHeight);
 
     const radiator = await loadObject("/img/3d/radiator/scene.gltf");
     const autoCannon = await loadObject(
@@ -67,6 +64,9 @@ class Caliope extends ShipObject {
       await loadObject("/img/3d/systems/thrusters/5mThruster/scene.gltf")
     );
 
+    this.setShipObject(object);
+
+    /*
     const shipMaterial = this.shipObject.children[0].material;
 
     shipMaterial.emissive = new THREE.Color(1, 1, 1);
@@ -74,7 +74,7 @@ class Caliope extends ShipObject {
       "/img/3d/caliope/emissiveMap.png"
     );
     shipMaterial.emissiveMap.flipY = false;
-
+*/
     /*
     this.shipObject.traverse(o => {
       if (o.isMesh) {

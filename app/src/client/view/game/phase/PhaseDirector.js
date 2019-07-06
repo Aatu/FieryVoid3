@@ -4,6 +4,7 @@ import ShipIconContainer from "../renderer/icon/ShipIconContainer";
 import EWIconContainer from "../renderer/icon/EWIconContainer";
 import TerrainRenderer from "../renderer/TerrainRenderer";
 import ShipWindowManager from "../ui/shipWindow/ShipWindowManager";
+import MovementPathService from "../movement/MovementPathService";
 import * as gameStatus from "../../../../model/game/gameStatuses";
 import * as gamePhase from "../../../../model/game/gamePhases";
 
@@ -25,6 +26,7 @@ class PhaseDirector {
     this.coordinateConverter = coordinateConverter;
     this.shipWindowManager = null;
     this.movementService = new MovementService();
+    this.movementPathService = null;
     this.terrainRenderer = null;
     this.phaseState = new PhaseState();
     this.gameConnector = gameConnector;
@@ -43,6 +45,10 @@ class PhaseDirector {
       this.movementService
     );
 
+    this.movementPathService = new MovementPathService(
+      scene,
+      this.shipIconContainer
+    );
     this.terrainRenderer = new TerrainRenderer(scene);
 
     this.uiState.setPhaseDirector(this);
@@ -104,6 +110,10 @@ class PhaseDirector {
       return this.activatePhaseStrategy(ReplayPhaseStrategy, gameData);
     }
 
+    if (!gameData.isPlayerActive(this.currentUser)) {
+      return this.activatePhaseStrategy(WaitingPhaseStrategy, gameData);
+    }
+
     if (gameData.phase === gamePhase.DEPLOYMENT) {
       return this.activatePhaseStrategy(DeploymentPhaseStrategy, gameData);
     }
@@ -119,6 +129,7 @@ class PhaseDirector {
     this.shipIconContainer.update(gameData);
     this.movementService.update(gameData, this);
     this.ewIconContainer.update(gameData, this.shipIconContainer);
+    this.movementPathService.update(gameData);
 
     if (this.phaseStrategy && this.phaseStrategy instanceof phaseStrategy) {
       this.phaseStrategy.update(gameData);
@@ -144,7 +155,8 @@ class PhaseDirector {
       coordinateConverter: this.coordinateConverter,
       uiState: this.uiState,
       currentUser: this.currentUser,
-      gameConnector: this.gameConnector
+      gameConnector: this.gameConnector,
+      movementPathService: this.movementPathService
     };
   }
 }

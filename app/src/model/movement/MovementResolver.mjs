@@ -29,15 +29,6 @@ class MovementResolver {
         newMovement
       ).getAmountOverChanneled();
 
-      /*
-      console.log(
-        "overChannel",
-        initialOverChannel,
-        newOverChannel,
-        newOverChannel - initialOverChannel
-      );
-      */
-
       if (commit) {
         this.ship.movement.replaceMovement(newMovement);
         this.movementService.shipMovementChanged(this.ship);

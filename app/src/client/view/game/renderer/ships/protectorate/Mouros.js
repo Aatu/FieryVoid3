@@ -13,19 +13,16 @@ class Fulcrum extends ShipObject {
 
   async create() {
     super.create();
-
     const object = await loadObject(
       "/img/3d/ships/protectorate/Mouros/scene.gltf"
     );
+
     //object.scale.set(2, 2, 2);
     this.startRotation = { x: 90, y: 90, z: 0 };
 
-    this.shipObject = object;
     this.setRotation(this.rotation.x, this.rotation.y, this.rotation.z);
-    this.mesh.add(this.shipObject);
-    object.position.set(0, 0, this.shipZ);
 
-    console.log(this.shipObject);
+    object.position.set(0, 0, this.defaultHeight);
 
     super.replaceSocketByName(
       [
@@ -52,6 +49,8 @@ class Fulcrum extends ShipObject {
       ],
       await loadObject("/img/3d/systems/thrusters/8mThruster/scene.gltf")
     );
+
+    this.setShipObject(object);
   }
 
   render() {

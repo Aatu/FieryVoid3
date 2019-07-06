@@ -11,6 +11,7 @@ const Container = styled.div`
   svg #svg-path {
     fill: white;
     ${props => props.overChannel && "fill:#ffad3a;"}
+    ${props => props.can === false && "fill:#ff0000;"}
   }
   ${Clickable}
 `;

@@ -8,13 +8,13 @@ const Container = styled.div`
   width: 40px;
   height: 40px;
   left: -20px;
-  top: 103px;
+  top: 63px;
   ${Clickable}
 `;
 
 const RotatedContainer = styled(Container)`
   transform: rotate(180deg);
-  top: 153px;
+  top: 113px;
 `;
 
 class EvadeButton extends React.Component {
@@ -29,18 +29,26 @@ class EvadeButton extends React.Component {
   }
 
   render() {
-    return [
-      this.canEvade(1) && (
-        <Container key="evade-more" onClick={this.evade.bind(this, 1)}>
+    const canMore = this.canEvade(1);
+    const canLess = this.canEvade(-1);
+    return (
+      <>
+        <Container
+          key="evade-more"
+          onClick={this.evade.bind(this, 1)}
+          can={!!canMore}
+        >
           <Evade />
         </Container>
-      ),
-      this.canEvade(-1) && (
-        <RotatedContainer key="evade-less" onClick={this.evade.bind(this, -1)}>
+        <RotatedContainer
+          key="evade-less"
+          onClick={this.evade.bind(this, -1)}
+          can={!!canLess}
+        >
           <Evade />
         </RotatedContainer>
-      )
-    ];
+      </>
+    );
   }
 }
 

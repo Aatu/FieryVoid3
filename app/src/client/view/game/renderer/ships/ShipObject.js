@@ -1,17 +1,13 @@
 import * as THREE from "three";
-import { loadObject, cloneObject } from "../../utils/objectLoader";
+import { cloneObject } from "../../utils/objectLoader";
+import GhostShipObject from "./GhostShipObject";
+import * as shipObjects from ".";
 
 import {
   degreeToRadian,
   addToDirection,
   getArcLength
 } from "../../../../../model/utils/math";
-
-import {
-  MovementPath
-  //MovementPathDeployment,
-  //MovementPathMoved
-} from "../../movement";
 
 import {
   LineSprite,
@@ -33,6 +29,13 @@ class ShipObject {
     //this.mesh.castShadow = true;
     //this.mesh.receiveShadow = true;
     this.shipObject = null;
+
+    this.resolveShipObjectLoaded = null;
+    this.isShipObjectLoaded = new Promise((resolve, reject) => {
+      this.resolveShipObjectLoaded = resolve;
+    });
+
+    this.ghostShipObject = null;
     this.weaponArcs = [];
     this.shipSideSprite = null;
     this.shipEWSprite = null;
@@ -42,7 +45,6 @@ class ShipObject {
     this.defaultHeight = 50;
     this.sideSpriteSize = 100;
     this.position = { x: 0, y: 0, z: 0 };
-    this.movementPath = null;
     this.shipZ = null;
 
     this.movements = null;
@@ -52,18 +54,22 @@ class ShipObject {
     this.startRotation = { x: 0, y: 0, z: 0 };
     this.rotation = { x: 0, y: 0, z: 0 };
 
-    this.loadedResolve = null;
-    this.loaded = new Promise((resolve, reject) => {
-      this.loadedResolve = resolve;
-    });
-
     this.emissiveReplaced = [];
+
+    this.ghost = false;
+    this.forcedEmissiveColor = null;
 
     this.consumeShipdata(this.ship);
   }
 
-  getLoadedPromise() {
-    return this.loaded;
+  setShipObject(object) {
+    this.shipObject = object;
+    this.mesh.add(object);
+    this.resolveShipObjectLoaded(true);
+  }
+
+  clone() {
+    return new shipObjects[this.ship.shipModel](this.ship, this.scene);
   }
 
   consumeShipdata(ship) {
@@ -121,10 +127,9 @@ class ShipObject {
 
   create() {
     this.createMesh();
-    this.loadedResolve(true);
   }
 
-  setPosition(x, y) {
+  async setPosition(x, y) {
     if (typeof x === "object") {
       y = x.y;
       x = x.x;
@@ -136,32 +141,38 @@ class ShipObject {
       this.mesh.position.set(x, y, 0);
     }
 
-    if (this.shipObject) {
-      this.shipObject.position.set(0, 0, this.shipZ);
-    }
+    await this.isShipObjectLoaded;
+    this.shipObject.position.set(0, 0, this.shipZ);
+  }
+
+  setShipZ(z) {
+    this.shipZ = z;
+    this.setPosition(this.position);
   }
 
   getPosition() {
     return this.position;
   }
 
-  setRotation(x, y, z) {
+  async setRotation(x, y, z) {
     this.rotation = { x, y, z };
 
-    if (this.shipObject) {
-      this.shipObject.rotation.set(
-        degreeToRadian(x + this.startRotation.x),
-        degreeToRadian(y + this.startRotation.y),
-        degreeToRadian(z + this.startRotation.z)
-      );
-    }
+    await this.isShipObjectLoaded;
+    this.shipObject.rotation.set(
+      degreeToRadian(x + this.startRotation.x),
+      degreeToRadian(y + this.startRotation.y),
+      degreeToRadian(z + this.startRotation.z)
+    );
   }
 
   getRotation() {
     return this.rotation;
   }
 
-  setOpacity(opacity) {}
+  async setOpacity(opacity) {
+    await this.isShipObjectLoaded;
+    this.replaceOpacity(opacity);
+  }
 
   hide() {
     if (this.hidden) {
@@ -240,11 +251,7 @@ class ShipObject {
     this.shipSideSprite.multiplyOpacity(opacity);
     this.line.multiplyOpacity(opacity);
   }
-
-  setNotMoved(value) {
-    //console.log("ShipObject.showSideSprite is not yet implemented")
-  }
-
+  /*
   showWeaponArc(ship, weapon) {
     var hexDistance = window.coordinateConverter.getHexDistance();
     var dis =
@@ -279,7 +286,7 @@ class ShipObject {
 
     return null;
   }
-
+*/
   hideWeaponArcs() {
     this.weaponArcs.forEach(function(arc) {
       this.mesh.remove(arc);
@@ -338,24 +345,12 @@ class ShipObject {
   }
   */
 
-  hideMovementPath() {
-    if (this.movementPath) {
-      this.movementPath.remove(this.scene);
-      this.movementPath = null;
-    }
-  }
-
-  showMovementPath(terrain) {
-    //TODO: Move to a service
-    this.hideMovementPath(this.ship);
-    this.movementPath = new MovementPath(this.ship, this.scene, terrain);
-  }
-
-  replaceSocketByName(names, entity) {
+  async replaceSocketByName(names, entity) {
     names = [].concat(names);
     const toDelete = [];
     const toAdd = [];
 
+    await this.isShipObjectLoaded;
     this.shipObject.children.forEach(child => {
       if (names.includes(child.name)) {
         toDelete.push(child);
@@ -371,10 +366,28 @@ class ShipObject {
     toAdd.forEach(mesh => this.shipObject.add(mesh));
   }
 
-  replaceEmissive(color) {
-    if (!this.shipObject) {
-      return;
-    }
+  async replaceOpacity(opacity) {
+    await this.isShipObjectLoaded;
+
+    this.shipObject.traverse(child => {
+      if (!child.isMesh) {
+        return;
+      }
+
+      child.material.transparent = true;
+      child.material.opacity = opacity;
+      child.material.needsUpdate = true;
+    });
+  }
+
+  forceEmissive(color) {
+    this.forcedEmissiveColor = color;
+    this.replaceEmissive(color);
+    this.emissiveReplaced = [];
+  }
+
+  async replaceEmissive(color) {
+    await this.isShipObjectLoaded;
 
     this.shipObject.traverse(child => {
       if (!child.isMesh) {
@@ -399,11 +412,8 @@ class ShipObject {
     });
   }
 
-  revertEmissive() {
-    if (!this.shipObject) {
-      return;
-    }
-
+  async revertEmissive() {
+    await this.isShipObjectLoaded;
     this.shipObject.traverse(child => {
       if (!child.isMesh) {
         return;
@@ -413,12 +423,38 @@ class ShipObject {
         replacement => replacement.object === child
       );
 
-      if (replacement) {
+      if (this.forcedEmissiveColor) {
+        child.material.emissiveMap = null;
+        child.material.emissive = this.forcedEmissiveColor;
+        child.material.needsUpdate = true;
+      } else if (replacement) {
         child.material.emissiveMap = replacement.map;
         child.material.emissive = replacement.color;
         child.material.needsUpdate = true;
       }
     });
+  }
+
+  setGhostShip(mine) {
+    this.ghost = true;
+    this.setGhostShipEmissive(mine);
+    this.setOpacity(0.2);
+  }
+
+  async setGhostShipEmissive(mine) {
+    await this.isShipObjectLoaded;
+    this.mesh.remove(this.shipSideSprite.mesh);
+    this.mesh.remove(this.line.mesh);
+
+    if (mine) {
+      this.forceEmissive(new THREE.Color(39 / 255, 196 / 255, 39 / 255));
+    } else {
+      this.forceEmissive(new THREE.Color(196 / 255, 39 / 255, 39 / 255));
+    }
+  }
+
+  isGhostShip() {
+    return this.ghost;
   }
 
   render() {

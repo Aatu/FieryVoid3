@@ -17,7 +17,8 @@ class ShipSystem {
         header: "Hitpoints",
         value: `${this.getRemainingHitpoints()}/${this.hitpoints}`
       },
-      { header: "Armor", value: `${this.getArmor()}` }
+      { header: "Armor", value: `${this.getArmor()}` },
+      ...this.callHandler("getMessages", null, [])
     ];
   }
 

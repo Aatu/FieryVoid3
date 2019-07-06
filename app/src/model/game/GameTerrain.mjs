@@ -35,5 +35,4 @@ class GameTerrain {
   }
 }
 
-window.GameTerrain = GameTerrain;
 export default GameTerrain;

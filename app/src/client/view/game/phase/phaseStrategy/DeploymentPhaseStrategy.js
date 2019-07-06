@@ -21,16 +21,16 @@ class DeploymentPhaseStrategy extends PhaseStrategy {
 
     this.strategies = [
       new RightClickShowsShipWindow(),
-      //new ShowDeploymentAreas(),
+      new ShowDeploymentAreas(),
       new MouseOverHighlightsShip(),
-      //new MouseOverShowsMovementPath(),
+      new MouseOverShowsMovementPath(),
       new ShowShipObjects(),
       new MouseOverShowsShipTooltip(),
       new SelectUndeployedShip(),
       new HighlightSelectedShip(),
       new DeployShipOnHexClick(),
       new AllowSubmittingWhenDeploymentDone(),
-      new SelectedShipNavigationPath(),
+      //new SelectedShipNavigationPath(),
       new SelectedShipDeploymentMovementUi()
     ];
   }

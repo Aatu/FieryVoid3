@@ -24,17 +24,28 @@ class ARK {
       velocity.toString()
     );
 */
-    while (currentTime < 1 && dt <= 1) {
-      const parent = this.gameTerrain.getParentEntity(
-        position,
-        currentTime,
-        turn
-      );
 
-      if (parent.position.distanceTo(position) < 100) {
-        positions.push(parent.position.clone());
+    const parent = this.gameTerrain.getParentEntity(position, turn);
+
+    if (!parent) {
+      const endPosition = position.add(velocity);
+      positions.push(endPosition);
+      return {
+        position: endPosition,
+        velocity,
+        positions,
+        collision: false
+      };
+    }
+
+    const parentMass = parent.mass;
+    const parentPosition = parent.position;
+
+    while (currentTime < 1 && dt <= 1) {
+      if (parent && parentPosition.distanceTo(position) < 100) {
+        positions.push(parentPosition.clone());
         return {
-          position: parent.position.clone(),
+          position: parentPosition.clone(),
           velocity: new Vector(0, 0),
           positions,
           collision: true
@@ -42,7 +53,7 @@ class ARK {
       }
 
       const { dPosition, dVelocity, error } = arkStep
-        .setValues(position, velocity, parent.position, parent.mass, dt)
+        .setValues(position, velocity, parentPosition, parentMass, dt)
         .calculate();
       //console.log("dt", dt, "currentTime", currentTime);
 
@@ -68,14 +79,8 @@ class ARK {
     dt = 1 - currentTime;
     currentTime = 1;
 
-    const fParent = this.gameTerrain.getParentEntity(
-      position,
-      currentTime,
-      turn
-    );
-
     const { dPosition: fDPosition, dVelocity: fDVelocity } = arkStep
-      .setValues(position, velocity, fParent.position, fParent.mass, dt)
+      .setValues(position, velocity, parentPosition, parentMass, dt)
       .calculate();
 
     position = position.add(fDPosition);

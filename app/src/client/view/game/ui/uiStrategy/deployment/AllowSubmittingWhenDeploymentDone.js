@@ -1,5 +1,4 @@
-import UiStrategy from "./UiStrategy";
-import * as THREE from "three";
+import UiStrategy from "../UiStrategy";
 
 class AllowSubmittingWhenDeploymentDone extends UiStrategy {
   deactivate() {
