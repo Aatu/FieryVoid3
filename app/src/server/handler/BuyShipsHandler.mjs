@@ -89,7 +89,10 @@ class BuyShipsHandler {
       startMove.velocity,
       startMove.facing,
       startMove.rolled,
-      1
+      1,
+      0,
+      undefined,
+      2
     );
   }
 
@@ -118,7 +121,10 @@ class BuyShipsHandler {
       slot.deploymentVector,
       slot.facing,
       false,
-      gameData.turn
+      gameData.turn,
+      0,
+      undefined,
+      1
     );
   }
 

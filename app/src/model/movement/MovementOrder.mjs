@@ -15,7 +15,8 @@ class MovementOrder {
     rolled,
     turn,
     value = 0,
-    requiredThrust = undefined
+    requiredThrust = undefined,
+    index = 0
   ) {
     this.id = id;
     this.type = type;
@@ -24,6 +25,7 @@ class MovementOrder {
     this.turn = turn;
     this.value = value;
     this.requiredThrust = requiredThrust || new RequiredThrust();
+    this.index = index;
     this.setPosition(position);
     this.setVelocity(velocity);
   }
@@ -72,6 +74,11 @@ class MovementOrder {
     return this;
   }
 
+  setIndex(index) {
+    this.index = index;
+    return this;
+  }
+
   serialize() {
     return {
       id: this.id,
@@ -82,7 +89,8 @@ class MovementOrder {
       rolled: this.rolled,
       turn: this.turn,
       value: this.value,
-      requiredThrust: this.requiredThrust.serialize()
+      requiredThrust: this.requiredThrust.serialize(),
+      index: this.index
     };
   }
 
@@ -95,6 +103,7 @@ class MovementOrder {
     this.rolled = data.rolled;
     this.turn = data.turn;
     this.value = data.value;
+    this.index = data.index;
     this.requiredThrust = new RequiredThrust().deserialize(data.requiredThrust);
 
     return this;
@@ -158,7 +167,8 @@ class MovementOrder {
       this.rolled,
       this.turn,
       this.value,
-      this.requiredThrust
+      this.requiredThrust,
+      this.index
     );
   }
 

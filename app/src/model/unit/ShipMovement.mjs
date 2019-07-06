@@ -9,11 +9,26 @@ class ShipMovement {
 
   addMovement(move) {
     this.moves.push(move.clone());
+    this.buildIndex();
   }
 
   removeMovement(move) {
     const toDelete = this.moves.find(other => other.equals(move));
     this.moves = this.moves.filter(other => other !== toDelete);
+    this.buildIndex();
+  }
+
+  removeMovementExceptEnd(turn) {
+    this.moves = this.moves.filter(
+      move =>
+        move.turn < turn || move.isEnd() || move.isDeploy() || move.isStart()
+    );
+    this.buildIndex();
+  }
+
+  removeMovementForTurn(turn) {
+    this.moves = this.moves.filter(move => move.turn < turn || move.isStart());
+    this.buildIndex();
   }
 
   getMovement() {
@@ -69,6 +84,24 @@ class ShipMovement {
     ];
 
     this.moves = this.moves.map(move => move.clone());
+    this.buildIndex();
+  }
+
+  buildIndex() {
+    let lastIndex = null;
+
+    this.moves.forEach(move => {
+      if (
+        lastIndex === null &&
+        (move.isEnd() || move.isStart() || move.isDeploy()) &&
+        move.index !== 0
+      ) {
+        lastIndex = move.index;
+      } else if (lastIndex !== null) {
+        lastIndex++;
+        move.index = lastIndex;
+      }
+    });
   }
 
   getLastEndMove() {

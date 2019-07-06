@@ -65,7 +65,10 @@ class DeploymentHandler {
         serverFirstMove.velocity,
         deployMove.facing,
         serverFirstMove.rolled,
-        serverGameData.turn
+        serverGameData.turn,
+        0,
+        null,
+        1
       );
 
       if (!serverDeployMove.equals(deployMove)) {

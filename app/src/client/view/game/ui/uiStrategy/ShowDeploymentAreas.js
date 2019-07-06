@@ -9,6 +9,16 @@ class ShowDeploymentAreas extends UiStrategy {
     this.areas = [];
   }
 
+  deactivate() {
+    const { scene } = this.services;
+    this.areas.forEach(area => {
+      area.sprites.forEach(sprite => {
+        scene.remove(sprite.mesh);
+        sprite.destroy();
+      });
+    });
+  }
+
   update(gameData) {
     super.update(gameData);
     const { scene, coordinateConverter, currentUser } = this.services;

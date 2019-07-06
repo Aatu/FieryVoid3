@@ -55,12 +55,14 @@ const compareMovements = (test, moves1, moves2) => {
       move
         .clone()
         .setRequiredThrust(null)
+        .setId(null)
         .round()
     ),
     moves2.map(move =>
       move
         .clone()
         .setRequiredThrust(null)
+        .setId(null)
         .round()
     )
   );

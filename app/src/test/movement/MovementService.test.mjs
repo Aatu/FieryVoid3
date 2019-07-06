@@ -21,7 +21,10 @@ const startMove = new MovementOrder(
   new hexagon.Offset(3, 2),
   0,
   false,
-  999
+  999,
+  0,
+  null,
+  1
 );
 
 const deployMove = new MovementOrder(
@@ -31,7 +34,10 @@ const deployMove = new MovementOrder(
   startMove.velocity,
   startMove.facing,
   startMove.rolled,
-  999
+  999,
+  0,
+  null,
+  2
 );
 
 const getMovementService = () =>
@@ -72,8 +78,18 @@ const constructDeployedShip = id => {
 
 const compareMovements = (test, moves1, moves2) => {
   test.deepEqual(
-    moves1.map(move => move.clone().setRequiredThrust(null)),
-    moves2.map(move => move.clone().setRequiredThrust(null))
+    moves1.map(move =>
+      move
+        .clone()
+        .setRequiredThrust(null)
+        .setIndex(0)
+    ),
+    moves2.map(move =>
+      move
+        .clone()
+        .setRequiredThrust(null)
+        .setIndex(0)
+    )
   );
 };
 
@@ -93,7 +109,10 @@ test("Ship can be deployed", test => {
       startMove.velocity,
       startMove.facing,
       startMove.rolled,
-      999
+      999,
+      0,
+      null,
+      2
     )
   ]);
 
@@ -108,7 +127,10 @@ test("Ship can be deployed", test => {
       startMove.velocity,
       startMove.facing,
       startMove.rolled,
-      999
+      999,
+      0,
+      null,
+      2
     )
   ]);
 });

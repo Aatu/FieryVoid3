@@ -19,6 +19,10 @@ class GameData {
     this.phase = phase;
   }
 
+  advanceTurn() {
+    this.turn++;
+  }
+
   addPlayer(user) {
     if (this.players.find(player => player.id === user.id)) {
       return;
@@ -156,6 +160,21 @@ class GameData {
     this.creatorId = data.creatorId;
     this.status = data.status || gameStatuses.LOBBY;
     this.terrain = new GameTerrain(this).deserialize(gameData.terrain);
+
+    return this;
+  }
+
+  clone() {
+    return new GameData(this.serialize());
+  }
+
+  censorForUser(user) {
+    this.ships.getShips().forEach(ship => {
+      ship.movement.removeMovementForTurn(this.turn + 1);
+      if (!user || !ship.player.is(user)) {
+        ship.movement.removeMovementExceptEnd(this.turn);
+      }
+    });
 
     return this;
   }

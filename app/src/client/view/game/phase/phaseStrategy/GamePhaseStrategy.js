@@ -1,22 +1,14 @@
 import PhaseStrategy from "./PhaseStrategy";
 import {
-  ShowDeploymentAreas,
   ShowShipObjects,
   RightClickShowsShipWindow,
   MouseOverHighlightsShip,
-  MouseOverShowsMovementPath,
   MouseOverShowsShipTooltip,
-  SelectUndeployedShip,
   HighlightSelectedShip,
-  DeployShipOnHexClick,
-  AllowSubmittingWhenDeploymentDone,
-  DebugDrawLineFromSelectedShip,
-  SelectedShipNavigationPath,
-  SelectedShipDeploymentMovementUi,
   SelectedShipMovementUi,
   SelectFirstActiveShip,
-  SelectedShipMovementPath,
-  AllShipsMovementPaths
+  AllShipsMovementPaths,
+  AllowSubmittingOnValidGameState
 } from "../../ui/uiStrategy";
 
 class GamePhaseStrategy extends PhaseStrategy {
@@ -31,7 +23,8 @@ class GamePhaseStrategy extends PhaseStrategy {
       new SelectFirstActiveShip(),
       new HighlightSelectedShip(),
       new SelectedShipMovementUi(),
-      new AllShipsMovementPaths()
+      new AllShipsMovementPaths(),
+      new AllowSubmittingOnValidGameState()
     ];
   }
 }

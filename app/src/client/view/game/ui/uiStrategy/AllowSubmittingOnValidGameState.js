@@ -8,7 +8,9 @@ class AllowSubmittingOnValidGameState extends UiStrategy {
 
   update(gameData) {
     super.update(gameData);
-    uiState.setTurnReady(result);
+
+    const { uiState } = this.services;
+    uiState.setTurnReady(true);
   }
 }
 

@@ -72,6 +72,9 @@ test.serial("Buy ships for first player", async test => {
   );
   test.true(newGameData.slots.getSlotById(slot1.id).isBought());
   test.false(newGameData.isPlayerActive(user));
+
+  test.is(ships[0].movement.getDeployMove().index, 2);
+  test.is(ships[0].movement.getStartMove().index, 1);
 });
 
 test.serial("Buy ships for player that is in multiple slots", async test => {
@@ -194,7 +197,9 @@ test.serial("Buy ships for both players", async test => {
       0,
       false,
       1,
-      0
+      0,
+      null,
+      1
     ),
     new MovementOrder(
       null,
@@ -204,7 +209,9 @@ test.serial("Buy ships for both players", async test => {
       0,
       false,
       1,
-      0
+      0,
+      null,
+      2
     )
   ]);
 

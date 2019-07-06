@@ -84,7 +84,8 @@ class GameController {
   }
 
   async getGameData(gameId, user) {
-    return await this.gameDataService.loadGame(gameId);
+    const game = await this.gameDataService.loadGame(gameId);
+    return game.censorForUser(user);
   }
 
   async takeSlot(gameId, slotId, user) {
@@ -123,9 +124,12 @@ class GameController {
     const serverGameData = await this.gameDataService.loadGame(gameId);
 
     this.gameHandler.submit(serverGameData, clientGameData, user);
-
-    this.gameClients.sendGameDataAll(serverGameData);
     await this.gameDataService.saveGame(serverGameData);
+
+    if (this.gameHandler.advance(serverGameData, clientGameData, user)) {
+      this.gameClients.sendGameDataAll(serverGameData);
+      await this.gameDataService.saveGame(serverGameData);
+    }
   }
 }
 

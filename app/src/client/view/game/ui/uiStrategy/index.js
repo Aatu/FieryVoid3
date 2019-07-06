@@ -16,6 +16,7 @@ import SelectedShipDeploymentMovementUi from "./deployment/SelectedShipDeploymen
 import ShowWaitingStatus from "./ShowWaitingStatus";
 import SelectFirstActiveShip from "./SelectFirstActiveShip";
 import AllShipsMovementPaths from "./AllShipsMovementPaths";
+import AllowSubmittingOnValidGameState from "./AllowSubmittingOnValidGameState";
 
 export {
   MouseOverShowsMovementPath,
@@ -35,5 +36,6 @@ export {
   SelectFirstActiveShip,
   SelectedShipMovementUi,
   SelectedShipMovementPath,
-  AllShipsMovementPaths
+  AllShipsMovementPaths,
+  AllowSubmittingOnValidGameState
 };

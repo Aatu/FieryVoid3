@@ -73,7 +73,10 @@ class MovementService {
         lastMove.velocity,
         lastMove.facing,
         lastMove.rolled,
-        this.gamedata.turn
+        this.gamedata.turn,
+        0,
+        null,
+        1
       );
       ship.movement.addMovement(deployMove);
     } else {

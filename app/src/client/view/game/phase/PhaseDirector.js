@@ -72,9 +72,6 @@ class PhaseDirector {
   }
 
   commitTurn() {
-    if (this.gameData.phase === gamePhase.DEPLOYMENT) {
-    }
-
     switch (this.gameData.phase) {
       case gamePhase.DEPLOYMENT:
         this.gameConnector.commitDeployment(this.gameData);
@@ -140,7 +137,6 @@ class PhaseDirector {
       this.phaseStrategy.deactivate();
     }
 
-    console.log("phase strategy", phaseStrategy);
     this.phaseStrategy = new phaseStrategy(this.getServices());
     this.phaseStrategy.activate().update(gameData);
   }

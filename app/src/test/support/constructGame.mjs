@@ -2,6 +2,7 @@ import GameData from "../../model/game/GameData.mjs";
 import GameSlot from "../../model/game/GameSlot.mjs";
 import hexagon from "../../model/hexagon";
 import TestShip from "../../model/unit/ships/test/TestShip";
+import MovementService from "../../model/movement/MovementService";
 
 export const constructLobbyGame = user => {
   const gameData = new GameData();
@@ -129,6 +130,36 @@ export const constructShipsBoughtGame = async (user1, user2, controller) => {
     user2
   );
 
+  const newGameData = await controller.getGameData(gameData.id);
+
+  return newGameData;
+};
+
+export const constructDeployedGame = async (user1, user2, controller) => {
+  const gameData = await constructShipsBoughtGame(user1, user2, controller);
+
+  const movementService = new MovementService().update(
+    { turn: 1 },
+    { relayEvent: () => null }
+  );
+
+  movementService.deploy(
+    gameData.ships.getShips().find(ship => ship.name === "UCS Achilles"),
+    new hexagon.Offset(-32, 3)
+  );
+
+  movementService.deploy(
+    gameData.ships.getShips().find(ship => ship.name === "UCS Eclipse"),
+    new hexagon.Offset(-34, 3)
+  );
+
+  movementService.deploy(
+    gameData.ships.getShips().find(ship => ship.name === "GEPS Biliyaz"),
+    new hexagon.Offset(34, 0)
+  );
+
+  await controller.commitDeployment(gameData.id, gameData.serialize(), user1);
+  await controller.commitDeployment(gameData.id, gameData.serialize(), user2);
   const newGameData = await controller.getGameData(gameData.id);
 
   return newGameData;

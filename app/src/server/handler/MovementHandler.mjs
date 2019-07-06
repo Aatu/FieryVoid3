@@ -1,17 +1,18 @@
-import { InvalidGameDataError } from "../errors";
+import { InvalidGameDataError, UnauthorizedError } from "../errors";
 import MovementValidator from "../services/validation/MovementValidator";
 import MovementService from "../../model/movement/MovementService";
-import coordinateConverter from "../../model/utils/CoordinateConverter";
+import uuidv4 from "uuid/v4";
 
 class MovementHandler {
-  constructor(gameDataService) {
-    this.gameDataService = gameDataService;
-
+  constructor() {
     this.movementService = new MovementService();
-    this.coordinateConverter = coordinateConverter;
   }
 
   receiveMoves(serverGameData, clientGameData, user) {
+    if (!user) {
+      throw new UnauthorizedError("Not logged in");
+    }
+
     const activeShips = serverGameData.getActiveShipsForUser(user);
 
     if (activeShips.length === 0) {
@@ -20,21 +21,23 @@ class MovementHandler {
 
     activeShips.forEach(serverShip => {
       const clientShip = clientGameData.ships.getShipById(serverShip.id);
+      const startMove = serverShip.movement.getLastEndMoveOrSurrogate();
       const validator = new MovementValidator(
         clientShip,
         serverGameData.turn,
-        serverShip.movement.getLastEndMoveOrSurrogate()
+        startMove
       );
 
       validator.validate();
 
-      serverShip.movement.replaceMovement(clientShip.movement.getMovement());
+      serverShip.movement.replaceMovement(
+        clientShip.movement.getMovement().map(move => move.setId(uuidv4()))
+      );
+
       serverShip.movement.addMovement(
-        this.movementService.getNewEndMove(
-          serverShip,
-          serverGameData.terrain,
-          this.coordinateConverter
-        )
+        this.movementService
+          .getNewEndMove(serverShip, serverGameData.terrain)
+          .setId(uuidv4())
       );
     });
   }

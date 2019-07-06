@@ -35,7 +35,7 @@ class GameClients {
     }
 
     this.games[gameData.id].forEach(subscription =>
-      this.sendGameData(gameData, null, subscription.connection)
+      this.sendGameData(gameData, subscription.user, subscription.connection)
     );
   }
 
@@ -61,7 +61,10 @@ class GameClients {
       connection.send(
         JSON.stringify({
           type: "gameData",
-          payload: gameData.serialize()
+          payload: gameData
+            .clone()
+            .censorForUser(user)
+            .serialize()
         })
       );
     }

@@ -1,27 +1,20 @@
 import UiStrategy from "./UiStrategy";
 
-const hideAllMovementPaths = shipIconContainer => {
-  shipIconContainer.getArray().forEach(function(icon) {
-    icon.hideMovementPath();
-  });
-};
-
 class MouseOverShowsMovementPath extends UiStrategy {
   deactivate() {
-    const { shipIconContainer } = this.services;
-    hideAllMovementPaths(shipIconContainer);
+    const { movementPathService } = this.services;
+    movementPathService.hideAllMovementPaths();
   }
 
   mouseOverShip(payload) {
-    const { shipIconContainer } = this.services;
-    hideAllMovementPaths(shipIconContainer);
-    payload.entity.showMovementPath(this.gameData.terrain);
+    const { movementPathService } = this.services;
+    movementPathService.hideAllMovementPaths();
+    movementPathService.showMovementPath(payload.entity.ship);
   }
 
-  mouseOutShip(payload) {
-    const { shipIconContainer } = this.services;
-    hideAllMovementPaths(shipIconContainer);
-    console.log("mouseOutShip mousover");
+  mouseOutShip() {
+    const { movementPathService } = this.services;
+    movementPathService.hideAllMovementPaths();
   }
 }
 

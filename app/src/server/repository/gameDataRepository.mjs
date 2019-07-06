@@ -56,7 +56,7 @@ class GameDataRepository {
   async saveShip(conn, gameId, turn, phase, ship) {
     await this.saveShipForGame(conn, gameId, ship);
     await this.saveShipData(conn, gameId, turn, phase, ship);
-    await this.saveShipMovement(conn, gameId, turn, ship);
+    await this.saveShipMovement(conn, gameId, ship);
   }
 
   async saveGame(gameData) {
@@ -269,7 +269,7 @@ class GameDataRepository {
     );
   }
 
-  async saveShipMovement(conn, gameId, turn, ship) {
+  async saveShipMovement(conn, gameId, ship) {
     if (ship.movement.length === 0) {
       return;
     }
@@ -285,12 +285,12 @@ class GameDataRepository {
     ) VALUES (
       UuidToBin(?),?,UuidToBin(?),?,?,?
     ) ON DUPLICATE KEY UPDATE data = ?`,
-      ship.movement.map((move, i) => [
+      ship.movement.map(move => [
         move.id,
         gameId,
         ship.id,
-        turn,
-        i,
+        move.turn,
+        move.index,
         JSON.stringify(move),
         JSON.stringify(move)
       ])
