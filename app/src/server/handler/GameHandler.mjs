@@ -18,16 +18,21 @@ class GameHandler {
     serverGameData.setPlayerInactive(user);
   }
 
+  isReady(gameData) {
+    return gameData.getActiveShips().length === 0;
+  }
+
   advance(gameData) {
-    if (gameData.getActiveShips().length !== 0) {
-      return false;
+    if (!this.isReady(gameData)) {
+      return;
     }
 
     gameData.players.forEach(player => gameData.setPlayerActive(player));
     gameData.ships.getShips().forEach(ship => gameData.setActiveShip(ship));
     gameData.advanceTurn();
+    gameData.removeOldData();
 
-    return true;
+    return;
   }
 }
 

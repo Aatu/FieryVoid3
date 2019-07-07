@@ -40,6 +40,7 @@ test.serial("Create game successfull", async test => {
   const controller = new GameController(db);
   const gameId = await controller.createGame(gameData.serialize(), user);
   test.is(gameId, 1);
+
   const newGameData = await controller.getGameData(gameId);
 
   test.is(newGameData.id, gameId);

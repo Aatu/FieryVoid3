@@ -8,6 +8,12 @@ class SelectFirstActiveShip extends UiStrategy {
       uiState.getSelectedShip() &&
       gameData.activeShips.isActive(uiState.getSelectedShip())
     ) {
+      const oldShip = uiState.getSelectedShip();
+      const newShip = gameData.ships.getShipById(oldShip.id);
+      if (oldShip !== newShip) {
+        console.log("update reference to new selected ship");
+        uiState.selectShip(newShip);
+      }
       return;
     }
 

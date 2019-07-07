@@ -31,6 +31,11 @@ class ShipMovement {
     this.buildIndex();
   }
 
+  removeMovementForOtherTurns(turn) {
+    this.moves = this.moves.filter(move => move.turn === turn);
+    this.buildIndex();
+  }
+
   getMovement() {
     return this.moves.map(move => move.clone());
   }

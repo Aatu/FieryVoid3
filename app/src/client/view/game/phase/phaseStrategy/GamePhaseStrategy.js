@@ -27,6 +27,10 @@ class GamePhaseStrategy extends PhaseStrategy {
       new AllowSubmittingOnValidGameState()
     ];
   }
+
+  commitTurn(gameConnector) {
+    gameConnector.commitTurn(this.gameData);
+  }
 }
 
 export default GamePhaseStrategy;

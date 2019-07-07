@@ -48,10 +48,11 @@ class RequiredThrustValidator {
           );
         }
 
-        const thrusterDirection = thruster.callHandler("getThrustDirection");
-        if (thrusterDirection !== parseInt(direction, 10)) {
+        if (!thruster.callHandler("isDirection", parseInt(direction, 10))) {
           throw new InvalidGameDataError(
-            `Thruster id ${thrusterId} is not direction ${direction}. Instead is ${thrusterDirection}`
+            `Thruster id ${thrusterId} is not direction ${direction}. Instead is ${thruster.callHandler(
+              "getThrustDirection"
+            )}`
           );
         }
 

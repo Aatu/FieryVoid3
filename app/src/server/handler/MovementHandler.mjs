@@ -20,6 +20,7 @@ class MovementHandler {
     }
 
     activeShips.forEach(serverShip => {
+      console.log("PROCRESS MOVEMENT FOR ", serverShip.name);
       const clientShip = clientGameData.ships.getShipById(serverShip.id);
       const startMove = serverShip.movement.getLastEndMoveOrSurrogate();
       const validator = new MovementValidator(

@@ -18,13 +18,7 @@ class ShowShipObjects extends AnimationUiStrategy {
         icon.hide();
       } else {
         icon.show();
-        this.animations.push(
-          new ShipIdleMovementAnimation(
-            icon,
-            coordinateConverter,
-            this.animations.length * 5000
-          )
-        );
+        this.animations.push(new ShipIdleMovementAnimation(icon));
       }
       return this;
     });
@@ -41,7 +35,7 @@ class ShowShipObjects extends AnimationUiStrategy {
   deactivate() {
     const { shipIconContainer } = this.services;
     shipIconContainer.getArray().forEach(function(icon) {
-      icon.show();
+      icon.hide();
     }, this);
 
     return super.deactivate();

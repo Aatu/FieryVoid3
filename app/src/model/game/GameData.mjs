@@ -170,10 +170,18 @@ class GameData {
 
   censorForUser(user) {
     this.ships.getShips().forEach(ship => {
-      ship.movement.removeMovementForTurn(this.turn + 1);
+      ship.movement.removeMovementForOtherTurns(this.turn);
       if (!user || !ship.player.is(user)) {
         ship.movement.removeMovementExceptEnd(this.turn);
       }
+    });
+
+    return this;
+  }
+
+  removeOldData() {
+    this.ships.getShips().forEach(ship => {
+      ship.movement.removeMovementForOtherTurns(this.turn);
     });
 
     return this;

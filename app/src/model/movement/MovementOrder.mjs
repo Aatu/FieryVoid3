@@ -112,8 +112,12 @@ class MovementOrder {
   equals(move) {
     return (
       this.type === move.type &&
-      this.position.equals(move.position) &&
-      this.velocity.equals(move.velocity) &&
+      this.position
+        .roundToHexCenter()
+        .equals(move.position.roundToHexCenter()) &&
+      this.velocity
+        .roundToHexCenter()
+        .equals(move.velocity.roundToHexCenter()) &&
       this.facing === move.facing &&
       this.rolled === move.rolled &&
       this.turn === move.turn &&

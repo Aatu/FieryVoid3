@@ -17,6 +17,8 @@ import ShowWaitingStatus from "./ShowWaitingStatus";
 import SelectFirstActiveShip from "./SelectFirstActiveShip";
 import AllShipsMovementPaths from "./AllShipsMovementPaths";
 import AllowSubmittingOnValidGameState from "./AllowSubmittingOnValidGameState";
+import ReplayShipMovement from "./replay/ReplayShipMovement";
+import AutomaticReplay from "./replay/AutomaticReplay";
 
 export {
   MouseOverShowsMovementPath,
@@ -37,5 +39,7 @@ export {
   SelectedShipMovementUi,
   SelectedShipMovementPath,
   AllShipsMovementPaths,
-  AllowSubmittingOnValidGameState
+  AllowSubmittingOnValidGameState,
+  ReplayShipMovement,
+  AutomaticReplay
 };

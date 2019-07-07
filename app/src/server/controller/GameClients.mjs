@@ -1,3 +1,5 @@
+import * as gameMessages from "../../model/game/gameMessage.mjs";
+
 class GameClients {
   constructor() {
     this.games = {};
@@ -29,18 +31,40 @@ class GameClients {
     return this.games[gameId];
   }
 
-  sendGameDataAll(gameData) {
-    if (!this.games[gameData.id]) {
+  sendReplay(gameDatas, user, connection) {
+    gameDatas = [].concat(gameDatas);
+    this.sendGameData(gameDatas, user, connection, gameMessages.MESSAGE_REPLAY);
+  }
+
+  sendTurnChange(gameDatas) {
+    return this.sendGameDataAll(gameDatas, gameMessages.MESSAGE_TURN_CHANGED);
+  }
+
+  sendGameDataAll(gameDatas, message = gameMessages.MESSAGE_GAMEDATA) {
+    gameDatas = [].concat(gameDatas);
+    const gameId = gameDatas[0].id;
+
+    if (!this.games[gameId]) {
       return;
     }
 
-    this.games[gameData.id].forEach(subscription =>
-      this.sendGameData(gameData, subscription.user, subscription.connection)
+    this.games[gameId].forEach(subscription =>
+      this.sendGameData(
+        gameDatas,
+        subscription.user,
+        subscription.connection,
+        message
+      )
     );
   }
 
-  sendGameData(gameData, user = null, connection = null) {
-    if (!gameData) {
+  sendGameData(
+    gameDatas,
+    user = null,
+    connection = null,
+    message = gameMessages.MESSAGE_GAMEDATA
+  ) {
+    if (!gameDatas) {
       return;
     }
 
@@ -48,8 +72,11 @@ class GameClients {
       throw new Error("Either connection or user must be given");
     }
 
+    gameDatas = [].concat(gameDatas);
+    const gameId = gameDatas[0].id;
+
     if (!connection && user) {
-      const game = this.games[gameData.id].find(
+      const game = this.games[gameId].find(
         subscription => subscription.user.id === user.id
       );
       if (game.connection) {
@@ -60,13 +87,24 @@ class GameClients {
     if (connection) {
       connection.send(
         JSON.stringify({
-          type: "gameData",
-          payload: gameData
-            .clone()
-            .censorForUser(user)
-            .serialize()
+          type: message,
+          payload: this.getMessage(gameDatas, message, user)
         })
       );
+    }
+  }
+
+  getMessage(payload, message, user) {
+    switch (message) {
+      case gameMessages.MESSAGE_GAMEDATA:
+        return payload[payload.length - 1]
+          .clone()
+          .censorForUser(user)
+          .serialize();
+      case gameMessages.MESSAGE_REPLAY:
+      case gameMessages.MESSAGE_TURN_CHANGED:
+        payload[payload.length - 1].clone().censorForUser(user);
+        return payload.map(gameData => gameData.clone().serialize());
     }
   }
 }

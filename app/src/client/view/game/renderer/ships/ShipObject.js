@@ -122,6 +122,7 @@ class ShipObject {
     this.mesh.name = "ship";
     this.mesh.userData = { icon: this };
     this.scene.add(this.mesh);
+    this.hide();
     this.consumeEW(this.ship);
   }
 
@@ -444,12 +445,14 @@ class ShipObject {
   async setGhostShipEmissive(mine) {
     await this.isShipObjectLoaded;
     this.mesh.remove(this.shipSideSprite.mesh);
-    this.mesh.remove(this.line.mesh);
+    //this.mesh.remove(this.line.mesh);
 
     if (mine) {
       this.forceEmissive(new THREE.Color(39 / 255, 196 / 255, 39 / 255));
+      this.line.setOverlayColor(new THREE.Color(39 / 255, 196 / 255, 39 / 255));
     } else {
       this.forceEmissive(new THREE.Color(196 / 255, 39 / 255, 39 / 255));
+      this.line.setOverlayColor(new THREE.Color(196 / 255, 39 / 255, 39 / 255));
     }
   }
 

@@ -6,6 +6,11 @@ class SelectedShipMovementUi extends UiStrategy {
     uiState.hideShipMovement();
   }
 
+  update(gameData) {
+    super.update(gameData);
+    this.shipMovementChanged();
+  }
+
   shipMovementChanged() {
     const { uiState } = this.services;
     const ship = uiState.getSelectedShip();

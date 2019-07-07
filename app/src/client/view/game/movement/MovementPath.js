@@ -102,7 +102,7 @@ const createMovementLine = (position, target, color, opacity = 0.8) => {
       coordinateConverter.getHexDistance() * 0.45,
       true
     ),
-    10,
+    4,
     color,
     opacity
   );

@@ -13,6 +13,9 @@ class TerrainRenderer {
   init() {}
 
   update(terrain) {
+    //TODO: This creates new objects every time gamedata updates.
+    return;
+
     this.terrain = terrain;
     console.log("update terrain renderer", terrain);
 

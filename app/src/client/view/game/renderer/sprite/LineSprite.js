@@ -83,6 +83,11 @@ class LineSprite {
     edge.position.z = (pointY.z + pointX.z) / 2;
   }
 
+  setOverlayColor(color) {
+    this.material.color = color;
+    this.material.needsUpdate = true;
+  }
+
   update(start, end, lineWidth) {
     lineWidth = lineWidth || this.lineWidth;
     this.lineWidth = lineWidth;

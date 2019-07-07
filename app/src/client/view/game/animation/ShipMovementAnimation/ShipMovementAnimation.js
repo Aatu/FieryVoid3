@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import Animation from "../Animation";
 import ShipEvasionMovementPath from "./ShipEvasionMovementPath";
+import PivotSteps from "./PivotSteps";
 import {
   addToDirection,
   hexFacingToAngle,
@@ -8,32 +9,21 @@ import {
 } from "../../../../../model/utils/math.mjs";
 
 class ShipMovementAnimation extends Animation {
-  constructor(
-    shipIcon,
-    movementService,
-    coordinateConverter,
-    turn,
-    time = 0,
-    continious = false
-  ) {
+  constructor(shipIcon, moves) {
     super();
 
     this.shipIcon = shipIcon;
-    this.ship = shipIcon.ship;
-    this.movementService = movementService;
-    this.coordinateConverter = coordinateConverter;
-    this.continious = continious;
-    this.time = time;
-    this.turn = turn;
+    this.moves = moves;
 
     this.doneCallback = null;
 
-    if (!this.movementService) {
-      throw new Error("movement service undefined");
-    }
-
     this.duration = 5000;
     this.time = this.time;
+
+    this.positionCurves = this.movesToCurves(moves);
+    this.pivotSteps = new PivotSteps(moves);
+
+    /*
 
     this.positionCurve = this.buildPositionCurve();
     this.rotations = this.buildRotations();
@@ -70,15 +60,23 @@ class ShipMovementAnimation extends Animation {
     Animation.call(this);
   }
 
-  update(gameData) {}
+  deactivate() {}
 
-  stop() {
-    super.stop();
-  }
+  update(gameData) {}
 
   cleanUp() {}
 
-  render(now, total, last, delta, zoom, back, paused) {
+  render({ turn, percentDone }) {
+    const position = this.positionCurves[turn]
+      ? this.positionCurves[turn].getPoint(percentDone)
+      : this.positionCurves[this.positionCurves.length - 1].getPoint(1);
+
+    this.shipIcon.setPosition(position);
+    this.shipIcon.setFacing(-this.pivotSteps.getFacing(turn, percentDone));
+
+    //console.log(index, percent);
+
+    /*
     this.callStartCallback(total);
 
     const { position, facing } = !this.done
@@ -269,43 +267,52 @@ class ShipMovementAnimation extends Animation {
     return pivots;
   }
 
-  buildPositionCurve() {
-    const end = this.movementService.getLastEndMove(this.ship);
-    const start = this.movementService.getLastTurnEndMove(this.ship) || end;
+  movesToCurves(moves) {
+    const startsAndEnds = [];
+    let start = null;
 
-    if (!end || end === start) {
-      const position = this.coordinateConverter.fromHexToGame(start.position);
-      return new THREE.CubicBezierCurve3(
-        new THREE.Vector3(position.x, position.y, position.z),
-        new THREE.Vector3(position.x, position.y, position.z),
-        new THREE.Vector3(position.x, position.y, position.z),
-        new THREE.Vector3(position.x, position.y, position.z)
-      );
-    }
+    moves.forEach(move => {
+      if (move.isDeploy()) {
+        start = move;
+      } else if (move.isEnd() && !start) {
+        start = move;
+      } else if (move.isEnd()) {
+        startsAndEnds.push({
+          start: start,
+          end: move
+        });
 
-    const point1 = this.coordinateConverter.fromHexToGame(start.position);
+        start = move;
+      }
+    });
 
-    const control1 = this.coordinateConverter.fromHexToGame(
-      start.position.add(start.target.scale(0.5))
+    const curves = startsAndEnds.map(({ start, end }) =>
+      this.buildPositionCurve(start, end)
     );
 
-    const control2 = this.coordinateConverter.fromHexToGame(
-      this.continious
-        ? end.position.subtract(end.target.scale(0.5))
-        : end.position
+    return curves;
+  }
+
+  buildPositionCurve(start, end) {
+    const point1 = start.position.roundToHexCenter();
+    const control1 = start.position.add(start.velocity.multiplyScalar(0.5));
+    const control2 = end.position.sub(end.velocity.multiplyScalar(0.5));
+    const point2 = end.position.roundToHexCenter();
+
+    return new THREE.QuadraticBezierCurve3(
+      new THREE.Vector3(point1.x, point1.y, point1.z),
+      new THREE.Vector3(control1.x, control1.y, control1.z),
+      new THREE.Vector3(point2.x, point2.y, point2.z)
     );
-
-    const point2 = this.coordinateConverter.fromHexToGame(end.position);
-
+    /*
     return new THREE.CubicBezierCurve3(
       new THREE.Vector3(point1.x, point1.y, point1.z),
       new THREE.Vector3(control1.x, control1.y, control1.z),
       new THREE.Vector3(control2.x, control2.y, control2.z),
       new THREE.Vector3(point2.x, point2.y, point2.z)
     );
+    */
   }
 }
-
-window.ShipMovementAnimation = ShipMovementAnimation;
 
 export default ShipMovementAnimation;

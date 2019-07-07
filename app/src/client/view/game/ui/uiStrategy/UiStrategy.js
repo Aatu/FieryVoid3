@@ -4,6 +4,8 @@ class UiStrategy {
     this.gameData = null;
   }
 
+  deactivate() {}
+
   activate(services) {
     this.services = services;
   }

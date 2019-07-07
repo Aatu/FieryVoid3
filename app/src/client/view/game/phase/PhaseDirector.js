@@ -13,6 +13,7 @@ import DeploymentPhaseStrategy from "./phaseStrategy/DeploymentPhaseStrategy";
 import ReplayPhaseStrategy from "./phaseStrategy/ReplayPhaseStrategy";
 import WaitingPhaseStrategy from "./phaseStrategy/WaitingPhaseStrategy";
 import GamePhaseStrategy from "./phaseStrategy/GamePhaseStrategy";
+import AutomaticReplayPhaseStrategy from "./phaseStrategy/AutomaticReplayPhaseStrategy";
 
 class PhaseDirector {
   constructor(uiState, currentUser, coordinateConverter, gameConnector) {
@@ -54,11 +55,34 @@ class PhaseDirector {
     this.uiState.setPhaseDirector(this);
   }
 
+  closeReplay() {
+    console.log("CLOSE REPLAY");
+    this.phaseStrategy.deactivate();
+    this.phaseStrategy = null;
+
+    this.resolvePhaseStrategy(this.gameData);
+  }
+
   receiveGameData(gameData) {
     window.gameData = gameData;
     this.gameData = gameData;
     this.resolvePhaseStrategy(gameData);
-    this.terrainRenderer.update(gameData.terrain);
+  }
+
+  receiveReplay(gameDatas) {
+    this.receiveTurnChange(gameDatas);
+  }
+
+  receiveTurnChange(gameDatas) {
+    this.gameData = gameDatas[gameDatas.length - 1];
+
+    if (!this.phaseStrategy || this.phaseStrategy.canDisturb()) {
+      this.activatePhaseStrategy(AutomaticReplayPhaseStrategy, this.gameData);
+    }
+
+    if (this.phaseStrategy) {
+      this.relayEvent("newTurn", gameDatas);
+    }
   }
 
   relayEvent(name, payload) {
@@ -72,15 +96,7 @@ class PhaseDirector {
   }
 
   commitTurn() {
-    switch (this.gameData.phase) {
-      case gamePhase.DEPLOYMENT:
-        this.gameConnector.commitDeployment(this.gameData);
-        break;
-      case gamePhase.GAME:
-      default:
-        this.gameConnector.commitTurn(this.gameData);
-    }
-
+    this.phaseStrategy.commitTurn(this.gameConnector);
     return this.activatePhaseStrategy(WaitingPhaseStrategy, this.gameData);
   }
 
@@ -94,6 +110,10 @@ class PhaseDirector {
   }
 
   resolvePhaseStrategy(gameData) {
+    if (this.phaseStrategy && !this.phaseStrategy.canDisturb()) {
+      return;
+    }
+
     if (gameData.status === gameStatus.LOBBY) {
       return this.activatePhaseStrategy(LobbyPhaseStrategy, gameData);
     }
@@ -127,6 +147,7 @@ class PhaseDirector {
     this.movementService.update(gameData, this);
     this.ewIconContainer.update(gameData, this.shipIconContainer);
     this.movementPathService.update(gameData);
+    this.terrainRenderer.update(gameData.terrain);
 
     if (this.phaseStrategy && this.phaseStrategy instanceof phaseStrategy) {
       this.phaseStrategy.update(gameData);

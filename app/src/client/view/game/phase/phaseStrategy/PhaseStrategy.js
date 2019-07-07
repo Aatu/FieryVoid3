@@ -18,11 +18,16 @@ class PhaseStrategy {
     this.strategies = [];
     this.inactive = true;
 
-    this.lastAnimationTime = 0;
-    this.totalAnimationTime = 0;
-    this.currentDeltaTime = 0;
+    this.gameData = null;
 
-    this.currentlyMouseOveredIds = null;
+    this.animationPaused = true;
+    this.animationReversed = false;
+    this.currentDeltaTime = 0;
+    this.animationStartTime = 0;
+    this.totalAnimationTime = 0;
+    this.lastAnimationTime = 0;
+    this.animationEndtime = 0;
+    this.animationTurnLength = null;
   }
 
   onEvent(name, payload) {
@@ -46,33 +51,68 @@ class PhaseStrategy {
   }
 
   render(coordinateConverter, scene, zoom) {
-    this.updateDeltaTime();
-    this.updateTotalAnimationTime();
+    this.updateDeltaTime(this.animationPaused);
+    this.updateTotalAnimationTime(this.animationPaused);
 
     const { shipIconContainer } = this.services;
 
     shipIconContainer &&
       shipIconContainer.render(coordinateConverter, scene, zoom);
+
+    const turnDone =
+      this.animationTurnLength !== null
+        ? this.totalAnimationTime / this.animationTurnLength
+        : 0;
+
     this.callStrategies("render", {
       delta: this.currentDeltaTime,
       total: this.totalAnimationTime,
-      last: this.lastAnimationTime
+      last: this.lastAnimationTime,
+      turn: Math.floor(turnDone),
+      percentDone: turnDone % 1
     });
   }
 
-  updateTotalAnimationTime(paused) {
-    if (paused) {
+  animateFromTo(start, end, turnLength) {
+    console.log("animate from", start, "to", end);
+    this.animationStartTime = start;
+    this.totalAnimationTime = start;
+    this.lastAnimationTime = null;
+    this.currentDeltaTime = 0;
+    this.animationEndtime = end;
+    this.animationTurnLength = turnLength;
+    this.animationPaused = false;
+  }
+
+  pauseAnimation() {
+    this.animationPaused = true;
+  }
+
+  unpauseAnimation() {
+    this.animationPaused = false;
+  }
+
+  updateTotalAnimationTime() {
+    if (this.animationPaused) {
       return;
     }
 
-    if (this.goingBack) {
+    if (this.animationReversed) {
       this.totalAnimationTime -= this.currentDeltaTime;
+      if (this.totalAnimationTime < this.animationStartTime) {
+        this.totalAnimationTime = this.animationStartTime;
+        this.animationPaused = true;
+      }
     } else {
       this.totalAnimationTime += this.currentDeltaTime;
+      if (this.totalAnimationTime >= this.animationEndtime) {
+        this.totalAnimationTime = this.animationEndtime;
+        this.animationPaused = true;
+      }
     }
   }
 
-  updateDeltaTime(paused) {
+  updateDeltaTime() {
     const now = Date.now();
 
     if (!this.lastAnimationTime) {
@@ -80,15 +120,15 @@ class PhaseStrategy {
       this.currentDeltaTime = 0;
     }
 
-    if (!paused) {
-      this.currentDeltaTime = now - this.lastAnimationTime;
-    }
+    this.currentDeltaTime = now - this.lastAnimationTime;
 
     this.lastAnimationTime = now;
   }
 
   update(gamedata) {
     const { uiState } = this.services;
+
+    this.gameData = gamedata;
     uiState.setGameData(gamedata);
     this.updateStrategies(gamedata);
 
@@ -119,6 +159,12 @@ class PhaseStrategy {
   onZoomEvent(payload) {
     this.callStrategies("onZoom", payload);
   }
+
+  canDisturb() {
+    return true;
+  }
+
+  commitTurn(gameConnector) {}
 }
 
 export default PhaseStrategy;

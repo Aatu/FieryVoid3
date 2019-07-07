@@ -105,10 +105,23 @@ class GameConnector {
 
   onMessage({ data }) {
     const { type, payload } = JSON.parse(data);
+    console.log("message received", type);
 
     switch (type) {
-      case "gameData":
+      case gameMessages.MESSAGE_GAMEDATA:
         this.phaseDirector.receiveGameData(new GameData(payload));
+        break;
+
+      case gameMessages.MESSAGE_TURN_CHANGED:
+        this.phaseDirector.receiveTurnChange(
+          payload.map(entry => new GameData(entry))
+        );
+        break;
+
+      case gameMessages.MESSAGE_REPLAY:
+        this.phaseDirector.receiveReplay(
+          payload.map(entry => new GameData(entry))
+        );
         break;
       default:
         throw new Error(`Unrecognized websocket message type: '${type}'`);

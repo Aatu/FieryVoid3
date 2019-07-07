@@ -34,6 +34,10 @@ class DeploymentPhaseStrategy extends PhaseStrategy {
       new SelectedShipDeploymentMovementUi()
     ];
   }
+
+  commitTurn(gameConnector) {
+    gameConnector.commitDeployment(this.gameData);
+  }
 }
 
 export default DeploymentPhaseStrategy;

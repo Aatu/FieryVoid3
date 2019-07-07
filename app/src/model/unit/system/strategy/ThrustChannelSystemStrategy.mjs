@@ -98,6 +98,13 @@ class ThrustChannelSystemStrategy extends ShipSystemStrategy {
     return true;
   }
 
+  isDirection(system, direction) {
+    return (
+      this.direction === direction ||
+      (Array.isArray(this.direction) && this.direction.includes(direction))
+    );
+  }
+
   getPossibleCriticals(system, payload, previousResponse = []) {
     return [
       ...previousResponse,

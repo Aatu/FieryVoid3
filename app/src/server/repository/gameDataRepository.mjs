@@ -8,22 +8,18 @@ class GameDataRepository {
     this.db = db;
   }
 
-  async loadGame(id, turn = null, phase = null) {
+  async loadGame(id, turn = null) {
     let conn = null;
     try {
       conn = await this.db.getConnection();
-      const gameData = await this.getGame(conn, id);
+      const gameData = await this.getGame(conn, id, turn);
       gameData.players = await this.getPlayersInGame(conn, id);
 
       if (!turn) {
         turn = gameData.turn;
       }
 
-      if (!phase) {
-        phase = gameData.phase;
-      }
-
-      const shipData = await this.getShipDataForGame(conn, id, turn, phase);
+      const shipData = await this.getShipDataForGame(conn, id, turn);
       const movementData = await this.getMovementForGame(conn, id, turn);
 
       const ships = await this.getShipsForGame(conn, id);
@@ -53,53 +49,42 @@ class GameDataRepository {
     return ship;
   }
 
-  async saveShip(conn, gameId, turn, phase, ship) {
+  async saveShip(conn, gameId, turn, ship) {
     await this.saveShipForGame(conn, gameId, ship);
-    await this.saveShipData(conn, gameId, turn, phase, ship);
+    await this.saveShipData(conn, gameId, turn, ship);
     await this.saveShipMovement(conn, gameId, ship);
   }
 
-  async saveGame(gameData) {
+  async saveGame(gameDatas, error) {
+    gameDatas = [].concat(gameDatas);
     let conn = null;
+    let gameId = null;
 
     try {
       conn = await this.db.getConnection();
       await conn.beginTransaction();
-      const serialized = gameData.serialize();
-      const gameId = await this.saveGameData(conn, serialized);
 
       await Promise.all(
-        serialized.players.map(player =>
-          this.savePlayerInGame(conn, gameId, player)
-        )
-      );
+        gameDatas.map(async gameData => {
+          const serialized = gameData.serialize();
+          gameId = await this.saveGameData(conn, serialized);
 
-      await Promise.all(
-        serialized.ships.map(ship =>
-          this.saveShip(conn, gameId, gameData.turn, gameData.phase, ship)
-        )
+          await Promise.all(
+            serialized.players.map(player =>
+              this.savePlayerInGame(conn, gameId, player)
+            )
+          );
+
+          await Promise.all(
+            serialized.ships.map(ship =>
+              this.saveShip(conn, gameId, gameData.turn, ship)
+            )
+          );
+        })
       );
 
       await conn.commit();
       await conn.end();
-
-      return gameId;
-
-      await this.saveMovementForGame(
-        conn,
-        serialized.id,
-        serialized.turn,
-        [].concat.apply([], serialized.ships.map(ship => ship.movement))
-      );
-
-      await this.saveFireForGame(
-        conn,
-        serialized.id,
-        serialized.turn,
-        [].concat.apply([], serialized.ships.map(ship => ship.fire))
-      );
-
-      conn.commit();
 
       return gameId;
     } catch (error) {
@@ -111,7 +96,7 @@ class GameDataRepository {
     }
   }
 
-  async getGame(conn, id) {
+  async getGame(conn, id, turn) {
     const response = (await this.db.query(
       conn,
       `SELECT
@@ -128,6 +113,9 @@ class GameDataRepository {
       [id]
     ))[0];
 
+    if (turn !== null) {
+      response.turn = turn;
+    }
     response.data = JSON.parse(response.data);
     response.activeShips = JSON.parse(response.activeShips);
     return response;
@@ -242,16 +230,13 @@ class GameDataRepository {
   }
 
   async savePlayerInGame(conn, gameId, player) {
-    await this.db.query(conn, "DELETE FROM game_player WHERE game_id = ?", [
-      gameId
-    ]);
-
     return this.db.query(
       conn,
       `INSERT INTO game_player (
         game_id,
         user_id
-      ) VALUES (?, ?)`,
+      ) VALUES (?, ?)
+      ON DUPLICATE KEY UPDATE last_activity = now()`,
       [gameId, player.id]
     );
   }
@@ -358,32 +343,31 @@ class GameDataRepository {
     ))[0];
   }
 
-  async getShipDataForGame(conn, id, turn, phase) {
+  async getShipDataForGame(conn, id, turn) {
     return this.db.query(
       conn,
       `SELECT 
         CAST(UuidFromBin(ship_id) as CHAR) as shipId,
         data
       FROM game_ship_data
-      WHERE game_id = ? and turn = ? and phase = ?`,
-      [id, turn, phase]
+      WHERE game_id = ? and turn = ?`,
+      [id, turn]
     );
   }
 
-  async saveShipData(conn, gameId, turn, phase, data) {
+  async saveShipData(conn, gameId, turn, data) {
     return (await this.db.query(
       conn,
       `INSERT INTO game_ship_data (
         game_id,
         ship_id,
         turn,
-        phase,
         data
       ) VALUES (
-          ?,UuidToBin(?),?,?,?
+          ?,UuidToBin(?),?,?
       ) ON DUPLICATE KEY UPDATE
         data = ?`,
-      [gameId, data.id, turn, phase, data.shipData, data.shipData]
+      [gameId, data.id, turn, data.shipData, data.shipData]
     ))[0];
   }
 }

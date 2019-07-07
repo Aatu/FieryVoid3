@@ -10,7 +10,7 @@ class MovementPathService {
   }
 
   getPath(ship) {
-    return this.paths.find(path => path.ship === ship);
+    return this.paths.find(path => path.ship.id === ship.id);
   }
 
   update(gameData) {
@@ -47,6 +47,8 @@ class MovementPathService {
     if (path.movementPath) {
       path.movementPath.remove(this.scene);
     }
+
+    path.ship = ship;
 
     //console.log(this.shipIconContainer.getByShip(ship).clone());
 

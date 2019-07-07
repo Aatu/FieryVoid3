@@ -27,6 +27,10 @@ class ShipIconContainer {
     this.ghostShipIcons = [];
   }
 
+  shipsLoaded() {
+    return Promise.all(this.iconsAsArray.map(icon => icon.isShipObjectLoaded));
+  }
+
   getGhostShipIconByShip(ship) {
     let icon = this.ghostShipIcons.find(icon => icon.ship === ship);
 

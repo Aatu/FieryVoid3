@@ -25,6 +25,12 @@ class UIState {
     this.updateState();
   }
 
+  closeReplay() {
+    this.state.replay = false;
+    this.phaseDirector.closeReplay();
+    this.updateState();
+  }
+
   isReplay() {
     return this.state.replay;
   }
@@ -179,7 +185,7 @@ class UIState {
 
   hideShipTooltip(ship) {
     this.state.shipTooltip = this.state.shipTooltip.filter(
-      tooltip => tooltip.ship !== ship
+      tooltip => tooltip.ship.id !== ship.id
     );
     this.updateState();
   }

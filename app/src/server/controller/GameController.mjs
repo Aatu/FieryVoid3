@@ -8,6 +8,7 @@ import GameHandler from "../handler/GameHandler.mjs";
 import GameClients from "./GameClients.mjs";
 import * as gameMessages from "../../model/game/gameMessage.mjs";
 import * as gamePhases from "../../model/game/gamePhases.mjs";
+import ReplayHandler from "../handler/ReplayHandler.mjs";
 
 class GameController {
   constructor(dbConnection) {
@@ -21,12 +22,24 @@ class GameController {
     this.buyShipsHandler = new BuyShipsHandler();
     this.deploymentHandler = new DeploymentHandler();
     this.gameHandler = new GameHandler();
+    this.replayHandler = new ReplayHandler(this.gameDataService);
   }
 
   async openConnection(connection, user, gameId) {
     console.log("open connection");
     this.gameClients.subscribeToGame(connection, user, gameId);
     const gameData = await this.gameDataService.loadGame(gameId);
+    if (gameData.turn > 1) {
+      const gameDatas = await this.replayHandler.requestReplay(
+        gameId,
+        gameData.turn - 1,
+        gameData.turn,
+        user
+      );
+
+      this.gameClients.sendReplay(gameDatas, user, connection);
+    }
+
     this.gameClients.sendGameData(gameData, user, connection);
   }
 
@@ -56,13 +69,25 @@ class GameController {
           return this.commitDeployment(gameId, message.payload, user);
         case gameMessages.MESSAGE_COMMIT_TURN:
           return this.commitTurn(gameId, message.payload, user);
+        case gameMessages.MESSAGE_REQUEST_REPLAY:
+          return this.requestReplay(gameId, message.payload, user);
         default:
           throw new Error(`Unrecognized message type ${message.type}`);
       }
     } catch (error) {
-      //this.gameDataService.releaseGame(gameId);
       throw error;
     }
+  }
+
+  async requestReplay(gameId, { start = null, end = null }, user) {
+    const gameDatas = this.replayHandler.requestReplay(
+      gameId,
+      start,
+      end,
+      user
+    );
+
+    this.gameClients.sendReplay(gameDatas, user);
   }
 
   async createGame(clientGameData, user) {
@@ -72,15 +97,15 @@ class GameController {
       user
     );
 
-    const gameId = await this.gameDataService.saveGame(serverGameData);
+    const gameId = await this.gameDataService.createGame(serverGameData);
     return gameId;
   }
 
   async removeGame(gameId, user) {
-    const gameData = await this.gameDataService.loadGame(gameId);
+    const { key, gameData } = await this.gameDataService.reserveGame(gameId);
     this.createGameHandler.removeGame(gameData, user);
     this.gameClients.sendGameDataAll(gameData);
-    await this.gameDataService.saveGame(gameData);
+    await this.gameDataService.saveGame(key, gameData);
   }
 
   async getGameData(gameId, user) {
@@ -89,47 +114,58 @@ class GameController {
   }
 
   async takeSlot(gameId, slotId, user) {
-    const gameData = await this.gameDataService.loadGame(gameId);
+    const { key, gameData } = await this.gameDataService.reserveGame(gameId);
     this.createGameHandler.takeSlot(gameData, slotId, user);
     this.gameClients.sendGameDataAll(gameData);
-    await this.gameDataService.saveGame(gameData);
+    await this.gameDataService.saveGame(key, gameData);
   }
 
   async leaveSlot(gameId, slotId, user) {
-    const gameData = await this.gameDataService.loadGame(gameId);
+    const { key, gameData } = await this.gameDataService.reserveGame(gameId);
     this.createGameHandler.leaveSlot(gameData, slotId, user);
     this.gameClients.sendGameDataAll(gameData);
-    await this.gameDataService.saveGame(gameData);
+    await this.gameDataService.saveGame(key, gameData);
   }
 
   async buyShips(gameId, slotId, ships, user) {
-    const gameData = await this.gameDataService.loadGame(gameId);
+    const { key, gameData } = await this.gameDataService.reserveGame(gameId);
     this.buyShipsHandler.buyShips(gameData, slotId, ships, user);
     this.gameClients.sendGameDataAll(gameData);
-    await this.gameDataService.saveGame(gameData);
+    await this.gameDataService.saveGame(key, gameData);
   }
 
   async commitDeployment(gameId, clientGameData, user) {
     clientGameData = new GameData(clientGameData);
-    const serverGameData = await this.gameDataService.loadGame(gameId);
+    const {
+      key,
+      gameData: serverGameData
+    } = await this.gameDataService.reserveGame(gameId);
 
     this.deploymentHandler.deploy(serverGameData, clientGameData, user);
 
     this.gameClients.sendGameDataAll(serverGameData);
-    await this.gameDataService.saveGame(serverGameData);
+    await this.gameDataService.saveGame(key, serverGameData);
   }
 
   async commitTurn(gameId, clientGameData, user) {
     clientGameData = new GameData(clientGameData);
-    const serverGameData = await this.gameDataService.loadGame(gameId);
+    const {
+      key,
+      gameData: serverGameData
+    } = await this.gameDataService.reserveGame(gameId);
+
+    const toSave = [];
 
     this.gameHandler.submit(serverGameData, clientGameData, user);
-    await this.gameDataService.saveGame(serverGameData);
+    toSave.push(serverGameData.clone());
 
-    if (this.gameHandler.advance(serverGameData, clientGameData, user)) {
-      this.gameClients.sendGameDataAll(serverGameData);
-      await this.gameDataService.saveGame(serverGameData);
+    if (this.gameHandler.isReady(serverGameData)) {
+      this.gameHandler.advance(serverGameData); //change turn and advance game
+      toSave.push(serverGameData);
+      this.gameClients.sendTurnChange(toSave);
     }
+
+    await this.gameDataService.saveGame(key, toSave);
   }
 }
 
