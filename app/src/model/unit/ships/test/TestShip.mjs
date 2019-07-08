@@ -2,9 +2,7 @@ import Ship from "../../Ship.mjs";
 import systems from "../../system";
 
 class TestShip extends Ship {
-  constructor(data) {
-    super(data);
-
+  setShipProperties() {
     this.accelcost = 3;
     this.rollcost = 3;
     this.pivotcost = 3;
@@ -26,7 +24,8 @@ class TestShip extends Ship {
       ),
       new systems.Engine({ id: 5, hitpoints: 10, armor: 3 }, 12, 6, 2),
       new systems.Engine({ id: 6, hitpoints: 10, armor: 3 }, 12, 6, 2),
-      new systems.Reactor({ id: 7, hitpoints: 10, armor: 3 }, 20)
+      new systems.Reactor({ id: 7, hitpoints: 10, armor: 3 }, 20),
+      new systems.EwArray({ id: 11, hitpoints: 10, armor: 3 }, 10)
     ]);
   }
 }

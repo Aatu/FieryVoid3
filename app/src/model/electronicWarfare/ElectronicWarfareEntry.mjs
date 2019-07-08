@@ -33,7 +33,7 @@ class ElectronicWarfareEntry {
     switch (this.type) {
       case ewTypes.EW_OFFENSIVE:
       case ewTypes.EW_DEFENSIVE:
-      case ewTypes.EW_TRACKING:
+      case ewTypes.EW_CC:
       case ewTypes.EW_OFFENSIVE_SUPPORT:
       case ewTypes.EW_DEFENSIVE_SUPPORT:
         return this.amount;
@@ -48,7 +48,7 @@ class ElectronicWarfareEntry {
     switch (this.type) {
       case ewTypes.EW_OFFENSIVE:
       case ewTypes.EW_DEFENSIVE:
-      case ewTypes.EW_TRACKING:
+      case ewTypes.EW_CC:
       case ewTypes.EW_OFFENSIVE_SUPPORT:
       case ewTypes.EW_DEFENSIVE_SUPPORT:
         return 1;
@@ -72,17 +72,7 @@ class ElectronicWarfareEntry {
     this.targetShipId = data.targetShipId;
     this.amount = data.amount;
 
-    this.validate();
-  }
-
-  validate() {
-    if (!this.targetShipId) {
-      throw new Error("ElectronicWarfareEntry must have targetShipId");
-    }
-
-    if (this.amount <= 0) {
-      throw new Error("ElectronicWarfareEntry amount must be more than zero");
-    }
+    return this;
   }
 }
 

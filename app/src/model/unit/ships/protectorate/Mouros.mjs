@@ -2,9 +2,7 @@ import Ship from "../../Ship.mjs";
 import systems from "../../system";
 
 class Mouros extends Ship {
-  constructor(data) {
-    super(data);
-
+  setShipProperties() {
     this.shipTypeName =
       "OuterLight Industries Mouros 118-A mainstay battleship";
     this.shipModel = this.accelcost = 3;

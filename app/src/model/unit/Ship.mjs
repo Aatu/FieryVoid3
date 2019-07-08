@@ -6,7 +6,6 @@ import ShipMovement from "./ShipMovement";
 class Ship {
   constructor(data = {}) {
     this.systems = new ShipSystems(this);
-    this.deserialize(data);
     this.pointCost = 0;
     this.accelcost = 1;
     this.rollcost = 1;
@@ -15,7 +14,11 @@ class Ship {
 
     this.shipModel = null;
     this.shipTypeName = "";
+    this.setShipProperties();
+    this.deserialize(data);
   }
+
+  setShipProperties() {}
 
   getPointCost() {
     return this.pointCost;

@@ -9,24 +9,14 @@ import * as ewTypes from "../../../electronicWarfare/electronicWarfareTypes.mjs"
 import ElectronicWarfareEntry from "../../../electronicWarfare/ElectronicWarfareEntry.mjs";
 import Ship from "../../Ship.mjs";
 
-/*
-export const EW_OFFENSIVE = "oew";
-export const EW_DEFENSIVE = "dew";
-export const EW_TRACKING = "cqew";
-export const EW_OFFENSIVE_SUPPORT = "soew";
-export const EW_DEFENSIVE_SUPPORT = "sdew";
-export const EW_DISRUPTION = "disew";
-export const EW_AREA_DEFENSIVE_SUPPORT = "adew";
-*/
-
 const typeAsString = type => {
   switch (type) {
     case ewTypes.EW_OFFENSIVE:
       return "Offensive EW";
     case ewTypes.EW_DEFENSIVE:
       return "Defensive EW";
-    case ewTypes.EW_TRACKING:
-      return "Tracking EW";
+    case ewTypes.EW_CC:
+      return "Close combat EW";
     case ewTypes.EW_OFFENSIVE_SUPPORT:
       return "Offensive support EW";
     case ewTypes.EW_DEFENSIVE_SUPPORT:
@@ -46,16 +36,32 @@ class ElectronicWarfareProvider extends ShipSystemStrategy {
     this.allowedEwTypes = allowedEwTypes || [
       ewTypes.EW_OFFENSIVE,
       ewTypes.EW_DEFENSIVE,
-      ewTypes.EW_TRACKING
+      ewTypes.EW_CC
     ];
 
     this.entries = [];
   }
 
-  serialize() {}
+  serialize(payload, previousResponse = []) {
+    return {
+      ...previousResponse,
+      electronicWarfareProvider: [
+        ...this.entries.map(entry => entry.serialize())
+      ]
+    };
+  }
 
   deserialize(data = {}) {
-    return this;
+    return (this.entries = data.electronicWarfareProvider
+      ? data.electronicWarfareProvider.map(
+          entry =>
+            new ElectronicWarfareEntry(
+              entry.type,
+              entry.targetShipId,
+              entry.amount
+            )
+        )
+      : []);
   }
 
   getMessages(payload, previousResponse = []) {

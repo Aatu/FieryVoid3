@@ -68,33 +68,6 @@ const compareMovements = (test, moves1, moves2) => {
   );
 };
 
-test("Submit movement, but ship is not active", test => {
-  const serverGame = new GameData({
-    id: 123,
-    turn: 1,
-    phase: 1,
-    activeShips: [567]
-  });
-
-  const user = new User(989, "Nönmän");
-  const ship = constructDeployedShip(1, user);
-  serverGame.ships.addShip(ship);
-
-  const clientGame = new GameData().deserialize(serverGame.serialize());
-  test.deepEqual(serverGame.serialize(), clientGame.serialize());
-
-  const movementHandler = new MovementHandler();
-
-  const error = test.throws(() =>
-    movementHandler.receiveMoves(
-      serverGame,
-      new GameData().deserialize(clientGame.serialize()),
-      user
-    )
-  );
-  test.is(error.message, "Current user has no active ships");
-});
-
 test("Submit movement", test => {
   const serverGame = new GameData({
     id: 123,
@@ -128,24 +101,14 @@ test("Submit movement", test => {
   movementHandler.receiveMoves(
     serverGame,
     new GameData().deserialize(clientGame.serialize()),
+    serverGame.getActiveShipsForUser(user),
     user
   );
 
   compareMovements(
     test,
     serverGame.ships.getShipById(1).movement.getMovement(),
-    [
-      ...clientGame.ships.getShipById(1).movement.getMovement(),
-      new MovementOrder(
-        null,
-        movementTypes.END,
-        new hexagon.Offset(10, -7),
-        new hexagon.Offset(5, -2),
-        1,
-        true,
-        2
-      )
-    ]
+    [...clientGame.ships.getShipById(1).movement.getMovement()]
   );
 
   test.is(serverGame.ships.getShipById(2).movement.getMovement().length, 2);

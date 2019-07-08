@@ -1,12 +1,36 @@
 import MovementHandler from "./MovementHandler.mjs";
+import ElectronicWarfareHandler from "./ElectronicWarfareHandler.mjs";
+import { UnauthorizedError, InvalidGameDataError } from "../errors";
 
 class GameHandler {
   constructor() {
     this.movementHandler = new MovementHandler();
+    this.electronicWarfareHandler = new ElectronicWarfareHandler();
   }
 
   submit(serverGameData, clientGameData, user) {
-    this.movementHandler.receiveMoves(serverGameData, clientGameData, user);
+    if (!user) {
+      throw new UnauthorizedError("Not logged in");
+    }
+
+    const activeShips = serverGameData.getActiveShipsForUser(user);
+
+    if (activeShips.length === 0) {
+      throw new InvalidGameDataError("Current user has no active ships");
+    }
+
+    this.movementHandler.receiveMoves(
+      serverGameData,
+      clientGameData,
+      activeShips,
+      user
+    );
+    this.electronicWarfareHandler.receiveElectronicWarfare(
+      serverGameData,
+      clientGameData,
+      activeShips,
+      user
+    );
     this.inactivateUsersShips(serverGameData, user);
   }
 
@@ -27,6 +51,7 @@ class GameHandler {
       return;
     }
 
+    this.movementHandler.advance(gameData);
     gameData.players.forEach(player => gameData.setPlayerActive(player));
     gameData.ships.getShips().forEach(ship => gameData.setActiveShip(ship));
     gameData.advanceTurn();

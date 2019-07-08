@@ -1,16 +1,44 @@
 import * as ewTypes from "../electronicWarfare/electronicWarfareTypes.mjs";
 import ElectronicWarfareEntry from "../electronicWarfare/ElectronicWarfareEntry.mjs";
 import Ship from "../unit/Ship.mjs";
+import ShipCurrentElectronicWarfare from "./ShipCurrentElectronicWarfare.mjs";
 
-class UnableToAssignEw extends Error {}
+export class UnableToAssignEw extends Error {}
 
 class ShipElectronicWarfare {
   constructor(ship) {
     this.ship = ship;
+    this.current = new ShipCurrentElectronicWarfare();
+  }
+
+  serialize() {
+    return this.current.serialize();
+  }
+
+  deserialize(data = {}) {
+    this.current.deserialize(data);
+
+    return this;
+  }
+
+  setCurrentElectronicWarfare() {
+    this.current = new ShipCurrentElectronicWarfare(
+      this.getDefensiveEw(),
+      this.getCcEw(),
+      this.getAllEntries()
+    );
+  }
+
+  assignCcEw(amount) {
+    this.assingEw(ewTypes.EW_CC, this.ship.id, amount);
   }
 
   assignOffensiveEw(target, amount) {
     this.assingEw(ewTypes.EW_OFFENSIVE, target, amount);
+  }
+
+  getCcEw() {
+    return this.getEw(ewTypes.EW_CC, this.ship.id);
   }
 
   getDefensiveEw() {
@@ -71,14 +99,6 @@ class ShipElectronicWarfare {
     );
   }
 
-  deserialize(data = {}) {
-    return this;
-  }
-
-  serialize() {
-    return {};
-  }
-
   getEwArrays() {
     return this.ship.systems
       .getSystems()
@@ -93,7 +113,7 @@ class ShipElectronicWarfare {
       while (amount > 0) {
         const availableSystems = this.getAvailableSystemsForEntry(entry);
         if (availableSystems.length === 0) {
-          throw new UnableToAssignEw("Check ew validity first!");
+          throw new UnableToAssignEw("Invalid EW");
         }
 
         availableSystems.shift().callHandler("assignEw", {

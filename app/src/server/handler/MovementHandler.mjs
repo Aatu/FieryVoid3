@@ -8,19 +8,8 @@ class MovementHandler {
     this.movementService = new MovementService();
   }
 
-  receiveMoves(serverGameData, clientGameData, user) {
-    if (!user) {
-      throw new UnauthorizedError("Not logged in");
-    }
-
-    const activeShips = serverGameData.getActiveShipsForUser(user);
-
-    if (activeShips.length === 0) {
-      throw new InvalidGameDataError("Current user has no active ships");
-    }
-
+  receiveMoves(serverGameData, clientGameData, activeShips, user) {
     activeShips.forEach(serverShip => {
-      console.log("PROCRESS MOVEMENT FOR ", serverShip.name);
       const clientShip = clientGameData.ships.getShipById(serverShip.id);
       const startMove = serverShip.movement.getLastEndMoveOrSurrogate();
       const validator = new MovementValidator(
@@ -34,10 +23,14 @@ class MovementHandler {
       serverShip.movement.replaceMovement(
         clientShip.movement.getMovement().map(move => move.setId(uuidv4()))
       );
+    });
+  }
 
-      serverShip.movement.addMovement(
+  advance(gameData) {
+    gameData.ships.getShips().forEach(ship => {
+      ship.movement.addMovement(
         this.movementService
-          .getNewEndMove(serverShip, serverGameData.terrain)
+          .getNewEndMove(ship, gameData.terrain)
           .setId(uuidv4())
       );
     });

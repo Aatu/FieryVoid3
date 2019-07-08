@@ -2,9 +2,7 @@ import Ship from "../../Ship.mjs";
 import systems from "../../system";
 
 class Caliope extends Ship {
-  constructor(data) {
-    super(data);
-
+  setShipProperties() {
     this.shipTypeName = "OuterLight Industries Caliope OI-E1 cruiser";
     this.shipModel = this.accelcost = 3;
     this.rollcost = 3;

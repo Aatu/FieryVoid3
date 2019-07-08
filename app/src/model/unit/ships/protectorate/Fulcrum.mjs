@@ -2,9 +2,7 @@ import Ship from "../../Ship.mjs";
 import systems from "../../system";
 
 class Fulcrum extends Ship {
-  constructor(data) {
-    super(data);
-
+  setShipProperties() {
     this.shipTypeName = "Arakaki Systems Fulcrum IV fleet destroyer";
     this.shipModel = this.accelcost = 3;
     this.rollcost = 3;
