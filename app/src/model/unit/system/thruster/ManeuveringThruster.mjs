@@ -6,11 +6,10 @@ import {
 
 class ManeuveringThruster extends ShipSystem {
   constructor(args, channel, evasion) {
-    super(args);
-    this.strategies = [
+    super(args, [
       new ThrustChannelSystemStrategy(channel, 6),
       new AllowsEvasionSystemStrategy(evasion)
-    ];
+    ]);
   }
 
   getDisplayName() {

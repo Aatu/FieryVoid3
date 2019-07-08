@@ -4,14 +4,14 @@ import ShipSystemStrategy from "../../model/unit/system/strategy/ShipSystemStrat
 
 test("ShipSystem calls its strategies", test => {
   const testStrategy1 = new ShipSystemStrategy();
-  testStrategy1.onTest = (system, payload, response = {}) => {
+  testStrategy1.onTest = (payload, response = {}) => {
     const number = response.number || 0;
     const payloadNumber = payload.number || 0;
     return { ...response, number: payloadNumber + number + 1, strat1: true };
   };
 
   const testStrategy2 = new ShipSystemStrategy();
-  testStrategy2.onTest = (system, payload, response = {}) => {
+  testStrategy2.onTest = (payload, response = {}) => {
     const number = response.number || 0;
     return { ...response, number: number * 10, strat2: true };
   };

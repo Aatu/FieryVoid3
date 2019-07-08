@@ -1,9 +1,8 @@
 import ShipSystem from "../ShipSystem.mjs";
 
 class Structure extends ShipSystem {
-  constructor(args, output) {
+  constructor(args) {
     super(args);
-    this.strategies = [];
   }
 }
 

@@ -19,14 +19,14 @@ class AutomaticReplay extends UiStrategy {
     setTimeout(() => {
       this.phaseStrategy.animateFromTo(
         0,
-        this.length * this.turnLenght,
+        this.length * this.turnLenght + 2000,
         this.turnLenght
       );
     }, 500);
   }
 
   render({ delta, total }) {
-    if (total >= this.length * this.turnLenght) {
+    if (total >= this.length * this.turnLenght + 2000) {
       const { uiState } = this.services;
       uiState.closeReplay();
     }

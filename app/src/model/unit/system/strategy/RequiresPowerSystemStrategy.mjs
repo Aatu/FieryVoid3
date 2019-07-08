@@ -9,11 +9,11 @@ class RequiresPowerSystemStrategy extends ShipSystemStrategy {
     }
   }
 
-  getPowerRequirement(system, payload, previousResponse = 0) {
+  getPowerRequirement(payload, previousResponse = 0) {
     return this.power + previousResponse;
   }
 
-  canSetOffline(system, payload, previousResponse = false) {
+  canSetOffline(payload, previousResponse = false) {
     return true;
   }
 }

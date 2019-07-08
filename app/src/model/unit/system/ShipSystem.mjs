@@ -2,11 +2,14 @@ import SystemDamage from "./SystemDamage";
 import SystemPower from "./SystemPower";
 
 class ShipSystem {
-  constructor(args = {}) {
+  constructor(args = {}, strategies = []) {
     this.id = args.id;
     this.hitpoints = args.hitpoints;
     this.armor = args.armor;
-    this.strategies = [];
+    this.strategies = strategies;
+
+    this.strategies.forEach(strategy => strategy.init(this));
+
     this.damage = new SystemDamage(this);
     this.power = new SystemPower(this);
   }
@@ -72,7 +75,7 @@ class ShipSystem {
 
   callHandler(name, payload = {}, response = undefined) {
     this.strategies.forEach(strategy => {
-      response = strategy.callHandler(name, this, payload, response);
+      response = strategy.callHandler(name, payload, response);
     });
 
     return response;
@@ -81,13 +84,15 @@ class ShipSystem {
   deserialize(data = {}) {
     this.damage.deserialize(data.damage);
     this.power.deserialize(data.power);
+    this.callHandler("deserialize", data);
     return this;
   }
 
   serialize() {
     return {
       damage: this.damage.serialize(),
-      power: this.power.serialize()
+      power: this.power.serialize(),
+      ...this.callHandler("serialize")
     };
   }
 

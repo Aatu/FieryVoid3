@@ -27,7 +27,7 @@ class ThrustChannelSystemStrategy extends ShipSystemStrategy {
     return directionsToString[this.direction];
   }
 
-  getMessages(system, payload, previousResponse = []) {
+  getMessages(payload, previousResponse = []) {
     previousResponse.push({
       header: "Output",
       value: this.output
@@ -41,15 +41,15 @@ class ThrustChannelSystemStrategy extends ShipSystemStrategy {
     return previousResponse;
   }
 
-  getThrustChannel(system, payload, previousResponse = 0) {
-    if (system.isDisabled()) {
+  getThrustChannel(payload, previousResponse = 0) {
+    if (this.system.isDisabled()) {
       return previousResponse;
     }
 
     return previousResponse + this.output;
   }
 
-  getThrustDirection(system, payload, previousResponse = null) {
+  getThrustDirection(payload, previousResponse = null) {
     if (previousResponse !== null) {
       throw new Error(
         "System implementing multiple getThrustDirection handlers is not supported"
@@ -63,10 +63,10 @@ class ThrustChannelSystemStrategy extends ShipSystemStrategy {
     return this.output;
   }
 
-  getMaxChannelAmount(system) {
+  getMaxChannelAmount() {
     if (
-      system.hasCritical(FirstThrustIgnored) ||
-      system.hasCritical(EfficiencyHalved)
+      this.system.hasCritical(FirstThrustIgnored) ||
+      this.system.hasCritical(EfficiencyHalved)
     ) {
       return this.output;
     } else {
@@ -74,18 +74,18 @@ class ThrustChannelSystemStrategy extends ShipSystemStrategy {
     }
   }
 
-  canChannelAmount(system, amount) {
-    return amount <= this.getMaxChannelAmount(system);
+  canChannelAmount(amount) {
+    return amount <= this.getMaxChannelAmount();
   }
 
-  getChannelCost(system, amount) {
+  getChannelCost(amount) {
     let cost = 0;
 
-    if (system.hasCritical(FirstThrustIgnored)) {
+    if (this.system.hasCritical(FirstThrustIgnored)) {
       cost += 1;
     }
 
-    if (system.hasCritical(EfficiencyHalved)) {
+    if (this.system.hasCritical(EfficiencyHalved)) {
       cost += amount * 2;
     } else {
       cost += amount;
@@ -94,18 +94,18 @@ class ThrustChannelSystemStrategy extends ShipSystemStrategy {
     return cost;
   }
 
-  isThruster(system, payload, previousResponse = 0) {
+  isThruster(payload, previousResponse = 0) {
     return true;
   }
 
-  isDirection(system, direction) {
+  isDirection(direction) {
     return (
       this.direction === direction ||
       (Array.isArray(this.direction) && this.direction.includes(direction))
     );
   }
 
-  getPossibleCriticals(system, payload, previousResponse = []) {
+  getPossibleCriticals(payload, previousResponse = []) {
     return [
       ...previousResponse,
       { weight: 10, className: FirstThrustIgnored },

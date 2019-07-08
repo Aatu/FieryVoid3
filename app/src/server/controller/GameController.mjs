@@ -155,14 +155,17 @@ class GameController {
     } = await this.gameDataService.reserveGame(gameId);
 
     const toSave = [];
+    const toSend = [];
 
     this.gameHandler.submit(serverGameData, clientGameData, user);
     toSave.push(serverGameData.clone());
+    toSend.push(serverGameData.clone().removeOldData());
 
     if (this.gameHandler.isReady(serverGameData)) {
-      this.gameHandler.advance(serverGameData); //change turn and advance game
+      this.gameHandler.advance(serverGameData);
       toSave.push(serverGameData);
-      this.gameClients.sendTurnChange(toSave);
+      toSend.push(serverGameData.clone());
+      this.gameClients.sendTurnChange(toSend);
     }
 
     await this.gameDataService.saveGame(key, toSave);

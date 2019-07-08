@@ -1,5 +1,5 @@
 import ShipSystems from "./ShipSystems.mjs";
-import ShipEW from "./ShipEW.mjs";
+import ShipElectronicWarfare from "./ShipElectronicWarfare.mjs";
 import ShipPlayer from "./ShipPlayer.mjs";
 import ShipMovement from "./ShipMovement";
 
@@ -40,7 +40,9 @@ class Ship {
     this.systems.deserialize(shipData.systems);
     this.player = new ShipPlayer(this).deserialize(shipData.player);
     this.movement = new ShipMovement(this).deserialize(data.movement);
-    this.ew = new ShipEW(this);
+    this.electronicWarfare = new ShipElectronicWarfare(this).deserialize(
+      data.electronicWarfare
+    );
 
     return this;
   }
@@ -55,7 +57,8 @@ class Ship {
       movement: this.movement.serialize(),
       shipData: {
         systems: this.systems.serialize(),
-        player: this.player.serialize()
+        player: this.player.serialize(),
+        electronicWarfare: this.electronicWarfare.serialize()
       }
     };
   }

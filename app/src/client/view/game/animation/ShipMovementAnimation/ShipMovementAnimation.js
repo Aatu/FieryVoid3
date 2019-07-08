@@ -2,16 +2,12 @@ import * as THREE from "three";
 import Animation from "../Animation";
 import ShipEvasionMovementPath from "./ShipEvasionMovementPath";
 import PivotSteps from "./PivotSteps";
-import {
-  addToDirection,
-  hexFacingToAngle,
-  getDistanceBetweenDirections
-} from "../../../../../model/utils/math.mjs";
 
 class ShipMovementAnimation extends Animation {
   constructor(shipIcon, moves) {
     super();
 
+    console.log("ShipMovementAnimation, moves", moves);
     this.shipIcon = shipIcon;
     this.moves = moves;
 
@@ -49,14 +45,6 @@ class ShipMovementAnimation extends Animation {
 
     */
 
-    /*
-    this.hexAnimations.forEach(function (animation) {
-        animation.debugCurve = drawRoute(animation.curve);
-    });
-    */
-
-    this.endPause = 0;
-
     Animation.call(this);
   }
 
@@ -73,198 +61,6 @@ class ShipMovementAnimation extends Animation {
 
     this.shipIcon.setPosition(position);
     this.shipIcon.setFacing(-this.pivotSteps.getFacing(turn, percentDone));
-
-    //console.log(index, percent);
-
-    /*
-    this.callStartCallback(total);
-
-    const { position, facing } = !this.done
-      ? this.getPositionAndFacingAtTime(total)
-      : this.getPositionAndFacingAtTime(this.time + this.duration);
-
-    this.shipIcon.setPosition(position);
-    this.shipIcon.setFacing(-facing);
-
-    this.callDoneCallback(total);
-
-    /*
-    if (
-      total > this.time &&
-      total < this.time + this.duration + this.endPause &&
-      !paused
-    ) {
-      window.webglScene.moveCameraTo(positionAndFacing.position);
-    }
-    */
-  }
-
-  getPositionAndFacingAtTime(time) {
-    let totalDone = (time - this.time) / this.duration;
-
-    if (totalDone > 1) {
-      totalDone = 1;
-    } else if (totalDone < 0) {
-      totalDone = 0;
-    }
-
-    return {
-      position: this.applyOffset(
-        this.positionCurve.getPoint(totalDone),
-        totalDone
-      ),
-      facing: this.getFacing(time)
-    };
-  }
-
-  applyOffset(position, totalDone) {
-    return {
-      x: position.x + this.evasionOffset.getOffset(totalDone).x,
-      y: position.y + this.evasionOffset.getOffset(totalDone).y
-    };
-  }
-
-  getFacing(time) {
-    if (time < this.time) {
-      return this.rotations[0].start;
-    }
-
-    if (time > this.time + this.duration) {
-      return this.rotations[this.rotations.length - 1].end;
-    }
-
-    let rotation = this.rotations.find(
-      rotation =>
-        time >= rotation.startTime + this.time &&
-        time < rotation.endTime + this.time
-    );
-
-    if (!rotation) {
-      rotation = this.rotations[this.rotations.length - 1];
-    }
-
-    let totalDone =
-      rotation.duration === 0
-        ? 1
-        : (time - (rotation.startTime + this.time)) / rotation.duration;
-
-    if (totalDone > 1) {
-      totalDone = 1;
-    }
-
-    return addToDirection(
-      rotation.start,
-      rotation.amount * this.easeInOut.getPoint(totalDone).y
-    );
-  }
-
-  buildRotations() {
-    let pivots = this.buildPivotList();
-
-    let startTime = 0;
-
-    pivots.forEach(pivot => {
-      pivot.startTime = startTime;
-      startTime = pivot.endTime;
-    });
-
-    if (pivots.length === 0) {
-      const facing = hexFacingToAngle(
-        this.movementService.getLastTurnEndMove(this.ship).facing
-      );
-
-      pivots = [
-        {
-          amount: 0,
-          start: facing,
-          end: facing,
-          startTime: 0,
-          endTime: this.duration
-        }
-      ];
-    }
-
-    pivots[pivots.length - 1].endTime = this.duration;
-
-    pivots.forEach(pivot => {
-      pivot.duration = pivot.endTime - pivot.startTime;
-    });
-
-    return pivots;
-  }
-
-  buildPivotList() {
-    let startTime = 0;
-    let facings = [];
-    const lastTurnEndMove = this.movementService.getLastTurnEndMove(this.ship);
-    let lastFacing = lastTurnEndMove.facing;
-
-    const pivots = [];
-
-    let pivotStarted = false;
-
-    const totalMovementLength = this.movementService
-      .getThisTurnMovement(this.ship)
-      .filter(move => move.isPivot() || move.isSpeed()).length;
-
-    const moveStep = this.duration / totalMovementLength;
-    const pivotStep = moveStep > 1000 ? 1000 : moveStep;
-
-    let moves = this.movementService
-      .getThisTurnMovement(this.ship)
-      .filter(move => move.isPivot() || move.isSpeed())
-      .map(move => {
-        if (move.isPivot()) {
-          return move.facing;
-        } else if (move.isSpeed()) {
-          return null;
-        }
-      });
-
-    moves.push(null);
-
-    moves.forEach(pivot => {
-      if (pivot === null && pivotStarted) {
-        let direction = facings[0] - lastFacing;
-        if (direction === -5) {
-          direction = 1;
-        } else if (direction === 5) {
-          direction = -1;
-        }
-
-        const start = hexFacingToAngle(lastFacing);
-        const end = hexFacingToAngle(facings[facings.length - 1]);
-        pivots.push({
-          start,
-          end,
-          amount:
-            getDistanceBetweenDirections(start, end, direction) * direction,
-          endTime: startTime * pivotStep
-        });
-
-        lastFacing = facings[facings.length - 1];
-        facings = [];
-        pivotStarted = false;
-      } else if (pivot && !pivotStarted) {
-        pivotStarted = true;
-        facings.push(pivot);
-      } else if (pivot) {
-        facings.push(pivot);
-      }
-
-      startTime++;
-    });
-
-    /*
-    if (pivotStarted) {
-      pivots.push({
-        facings: facings,
-        startTime: startTime
-      });
-    }
-    */
-
-    return pivots;
   }
 
   movesToCurves(moves) {

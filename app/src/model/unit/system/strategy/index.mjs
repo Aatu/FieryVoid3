@@ -4,6 +4,7 @@ import RequiresPowerSystemStrategy from "./RequiresPowerSystemStrategy";
 import PowerOutputSystemStrategy from "./PowerOutputSystemStrategy";
 import ThrustChannelSystemStrategy from "./ThrustChannelSystemStrategy";
 import AllowsEvasionSystemStrategy from "./AllowsEvasionSystemStrategy";
+import ElectronicWarfareProvider from "./ElectronicWarfareProvider";
 
 export {
   BoostableSystemStrategy,
@@ -11,5 +12,6 @@ export {
   RequiresPowerSystemStrategy,
   PowerOutputSystemStrategy,
   ThrustChannelSystemStrategy,
-  AllowsEvasionSystemStrategy
+  AllowsEvasionSystemStrategy,
+  ElectronicWarfareProvider
 };

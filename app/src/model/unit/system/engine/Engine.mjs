@@ -7,12 +7,11 @@ import {
 
 class Engine extends ShipSystem {
   constructor(args, output, power, boostPower) {
-    super(args);
-    this.strategies = [
+    super(args, [
       new BoostableSystemStrategy(boostPower),
       new ThrustOutputSystemStrategy(output),
       new RequiresPowerSystemStrategy(power)
-    ];
+    ]);
   }
 }
 

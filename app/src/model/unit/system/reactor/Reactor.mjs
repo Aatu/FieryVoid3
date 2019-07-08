@@ -3,8 +3,7 @@ import { PowerOutputSystemStrategy } from "../strategy";
 
 class Reactor extends ShipSystem {
   constructor(args, output) {
-    super(args);
-    this.strategies = [new PowerOutputSystemStrategy(output)];
+    super(args, [new PowerOutputSystemStrategy(output)]);
   }
 }
 

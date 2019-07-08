@@ -7,8 +7,8 @@ class AllowsEvasionSystemStrategy extends ShipSystemStrategy {
     this.evasion = evasion || 0;
   }
 
-  getMaxEvasion(system, payload, previousResponse = 0) {
-    if (system.isDisabled()) {
+  getMaxEvasion(payload, previousResponse = 0) {
+    if (this.system.isDisabled()) {
       return previousResponse;
     }
 

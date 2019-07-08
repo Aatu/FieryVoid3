@@ -13,26 +13,26 @@ class PowerOutputSystemStrategy extends ShipSystemStrategy {
     this.output = output || 0;
   }
 
-  getPowerOutput(system, payload, previousResponse = 0) {
-    if (system.isDisabled()) {
+  getPowerOutput(payload, previousResponse = 0) {
+    if (this.system.isDisabled()) {
       return previousResponse;
     }
 
     let output = this.output;
 
-    if (system.hasCritical(OutputReduced2)) {
+    if (this.system.hasCritical(OutputReduced2)) {
       output -= 2;
     }
 
-    if (system.hasCritical(OutputReduced4)) {
+    if (this.system.hasCritical(OutputReduced4)) {
       output -= 4;
     }
 
-    if (system.hasCritical(OutputReduced6)) {
+    if (this.system.hasCritical(OutputReduced6)) {
       output -= 6;
     }
 
-    if (system.hasCritical(OutputReduced8)) {
+    if (this.system.hasCritical(OutputReduced8)) {
       output -= 8;
     }
 
@@ -43,7 +43,7 @@ class PowerOutputSystemStrategy extends ShipSystemStrategy {
     return previousResponse + output;
   }
 
-  getPossibleCriticals(system, payload, previousResponse = []) {
+  getPossibleCriticals(payload, previousResponse = []) {
     return [
       ...previousResponse,
       { weight: 10, className: OutputReduced2 },

@@ -9,19 +9,19 @@ class BoostableSystemStrategy extends ShipSystemStrategy {
     }
   }
 
-  canBoost(system, payload, previousResponse) {
+  canBoost(payload, previousResponse) {
     return true;
   }
 
-  getPowerRequiredForBoost(system, payload, previousResponse = 0) {
+  getPowerRequiredForBoost(payload, previousResponse = 0) {
     return this.power + previousResponse;
   }
 
-  boost(system, payload, previousResponse) {
+  boost(payload, previousResponse) {
     //TODO
   }
 
-  deboost(system, payload, previousResponse) {
+  deboost(payload, previousResponse) {
     //TODO
   }
 }

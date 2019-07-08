@@ -43,7 +43,7 @@ const shouldEaseOut = (
     if (!startsAndEnds[startEndIndex + 1]) {
       return true;
     } else {
-      const nextBetween = startsAndEnds[betweenIndex + 1].between;
+      const nextBetween = startsAndEnds[startEndIndex + 1].between;
       const nextMove = nextBetween[0];
       if (!nextMove.isPivot() || nextMove.value !== move.value) {
         return true;
@@ -53,7 +53,7 @@ const shouldEaseOut = (
     }
   } else {
     const nextMove = between[betweenIndex + 1];
-    if (!lastMove.isPivot() || nextMove.value !== move.value) {
+    if (!nextMove.isPivot() || nextMove.value !== move.value) {
       return true;
     } else {
       return false;
