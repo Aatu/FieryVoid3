@@ -41,6 +41,22 @@ class Offset {
     return neighbours;
   }
 
+  getNeighbourAtHeading(heading) {
+    if (heading >= 330 || heading <= 30) {
+      return this.add(new Offset(1, 0));
+    } else if (heading >= 150 && heading <= 210) {
+      return this.add(new Offset(-1, 0));
+    } else if (heading > 30 && heading < 90) {
+      return this.add(new Offset(1, -1));
+    } else if (heading >= 90 && heading < 150) {
+      return this.add(new Offset(0, -1));
+    } else if (heading > 210 && heading <= 270) {
+      return this.add(new Offset(0, 1));
+    } else if (heading > 270 && heading < 330) {
+      return this.add(new Offset(1, 1));
+    }
+  }
+
   add(offset) {
     return this.toCube()
       .add(offset.toCube())

@@ -16,6 +16,7 @@ class EWIconContainer {
   }
 
   update(gamedata) {
+    return;
     this.gamedata = gamedata;
     this.ewIcons.forEach(function(ewIcon) {
       ewIcon.used = false;

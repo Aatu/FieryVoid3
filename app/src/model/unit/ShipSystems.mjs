@@ -11,6 +11,27 @@ class ShipSystems {
     this.power = new ShipPower(this);
   }
 
+  getSystemsForHit(attackPosition, ignoreSections = []) {
+    return this.sections
+      .getHitSection(
+        attackPosition,
+        this.ship.getPosition(),
+        this.ship.getFacing(),
+        ignoreSections
+      )
+      .reduce((all, section) => {
+        return [
+          ...all,
+          ...section.getSystems().filter(system => !system.isDestroyed())
+        ];
+      }, []);
+  }
+
+  getSystemsForOverkill(attackPosition, system) {
+    //TODO: return structure in same section
+    // if no structure, return getSystemsForHit with hit systems section in ignore list
+  }
+
   addSystem(system, section) {
     if (this.getSystemById(system.id)) {
       throw new Error("System with duplicate id! " + system.id);
@@ -54,19 +75,37 @@ class ShipSystems {
     return this;
   }
 
-  addStarboardSystem(systems) {
+  addStarboardFrontSystem(systems) {
     systems = [].concat(systems);
     systems.forEach(system =>
-      this.addSystem(system, this.sections.getStarboardSection())
+      this.addSystem(system, this.sections.getStarboardFrontSection())
     );
 
     return this;
   }
 
-  addPortSystem(systems) {
+  addStarboardAftSystem(systems) {
     systems = [].concat(systems);
     systems.forEach(system =>
-      this.addSystem(system, this.sections.getPortSection())
+      this.addSystem(system, this.sections.getStarboardAftSection())
+    );
+
+    return this;
+  }
+
+  addPortFrontSystem(systems) {
+    systems = [].concat(systems);
+    systems.forEach(system =>
+      this.addSystem(system, this.sections.getPortFrontSection())
+    );
+
+    return this;
+  }
+
+  addPortAftSystem(systems) {
+    systems = [].concat(systems);
+    systems.forEach(system =>
+      this.addSystem(system, this.sections.getPortAftSection())
     );
 
     return this;

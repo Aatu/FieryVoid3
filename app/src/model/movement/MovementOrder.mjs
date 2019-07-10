@@ -56,6 +56,10 @@ class MovementOrder {
     this.velocity = velocity;
   }
 
+  getPosition() {
+    return this.position;
+  }
+
   getHexPosition() {
     return coordinateConverter.fromGameToHex(this.position);
   }

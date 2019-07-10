@@ -2,13 +2,13 @@ import {
   PrimarySection,
   FrontSection,
   AftSection,
-  StarboardSection,
-  PortSection,
   PortFrontSection,
   PortAftSection,
   StarboardFrontSection,
   StarboardAftSection
 } from "./systemSection";
+import { getCompassHeadingOfPoint, addToDirection } from "../../utils/math.mjs";
+import hexagon from "../../hexagon";
 
 class ShipSystemSections {
   constructor() {
@@ -16,13 +16,56 @@ class ShipSystemSections {
       new PrimarySection(),
       new FrontSection(),
       new AftSection(),
-      new StarboardSection(),
-      new PortSection(),
       new PortFrontSection(),
       new PortAftSection(),
       new StarboardFrontSection(),
       new StarboardAftSection()
     ];
+  }
+
+  getHitSectionHeading(shooterPosition, shipPosition, shipFacing) {
+    const heading = addToDirection(
+      getCompassHeadingOfPoint(shipPosition, shooterPosition),
+      -shipFacing
+    );
+
+    return heading;
+  }
+
+  getHitSection(
+    shooterPosition,
+    shipPosition,
+    shipFacing,
+    ignoreSections = []
+  ) {
+    const heading = this.getHitSectionHeading(
+      shooterPosition,
+      shipPosition,
+      shipFacing
+    );
+
+    return this.sections.filter(section => {
+      const location = section.getOffsetHex();
+      const intervening = location.getNeighbourAtHeading(heading);
+
+      if (ignoreSections.includes(section)) {
+        return false;
+      }
+
+      return this.sections.every(blockingSection => {
+        if (!blockingSection.getOffsetHex().equals(intervening)) {
+          return true;
+        } else if (!blockingSection.hasUndestroyedStructure()) {
+          return true;
+        } else if (blockingSection === section) {
+          return true;
+        } else if (ignoreSections.includes(blockingSection)) {
+          return true;
+        } else {
+          return false;
+        }
+      });
+    });
   }
 
   getPrimarySection() {
@@ -37,20 +80,12 @@ class ShipSystemSections {
     return this.getSection(AftSection);
   }
 
-  getStarboardSection() {
-    return this.getSection(StarboardSection);
-  }
-
   getStarboardFrontSection() {
     return this.getSection(StarboardFrontSection);
   }
 
   getStarboardAftSection() {
     return this.getSection(StarboardAftSection);
-  }
-
-  getPortSection() {
-    return this.getSection(PortSection);
   }
 
   getPortFrontSection() {

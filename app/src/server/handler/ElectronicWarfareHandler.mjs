@@ -17,8 +17,11 @@ class ElectronicWarfareHandler {
     });
   }
 
-  advance() {
-    //TODO: repeat EW for next turn, if possible
+  advance(gameData) {
+    gameData.ships.getShips().forEach(ship => {
+      ship.electronicWarfare.activatePlannedElectronicWarfare();
+      ship.electronicWarfare.repeatElectonicWarfare();
+    });
   }
 }
 

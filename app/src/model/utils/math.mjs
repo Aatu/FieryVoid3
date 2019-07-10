@@ -34,7 +34,7 @@ const getSeededRandomGenerator = seed => {
 const addToDirection = (current, add) => {
   add = add % 360;
 
-  var ret = 0;
+  let ret = 0;
   if (current + add > 360) {
     ret = add - (360 - current);
   } else if (current + add < 0) {
@@ -203,17 +203,7 @@ const getCompassHeadingOfShip = (observer, target) => {
 };
 
 const getCompassHeadingOfPoint = (observer, target) => {
-  if (observer instanceof hexagon.Offset) {
-    throw new Error("Convert to game coordinates first!");
-    //observer = coordinateConverter.fromHexToGame(observer);
-  }
-
-  if (target instanceof hexagon.Offset) {
-    throw new Error("Convert to game coordinates first!");
-    //target = coordinateConverter.fromHexToGame(target);
-  }
-
-  var heading = radianToDegree(
+  let heading = radianToDegree(
     Math.atan2(target.y - observer.y, target.x - observer.x)
   );
 

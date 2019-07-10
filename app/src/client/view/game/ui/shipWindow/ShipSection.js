@@ -112,7 +112,6 @@ const orderSystems = (section, location) => {
 
   if (
     [
-      systemLocation.SYSTEM_LOCATION_STARBOARD,
       systemLocation.SYSTEM_LOCATION_STARBOARD_AFT,
       systemLocation.SYSTEM_LOCATION_STARBOARD_FRONT
     ].includes(location)
@@ -120,7 +119,6 @@ const orderSystems = (section, location) => {
     return orderSystemsThreeWide(systems);
   } else if (
     [
-      systemLocation.SYSTEM_LOCATION_PORT,
       systemLocation.SYSTEM_LOCATION_PORT_AFT,
       systemLocation.SYSTEM_LOCATION_PORT_FRONT
     ].includes(location)

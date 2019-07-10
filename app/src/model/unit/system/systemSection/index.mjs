@@ -1,8 +1,6 @@
 import PrimarySection from "./PrimarySection";
 import AftSection from "./AftSection";
 import FrontSection from "./FrontSection";
-import StarboardSection from "./StarboardSection";
-import PortSection from "./PortSection";
 import PortAftSection from "./PortAftSection";
 import PortFrontSection from "./PortFrontSection";
 import StarboardFrontSection from "./StarboardFrontSection";
@@ -12,8 +10,6 @@ export {
   PrimarySection,
   AftSection,
   FrontSection,
-  StarboardSection,
-  PortSection,
   PortFrontSection,
   PortAftSection,
   StarboardFrontSection,

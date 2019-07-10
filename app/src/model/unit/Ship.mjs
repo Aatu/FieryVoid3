@@ -24,6 +24,24 @@ class Ship {
     return this.pointCost;
   }
 
+  getFacing() {
+    const lastMove = this.movement.getLastMove();
+    if (!lastMove) {
+      return null;
+    }
+
+    return lastMove.getFacing();
+  }
+
+  getPosition() {
+    const lastMove = this.movement.getLastMove();
+    if (!lastMove) {
+      return null;
+    }
+
+    return lastMove.getPosition();
+  }
+
   getHexPosition() {
     const lastMove = this.movement.getLastMove();
     if (!lastMove) {
@@ -44,7 +62,7 @@ class Ship {
     this.player = new ShipPlayer(this).deserialize(shipData.player);
     this.movement = new ShipMovement(this).deserialize(data.movement);
     this.electronicWarfare = new ShipElectronicWarfare(this).deserialize(
-      data.electronicWarfare
+      shipData.electronicWarfare
     );
 
     return this;

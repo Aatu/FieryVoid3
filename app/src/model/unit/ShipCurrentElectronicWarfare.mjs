@@ -1,10 +1,12 @@
 import * as ewTypes from "../electronicWarfare/electronicWarfareTypes.mjs";
+import ElectornicWarfareEntry from "../electronicWarfare/ElectronicWarfareEntry.mjs";
+import Ship from "./Ship.mjs";
 
 class ShipCurrentElectronicWarfare {
   constructor(dew, ccew, entries) {
     this.dew = dew;
     this.ccew = ccew;
-    this.entries = entries.map(entry => entry.clone());
+    this.entries = entries ? entries.map(entry => entry.clone()) : [];
   }
 
   serialize() {

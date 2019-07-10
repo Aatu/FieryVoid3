@@ -5,7 +5,7 @@ const helperA = new THREE.Vector3();
 const helperB = new THREE.Vector3();
 
 class Vector {
-  constructor(x, y, z = 0) {
+  constructor(x = 0, y = 0, z = 0) {
     if (x instanceof THREE.Vector3 || x instanceof Vector) {
       this.x = x.x;
       this.y = x.y;

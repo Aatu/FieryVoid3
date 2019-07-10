@@ -74,7 +74,6 @@ class ShipObject {
 
   consumeShipdata(ship) {
     this.ship = ship;
-    this.consumeEW(ship);
   }
 
   createMesh() {
@@ -123,7 +122,6 @@ class ShipObject {
     this.mesh.userData = { icon: this };
     this.scene.add(this.mesh);
     this.hide();
-    this.consumeEW(this.ship);
   }
 
   create() {
@@ -212,20 +210,6 @@ class ShipObject {
   setScale(width, height) {
     //console.log("ShipObject.setScale is not yet implemented")
     //console.trace();
-  }
-
-  consumeEW(ship) {
-    if (!this.shipEWSprite) {
-      return;
-    }
-
-    let dew = ship.ew.getDefensiveEW();
-
-    //TODO: Evasion
-
-    const ccew = ship.ew.getCCEW();
-
-    this.shipEWSprite.update(dew, ccew);
   }
 
   showEW() {

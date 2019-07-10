@@ -79,7 +79,7 @@ class ElectronicWarfareProvider extends ShipSystemStrategy {
   }
 
   getUsageVsOutputText() {
-    this.getTotalEwUsed() + "/" + this.getEwOutput();
+    return this.getTotalEwUsed() + "/" + this.getEwOutput();
   }
 
   getValidEwTypes() {

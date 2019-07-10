@@ -8,21 +8,21 @@ export class UnableToAssignEw extends Error {}
 class ShipElectronicWarfare {
   constructor(ship) {
     this.ship = ship;
-    this.current = new ShipCurrentElectronicWarfare();
+    this.inEffect = new ShipCurrentElectronicWarfare();
   }
 
   serialize() {
-    return this.current.serialize();
+    return this.inEffect.serialize();
   }
 
   deserialize(data = {}) {
-    this.current.deserialize(data);
+    this.inEffect.deserialize(data);
 
     return this;
   }
 
-  setCurrentElectronicWarfare() {
-    this.current = new ShipCurrentElectronicWarfare(
+  activatePlannedElectronicWarfare() {
+    this.inEffect = new ShipCurrentElectronicWarfare(
       this.getDefensiveEw(),
       this.getCcEw(),
       this.getAllEntries()
@@ -105,7 +105,11 @@ class ShipElectronicWarfare {
       .filter(system => system.callHandler("isEwArray"));
   }
 
-  assignEntries(entries) {
+  repeatElectonicWarfare() {
+    this.assignEntries(this.getAllEntries(), true);
+  }
+
+  assignEntries(entries, allowIncomplete = false) {
     this.getEwArrays().forEach(system => system.callHandler("resetEw"));
 
     entries.forEach(entry => {
@@ -113,7 +117,11 @@ class ShipElectronicWarfare {
       while (amount > 0) {
         const availableSystems = this.getAvailableSystemsForEntry(entry);
         if (availableSystems.length === 0) {
-          throw new UnableToAssignEw("Invalid EW");
+          if (allowIncomplete) {
+            return;
+          } else {
+            throw new UnableToAssignEw("Invalid EW");
+          }
         }
 
         availableSystems.shift().callHandler("assignEw", {
