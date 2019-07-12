@@ -17,7 +17,6 @@ class TerrainRenderer {
     return;
 
     this.terrain = terrain;
-    console.log("update terrain renderer", terrain);
 
     this.terrainObjects = this.terrain.getEntities().forEach(entity => ({
       entity,
@@ -26,7 +25,6 @@ class TerrainRenderer {
   }
 
   async createObject(entity) {
-    console.log("hi");
     const object = await loadObject("/img/3d/sphere/scene.gltf");
 
     const material = object.children[0].material;
@@ -35,7 +33,6 @@ class TerrainRenderer {
 
     object.position.set(0, 0, 0);
     const scale = HexagonMath.getHexWidth() * entity.diameter;
-    console.log("scale", scale);
     object.scale.set(scale, scale, scale);
     this.scene.add(object);
   }

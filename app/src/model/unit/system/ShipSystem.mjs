@@ -46,6 +46,11 @@ class ShipSystem {
   }
 
   getArmor() {
+    const armorMod = this.callHandler("applyArmorPiercing");
+    if (armorMod) {
+      return this.armor + armorMod;
+    }
+
     return this.armor;
   }
 
@@ -59,6 +64,10 @@ class ShipSystem {
 
   addDamage(damage) {
     this.damage.addDamage(damage);
+  }
+
+  rollCritical(damageEntry) {
+    this.damage.rollCritical(damageEntry);
   }
 
   addCritical(critical) {

@@ -171,9 +171,8 @@ class GameData {
   censorForUser(user) {
     this.ships.getShips().forEach(ship => {
       ship.movement.removeMovementForOtherTurns(this.turn);
-      if (!user || !ship.player.is(user)) {
-        ship.movement.removeMovementExceptEnd(this.turn);
-      }
+      const mine = user && ship.player.is(user);
+      ship.censorForUser(user, mine);
     });
 
     return this;

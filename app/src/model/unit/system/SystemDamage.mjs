@@ -31,6 +31,11 @@ class SystemDamage {
     this.entries.push(damage);
   }
 
+  rollCritical(damageEntry) {
+    //TODO: roll if this damage causes any critical hits
+    // return gameEvent for log etc
+  }
+
   addCritical(critical) {
     this.criticals.push(new CriticalEntry(critical));
   }

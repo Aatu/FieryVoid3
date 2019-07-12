@@ -1,26 +1,40 @@
 import { InvalidGameDataError, UnauthorizedError } from "../errors";
-import { UnableToAssignEw } from "../../model/unit/ShipElectronicWarfare";
+import WeaponFireService from "../../model/weapon/WeaponFireService";
+import uuidv4 from "uuid/v4";
 
 class WeaponHandler {
   receiveFireOrders(serverGameData, clientGameData, activeShips, user) {
+    const clientFireService = new WeaponFireService().update(clientGameData);
+    const serverFireService = new WeaponFireService().update(serverGameData);
+
     activeShips.forEach(serverShip => {
       const clientShip = clientGameData.ships.getShipById(serverShip.id);
-      const entries = clientShip.electronicWarfare.getAllEntries();
-      try {
-        serverShip.electronicWarfare.assignEntries(entries);
-      } catch (e) {
-        if (e instanceof UnableToAssignEw) {
-          throw new InvalidGameDataError(e.message);
-        }
-        throw e;
-      }
+
+      clientFireService
+        .getAllFireOrdersForShip(clientShip)
+        .forEach(fireOrder => {
+          const shooter = serverGameData.ships.getShipById(fireOrder.shooterId);
+          const target = serverGameData.ships.getShipById(fireOrder.targetId);
+          const weapon = shooter.systems.getSystemById(fireOrder.weaponId);
+
+          if (!serverFireService.canFire(shooter, target, weapon)) {
+            throw new InvalidGameDataError("Invalid fire order");
+          }
+
+          const order = serverFireService.addFireOrder(shooter, target, weapon);
+          order.setId(uuidv4());
+        });
     });
   }
 
   advance(gameData) {
+    console.log("advance weaponfire");
     gameData.ships.getShips().forEach(ship => {
-      ship.electronicWarfare.activatePlananedElectronicWarfare();
-      ship.electronicWarfare.repeatElectonicWarfare();
+      ship.systems
+        .getSystems()
+        .forEach(system =>
+          system.callHandler("executeFireOrders", { gameData })
+        );
     });
   }
 }

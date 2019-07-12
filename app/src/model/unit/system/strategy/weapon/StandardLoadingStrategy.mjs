@@ -28,14 +28,14 @@ class StandardLoadingStrategy extends ShipSystemStrategy {
     return {
       ...previousResponse,
       standardLoadingStrategy: {
-        loading: this.loading
+        turnsLoaded: this.turnsLoaded
       }
     };
   }
 
   deserialize(data = {}) {
-    this.loading = data.standardLoadingStrategy
-      ? data.standardLoadingStrategy.loading
+    this.turnsLoaded = data.standardLoadingStrategy
+      ? data.standardLoadingStrategy.turnsLoaded
       : 0;
 
     return this;
@@ -43,10 +43,10 @@ class StandardLoadingStrategy extends ShipSystemStrategy {
 
   advanceTurn() {
     if (this.system.isDisabled()) {
-      this.loading = 0;
+      this.turnsLoaded = 0;
     }
 
-    this.loading++;
+    this.turnsLoaded++;
   }
 }
 

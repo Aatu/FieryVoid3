@@ -4,7 +4,7 @@ class StandardRangeStrategy extends ShipSystemStrategy {
   constructor(rangesAndPenalties) {
     super();
 
-    this.rangesAndPenalties = rangesAndPenalties;
+    this.rangesAndPenalties = rangesAndPenalties || [];
 
     /*
     TODO: Range penalties should go in steps so that 

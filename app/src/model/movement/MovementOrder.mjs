@@ -56,6 +56,10 @@ class MovementOrder {
     this.velocity = velocity;
   }
 
+  getFacing() {
+    return this.facing;
+  }
+
   getPosition() {
     return this.position;
   }

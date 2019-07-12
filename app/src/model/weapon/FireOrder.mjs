@@ -2,15 +2,22 @@ import Ship from "../unit/Ship";
 import ShipSystem from "../unit/system/ShipSystem";
 
 class FireOrder {
-  constructor(shooterId, targetId, weaponId, weaponSettigs) {
+  constructor(shooterId, targetId, weaponId, weaponSettigs = {}) {
+    this.id = null;
     this.shooterId = shooterId instanceof Ship ? shooterId.id : shooterId;
     this.targetId = shooterId instanceof Ship ? targetId.id : targetId;
     this.weaponId = weaponId instanceof ShipSystem ? weaponId.id : weaponId;
     this.weaponSettigs = weaponSettigs;
   }
 
+  setId(id) {
+    this.id = id;
+    return this;
+  }
+
   serialize() {
     return {
+      id: this.id,
       shooterId: this.shooterId,
       targetId: this.targetId,
       weaponId: this.weaponId,
@@ -19,6 +26,7 @@ class FireOrder {
   }
 
   deserialize(data = {}) {
+    this.id = data.id || null;
     this.shooterId = data.shooterId;
     this.targetId = data.targetId;
     this.weaponId = data.weaponId;

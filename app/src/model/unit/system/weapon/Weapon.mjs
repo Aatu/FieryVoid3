@@ -1,11 +1,12 @@
-export default ThrustChannelSystemStrategy;
-
 import ShipSystem from "../ShipSystem.mjs";
 
 class Weapon extends ShipSystem {
-  constructor(args, numberOfShots) {
-    super(args);
-    this.numberOfShots = numberOfShots;
+  constructor(args, strategies) {
+    super(args, strategies);
+  }
+
+  isWeapon() {
+    return true;
   }
 }
 

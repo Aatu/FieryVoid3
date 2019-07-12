@@ -1,11 +1,13 @@
 import MovementHandler from "./MovementHandler.mjs";
 import ElectronicWarfareHandler from "./ElectronicWarfareHandler.mjs";
+import WeaponHandler from "./WeaponHandler.mjs";
 import { UnauthorizedError, InvalidGameDataError } from "../errors";
 
 class GameHandler {
   constructor() {
     this.movementHandler = new MovementHandler();
     this.electronicWarfareHandler = new ElectronicWarfareHandler();
+    this.weaponHandler = new WeaponHandler();
   }
 
   submit(serverGameData, clientGameData, user) {
@@ -25,12 +27,21 @@ class GameHandler {
       activeShips,
       user
     );
+
     this.electronicWarfareHandler.receiveElectronicWarfare(
       serverGameData,
       clientGameData,
       activeShips,
       user
     );
+
+    this.weaponHandler.receiveFireOrders(
+      serverGameData,
+      clientGameData,
+      activeShips,
+      user
+    );
+
     this.inactivateUsersShips(serverGameData, user);
   }
 
@@ -53,6 +64,7 @@ class GameHandler {
 
     this.movementHandler.advance(gameData);
     this.electronicWarfareHandler.advance(gameData);
+    this.weaponHandler.advance(gameData);
     gameData.advanceTurn();
 
     return;

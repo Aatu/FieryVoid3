@@ -6,6 +6,8 @@ import ThrustChannelSystemStrategy from "./ThrustChannelSystemStrategy";
 import AllowsEvasionSystemStrategy from "./AllowsEvasionSystemStrategy";
 import ElectronicWarfareProvider from "./ElectronicWarfareProvider";
 import {
+  TestDamageStrategy,
+  StandardDamageStrategy,
   StandardHitStrategy,
   StandardRangeStrategy,
   FireOrderStrategy,
@@ -14,6 +16,8 @@ import {
 } from "./weapon";
 
 export {
+  TestDamageStrategy,
+  StandardDamageStrategy,
   StandardHitStrategy,
   StandardRangeStrategy,
   FireOrderStrategy,

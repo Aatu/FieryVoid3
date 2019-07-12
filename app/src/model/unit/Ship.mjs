@@ -110,6 +110,13 @@ class Ship {
     return false;
   }
 
+  censorForUser(user, mine) {
+    if (!mine) {
+      this.movement.removeMovementExceptEnd(this.turn);
+    }
+    this.systems.censorForUser(user, mine);
+  }
+
   advanceTurn(turn) {
     this.movement.removeMovementForOtherTurns(turn);
     this.systems.advanceTurn(turn);

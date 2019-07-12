@@ -405,6 +405,10 @@ dot-prop@^4.1.0:
   dependencies:
     is-obj "^1.0.0"
 
+droll@^0.2.1:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/droll/-/droll-0.2.1.tgz#c91c000c3502469716667aa804dc4bb74f86d03f"
+
 duplexer3@^0.1.4:
   version "0.1.4"
   resolved "https://registry.yarnpkg.com/duplexer3/-/duplexer3-0.1.4.tgz#ee01dd1cac0ed3cbc7fdbea37dc0a8f1ce002ce2"

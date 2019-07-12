@@ -195,6 +195,12 @@ class ElectronicWarfareProvider extends ShipSystemStrategy {
       { weight: 1, className: OutputReduced8 }
     ];
   }
+
+  censorForUser({ mine }) {
+    if (!mine) {
+      this.entries = [];
+    }
+  }
 }
 
 export default ElectronicWarfareProvider;

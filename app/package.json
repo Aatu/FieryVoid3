@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "axios": "^0.18.0",
+    "droll": "^0.2.1",
     "esm": "^3.2.22",
     "formik": "^1.5.2",
     "mathjs": "^6.0.2",

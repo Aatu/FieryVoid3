@@ -84,7 +84,7 @@ test.serial(
     test.is(newGameData.turn, 2);
     test.is(achilles.electronicWarfare.getOffensiveEw(biliyaz), 5);
     test.is(achilles.electronicWarfare.inEffect.getOffensiveEw(biliyaz), 5);
-    test.is(biliyaz.electronicWarfare.getCcEw(biliyaz), 3);
+    test.is(biliyaz.electronicWarfare.getCcEw(biliyaz), 0); //this is censored
     test.is(biliyaz.electronicWarfare.inEffect.getCcEw(biliyaz), 3);
 
     db.close();

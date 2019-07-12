@@ -23,11 +23,23 @@ class WeaponFireService {
     return this;
   }
 
-  getAllFireOrders(shooter) {
-    return shooter.systems.getSystems((all, system) => [
-      ...all,
-      ...system.callHandler("getFireOrders")
-    ]);
+  getAllFireOrders() {
+    return this.gamedata.ships
+      .getShips()
+      .reduce(
+        (all, ship) => [...all, ...this.getAllFireOrdersForShip(ship)],
+        []
+      );
+  }
+
+  getAllFireOrdersForShip(shooter) {
+    return shooter.systems
+      .getSystems()
+      .filter(system => system.isWeapon && system.isWeapon())
+      .reduce(
+        (all, system) => [...all, ...system.callHandler("getFireOrders")],
+        []
+      );
   }
 
   addFireOrder(shooter, target, weapon) {
@@ -35,51 +47,39 @@ class WeaponFireService {
       throw new Error("Check validity first");
     }
 
-    weapon.callHandler("addFireOrder", { shooter, target });
+    return weapon.callHandler("addFireOrder", { shooter, target });
   }
 
   canFire(shooter, target, weapon) {
-    if (shooter.isDestroyed() || target.isDestroyed() || weapon.isDisabled()) {
+    if (
+      shooter.isDestroyed() ||
+      target.isDestroyed() ||
+      weapon.isDisabled() ||
+      !weapon.isWeapon()
+    ) {
+      console.log("something disabled or not weapon");
       return false;
     }
 
     if (!weapon.callHandler("isOnArc", { shooter, target })) {
+      console.log("not on arc");
       return false;
     }
 
     if (!weapon.callHandler("isLoaded")) {
+      console.log("not loaded");
+      return false;
+    }
+
+    if (
+      weapon.callHandler("getFireOrders").length >=
+      weapon.callHandler("getNumberOfShots")
+    ) {
+      console.log("fire orders already set");
       return false;
     }
 
     return true;
-  }
-
-  getHitChange(fireOrder) {
-    const shooter = this.gamedata.ships.getShipById(fireOrder.shooterId);
-    const target = this.gamedata.ships.getShipById(fireOrder.shooterId);
-    const weapon = shooter.systems.getSystemById(FireOrder.weaponId);
-    const weaponSettings = fireOrder.weaponSettings;
-
-    const baseToHit = weapon.callHandler("getBaseHitChange", {
-      shooter,
-      target,
-      weaponSettings
-    });
-
-    const dew = target.electronicWarfre.inEffect.getDefensiveEw();
-    const oew = shooter.electronicWarfre.inEffect.getOffensiveEw(target);
-
-    let distance = shooter.getHexPosition().distance(target.getHexPosition());
-    if (oew === 0) {
-      distance *= 2;
-    }
-
-    const rangeModifier = weapon.callHandler("getRangeModifier", {
-      distance,
-      weaponSettings
-    });
-
-    return baseToHit + oew - dew + rangeModifier;
   }
 }
 

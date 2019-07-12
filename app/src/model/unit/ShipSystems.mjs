@@ -145,6 +145,12 @@ class ShipSystems {
 
     return this;
   }
+
+  censorForUser(user, mine) {
+    this.getSystems().forEach(system => {
+      system.callHandler("censorForUser", { user, mine });
+    });
+  }
 }
 
 export default ShipSystems;
