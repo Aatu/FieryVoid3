@@ -181,27 +181,6 @@ const radianToDegree = angle => {
 
 const degreeToRadian = angle => angle / (180.0 / Math.PI);
 
-const getCompassHeadingOfShip = (observer, target) => {
-  throw new Error("This should not be here");
-  /*
-    var oPos = shipManager.getShipPosition(observer);
-    var tPos = shipManager.getShipPosition(target);
-
-    if (oPos.equals(tPos)) {
-      if (shipManager.hasBetterInitive(observer, target)) {
-        oPos = shipManager.movement.getPreviousLocation(observer);
-      } else {
-        tPos = shipManager.movement.getPreviousLocation(target);
-      }
-    }
-
-    oPos = window.coordinateConverter.fromHexToGame(oPos);
-    tPos = window.coordinateConverter.fromHexToGame(tPos);
-
-    return mathlib.getCompassHeadingOfPoint(oPos, tPos);
-    */
-};
-
 const getCompassHeadingOfPoint = (observer, target) => {
   let heading = radianToDegree(
     Math.atan2(target.y - observer.y, target.x - observer.x)
@@ -250,7 +229,6 @@ export {
   isInArc,
   radianToDegree,
   degreeToRadian,
-  getCompassHeadingOfShip,
   getCompassHeadingOfPoint,
   hexFacingToAngle
 };

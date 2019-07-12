@@ -1,8 +1,8 @@
-import ShipSystemStrategy from "./ShipSystemStrategy.mjs";
+import ShipSystemStrategy from "../ShipSystemStrategy.mjs";
 
 class StandardHitStrategy extends ShipSystemStrategy {
-  constructor() {
-    super();
+  getBaseHitChange({ shooter, target, weaponSettings }) {
+    return target.getHitProfile(shooter.getPosition());
   }
 }
 

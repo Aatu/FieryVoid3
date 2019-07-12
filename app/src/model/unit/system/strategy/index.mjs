@@ -5,8 +5,20 @@ import PowerOutputSystemStrategy from "./PowerOutputSystemStrategy";
 import ThrustChannelSystemStrategy from "./ThrustChannelSystemStrategy";
 import AllowsEvasionSystemStrategy from "./AllowsEvasionSystemStrategy";
 import ElectronicWarfareProvider from "./ElectronicWarfareProvider";
+import {
+  StandardHitStrategy,
+  StandardRangeStrategy,
+  FireOrderStrategy,
+  StandardLoadingStrategy,
+  WeaponArcStrategy
+} from "./weapon";
 
 export {
+  StandardHitStrategy,
+  StandardRangeStrategy,
+  FireOrderStrategy,
+  StandardLoadingStrategy,
+  WeaponArcStrategy,
   BoostableSystemStrategy,
   ThrustOutputSystemStrategy,
   RequiresPowerSystemStrategy,

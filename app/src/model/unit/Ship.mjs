@@ -2,6 +2,11 @@ import ShipSystems from "./ShipSystems.mjs";
 import ShipElectronicWarfare from "./ShipElectronicWarfare.mjs";
 import ShipPlayer from "./ShipPlayer.mjs";
 import ShipMovement from "./ShipMovement";
+import {
+  getCompassHeadingOfPoint,
+  addToDirection,
+  hexFacingToAngle
+} from "../utils/math.mjs";
 
 class Ship {
   constructor(data = {}) {
@@ -11,6 +16,8 @@ class Ship {
     this.rollcost = 1;
     this.pivotcost = 1;
     this.evasioncost = 1;
+    this.frontHitProfile = 30;
+    this.sideHitProfile = 50;
 
     this.shipModel = null;
     this.shipTypeName = "";
@@ -19,6 +26,21 @@ class Ship {
   }
 
   setShipProperties() {}
+
+  getHitProfile(position) {
+    const heading = addToDirection(
+      getCompassHeadingOfPoint(this.getPosition(), position),
+      -hexFacingToAngle(this.getFacing())
+    );
+
+    console.log("heading", heading);
+
+    if (heading >= 330 || heading <= 30 || (heading >= 150 && heading <= 210)) {
+      return this.frontHitProfile;
+    } else {
+      return this.sideHitProfile;
+    }
+  }
 
   getPointCost() {
     return this.pointCost;
@@ -86,6 +108,15 @@ class Ship {
 
   isDestroyed() {
     return false;
+  }
+
+  advanceTurn(turn) {
+    this.movement.removeMovementForOtherTurns(turn);
+    this.systems.advanceTurn(turn);
+    this.electronicWarfare.activatePlannedElectronicWarfare();
+    this.electronicWarfare.repeatElectonicWarfare();
+
+    return this;
   }
 }
 

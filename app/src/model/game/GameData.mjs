@@ -179,12 +179,14 @@ class GameData {
     return this;
   }
 
-  removeOldData() {
-    this.ships.getShips().forEach(ship => {
-      ship.movement.removeMovementForOtherTurns(this.turn);
-    });
+  advanceTurn() {
+    this.turn++;
+    this.players.forEach(player => this.setPlayerActive(player));
 
-    return this;
+    this.ships.getShips().forEach(ship => {
+      ship.advanceTurn(this.turn);
+      this.setActiveShip(ship);
+    });
   }
 }
 

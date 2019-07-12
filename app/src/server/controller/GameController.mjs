@@ -159,7 +159,7 @@ class GameController {
 
     this.gameHandler.submit(serverGameData, clientGameData, user);
     toSave.push(serverGameData.clone());
-    toSend.push(serverGameData.clone().removeOldData());
+    toSend.push(serverGameData.clone());
 
     if (this.gameHandler.isReady(serverGameData)) {
       this.gameHandler.advance(serverGameData);

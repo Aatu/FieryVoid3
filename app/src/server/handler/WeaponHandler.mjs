@@ -1,8 +1,8 @@
 import { InvalidGameDataError, UnauthorizedError } from "../errors";
 import { UnableToAssignEw } from "../../model/unit/ShipElectronicWarfare";
 
-class ElectronicWarfareHandler {
-  receiveElectronicWarfare(serverGameData, clientGameData, activeShips, user) {
+class WeaponHandler {
+  receiveFireOrders(serverGameData, clientGameData, activeShips, user) {
     activeShips.forEach(serverShip => {
       const clientShip = clientGameData.ships.getShipById(serverShip.id);
       const entries = clientShip.electronicWarfare.getAllEntries();
@@ -17,7 +17,12 @@ class ElectronicWarfareHandler {
     });
   }
 
-  advance(gameData) {}
+  advance(gameData) {
+    gameData.ships.getShips().forEach(ship => {
+      ship.electronicWarfare.activatePlananedElectronicWarfare();
+      ship.electronicWarfare.repeatElectonicWarfare();
+    });
+  }
 }
 
-export default ElectronicWarfareHandler;
+export default WeaponHandler;

@@ -52,7 +52,7 @@ class ElectronicWarfareProvider extends ShipSystemStrategy {
   }
 
   deserialize(data = {}) {
-    return (this.entries = data.electronicWarfareProvider
+    this.entries = data.electronicWarfareProvider
       ? data.electronicWarfareProvider.map(
           entry =>
             new ElectronicWarfareEntry(
@@ -61,7 +61,9 @@ class ElectronicWarfareProvider extends ShipSystemStrategy {
               entry.amount
             )
         )
-      : []);
+      : [];
+
+    return this;
   }
 
   getMessages(payload, previousResponse = []) {

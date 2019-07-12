@@ -53,10 +53,7 @@ class GameHandler {
 
     this.movementHandler.advance(gameData);
     this.electronicWarfareHandler.advance(gameData);
-    gameData.players.forEach(player => gameData.setPlayerActive(player));
-    gameData.ships.getShips().forEach(ship => gameData.setActiveShip(ship));
     gameData.advanceTurn();
-    gameData.removeOldData();
 
     return;
   }

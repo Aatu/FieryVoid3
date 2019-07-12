@@ -1,5 +1,6 @@
 import ShipPower from "./ShipPower.mjs";
 import ShipSystemSections from "./system/ShipSystemSections";
+import { hexFacingToAngle } from "../utils/math.mjs";
 
 class ShipSystems {
   constructor(ship) {
@@ -16,7 +17,7 @@ class ShipSystems {
       .getHitSection(
         attackPosition,
         this.ship.getPosition(),
-        this.ship.getFacing(),
+        hexFacingToAngle(this.ship.getFacing()),
         ignoreSections
       )
       .reduce((all, section) => {
@@ -135,6 +136,14 @@ class ShipSystems {
       systemId: system.id,
       data: system.serialize()
     }));
+  }
+
+  advanceTurn(turn) {
+    this.getSystems().forEach(system => {
+      system.callHandler("advanceTurn", turn);
+    });
+
+    return this;
   }
 }
 

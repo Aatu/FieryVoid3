@@ -1,8 +1,10 @@
-import StandardRangeStrategy from "./ShipSystemStrategy.mjs";
+import ShipSystemStrategy from "../ShipSystemStrategy.mjs";
 
 class StandardRangeStrategy extends ShipSystemStrategy {
-  constructor() {
+  constructor(rangesAndPenalties) {
     super();
+
+    this.rangesAndPenalties = rangesAndPenalties;
 
     /*
     TODO: Range penalties should go in steps so that 
@@ -14,6 +16,37 @@ class StandardRangeStrategy extends ShipSystemStrategy {
     and agility, but I think it would be better to handle on weapon level. In other words, not putting fast tracking
     spinal weapons on large ships. 
     */
+  }
+
+  getRangeModifier({ distance: currentRange }) {
+    const exactModifier = this.rangesAndPenalties.find(
+      ({ range }) => range === currentRange
+    );
+
+    if (exactModifier) {
+      return exactModifier.modifier;
+    }
+
+    let start = null;
+    let end = null;
+
+    this.rangesAndPenalties.forEach(({ range, modifier }) => {
+      if ((start === null || range > start.range) && range < currentRange) {
+        start = { range, modifier };
+      } else if ((end === null || range < end.range) && range > currentRange) {
+        end = { range, modifier };
+      }
+    });
+
+    if (!end) {
+      return false;
+    }
+
+    const difference = end.modifier - start.modifier;
+    const distance = end.range - start.range;
+    return (
+      start.modifier + (difference * (currentRange - start.range)) / distance
+    );
   }
 }
 

@@ -1,24 +1,86 @@
+import FireOrder from "./FireOrder.mjs";
+
 class WeaponFireService {
   /*
     TODO:
 
     Weapon firing sequence
         - weapon fires as many times as it has shots assigned
-        - first, check if electronic warfare systems acquire a lock. 
-            * This is checked per shot, because state of the lock might rapidly change
-            * What does this mean? should this work just like old instead?
-            * Weapon does not fire if no lock aquired?
-            * Affected by range?
-                - close up small locks are enough?
-                - effectiveness of DEW drop with range? Linear for simplicity?
-            * Can aquire a solid lock, no penalties
-            * Can aquire a poor lock, some penalties to hit? This might for example mean that the ship
-                only aquires the lock for a small while and have to make a hasty shot.
-            * Can fail to aquire a lock => weapon does not waste fire
-        - calculate the hit change using targets to hit profile, weapons range strategy (affected by evasion)
+        - compare DEW and OEW
+        - calculate the hit change using targets to hit profile, weapons range strategy (affected by evasion), and weapon hit strategy
         - RNG if hit actually lands
         - Apply damage, criticals and heat according to weapon damage strategy
     */
+
+  constructor() {
+    this.gamedata = null;
+  }
+
+  update(gamedata, phaseDirector) {
+    this.gamedata = gamedata;
+    this.phaseDirector = phaseDirector;
+
+    return this;
+  }
+
+  getAllFireOrders(shooter) {
+    return shooter.systems.getSystems((all, system) => [
+      ...all,
+      ...system.callHandler("getFireOrders")
+    ]);
+  }
+
+  addFireOrder(shooter, target, weapon) {
+    if (!this.canFire(shooter, target, weapon)) {
+      throw new Error("Check validity first");
+    }
+
+    weapon.callHandler("addFireOrder", { shooter, target });
+  }
+
+  canFire(shooter, target, weapon) {
+    if (shooter.isDestroyed() || target.isDestroyed() || weapon.isDisabled()) {
+      return false;
+    }
+
+    if (!weapon.callHandler("isOnArc", { shooter, target })) {
+      return false;
+    }
+
+    if (!weapon.callHandler("isLoaded")) {
+      return false;
+    }
+
+    return true;
+  }
+
+  getHitChange(fireOrder) {
+    const shooter = this.gamedata.ships.getShipById(fireOrder.shooterId);
+    const target = this.gamedata.ships.getShipById(fireOrder.shooterId);
+    const weapon = shooter.systems.getSystemById(FireOrder.weaponId);
+    const weaponSettings = fireOrder.weaponSettings;
+
+    const baseToHit = weapon.callHandler("getBaseHitChange", {
+      shooter,
+      target,
+      weaponSettings
+    });
+
+    const dew = target.electronicWarfre.inEffect.getDefensiveEw();
+    const oew = shooter.electronicWarfre.inEffect.getOffensiveEw(target);
+
+    let distance = shooter.getHexPosition().distance(target.getHexPosition());
+    if (oew === 0) {
+      distance *= 2;
+    }
+
+    const rangeModifier = weapon.callHandler("getRangeModifier", {
+      distance,
+      weaponSettings
+    });
+
+    return baseToHit + oew - dew + rangeModifier;
+  }
 }
 
 export default WeaponFireService;
