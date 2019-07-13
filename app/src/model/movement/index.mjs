@@ -1,11 +1,11 @@
-import MovementService from "./MovementService";
-import MovementOrder from "./MovementOrder";
-import movementTypes from "./MovementTypes";
-import MovementResolver from "./MovementResolver";
-import ThrustBill from "./ThrustBill";
-import RequiredThrust from "./RequiredThrust";
-import ThrustAssignment from "./ThrustAssignment";
-import OverChannelResolver from "./OverChannelResolver";
+import MovementService from "./MovementService.mjs";
+import MovementOrder from "./MovementOrder.mjs";
+import movementTypes from "./MovementTypes.mjs";
+import MovementResolver from "./MovementResolver.mjs";
+import ThrustBill from "./ThrustBill.mjs";
+import RequiredThrust from "./RequiredThrust.mjs";
+import ThrustAssignment from "./ThrustAssignment.mjs";
+import OverChannelResolver from "./OverChannelResolver.mjs";
 
 export {
   MovementService,

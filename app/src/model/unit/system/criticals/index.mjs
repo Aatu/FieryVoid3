@@ -1,10 +1,10 @@
 //import * as Uc from "./uc";
-import FirstThrustIgnored from "./FirstThrustIgnored";
-import EfficiencyHalved from "./EfficiencyHalved";
-import OutputReduced2 from "./OutputReduced2";
-import OutputReduced4 from "./OutputReduced4";
-import OutputReduced6 from "./OutputReduced6";
-import OutputReduced8 from "./OutputReduced8";
+import FirstThrustIgnored from "./FirstThrustIgnored.mjs";
+import EfficiencyHalved from "./EfficiencyHalved.mjs";
+import OutputReduced2 from "./OutputReduced2.mjs";
+import OutputReduced4 from "./OutputReduced4.mjs";
+import OutputReduced6 from "./OutputReduced6.mjs";
+import OutputReduced8 from "./OutputReduced8.mjs";
 
 export {
   FirstThrustIgnored,

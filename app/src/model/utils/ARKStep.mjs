@@ -1,4 +1,4 @@
-import Vector from "./Vector";
+import Vector from "./Vector.mjs";
 import THREE from "three";
 
 const a = [

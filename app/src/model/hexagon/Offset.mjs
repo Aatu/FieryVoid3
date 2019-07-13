@@ -1,4 +1,4 @@
-import Cube from "./Cube";
+import Cube from "./Cube.mjs";
 
 const NEIGHBOURS = [
   [

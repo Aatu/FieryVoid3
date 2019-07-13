@@ -1,5 +1,5 @@
-import SystemSection from "./SystemSection";
-import * as systemLocation from "./systemLocation";
+import SystemSection from "./SystemSection.mjs";
+import * as systemLocation from "./systemLocation.mjs";
 
 class PortFrontSection extends SystemSection {
   constructor() {

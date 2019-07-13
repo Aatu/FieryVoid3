@@ -1,5 +1,5 @@
 import Ship from "../../Ship.mjs";
-import systems from "../../system";
+import systems from "../../system/index.mjs";
 
 class Caliope extends Ship {
   setShipProperties() {
@@ -54,21 +54,24 @@ class Caliope extends Ship {
         { id: 101, hitpoints: 10, armor: 3 },
         3,
         2
-      )
+      ),
+      new systems.Thruster({ id: 103, hitpoints: 10, armor: 3 }, 5, 3),
+      new systems.Thruster({ id: 104, hitpoints: 10, armor: 3 }, 5, 3),
+      new systems.Structure({ id: 111, hitpoints: 30, armor: 4 })
     ]);
 
     this.systems.addPrimarySystem([
-      new systems.Thruster({ id: 1, hitpoints: 10, armor: 3 }, 5, 0),
-      new systems.Thruster({ id: 2, hitpoints: 10, armor: 3 }, 5, 0),
-      new systems.Thruster({ id: 8, hitpoints: 10, armor: 3 }, 5, [1, 2]),
-      new systems.Thruster({ id: 9, hitpoints: 10, armor: 3 }, 5, [4, 5]),
-      new systems.Thruster({ id: 3, hitpoints: 10, armor: 3 }, 5, 3),
-      new systems.Thruster({ id: 4, hitpoints: 10, armor: 3 }, 5, 3),
-
-      new systems.Engine({ id: 5, hitpoints: 10, armor: 3 }, 12, 6, 2),
-      new systems.Engine({ id: 6, hitpoints: 10, armor: 3 }, 12, 6, 2),
+      new systems.Engine({ id: 6, hitpoints: 20, armor: 3 }, 12, 6, 2),
       new systems.Reactor({ id: 7, hitpoints: 10, armor: 3 }, 20),
       new systems.Structure({ id: 11, hitpoints: 30, armor: 4 })
+    ]);
+
+    this.systems.addStarboardFrontSystem([
+      new systems.Thruster({ id: 8, hitpoints: 10, armor: 3 }, 5, [1, 2])
+    ]);
+
+    this.systems.addPortFrontSystem([
+      new systems.Thruster({ id: 9, hitpoints: 10, armor: 3 }, 5, [4, 5])
     ]);
 
     this.systems.addAftSystem([
@@ -76,7 +79,13 @@ class Caliope extends Ship {
         { id: 201, hitpoints: 10, armor: 3 },
         3,
         2
-      )
+      ),
+
+      new systems.Thruster({ id: 31, hitpoints: 10, armor: 3 }, 5, 0),
+      new systems.Thruster({ id: 32, hitpoints: 10, armor: 3 }, 5, 0),
+      new systems.Thruster({ id: 33, hitpoints: 10, armor: 3 }, 5, 0),
+
+      new systems.Structure({ id: 311, hitpoints: 30, armor: 4 })
     ]);
   }
 }

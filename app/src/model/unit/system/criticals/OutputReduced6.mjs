@@ -1,4 +1,4 @@
-import Critical from "./Critical";
+import Critical from "./Critical.mjs";
 
 class OutputReduced6 extends Critical {}
 

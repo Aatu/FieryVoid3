@@ -3,23 +3,23 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "axios": "^0.18.0",
+    "axios": "^0.19.0",
     "droll": "^0.2.1",
     "esm": "^3.2.22",
-    "formik": "^1.5.2",
-    "mathjs": "^6.0.2",
+    "formik": "^1.5.8",
+    "mathjs": "^6.0.3",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-draggable": "^3.3.0",
-    "react-redux": "^6.0.1",
-    "react-router-dom": "^5.0.0",
-    "react-scripts": "2.1.8",
-    "redux": "^4.0.1",
-    "redux-promise-middleware": "^6.1.0",
+    "react-redux": "^7.1.0",
+    "react-router-dom": "^5.0.1",
+    "react-scripts": "3.0.0",
+    "redux": "^4.0.4",
+    "redux-promise-middleware": "^6.1.1",
     "redux-thunk": "^2.3.0",
-    "styled-components": "^4.2.0",
-    "three": "^0.105.2",
-    "three-gltf-loader": "^1.104.0",
+    "styled-components": "^4.3.2",
+    "three": "^0.106.2",
+    "three-gltf-loader": "^1.106.0",
     "yup": "^0.27.0"
   },
   "scripts": {
@@ -38,7 +38,7 @@
     "not op_mini all"
   ],
   "devDependencies": {
-    "ava": "^2.0.0",
+    "ava": "^2.2.0",
     "redux-devtools-extension": "^2.13.8"
   },
   "ava": {

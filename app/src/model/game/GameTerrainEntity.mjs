@@ -1,4 +1,4 @@
-import Vector from "../../model/utils/Vector";
+import Vector from "../../model/utils/Vector.mjs";
 const TERRAIN_TYPE_SUN = "sun";
 
 class GameTerrainEntity {

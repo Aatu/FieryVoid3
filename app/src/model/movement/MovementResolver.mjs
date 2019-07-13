@@ -1,12 +1,12 @@
-import hexagon from "../hexagon";
-import { addToHexFacing } from "../utils/math";
+import hexagon from "../hexagon/index.mjs";
+import { addToHexFacing } from "../utils/math.mjs";
 
 import {
   MovementOrder,
   movementTypes,
   ThrustBill,
   OverChannelResolver
-} from ".";
+} from "./index.mjs";
 
 class MovementResolver {
   constructor(ship, movementService, turn) {

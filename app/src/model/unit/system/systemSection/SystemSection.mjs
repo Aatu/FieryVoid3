@@ -1,6 +1,6 @@
-import Structure from "../structure/Structure";
-import hexagon from "../../../hexagon";
-import * as systemLocation from "./systemLocation";
+import Structure from "../structure/Structure.mjs";
+import hexagon from "../../../hexagon/index.mjs";
+import * as systemLocation from "./systemLocation.mjs";
 
 class SystemSection {
   constructor(location) {

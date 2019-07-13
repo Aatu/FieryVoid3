@@ -53,12 +53,21 @@ const TooltipMenu = styled.div`
 `;
 
 const TooltipButton = styled.button`
-  border: 1px solid white;
+  border: none;
   width: 40px;
   height: 40px;
   background-color: transparent;
   margin: 3px;
   cursor: pointer;
+  background-image: ${props => props.img && `url(${props.img})`};
+  background-size: cover;
+  opacity: 0.5;
+  filter: grayscale(50%);
+
+  &:hover {
+    opacity: 1;
+    filter: grayscale(0%);
+  }
 `;
 
 export { Tooltip, TooltipHeader, TooltipEntry, TooltipMenu, TooltipButton };

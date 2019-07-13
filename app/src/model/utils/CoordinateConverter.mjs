@@ -1,9 +1,9 @@
 import THREE from "three";
-import Vector from "./Vector";
-import * as gameConfig from "../gameConfig";
-import hexagon from "../hexagon";
-import HexagonMath from "./HexagonMath";
-import { distance } from "./math";
+import Vector from "./Vector.mjs";
+import * as gameConfig from "../gameConfig.mjs";
+import hexagon from "../hexagon/index.mjs";
+import HexagonMath from "./HexagonMath.mjs";
+import { distance } from "./math.mjs";
 
 const getShipIcon = object3d => {
   while (object3d.parent) {

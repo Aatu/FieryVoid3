@@ -2,6 +2,7 @@ import * as React from "react";
 import styled from "styled-components";
 import GamePositionComponent from "../GamePositionComponent";
 import ShipTooltipMenu from "./ShipTooltipMenu";
+import ShipWindow from "../shipWindow/ShipWindow";
 import {
   Tooltip,
   TooltipHeader,
@@ -55,8 +56,8 @@ class ShipTooltip extends React.Component {
       >
         <ShipTooltipContainer>
           <InfoHeader>{ship.name}</InfoHeader>
-          Hei! täällä me ollaan!
           {ui && <ShipTooltipMenu uiState={uiState} ship={ship} {...rest} />}
+          <ShipWindow ship={ship} uiState={uiState} />
         </ShipTooltipContainer>
       </GamePositionComponent>
     );

@@ -1,9 +1,9 @@
 import MovementOrder from "../../../model/movement/MovementOrder.mjs";
-import movementTypes from "../../../model/movement/movementTypes";
-import RequiredThrustValidator from "./RequiredThrustValidator";
-import hexagon from "../../../model/hexagon";
-import Vector from "../../../model/utils/Vector";
-import { InvalidGameDataError } from "../../errors";
+import movementTypes from "../../../model/movement/movementTypes.mjs";
+import RequiredThrustValidator from "./RequiredThrustValidator.mjs";
+import hexagon from "../../../model/hexagon/index.mjs";
+import Vector from "../../../model/utils/Vector.mjs";
+import { InvalidGameDataError } from "../../errors/index.mjs";
 import { addToHexFacing } from "../../../model/utils/math.mjs";
 
 class MovementValidator {

@@ -1,9 +1,9 @@
-import * as thrusters from "./thruster";
-import * as engines from "./engine";
-import * as reactors from "./reactor";
-import * as structures from "./structure";
-import * as ewArrays from "./electronicWarfare";
-import * as weapons from "./weapon";
+import * as thrusters from "./thruster/index.mjs";
+import * as engines from "./engine/index.mjs";
+import * as reactors from "./reactor/index.mjs";
+import * as structures from "./structure/index.mjs";
+import * as ewArrays from "./electronicWarfare/index.mjs";
+import * as weapons from "./weapon/index.mjs";
 
 const merged = {
   ...thrusters,

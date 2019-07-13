@@ -1,6 +1,6 @@
 import passport from "passport";
 import LocalStrategy from "passport-local";
-import User from "../../model/User";
+import User from "../../model/User.mjs";
 
 class PassportService {
   constructor(userService) {

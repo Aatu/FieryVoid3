@@ -4,7 +4,7 @@ import {
   OutputReduced4,
   OutputReduced6,
   OutputReduced8
-} from "../criticals";
+} from "../criticals/index.mjs";
 
 class PowerOutputSystemStrategy extends ShipSystemStrategy {
   constructor(output) {

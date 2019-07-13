@@ -1,9 +1,11 @@
-import { MovementOrder } from ".";
-import { movementTypes } from ".";
-import { MovementResolver } from ".";
-import { OverChannelResolver } from ".";
-import hexagon from "../hexagon";
-import { addToHexFacing } from "../utils/math";
+import {
+  MovementOrder,
+  movementTypes,
+  MovementResolver,
+  OverChannelResolver
+} from "./index.mjs";
+import hexagon from "../hexagon/index.mjs";
+import { addToHexFacing } from "../utils/math.mjs";
 
 class MovementService {
   constructor() {

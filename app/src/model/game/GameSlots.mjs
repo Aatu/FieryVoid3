@@ -1,4 +1,4 @@
-import GameSlot from "./GameSlot";
+import GameSlot from "./GameSlot.mjs";
 
 class GameSlots {
   constructor(gameData) {

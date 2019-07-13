@@ -3,7 +3,7 @@ import {
   BoostableSystemStrategy,
   ThrustOutputSystemStrategy,
   RequiresPowerSystemStrategy
-} from "../strategy";
+} from "../strategy/index.mjs";
 
 class Engine extends ShipSystem {
   constructor(args, output, power, boostPower) {
@@ -12,6 +12,18 @@ class Engine extends ShipSystem {
       new ThrustOutputSystemStrategy(output),
       new RequiresPowerSystemStrategy(power)
     ]);
+  }
+
+  getDisplayName() {
+    return "Engine";
+  }
+
+  getBackgroundImage() {
+    return "/img/system/engine.png";
+  }
+
+  getIconText() {
+    return this.callHandler("getThrustOutput");
   }
 }
 

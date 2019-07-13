@@ -1,4 +1,4 @@
-import { movementTypes } from ".";
+import { movementTypes } from "./index.mjs";
 import { addToHexFacing } from "../utils/math.mjs";
 
 class RequiredThrust {

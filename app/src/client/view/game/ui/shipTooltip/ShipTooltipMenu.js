@@ -10,9 +10,24 @@ class ShipTooltipMenu extends React.PureComponent {
     return (
       <TooltipMenu>
         {ship.player.isUsers(currentUser) && !uiState.isSelected(ship) && (
-          <TooltipButton onClick={() => uiState.selectShip(ship)} />
+          <TooltipButton
+            img="/img/selectShip.png"
+            onClick={() => uiState.selectShip(ship)}
+          />
         )}
-        <TooltipButton onClick={() => uiState.openShipWindow(ship)} />
+
+        {!ship.player.isUsers(currentUser) && uiState.getSelectedShip() && (
+          <>
+            <TooltipButton
+              img="/img/addOEW.png"
+              onClick={() => uiState.selectShip(ship)}
+            />
+            <TooltipButton
+              img="/img/removeOEW.png"
+              onClick={() => uiState.selectShip(ship)}
+            />
+          </>
+        )}
       </TooltipMenu>
     );
   }

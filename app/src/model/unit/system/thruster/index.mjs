@@ -1,4 +1,4 @@
-import ManeuveringThruster from "./ManeuveringThruster";
-import Thruster from "./Thruster";
+import ManeuveringThruster from "./ManeuveringThruster.mjs";
+import Thruster from "./Thruster.mjs";
 
 export { ManeuveringThruster, Thruster };

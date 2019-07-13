@@ -1,8 +1,7 @@
 import GameData from "../../model/game/GameData.mjs";
 import * as gameStatuses from "../../model/game/gameStatuses.mjs";
-import { InvalidGameDataError, UnauthorizedError } from "../errors";
-import Sun from "../../model/terrain/Sun";
-import uuidv4 from "uuid/v4";
+import { InvalidGameDataError, UnauthorizedError } from "../errors/index.mjs";
+import Sun from "../../model/terrain/Sun.mjs";
 
 class CreateGameHandler {
   createGame(clientGameData, user) {

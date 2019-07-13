@@ -1,5 +1,5 @@
 import Ship from "../../Ship.mjs";
-import systems from "../../system";
+import systems from "../../system/index.mjs";
 
 class Mouros extends Ship {
   setShipProperties() {

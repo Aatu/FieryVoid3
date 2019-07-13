@@ -1,5 +1,5 @@
 import MovementOrder from "../movement/MovementOrder.mjs";
-import Vector from "../utils/Vector";
+import Vector from "../utils/Vector.mjs";
 
 class ShipMovement {
   constructor(ship) {

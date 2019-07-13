@@ -1,5 +1,5 @@
 import GameTerrainEntity from "./GameTerrainEntity.mjs";
-import ARK from "../../model/utils/ARK";
+import ARK from "../../model/utils/ARK.mjs";
 
 class GameTerrain {
   constructor(gameData) {

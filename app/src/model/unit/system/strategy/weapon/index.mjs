@@ -1,10 +1,10 @@
-import StandardHitStrategy from "./StandardHitStrategy";
-import StandardRangeStrategy from "./StandardRangeStrategy";
-import FireOrderStrategy from "./FireOrderStrategy";
-import StandardLoadingStrategy from "./StandardLoadingStrategy";
-import WeaponArcStrategy from "./WeaponArcStrategy";
-import TestDamageStrategy from "./TestDamageStrategy";
-import StandardDamageStrategy from "./StandardDamageStrategy";
+import StandardHitStrategy from "./StandardHitStrategy.mjs";
+import StandardRangeStrategy from "./StandardRangeStrategy.mjs";
+import FireOrderStrategy from "./FireOrderStrategy.mjs";
+import StandardLoadingStrategy from "./StandardLoadingStrategy.mjs";
+import WeaponArcStrategy from "./WeaponArcStrategy.mjs";
+import TestDamageStrategy from "./TestDamageStrategy.mjs";
+import StandardDamageStrategy from "./StandardDamageStrategy.mjs";
 
 export {
   TestDamageStrategy,

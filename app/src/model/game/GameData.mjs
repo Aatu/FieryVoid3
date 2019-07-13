@@ -1,8 +1,8 @@
-import GameSlots from "./GameSlots";
-import GameShips from "./GameShips";
-import GameActiveShips from "./GameActiveShips";
-import GameTerrain from "./GameTerrain";
-import User from "../User";
+import GameSlots from "./GameSlots.mjs";
+import GameShips from "./GameShips.mjs";
+import GameActiveShips from "./GameActiveShips.mjs";
+import GameTerrain from "./GameTerrain.mjs";
+import User from "../User.mjs";
 import * as gameStatuses from "./gameStatuses.mjs";
 import * as gamePhases from "./gamePhases.mjs";
 

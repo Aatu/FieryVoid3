@@ -1,5 +1,5 @@
 import Yup from "yup";
-import { InvalidRequestError } from "../errors";
+import { InvalidRequestError } from "../errors/index.mjs";
 
 class UserService {
   constructor(userRepository) {

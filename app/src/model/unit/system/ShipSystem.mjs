@@ -1,5 +1,5 @@
-import SystemDamage from "./SystemDamage";
-import SystemPower from "./SystemPower";
+import SystemDamage from "./SystemDamage.mjs";
+import SystemPower from "./SystemPower.mjs";
 
 class ShipSystem {
   constructor(args = {}, strategies = []) {

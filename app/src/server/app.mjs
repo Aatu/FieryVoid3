@@ -4,14 +4,13 @@ import session from "express-session";
 import bodyParser from "body-parser";
 import cors from "cors";
 import expressWs from "express-ws";
-import UserService from "./services/UserService";
-import UserRepository from "./repository/UserRepository";
-import PassportService from "./services/PassportService";
-import GameDataService from "./services/GameDataService";
-import GameController from "./controller/GameController";
-import DbConnection from "./repository/DbConnection";
+import UserService from "./services/UserService.mjs";
+import UserRepository from "./repository/UserRepository.mjs";
+import PassportService from "./services/PassportService.mjs";
+import GameController from "./controller/GameController.mjs";
+import DbConnection from "./repository/DbConnection.mjs";
 
-import * as errors from "./errors";
+import * as errors from "./errors/index.mjs";
 
 const app = express();
 const port = 4000;

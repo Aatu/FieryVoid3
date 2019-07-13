@@ -1,5 +1,5 @@
-import RequiredThrust from "../../../model/movement/RequiredThrust";
-import { InvalidGameDataError } from "../../errors";
+import RequiredThrust from "../../../model/movement/RequiredThrust.mjs";
+import { InvalidGameDataError } from "../../errors/index.mjs";
 
 class RequiredThrustValidator {
   constructor(ship, move) {

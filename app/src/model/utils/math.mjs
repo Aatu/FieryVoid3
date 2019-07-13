@@ -1,4 +1,4 @@
-import hexagon from "../hexagon";
+import hexagon from "../hexagon/index.mjs";
 
 const distance = (x1, y1, x2, y2) => {
   if (y1.x !== undefined && x1.x !== undefined) {

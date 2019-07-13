@@ -1,4 +1,4 @@
-import { InvalidGameDataError, UnauthorizedError } from "../errors";
+import { InvalidGameDataError, UnauthorizedError } from "../errors/index.mjs";
 
 class ReplayHandler {
   constructor(gameDataService) {
@@ -19,8 +19,6 @@ class ReplayHandler {
         `invalid start or end for replay. start: '${start}', end: '${end}'`
       );
     }
-
-    console.log(`Getting replay from ${start} to ${end}`);
 
     while (currentTurn <= end) {
       let replay = await this.gameDataService.loadReplay(gameId, currentTurn);

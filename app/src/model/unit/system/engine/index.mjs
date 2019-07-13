@@ -1,3 +1,3 @@
-import Engine from "./Engine";
+import Engine from "./Engine.mjs";
 
 export { Engine };

@@ -1,6 +1,7 @@
 import ShipSystemStrategy from "../ShipSystemStrategy.mjs";
 import { randomizeHitSystem } from "./utils/weaponUtils.mjs";
 import DamageEntry from "../../DamageEntry.mjs";
+import droll from "droll";
 
 class StandardDamageStrategy extends ShipSystemStrategy {
   constructor(damageFormula) {
@@ -10,7 +11,7 @@ class StandardDamageStrategy extends ShipSystemStrategy {
   }
 
   getDamageForWeaponHit({ requiredToHit, rolledToHit }) {
-    return droll(damageFormula);
+    return droll(this.damageFormula);
   }
 
   applyArmorPiercing({ armor }) {

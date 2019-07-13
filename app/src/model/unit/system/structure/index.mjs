@@ -1,3 +1,3 @@
-import Structure from "./Structure";
+import Structure from "./Structure.mjs";
 
 export { Structure };

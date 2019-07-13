@@ -1,4 +1,4 @@
-import ARKStep from "./ARKStep";
+import ARKStep from "./ARKStep.mjs";
 import Vector from "./Vector.mjs";
 
 const arkStep = new ARKStep();

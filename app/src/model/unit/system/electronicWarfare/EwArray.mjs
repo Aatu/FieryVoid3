@@ -1,5 +1,5 @@
 import ShipSystem from "../ShipSystem.mjs";
-import { ElectronicWarfareProvider } from "../strategy";
+import { ElectronicWarfareProvider } from "../strategy/index.mjs";
 
 class EwArray extends ShipSystem {
   constructor(args, output) {

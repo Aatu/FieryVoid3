@@ -1,5 +1,5 @@
-import Ship from "../unit/Ship";
-import ShipSystem from "../unit/system/ShipSystem";
+import Ship from "../unit/Ship.mjs";
+import ShipSystem from "../unit/system/ShipSystem.mjs";
 
 class FireOrder {
   constructor(shooterId, targetId, weaponId, weaponSettigs = {}) {

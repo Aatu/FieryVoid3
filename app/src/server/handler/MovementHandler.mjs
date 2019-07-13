@@ -1,7 +1,7 @@
-import { InvalidGameDataError, UnauthorizedError } from "../errors";
-import MovementValidator from "../services/validation/MovementValidator";
-import MovementService from "../../model/movement/MovementService";
-import uuidv4 from "uuid/v4";
+import { InvalidGameDataError, UnauthorizedError } from "../errors/index.mjs";
+import MovementValidator from "../services/validation/MovementValidator.mjs";
+import MovementService from "../../model/movement/MovementService.mjs";
+import uuidv4 from "uuid/v4.js";
 
 class MovementHandler {
   constructor() {

@@ -1,4 +1,4 @@
-import CachedGameData from "./CachedGameData";
+import CachedGameData from "./CachedGameData.mjs";
 
 class GameDataService {
   constructor(gameDataRepository) {

@@ -1,3 +1,3 @@
-import Reactor from "./Reactor";
+import Reactor from "./Reactor.mjs";
 
 export { Reactor };

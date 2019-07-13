@@ -1,4 +1,4 @@
-import ships from "./ships";
+import ships from "./ships/index.mjs";
 
 export const createShipObject = data => {
   const { shipClass } = data;

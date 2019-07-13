@@ -1,4 +1,7 @@
-import { FirstThrustIgnored, EfficiencyHalved } from "../unit/system/criticals";
+import {
+  FirstThrustIgnored,
+  EfficiencyHalved
+} from "../unit/system/criticals/index.mjs";
 
 class ThrustAssignment {
   constructor(thruster) {

@@ -1,6 +1,6 @@
 import ShipSystem from "../ShipSystem.mjs";
 import * as ewTypes from "../../../electronicWarfare/electronicWarfareTypes.mjs";
-import { ElectronicWarfareProvider } from "../strategy";
+import { ElectronicWarfareProvider } from "../strategy/index.mjs";
 
 class CQEWArray extends ShipSystem {
   constructor(args, output) {

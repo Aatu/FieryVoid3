@@ -1,4 +1,4 @@
-import { RequiredThrust, ThrustAssignment } from ".";
+import { RequiredThrust, ThrustAssignment } from "./index.mjs";
 
 class ThrustBill {
   constructor(ship, thrustAvailable, movement) {

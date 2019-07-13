@@ -6,9 +6,9 @@ import {
   PortAftSection,
   StarboardFrontSection,
   StarboardAftSection
-} from "./systemSection";
+} from "./systemSection/index.mjs";
 import { getCompassHeadingOfPoint, addToDirection } from "../../utils/math.mjs";
-import hexagon from "../../hexagon";
+import hexagon from "../../hexagon/index.mjs";
 
 class ShipSystemSections {
   constructor() {

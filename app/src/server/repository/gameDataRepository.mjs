@@ -131,7 +131,7 @@ class GameDataRepository {
         phase,
         active_ships,
         data,
-        creator_id ,
+        creator_id,
         status
       ) VALUES (
           ?,?,?,?,?,?,?,?
@@ -148,16 +148,16 @@ class GameDataRepository {
         data.name,
         data.turn,
         data.phase,
-        data.activeShips,
-        data.data,
+        JSON.stringify(data.activeShips),
+        JSON.stringify(data.data),
         data.creatorId,
         data.status,
 
         data.name,
         data.turn,
         data.phase,
-        data.activeShips,
-        data.data,
+        JSON.stringify(data.activeShips),
+        JSON.stringify(data.data),
         data.creatorId,
         data.status
       ]

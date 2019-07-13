@@ -1,3 +1,3 @@
-import UcRhino from "./UcRhino";
+import UcRhino from "./UcRhino.mjs";
 
 export { UcRhino };

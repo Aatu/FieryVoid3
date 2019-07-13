@@ -18,11 +18,12 @@ class DbConnection {
   }
 
   async query(conn, query, payload = []) {
+    let response = null;
     try {
       if (!conn) {
         conn = await this.getConnection();
       }
-      const response = await conn.query(query, payload);
+      response = await conn.query(query, payload);
       return response;
     } catch (err) {
       if (conn) {

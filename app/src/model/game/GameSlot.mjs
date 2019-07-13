@@ -1,5 +1,5 @@
-import hexagon from "../hexagon";
-import uuidv4 from "uuid/v4";
+import hexagon from "../hexagon/index.mjs";
+import uuidv4 from "uuid/v4.js";
 
 class GameSlot {
   constructor(data = {}, gameData) {

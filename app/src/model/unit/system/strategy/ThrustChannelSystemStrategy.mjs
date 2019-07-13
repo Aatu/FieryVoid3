@@ -1,5 +1,5 @@
 import ShipSystemStrategy from "./ShipSystemStrategy.mjs";
-import { FirstThrustIgnored, EfficiencyHalved } from "../criticals";
+import { FirstThrustIgnored, EfficiencyHalved } from "../criticals/index.mjs";
 
 const directionsToString = {
   0: "Thrust forward",

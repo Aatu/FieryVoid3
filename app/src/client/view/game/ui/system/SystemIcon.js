@@ -2,6 +2,8 @@ import * as React from "react";
 import styled from "styled-components";
 import SystemInfo from "./SystemInfo";
 
+import { colors } from "../../../../styled";
+
 const HealthBar = styled.div`
   position: absolute;
   bottom: 0;
@@ -39,16 +41,12 @@ const SystemText = styled.div`
 const System = styled.div`
   position: relative;
   box-sizing: border-box;
-  width: 32px;
-  height: 32px;
-  margin: ${props => (props.scs ? "3px 0" : "2px")};
-  border: ${props => {
-    if (props.firing) {
-      return "1px solid #eb5c15";
-    } else {
-      return "1px solid #496791";
-    }
-  }};
+  width: ${props => (props.scs ? "30px" : "34px")};
+  height: ${props => (props.scs ? "30px" : "34px")};
+  margin: ${props => (props.scs ? "3px 1px" : "2px")};
+
+  border: ${props => !props.scs && `1px solid ${colors.systemBorder}`};
+
   background-color: ${props => {
     if (props.selected) {
       return "#4e6c91";

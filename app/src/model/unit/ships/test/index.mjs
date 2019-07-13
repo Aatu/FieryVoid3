@@ -1,3 +1,3 @@
-import TestShip from "./TestShip";
+import TestShip from "./TestShip.mjs";
 
 export { TestShip };

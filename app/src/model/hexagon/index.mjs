@@ -1,4 +1,4 @@
-import Cube from "./Cube";
-import Offset from "./Offset";
+import Cube from "./Cube.mjs";
+import Offset from "./Offset.mjs";
 
 export default { Cube, Offset };

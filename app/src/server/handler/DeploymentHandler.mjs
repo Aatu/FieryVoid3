@@ -1,8 +1,8 @@
-import uuidv4 from "uuid/v4";
-import movementTypes from "../../model/movement/movementTypes";
-import MovementOrder from "../../model/movement/MovementOrder";
-import { InvalidGameDataError } from "../errors";
-import * as gamePhases from "../../model/game/gamePhases";
+import uuidv4 from "uuid/v4.js";
+import movementTypes from "../../model/movement/movementTypes.mjs";
+import MovementOrder from "../../model/movement/MovementOrder.mjs";
+import { InvalidGameDataError } from "../errors/index.mjs";
+import * as gamePhases from "../../model/game/gamePhases.mjs";
 
 class DeploymentHandler {
   deploy(serverGameData, clientGameData, user) {

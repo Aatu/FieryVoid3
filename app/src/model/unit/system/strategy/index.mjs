@@ -1,10 +1,10 @@
-import BoostableSystemStrategy from "./BoostableSystemStrategy";
-import ThrustOutputSystemStrategy from "./ThrustOutputSystemStrategy";
-import RequiresPowerSystemStrategy from "./RequiresPowerSystemStrategy";
-import PowerOutputSystemStrategy from "./PowerOutputSystemStrategy";
-import ThrustChannelSystemStrategy from "./ThrustChannelSystemStrategy";
-import AllowsEvasionSystemStrategy from "./AllowsEvasionSystemStrategy";
-import ElectronicWarfareProvider from "./ElectronicWarfareProvider";
+import BoostableSystemStrategy from "./BoostableSystemStrategy.mjs";
+import ThrustOutputSystemStrategy from "./ThrustOutputSystemStrategy.mjs";
+import RequiresPowerSystemStrategy from "./RequiresPowerSystemStrategy.mjs";
+import PowerOutputSystemStrategy from "./PowerOutputSystemStrategy.mjs";
+import ThrustChannelSystemStrategy from "./ThrustChannelSystemStrategy.mjs";
+import AllowsEvasionSystemStrategy from "./AllowsEvasionSystemStrategy.mjs";
+import ElectronicWarfareProvider from "./ElectronicWarfareProvider.mjs";
 import {
   TestDamageStrategy,
   StandardDamageStrategy,
@@ -13,7 +13,7 @@ import {
   FireOrderStrategy,
   StandardLoadingStrategy,
   WeaponArcStrategy
-} from "./weapon";
+} from "./weapon/index.mjs";
 
 export {
   TestDamageStrategy,

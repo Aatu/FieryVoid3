@@ -1,5 +1,5 @@
-import { InvalidGameDataError, UnauthorizedError } from "../errors";
-import { UnableToAssignEw } from "../../model/unit/ShipElectronicWarfare";
+import { InvalidGameDataError, UnauthorizedError } from "../errors/index.mjs";
+import { UnableToAssignEw } from "../../model/unit/ShipElectronicWarfare.mjs";
 
 class ElectronicWarfareHandler {
   receiveElectronicWarfare(serverGameData, clientGameData, activeShips, user) {

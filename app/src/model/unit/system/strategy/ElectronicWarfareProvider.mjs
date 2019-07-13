@@ -4,7 +4,7 @@ import {
   OutputReduced4,
   OutputReduced6,
   OutputReduced8
-} from "../criticals";
+} from "../criticals/index.mjs";
 import * as ewTypes from "../../../electronicWarfare/electronicWarfareTypes.mjs";
 import ElectronicWarfareEntry from "../../../electronicWarfare/ElectronicWarfareEntry.mjs";
 import Ship from "../../Ship.mjs";

@@ -1,7 +1,7 @@
 import ShipSystems from "./ShipSystems.mjs";
 import ShipElectronicWarfare from "./ShipElectronicWarfare.mjs";
 import ShipPlayer from "./ShipPlayer.mjs";
-import ShipMovement from "./ShipMovement";
+import ShipMovement from "./ShipMovement.mjs";
 import {
   getCompassHeadingOfPoint,
   addToDirection,

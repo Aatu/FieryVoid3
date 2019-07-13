@@ -1,5 +1,5 @@
-import DamageEntry from "./DamageEntry";
-import CriticalEntry from "./CriticalEntry";
+import DamageEntry from "./DamageEntry.mjs";
+import CriticalEntry from "./CriticalEntry.mjs";
 
 class SystemDamage {
   constructor(system) {

@@ -1,6 +1,6 @@
-import EwArray from "./EwArray";
+import EwArray from "./EwArray.mjs";
 import * as ewTypes from "../../../electronicWarfare/electronicWarfareTypes.mjs";
-import { ElectronicWarfareProvider } from "../strategy";
+import { ElectronicWarfareProvider } from "../strategy/index.mjs";
 
 class ElintArray extends EwArray {
   constructor(args, output) {

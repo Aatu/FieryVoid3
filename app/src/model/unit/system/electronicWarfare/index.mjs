@@ -1,5 +1,5 @@
-import EwArray from "./EwArray";
-import CQEWArray from "./CQEWArray";
-import ElintArray from "./ElintArray";
+import EwArray from "./EwArray.mjs";
+import CQEWArray from "./CQEWArray.mjs";
+import ElintArray from "./ElintArray.mjs";
 
 export { EwArray, CQEWArray, ElintArray };

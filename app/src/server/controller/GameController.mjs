@@ -1,6 +1,6 @@
 import GameDataService from "../services/GameDataService.mjs";
 import GameDataRepository from "../repository/GameDataRepository.mjs";
-import GameData from "../../model/game/GameData";
+import GameData from "../../model/game/GameData.mjs";
 import CreateGameHandler from "../handler/CreateGameHandler.mjs";
 import BuyShipsHandler from "../handler/BuyShipsHandler.mjs";
 import DeploymentHandler from "../handler/DeploymentHandler.mjs";

@@ -1,32 +1,25 @@
 import * as React from "react";
 import styled from "styled-components";
 import SystemIcon from "../system/SystemIcon";
+import { colors } from "../../../../styled";
 import * as systemLocation from "../../../../../model/unit/system/systemSection/systemLocation";
 
 const ShipSectionContainer = styled.div`
   display: flex;
   flex-wrap: wrap-reverse;
-  width: ${props => {
-    switch (props.location) {
-      case 1:
-      case 0:
-      case 2:
-        return "40%";
-      default:
-        return "30%";
-    }
-  }};
+  width: calc(100% - 2px);
   align-items: end;
   justify-content: space-around;
   box-sizing: border-box;
-  margin: 2px;
+  margin: 1px;
+  flex-grow: 1;
 
   border: ${props => {
     switch (props.location) {
       case 0:
-        return "2px solid #6089c1";
+        return `1px solid ${colors.systemWindowPrimaryBorder}`;
       default:
-        return "2px dotted #496791";
+        return `1px dashed ${colors.systemWindowBorder}`;
     }
   }};
 `;
@@ -43,14 +36,12 @@ const StructureContainer = styled.div`
   box-sizing: border-box;
   width: calc(100% - 4px);
   height: 16px;
-  box-sizing: border-box;
   background-color: black;
   color: ${props => (props.health === 0 ? "transparent" : "white")};
   font-family: arial;
   font-size: 11px;
   text-shadow: black 0 0 6px, black 0 0 6px;
-  border: 1px solid #496791;
-  margin: 2px;
+  margin: 1px;
   filter: ${props => (props.health === 0 ? "blur(1px)" : "none")};
 
   :before {

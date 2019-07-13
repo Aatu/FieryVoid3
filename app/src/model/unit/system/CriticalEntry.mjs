@@ -1,4 +1,4 @@
-import * as criticals from "./criticals";
+import * as criticals from "./criticals/index.mjs";
 
 class CriticalEntry {
   constructor(critical) {

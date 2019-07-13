@@ -1,4 +1,4 @@
-import { InvalidGameDataError } from "../errors";
+import { InvalidGameDataError } from "../errors/index.mjs";
 import {
   createShipObject,
   createBareShipObject
@@ -7,7 +7,7 @@ import * as gameStatuses from "../../model/game/gameStatuses.mjs";
 import * as gamePhases from "../../model/game/gamePhases.mjs";
 import MovementOrder from "../../model/movement/MovementOrder.mjs";
 import MovementTypes from "../../model/movement/MovementTypes.mjs";
-import uuidv4 from "uuid/v4";
+import uuidv4 from "uuid/v4.js";
 
 class BuyShipsHandler {
   buyShips(gameData, slotId, ships, user) {

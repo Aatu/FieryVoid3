@@ -1,6 +1,6 @@
-import { InvalidGameDataError, UnauthorizedError } from "../errors";
-import WeaponFireService from "../../model/weapon/WeaponFireService";
-import uuidv4 from "uuid/v4";
+import { InvalidGameDataError, UnauthorizedError } from "../errors/index.mjs";
+import WeaponFireService from "../../model/weapon/WeaponFireService.mjs";
+import uuidv4 from "uuid/v4.js";
 
 class WeaponHandler {
   receiveFireOrders(serverGameData, clientGameData, activeShips, user) {

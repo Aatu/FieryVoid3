@@ -1,5 +1,5 @@
 import THREE from "three";
-import coordinateConverter from "./CoordinateConverter";
+import coordinateConverter from "./CoordinateConverter.mjs";
 
 const helperA = new THREE.Vector3();
 const helperB = new THREE.Vector3();

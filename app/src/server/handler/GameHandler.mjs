@@ -1,7 +1,7 @@
 import MovementHandler from "./MovementHandler.mjs";
 import ElectronicWarfareHandler from "./ElectronicWarfareHandler.mjs";
 import WeaponHandler from "./WeaponHandler.mjs";
-import { UnauthorizedError, InvalidGameDataError } from "../errors";
+import { UnauthorizedError, InvalidGameDataError } from "../errors/index.mjs";
 
 class GameHandler {
   constructor() {

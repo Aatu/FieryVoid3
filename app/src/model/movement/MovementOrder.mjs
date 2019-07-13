@@ -1,8 +1,8 @@
-import Vector from "../../model/utils/Vector";
-import coordinateConverter from "../../model/utils/CoordinateConverter";
-import { movementTypes } from ".";
-import hexagon from "../hexagon";
-import { addToHexFacing } from "../utils/math";
+import Vector from "../../model/utils/Vector.mjs";
+import coordinateConverter from "../../model/utils/CoordinateConverter.mjs";
+import { movementTypes } from "./index.mjs";
+import hexagon from "../hexagon/index.mjs";
+import { addToHexFacing } from "../utils/math.mjs";
 import RequiredThrust from "./RequiredThrust.mjs";
 
 class MovementOrder {

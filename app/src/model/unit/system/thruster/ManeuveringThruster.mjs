@@ -2,7 +2,7 @@ import ShipSystem from "../ShipSystem.mjs";
 import {
   ThrustChannelSystemStrategy,
   AllowsEvasionSystemStrategy
-} from "../strategy";
+} from "../strategy/index.mjs";
 
 class ManeuveringThruster extends ShipSystem {
   constructor(args, channel, evasion) {
