@@ -201,7 +201,7 @@ class SystemIcon extends React.Component {
 
 const isFiring = (ship, system) => false; //ASK FROM SHIP weaponManager.hasFiringOrder(ship, system);
 
-const isLoading = system => false; //ASK FROM SYSTEM system.weapon && !weaponManager.isLoaded(system);
+const isLoading = system => undefined; //ASK FROM SYSTEM system.weapon && !weaponManager.isLoaded(system);
 
 const isOffline = (ship, system) => system.power.isOffline();
 

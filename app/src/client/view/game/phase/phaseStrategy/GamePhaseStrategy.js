@@ -8,7 +8,8 @@ import {
   SelectedShipMovementUi,
   SelectFirstActiveShip,
   AllShipsMovementPaths,
-  AllowSubmittingOnValidGameState
+  AllowSubmittingOnValidGameState,
+  GameShipTooltipMenuStrategy
 } from "../../ui/uiStrategy";
 
 class GamePhaseStrategy extends PhaseStrategy {
@@ -24,7 +25,8 @@ class GamePhaseStrategy extends PhaseStrategy {
       new HighlightSelectedShip(),
       new SelectedShipMovementUi(),
       new AllShipsMovementPaths(),
-      new AllowSubmittingOnValidGameState()
+      new AllowSubmittingOnValidGameState(),
+      new GameShipTooltipMenuStrategy()
     ];
   }
 

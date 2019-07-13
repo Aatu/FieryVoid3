@@ -19,6 +19,7 @@ import AllShipsMovementPaths from "./AllShipsMovementPaths";
 import AllowSubmittingOnValidGameState from "./AllowSubmittingOnValidGameState";
 import ReplayShipMovement from "./replay/ReplayShipMovement";
 import AutomaticReplay from "./replay/AutomaticReplay";
+import GameShipTooltipMenuStrategy from "./GameShipTooltipMenuStrategy";
 
 export {
   MouseOverShowsMovementPath,
@@ -41,5 +42,6 @@ export {
   AllShipsMovementPaths,
   AllowSubmittingOnValidGameState,
   ReplayShipMovement,
-  AutomaticReplay
+  AutomaticReplay,
+  GameShipTooltipMenuStrategy
 };

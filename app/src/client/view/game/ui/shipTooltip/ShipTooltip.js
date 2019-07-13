@@ -46,7 +46,17 @@ const TestDiv = styled.div`
 
 class ShipTooltip extends React.Component {
   render() {
-    const { ship, getPosition, uiState, ui, ...rest } = this.props;
+    const {
+      ship,
+      getPosition,
+      uiState,
+      ui,
+      shipTooltipMenuProvider,
+      ...rest
+    } = this.props;
+
+    const Menu =
+      ui && shipTooltipMenuProvider ? shipTooltipMenuProvider() : null;
 
     return (
       <GamePositionComponent
@@ -56,7 +66,7 @@ class ShipTooltip extends React.Component {
       >
         <ShipTooltipContainer>
           <InfoHeader>{ship.name}</InfoHeader>
-          {ui && <ShipTooltipMenu uiState={uiState} ship={ship} {...rest} />}
+          {Menu && <Menu uiState={uiState} ship={ship} {...rest} />}
           <ShipWindow ship={ship} uiState={uiState} />
         </ShipTooltipContainer>
       </GamePositionComponent>

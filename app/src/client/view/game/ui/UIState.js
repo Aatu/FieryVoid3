@@ -19,7 +19,8 @@ class UIState {
       systemInfoMenu: null,
       shipMovement: null,
       shipTooltip: [],
-      turnReady: false
+      turnReady: false,
+      shipTooltipMenuProvider: null
     };
 
     this.updateState();
@@ -97,6 +98,11 @@ class UIState {
     }
 
     this.setState({ uiState: this });
+  }
+
+  setTooltipMenuProvider(callBack) {
+    this.state.shipTooltipMenuProvider = callBack;
+    this.updateState();
   }
 
   setGameData(gameData) {
