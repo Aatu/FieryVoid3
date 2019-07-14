@@ -4,7 +4,7 @@ const loader = new GLTFLoader();
 
 const entities = [];
 
-export const cloneObject = source => {
+export const cloneObject = (source, cloneMaterial = true) => {
   const sourceLookup = new Map();
   const cloneLookup = new Map();
 
@@ -32,11 +32,13 @@ export const cloneObject = source => {
     clonedMesh.bind(clonedMesh.skeleton, clonedMesh.bindMatrix);
   });
 
-  clone.traverse(node => {
-    if (node.isMesh) {
-      node.material = node.material.clone();
-    }
-  });
+  if (cloneMaterial) {
+    clone.traverse(node => {
+      if (node.isMesh) {
+        node.material = node.material.clone();
+      }
+    });
+  }
 
   return clone;
 };

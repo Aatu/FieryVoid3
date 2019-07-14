@@ -158,8 +158,6 @@ class PivotPath {
   constructor(moves) {
     this.moves = moves;
     this.path = movesToSteps(moves);
-
-    console.log(this.path);
   }
 
   getFacing(turn, percentDone) {

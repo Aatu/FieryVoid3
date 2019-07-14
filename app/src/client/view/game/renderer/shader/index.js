@@ -4,6 +4,8 @@ import effectVertexShader from "./effectVertexShader";
 import effectFragmentShader from "./effectFragmentShader";
 import spriteFragmentShader from "./spriteFragmentShader";
 import spriteVertexShader from "./spriteVertexShader";
+import lineFragmentShader from "./lineFragmentShader";
+import lineVertexShader from "./lineVertexShader";
 
 export {
   starVertexShader,
@@ -11,5 +13,7 @@ export {
   effectVertexShader,
   effectFragmentShader,
   spriteFragmentShader,
-  spriteVertexShader
+  spriteVertexShader,
+  lineFragmentShader,
+  lineVertexShader
 };

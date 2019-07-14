@@ -7,6 +7,8 @@ import coordinateConverter from "../../../../model/utils/CoordinateConverter";
 
 import { CircleSprite, LineSprite, ShipFacingSprite } from "../renderer/sprite";
 
+import Line from "../renderer/Line";
+
 class MovementPath {
   constructor(ship, scene, terrain, ghost) {
     this.ship = ship;
@@ -14,7 +16,7 @@ class MovementPath {
     this.terrain = terrain;
     this.ghost = ghost;
 
-    this.color = new THREE.Color(132 / 255, 165 / 255, 206 / 255);
+    this.color = new THREE.Color(39 / 255, 196 / 255, 39 / 255); //new THREE.Color(132 / 255, 165 / 255, 206 / 255);
 
     this.objects = [];
 
@@ -46,13 +48,14 @@ class MovementPath {
     const end = position.roundToHexCenter();
 
     const line = createMovementLine(
+      this.scene,
       start,
       middle.equals(end) ? end : middle,
       this.color,
-      0.5
+      0.2,
+      this.ghost.shipZ
     );
 
-    this.scene.add(line.mesh);
     this.objects.push(line);
 
     if (!middle.equals(end)) {
@@ -65,13 +68,13 @@ class MovementPath {
       this.objects.push(dot);
 
       const line2 = createMovementLine(
+        this.scene,
         middle,
         end,
         new THREE.Color(100 / 255, 100 / 255, 255 / 255),
         0.5
       );
 
-      this.scene.add(line2.mesh);
       this.objects.push(line2);
     }
 
@@ -88,21 +91,19 @@ const createMovementMiddleStep = (position, color) => {
   return circle;
 };
 
-const createMovementLine = (position, target, color, opacity = 0.8) => {
-  return new LineSprite(
-    getPointBetweenInDistance(
-      position,
-      target,
-      coordinateConverter.getHexDistance() * 0.45,
-      true
-    ),
-    getPointBetweenInDistance(
-      target,
-      position,
-      coordinateConverter.getHexDistance() * 0.45,
-      true
-    ),
-    4,
+const createMovementLine = (
+  scene,
+  position,
+  target,
+  color,
+  opacity = 0.8,
+  z
+) => {
+  return new Line(
+    scene,
+    { x: position.x, y: position.y, z },
+    { x: target.x, y: target.y, z },
+    10,
     color,
     opacity
   );

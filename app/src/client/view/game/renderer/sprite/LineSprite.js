@@ -1,5 +1,9 @@
 import * as THREE from "three";
 
+import { loadObject } from "../../utils/objectLoader";
+
+const hexagonMesh = null;
+
 class LineSprite {
   constructor(start, end, lineWidth, color, opacity, args) {
     if (!args) {
@@ -31,6 +35,14 @@ class LineSprite {
       this.lineWidth,
       this.material
     );
+  }
+
+  async getGeometry() {
+    if (!hexagonMesh) {
+      hexagonMesh = await loadObject("/img/3d/line/scene.gltf");
+    }
+
+    return hexagonMesh;
   }
 
   create(pointX, pointY, lineWidth, material) {

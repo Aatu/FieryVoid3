@@ -2,6 +2,8 @@ import * as THREE from "three";
 import HexGridRenderer from "./renderer/hexgrid/HexGridRender";
 import StarField from "./terrain/StarField";
 import { ZOOM_MAX, ZOOM_MIN } from "../../../model/gameConfig";
+import Line from "../game/renderer/Line";
+import LineSprite from "../game/renderer/sprite/LineSprite";
 
 window.THREE = THREE;
 
@@ -96,6 +98,34 @@ class GameScene {
     const directionalLight4 = new THREE.DirectionalLight(0x470000, 0.5);
     directionalLight4.position.set(0, -1, 1);
     this.scene.add(directionalLight4);
+
+    /*
+    const line = new Line(
+      this.scene,
+      { x: 406.5864317029974, y: 534.742785792575, z: 0 },
+      { x: 567.692147554496, y: 627.757214207425, z: 0 },
+      2,
+      new THREE.Color(1, 0, 0)
+    );
+
+    new Line(
+      this.scene,
+      { x: 0, y: 0, z: 0 },
+      { x: 0, y: 0, z: 100 },
+      2,
+      new THREE.Color(1, 0, 0)
+    );
+
+    */
+    /*
+    const line2 = new Line(
+      { x: 0, y: 0, z: 0 },
+      { x: 0, y: 2000, z: 0 },
+      10,
+      new THREE.Color(1, 0, 0)
+    );
+    this.scene.add(line2.mesh);
+    */
 
     /*
     const helper = new THREE.DirectionalLightHelper(directionalLight4, 5);

@@ -16,6 +16,8 @@ import {
   DottedCircleSprite
 } from "../sprite";
 
+import Line from "../Line";
+
 const COLOR_MINE = new THREE.Color(39 / 255, 196 / 255, 39 / 255);
 const COLOR_ENEMY = new THREE.Color(255 / 255, 40 / 255, 40 / 255);
 
@@ -82,14 +84,14 @@ class ShipObject {
     }
 
     const opacity = 0.5;
-    this.line = new LineSprite(
+    this.line = new Line(
+      this.mesh,
       { x: 0, y: 0, z: 1 },
       { x: 0, y: 0, z: this.defaultHeight },
       1,
       new THREE.Color(1, 1, 1),
       opacity
     );
-    this.mesh.add(this.line.mesh);
 
     this.shipSelectedSprite = new DottedCircleSprite(
       { width: this.overlaySpriteSize, height: this.overlaySpriteSize },

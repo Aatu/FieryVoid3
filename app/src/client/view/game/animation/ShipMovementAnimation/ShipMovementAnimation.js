@@ -7,7 +7,6 @@ class ShipMovementAnimation extends Animation {
   constructor(shipIcon, moves) {
     super();
 
-    console.log("ShipMovementAnimation, moves", moves);
     this.shipIcon = shipIcon;
     this.moves = moves;
 
