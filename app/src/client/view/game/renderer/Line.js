@@ -87,12 +87,7 @@ class Line {
       this.mesh.geometry.addAttribute("color", this.colorAttribute);
     } else {
       for (let i = 0; i < 14; i++) {
-        this.offsetAttribute.setXYZ(
-          i,
-          this.color.r,
-          this.color.g,
-          this.color.b
-        );
+        this.colorAttribute.setXYZ(i, this.color.r, this.color.g, this.color.b);
       }
     }
 

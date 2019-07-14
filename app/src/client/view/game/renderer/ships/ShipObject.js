@@ -435,10 +435,10 @@ class ShipObject {
 
     if (mine) {
       this.forceEmissive(new THREE.Color(39 / 255, 196 / 255, 39 / 255));
-      this.line.setOverlayColor(new THREE.Color(39 / 255, 196 / 255, 39 / 255));
+      this.line.setColor(new THREE.Color(39 / 255, 196 / 255, 39 / 255));
     } else {
       this.forceEmissive(new THREE.Color(196 / 255, 39 / 255, 39 / 255));
-      this.line.setOverlayColor(new THREE.Color(196 / 255, 39 / 255, 39 / 255));
+      this.line.setColor(new THREE.Color(196 / 255, 39 / 255, 39 / 255));
     }
   }
 
