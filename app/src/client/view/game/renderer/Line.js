@@ -99,7 +99,7 @@ class Line {
       }
       this.pulseAttribute = new THREE.BufferAttribute(
         new Float32Array(pulses),
-        1
+        2
       ).setDynamic(true);
       this.mesh.geometry.addAttribute("pulse", this.pulseAttribute);
     } else {

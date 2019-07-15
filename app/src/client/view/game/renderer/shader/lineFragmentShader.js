@@ -9,7 +9,7 @@ const lineFragmentShader = `
 
     vec4 getPulse(vec4 color) {
         float pulseAmount = vPulse.x;
-        float pulseSpeed = 1.0; //vPulse.y;
+        float pulseSpeed = vPulse.y;
 
         if (pulseAmount == 0.0 || pulseSpeed == 0.0) {
             return color;
@@ -33,7 +33,7 @@ const lineFragmentShader = `
     }
 
     vec4 blendSides(vec4 color) {
-        float treshold = 0.2;
+        float treshold = 0.4;
         if (vUv.x < treshold) {
             color.a *= vUv.x * 1.0 / treshold;
         } else if (vUv.x > 1.0 - treshold) {
