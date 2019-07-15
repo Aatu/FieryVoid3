@@ -1,10 +1,11 @@
 import MovementPath from "./MovementPath";
 
 class MovementPathService {
-  constructor(scene, shipIconContainer) {
+  constructor(scene, shipIconContainer, currentUser) {
     this.scene = scene;
     this.shipIconContainer = shipIconContainer;
     this.terrain = null;
+    this.currentUser = currentUser;
 
     this.paths = [];
   }
@@ -56,7 +57,8 @@ class MovementPathService {
       ship,
       this.scene,
       this.terrain,
-      path.ghost
+      path.ghost,
+      ship.player.is(this.currentUser)
     );
   }
 }

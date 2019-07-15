@@ -10,13 +10,17 @@ import { CircleSprite, LineSprite, ShipFacingSprite } from "../renderer/sprite";
 import Line from "../renderer/Line";
 
 class MovementPath {
-  constructor(ship, scene, terrain, ghost) {
+  constructor(ship, scene, terrain, ghost, mine) {
     this.ship = ship;
     this.scene = scene;
     this.terrain = terrain;
     this.ghost = ghost;
 
-    this.color = new THREE.Color(39 / 255, 196 / 255, 39 / 255); //new THREE.Color(132 / 255, 165 / 255, 206 / 255);
+    this.color = mine
+      ? new THREE.Color(39 / 255, 196 / 255, 39 / 255)
+      : new THREE.Color(196 / 255, 39 / 255, 39 / 255);
+
+    //this.color = new THREE.Color(19 / 255, 96 / 255, 19 / 255);
 
     this.objects = [];
 
@@ -99,14 +103,15 @@ const createMovementLine = (
   opacity = 0.8,
   z
 ) => {
-  return new Line(
-    scene,
-    { x: position.x, y: position.y, z },
-    { x: target.x, y: target.y, z },
-    10,
+  return new Line(scene, {
+    start: { x: position.x, y: position.y, z },
+    end: { x: target.x, y: target.y, z },
+    width: 10,
     color,
-    opacity
-  );
+    opacity,
+    pulseAmount: 1,
+    dashSize: 15
+  });
 };
 
 const createMovementFacing = (ghost, facing, target) => {

@@ -10,14 +10,15 @@ const baseMaterial = new THREE.ShaderMaterial({
   vertexShader: lineVertexShader,
   fragmentShader: lineFragmentShader,
   transparent: true,
-  depthWrite: false
+  depthWrite: false,
+  //depthTest: false,
+  side: THREE.DoubleSide,
+  blending: THREE.AdditiveBlending
 });
 
-/*
 const uniforms = {
-  color: { type: "v3", value: new THREE.Color(0, 1, 0) }
+  time: { type: "f", value: 0.0 }
 };
-
 
 baseMaterial.uniforms = uniforms;
 /*
@@ -26,31 +27,44 @@ const baseMaterial = new THREE.MeshBasicMaterial({
 });
 */
 
-const meshes = [];
+const animate = () => {
+  const now = Date.now();
+  baseMaterial.uniforms.time.value = (now % 1000) * 0.001;
+  baseMaterial.needsUpdate = true;
+  requestAnimationFrame(animate);
+};
+
+const verticeAmount = 16;
+
+animate();
 
 class Line {
-  constructor(scene, start, end, lineWidth, color, opacity, args) {
+  constructor(scene, args = {}) {
     if (!args) {
       args = {};
     }
 
     this.scene = scene;
     this.mesh = null;
-    this.start = start;
-    this.end = end;
-    this.lineWidth = lineWidth || 10;
+    this.start = args.start;
+    this.end = args.end;
+    this.width = args.width || 10;
+    this.pulseAmount = args.pulseAmount || 0;
+    this.pulseSpeed = args.pulseSpeed || 1;
+    this.dashSize = args.dashSize || 0;
+    this.length = new THREE.Vector3().subVectors(this.start, this.end).length();
 
-    this.color = color;
-    this.opacity = opacity;
+    this.color = args.color;
+    this.opacity = args.opacity;
 
     this.currentRotationMatrix = null;
 
-    this.create(this.start, this.end, this.lineWidth);
+    this.create(this.start, this.end, this.width);
   }
 
   async getGeometry() {
     if (!hexagonMesh) {
-      const scene = await loadObject("/img/3d/line/scene.gltf");
+      const scene = await loadObject("/img/3d/line2/scene.gltf");
       hexagonMesh = scene.children[0];
       hexagonMesh.rotation.set(
         hexagonMesh.rotation.x + degreeToRadian(90),
@@ -68,16 +82,62 @@ class Line {
     mesh = mesh.clone();
     mesh.geometry = mesh.geometry.clone();
     //mesh.material = baseMaterial.clone();
-    mesh.scale.set(width / 2, width / 2, height / 2);
+    mesh.scale.set(width, width, height);
 
     return mesh;
+  }
+
+  setPulse(amount, speed = 1) {
+    this.pulseAmount = amount;
+    this.pulseSpeed = speed;
+
+    console.log(this.pulseAmount, this.pulseSpeed);
+    if (!this.pulseAttribute) {
+      const pulses = [];
+      for (let i = 0; i < verticeAmount; i++) {
+        pulses.push(this.pulseAmount, this.pulseSpeed);
+      }
+      this.pulseAttribute = new THREE.BufferAttribute(
+        new Float32Array(pulses),
+        1
+      ).setDynamic(true);
+      this.mesh.geometry.addAttribute("pulse", this.pulseAttribute);
+    } else {
+      for (let i = 0; i < verticeAmount; i++) {
+        this.pulseAttribute.setXY(i, this.pulseAmount, this.pulseSpeed);
+      }
+    }
+
+    this.dashAttribute.needsUpdate = true;
+  }
+
+  setDashed(dashSize) {
+    this.dashRatio = dashSize / this.length;
+
+    if (!this.dashAttribute) {
+      const dashes = [];
+      for (let i = 0; i < verticeAmount; i++) {
+        dashes.push(this.dashRatio);
+      }
+      this.dashAttribute = new THREE.BufferAttribute(
+        new Float32Array(dashes),
+        1
+      ).setDynamic(true);
+      this.mesh.geometry.addAttribute("dashRatio", this.dashAttribute);
+    } else {
+      for (let i = 0; i < verticeAmount; i++) {
+        this.dashAttribute.setX(i, this.dashAttribute);
+      }
+    }
+
+    this.dashAttribute.needsUpdate = true;
   }
 
   setColor(color) {
     this.color = color;
     if (!this.colorAttribute) {
       const colors = [];
-      for (let i = 0; i < 14; i++) {
+      for (let i = 0; i < verticeAmount; i++) {
         colors.push(this.color.r, this.color.g, this.color.b);
       }
       this.colorAttribute = new THREE.BufferAttribute(
@@ -86,7 +146,7 @@ class Line {
       ).setDynamic(true);
       this.mesh.geometry.addAttribute("color", this.colorAttribute);
     } else {
-      for (let i = 0; i < 14; i++) {
+      for (let i = 0; i < verticeAmount; i++) {
         this.colorAttribute.setXYZ(i, this.color.r, this.color.g, this.color.b);
       }
     }
@@ -98,7 +158,7 @@ class Line {
     this.opacity = opacity;
     if (!this.opacityAttribute) {
       const opacitys = [];
-      for (let i = 0; i < 14; i++) {
+      for (let i = 0; i < verticeAmount; i++) {
         opacitys.push(opacity);
       }
       this.opacityAttribute = new THREE.BufferAttribute(
@@ -107,7 +167,7 @@ class Line {
       ).setDynamic(true);
       this.mesh.geometry.addAttribute("opacity", this.opacityAttribute);
     } else {
-      for (let i = 0; i < 14; i++) {
+      for (let i = 0; i < verticeAmount; i++) {
         this.opacityAttribute.setX(i, this.opacity);
       }
     }
@@ -126,8 +186,7 @@ class Line {
   }
 
   async create(pointX, pointY, lineWidth) {
-    const direction = new THREE.Vector3().subVectors(pointY, pointX);
-    const mesh = await this.createMesh(lineWidth, direction.length());
+    const mesh = await this.createMesh(lineWidth, this.length);
     const orientation = this.getOrientation(pointX, pointY);
 
     mesh.applyMatrix(orientation);
@@ -141,6 +200,8 @@ class Line {
     this.mesh = mesh;
     this.setColor(this.color);
     this.setOpacity(this.opacity);
+    this.setDashed(this.dashSize);
+    this.setPulse(this.pulseAmount, this.pulseSpeed);
   }
 
   updateMesh(pointX, pointY, lineWidth, mesh) {
@@ -161,8 +222,8 @@ class Line {
   }
 
   update(start, end, lineWidth) {
-    lineWidth = lineWidth || this.lineWidth;
-    this.lineWidth = lineWidth;
+    lineWidth = lineWidth || this.width;
+    this.width = lineWidth;
     this.start = start;
     this.end = end;
     //this.updateMesh(start, end, lineWidth, this.mesh);
@@ -170,7 +231,7 @@ class Line {
   }
 
   setLineWidth(lineWidth) {
-    this.lineWidth = lineWidth;
+    this.width = lineWidth;
     //this.updateMesh(this.start, this.end, this.lineWidth, this.mesh);
     //this.mesh.rotation.setFromVector3({x: 0, y: 0, z: 0});
   }

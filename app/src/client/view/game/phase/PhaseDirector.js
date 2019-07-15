@@ -48,7 +48,8 @@ class PhaseDirector {
 
     this.movementPathService = new MovementPathService(
       scene,
-      this.shipIconContainer
+      this.shipIconContainer,
+      this.currentUser
     );
     this.terrainRenderer = new TerrainRenderer(scene);
 

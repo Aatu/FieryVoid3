@@ -84,14 +84,13 @@ class ShipObject {
     }
 
     const opacity = 0.5;
-    this.line = new Line(
-      this.mesh,
-      { x: 0, y: 0, z: 1 },
-      { x: 0, y: 0, z: this.defaultHeight },
-      1,
-      new THREE.Color(1, 1, 1),
+    this.line = new Line(this.mesh, {
+      start: { x: 0, y: 0, z: 1 },
+      end: { x: 0, y: 0, z: this.defaultHeight },
+      width: 1,
+      color: new THREE.Color(1, 1, 1),
       opacity
-    );
+    });
 
     this.shipSelectedSprite = new DottedCircleSprite(
       { width: this.overlaySpriteSize, height: this.overlaySpriteSize },
