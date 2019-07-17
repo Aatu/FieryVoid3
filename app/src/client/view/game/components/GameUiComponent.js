@@ -5,6 +5,7 @@ import ShipTooltip from "../ui/shipTooltip";
 import TurnHeader from "../ui/TurnHeader";
 import GameMovement from "../ui/movement/GameMovement";
 import DeploymentMovement from "../ui/movement/DeploymentMovement";
+import GameUiModeButtons from "../ui/GameUiModeButtons";
 import * as gamePhases from "../../../../model/game/gamePhases";
 
 class GameUiComponent extends React.Component {
@@ -14,6 +15,12 @@ class GameUiComponent extends React.Component {
     if (!uiState) {
       return null;
     }
+
+    console.log(
+      "render GameUiComponent",
+      uiState.state.gameUiModeButtons,
+      uiState.state.gameUiMode
+    );
 
     return (
       <>
@@ -65,6 +72,10 @@ class GameUiComponent extends React.Component {
           uiState.state.shipMovement.type === "game" && (
             <GameMovement {...uiState.state.shipMovement} uiState={uiState} />
           )}
+
+        {uiState.state.gameUiModeButtons && (
+          <GameUiModeButtons uiState={uiState} {...uiState.state.gameUiMode} />
+        )}
       </>
     );
   }

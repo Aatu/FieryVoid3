@@ -1,4 +1,5 @@
 import ShipWindowManager from "../ui/shipWindow/ShipWindowManager";
+import * as gameUiModes from "./gameUiModes";
 
 class UIState {
   constructor() {
@@ -20,9 +21,29 @@ class UIState {
       shipMovement: null,
       shipTooltip: [],
       turnReady: false,
-      shipTooltipMenuProvider: null
+      shipTooltipMenuProvider: null,
+      gameUiMode: {},
+      gameUiModeButtons: false
     };
 
+    this.state.gameUiMode[gameUiModes.EW] = false;
+    this.state.gameUiMode[gameUiModes.WEAPONS] = false;
+    this.state.gameUiMode[gameUiModes.MOVEMENT] = false;
+
+    this.updateState();
+  }
+
+  hasGameUiMode(value) {
+    return this.state.gameUiMode[value];
+  }
+
+  toggleGameUiMode(value) {
+    this.state.gameUiMode[value] = !this.state.gameUiMode[value];
+    this.updateState();
+  }
+
+  showUiModeButtons(value) {
+    this.state.gameUiModeButtons = value;
     this.updateState();
   }
 
@@ -98,6 +119,7 @@ class UIState {
     }
 
     this.setState({ uiState: this });
+    this.customEvent("uiStateChanged");
   }
 
   setTooltipMenuProvider(callBack) {
@@ -166,8 +188,8 @@ class UIState {
     this.updateState();
   }
 
-  shipMovementChanged(ship) {
-    this.customEvent("shipMovementChanged", ship);
+  shipStateChanged(ship) {
+    this.customEvent("shipStateChanged", ship);
   }
 
   isSelectedSystem(system) {

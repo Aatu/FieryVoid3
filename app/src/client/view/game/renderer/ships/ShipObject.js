@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { cloneObject } from "../../utils/objectLoader";
-import GhostShipObject from "./GhostShipObject";
 import * as shipObjects from ".";
+import Vector from "../../../../../model/utils/Vector.mjs";
 
 import {
   degreeToRadian,
@@ -60,6 +60,7 @@ class ShipObject {
 
     this.ghost = false;
     this.forcedEmissiveColor = null;
+    this.opacity = 1;
 
     this.consumeShipdata(this.ship);
   }
@@ -151,7 +152,7 @@ class ShipObject {
   }
 
   getPosition() {
-    return this.position;
+    return new Vector(this.position);
   }
 
   async setRotation(x, y, z) {
@@ -171,6 +172,7 @@ class ShipObject {
 
   async setOpacity(opacity) {
     await this.isShipObjectLoaded;
+    this.opacity = opacity;
     this.replaceOpacity(opacity);
   }
 
@@ -362,6 +364,17 @@ class ShipObject {
 
       child.material.transparent = true;
       child.material.opacity = opacity;
+      child.material.needsUpdate = true;
+    });
+  }
+
+  revertOpacity() {
+    this.shipObject.traverse(child => {
+      if (!child.isMesh) {
+        return;
+      }
+
+      child.material.opacity = this.opacity;
       child.material.needsUpdate = true;
     });
   }

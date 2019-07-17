@@ -92,7 +92,7 @@ class MovementService {
     const newfacing = addToHexFacing(deployMove.facing, step);
     deployMove.facing = newfacing;
     ship.movement.replaceDeployMove(deployMove);
-    this.shipMovementChanged(ship);
+    this.shipStateChanged(ship);
   }
 
   getOverChannel(ship) {
@@ -119,8 +119,8 @@ class MovementService {
     return new hexagon.Offset(move.position);
   }
 
-  shipMovementChanged(ship) {
-    this.phaseDirector.relayEvent("shipMovementChanged", ship);
+  shipStateChanged(ship) {
+    this.phaseDirector.relayEvent("shipStateChanged", ship);
   }
 
   canThrust(ship, direction) {

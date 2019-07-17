@@ -24,7 +24,7 @@ class ShowShipObjects extends AnimationUiStrategy {
     });
   }
 
-  shipMovementChanged(ship) {
+  shipStateChanged(ship) {
     const animation = this.animations.find(
       animation => animation.ship === ship
     );

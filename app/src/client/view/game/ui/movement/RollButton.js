@@ -5,10 +5,10 @@ import { Roll } from "../../../../styled/icon";
 
 const Container = styled.div`
   position: absolute;
-  width: 50px;
-  height: 50px;
-  left: -25px;
-  top: -153px;
+  width: 32px;
+  height: 32px;
+  left: -16px;
+  top: -65px;
   ${Clickable}
 `;
 

@@ -57,6 +57,8 @@ class Fulcrum extends Ship {
       new systems.Thruster({ id: 3, hitpoints: 10, armor: 3 }, 5, 3),
       new systems.Thruster({ id: 4, hitpoints: 10, armor: 3 }, 5, 3),
 
+      new systems.EwArray({ id: 12, hitpoints: 30, armor: 4 }, 8),
+
       new systems.Engine({ id: 5, hitpoints: 10, armor: 3 }, 12, 6, 2),
       new systems.Engine({ id: 6, hitpoints: 10, armor: 3 }, 12, 6, 2),
       new systems.Reactor({ id: 7, hitpoints: 10, armor: 3 }, 20),

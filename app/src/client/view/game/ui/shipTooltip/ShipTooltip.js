@@ -1,7 +1,6 @@
 import * as React from "react";
 import styled from "styled-components";
 import GamePositionComponent from "../GamePositionComponent";
-import ShipTooltipMenu from "./ShipTooltipMenu";
 import ShipWindow from "../shipWindow/ShipWindow";
 import {
   Tooltip,
@@ -16,9 +15,8 @@ const InfoHeader = styled(TooltipHeader)`
 
 const ShipTooltipContainer = styled(Tooltip)`
   width: 300px;
-  margin-left: -50%;
   text-align: left;
-  opacity: 0.8;
+  opacity: 0.95;
   position: relative;
 `;
 
@@ -35,13 +33,6 @@ export const Header = styled.span`
 
 const InfoValue = styled.span`
   color: ${colors.lightBlue};
-`;
-
-const TestDiv = styled.div`
-  width: 40px;
-  height: 40px;
-  background-color: red;
-  margin-left: -50%;
 `;
 
 class ShipTooltip extends React.Component {
@@ -63,6 +54,7 @@ class ShipTooltip extends React.Component {
         getPosition={getPosition}
         uiState={uiState}
         marginTop={20}
+        marginLeft={-150}
       >
         <ShipTooltipContainer>
           <InfoHeader>{ship.name}</InfoHeader>

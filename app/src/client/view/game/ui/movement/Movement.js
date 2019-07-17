@@ -1,11 +1,10 @@
 import * as React from "react";
 import styled, { css } from "styled-components";
-import GamePositionComponent from "../GamePositionComponent";
 
 const Container = styled.div`
   position: absolute;
   left: 50%;
-  bottom: 200px;
+  bottom: 150px;
   opacity: 0.85;
   user-select: none;
 `;
@@ -35,15 +34,15 @@ const TextContainer = styled.div`
 
 const Power = styled.div`
   ${Text}
-  font-size: 60px;
+  font-size: 36px;
   font-weight: bold;
   display: flex;
   justify-content: center;
   align-items: center;
   position: absolute;
-  width: 100px;
+  width: 50px;
   height: 60px;
-  left: -50px;
+  left: -25px;
   bottom: -30px;
 `;
 

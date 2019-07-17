@@ -5,10 +5,10 @@ import { Cancel } from "../../../../styled/icon";
 
 const Container = styled.div`
   position: absolute;
-  width: 50px;
-  height: 50px;
+  width: 32px;
+  height: 32px;
   left: 125px;
-  top: 103px;
+  top: 53px;
   ${Clickable}
 `;
 

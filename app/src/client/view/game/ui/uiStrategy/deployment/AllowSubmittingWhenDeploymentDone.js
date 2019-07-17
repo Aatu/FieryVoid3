@@ -11,7 +11,7 @@ class AllowSubmittingWhenDeploymentDone extends UiStrategy {
     this.checkDeployment();
   }
 
-  shipMovementChanged() {
+  shipStateChanged() {
     this.checkDeployment();
   }
 

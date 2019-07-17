@@ -3,8 +3,8 @@ import { Clickable } from "../../../../styled";
 
 const Container = styled.div`
   position: absolute;
-  width: 50px;
-  height: 50px;
+  width: 32px;
+  height: 32px;
   display: flex;
   justify-content: center;
   align-items: center;

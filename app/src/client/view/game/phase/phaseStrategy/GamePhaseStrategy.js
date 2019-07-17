@@ -9,7 +9,12 @@ import {
   SelectFirstActiveShip,
   AllShipsMovementPaths,
   AllowSubmittingOnValidGameState,
-  GameShipTooltipMenuStrategy
+  GameShipTooltipMenuStrategy,
+  ShowUiModeButtons,
+  OwnedShipEw,
+  MouseOverShowsMovementPath,
+  MouseOverShowsElectronicWarfare,
+  ShipClickSelectsShip
 } from "../../ui/uiStrategy";
 
 class GamePhaseStrategy extends PhaseStrategy {
@@ -17,16 +22,21 @@ class GamePhaseStrategy extends PhaseStrategy {
     super(services);
 
     this.strategies = [
-      new RightClickShowsShipWindow(),
+      new ShipClickSelectsShip(),
+      //new RightClickShowsShipWindow(),
       new MouseOverHighlightsShip(),
       new ShowShipObjects(),
       new MouseOverShowsShipTooltip(),
       new SelectFirstActiveShip(),
       new HighlightSelectedShip(),
       new SelectedShipMovementUi(),
+      //new MouseOverShowsMovementPath(),
       new AllShipsMovementPaths(),
       new AllowSubmittingOnValidGameState(),
-      new GameShipTooltipMenuStrategy()
+      new GameShipTooltipMenuStrategy(),
+      new ShowUiModeButtons(),
+      //new MouseOverShowsElectronicWarfare(),
+      new OwnedShipEw()
     ];
   }
 

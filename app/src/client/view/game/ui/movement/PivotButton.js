@@ -4,12 +4,12 @@ import { Pivot } from "../../../../styled/icon";
 import Container from "./Container";
 
 const ButtonContainer = styled(Container)`
-  left: 55px;
-  top: -25px;
+  left: 25px;
+  top: -16px;
 
   ${props =>
     props.pivotDirection === 1
-      ? "left: -105px;"
+      ? "left: -57px;"
       : "transform: rotate(-180deg) scaleY(-1);"};
 `;
 

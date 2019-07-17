@@ -12,13 +12,13 @@ const ButtonContainer = styled(Container)`
 
   ${props => `transform: rotate(${props.direction + 90}deg);`}
 
-  ${props => `left: calc(${props.x}px - 25px);`}
-  ${props => `top: calc(${props.y}px - 25px);`}
+  ${props => `left: calc(${props.x}px - 16px);`}
+  ${props => `top: calc(${props.y}px - 16px);`}
 `;
 
 class ThrustButton extends React.Component {
   getPosition(direction) {
-    return getPointInDirection(150, -hexFacingToAngle(direction), 0, 0);
+    return getPointInDirection(75, -hexFacingToAngle(direction), 0, 0);
   }
 
   canThrust() {

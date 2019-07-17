@@ -5,16 +5,16 @@ import { Evade } from "../../../../styled/icon";
 
 const Container = styled.div`
   position: absolute;
-  width: 40px;
-  height: 40px;
-  left: -20px;
-  top: 63px;
+  width: 26px;
+  height: 26px;
+  left: -13px;
+  top: 38px;
   ${Clickable}
 `;
 
 const RotatedContainer = styled(Container)`
   transform: rotate(180deg);
-  top: 113px;
+  top: 68px;
 `;
 
 class EvadeButton extends React.Component {

@@ -53,6 +53,11 @@ class Line {
     this.pulseSpeed = args.pulseSpeed || 1;
     this.dashSize = args.dashSize || 0;
     this.length = new THREE.Vector3().subVectors(this.start, this.end).length();
+    this.type = args.type || "laser";
+
+    this.ready = new Promise(resolve => {
+      this.resolveReady = resolve;
+    });
 
     this.color = args.color;
     this.opacity = args.opacity;
@@ -87,14 +92,22 @@ class Line {
     return mesh;
   }
 
+  getVertexAmount() {
+    switch (this.type) {
+      case "cylinder":
+        return 14;
+      case "laser":
+        return 16;
+    }
+  }
+
   setPulse(amount, speed = 1) {
     this.pulseAmount = amount;
     this.pulseSpeed = speed;
 
-    console.log(this.pulseAmount, this.pulseSpeed);
     if (!this.pulseAttribute) {
       const pulses = [];
-      for (let i = 0; i < verticeAmount; i++) {
+      for (let i = 0; i < this.getVertexAmount(); i++) {
         pulses.push(this.pulseAmount, this.pulseSpeed);
       }
       this.pulseAttribute = new THREE.BufferAttribute(
@@ -103,7 +116,7 @@ class Line {
       ).setDynamic(true);
       this.mesh.geometry.addAttribute("pulse", this.pulseAttribute);
     } else {
-      for (let i = 0; i < verticeAmount; i++) {
+      for (let i = 0; i < this.getVertexAmount(); i++) {
         this.pulseAttribute.setXY(i, this.pulseAmount, this.pulseSpeed);
       }
     }
@@ -116,7 +129,7 @@ class Line {
 
     if (!this.dashAttribute) {
       const dashes = [];
-      for (let i = 0; i < verticeAmount; i++) {
+      for (let i = 0; i < this.getVertexAmount(); i++) {
         dashes.push(this.dashRatio);
       }
       this.dashAttribute = new THREE.BufferAttribute(
@@ -125,7 +138,7 @@ class Line {
       ).setDynamic(true);
       this.mesh.geometry.addAttribute("dashRatio", this.dashAttribute);
     } else {
-      for (let i = 0; i < verticeAmount; i++) {
+      for (let i = 0; i < this.getVertexAmount(); i++) {
         this.dashAttribute.setX(i, this.dashAttribute);
       }
     }
@@ -137,7 +150,7 @@ class Line {
     this.color = color;
     if (!this.colorAttribute) {
       const colors = [];
-      for (let i = 0; i < verticeAmount; i++) {
+      for (let i = 0; i < this.getVertexAmount(); i++) {
         colors.push(this.color.r, this.color.g, this.color.b);
       }
       this.colorAttribute = new THREE.BufferAttribute(
@@ -146,7 +159,7 @@ class Line {
       ).setDynamic(true);
       this.mesh.geometry.addAttribute("color", this.colorAttribute);
     } else {
-      for (let i = 0; i < verticeAmount; i++) {
+      for (let i = 0; i < this.getVertexAmount(); i++) {
         this.colorAttribute.setXYZ(i, this.color.r, this.color.g, this.color.b);
       }
     }
@@ -158,7 +171,7 @@ class Line {
     this.opacity = opacity;
     if (!this.opacityAttribute) {
       const opacitys = [];
-      for (let i = 0; i < verticeAmount; i++) {
+      for (let i = 0; i < this.getVertexAmount(); i++) {
         opacitys.push(opacity);
       }
       this.opacityAttribute = new THREE.BufferAttribute(
@@ -167,7 +180,7 @@ class Line {
       ).setDynamic(true);
       this.mesh.geometry.addAttribute("opacity", this.opacityAttribute);
     } else {
-      for (let i = 0; i < verticeAmount; i++) {
+      for (let i = 0; i < this.getVertexAmount(); i++) {
         this.opacityAttribute.setX(i, this.opacity);
       }
     }
@@ -202,55 +215,61 @@ class Line {
     this.setOpacity(this.opacity);
     this.setDashed(this.dashSize);
     this.setPulse(this.pulseAmount, this.pulseSpeed);
+    this.resolveReady(true);
   }
 
-  updateMesh(pointX, pointY, lineWidth, mesh) {
-    const direction = new THREE.Vector3().subVectors(pointY, pointX);
-    const orientation = this.getOrientation(pointX, pointY);
+  updateMesh() {
+    const orientation = this.getOrientation(this.start, this.end);
 
-    mesh.applyMatrix(
+    this.mesh.applyMatrix(
       new THREE.Matrix4().getInverse(this.currentRotationMatrix)
     );
 
-    mesh.scale.set(lineWidth / 2, lineWidth / 2, direction.length() / 2);
+    this.mesh.scale.set(this.width, this.width, this.length);
 
-    mesh.applyMatrix(orientation);
+    this.mesh.applyMatrix(orientation);
     this.currentRotationMatrix = orientation;
-    mesh.position.x = (pointY.x + pointX.x) / 2;
-    mesh.position.y = (pointY.y + pointX.y) / 2;
-    mesh.position.z = (pointY.z + pointX.z) / 2;
+    this.mesh.position.x = (this.end.x + this.start.x) / 2;
+    this.mesh.position.y = (this.end.y + this.start.y) / 2;
+    this.mesh.position.z = (this.end.z + this.start.z) / 2;
   }
 
   update(start, end, lineWidth) {
-    lineWidth = lineWidth || this.width;
     this.width = lineWidth;
     this.start = start;
     this.end = end;
-    //this.updateMesh(start, end, lineWidth, this.mesh);
-    //this.mesh.rotation.setFromVector3({x: 0, y: 0, z: 0});
+    this.length = new THREE.Vector3().subVectors(this.start, this.end).length();
+    this.updateMesh();
+  }
+
+  setEnd(end) {
+    this.update(this.start, end, this.width);
   }
 
   setLineWidth(lineWidth) {
     this.width = lineWidth;
-    //this.updateMesh(this.start, this.end, this.lineWidth, this.mesh);
-    //this.mesh.rotation.setFromVector3({x: 0, y: 0, z: 0});
+
+    this.mesh.scale.set(this.width, this.width, this.length);
   }
 
   multiplyOpacity(m) {
     this.setOpacity(this.opacity * m);
   }
 
-  hide() {
+  async hide() {
+    await this.ready;
     this.mesh.visible = false;
     return this;
   }
 
-  show() {
+  async show() {
+    await this.ready;
     this.mesh.visible = true;
     return this;
   }
 
-  destroy() {
+  async destroy() {
+    await this.ready;
     this.scene.remove(this.mesh);
   }
 }

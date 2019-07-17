@@ -7,6 +7,8 @@ class GameShipTooltipMenu extends React.PureComponent {
     const { ship, uiState } = this.props;
     const { currentUser } = uiState.services;
 
+    const selectShip = uiState.getSelectedShip();
+
     return (
       <TooltipMenu>
         {ship.player.isUsers(currentUser) && !uiState.isSelected(ship) && (
@@ -16,15 +18,28 @@ class GameShipTooltipMenu extends React.PureComponent {
           />
         )}
 
-        {!ship.player.isUsers(currentUser) && uiState.getSelectedShip() && (
+        {!ship.player.isUsers(currentUser) && selectShip && (
           <>
             <TooltipButton
-              img="/img/addOEW.png"
-              onClick={() => uiState.selectShip(ship)}
-            />
-            <TooltipButton
               img="/img/removeOEW.png"
-              onClick={() => uiState.selectShip(ship)}
+              disabled={
+                !selectShip.electronicWarfare.canAssignOffensiveEw(ship, -1)
+              }
+              onClick={() => {
+                selectShip.electronicWarfare.assignOffensiveEw(ship, -1);
+                uiState.shipStateChanged(selectShip);
+              }}
+            />
+
+            <TooltipButton
+              img="/img/addOEW.png"
+              disabled={
+                !selectShip.electronicWarfare.canAssignOffensiveEw(ship, 1)
+              }
+              onClick={() => {
+                selectShip.electronicWarfare.assignOffensiveEw(ship, 1);
+                uiState.shipStateChanged(selectShip);
+              }}
             />
           </>
         )}

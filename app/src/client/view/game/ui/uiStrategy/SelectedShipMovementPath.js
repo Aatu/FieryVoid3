@@ -18,11 +18,11 @@ class SelectedShipMovementPath extends UiStrategy {
 
     const ship = uiState.getSelectedShip();
     if (ship) {
-      this.shipMovementChanged(ship);
+      this.shipStateChanged(ship);
     }
   }
 
-  shipMovementChanged(ship) {
+  shipStateChanged(ship) {
     const { shipIconContainer, uiState } = this.services;
 
     if (uiState.getSelectedShip() !== ship || !this.gameData) {
@@ -47,7 +47,7 @@ class SelectedShipMovementPath extends UiStrategy {
     const { uiState } = this.services;
     const ship = uiState.getSelectedShip();
     if (ship) {
-      this.shipMovementChanged(ship);
+      this.shipStateChanged(ship);
     }
 
     console.log("mouseOutShip selected", ship);

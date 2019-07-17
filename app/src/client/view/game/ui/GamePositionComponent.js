@@ -45,8 +45,8 @@ class GamePositionComponent extends React.Component {
   }
 
   render() {
-    const { children } = this.props;
-    const { position, marginTop = 0 } = this.state;
+    const { children, marginTop = 0, marginLeft = 0 } = this.props;
+    const { position } = this.state;
 
     if (!position) {
       return null;
@@ -56,7 +56,7 @@ class GamePositionComponent extends React.Component {
       <Container
         style={{
           top: position.y + marginTop + "px",
-          left: position.x + "px"
+          left: position.x + marginLeft + "px"
         }}
       >
         {children}

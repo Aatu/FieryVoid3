@@ -37,6 +37,10 @@ class ShipElectronicWarfare {
     this.assingEw(ewTypes.EW_OFFENSIVE, target, amount);
   }
 
+  canAssignOffensiveEw(target, amount) {
+    return this.canAssignEw(ewTypes.EW_OFFENSIVE, target, amount);
+  }
+
   getCcEw() {
     return this.getEw(ewTypes.EW_CC, this.ship.id);
   }
@@ -71,8 +75,10 @@ class ShipElectronicWarfare {
     if (target && target instanceof Ship) {
       target = target.id;
     }
+
     const entries = this.getAllEntries();
     entries.push(new ElectronicWarfareEntry(type, target, amount));
+
     this.assignEntries(entries);
   }
 
@@ -90,6 +96,30 @@ class ShipElectronicWarfare {
 
       throw e;
     }
+  }
+
+  getAllOew() {
+    const combined = [];
+
+    this.getEwArrays()
+      .reduce(
+        (all, system) => [...all, ...system.callHandler("getEwEntries")],
+        []
+      )
+      .filter(entry => entry.getType() === ewTypes.EW_OFFENSIVE)
+      .forEach(entry => {
+        const existing = combined.find(
+          combinedEntry => combinedEntry.targetShipId === entry.targetShipId
+        );
+
+        if (existing) {
+          existing.amount += entry.amount;
+        } else {
+          combined.push(entry.clone());
+        }
+      });
+
+    return combined;
   }
 
   getAllEntries() {
@@ -112,26 +142,58 @@ class ShipElectronicWarfare {
   assignEntries(entries, allowIncomplete = false) {
     this.getEwArrays().forEach(system => system.callHandler("resetEw"));
 
-    entries.forEach(entry => {
-      let amount = entry.getAmount();
-      while (amount > 0) {
-        const availableSystems = this.getAvailableSystemsForEntry(entry);
-        if (availableSystems.length === 0) {
-          if (allowIncomplete) {
-            return;
-          } else {
-            throw new UnableToAssignEw("Invalid EW");
-          }
-        }
+    const negativeEntries = entries.filter(entry => entry.getAmount() < 0);
 
-        availableSystems.shift().callHandler("assignEw", {
-          type: entry.type,
-          target: entry.targetShipId,
-          amount: 1
-        });
-        amount--;
+    entries
+      .filter(entry => entry.getAmount() > 0)
+      .map(entry => {
+        negativeEntries
+          .filter(
+            negativeEntry =>
+              negativeEntry.type === entry.type &&
+              negativeEntry.targetShipId === entry.targetShipId
+          )
+          .forEach(negativeEntry => {
+            if (entry.getAmount() >= Math.abs(negativeEntry.getAmount())) {
+              entry.amount += negativeEntry.getAmount();
+              negativeEntry.amount = 0;
+            } else if (
+              Math.abs(negativeEntry.getAmount()) > entry.getAmount()
+            ) {
+              negativeEntry.amount += entry.getAmount();
+              entry.amount = 0;
+            }
+          });
+
+        return entry;
+      })
+      .filter(entry => entry.getAmount() !== 0)
+      .forEach(entry => this.assignPositiveEW(entry, allowIncomplete));
+
+    if (negativeEntries.some(entry => entry.getAmount() !== 0)) {
+      throw new UnableToAssignEw("Invalid EW, negative entries left");
+    }
+  }
+
+  assignPositiveEW(entry, allowIncomplete) {
+    let amount = entry.getAmount();
+    while (amount > 0) {
+      const availableSystems = this.getAvailableSystemsForEntry(entry);
+      if (availableSystems.length === 0) {
+        if (allowIncomplete) {
+          return;
+        } else {
+          throw new UnableToAssignEw("Invalid EW");
+        }
       }
-    });
+
+      availableSystems.shift().callHandler("assignEw", {
+        type: entry.type,
+        target: entry.targetShipId,
+        amount: 1
+      });
+      amount--;
+    }
   }
 
   getAvailableSystemsForEntry(entry) {

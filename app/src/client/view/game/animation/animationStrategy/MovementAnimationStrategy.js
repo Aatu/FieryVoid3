@@ -95,7 +95,7 @@ class MovementAnimationStrategy extends AnimationStrategy {
     });
   }
 
-  shipMovementChanged(ship) {}
+  shipStateChanged(ship) {}
 
   deactivate() {
     if (this.shipIconContainer) {

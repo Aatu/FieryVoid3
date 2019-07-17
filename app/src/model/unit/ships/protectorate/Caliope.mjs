@@ -63,7 +63,8 @@ class Caliope extends Ship {
     this.systems.addPrimarySystem([
       new systems.Engine({ id: 6, hitpoints: 20, armor: 3 }, 12, 6, 2),
       new systems.Reactor({ id: 7, hitpoints: 10, armor: 3 }, 20),
-      new systems.Structure({ id: 11, hitpoints: 30, armor: 4 })
+      new systems.Structure({ id: 11, hitpoints: 30, armor: 4 }),
+      new systems.EwArray({ id: 12, hitpoints: 30, armor: 4 }, 8)
     ]);
 
     this.systems.addStarboardFrontSystem([

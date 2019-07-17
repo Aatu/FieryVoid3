@@ -1,7 +1,7 @@
 import MovementService from "../../../../model/movement/MovementService";
 import PhaseState from "./PhaseState";
 import ShipIconContainer from "../renderer/icon/ShipIconContainer";
-import EWIconContainer from "../renderer/icon/EWIconContainer";
+import ElectronicWarfareIndicatorService from "../renderer/electronicWarfare/ElectronicWarfareIndicatorService";
 import TerrainRenderer from "../renderer/TerrainRenderer";
 import ShipWindowManager from "../ui/shipWindow/ShipWindowManager";
 import MovementPathService from "../movement/MovementPathService";
@@ -20,7 +20,7 @@ class PhaseDirector {
     this.uiState = uiState;
     this.currentUser = currentUser;
     this.shipIconContainer = null;
-    this.ewIconContainer = null;
+    this.electronicWarfareIndicatorService = null;
     this.timeline = [];
 
     this.phaseStrategy = null;
@@ -40,7 +40,11 @@ class PhaseDirector {
   init(scene) {
     this.scene = scene;
     this.shipIconContainer = new ShipIconContainer(scene, this.currentUser);
-    this.ewIconContainer = new EWIconContainer(scene, this.shipIconContainer);
+    this.electronicWarfareIndicatorService = new ElectronicWarfareIndicatorService(
+      scene,
+      this.shipIconContainer,
+      this.currentUser
+    );
     this.shipWindowManager = new ShipWindowManager(
       this.uiState,
       this.movementService
@@ -93,7 +97,6 @@ class PhaseDirector {
 
     this.phaseStrategy.onEvent(name, payload);
     this.shipIconContainer.onEvent(name, payload);
-    this.ewIconContainer.onEvent(name, payload);
   }
 
   commitTurn() {
@@ -146,7 +149,6 @@ class PhaseDirector {
   activatePhaseStrategy(phaseStrategy, gameData) {
     this.shipIconContainer.update(gameData);
     this.movementService.update(gameData, this);
-    this.ewIconContainer.update(gameData, this.shipIconContainer);
     this.movementPathService.update(gameData);
     this.terrainRenderer.update(gameData.terrain);
 
@@ -167,7 +169,7 @@ class PhaseDirector {
     return {
       phaseState: this.phaseState,
       shipIconContainer: this.shipIconContainer,
-      ewIconContainer: this.ewIconContainer,
+      electronicWarfareIndicatorService: this.electronicWarfareIndicatorService,
       scene: this.scene,
       shipWindowManager: this.shipWindowManager,
       movementService: this.movementService,

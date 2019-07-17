@@ -12,8 +12,10 @@ class HighlightSelectedShip extends UiStrategy {
   }
 
   deactivate() {
+    const { shipIconContainer } = this.services;
     if (this.icon) {
       this.icon.revertEmissive();
+      shipIconContainer.getGhostShipIconByShip(this.icon.ship).revertOpacity();
     }
   }
 
@@ -25,16 +27,20 @@ class HighlightSelectedShip extends UiStrategy {
   }
 
   shipDeselected(ship) {
+    const { shipIconContainer } = this.services;
     this.active = true;
     this.activeTime = 0;
 
     if (this.icon) {
       this.icon.revertEmissive();
+      shipIconContainer.getGhostShipIconByShip(this.icon.ship).revertOpacity();
     }
     this.icon = null;
   }
 
   render({ delta }) {
+    const { shipIconContainer } = this.services;
+
     if (!this.active) {
       return;
     }
@@ -42,8 +48,9 @@ class HighlightSelectedShip extends UiStrategy {
     const sineAmplitude = 1;
     const sineFrequency = 200;
 
-    const opacity =
+    let opacity =
       0.5 * Math.sin(this.activeTime / sineFrequency) + sineAmplitude * 0.5;
+    opacity = 0.2 + 0.6 * opacity;
 
     this.icon.replaceEmissive(
       new THREE.Color(
@@ -53,6 +60,9 @@ class HighlightSelectedShip extends UiStrategy {
       )
     );
 
+    shipIconContainer
+      .getGhostShipIconByShip(this.icon.ship)
+      .replaceOpacity(opacity);
     this.activeTime += delta;
   }
 }

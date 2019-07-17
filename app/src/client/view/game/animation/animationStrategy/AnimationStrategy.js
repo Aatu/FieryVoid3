@@ -108,7 +108,7 @@ class AnimationStrategy {
     toRemove.deactivate();
   }
 
-  shipMovementChanged() {}
+  shipStateChanged() {}
 
   updateTotalAnimationTime(paused) {
     if (paused) {

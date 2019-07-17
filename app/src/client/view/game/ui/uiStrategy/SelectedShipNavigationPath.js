@@ -21,7 +21,7 @@ class SelectedShipNavigationPath extends UiStrategy {
     this.show(uiState.getSelectedShip());
   }
 
-  shipMovementChanged() {
+  shipStateChanged() {
     if (this.ship) {
       if (this.path) {
         this.path.remove();

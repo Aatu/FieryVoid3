@@ -26,7 +26,7 @@ class DeployShipOnHexClick extends UiStrategy {
       return;
     }
     movementService.deploy(ship, hex);
-    uiState.shipMovementChanged(ship);
+    uiState.shipStateChanged(ship);
   }
 }
 

@@ -7,6 +7,13 @@ class MouseOverShowsShipTooltip extends UiStrategy {
     this.clickedShip = null;
   }
 
+  shipStateChanged(ship) {
+    const { uiState, shipIconContainer } = this.services;
+    if (this.clickedShip === ship) {
+      uiState.showShipTooltip(shipIconContainer.getByShip(ship), true);
+    }
+  }
+
   deactivate() {
     const { uiState } = this.services;
     if (this.clickedShip) {

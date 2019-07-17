@@ -11,7 +11,6 @@ const ShipWindowContainer = styled.div`
   height: auto;
   opacity: 0.95;
   z-index: 10001;
-  box-shadow: 5px 5px 10px black;
   font-size: 10px;
   color: white;
   font-family: arial;
