@@ -234,7 +234,8 @@ class Line {
     this.mesh.position.z = (this.end.z + this.start.z) / 2;
   }
 
-  update(start, end, lineWidth) {
+  async update(start, end, lineWidth) {
+    await this.ready;
     this.width = lineWidth;
     this.start = start;
     this.end = end;

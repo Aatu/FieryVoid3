@@ -52,17 +52,19 @@ class HighlightSelectedShip extends UiStrategy {
       0.5 * Math.sin(this.activeTime / sineFrequency) + sineAmplitude * 0.5;
     opacity = 0.2 + 0.6 * opacity;
 
-    this.icon.replaceEmissive(
-      new THREE.Color(
-        (39 * opacity) / 255,
-        (196 * opacity) / 255,
-        (39 * opacity) / 255
-      )
-    );
+    const ghost = shipIconContainer.getGhostShipIconByShip(this.icon.ship);
 
-    shipIconContainer
-      .getGhostShipIconByShip(this.icon.ship)
-      .replaceOpacity(opacity);
+    if (ghost.hidden) {
+      this.icon.replaceEmissive(
+        new THREE.Color(
+          (39 * opacity) / 255,
+          (196 * opacity) / 255,
+          (39 * opacity) / 255
+        )
+      );
+    }
+
+    ghost.replaceOpacity(opacity);
     this.activeTime += delta;
   }
 }

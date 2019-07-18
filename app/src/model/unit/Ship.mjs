@@ -121,7 +121,8 @@ class Ship {
     this.movement.removeMovementForOtherTurns(turn);
     this.systems.advanceTurn(turn);
     this.electronicWarfare.activatePlannedElectronicWarfare();
-    this.electronicWarfare.repeatElectonicWarfare();
+    this.electronicWarfare.removeAll();
+    //this.electronicWarfare.repeatElectonicWarfare();
 
     return this;
   }

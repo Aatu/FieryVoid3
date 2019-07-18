@@ -47,12 +47,17 @@ class OwnedShipEw extends UiStrategy {
       currentUser
     } = this.services;
 
+    electronicWarfareIndicatorService.hideAll();
+
     if (uiState.hasGameUiMode(gameUiModes.EW)) {
       this.gameData.ships
         .getUsersShips(currentUser)
         .forEach(ship => electronicWarfareIndicatorService.showForShip(ship));
-    } else {
-      electronicWarfareIndicatorService.hideAll();
+    }
+
+    if (
+      !uiState.hasGameUiMode([gameUiModes.ENEMY_WEAPONS, gameUiModes.WEAPONS])
+    ) {
       const ship = uiState.getSelectedShip();
       if (ship) {
         electronicWarfareIndicatorService.showForShip(ship);

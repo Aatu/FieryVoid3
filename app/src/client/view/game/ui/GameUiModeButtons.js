@@ -11,15 +11,18 @@ const Container = styled.div`
 
 class GameUiModeButtons extends React.PureComponent {
   render() {
-    const { ew, movement, weapons, uiState } = this.props;
-
-    console.log("render GameUiModeButtons");
+    const { ew, movement, weapons, enemy_weapons, uiState } = this.props;
 
     return (
       <Container>
         <TooltipButton
-          selected={weapons}
+          selected={enemy_weapons}
           img="/img/targetShip.png"
+          onClick={() => uiState.toggleGameUiMode(gameUiModes.ENEMY_WEAPONS)}
+        />
+        <TooltipButton
+          selected={weapons}
+          img="/img/firing.png"
           onClick={() => uiState.toggleGameUiMode(gameUiModes.WEAPONS)}
         />
         <TooltipButton

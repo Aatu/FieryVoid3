@@ -41,6 +41,26 @@ class ShipCurrentElectronicWarfare {
     return this.getFromEntries(ewTypes.EW_OFFENSIVE, target);
   }
 
+  getAllOew() {
+    const combined = [];
+
+    this.entries
+      .filter(entry => entry.getType() === ewTypes.EW_OFFENSIVE)
+      .forEach(entry => {
+        const existing = combined.find(
+          combinedEntry => combinedEntry.targetShipId === entry.targetShipId
+        );
+
+        if (existing) {
+          existing.amount += entry.amount;
+        } else {
+          combined.push(entry.clone());
+        }
+      });
+
+    return combined;
+  }
+
   getFromEntries(type, target) {
     if (target instanceof Ship) {
       target = target.id;

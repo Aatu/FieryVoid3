@@ -27,6 +27,8 @@ class ShipElectronicWarfare {
       this.getCcEw(),
       this.getAllEntries()
     );
+
+    console.log("activated EW", this.inEffect.serialize());
   }
 
   assignCcEw(amount) {
@@ -139,9 +141,12 @@ class ShipElectronicWarfare {
     this.assignEntries(this.getAllEntries(), true);
   }
 
-  assignEntries(entries, allowIncomplete = false) {
+  removeAll() {
     this.getEwArrays().forEach(system => system.callHandler("resetEw"));
+  }
 
+  assignEntries(entries, allowIncomplete = false) {
+    this.removeAll();
     const negativeEntries = entries.filter(entry => entry.getAmount() < 0);
 
     entries

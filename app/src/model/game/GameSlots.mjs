@@ -36,6 +36,10 @@ class GameSlots {
     return slot.team === userSlot.team;
   }
 
+  getUsersSlots(user) {
+    return this.slots.filter(slot => slot.isUsers(user));
+  }
+
   getSlotByShip(ship) {
     return this.slots.find(slot => slot.includesShip(ship));
   }

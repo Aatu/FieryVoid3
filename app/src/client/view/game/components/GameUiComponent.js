@@ -16,12 +16,6 @@ class GameUiComponent extends React.Component {
       return null;
     }
 
-    console.log(
-      "render GameUiComponent",
-      uiState.state.gameUiModeButtons,
-      uiState.state.gameUiMode
-    );
-
     return (
       <>
         {uiState.state.lobby && (

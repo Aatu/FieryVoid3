@@ -51,8 +51,6 @@ class MovementPathService {
 
     path.ship = ship;
 
-    //console.log(this.shipIconContainer.getByShip(ship).clone());
-
     path.movementPath = new MovementPath(
       ship,
       this.scene,

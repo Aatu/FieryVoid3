@@ -51,7 +51,6 @@ class HexGridRenderer {
     this.mesh.position.x += HexagonMath.getHexB() / 2;
     this.mesh.name = "hexgrid";
 
-    this.mesh.receiveShadow = true;
     scene.add(this.mesh);
   }
 

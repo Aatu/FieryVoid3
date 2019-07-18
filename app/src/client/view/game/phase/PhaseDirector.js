@@ -110,6 +110,7 @@ class PhaseDirector {
     }
 
     this.phaseStrategy.render(coordinateConverter, scene, zoom);
+    this.electronicWarfareIndicatorService.render();
     this.uiState.render();
   }
 

@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import ShipEWIndicators from "./ShipEWIndicators";
+import ShipCurrentEWIndicators from "./ShipCurrentEWIndicators";
 
 const COLOR_OEW_DIST = new THREE.Color(255 / 255, 157 / 255, 0 / 255);
 const COLOR_SDEW = new THREE.Color(109 / 255, 189 / 255, 255 / 255);
@@ -12,6 +13,26 @@ class ElectronicWarfareIndicatorService {
     this.currentUser = currentUser;
 
     this.indicators = [];
+    this.currentIndicators = [];
+  }
+
+  getCurrentIndicators(ship) {
+    let indicator = this.currentIndicators.find(indicator =>
+      indicator.isShip(ship)
+    );
+
+    if (!indicator) {
+      indicator = new ShipCurrentEWIndicators(
+        ship,
+        this.shipIconContainer,
+        this.currentUser,
+        this.scene
+      );
+
+      this.currentIndicators.push(indicator);
+    }
+
+    return indicator;
   }
 
   getIndicators(ship) {
@@ -31,6 +52,23 @@ class ElectronicWarfareIndicatorService {
     return indicator;
   }
 
+  render() {
+    this.indicators.forEach(indicator => indicator.render());
+    this.currentIndicators.forEach(indicator => indicator.render());
+  }
+
+  showCurrentForShip(ship) {
+    this.getCurrentIndicators(ship)
+      .update(ship)
+      .show();
+  }
+
+  hideCurrentForShip(ship) {
+    this.getCurrentIndicators(ship)
+      .update(ship)
+      .hide();
+  }
+
   showForShip(ship) {
     this.getIndicators(ship)
       .update(ship)
@@ -45,6 +83,10 @@ class ElectronicWarfareIndicatorService {
 
   hideAll() {
     this.indicators.forEach(indicators => indicators.hide());
+  }
+
+  hideAllCurrent() {
+    this.currentIndicators.forEach(indicators => indicators.hide());
   }
 }
 

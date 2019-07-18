@@ -26,15 +26,17 @@ class UIState {
       gameUiModeButtons: false
     };
 
-    this.state.gameUiMode[gameUiModes.EW] = false;
+    this.state.gameUiMode[gameUiModes.EW] = true;
+    this.state.gameUiMode[gameUiModes.ENEMY_WEAPONS] = false;
     this.state.gameUiMode[gameUiModes.WEAPONS] = false;
-    this.state.gameUiMode[gameUiModes.MOVEMENT] = false;
+    this.state.gameUiMode[gameUiModes.MOVEMENT] = true;
 
     this.updateState();
   }
 
-  hasGameUiMode(value) {
-    return this.state.gameUiMode[value];
+  hasGameUiMode(values) {
+    values = [].concat(values);
+    return values.some(value => this.state.gameUiMode[value]);
   }
 
   toggleGameUiMode(value) {

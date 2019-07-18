@@ -14,7 +14,8 @@ import {
   OwnedShipEw,
   MouseOverShowsMovementPath,
   MouseOverShowsElectronicWarfare,
-  ShipClickSelectsShip
+  ShipClickSelectsShip,
+  CurrentEW
 } from "../../ui/uiStrategy";
 
 class GamePhaseStrategy extends PhaseStrategy {
@@ -36,7 +37,8 @@ class GamePhaseStrategy extends PhaseStrategy {
       new GameShipTooltipMenuStrategy(),
       new ShowUiModeButtons(),
       //new MouseOverShowsElectronicWarfare(),
-      new OwnedShipEw()
+      new OwnedShipEw(),
+      new CurrentEW()
     ];
   }
 

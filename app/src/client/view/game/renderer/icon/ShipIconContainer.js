@@ -49,6 +49,11 @@ class ShipIconContainer {
       } else {
         this.iconsAsObject[ship.id].consumeShipdata(ship);
       }
+
+      const ghost = this.ghostShipIcons.find(icon => icon.ship.id === ship.id);
+      if (ghost) {
+        ghost.consumeShipdata(ship);
+      }
     });
 
     this.iconsAsArray = buildShipArray(this.iconsAsObject);

@@ -24,8 +24,10 @@ import ShowUiModeButtons from "./ShowUiModeButtons";
 import OwnedShipEw from "./electronicWarfare/OwnedShipEw";
 import MouseOverShowsElectronicWarfare from "./electronicWarfare/MouseOverShowsElectronicWarfare";
 import ShipClickSelectsShip from "./ShipClickSelectsShip";
+import CurrentEW from "./electronicWarfare/CurrentEW";
 
 export {
+  CurrentEW,
   OwnedShipEw,
   MouseOverShowsElectronicWarfare,
   ShowUiModeButtons,

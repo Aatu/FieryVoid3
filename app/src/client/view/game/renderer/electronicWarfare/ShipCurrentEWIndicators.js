@@ -1,6 +1,6 @@
-import OEWIndicator from "./OEWIndicator";
+import CurrentOEWIndicator from "./CurrentOEWIndicator";
 
-class ShipEWIndicators {
+class ShipCurrentEWIndicators {
   constructor(ship, shipIconContainer, currentUser, scene) {
     this.ship = ship;
     this.icon = shipIconContainer.getByShip(ship);
@@ -39,26 +39,28 @@ class ShipEWIndicators {
 
   createOEW() {
     const old = this.oew;
-    const newOew = this.ship.electronicWarfare.getAllOew().map(ewEntry => {
-      const targetIcon = this.shipIconContainer.getById(ewEntry.targetShipId);
-      const targetGhost = this.shipIconContainer.getGhostShipIconByShip(
-        targetIcon.ship
-      );
-      let indicator = this.oew.find(oew => oew.targetIcon === targetIcon);
-
-      if (!indicator) {
-        indicator = new OEWIndicator(
-          this.icon,
-          targetIcon,
-          targetGhost,
-          ewEntry.amount,
-          this.ship.player.is(this.currentUser),
-          this.scene
+    const newOew = this.ship.electronicWarfare.inEffect
+      .getAllOew()
+      .map(ewEntry => {
+        const targetIcon = this.shipIconContainer.getById(ewEntry.targetShipId);
+        const targetGhost = this.shipIconContainer.getGhostShipIconByShip(
+          targetIcon.ship
         );
-      }
+        let indicator = this.oew.find(oew => oew.targetIcon === targetIcon);
 
-      return indicator.update(this.ship, ewEntry.amount);
-    });
+        if (!indicator) {
+          indicator = new CurrentOEWIndicator(
+            this.icon,
+            targetIcon,
+            targetGhost,
+            ewEntry.amount,
+            this.ship.player.is(this.currentUser),
+            this.scene
+          );
+        }
+
+        return indicator.update(this.ship, ewEntry.amount);
+      });
 
     old
       .filter(indicator =>
@@ -70,4 +72,4 @@ class ShipEWIndicators {
   }
 }
 
-export default ShipEWIndicators;
+export default ShipCurrentEWIndicators;
