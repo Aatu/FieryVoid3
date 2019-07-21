@@ -68,9 +68,11 @@ class ShipElectronicWarfare {
       );
     }
 
-    return this.getAllEntries()
+    const result = this.getAllEntries()
       .filter(entry => entry.type === type && entry.targetShipId === target)
       .reduce((total, entry) => total + entry.getAmount(), 0);
+
+    return result;
   }
 
   assingEw(type, target, amount) {

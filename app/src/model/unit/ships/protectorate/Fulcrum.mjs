@@ -41,7 +41,29 @@ class Fulcrum extends Ship {
     this.shipModel = "Fulcrum";
     this.pointCost = 500;
 
+    //RailgunFixed22gw, PDC30mm, CannonFixed120mm
     this.systems.addFrontSystem([
+      new systems.Structure({ id: 100, hitpoints: 30, armor: 4 }),
+
+      new systems.RailgunFixed22gw(
+        { id: 102, hitpoints: 10, armor: 3 },
+        { start: 330, end: 30 }
+      ),
+      new systems.CannonFixed120mm(
+        { id: 103, hitpoints: 10, armor: 3 },
+        { start: 330, end: 30 }
+      ),
+      new systems.CannonFixed120mm(
+        { id: 104, hitpoints: 10, armor: 3 },
+        { start: 330, end: 30 }
+      ),
+      new systems.CannonFixed120mm(
+        { id: 105, hitpoints: 10, armor: 3 },
+        { start: 330, end: 30 }
+      ),
+
+      new systems.Thruster({ id: 106, hitpoints: 10, armor: 3 }, 3, 0),
+      new systems.Thruster({ id: 107, hitpoints: 10, armor: 3 }, 3, 0),
       new systems.ManeuveringThruster(
         { id: 101, hitpoints: 10, armor: 3 },
         3,
@@ -50,26 +72,59 @@ class Fulcrum extends Ship {
     ]);
 
     this.systems.addPrimarySystem([
-      new systems.Thruster({ id: 1, hitpoints: 10, armor: 3 }, 5, 0),
-      new systems.Thruster({ id: 2, hitpoints: 10, armor: 3 }, 5, 0),
-      new systems.Thruster({ id: 8, hitpoints: 10, armor: 3 }, 5, [1, 2]),
-      new systems.Thruster({ id: 9, hitpoints: 10, armor: 3 }, 5, [4, 5]),
-      new systems.Thruster({ id: 3, hitpoints: 10, armor: 3 }, 5, 3),
-      new systems.Thruster({ id: 4, hitpoints: 10, armor: 3 }, 5, 3),
+      new systems.EwArray({ id: 12, hitpoints: 30, armor: 4 }, 12),
 
-      new systems.EwArray({ id: 12, hitpoints: 30, armor: 4 }, 8),
+      new systems.Reactor({ id: 7, hitpoints: 20, armor: 3 }, 20),
+      new systems.Structure({ id: 11, hitpoints: 30, armor: 4 }),
 
-      new systems.Engine({ id: 5, hitpoints: 10, armor: 3 }, 12, 6, 2),
-      new systems.Engine({ id: 6, hitpoints: 10, armor: 3 }, 12, 6, 2),
-      new systems.Reactor({ id: 7, hitpoints: 10, armor: 3 }, 20),
-      new systems.Structure({ id: 11, hitpoints: 30, armor: 4 })
+      new systems.PDC30mm(
+        { id: 14, hitpoints: 5, armor: 3 },
+        { start: 0, end: 0 }
+      )
     ]);
 
     this.systems.addAftSystem([
+      new systems.Structure({ id: 200, hitpoints: 30, armor: 4 }),
+
+      new systems.Engine({ id: 202, hitpoints: 20, armor: 3 }, 12, 6, 2),
       new systems.ManeuveringThruster(
         { id: 201, hitpoints: 10, armor: 3 },
         3,
         2
+      ),
+      new systems.Thruster({ id: 203, hitpoints: 15, armor: 3 }, 12, 3),
+
+      new systems.PDC30mm(
+        { id: 214, hitpoints: 5, armor: 3 },
+        { start: 0, end: 0 }
+      )
+    ]);
+
+    this.systems.addStarboardFrontSystem([
+      new systems.PDC30mm(
+        { id: 15, hitpoints: 5, armor: 3 },
+        { start: 0, end: 180 }
+      )
+    ]);
+
+    this.systems.addStarboardAftSystem([
+      new systems.PDC30mm(
+        { id: 215, hitpoints: 5, armor: 3 },
+        { start: 0, end: 180 }
+      )
+    ]);
+
+    this.systems.addPortFrontSystem([
+      new systems.PDC30mm(
+        { id: 13, hitpoints: 5, armor: 3 },
+        { start: 180, end: 0 }
+      )
+    ]);
+
+    this.systems.addPortAftSystem([
+      new systems.PDC30mm(
+        { id: 213, hitpoints: 5, armor: 3 },
+        { start: 180, end: 0 }
       )
     ]);
   }

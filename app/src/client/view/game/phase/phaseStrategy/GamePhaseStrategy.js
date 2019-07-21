@@ -15,7 +15,12 @@ import {
   MouseOverShowsMovementPath,
   MouseOverShowsElectronicWarfare,
   ShipClickSelectsShip,
-  CurrentEW
+  CurrentEW,
+  WeaponArcsOnSystemMouseOver,
+  SelectWeaponOnSystemClick,
+  SelectedShipSystemList,
+  GameSystemInfoMenuStrategy,
+  SystemClickShowsSystemMenu
 } from "../../ui/uiStrategy";
 
 class GamePhaseStrategy extends PhaseStrategy {
@@ -38,7 +43,12 @@ class GamePhaseStrategy extends PhaseStrategy {
       new ShowUiModeButtons(),
       //new MouseOverShowsElectronicWarfare(),
       new OwnedShipEw(),
-      new CurrentEW()
+      new CurrentEW(),
+      new WeaponArcsOnSystemMouseOver(),
+      new SelectWeaponOnSystemClick(),
+      new SelectedShipSystemList(),
+      new GameSystemInfoMenuStrategy(),
+      new SystemClickShowsSystemMenu()
     ];
   }
 

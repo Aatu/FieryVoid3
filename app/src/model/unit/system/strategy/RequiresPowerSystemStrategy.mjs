@@ -9,6 +9,15 @@ class RequiresPowerSystemStrategy extends ShipSystemStrategy {
     }
   }
 
+  getMessages(payload, previousResponse = []) {
+    previousResponse.push({
+      header: "Power requirement",
+      value: this.power
+    });
+
+    return previousResponse;
+  }
+
   getPowerRequirement(payload, previousResponse = 0) {
     return this.power + previousResponse;
   }

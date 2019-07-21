@@ -6,10 +6,14 @@ import {
 } from "../../../../utils/math.mjs";
 
 class WeaponArcStrategy extends ShipSystemStrategy {
-  constructor(arcs) {
+  constructor(arcs = []) {
     super();
 
-    this.arcs = arcs;
+    this.arcs = [].concat(arcs);
+  }
+
+  hasArcs() {
+    return true;
   }
 
   isOnArc({ shooter, target }) {

@@ -1,11 +1,11 @@
 import * as React from "react";
 import Lobby from "./lobby";
-import ShipWindowsContainer from "../ui/shipWindow/ShipWindowsContainer";
 import ShipTooltip from "../ui/shipTooltip";
 import TurnHeader from "../ui/TurnHeader";
 import GameMovement from "../ui/movement/GameMovement";
 import DeploymentMovement from "../ui/movement/DeploymentMovement";
 import GameUiModeButtons from "../ui/GameUiModeButtons";
+import LeftPanel from "../ui/leftPanel/LeftPanel";
 import * as gamePhases from "../../../../model/game/gamePhases";
 
 class GameUiComponent extends React.Component {
@@ -24,13 +24,6 @@ class GameUiComponent extends React.Component {
             gameData={uiState.state.gameData}
             game={game}
             currentUser={user}
-          />
-        )}
-
-        {uiState.state.shipWindows && (
-          <ShipWindowsContainer
-            uiState={uiState}
-            {...uiState.state.shipWindows}
           />
         )}
 
@@ -70,6 +63,12 @@ class GameUiComponent extends React.Component {
         {uiState.state.gameUiModeButtons && (
           <GameUiModeButtons uiState={uiState} {...uiState.state.gameUiMode} />
         )}
+
+        <LeftPanel
+          uiState={uiState}
+          systemList={uiState.state.systemList}
+          {...uiState.state}
+        />
       </>
     );
   }

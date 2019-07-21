@@ -25,8 +25,18 @@ import OwnedShipEw from "./electronicWarfare/OwnedShipEw";
 import MouseOverShowsElectronicWarfare from "./electronicWarfare/MouseOverShowsElectronicWarfare";
 import ShipClickSelectsShip from "./ShipClickSelectsShip";
 import CurrentEW from "./electronicWarfare/CurrentEW";
+import WeaponArcsOnSystemMouseOver from "./weapon/WeaponArcsOnSystemMouseOver";
+import SelectWeaponOnSystemClick from "./weapon/SelectWeaponOnSystemClick";
+import SelectedShipSystemList from "./weapon/SelectedShipSystemList";
+import GameSystemInfoMenuStrategy from "./GameSystemInfoMenuStrategy";
+import SystemClickShowsSystemMenu from "./SystemClickShowsSystemMenu";
 
 export {
+  SystemClickShowsSystemMenu,
+  GameSystemInfoMenuStrategy,
+  SelectedShipSystemList,
+  SelectWeaponOnSystemClick,
+  WeaponArcsOnSystemMouseOver,
   CurrentEW,
   OwnedShipEw,
   MouseOverShowsElectronicWarfare,

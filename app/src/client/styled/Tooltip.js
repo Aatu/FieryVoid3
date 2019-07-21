@@ -23,6 +23,7 @@ const Tooltip = styled(Component)`
   padding: 3px 15px 3px 15px;
   padding-bottom: 8px;
   border: 1px solid #121212;
+  filter: brightness(1);
 `;
 
 const TooltipHeader = styled.div`
@@ -73,7 +74,7 @@ const TooltipButton = styled.button`
   width: 40px;
   height: 40px;
   background-color: transparent;
-  margin: 3px;
+  margin: 0;
   cursor: pointer;
   background-image: ${props => props.img && `url(${props.img})`};
   background-size: cover;

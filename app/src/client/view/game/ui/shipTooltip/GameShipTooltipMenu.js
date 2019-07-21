@@ -1,13 +1,14 @@
 import * as React from "react";
 import styled from "styled-components";
 import { TooltipMenu, TooltipButton } from "../../../../styled";
+import OEWButtons from "../electronicWarfare/OEWButtons";
 
 class GameShipTooltipMenu extends React.PureComponent {
   render() {
     const { ship, uiState } = this.props;
     const { currentUser } = uiState.services;
 
-    const selectShip = uiState.getSelectedShip();
+    const selectedShip = uiState.getSelectedShip();
 
     return (
       <TooltipMenu>
@@ -18,28 +19,13 @@ class GameShipTooltipMenu extends React.PureComponent {
           />
         )}
 
-        {!ship.player.isUsers(currentUser) && selectShip && (
+        {!ship.player.isUsers(currentUser) && selectedShip && (
           <>
-            <TooltipButton
-              img="/img/removeOEW.png"
-              disabled={
-                !selectShip.electronicWarfare.canAssignOffensiveEw(ship, -1)
-              }
-              onClick={() => {
-                selectShip.electronicWarfare.assignOffensiveEw(ship, -1);
-                uiState.shipStateChanged(selectShip);
-              }}
-            />
-
-            <TooltipButton
-              img="/img/addOEW.png"
-              disabled={
-                !selectShip.electronicWarfare.canAssignOffensiveEw(ship, 1)
-              }
-              onClick={() => {
-                selectShip.electronicWarfare.assignOffensiveEw(ship, 1);
-                uiState.shipStateChanged(selectShip);
-              }}
+            <OEWButtons
+              ship={selectedShip}
+              target={ship}
+              uiState={uiState}
+              oew={selectedShip.electronicWarfare.getOffensiveEw(ship)}
             />
           </>
         )}

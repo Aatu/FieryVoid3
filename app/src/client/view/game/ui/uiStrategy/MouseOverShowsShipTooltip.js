@@ -38,6 +38,11 @@ class MouseOverShowsShipTooltip extends UiStrategy {
     }
 
     const { uiState } = this.services;
+
+    if (uiState.state.systemMenu.activeSystem) {
+      return;
+    }
+
     uiState.hideShipTooltip(this.clickedShip);
     this.clickedShip = null;
   }

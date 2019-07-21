@@ -110,6 +110,14 @@ class ShipSystem {
     this.power.advanceTurn();
     this.callHandler("advanceTurn");
   }
+
+  isWeapon() {
+    return false;
+  }
+
+  showOnSystemList() {
+    return false;
+  }
 }
 
 export default ShipSystem;

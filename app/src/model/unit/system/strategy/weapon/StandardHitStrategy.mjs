@@ -1,6 +1,11 @@
 import ShipSystemStrategy from "../ShipSystemStrategy.mjs";
 
 class StandardHitStrategy extends ShipSystemStrategy {
+  constructor(numberOfShots = 1) {
+    super();
+    this.numberOfShots = numberOfShots;
+  }
+
   getBaseHitChange({ shooter, target, weaponSettings }) {
     return target.getHitProfile(shooter.getPosition());
   }

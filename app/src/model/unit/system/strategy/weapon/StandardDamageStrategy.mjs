@@ -4,10 +4,11 @@ import DamageEntry from "../../DamageEntry.mjs";
 import droll from "droll";
 
 class StandardDamageStrategy extends ShipSystemStrategy {
-  constructor(damageFormula) {
+  constructor(damageFormula, armorPiercingFormula) {
     super();
 
     this.damageFormula = damageFormula;
+    this.armorPiercingFormula = armorPiercingFormula;
   }
 
   getDamageForWeaponHit({ requiredToHit, rolledToHit }) {

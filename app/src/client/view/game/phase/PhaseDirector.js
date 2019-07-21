@@ -148,6 +148,7 @@ class PhaseDirector {
   }
 
   activatePhaseStrategy(phaseStrategy, gameData) {
+    this.uiState.update(gameData);
     this.shipIconContainer.update(gameData);
     this.movementService.update(gameData, this);
     this.movementPathService.update(gameData);

@@ -1,11 +1,9 @@
-import ShipWindowManager from "../ui/shipWindow/ShipWindowManager";
 import * as gameUiModes from "./gameUiModes";
 
 class UIState {
   constructor() {
     this.phaseDirector = null;
     this.services = null;
-    this.shipWindowManager = null;
 
     this.renderListeners = [];
 
@@ -14,24 +12,76 @@ class UIState {
       lobby: false,
       gameData: null,
       selectedShip: null,
-      shipWindows: null,
-      weaponList: null,
+      selectedSystems: [],
       systemInfo: null,
       systemInfoMenu: null,
       shipMovement: null,
       shipTooltip: [],
       turnReady: false,
       shipTooltipMenuProvider: null,
+      systemMenu: {
+        systemInfoMenuProvider: null,
+        activeSystem: null,
+        activeSystemElement: null
+      },
       gameUiMode: {},
-      gameUiModeButtons: false
+      gameUiModeButtons: false,
+      systemList: [],
+      stateVersion: 0
     };
 
-    this.state.gameUiMode[gameUiModes.EW] = true;
+    this.state.gameUiMode[gameUiModes.EW] = false;
     this.state.gameUiMode[gameUiModes.ENEMY_WEAPONS] = false;
     this.state.gameUiMode[gameUiModes.WEAPONS] = false;
-    this.state.gameUiMode[gameUiModes.MOVEMENT] = true;
+    this.state.gameUiMode[gameUiModes.MOVEMENT] = false;
 
     this.updateState();
+  }
+
+  setSystemList(systems) {
+    this.state.systemList = systems;
+    this.updateState();
+  }
+
+  isSelectedSystem(system) {
+    return this.state.selectedSystems.includes(system);
+  }
+
+  selectSystem(ship, systems) {
+    if (this.getSelectedShip() !== ship) {
+      this.selectShip(ship);
+    }
+
+    systems = []
+      .concat(systems)
+      .filter(system => !this.isSelectedSystem(system))
+      .forEach(system => this.state.selectedSystems.push(system));
+
+    this.updateState();
+    this.customEvent("systemSelected", { systems });
+    console.log("systems selected", this.state.selectedSystems);
+  }
+
+  deselectSystem(systems) {
+    systems = [].concat(systems);
+
+    this.state.selectedSystems = this.state.selectedSystems.filter(selected =>
+      systems.every(system => system.id !== selected.id)
+    );
+
+    this.updateState();
+    this.customEvent("systemDeselected", { systems });
+  }
+
+  deselectAllSystems() {
+    const systems = this.state.selectedSystems;
+    this.state.selectedSystems = [];
+    this.updateState();
+    this.customEvent("systemDeselected", { systems });
+  }
+
+  getSelectedSystems() {
+    return this.state.selectedSystems;
   }
 
   hasGameUiMode(values) {
@@ -64,6 +114,22 @@ class UIState {
     this.updateState();
   }
 
+  update(gameData) {
+    this.gameData = gameData;
+    if (this.state.selectedShip) {
+      this.selectShip(
+        this.gameData.ships.getShipById(this.state.selectedShip.id)
+      );
+
+      this.selectSystem(
+        this.getSelectedShip(),
+        this.state.selectedSystems.map(system =>
+          this.getSelectedShip().systems.getSystemById(system.id)
+        )
+      );
+    }
+  }
+
   setTurnReady(ready) {
     this.state.turnReady = ready;
     this.updateState();
@@ -76,10 +142,6 @@ class UIState {
 
   setPhaseDirector(phaseDirector) {
     this.phaseDirector = phaseDirector;
-    this.shipWindowManager = new ShipWindowManager(
-      this,
-      phaseDirector.movementService
-    );
     this.services = phaseDirector.getServices();
   }
 
@@ -92,6 +154,10 @@ class UIState {
   }
 
   selectShip(ship) {
+    if (this.getSelectedShip() === ship) {
+      return;
+    }
+
     this.deselectShip();
     this.state.selectedShip = ship;
     this.updateState();
@@ -102,6 +168,7 @@ class UIState {
     const ship = this.state.selectedShip;
     this.state.selectedShip = null;
     this.updateState();
+    this.deselectAllSystems();
     if (ship) {
       this.customEvent("shipDeselected", ship);
     }
@@ -120,12 +187,24 @@ class UIState {
       return;
     }
 
+    this.state.stateVersion++;
     this.setState({ uiState: this });
     this.customEvent("uiStateChanged");
   }
 
   setTooltipMenuProvider(callBack) {
     this.state.shipTooltipMenuProvider = callBack;
+    this.updateState();
+  }
+
+  setSystemInfoMenuProvider(callBack) {
+    this.state.systemMenu.systemInfoMenuProvider = callBack;
+    this.updateState();
+  }
+
+  setSystemMenuActiveSystem(system, element) {
+    this.state.systemMenu.activeSystem = system;
+    this.state.systemMenu.activeSystemElement = element;
     this.updateState();
   }
 
@@ -139,35 +218,8 @@ class UIState {
     this.updateState();
   }
 
-  openShipWindow(ship) {
-    this.shipWindowManager.open(ship);
-  }
-
-  closeShipWindow(ship) {
-    this.shipWindowManager.close(ship);
-  }
-
-  closeShipWindows() {
-    this.shipWindowManager.closeAll();
-  }
-
   getState() {
     return this.state;
-  }
-
-  setShipWindows(args) {
-    this.state.shipWindows = args;
-    this.updateState();
-  }
-
-  showWeaponList(args) {
-    this.state.weaponList = args;
-    this.updateState();
-  }
-
-  hideWeaponList() {
-    this.state.weaponList = null;
-    this.updateState();
   }
 
   showSystemInfo(args) {
@@ -192,11 +244,6 @@ class UIState {
 
   shipStateChanged(ship) {
     this.customEvent("shipStateChanged", ship);
-  }
-
-  isSelectedSystem(system) {
-    //TODO: implement
-    return false;
   }
 
   showShipTooltip(icon, ui = false) {

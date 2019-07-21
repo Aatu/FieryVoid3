@@ -49,9 +49,6 @@ class GameController {
   }
 
   async onMessage(message, user, gameId) {
-    console.log("MESSAGE RECEIVED");
-    console.log(message);
-
     try {
       switch (message.type) {
         case gameMessages.MESSAGE_TAKE_SLOT:

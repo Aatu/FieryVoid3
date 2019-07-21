@@ -1,3 +1,9 @@
 import TestWeapon from "./TestWeapon.mjs";
 
-export { TestWeapon };
+import RailgunFixed22gw from "./railgun/RailgunFixed22gw.mjs";
+
+import PDC30mm from "./pdc/PDC30mm.mjs";
+
+import CannonFixed120mm from "./cannon/CannonFixed120mm.mjs";
+
+export { TestWeapon, RailgunFixed22gw, PDC30mm, CannonFixed120mm };

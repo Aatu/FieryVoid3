@@ -3,11 +3,7 @@ import { cloneObject } from "../../utils/objectLoader";
 import * as shipObjects from ".";
 import Vector from "../../../../../model/utils/Vector.mjs";
 
-import {
-  degreeToRadian,
-  addToDirection,
-  getArcLength
-} from "../../../../../model/utils/math";
+import { degreeToRadian } from "../../../../../model/utils/math";
 
 import {
   LineSprite,
@@ -38,7 +34,6 @@ class ShipObject {
     });
 
     this.ghostShipObject = null;
-    this.weaponArcs = [];
     this.shipSideSprite = null;
     this.shipEWSprite = null;
     this.shipSelectedSprite = null;
@@ -238,47 +233,6 @@ class ShipObject {
   setSideSpriteOpacity(opacity) {
     this.shipSideSprite.multiplyOpacity(opacity);
     this.line.multiplyOpacity(opacity);
-  }
-  /*
-  showWeaponArc(ship, weapon) {
-    var hexDistance = window.coordinateConverter.getHexDistance();
-    var dis =
-      weapon.rangePenalty === 0
-        ? hexDistance * weapon.range
-        : (50 / weapon.rangePenalty) * hexDistance;
-    var arcs = weapon.getArcs(weapon);
-
-    var arcLenght =
-      arcs.start === arcs.end ? 360 : getArcLength(arcs.start, arcs.end);
-    var arcStart = addToDirection(0, arcLenght * -0.5);
-    var arcFacing = addToDirection(arcs.end, arcLenght * -0.5);
-
-    var geometry = new THREE.CircleGeometry(
-      dis,
-      32,
-      degreeToRadian(arcStart),
-      degreeToRadian(arcLenght)
-    );
-    var material = new THREE.MeshBasicMaterial({
-      color: new THREE.Color("rgb(20,80,128)"),
-      opacity: 0.5,
-      transparent: true
-    });
-    var circle = new THREE.Mesh(geometry, material);
-    circle.rotation.z = degreeToRadian(
-      -addToDirection(arcFacing, -this.getFacing())
-    );
-    circle.position.z = -1;
-    this.mesh.add(circle);
-    this.weaponArcs.push(circle);
-
-    return null;
-  }
-*/
-  hideWeaponArcs() {
-    this.weaponArcs.forEach(function(arc) {
-      this.mesh.remove(arc);
-    }, this);
   }
 
   showBDEW() {

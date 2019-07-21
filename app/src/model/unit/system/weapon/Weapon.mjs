@@ -8,6 +8,10 @@ class Weapon extends ShipSystem {
   isWeapon() {
     return true;
   }
+
+  showOnSystemList() {
+    return true;
+  }
 }
 
 export default Weapon;

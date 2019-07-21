@@ -41,28 +41,13 @@ const ColumnMiddle = styled(Column)`
 `;
 
 class ShipWindow extends React.Component {
-  onShipMouseOver(event) {
-    let { ship, uiState } = this.props;
-
-    uiState.customEvent("SystemMouseOver", {
-      ship: ship,
-      system: ship,
-      element: event.target
-    });
-  }
-
-  onShipMouseOut() {
-    let { uiState } = this.props;
-    uiState.customEvent("SystemMouseOut");
-  }
-
   close() {
     let { uiState } = this.props;
     uiState.closeShipWindow(this.props.ship);
   }
 
   render() {
-    const { ship, uiState } = this.props;
+    const { ship, uiState, ...rest } = this.props;
 
     return (
       <ShipWindowContainer
@@ -78,11 +63,13 @@ class ShipWindow extends React.Component {
             uiState={uiState}
             ship={ship}
             section={ship.systems.sections.getStarboardFrontSection()}
+            {...rest}
           />
           <ShipSection
             uiState={uiState}
             ship={ship}
             section={ship.systems.sections.getStarboardAftSection()}
+            {...rest}
           />
         </Column>
 
@@ -91,16 +78,19 @@ class ShipWindow extends React.Component {
             uiState={uiState}
             section={ship.systems.sections.getFrontSection()}
             ship={ship}
+            {...rest}
           />
           <ShipSection
             uiState={uiState}
             ship={ship}
             section={ship.systems.sections.getPrimarySection()}
+            {...rest}
           />
           <ShipSection
             uiState={uiState}
             ship={ship}
             section={ship.systems.sections.getAftSection()}
+            {...rest}
           />
         </ColumnMiddle>
 
@@ -109,11 +99,13 @@ class ShipWindow extends React.Component {
             uiState={uiState}
             ship={ship}
             section={ship.systems.sections.getPortFrontSection()}
+            {...rest}
           />
           <ShipSection
             uiState={uiState}
             ship={ship}
             section={ship.systems.sections.getPortAftSection()}
+            {...rest}
           />
         </Column>
       </ShipWindowContainer>
@@ -121,6 +113,6 @@ class ShipWindow extends React.Component {
   }
 }
 
-const shipWindowClicked = uiState => uiState.customEvent("CloseSystemInfo");
+const shipWindowClicked = uiState => uiState.customEvent("closeSystemInfo");
 
 export default ShipWindow;

@@ -41,23 +41,21 @@ const SystemText = styled.div`
 const System = styled.div`
   position: relative;
   box-sizing: border-box;
-  width: ${props => (props.scs ? "30px" : "34px")};
-  height: ${props => (props.scs ? "30px" : "34px")};
-  margin: ${props => (props.scs ? "3px 1px" : "2px")};
-
-  border: ${props => !props.scs && `1px solid ${colors.systemBorder}`};
+  width: 30px;
+  height: 30px;
+  margin: 3px 1px;
 
   background-color: ${props => {
-    if (props.selected) {
+    if (props.selected && !props.scs) {
       return "#4e6c91";
     } else if (props.firing) {
       return "#e06f01";
     } else {
-      return "black";
+      return "transparent";
     }
   }};
   box-shadow: ${props => {
-    if (props.selected) {
+    if (props.selected && !props.scs) {
       return "0px 0px 15px #0099ff";
     } else if (props.firing) {
       return "box-shadow: 0px 0px 15px #eb5c15";
@@ -67,7 +65,13 @@ const System = styled.div`
   }};
   background-image: ${props => `url(${props.background})`};
   background-size: cover;
-  filter: ${props => (props.destroyed ? "blur(1px)" : "none")};
+  filter: ${props => {
+    if (props.destroyed) {
+      return "blur(1px)";
+    } else {
+      return "none";
+    }
+  }};
   cursor: pointer;
 
   ${SystemText} {
@@ -99,7 +103,7 @@ const System = styled.div`
 
     background-image: ${props => {
       if (props.offline) {
-        return "url(./img/offline.png)";
+        return "url(/img/offline.png)";
       }
 
       return "none";
@@ -111,21 +115,24 @@ class SystemIcon extends React.Component {
   constructor(props) {
     super(props);
 
+    this.element = React.createRef();
     this.state = {
-      mouseOveredSystem: null
+      mouseOveredSystem: null,
+      clickedSystem: null
     };
   }
 
-  clickSystem(e) {
-    e.stopPropagation();
-    e.preventDefault();
+  clickSystem(event) {
+    event.stopPropagation();
+    event.preventDefault();
 
-    const { uiState, system, ship } = this.props;
+    const { uiState, system, ship, scs } = this.props;
 
-    uiState.customEvent("SystemClicked", {
+    uiState.customEvent("systemClicked", {
       ship,
       system,
-      element: e.target
+      element: this.element,
+      scs
     });
   }
 
@@ -135,13 +142,13 @@ class SystemIcon extends React.Component {
 
     let { uiState, system, ship } = this.props;
 
-    uiState.customEvent("SystemMouseOver", {
+    uiState.customEvent("systemMouseOver", {
       ship,
       system,
-      element: event.target
+      element: this.element
     });
 
-    this.setState({ mouseOveredSystem: event.target });
+    this.setState({ mouseOveredSystem: this.element });
   }
 
   onSystemMouseOut(event) {
@@ -150,7 +157,7 @@ class SystemIcon extends React.Component {
 
     let { uiState } = this.props;
 
-    uiState.customEvent("SystemMouseOut");
+    uiState.customEvent("systemMouseOut");
 
     this.setState({ mouseOveredSystem: null });
   }
@@ -161,11 +168,27 @@ class SystemIcon extends React.Component {
 
     let { uiState, system, ship } = this.props;
 
-    uiState.customEvent("SystemRightClicked", { system, ship });
+    uiState.customEvent("systemRightClicked", { system, ship });
   }
 
   render() {
-    let { uiState, system, ship, scs, destroyed } = this.props;
+    let {
+      uiState,
+      system,
+      ship,
+      scs,
+      destroyed,
+      systemMenu: {
+        systemInfoMenuProvider,
+        activeSystem,
+        activeSystemElement
+      } = {
+        systemInfoMenuProvider: null,
+        activeSystem: null,
+        activeSystemElement: null
+      },
+      ...rest
+    } = this.props;
     const { mouseOveredSystem } = this.state;
 
     if (getDestroyed(ship, system) || destroyed) {
@@ -176,8 +199,18 @@ class SystemIcon extends React.Component {
       );
     }
 
+    const menu = activeSystem ? systemInfoMenuProvider : null;
+
+    const displayMenu = Boolean(
+      (!activeSystem && mouseOveredSystem) ||
+        (activeSystem &&
+          activeSystem === system &&
+          activeSystemElement === this.element)
+    );
+
     return (
       <System
+        ref={c => (this.element = c)}
         scs={scs}
         onClick={this.clickSystem.bind(this)}
         onMouseOver={this.onSystemMouseOver.bind(this)}
@@ -186,14 +219,21 @@ class SystemIcon extends React.Component {
         background={getBackgroundImage(system)}
         offline={isOffline(ship, system)}
         loading={isLoading(system)}
-        selected={isSelected(system, uiState)}
+        selected={uiState.isSelectedSystem(system)}
         firing={isFiring(ship, system)}
       >
+        {displayMenu && (
+          <SystemInfo
+            uiState={uiState}
+            ship={ship}
+            system={system}
+            systemInfoMenuProvider={menu}
+            element={mouseOveredSystem || activeSystemElement}
+            {...rest}
+          />
+        )}
         <SystemText>{system.getIconText()}</SystemText>
         <HealthBar health={getStructureLeft(system)} />
-        {mouseOveredSystem && (
-          <SystemInfo ship={ship} system={system} element={mouseOveredSystem} />
-        )}
       </System>
     );
   }
@@ -213,7 +253,5 @@ const getDestroyed = (ship, system) => system.isDestroyed();
 const getBackgroundImage = system => system.getBackgroundImage();
 
 const hasCriticals = system => system.hasAnyCritical();
-
-const isSelected = (system, uiState) => uiState.isSelectedSystem(system);
 
 export default SystemIcon;

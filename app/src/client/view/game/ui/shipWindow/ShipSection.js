@@ -60,7 +60,7 @@ const StructureContainer = styled.div`
 
 class ShipSection extends React.Component {
   render() {
-    const { ship, section, uiState } = this.props;
+    const { ship, section, uiState, ...rest } = this.props;
     const location = section.location;
     const structure = section.getStructure();
 
@@ -73,6 +73,8 @@ class ShipSection extends React.Component {
             key={`system-scs-${location}-${ship.id}-${system.id}`}
             system={system}
             ship={ship}
+            selected={uiState.isSelectedSystem(system)}
+            {...rest}
           />
         ))}
 
