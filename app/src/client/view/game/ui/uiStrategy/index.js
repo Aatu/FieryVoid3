@@ -30,8 +30,10 @@ import SelectWeaponOnSystemClick from "./weapon/SelectWeaponOnSystemClick";
 import SelectedShipSystemList from "./weapon/SelectedShipSystemList";
 import GameSystemInfoMenuStrategy from "./GameSystemInfoMenuStrategy";
 import SystemClickShowsSystemMenu from "./SystemClickShowsSystemMenu";
+import SelectedShipEwList from "./electronicWarfare/SelectedShipEwList";
 
 export {
+  SelectedShipEwList,
   SystemClickShowsSystemMenu,
   GameSystemInfoMenuStrategy,
   SelectedShipSystemList,

@@ -1,15 +1,15 @@
 import * as React from "react";
 import styled, { css } from "styled-components";
-import { TooltipMenu, TooltipButton } from "../../../../styled";
 import SystemList from "../system/SystemList";
+import EwList from "../electronicWarfare/EwList";
 
 const Container = styled.div`
   position: absolute;
   left: 0;
   bottom: 0;
-  max-width: 33%;
+  width: 33%;
   display: flex;
-  align-items: center;
+  flex-direction: column;
 `;
 
 const SubContainer = styled.div`
@@ -20,11 +20,22 @@ const SubContainer = styled.div`
 
 class LeftPanel extends React.PureComponent {
   render() {
-    const { uiState, systemList, ...rest } = this.props;
+    const { uiState, systemList, ewList, ...rest } = this.props;
 
     return (
       <Container>
-        {uiState.state.systemList && (
+        {ewList && (
+          <SubContainer>
+            <EwList
+              ship={uiState.state.selectedShip}
+              uiState={uiState}
+              ewList={ewList}
+              {...rest}
+            />
+          </SubContainer>
+        )}
+
+        {systemList && (
           <SubContainer>
             <SystemList
               ship={uiState.state.selectedShip}

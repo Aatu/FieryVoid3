@@ -20,7 +20,8 @@ import {
   SelectWeaponOnSystemClick,
   SelectedShipSystemList,
   GameSystemInfoMenuStrategy,
-  SystemClickShowsSystemMenu
+  SystemClickShowsSystemMenu,
+  SelectedShipEwList
 } from "../../ui/uiStrategy";
 
 class GamePhaseStrategy extends PhaseStrategy {
@@ -48,7 +49,8 @@ class GamePhaseStrategy extends PhaseStrategy {
       new SelectWeaponOnSystemClick(),
       new SelectedShipSystemList(),
       new GameSystemInfoMenuStrategy(),
-      new SystemClickShowsSystemMenu()
+      new SystemClickShowsSystemMenu(),
+      new SelectedShipEwList()
     ];
   }
 

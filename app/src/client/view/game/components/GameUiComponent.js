@@ -64,11 +64,7 @@ class GameUiComponent extends React.Component {
           <GameUiModeButtons uiState={uiState} {...uiState.state.gameUiMode} />
         )}
 
-        <LeftPanel
-          uiState={uiState}
-          systemList={uiState.state.systemList}
-          {...uiState.state}
-        />
+        <LeftPanel uiState={uiState} {...uiState.state} />
       </>
     );
   }

@@ -46,18 +46,14 @@ const System = styled.div`
   margin: 3px 1px;
 
   background-color: ${props => {
-    if (props.selected && !props.scs) {
-      return "#4e6c91";
-    } else if (props.firing) {
+    if (props.firing) {
       return "#e06f01";
     } else {
       return "transparent";
     }
   }};
   box-shadow: ${props => {
-    if (props.selected && !props.scs) {
-      return "0px 0px 15px #0099ff";
-    } else if (props.firing) {
+    if (props.firing) {
       return "box-shadow: 0px 0px 15px #eb5c15";
     } else {
       return "none";
@@ -66,7 +62,9 @@ const System = styled.div`
   background-image: ${props => `url(${props.background})`};
   background-size: cover;
   filter: ${props => {
-    if (props.destroyed) {
+    if (props.selected && !props.scs) {
+      return "grayscale(100%) brightness(6) drop-shadow(0px 0px 5px white)";
+    } else if (props.destroyed) {
       return "blur(1px)";
     } else {
       return "none";
@@ -109,6 +107,10 @@ const System = styled.div`
       return "none";
     }};
   }
+`;
+
+const Container = styled.div`
+  position: relative;
 `;
 
 class SystemIcon extends React.Component {
@@ -209,19 +211,7 @@ class SystemIcon extends React.Component {
     );
 
     return (
-      <System
-        ref={c => (this.element = c)}
-        scs={scs}
-        onClick={this.clickSystem.bind(this)}
-        onMouseOver={this.onSystemMouseOver.bind(this)}
-        onMouseOut={this.onSystemMouseOut.bind(this)}
-        onContextMenu={this.onContextMenu.bind(this)}
-        background={getBackgroundImage(system)}
-        offline={isOffline(ship, system)}
-        loading={isLoading(system)}
-        selected={uiState.isSelectedSystem(system)}
-        firing={isFiring(ship, system)}
-      >
+      <Container>
         {displayMenu && (
           <SystemInfo
             uiState={uiState}
@@ -232,9 +222,23 @@ class SystemIcon extends React.Component {
             {...rest}
           />
         )}
-        <SystemText>{system.getIconText()}</SystemText>
-        <HealthBar health={getStructureLeft(system)} />
-      </System>
+        <System
+          ref={c => (this.element = c)}
+          scs={scs}
+          onClick={this.clickSystem.bind(this)}
+          onMouseOver={this.onSystemMouseOver.bind(this)}
+          onMouseOut={this.onSystemMouseOut.bind(this)}
+          onContextMenu={this.onContextMenu.bind(this)}
+          background={getBackgroundImage(system)}
+          offline={isOffline(ship, system)}
+          loading={isLoading(system)}
+          selected={uiState.isSelectedSystem(system)}
+          firing={isFiring(ship, system)}
+        >
+          <SystemText>{system.getIconText()}</SystemText>
+          <HealthBar health={getStructureLeft(system)} />
+        </System>
+      </Container>
     );
   }
 }

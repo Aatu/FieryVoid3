@@ -65,14 +65,7 @@ const TextRowSmall = styled(TextRow)`
 
 class Movement extends React.Component {
   render() {
-    const {
-      ship,
-      movementService,
-      getPosition,
-      uiState,
-      children,
-      ui = true
-    } = this.props;
+    const { ship, movementService, children, ui = true } = this.props;
 
     return (
       <>
@@ -83,10 +76,10 @@ class Movement extends React.Component {
         {ui && (
           <TextContainer>
             <TextRowSmall>
-              <div>{`Acceleration cost: ${ship.accelcost}`}</div>
-              <div>{`Pivot cost: ${ship.pivotcost}`}</div>
-              <div>{`Evasion cost: ${ship.evasioncost}`}</div>
-              <div>{`Roll cost: ${ship.rollcost}`}</div>
+              <div>{`Acceleration: ${ship.accelcost}`}</div>
+              <div>{`Pivot: ${ship.pivotcost}`}</div>
+              <div>{`Evasion: ${ship.evasioncost}`}</div>
+              <div>{`Roll: ${ship.rollcost}`}</div>
             </TextRowSmall>
 
             <TextRow>

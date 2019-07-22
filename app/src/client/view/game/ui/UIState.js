@@ -27,6 +27,7 @@ class UIState {
       gameUiMode: {},
       gameUiModeButtons: false,
       systemList: [],
+      ewList: [],
       stateVersion: 0
     };
 
@@ -36,6 +37,10 @@ class UIState {
     this.state.gameUiMode[gameUiModes.MOVEMENT] = false;
 
     this.updateState();
+  }
+
+  setEwList(entries) {
+    this.state.ewList = entries;
   }
 
   setSystemList(systems) {

@@ -20,6 +20,7 @@ const SystemInfoTooltip = styled(Tooltip)`
     }, "")}
   width: ${props => (props.ship ? "300px" : "200px")};
   text-align: left;
+  filter: brightness(1);
 `;
 
 export const Entry = styled(TooltipEntry)`
