@@ -1,5 +1,4 @@
 import * as THREE from "three";
-import { cloneObject } from "../../utils/objectLoader";
 import * as shipObjects from ".";
 import Vector from "../../../../../model/utils/Vector.mjs";
 
@@ -13,6 +12,7 @@ import {
 } from "../sprite";
 
 import Line from "../Line";
+import Object3d from "../object3d/Object3d";
 
 const COLOR_MINE = new THREE.Color(39 / 255, 196 / 255, 39 / 255);
 const COLOR_ENEMY = new THREE.Color(255 / 255, 40 / 255, 40 / 255);
@@ -27,6 +27,7 @@ class ShipObject {
     //this.mesh.castShadow = true;
     //this.mesh.receiveShadow = true;
     this.shipObject = null;
+    this.systemObjects = [];
 
     this.resolveShipObjectLoaded = null;
     this.isShipObjectLoaded = new Promise((resolve, reject) => {
@@ -62,7 +63,7 @@ class ShipObject {
 
   setShipObject(object) {
     this.shipObject = object;
-    this.mesh.add(object);
+    object.addTo(this.mesh);
     this.resolveShipObjectLoaded(true);
   }
 
@@ -138,7 +139,7 @@ class ShipObject {
     }
 
     await this.isShipObjectLoaded;
-    this.shipObject.position.set(0, 0, this.shipZ);
+    this.shipObject.object.position.set(0, 0, this.shipZ);
   }
 
   setShipZ(z) {
@@ -154,7 +155,7 @@ class ShipObject {
     this.rotation = { x, y, z };
 
     await this.isShipObjectLoaded;
-    this.shipObject.rotation.set(
+    this.shipObject.object.rotation.set(
       degreeToRadian(x + this.startRotation.x),
       degreeToRadian(y + this.startRotation.y),
       degreeToRadian(z + this.startRotation.z)
@@ -267,55 +268,37 @@ class ShipObject {
     this.BDEWSprite = null;
   }
 
-  /*
-  positionAndFaceIcon(offset, movementService) {
-    var movement = movementService.getLastEndMove(this.ship);
-    var gamePosition = window.coordinateConverter.fromHexToGame(
-      movement.position
-    );
-
-    if (offset) {
-      gamePosition.x += offset.x;
-      gamePosition.y += offset.y;
-    }
-
-    var facing = hexFacingToAngle(movement.facing);
-
-    gamePosition.z = this.defaultHeight;
-    this.setPosition(gamePosition);
-    this.setFacing(-facing);
-  }
-  */
-
   async replaceSocketByName(names, entity) {
     names = [].concat(names);
-    const toDelete = [];
-    const toAdd = [];
 
     await this.isShipObjectLoaded;
-    this.shipObject.children.forEach(child => {
-      if (names.includes(child.name)) {
-        toDelete.push(child);
-        const newEntity = cloneObject(entity);
-        newEntity.position.copy(child.position);
-        newEntity.rotation.copy(child.rotation);
-        newEntity.quaternion.copy(child.quaternion);
-        toAdd.push(newEntity);
-      }
-    });
 
-    toDelete.forEach(mesh => this.shipObject.remove(mesh));
-    toAdd.forEach(mesh => this.shipObject.add(mesh));
+    names.forEach(({ name, id }) => {
+      const slot = this.shipObject.scene.children.find(child => {
+        if (!child.name) {
+          return false;
+        }
+
+        if (child.name === name) {
+          return true;
+        }
+      });
+
+      const newEntity = entity.clone().setId(id);
+      newEntity.object.position.copy(slot.position);
+      newEntity.object.rotation.copy(slot.rotation);
+      newEntity.object.quaternion.copy(slot.quaternion);
+      this.shipObject.scene.remove(slot);
+      newEntity.addTo(this.shipObject.object);
+
+      this.systemObjects.push(newEntity);
+    });
   }
 
   async replaceOpacity(opacity) {
     await this.isShipObjectLoaded;
 
     this.shipObject.traverse(child => {
-      if (!child.isMesh) {
-        return;
-      }
-
       child.material.transparent = true;
       child.material.opacity = opacity;
       child.material.needsUpdate = true;
@@ -324,10 +307,6 @@ class ShipObject {
 
   revertOpacity() {
     this.shipObject.traverse(child => {
-      if (!child.isMesh) {
-        return;
-      }
-
       child.material.opacity = this.opacity;
       child.material.needsUpdate = true;
     });
@@ -343,10 +322,6 @@ class ShipObject {
     await this.isShipObjectLoaded;
 
     this.shipObject.traverse(child => {
-      if (!child.isMesh) {
-        return;
-      }
-
       const replacement = this.emissiveReplaced.find(
         replacement => replacement.object === child
       );
@@ -368,10 +343,6 @@ class ShipObject {
   async revertEmissive() {
     await this.isShipObjectLoaded;
     this.shipObject.traverse(child => {
-      if (!child.isMesh) {
-        return;
-      }
-
       const replacement = this.emissiveReplaced.find(
         replacement => replacement.object === child
       );
@@ -412,14 +383,8 @@ class ShipObject {
     return this.ghost;
   }
 
-  render() {
-    /*
-    if (this.shipSelectedSprite) {
-      this.shipSelectedSprite.setFacing(
-        this.shipSelectedSprite.getFacing() + 0.7
-      );
-    }
-    */
+  render(renderPayload) {
+    this.systemObjects.forEach(object => object.render(renderPayload));
   }
 }
 

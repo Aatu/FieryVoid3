@@ -1,4 +1,4 @@
-import GLTFLoader from "three-gltf-loader";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 
 const loader = new GLTFLoader();
 
@@ -8,9 +8,12 @@ export const cloneObject = (source, cloneMaterial = true) => {
   const sourceLookup = new Map();
   const cloneLookup = new Map();
 
-  const clone = source.clone();
+  console.log(source);
 
-  parallelTraverse(source, clone, function(sourceNode, clonedNode) {
+  const clone = source.scene.clone();
+  const animations = source.animations;
+
+  parallelTraverse(source.scene, clone, function(sourceNode, clonedNode) {
     sourceLookup.set(clonedNode, sourceNode);
     cloneLookup.set(sourceNode, clonedNode);
   });
@@ -40,7 +43,7 @@ export const cloneObject = (source, cloneMaterial = true) => {
     });
   }
 
-  return clone;
+  return { scene: clone, animations };
 };
 
 const parallelTraverse = (a, b, callback) => {
@@ -63,7 +66,7 @@ export const loadObject = async url => {
     url: url,
     value: new Promise((resolve, reject) => {
       loader.load(url, object => {
-        resolve(object.scene);
+        resolve(object);
       });
     })
   };

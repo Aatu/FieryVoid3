@@ -1,5 +1,5 @@
 import ShipObject from "../ShipObject";
-import { loadObject, cloneObject } from "../../../utils/objectLoader";
+import { loadObject3d } from "../../object3d/Object3d";
 import * as THREE from "three";
 
 class Caliope extends ShipObject {
@@ -13,55 +13,74 @@ class Caliope extends ShipObject {
 
   async create() {
     super.create();
-    const object = await loadObject("/img/3d/caliope/scene.gltf");
+    const object = await loadObject3d("/img/3d/caliope/scene.gltf");
     //object.scale.set(2, 2, 2);
     this.startRotation = { x: 90, y: 90, z: 0 };
 
     this.setRotation(this.rotation.x, this.rotation.y, this.rotation.z);
-    object.position.set(0, 0, this.defaultHeight);
+    object.object.position.set(0, 0, this.defaultHeight);
 
-    const radiator = await loadObject("/img/3d/radiator/scene.gltf");
-    const autoCannon = await loadObject(
+    const radiator = await loadObject3d("/img/3d/radiator/scene.gltf");
+    const autoCannon = await loadObject3d(
       "/img/3d/systems/weapons/conventional/85mmAutoCannon/scene.gltf"
     );
 
+    /*
+    console.log("radiator", radiator);
+    const mixer = new THREE.AnimationMixer(radiator);
+    const clips = radiator.children[0].animations;
+    console.log(mixer, clips);
+    */
+
     super.replaceSocketByName(
       [
-        "engine_pylon_top_front",
-        "engine_pylon_left_front",
-        "engine_pylon_right_front"
+        { name: "engine_pylon_top_front", id: 123 },
+        { name: "engine_pylon_left_front", id: 123 },
+        { name: "engine_pylon_right_front", id: 123 }
       ],
       radiator
     );
 
     super.replaceSocketByName(
       [
-        "engine_pylon_top",
-        "engine_pylon_left",
-        "engine_pylon_right",
-        "main_hull_front_left_bottom",
-        "main_hull_front_left_top",
-        "main_hull_front_right_bottom",
-        "main_hull_front_right_top"
+        { name: "engine_pylon_top", id: 123 },
+        { name: "engine_pylon_left", id: 123 },
+        { name: "engine_pylon_right", id: 123 }
       ],
       autoCannon
     );
 
     super.replaceSocketByName(
       [
-        "font_hull_bottom",
-        "font_hull_top",
-        "main_hull_front_left_side",
-        "main_hull_front_right_side"
+        { name: "main_hull_front_left_bottom", id: 123 },
+        { name: "main_hull_front_left_top", id: 123 },
+        { name: "main_hull_front_right_bottom", id: 123 },
+        { name: "main_hull_front_right_top", id: 123 }
       ],
-      await loadObject(
+      await loadObject3d(
+        "/img/3d/systems/weapons/railgun/turreted64GwRailgun/scene.gltf"
+      )
+    );
+
+    super.replaceSocketByName(
+      [
+        { name: "font_hull_bottom", id: 123 },
+        { name: "font_hull_top", id: 123 },
+        { name: "main_hull_front_left_side", id: 123 },
+        { name: "main_hull_front_right_side", id: 123 }
+      ],
+      await loadObject3d(
         "/img/3d/systems/weapons/conventional/30mmPDC/scene.gltf"
       )
     );
 
     super.replaceSocketByName(
-      ["thruster_top", "thruster_right", "thruster_left"],
-      await loadObject("/img/3d/systems/thrusters/5mThruster/scene.gltf")
+      [
+        { name: "thruster_top", id: 123 },
+        { name: "thruster_right", id: 123 },
+        { name: "thruster_left", id: 123 }
+      ],
+      await loadObject3d("/img/3d/systems/thrusters/5mThruster/scene.gltf")
     );
 
     this.setShipObject(object);

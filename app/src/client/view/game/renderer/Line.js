@@ -69,8 +69,8 @@ class Line {
 
   async getGeometry() {
     if (!hexagonMesh) {
-      const scene = await loadObject("/img/3d/line2/scene.gltf");
-      hexagonMesh = scene.children[0];
+      const object = await loadObject("/img/3d/line2/scene.gltf");
+      hexagonMesh = object.scene.children[0];
       hexagonMesh.rotation.set(
         hexagonMesh.rotation.x + degreeToRadian(90),
         hexagonMesh.rotation.y,

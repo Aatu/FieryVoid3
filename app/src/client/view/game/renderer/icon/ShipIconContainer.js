@@ -145,10 +145,8 @@ class ShipIconContainer {
     }, this);
   }
 
-  render(coordinateConverter, scene, zoom) {
-    this.iconsAsArray.forEach(icon =>
-      icon.render(coordinateConverter, scene, zoom)
-    );
+  render(renderPayload) {
+    this.iconsAsArray.forEach(icon => icon.render(renderPayload));
   }
 }
 

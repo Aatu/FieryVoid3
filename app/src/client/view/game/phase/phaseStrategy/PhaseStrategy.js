@@ -56,21 +56,21 @@ class PhaseStrategy {
 
     const { shipIconContainer } = this.services;
 
-    shipIconContainer &&
-      shipIconContainer.render(coordinateConverter, scene, zoom);
-
     const turnDone =
       this.animationTurnLength !== null
         ? this.totalAnimationTime / this.animationTurnLength
         : 0;
 
-    this.callStrategies("render", {
+    const renderPayload = {
       delta: this.currentDeltaTime,
       total: this.totalAnimationTime,
       last: this.lastAnimationTime,
       turn: Math.floor(turnDone),
-      percentDone: turnDone % 1
-    });
+      percentDone: turnDone % 1,
+      zoom
+    };
+    this.callStrategies("render", renderPayload);
+    shipIconContainer && shipIconContainer.render(renderPayload);
   }
 
   animateFromTo(start, end, turnLength) {
