@@ -25,6 +25,10 @@ class RequiresPowerSystemStrategy extends ShipSystemStrategy {
   canSetOffline(payload, previousResponse = false) {
     return true;
   }
+
+  canSetOnline() {
+    return true;
+  }
 }
 
 export default RequiresPowerSystemStrategy;

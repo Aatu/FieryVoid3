@@ -1,5 +1,7 @@
 const POWER_TYPE_OFFLINE = "offline";
 const POWER_TYPE_BOOST = "boost";
+const POWER_TYPE_GO_OFFLINE = "go-offline";
+const POWER_TYPE_GO_ONLINE = "go-online";
 
 class PowerEntry {
   constructor(powerType, amount = 0) {
@@ -9,6 +11,14 @@ class PowerEntry {
 
   isOffline() {
     return this.type === POWER_TYPE_OFFLINE;
+  }
+
+  isGoingOffline() {
+    return this.type === POWER_TYPE_GO_OFFLINE;
+  }
+
+  isGoingOnline() {
+    return this.type === POWER_TYPE_GO_ONLINE;
   }
 
   isBoost() {
@@ -27,10 +37,10 @@ class PowerEntry {
     return {
       type: this.type,
       amount: this.amount
-    }
+    };
   }
 
-  deserialize(data){
+  deserialize(data) {
     this.type = data.type;
     this.amount = data.amount || 0;
 
@@ -38,5 +48,11 @@ class PowerEntry {
   }
 }
 
-export { POWER_TYPE_OFFLINE, POWER_TYPE_BOOST };
+export {
+  POWER_TYPE_OFFLINE,
+  POWER_TYPE_BOOST,
+  POWER_TYPE_GO_OFFLINE,
+  POWER_TYPE_GO_ONLINE
+};
+
 export default PowerEntry;

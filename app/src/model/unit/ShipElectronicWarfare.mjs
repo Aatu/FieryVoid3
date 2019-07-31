@@ -27,8 +27,6 @@ class ShipElectronicWarfare {
       this.getCcEw(),
       this.getAllEntries()
     );
-
-    console.log("activated EW", this.inEffect.serialize());
   }
 
   assignCcEw(amount) {

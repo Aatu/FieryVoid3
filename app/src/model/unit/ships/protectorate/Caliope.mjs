@@ -64,7 +64,9 @@ class Caliope extends Ship {
       new systems.Engine({ id: 6, hitpoints: 20, armor: 3 }, 12, 6, 2),
       new systems.Reactor({ id: 7, hitpoints: 10, armor: 3 }, 20),
       new systems.Structure({ id: 11, hitpoints: 30, armor: 4 }),
-      new systems.EwArray({ id: 12, hitpoints: 30, armor: 4 }, 8)
+      new systems.EwArray({ id: 12, hitpoints: 30, armor: 4 }, 8),
+      new systems.HeatSink({ id: 13, hitpoints: 10, armor: 3 }),
+      new systems.HeatSink({ id: 14, hitpoints: 10, armor: 3 })
     ]);
 
     this.systems.addStarboardFrontSystem([
@@ -77,7 +79,7 @@ class Caliope extends Ship {
 
     this.systems.addAftSystem([
       new systems.ManeuveringThruster(
-        { id: 201, hitpoints: 10, armor: 3 },
+        { id: 301, hitpoints: 10, armor: 3 },
         3,
         2
       ),
@@ -86,7 +88,18 @@ class Caliope extends Ship {
       new systems.Thruster({ id: 32, hitpoints: 10, armor: 3 }, 5, 0),
       new systems.Thruster({ id: 33, hitpoints: 10, armor: 3 }, 5, 0),
 
-      new systems.Structure({ id: 311, hitpoints: 30, armor: 4 })
+      new systems.Structure({ id: 311, hitpoints: 30, armor: 4 }),
+      new systems.HeatSink({ id: 313, hitpoints: 10, armor: 3 }),
+      new systems.HeatSink({ id: 314, hitpoints: 10, armor: 3 }),
+      new systems.Radiator({ id: 312, hitpoints: 10, armor: 3 })
+    ]);
+
+    this.systems.addPortAftSystem([
+      new systems.Radiator({ id: 401, hitpoints: 10, armor: 3 })
+    ]);
+
+    this.systems.addStarboardAftSystem([
+      new systems.Radiator({ id: 201, hitpoints: 10, armor: 3 })
     ]);
   }
 }

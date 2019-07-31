@@ -7,14 +7,30 @@ class GameSystemTooltipMenu extends React.PureComponent {
     const { ship, system, uiState } = this.props;
     const { currentUser } = uiState.services;
 
+    const myShip = ship.player.is(currentUser);
     const selectedShip = uiState.getSelectedShip();
 
     return (
       <TooltipMenu>
-        <TooltipButton
-          img="/img/selectShip.png"
-          onClick={() => uiState.selectShip(ship)}
-        />
+        {myShip && ship.systems.power.canSetOnline(system) && (
+          <TooltipButton
+            img="/img/offline.png"
+            onClick={() => {
+              system.power.setOnline();
+              uiState.shipStateChanged(ship);
+            }}
+          />
+        )}
+
+        {myShip && ship.systems.power.canSetOffline(system) && (
+          <TooltipButton
+            img="/img/goOffline.png"
+            onClick={() => {
+              system.power.setOffline();
+              uiState.shipStateChanged(ship);
+            }}
+          />
+        )}
       </TooltipMenu>
     );
   }

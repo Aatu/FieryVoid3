@@ -1,6 +1,7 @@
 import MovementHandler from "./MovementHandler.mjs";
 import ElectronicWarfareHandler from "./ElectronicWarfareHandler.mjs";
 import WeaponHandler from "./WeaponHandler.mjs";
+import PowerHandler from "./PowerHandler.mjs";
 import { UnauthorizedError, InvalidGameDataError } from "../errors/index.mjs";
 
 class GameHandler {
@@ -8,6 +9,7 @@ class GameHandler {
     this.movementHandler = new MovementHandler();
     this.electronicWarfareHandler = new ElectronicWarfareHandler();
     this.weaponHandler = new WeaponHandler();
+    this.powerHandler = new PowerHandler();
   }
 
   submit(serverGameData, clientGameData, user) {
@@ -36,6 +38,13 @@ class GameHandler {
     );
 
     this.weaponHandler.receiveFireOrders(
+      serverGameData,
+      clientGameData,
+      activeShips,
+      user
+    );
+
+    this.powerHandler.receivePower(
       serverGameData,
       clientGameData,
       activeShips,

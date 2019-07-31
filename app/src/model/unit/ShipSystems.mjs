@@ -140,9 +140,10 @@ class ShipSystems {
 
   advanceTurn(turn) {
     this.getSystems().forEach(system => {
-      system.callHandler("advanceTurn", turn);
+      system.advanceTurn(turn);
     });
 
+    this.power.advanceTurn(turn);
     return this;
   }
 

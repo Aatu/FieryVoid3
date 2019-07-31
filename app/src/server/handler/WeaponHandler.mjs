@@ -28,7 +28,6 @@ class WeaponHandler {
   }
 
   advance(gameData) {
-    console.log("advance weaponfire");
     gameData.ships.getShips().forEach(ship => {
       ship.systems
         .getSystems()

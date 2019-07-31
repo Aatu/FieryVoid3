@@ -23,6 +23,42 @@ class ShipPower {
   isValidPower() {
     return this.getRemainingPowerOutput() >= 0;
   }
+
+  canSetOffline(system) {
+    return system.power.canSetOffline();
+  }
+
+  canSetOnline(system) {
+    if (!system.power.canSetOnline()) {
+      return false;
+    }
+
+    return this.getRemainingPowerOutput() >= system.power.getPowerRequirement();
+  }
+
+  copyPower(ship) {
+    this.shipSystems.getSystems().forEach(system => {
+      const otherSystem = ship.systems.getSystemById(system.id);
+
+      if (otherSystem.power.isGoingOffline()) {
+        if (this.canSetOffline(system)) {
+          system.power.setOffline();
+        } else {
+          throw new Error("Invalid power, can not set offline");
+        }
+      }
+
+      if (otherSystem.power.isGoingOnline()) {
+        if (this.canSetOnline(system)) {
+          system.power.setOnline();
+        } else {
+          throw new Error("Invalid power, can not set online");
+        }
+      }
+    });
+  }
+
+  advanceTurn(turn) {}
 }
 
 export default ShipPower;

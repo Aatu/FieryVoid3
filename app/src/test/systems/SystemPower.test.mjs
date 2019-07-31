@@ -42,3 +42,47 @@ test("Bunch of systems generate power", test => {
   test.deepEqual(systems.power.getRemainingPowerOutput(), 2);
   test.true(systems.power.isValidPower());
 });
+
+test("System can be turned offline", test => {
+  const reactor1 = new Reactor({ id: 1, hitpoints: 10, armor: 3 }, 10);
+  const reactor2 = new Reactor({ id: 2, hitpoints: 10, armor: 3 }, 10);
+  const engine1 = new Engine({ id: 3, hitpoints: 10, armor: 3 }, 12, 6, 2);
+  const engine2 = new Engine({ id: 4, hitpoints: 10, armor: 3 }, 12, 6, 2);
+
+  const systems = new ShipSystems().addPrimarySystem([
+    reactor1,
+    reactor2,
+    engine1,
+    engine2
+  ]);
+
+  test.deepEqual(systems.getSystems().length, 4);
+  engine1.power.setOffline();
+  test.true(engine1.power.isGoingOffline());
+  test.deepEqual(systems.power.getRemainingPowerOutput(), 14);
+  test.true(engine1.power.isOffline());
+  engine1.power.setOnline();
+  test.deepEqual(systems.power.getRemainingPowerOutput(), 8);
+  test.false(engine1.power.isOffline());
+
+  engine1.power.setOffline();
+  systems.advanceTurn();
+
+  test.true(engine1.power.isOffline());
+  test.deepEqual(systems.power.getRemainingPowerOutput(), 14);
+
+  engine1.power.setOnline();
+  test.true(engine1.power.isGoingOnline());
+});
+
+test("Invalid power test", test => {
+  const engine1 = new Engine({ id: 3, hitpoints: 10, armor: 3 }, 12, 6, 2);
+  const engine2 = new Engine({ id: 4, hitpoints: 10, armor: 3 }, 12, 6, 2);
+
+  const systems = new ShipSystems().addPrimarySystem([engine1, engine2]);
+
+  test.false(systems.power.isValidPower());
+  engine1.power.setOffline();
+  engine2.power.setOffline();
+  test.true(systems.power.isValidPower());
+});

@@ -105,10 +105,10 @@ class ShipSystem {
     };
   }
 
-  advanceTurn() {
+  advanceTurn(turn) {
     this.damage.advanceTurn();
     this.power.advanceTurn();
-    this.callHandler("advanceTurn");
+    this.callHandler("advanceTurn", turn);
   }
 
   isWeapon() {
