@@ -13,13 +13,12 @@ class Object3d {
     this.object = new THREE.Object3D();
     this.scene = scene;
     this.animations = animations;
+    this.actions = [];
 
     this.object.add(this.scene);
 
     this.animationMixer = new THREE.AnimationMixer(this.scene);
-    if (this.animations.length > 0) {
-      this.animationMixer.clipAction(this.animations[0]).play();
-    }
+    //this.playAnimation("online");
   }
 
   traverse(callBack) {
@@ -32,6 +31,51 @@ class Object3d {
         child.traverse(callBack);
       }
     });
+  }
+
+  disableAnimation(name) {
+    const clip = THREE.AnimationClip.findByName(this.animations, name);
+
+    if (!clip) {
+      return;
+    }
+
+    const action = this.animationMixer.clipAction(clip);
+    action.reset();
+    action.weight = 0;
+    action.paused = true;
+  }
+
+  playAnimation(name) {
+    const clip = THREE.AnimationClip.findByName(this.animations, name);
+
+    if (!clip) {
+      return;
+    }
+    const action = this.animationMixer.clipAction(clip);
+    action.reset();
+    action.weight = 1;
+    action.clampWhenFinished = true;
+    action.loop = THREE.LoopOnce;
+    action.time = 0;
+    action.paused = false;
+    action.play();
+  }
+
+  setAnimation(name, time) {
+    const clip = THREE.AnimationClip.findByName(this.animations, name);
+
+    if (!clip) {
+      return;
+    }
+    const action = this.animationMixer.clipAction(clip);
+    action.reset();
+    action.weight = 1;
+    action.clampWhenFinished = true;
+    action.loop = THREE.LoopOnce;
+    action.time = time;
+    action.paused = true;
+    action.play();
   }
 
   addTo(scene) {

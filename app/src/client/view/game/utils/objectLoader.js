@@ -8,8 +8,6 @@ export const cloneObject = (source, cloneMaterial = true) => {
   const sourceLookup = new Map();
   const cloneLookup = new Map();
 
-  console.log(source);
-
   const clone = source.scene.clone();
   const animations = source.animations;
 

@@ -34,9 +34,9 @@ class Caliope extends ShipObject {
 
     super.replaceSocketByName(
       [
-        { name: "engine_pylon_top_front", id: 123 },
-        { name: "engine_pylon_left_front", id: 123 },
-        { name: "engine_pylon_right_front", id: 123 }
+        { name: "engine_pylon_top_front", id: 312 },
+        { name: "engine_pylon_left_front", id: 201 },
+        { name: "engine_pylon_right_front", id: 401 }
       ],
       radiator
     );

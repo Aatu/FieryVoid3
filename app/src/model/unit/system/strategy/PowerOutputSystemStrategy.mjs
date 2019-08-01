@@ -13,6 +13,15 @@ class PowerOutputSystemStrategy extends ShipSystemStrategy {
     this.output = output || 0;
   }
 
+  getMessages(payload, previousResponse = []) {
+    previousResponse.push({
+      header: "Power output",
+      value: this.getPowerOutput()
+    });
+
+    return previousResponse;
+  }
+
   getPowerOutput(payload, previousResponse = 0) {
     if (this.system.isDisabled()) {
       return previousResponse;

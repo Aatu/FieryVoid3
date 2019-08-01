@@ -386,6 +386,39 @@ class ShipObject {
   render(renderPayload) {
     this.systemObjects.forEach(object => object.render(renderPayload));
   }
+
+  playSystemAnimation(system, name) {
+    const object = this.systemObjects.find(object => object.id === system.id);
+
+    if (!object) {
+      return;
+    }
+
+    console.log("animate", name, system);
+    object.playAnimation(name);
+  }
+
+  setSystemAnimation(system, name, time) {
+    const object = this.systemObjects.find(object => object.id === system.id);
+
+    if (!object) {
+      return;
+    }
+
+    console.log("set animation", name, system);
+    object.setAnimation(name, time);
+  }
+
+  disableSystemAnimation(system, name) {
+    const object = this.systemObjects.find(object => object.id === system.id);
+
+    if (!object) {
+      return;
+    }
+
+    console.log("disable", name, system);
+    object.disableAnimation(name);
+  }
 }
 
 export default ShipObject;

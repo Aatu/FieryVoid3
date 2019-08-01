@@ -26,9 +26,15 @@ class SystemPower {
   }
 
   isOffline() {
-    return this.entries.some(
-      entry => entry.isOffline() || entry.isGoingOffline()
+    return (
+      (this.entries.some(entry => entry.isOffline()) ||
+        this.isGoingOffline()) &&
+      !this.isGoingOnline()
     );
+  }
+
+  isOnline() {
+    return !this.isOffline();
   }
 
   isGoingOnline() {
@@ -43,6 +49,10 @@ class SystemPower {
     if (this.isOffline() || !this.canSetOffline()) {
       return;
     }
+
+    this.entries = this.entries.filter(
+      entry => entry.type !== POWER_TYPE_GO_ONLINE
+    );
 
     this.entries.push(new PowerEntry(POWER_TYPE_GO_OFFLINE));
   }
@@ -64,15 +74,11 @@ class SystemPower {
       return;
     }
 
-    const goOffline = this.entries.find(
-      entry => entry.type === POWER_TYPE_GO_OFFLINE
+    this.entries = this.entries.filter(
+      entry => entry.type !== POWER_TYPE_GO_OFFLINE
     );
 
-    if (goOffline) {
-      this.entries = this.entries.filter(entry => entry !== goOffline);
-    } else {
-      this.entries.push(new PowerEntry(POWER_TYPE_GO_ONLINE));
-    }
+    this.entries.push(new PowerEntry(POWER_TYPE_GO_ONLINE));
   }
 
   getPowerOutput() {

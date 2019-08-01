@@ -1,4 +1,7 @@
-import { ShipIdleMovementAnimation } from "../../animation";
+import {
+  ShipIdleMovementAnimation,
+  ShipSystemAnimation
+} from "../../animation";
 
 import AnimationUiStrategy from "./AnimationUiStrategy";
 
@@ -9,7 +12,7 @@ class ShowShipObjects extends AnimationUiStrategy {
 
   update(gamedata) {
     super.update(gamedata);
-    const { shipIconContainer, coordinateConverter } = this.services;
+    const { shipIconContainer } = this.services;
 
     shipIconContainer.getArray().forEach(icon => {
       const ship = icon.ship;
@@ -19,17 +22,18 @@ class ShowShipObjects extends AnimationUiStrategy {
       } else {
         icon.show();
         this.animations.push(new ShipIdleMovementAnimation(icon));
+        this.animations.push(new ShipSystemAnimation(icon).update());
       }
       return this;
     });
   }
 
   shipStateChanged(ship) {
-    const animation = this.animations.find(
-      animation => animation.ship === ship
-    );
-
-    animation.update();
+    this.animations
+      .filter(animation => animation.ship === ship)
+      .forEach(animation => {
+        animation.update();
+      });
   }
 
   deactivate() {
