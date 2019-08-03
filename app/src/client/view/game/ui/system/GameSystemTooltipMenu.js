@@ -17,6 +17,7 @@ class GameSystemTooltipMenu extends React.PureComponent {
             img="/img/offline.png"
             onClick={() => {
               system.power.setOnline();
+              uiState.shipSystemStateChanged(ship, system);
               uiState.shipStateChanged(ship);
             }}
           />
@@ -27,6 +28,7 @@ class GameSystemTooltipMenu extends React.PureComponent {
             img="/img/goOffline.png"
             onClick={() => {
               system.power.setOffline();
+              uiState.shipSystemStateChanged(ship, system);
               uiState.shipStateChanged(ship);
             }}
           />

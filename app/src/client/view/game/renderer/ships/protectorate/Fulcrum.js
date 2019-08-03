@@ -24,9 +24,9 @@ class Fulcrum extends ShipObject {
 
     super.replaceSocketByName(
       [
-        { name: "rear_hull_radiator_left", id: 123 },
-        { name: "rear_hull_radiator_right", id: 123 },
-        { name: "rear_hull_radiator_bottom", id: 123 }
+        { name: "rear_hull_radiator_left", id: 416 },
+        { name: "rear_hull_radiator_right", id: 216 },
+        { name: "rear_hull_radiator_bottom", id: 316 }
       ],
       await loadObject3d("/img/3d/systems/radiators/5x40mSail/scene.gltf")
     );
@@ -40,12 +40,12 @@ class Fulcrum extends ShipObject {
 
     super.replaceSocketByName(
       [
-        { name: "front_hull_pdc_bottom", id: 123 },
-        { name: "front_hull_pdc_left", id: 123 },
-        { name: "front_hull_pdc_right", id: 123 },
-        { name: "rear_hull_pdc_top", id: 123 },
-        { name: "rear_hull_pdc_right", id: 123 },
-        { name: "rear_hull_pdc_left", id: 123 }
+        { name: "front_hull_pdc_bottom", id: 14 },
+        { name: "front_hull_pdc_left", id: 15 },
+        { name: "front_hull_pdc_right", id: 13 },
+        { name: "rear_hull_pdc_top", id: 214 },
+        { name: "rear_hull_pdc_right", id: 213 },
+        { name: "rear_hull_pdc_left", id: 215 }
       ],
       await loadObject3d(
         "/img/3d/systems/weapons/conventional/30mmPDC/scene.gltf"

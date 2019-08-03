@@ -22,7 +22,7 @@ class ShowShipObjects extends AnimationUiStrategy {
       } else {
         icon.show();
         this.animations.push(new ShipIdleMovementAnimation(icon));
-        this.animations.push(new ShipSystemAnimation(icon).update());
+        this.animations.push(new ShipSystemAnimation(icon));
       }
       return this;
     });
@@ -36,9 +36,19 @@ class ShowShipObjects extends AnimationUiStrategy {
       });
   }
 
+  shipSystemStateChanged({ ship, system }) {
+    this.animations
+      .filter(animation => animation.ship === ship)
+      .forEach(animation => {
+        if (animation.updateSystem) {
+          animation.updateSystem(system);
+        }
+      });
+  }
+
   deactivate() {
     const { shipIconContainer } = this.services;
-    shipIconContainer.getArray().forEach(function(icon) {
+    shipIconContainer.getArray().forEach(icon => {
       icon.hide();
     }, this);
 

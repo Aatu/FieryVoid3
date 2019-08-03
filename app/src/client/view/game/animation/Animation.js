@@ -42,6 +42,8 @@ class Animation {
     }
   }
 
+  deactivate() {}
+
   reset() {}
 
   cleanUp() {}

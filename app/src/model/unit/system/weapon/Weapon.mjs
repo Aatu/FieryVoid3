@@ -12,6 +12,14 @@ class Weapon extends ShipSystem {
   showOnSystemList() {
     return true;
   }
+
+  getIconText() {
+    return (
+      this.callHandler("getTurnsLoaded") +
+      "/" +
+      this.callHandler("getLoadingTime")
+    );
+  }
 }
 
 export default Weapon;

@@ -394,7 +394,7 @@ class ShipObject {
       return;
     }
 
-    console.log("animate", name, system);
+    //console.log("animate", name, system);
     object.playAnimation(name);
   }
 
@@ -405,7 +405,7 @@ class ShipObject {
       return;
     }
 
-    console.log("set animation", name, system);
+    //console.log("set animation", name, system);
     object.setAnimation(name, time);
   }
 
@@ -416,7 +416,7 @@ class ShipObject {
       return;
     }
 
-    console.log("disable", name, system);
+    //console.log("disable", name, system);
     object.disableAnimation(name);
   }
 }

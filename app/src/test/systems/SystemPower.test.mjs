@@ -1,6 +1,7 @@
 import test from "ava";
 import Engine from "../../model/unit/system/engine/Engine.mjs";
 import Reactor from "../../model/unit/system/reactor/Reactor.mjs";
+import PDC30mm from "../../model/unit/system/weapon/pdc/PDC30mm.mjs";
 
 import ShipSystems from "../../model/unit/ShipSystems.mjs";
 
@@ -85,4 +86,22 @@ test("Invalid power test", test => {
   engine1.power.setOffline();
   engine2.power.setOffline();
   test.true(systems.power.isValidPower());
+});
+
+test("Offline state prevents loading", test => {
+  const reactor1 = new Reactor({ id: 1, hitpoints: 10, armor: 3 }, 10);
+  const pdc1 = new PDC30mm(
+    { id: 213, hitpoints: 5, armor: 3 },
+    { start: 180, end: 0 }
+  );
+
+  const systems = new ShipSystems().addPrimarySystem([reactor1, pdc1]);
+
+  systems.advanceTurn(2);
+  test.is(pdc1.callHandler("getTurnsLoaded"), 1);
+  pdc1.power.setOffline();
+  test.true(pdc1.isDisabled());
+  systems.advanceTurn(3);
+  test.true(pdc1.isDisabled());
+  test.is(pdc1.callHandler("getTurnsLoaded"), 0);
 });

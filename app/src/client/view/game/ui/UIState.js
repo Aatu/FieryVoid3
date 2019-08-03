@@ -251,6 +251,10 @@ class UIState {
     this.customEvent("shipStateChanged", ship);
   }
 
+  shipSystemStateChanged(ship, system) {
+    this.customEvent("shipSystemStateChanged", { ship, system });
+  }
+
   showShipTooltip(icon, ui = false) {
     const { coordinateConverter } = this.services;
     const ship = icon.ship;

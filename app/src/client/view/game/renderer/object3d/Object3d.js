@@ -18,7 +18,7 @@ class Object3d {
     this.object.add(this.scene);
 
     this.animationMixer = new THREE.AnimationMixer(this.scene);
-    //this.playAnimation("online");
+    this.loopAnimation("ambient");
   }
 
   traverse(callBack) {
@@ -57,6 +57,22 @@ class Object3d {
     action.weight = 1;
     action.clampWhenFinished = true;
     action.loop = THREE.LoopOnce;
+    action.time = 0;
+    action.paused = false;
+    action.play();
+  }
+
+  loopAnimation(name) {
+    const clip = THREE.AnimationClip.findByName(this.animations, name);
+
+    if (!clip) {
+      return;
+    }
+    const action = this.animationMixer.clipAction(clip);
+    action.reset();
+    action.weight = 1;
+    action.clampWhenFinished = true;
+    action.loop = THREE.LoopRepeat;
     action.time = 0;
     action.paused = false;
     action.play();

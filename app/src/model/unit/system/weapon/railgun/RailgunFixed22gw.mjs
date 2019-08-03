@@ -18,7 +18,7 @@ class RailgunFixed22gw extends Weapon {
         { range: 50, modifier: -100 },
         { range: 100, modifier: -200 }
       ]),
-      new StandardLoadingStrategy(1),
+      new StandardLoadingStrategy(3),
       new StandardDamageStrategy("3d3", "2d2 + 4")
     ]);
   }

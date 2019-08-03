@@ -6,4 +6,6 @@ import Caliope from "./protectorate/Caliope";
 import Fulcrum from "./protectorate/Fulcrum";
 import Mouros from "./protectorate/Mouros";
 
-export { Gunship, Rhino, Capital, Caliope, Fulcrum, Mouros };
+import Impetous from "./federation/Impetous";
+
+export { Gunship, Rhino, Capital, Caliope, Fulcrum, Mouros, Impetous };

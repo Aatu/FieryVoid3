@@ -97,7 +97,9 @@ class Fulcrum extends Ship {
       new systems.PDC30mm(
         { id: 214, hitpoints: 5, armor: 3 },
         { start: 0, end: 0 }
-      )
+      ),
+
+      new systems.Radiator({ id: 316, hitpoints: 10, armor: 3 })
     ]);
 
     this.systems.addStarboardFrontSystem([
@@ -111,7 +113,9 @@ class Fulcrum extends Ship {
       new systems.PDC30mm(
         { id: 215, hitpoints: 5, armor: 3 },
         { start: 0, end: 180 }
-      )
+      ),
+
+      new systems.Radiator({ id: 216, hitpoints: 10, armor: 3 })
     ]);
 
     this.systems.addPortFrontSystem([
@@ -125,7 +129,9 @@ class Fulcrum extends Ship {
       new systems.PDC30mm(
         { id: 213, hitpoints: 5, armor: 3 },
         { start: 180, end: 0 }
-      )
+      ),
+
+      new systems.Radiator({ id: 416, hitpoints: 10, armor: 3 })
     ]);
   }
 }

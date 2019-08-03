@@ -1,4 +1,4 @@
-import { ShipMovementAnimation } from "../../../animation";
+import { ShipMovementAnimation, ShipSystemAnimation } from "../../../animation";
 
 import AnimationUiStrategy from "../AnimationUiStrategy";
 
@@ -25,6 +25,12 @@ class ReplayShipMovement extends AnimationUiStrategy {
       icon.show();
       this.animations.push(
         new ShipMovementAnimation(icon, getMovesForShip(gameDatas, ship))
+      );
+      this.animations.push(
+        new ShipSystemAnimation(
+          icon,
+          gameDatas[0].ships.getShipById(icon.ship.id)
+        )
       );
     });
   }

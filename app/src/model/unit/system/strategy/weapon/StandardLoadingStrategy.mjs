@@ -44,9 +44,14 @@ class StandardLoadingStrategy extends ShipSystemStrategy {
   advanceTurn() {
     if (this.system.isDisabled()) {
       this.turnsLoaded = 0;
+      return;
     }
 
     this.turnsLoaded++;
+
+    if (this.turnsLoaded > this.loadingTime) {
+      this.turnsLoaded = this.loadingTime;
+    }
   }
 }
 

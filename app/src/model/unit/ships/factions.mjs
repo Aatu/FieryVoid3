@@ -7,5 +7,6 @@ class Faction {
 
 export default [
   new Faction("United Colonies", ["UcRhino"]),
-  new Faction("The Expanse Protecorate", ["Caliope", "Fulcrum", "Mouros"])
+  new Faction("The Expanse Protecorate", ["Caliope", "Fulcrum", "Mouros"]),
+  new Faction("Federation Navy", ["Impetous"])
 ];

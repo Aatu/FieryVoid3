@@ -95,7 +95,7 @@ class GameScene {
     //this.directionalLight3 = directionalLight3;
 
     //const directionalLight4 = new THREE.DirectionalLight(0x609dc1, 0.5);
-    const directionalLight4 = new THREE.DirectionalLight(0x470000, 0.5);
+    const directionalLight4 = new THREE.DirectionalLight(0xfff3a6, 0.02);
     directionalLight4.position.set(0, -1, 1);
     this.scene.add(directionalLight4);
 
