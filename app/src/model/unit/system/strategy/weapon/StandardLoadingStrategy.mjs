@@ -8,6 +8,10 @@ class StandardLoadingStrategy extends ShipSystemStrategy {
     this.turnsLoaded = 0;
   }
 
+  usesLoading() {
+    return true;
+  }
+
   onWeaponFired() {
     this.turnsLoaded = 0;
   }

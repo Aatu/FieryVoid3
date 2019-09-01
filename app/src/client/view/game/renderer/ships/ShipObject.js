@@ -191,7 +191,7 @@ class ShipObject {
   }
 
   getFacing() {
-    return this.getRotation().y;
+    return -this.getRotation().y;
   }
 
   setFacing(facing) {

@@ -26,25 +26,22 @@ class StandardDamageStrategy extends ShipSystemStrategy {
   }
 
   applyDamageFromWeaponFire({
-    fireOrder,
+    shooter,
+    target,
+    weaponSettings,
     gameData,
+    fireOrder,
     requiredToHit,
     rolledToHit
   }) {
-    const shooter = gameData.ships.getShipById(fireOrder.shooterId);
-    const target = gameData.ships.getShipById(fireOrder.targetId);
-    const weapon = shooter.systems.getSystemById(fireOrder.weaponId);
-
-    if (weapon !== this.system) {
-      throw new Error("Wrong system");
-    }
-
     const hitSystem = this.chooseHitSystem({ target, shooter });
     const damage = this.getDamageForWeaponHit({ requiredToHit, rolledToHit });
     const armor = this.applyArmorPiercing({ armor: hitSystem.getArmor() });
     const entry = new DamageEntry(damage - armor, armor, fireOrder.id);
     hitSystem.rollCritical(entry);
     hitSystem.addDamage(entry);
+    console.log("hitSystem", hitSystem, entry);
+    console.log("remaining", hitSystem.getRemainingHitpoints());
   }
 }
 

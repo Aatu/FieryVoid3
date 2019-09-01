@@ -21,6 +21,7 @@ class WeaponArcStrategy extends ShipSystemStrategy {
       shooter.getPosition(),
       target.getPosition()
     );
+
     const shooterFacing = hexFacingToAngle(shooter.getFacing());
     const arcs = this.getArcs({ facing: shooterFacing });
 

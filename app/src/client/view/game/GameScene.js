@@ -2,8 +2,6 @@ import * as THREE from "three";
 import HexGridRenderer from "./renderer/hexgrid/HexGridRender";
 import StarField from "./terrain/StarField";
 import { ZOOM_MAX, ZOOM_MIN } from "../../../model/gameConfig";
-import Line from "../game/renderer/Line";
-import LineSprite from "../game/renderer/sprite/LineSprite";
 
 window.THREE = THREE;
 

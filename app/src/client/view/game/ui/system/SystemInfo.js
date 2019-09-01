@@ -1,5 +1,6 @@
 import * as React from "react";
 import styled from "styled-components";
+import SystemInfoWeaponTargeting from "./SystemInfoWeaponTargeting";
 import {
   Tooltip,
   TooltipHeader,
@@ -45,7 +46,8 @@ class SystemInfo extends React.Component {
       system,
       element,
       systemInfoMenuProvider,
-      uiState
+      uiState,
+      weaponTargeting
     } = this.props;
 
     const Menu = systemInfoMenuProvider ? systemInfoMenuProvider() : null;
@@ -55,6 +57,15 @@ class SystemInfo extends React.Component {
         <InfoHeader>{system.getDisplayName()}</InfoHeader>
         {Menu && <Menu uiState={uiState} ship={ship} system={system} />}
         {system.getSystemInfo(ship).map(getEntry)}
+        {weaponTargeting && (
+          <SystemInfoWeaponTargeting
+            uiState={uiState}
+            ship={ship}
+            system={system}
+            target={weaponTargeting.target}
+            hitChange={weaponTargeting.hitChange}
+          />
+        )}
       </SystemInfoTooltip>
     );
   }

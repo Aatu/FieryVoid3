@@ -6,6 +6,13 @@ class GameShips {
     this.ships = [];
   }
 
+  isSameTeam(shipA, shipB) {
+    return (
+      this.gameData.slots.getTeamForShip(shipA) ===
+      this.gameData.slots.getTeamForShip(shipB)
+    );
+  }
+
   addShip(ship) {
     if (ship.id && this.getShipById(ship.id)) {
       throw new Error("Duplicate ship id added to gamedata");

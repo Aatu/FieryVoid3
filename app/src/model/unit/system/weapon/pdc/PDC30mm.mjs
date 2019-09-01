@@ -13,11 +13,11 @@ class PDC30mm extends Weapon {
       new RequiresPowerSystemStrategy(1),
       new FireOrderStrategy(1),
       new WeaponArcStrategy(arcs),
-      new StandardHitStrategy(),
+      new StandardHitStrategy(30),
       new StandardRangeStrategy([
-        { range: 0, modifier: 30 },
-        { range: 3, modifier: 30 },
-        { range: 5, modifier: 10 },
+        { range: 0, modifier: 0 },
+        { range: 3, modifier: 0 },
+        { range: 5, modifier: -20 },
         { range: 10, modifier: -30 },
         { range: 15, modifier: -100 },
         { range: 18, modifier: -200 }

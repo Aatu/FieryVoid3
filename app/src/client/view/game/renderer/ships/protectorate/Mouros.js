@@ -27,14 +27,22 @@ class Mouros extends ShipObject {
     super.replaceSocketByName(
       [
         { name: "Middle_hull_depress_top", id: 123 },
-        { name: "Middle_hull_frame_top", id: 123 },
         { name: "Middle_hull_depress_left", id: 123 },
-        { name: "Middle_hull_depress_right", id: 123 },
+        { name: "Middle_hull_depress_right", id: 123 }
+      ],
+      await loadObject3d(
+        "/img/3d/systems/weapons/conventional/30mmPDC/scene.gltf"
+      )
+    );
+
+    super.replaceSocketByName(
+      [
+        { name: "Middle_hull_frame_top", id: 123 },
         { name: "Middle_hull_frame_left", id: 123 },
         { name: "Middle_hull_frame_right", id: 123 }
       ],
       await loadObject3d(
-        "/img/3d/systems/weapons/conventional/30mmPDC/scene.gltf"
+        "/img/3d/systems/weapons/conventional/140mmCannonTurret/scene.gltf"
       )
     );
 

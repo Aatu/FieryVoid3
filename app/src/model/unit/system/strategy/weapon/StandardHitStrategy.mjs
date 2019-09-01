@@ -1,8 +1,9 @@
 import ShipSystemStrategy from "../ShipSystemStrategy.mjs";
 
 class StandardHitStrategy extends ShipSystemStrategy {
-  constructor(numberOfShots = 1) {
+  constructor(fireControl = 0, numberOfShots = 1) {
     super();
+    this.fireControl = fireControl;
     this.numberOfShots = numberOfShots;
   }
 
@@ -10,26 +11,17 @@ class StandardHitStrategy extends ShipSystemStrategy {
     return target.getHitProfile(shooter.getPosition());
   }
 
-  checkFireOrderHits({ fireOrder, gameData }) {
-    const toHit = this.getHitChange({ fireOrder, gameData });
+  checkFireOrderHits({ shooter, target, weaponSettings }) {
+    const toHit = this.getHitChange({ shooter, target, weaponSettings });
     const roll = Math.ceil(Math.random() * 100);
 
-    const hit = roll <= toHit;
+    const hit = roll <= toHit.result;
 
     return hit;
   }
 
-  getHitChange({ fireOrder, gameData }) {
-    const shooter = gameData.ships.getShipById(fireOrder.shooterId);
-    const target = gameData.ships.getShipById(fireOrder.shooterId);
-    const weapon = shooter.systems.getSystemById(fireOrder.weaponId);
-    const weaponSettings = fireOrder.weaponSettings;
-
-    if (weapon !== this.system) {
-      throw new Error("Wrong system");
-    }
-
-    const baseToHit = weapon.callHandler("getBaseHitChange", {
+  getHitChange({ shooter, target, weaponSettings = {} }) {
+    const baseToHit = this.system.callHandler("getBaseHitChange", {
       shooter,
       target,
       weaponSettings
@@ -43,16 +35,27 @@ class StandardHitStrategy extends ShipSystemStrategy {
       distance *= 2;
     }
 
-    const rangeModifier = weapon.callHandler("getRangeModifier", {
+    const rangeModifier = this.system.callHandler("getRangeModifier", {
       distance,
       weaponSettings
     });
 
+    let result =
+      baseToHit + this.fireControl + oew * 5 - dew * 5 + rangeModifier;
+
     if (rangeModifier === false) {
-      return 0;
+      result = 0;
     }
 
-    return baseToHit + oew - dew + rangeModifier;
+    return {
+      baseToHit,
+      fireControl: this.fireControl,
+      dew: dew,
+      oew: oew,
+      distance,
+      rangeModifier,
+      result: result
+    };
   }
 }
 

@@ -115,6 +115,10 @@ class ShipSystem {
     return false;
   }
 
+  canTarget() {
+    return false;
+  }
+
   showOnSystemList() {
     return false;
   }

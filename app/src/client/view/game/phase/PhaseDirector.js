@@ -1,4 +1,5 @@
 import MovementService from "../../../../model/movement/MovementService";
+import WeaponFireService from "../../../../model/weapon/WeaponFireService";
 import PhaseState from "./PhaseState";
 import ShipIconContainer from "../renderer/icon/ShipIconContainer";
 import ElectronicWarfareIndicatorService from "../renderer/electronicWarfare/ElectronicWarfareIndicatorService";
@@ -27,6 +28,7 @@ class PhaseDirector {
     this.coordinateConverter = coordinateConverter;
     this.shipWindowManager = null;
     this.movementService = new MovementService();
+    this.weaponFireService = new WeaponFireService();
     this.movementPathService = null;
     this.terrainRenderer = null;
     this.phaseState = new PhaseState();
@@ -153,6 +155,7 @@ class PhaseDirector {
     this.movementService.update(gameData, this);
     this.movementPathService.update(gameData);
     this.terrainRenderer.update(gameData.terrain);
+    this.weaponFireService.update(gameData);
 
     if (this.phaseStrategy && this.phaseStrategy instanceof phaseStrategy) {
       this.phaseStrategy.update(gameData);
@@ -179,7 +182,8 @@ class PhaseDirector {
       uiState: this.uiState,
       currentUser: this.currentUser,
       gameConnector: this.gameConnector,
-      movementPathService: this.movementPathService
+      movementPathService: this.movementPathService,
+      weaponFireService: this.weaponFireService
     };
   }
 }

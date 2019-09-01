@@ -62,13 +62,13 @@ class ShipWindow extends React.Component {
           <ShipSection
             uiState={uiState}
             ship={ship}
-            section={ship.systems.sections.getStarboardFrontSection()}
+            section={ship.systems.sections.getPortFrontSection()}
             {...rest}
           />
           <ShipSection
             uiState={uiState}
             ship={ship}
-            section={ship.systems.sections.getStarboardAftSection()}
+            section={ship.systems.sections.getPortAftSection()}
             {...rest}
           />
         </Column>
@@ -98,13 +98,13 @@ class ShipWindow extends React.Component {
           <ShipSection
             uiState={uiState}
             ship={ship}
-            section={ship.systems.sections.getPortFrontSection()}
+            section={ship.systems.sections.getStarboardFrontSection()}
             {...rest}
           />
           <ShipSection
             uiState={uiState}
             ship={ship}
-            section={ship.systems.sections.getPortAftSection()}
+            section={ship.systems.sections.getStarboardAftSection()}
             {...rest}
           />
         </Column>

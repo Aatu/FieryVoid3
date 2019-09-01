@@ -16,9 +16,8 @@ class WeaponFireService {
     this.gamedata = null;
   }
 
-  update(gamedata, phaseDirector) {
+  update(gamedata) {
     this.gamedata = gamedata;
-    this.phaseDirector = phaseDirector;
 
     return this;
   }
@@ -42,6 +41,18 @@ class WeaponFireService {
       );
   }
 
+  systemHasFireOrder(system) {
+    const fireOrders = system.callHandler("getFireOrders");
+    return fireOrders && fireOrders.length > 0;
+  }
+
+  systemHasFireOrderAgainstShip(system, target) {
+    const fireOrders = system.callHandler("getFireOrders");
+
+    console.log(fireOrders, target);
+    return fireOrders.some(order => order.targetId === target.id);
+  }
+
   addFireOrder(shooter, target, weapon) {
     if (!this.canFire(shooter, target, weapon)) {
       throw new Error("Check validity first");
@@ -50,12 +61,16 @@ class WeaponFireService {
     return weapon.callHandler("addFireOrder", { shooter, target });
   }
 
+  removeFireOrders(shooter, weapon) {
+    weapon.callHandler("removeFireOrders");
+  }
+
   canFire(shooter, target, weapon) {
     if (
       shooter.isDestroyed() ||
       target.isDestroyed() ||
       weapon.isDisabled() ||
-      !weapon.isWeapon()
+      !weapon.canTarget()
     ) {
       console.log("something disabled or not weapon");
       return false;
@@ -68,14 +83,6 @@ class WeaponFireService {
 
     if (!weapon.callHandler("isLoaded")) {
       console.log("not loaded");
-      return false;
-    }
-
-    if (
-      weapon.callHandler("getFireOrders").length >=
-      weapon.callHandler("getNumberOfShots")
-    ) {
-      console.log("fire orders already set");
       return false;
     }
 

@@ -50,6 +50,8 @@ class Impetous extends ShipObject {
     );
 
     */
+
+    console.log(object.object);
     super.replaceSocketByName(
       [
         { name: "engine_mount_2", id: 123 },
@@ -58,6 +60,49 @@ class Impetous extends ShipObject {
         { name: "engine_mount_5", id: 123 }
       ],
       await loadObject3d("/img/3d/systems/thrusters/10mThruster/scene.gltf")
+    );
+
+    super.replaceSocketByName(
+      [
+        { name: "front-wing-left-mount1", id: 501 },
+        { name: "front-wing-left-mount2", id: 502 },
+        { name: "front-wing-left-mount3", id: 503 },
+        { name: "front-wing-right-mount1", id: 101 },
+        { name: "front-wing-right-mount2", id: 102 },
+        { name: "front-wing-right-mount3", id: 103 }
+      ],
+      await loadObject3d(
+        "/img/3d/systems/weapons/conventional/2x30mmPDC/scene.gltf"
+      )
+    );
+
+    super.replaceSocketByName(
+      [{ name: "middle-top-mount1", id: 623 }],
+      await loadObject3d(
+        "/img/3d/systems/weapons/railgun/turreted64GwRailgun/scene.gltf"
+      )
+    );
+
+    super.replaceSocketByName(
+      [
+        { name: "front-wing-left-top-mount1", id: 623 },
+        { name: "front-wing-left-bottom-mount1", id: 623 },
+        { name: "aft-wing-left-top-mount1", id: 623 },
+        { name: "aft-wing-left-bottom-mount1", id: 623 }
+      ],
+      await loadObject3d(
+        "/img/3d/systems/weapons/conventional/2x140mmCannonTurret/scene.gltf"
+      )
+    );
+
+    super.replaceSocketByName(
+      [
+        { name: "front-wing-left-top-mount2", id: 623 },
+        { name: "front-wing-left-bottom-mount2", id: 623 }
+      ],
+      await loadObject3d(
+        "/img/3d/systems/weapons/conventional/85mmAutoCannon/scene.gltf"
+      )
     );
 
     this.setShipObject(object);

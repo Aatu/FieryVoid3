@@ -6,6 +6,12 @@ class GameSlots {
     this.slots = [];
   }
 
+  getTeamForShip(ship) {
+    const slot = this.slots.find(slot => slot.includesShip(ship));
+
+    return slot.team;
+  }
+
   getSlotsByTeams() {
     const teams = [];
 

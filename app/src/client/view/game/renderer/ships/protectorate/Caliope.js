@@ -58,7 +58,7 @@ class Caliope extends ShipObject {
         { name: "main_hull_front_right_top", id: 123 }
       ],
       await loadObject3d(
-        "/img/3d/systems/weapons/railgun/turreted64GwRailgun/scene.gltf"
+        "/img/3d/systems/weapons/conventional/140mmCannonTurret/scene.gltf"
       )
     );
 

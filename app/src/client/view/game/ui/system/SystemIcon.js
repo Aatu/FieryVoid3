@@ -27,15 +27,17 @@ const HealthBar = styled.div`
 `;
 
 const SystemText = styled.div`
+  position: absolute;
+  top: 0px;
   width: 100%;
   height: calc(100% - 5px);
-  color: white;
   font-family: arial;
   font-size: 10px;
+  color: white;
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  text-shadow: black 0 0 6px, black 0 0 6px;
+  text-shadow: black 0 0 6px, black 0 0 6px, black 0 0 6px, black 0 0 6px;
 `;
 
 const System = styled.div`
@@ -43,27 +45,13 @@ const System = styled.div`
   box-sizing: border-box;
   width: 30px;
   height: 30px;
-  margin: 3px 1px;
 
-  background-color: ${props => {
-    if (props.firing) {
-      return "#e06f01";
-    } else {
-      return "transparent";
-    }
-  }};
-  box-shadow: ${props => {
-    if (props.firing) {
-      return "box-shadow: 0px 0px 15px #eb5c15";
-    } else {
-      return "none";
-    }
-  }};
+  background-color: "transparent";
   background-image: ${props => `url(${props.background})`};
   background-size: cover;
   filter: ${props => {
-    if (props.selected && !props.scs) {
-      return "grayscale(100%) brightness(6) drop-shadow(0px 0px 5px white)";
+    if (props.firing) {
+      return "brightness(4)"; //"grayscale(100%) brightness(6) drop-shadow(0px 0px 5px white)";
     } else if (props.destroyed) {
       return "blur(1px)";
     } else {
@@ -110,7 +98,9 @@ const System = styled.div`
 `;
 
 const Container = styled.div`
+  cursor: pointer;
   position: relative;
+  margin: 3px 1px;
 `;
 
 class SystemIcon extends React.Component {
@@ -189,16 +179,25 @@ class SystemIcon extends React.Component {
         activeSystem: null,
         activeSystemElement: null
       },
+      onSystemClicked = this.clickSystem,
+      selected = false,
+      text = null,
       ...rest
     } = this.props;
     const { mouseOveredSystem } = this.state;
+    const { weaponFireService } = uiState.services;
 
     if (getDestroyed(ship, system) || destroyed) {
       return (
-        <System background={getBackgroundImage(system)} destroyed>
+        <Container>
+          <System background={getBackgroundImage(system)} destroyed />
           <HealthBar health="0" />
-        </System>
+        </Container>
       );
+    }
+
+    if (!text) {
+      text = system.getIconText();
     }
 
     const menu = activeSystem ? systemInfoMenuProvider : null;
@@ -210,8 +209,15 @@ class SystemIcon extends React.Component {
           activeSystemElement === this.element)
     );
 
+    const firing = weaponFireService.systemHasFireOrder(system);
+
     return (
-      <Container>
+      <Container
+        onClick={onSystemClicked.bind(this)}
+        onMouseOver={this.onSystemMouseOver.bind(this)}
+        onMouseOut={this.onSystemMouseOut.bind(this)}
+        onContextMenu={this.onContextMenu.bind(this)}
+      >
         {displayMenu && (
           <SystemInfo
             uiState={uiState}
@@ -225,25 +231,19 @@ class SystemIcon extends React.Component {
         <System
           ref={c => (this.element = c)}
           scs={scs}
-          onClick={this.clickSystem.bind(this)}
-          onMouseOver={this.onSystemMouseOver.bind(this)}
-          onMouseOut={this.onSystemMouseOut.bind(this)}
-          onContextMenu={this.onContextMenu.bind(this)}
           background={getBackgroundImage(system)}
           offline={isOffline(ship, system)}
           loading={isLoading(system)}
-          selected={uiState.isSelectedSystem(system)}
-          firing={isFiring(ship, system)}
-        >
-          <SystemText>{system.getIconText()}</SystemText>
-          <HealthBar health={getStructureLeft(system)} />
-        </System>
+          selected={selected}
+          firing={firing}
+        />
+
+        <SystemText selected={selected}>{text}</SystemText>
+        <HealthBar health={getStructureLeft(system)} />
       </Container>
     );
   }
 }
-
-const isFiring = (ship, system) => false; //ASK FROM SHIP weaponManager.hasFiringOrder(ship, system);
 
 const isLoading = system => undefined; //ASK FROM SYSTEM system.weapon && !weaponManager.isLoaded(system);
 
