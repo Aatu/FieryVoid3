@@ -49,7 +49,7 @@ test.serial("Submit successfull fire order for first player", async test => {
   fireService.addFireOrder(shooter, target, shooter.systems.getSystemById(20));
   test.deepEqual(
     shooter.systems.getSystemById(20).callHandler("getFireOrders"),
-    [new FireOrder(shooter, target, shooter.systems.getSystemById(20))]
+    [new FireOrder(shooter, target, shooter.systems.getSystemById(20), 2)]
   );
 
   await controller.commitTurn(gameData.id, gameData.serialize(), user);
@@ -64,7 +64,7 @@ test.serial("Submit successfull fire order for first player", async test => {
       .getSystemById(20)
       .callHandler("getFireOrders")
       .map(order => order.setId(null)),
-    [new FireOrder(shooter, target, shooter.systems.getSystemById(20))]
+    [new FireOrder(shooter, target, shooter.systems.getSystemById(20), 2)]
   );
 
   const opponentGameData = await controller.getGameData(gameData.id, user2);
@@ -117,7 +117,7 @@ test.serial("Submit successfull fire order for both players", async test => {
   fireService.addFireOrder(shooter, target, shooter.systems.getSystemById(20));
   test.deepEqual(
     shooter.systems.getSystemById(20).callHandler("getFireOrders"),
-    [new FireOrder(shooter, target, shooter.systems.getSystemById(20))]
+    [new FireOrder(shooter, target, shooter.systems.getSystemById(20), 2)]
   );
 
   await controller.commitTurn(gameData.id, gameData.serialize(), user);
@@ -128,7 +128,12 @@ test.serial("Submit successfull fire order for both players", async test => {
     .getShips()
     .find(ship => ship.name === "GEPS Biliyaz");
 
+  const achilles = newGameData.ships
+    .getShips()
+    .find(ship => ship.name === "UCS Achilles");
+
   test.is(biliyaz.systems.getSystemById(7).getRemainingHitpoints(), 10);
 
+  test.false(achilles.systems.getSystemById(20).callHandler("isLoaded"));
   db.close();
 });

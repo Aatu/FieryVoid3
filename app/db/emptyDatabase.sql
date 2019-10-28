@@ -113,10 +113,9 @@ CREATE TABLE `game_ship_data` (
   `game_id` int(11) NOT NULL,
   `ship_id` BINARY(16) NOT NULL,
   `turn` int(11) NOT NULL,
-  `phase` ENUM('deployment','game') DEFAULT 'deployment',
   `data` JSON DEFAULT '{}',
   CHECK (JSON_VALID(`data`)),
-  PRIMARY KEY (`game_id`,`turn`,`ship_id`, `phase`)
+  PRIMARY KEY (`game_id`,`turn`,`ship_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 

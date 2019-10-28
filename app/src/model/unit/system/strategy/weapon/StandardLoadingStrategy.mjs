@@ -5,7 +5,7 @@ class StandardLoadingStrategy extends ShipSystemStrategy {
     super();
 
     this.loadingTime = loadingTime;
-    this.turnsLoaded = 0;
+    this.turnsLoaded = loadingTime;
   }
 
   usesLoading() {

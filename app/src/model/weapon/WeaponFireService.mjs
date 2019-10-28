@@ -58,7 +58,11 @@ class WeaponFireService {
       throw new Error("Check validity first");
     }
 
-    return weapon.callHandler("addFireOrder", { shooter, target });
+    return weapon.callHandler("addFireOrder", {
+      shooter,
+      target,
+      turn: this.gamedata.turn
+    });
   }
 
   removeFireOrders(shooter, weapon) {
@@ -87,6 +91,19 @@ class WeaponFireService {
     }
 
     return true;
+  }
+
+  getAllResolvedFireOrdersForShip(shooter) {
+    return shooter.systems
+      .getSystems()
+      .filter(system => system.isWeapon && system.isWeapon())
+      .reduce(
+        (all, system) => [
+          ...all,
+          ...system.callHandler("getResolvedFireOrders")
+        ],
+        []
+      );
   }
 }
 

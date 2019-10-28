@@ -74,6 +74,7 @@ class GameHandler {
     this.movementHandler.advance(gameData);
     this.electronicWarfareHandler.advance(gameData);
     this.weaponHandler.advance(gameData);
+    this.powerHandler.advance(gameData);
     gameData.advanceTurn();
 
     return;

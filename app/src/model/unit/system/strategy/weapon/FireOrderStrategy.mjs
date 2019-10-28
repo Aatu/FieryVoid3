@@ -1,5 +1,6 @@
 import ShipSystemStrategy from "../ShipSystemStrategy.mjs";
 import FireOrder from "../../../../weapon/FireOrder.mjs";
+import FireOrderResult from "../../../../weapon/FireOrderResult.mjs";
 
 class FireOrderStrategy extends ShipSystemStrategy {
   constructor(numberOfShots = 1) {
@@ -12,6 +13,8 @@ class FireOrderStrategy extends ShipSystemStrategy {
 
   executeFireOrders({ gameData }) {
     this.fireOrders.forEach(fireOrder => {
+      const result = new FireOrderResult();
+      fireOrder.setResult(result);
       const weapon = this.system;
       const shooter = gameData.ships.getShipById(fireOrder.shooterId);
       const target = gameData.ships.getShipById(fireOrder.targetId);
@@ -22,7 +25,8 @@ class FireOrderStrategy extends ShipSystemStrategy {
           shooter,
           target,
           weaponSettings,
-          gameData
+          gameData,
+          result
         })
       ) {
         weapon.callHandler("applyDamageFromWeaponFire", {
@@ -30,9 +34,14 @@ class FireOrderStrategy extends ShipSystemStrategy {
           target,
           weaponSettings,
           gameData,
-          fireOrder
+          fireOrder,
+          result
         });
       }
+
+      weapon.callHandler("onWeaponFired");
+      result.setResolved();
+      console.log(result);
     });
   }
 
@@ -41,20 +50,31 @@ class FireOrderStrategy extends ShipSystemStrategy {
   }
 
   getFireOrders() {
-    return this.fireOrders;
+    return this.fireOrders.filter(fireOrder => !fireOrder.result);
+  }
+
+  getResolvedFireOrders() {
+    return this.fireOrders.filter(fireOrder => fireOrder.result);
   }
 
   removeFireOrders() {
     this.fireOrders = [];
   }
 
-  addFireOrder({ shooter, target, weaponSettings }) {
+  addFireOrder({ shooter, target, weaponSettings, turn }) {
     if (this.fireOrders.length === this.numberOfShots) {
       throw new Error(
         `Can only assign ${this.numberOfShots} fire orders for this system`
       );
     }
-    const order = new FireOrder(shooter, target, this.system, weaponSettings);
+    const order = new FireOrder(
+      shooter,
+      target,
+      this.system,
+      turn,
+      weaponSettings
+    );
+
     this.fireOrders.push(order);
     return order;
   }
@@ -74,13 +94,15 @@ class FireOrderStrategy extends ShipSystemStrategy {
     return this;
   }
 
-  advanceTurn() {
-    this.removeFireOrders();
+  advanceTurn(turn) {
+    this.fireOrders = this.fireOrders.filter(
+      fireOrder => fireOrder.turn >= turn - 1
+    );
   }
 
   censorForUser({ mine }) {
     if (!mine) {
-      this.fireOrders = [];
+      this.fireOrders = this.fireOrders.filter(fireOrder => fireOrder.result);
     }
   }
 }

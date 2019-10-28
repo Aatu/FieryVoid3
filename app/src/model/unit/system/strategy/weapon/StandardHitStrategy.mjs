@@ -11,11 +11,19 @@ class StandardHitStrategy extends ShipSystemStrategy {
     return target.getHitProfile(shooter.getPosition());
   }
 
-  checkFireOrderHits({ shooter, target, weaponSettings }) {
+  checkFireOrderHits({ shooter, target, weaponSettings, result }) {
     const toHit = this.getHitChange({ shooter, target, weaponSettings });
     const roll = Math.ceil(Math.random() * 100);
 
     const hit = roll <= toHit.result;
+
+    result.setDetails({
+      type: "checkFireOrderHits",
+      result: hit,
+      numberOfHits: hit ? 1 : 0,
+      hitChange: toHit,
+      hitRoll: roll
+    });
 
     return hit;
   }

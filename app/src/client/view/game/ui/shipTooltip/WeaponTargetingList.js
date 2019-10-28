@@ -97,9 +97,12 @@ class WeaponTargetingList extends React.Component {
     const { ship, uiState, ...rest } = this.props;
     const { weaponFireService } = uiState.services;
 
-    const { selectedShip } = uiState.state;
+    const selectedShip = uiState.getSelectedShip();
 
-    if (uiState.gameData.ships.isSameTeam(ship, selectedShip)) {
+    if (
+      !selectedShip ||
+      uiState.gameData.ships.isSameTeam(ship, selectedShip)
+    ) {
       return null;
     }
 

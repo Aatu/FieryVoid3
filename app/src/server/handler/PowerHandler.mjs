@@ -9,7 +9,13 @@ class PowerHandler {
     });
   }
 
-  advance(gameData) {}
+  advance(gameData) {
+    gameData.ships.getShips().forEach(ship => {
+      if (!ship.systems.power.isValidPower()) {
+        ship.systems.power.forceValidPower();
+      }
+    });
+  }
 }
 
 export default PowerHandler;

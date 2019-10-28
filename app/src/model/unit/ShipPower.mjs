@@ -21,7 +21,7 @@ class ShipPower {
   }
 
   isValidPower() {
-    return this.getRemainingPowerOutput() >= 0;
+    return this.getRemainingPowerOutput() >= 0 || this.getPowerRequired() === 0;
   }
 
   canSetOffline(system) {
@@ -43,17 +43,31 @@ class ShipPower {
       if (otherSystem.power.isGoingOffline()) {
         if (this.canSetOffline(system)) {
           system.power.setOffline();
-        } else {
-          throw new Error("Invalid power, can not set offline");
         }
       }
 
       if (otherSystem.power.isGoingOnline()) {
         if (this.canSetOnline(system)) {
           system.power.setOnline();
-        } else {
-          throw new Error("Invalid power, can not set online");
         }
+      }
+    });
+  }
+
+  forceValidPower() {
+    const shuffle = a => {
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    };
+
+    const systems = shuffle(this.shipSystems.getSystems());
+
+    systems.forEach(system => {
+      if (this.canSetOffline(system) && !this.isValidPower()) {
+        system.power.setOffline();
       }
     });
   }

@@ -21,6 +21,10 @@ class WeaponHandler {
             throw new InvalidGameDataError("Invalid fire order");
           }
 
+          if (fireOrder.turn !== serverGameData.turn) {
+            throw new InvalidGameDataError("Invalid fire order, invalid turn");
+          }
+
           const order = serverFireService.addFireOrder(shooter, target, weapon);
           order.setId(uuidv4());
         });

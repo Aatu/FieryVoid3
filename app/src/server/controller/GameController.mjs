@@ -146,6 +146,7 @@ class GameController {
 
   async commitTurn(gameId, clientGameData, user) {
     clientGameData = new GameData(clientGameData);
+    console.log("commit turn");
     const {
       key,
       gameData: serverGameData

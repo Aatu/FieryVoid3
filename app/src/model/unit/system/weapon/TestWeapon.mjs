@@ -16,7 +16,7 @@ class TestWeapon extends Weapon {
         { range: 0, modifier: 100000 },
         { range: 300, modifier: 100000 }
       ]),
-      new StandardLoadingStrategy(1),
+      new StandardLoadingStrategy(2),
       new TestDamageStrategy(10)
     ]);
   }
