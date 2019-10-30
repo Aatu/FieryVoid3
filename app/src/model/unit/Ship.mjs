@@ -30,8 +30,8 @@ class Ship {
 
   getHitProfile(position) {
     const heading = addToDirection(
-      getCompassHeadingOfPoint(this.getPosition(), position),
-      -hexFacingToAngle(this.getFacing())
+      getCompassHeadingOfPoint(this.getShootingPosition(), position),
+      -hexFacingToAngle(this.getShootingFacing())
     );
 
     console.log("heading", heading);
@@ -56,6 +56,15 @@ class Ship {
     return lastMove.getFacing();
   }
 
+  getShootingFacing() {
+    const lastMove = this.movement.getLastEndMoveOrSurrogate();
+    if (!lastMove) {
+      return null;
+    }
+
+    return lastMove.getFacing();
+  }
+
   getPosition() {
     const lastMove = this.movement.getLastMove();
     if (!lastMove) {
@@ -63,6 +72,24 @@ class Ship {
     }
 
     return lastMove.getPosition();
+  }
+
+  getShootingPosition() {
+    const lastMove = this.movement.getLastEndMoveOrSurrogate();
+    if (!lastMove) {
+      return null;
+    }
+
+    return lastMove.getPosition();
+  }
+
+  getShootingHexPosition() {
+    const lastMove = this.movement.getLastEndMoveOrSurrogate();
+    if (!lastMove) {
+      return null;
+    }
+
+    return lastMove.getHexPosition();
   }
 
   getHexPosition() {

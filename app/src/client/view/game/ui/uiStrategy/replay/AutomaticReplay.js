@@ -1,32 +1,24 @@
 import UiStrategy from "../UiStrategy";
 
 class AutomaticReplay extends UiStrategy {
-  constructor(phaseStrategy, turnLength = 5000) {
+  constructor(phaseStrategy, replayContext) {
     super();
     this.phaseStrategy = phaseStrategy;
-    this.turnLenght = turnLength;
-    this.length = 0;
+    this.replayContext = replayContext;
   }
 
   async newTurn(gameDatas) {
     const { shipIconContainer } = this.services;
-    const start = gameDatas[0].turn;
-    const end = gameDatas[gameDatas.length - 1].turn;
-    this.length = end - start;
 
     await shipIconContainer.shipsLoaded();
 
     setTimeout(() => {
-      this.phaseStrategy.animateFromTo(
-        0,
-        this.length * this.turnLenght + 2000,
-        this.turnLenght
-      );
+      this.phaseStrategy.animateFromTo(0);
     }, 500);
   }
 
   render({ delta, total }) {
-    if (total >= this.length * this.turnLenght + 2000) {
+    if (total >= this.replayContext.getTurnLength() + 2000) {
       const { uiState } = this.services;
       uiState.closeReplay();
     }

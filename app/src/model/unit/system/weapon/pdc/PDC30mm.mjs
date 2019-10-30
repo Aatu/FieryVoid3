@@ -6,6 +6,7 @@ import StandardRangeStrategy from "../../strategy/weapon/StandardRangeStrategy.m
 import StandardLoadingStrategy from "../../strategy/weapon/StandardLoadingStrategy.mjs";
 import StandardDamageStrategy from "../../strategy/weapon/StandardDamageStrategy.mjs";
 import RequiresPowerSystemStrategy from "../../strategy/RequiresPowerSystemStrategy.mjs";
+import WeaponAnimationStrategy from "../../strategy/weapon/WeaponAnimationStrategy.mjs";
 
 class PDC30mm extends Weapon {
   constructor(args, arcs) {
@@ -23,7 +24,13 @@ class PDC30mm extends Weapon {
         { range: 18, modifier: -200 }
       ]),
       new StandardLoadingStrategy(1),
-      new StandardDamageStrategy("d2", "d3+2")
+      new StandardDamageStrategy("d2", "d3+2"),
+      new WeaponAnimationStrategy("Bolt", {
+        size: 6,
+        speed: 0.2,
+        color: [0.8, 0.6, 0.2],
+        shots: 6
+      })
     ]);
   }
 

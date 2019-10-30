@@ -42,6 +42,7 @@ class FireOrderStrategy extends ShipSystemStrategy {
       weapon.callHandler("onWeaponFired");
       result.setResolved();
       console.log(result);
+      console.log(fireOrder.result);
     });
   }
 

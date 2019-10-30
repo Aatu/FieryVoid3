@@ -20,6 +20,7 @@ import AllowSubmittingOnValidGameState from "./AllowSubmittingOnValidGameState";
 import ReplayShipMovement from "./replay/ReplayShipMovement";
 import ReplayShipWeaponFire from "./replay/ReplayShipWeaponFire";
 import AutomaticReplay from "./replay/AutomaticReplay";
+import ShowReplayUi from "./replay/ShowReplayUi";
 import GameShipTooltipMenuStrategy from "./GameShipTooltipMenuStrategy";
 import ShowUiModeButtons from "./ShowUiModeButtons";
 import OwnedShipEw from "./electronicWarfare/OwnedShipEw";
@@ -67,5 +68,6 @@ export {
   AutomaticReplay,
   GameShipTooltipMenuStrategy,
   ShipClickSelectsShip,
-  ReplayShipWeaponFire
+  ReplayShipWeaponFire,
+  ShowReplayUi
 };

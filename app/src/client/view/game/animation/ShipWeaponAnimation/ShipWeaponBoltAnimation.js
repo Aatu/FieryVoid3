@@ -1,9 +1,8 @@
 import * as THREE from "three";
-import Animation from "../Animation";
 import Vector from "../../../../../model/utils/Vector";
-import { getSeededRandomGenerator } from "../../../../../model/utils/math";
+import ShipWeaponAnimation from "./ShipWeaponAnimation";
 
-class ShipWeaponBoltAnimation extends Animation {
+class ShipWeaponBoltAnimation extends ShipWeaponAnimation {
   constructor(
     fireOrder,
     weapon,
@@ -14,17 +13,23 @@ class ShipWeaponBoltAnimation extends Animation {
     particleEmitterContainer,
     args
   ) {
-    super();
+    super(getRandom);
 
     console.log("args", args);
 
-    const startTime = getRandom() * 2000;
+    let startTime = getRandom() * 2000;
     const speed = args.speed || 1;
     console.log("speed is", speed);
+
     const startPosition = replayShipMovement.getPositionAtTime(shooterIcon, 0);
-    const endPosition = replayShipMovement.getPositionAtTime(targetIcon, 0);
+    startPosition.z = shooterIcon.shipZ;
+    const endPosition = replayShipMovement
+      .getPositionAtTime(targetIcon, 0)
+      .add(this.getRandomPosition(100));
+    endPosition.z += targetIcon.shipZ;
+
     const distance = startPosition.distanceTo(endPosition);
-    const duration = distance / speed;
+    this.duration = distance / speed;
 
     const velocity = new Vector(endPosition)
       .sub(startPosition)
@@ -33,15 +38,21 @@ class ShipWeaponBoltAnimation extends Animation {
 
     console.log("ShipWeaponBoltAnimation", fireOrder);
 
-    this.createBolt(
-      startTime,
-      startPosition,
-      duration,
-      velocity,
-      speed,
-      args,
-      particleEmitterContainer
-    );
+    let shots = args.shots || 1;
+
+    while (shots--) {
+      this.createBolt(
+        startTime,
+        startPosition,
+        this.duration,
+        velocity,
+        speed,
+        args,
+        particleEmitterContainer
+      );
+
+      startTime += 50;
+    }
   }
 
   createBolt(
@@ -97,6 +108,10 @@ class ShipWeaponBoltAnimation extends Animation {
       .setActivationTime(startTime + (args.size * 0.3) / speed, 0)
       .setFadeIn(startTime, 0)
       .setFadeOut(startTime + duration, 0);
+  }
+
+  getDuration() {
+    return this.duration;
   }
 }
 

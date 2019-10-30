@@ -75,17 +75,14 @@ class WeaponFireService {
       weapon.isDisabled() ||
       !weapon.canTarget()
     ) {
-      console.log("something disabled or not weapon");
       return false;
     }
 
     if (!weapon.callHandler("isOnArc", { shooter, target })) {
-      console.log("not on arc");
       return false;
     }
 
     if (!weapon.callHandler("isLoaded")) {
-      console.log("not loaded");
       return false;
     }
 

@@ -23,7 +23,7 @@ class RailgunFixed22gw extends Weapon {
       new StandardDamageStrategy("3d3", "2d2 + 4"),
       new WeaponAnimationStrategy("Bolt", {
         size: 15,
-        speed: 0.01,
+        speed: 0.2,
         color: [0.8, 0.6, 0.2]
       })
     ]);

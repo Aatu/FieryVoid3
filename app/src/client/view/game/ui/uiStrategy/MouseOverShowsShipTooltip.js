@@ -5,6 +5,7 @@ class MouseOverShowsShipTooltip extends UiStrategy {
     super();
 
     this.clickedShip = null;
+    this.mouseOveredShip = null;
   }
 
   shipStateChanged(ship) {
@@ -53,7 +54,18 @@ class MouseOverShowsShipTooltip extends UiStrategy {
     }
 
     const { uiState } = this.services;
+
+    if (this.mouseOveredShip) {
+      uiState.hideShipTooltip(this.mouseOveredShip);
+    }
+
+    if (this.clickedShip) {
+      uiState.hideShipTooltip(this.clickedShip);
+      this.clickedShip = null;
+    }
+
     uiState.showShipTooltip(payload.entity);
+    this.mouseOveredShip = payload.entity.ship;
   }
 
   mouseOutShip(payload) {
@@ -63,7 +75,19 @@ class MouseOverShowsShipTooltip extends UiStrategy {
 
     const { uiState } = this.services;
     uiState.hideShipTooltip(payload.entity.ship);
+    this.mouseOveredShip = null;
   }
+
+  /*
+  mouseOut() {
+    const { uiState } = this.services;
+    if (this.mouseOveredShip && this.mouseOveredShip !== this.clickedShip) {
+      uiState.hideShipTooltip(this.mouseOveredShip.ship);
+    }
+
+    this.mouseOveredShip = null;
+  }
+  */
 }
 
 export default MouseOverShowsShipTooltip;

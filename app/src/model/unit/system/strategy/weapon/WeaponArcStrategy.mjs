@@ -18,11 +18,11 @@ class WeaponArcStrategy extends ShipSystemStrategy {
 
   isOnArc({ shooter, target }) {
     const targetHeading = getCompassHeadingOfPoint(
-      shooter.getPosition(),
-      target.getPosition()
+      shooter.getShootingPosition(),
+      target.getShootingPosition()
     );
 
-    const shooterFacing = hexFacingToAngle(shooter.getFacing());
+    const shooterFacing = hexFacingToAngle(shooter.getShootingFacing());
     const arcs = this.getArcs({ facing: shooterFacing });
 
     return arcs.some(({ start, end }) => {

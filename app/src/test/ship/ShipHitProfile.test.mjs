@@ -7,8 +7,8 @@ test("Gets the correct hit profile", test => {
   ship.sideHitProfile = 50;
   let facing = 0;
 
-  ship.getPosition = () => ({ x: 0, y: 0 });
-  ship.getFacing = () => facing;
+  ship.getShootingPosition = () => ({ x: 0, y: 0 });
+  ship.getShootingFacing = () => facing;
 
   test.is(ship.getHitProfile({ x: 200, y: 0 }), 30);
 

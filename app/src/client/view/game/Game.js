@@ -127,6 +127,10 @@ class Game {
     }
   }
 
+  onMouseOut() {
+    this.phaseDirector.relayEvent("mouseOut");
+  }
+
   onResize() {
     if (!this.sceneElement) {
       return;

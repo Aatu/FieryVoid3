@@ -16,8 +16,8 @@ class ShipSystems {
     return this.sections
       .getHitSection(
         attackPosition,
-        this.ship.getPosition(),
-        hexFacingToAngle(this.ship.getFacing()),
+        this.ship.getShootingPosition(),
+        hexFacingToAngle(this.ship.getShootingFacing()),
         ignoreSections
       )
       .reduce((all, section) => {

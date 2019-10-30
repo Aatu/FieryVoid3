@@ -5,7 +5,7 @@ import * as THREE from "three";
 class Impetous extends ShipObject {
   constructor(ship, scene) {
     super(ship, scene);
-    this.defaultHeight = 60;
+    this.defaultHeight = 30;
     this.sideSpriteSize = 30;
     this.overlaySpriteSize = 80;
     this.create();

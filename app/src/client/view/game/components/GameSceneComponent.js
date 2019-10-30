@@ -146,6 +146,13 @@ class GameSceneComponent extends React.Component {
     }
   }
 
+  onMouseOut(event) {
+    const { game } = this.props;
+    this.mouseDownPosition = null;
+    this.lastDraggingPosition = null;
+    game.onMouseOut(event);
+  }
+
   onKeyDown(event) {
     const { game } = this.props;
     game.onKeyDown(event);
@@ -164,6 +171,7 @@ class GameSceneComponent extends React.Component {
     return (
       <WebglCanvas
         ref={this.canvasRef}
+        onMouseOut={this.onMouseOut.bind(this)}
         onMouseDown={this.onMouseDown.bind(this)}
         onMouseUp={this.onMouseUp.bind(this)}
         onMouseMove={this.onMouseMove.bind(this)}

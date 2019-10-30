@@ -11,8 +11,11 @@ const getMovesForShip = (gameDatas, ship) =>
   }, []);
 
 class ReplayShipMovement extends AnimationUiStrategy {
-  constructor() {
+  constructor(replayContext) {
     super();
+    this.replayContext = replayContext;
+    this.ready = false;
+    this.replayContext.setReplayShipMovement(this);
   }
 
   async newTurn(gameDatas) {
@@ -35,6 +38,22 @@ class ReplayShipMovement extends AnimationUiStrategy {
         )
       );
     });
+
+    this.ready = true;
+  }
+
+  render(payload) {
+    const turnDone = this.replayContext.getMovementTurnDone(payload);
+    const turn = Math.floor(turnDone);
+    const percentDone = turnDone % 1;
+
+    this.animations.forEach(animation =>
+      animation.render({
+        ...payload,
+        turn,
+        percentDone
+      })
+    );
   }
 
   deactivate() {

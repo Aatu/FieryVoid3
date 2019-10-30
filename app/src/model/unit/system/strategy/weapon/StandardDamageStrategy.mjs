@@ -12,7 +12,7 @@ class StandardDamageStrategy extends ShipSystemStrategy {
   }
 
   getDamageForWeaponHit({ requiredToHit, rolledToHit }) {
-    return droll(this.damageFormula);
+    return droll.roll(this.damageFormula);
   }
 
   applyArmorPiercing({ armor }) {

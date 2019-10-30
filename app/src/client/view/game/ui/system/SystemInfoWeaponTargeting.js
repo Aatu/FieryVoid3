@@ -60,11 +60,11 @@ class SystemInfoWeaponTargeting extends React.Component {
           </InfoValue>
         </Entry>
         <Entry>
-          <Header>OEW x 5: </Header>
+          <Header>OEW: </Header>
           <InfoValue>+{hitChange.oew * 5} to hit</InfoValue>
         </Entry>
         <Entry>
-          <Header>DEW x 5: </Header>
+          <Header>DEW: </Header>
           <InfoValue>-{hitChange.dew * 5} to hit</InfoValue>
         </Entry>
         <Entry>

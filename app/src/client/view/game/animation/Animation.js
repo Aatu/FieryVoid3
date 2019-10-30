@@ -42,6 +42,10 @@ class Animation {
     }
   }
 
+  getDuration() {
+    return 0;
+  }
+
   deactivate() {}
 
   reset() {}
@@ -52,7 +56,5 @@ class Animation {
 
   render(now, total, last, delta, goingBack) {}
 }
-
-window.Animation = Animation;
 
 export default Animation;

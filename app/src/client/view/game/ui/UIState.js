@@ -8,7 +8,6 @@ class UIState {
     this.renderListeners = [];
 
     this.state = {
-      replay: false,
       lobby: false,
       gameData: null,
       selectedShip: null,
@@ -26,6 +25,7 @@ class UIState {
       },
       gameUiMode: {},
       gameUiModeButtons: false,
+      replayUi: false,
       systemList: [],
       ewList: [],
       stateVersion: 0
@@ -104,8 +104,17 @@ class UIState {
     this.updateState();
   }
 
+  showReplayUi(value) {
+    this.state.replayUi = value;
+    this.updateState();
+  }
+
+  startReplay() {
+    this.phaseDirector.startReplay();
+    this.updateState();
+  }
+
   closeReplay() {
-    this.state.replay = false;
     this.phaseDirector.closeReplay();
     this.updateState();
   }

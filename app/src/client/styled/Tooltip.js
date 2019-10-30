@@ -92,6 +92,11 @@ const TooltipButton = styled.button`
   &:focus {
     outline: 0;
   }
+
+  svg #svg-path {
+    fill: white;
+    ${props => props.disabled && "fill:#ff0000;"}
+  }
 `;
 
 export { Tooltip, TooltipHeader, TooltipEntry, TooltipMenu, TooltipButton };

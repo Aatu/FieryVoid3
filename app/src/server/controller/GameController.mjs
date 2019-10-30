@@ -146,7 +146,6 @@ class GameController {
 
   async commitTurn(gameId, clientGameData, user) {
     clientGameData = new GameData(clientGameData);
-    console.log("commit turn");
     const {
       key,
       gameData: serverGameData
@@ -160,7 +159,7 @@ class GameController {
     toSend.push(serverGameData.clone());
 
     if (this.gameHandler.isReady(serverGameData)) {
-      this.gameHandler.advance(serverGameData);
+      toSave.push(this.gameHandler.advance(serverGameData));
       toSave.push(serverGameData);
       toSend.push(serverGameData.clone());
       this.gameClients.sendTurnChange(toSend);

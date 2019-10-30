@@ -56,17 +56,10 @@ class PhaseStrategy {
 
     const { shipIconContainer } = this.services;
 
-    const turnDone =
-      this.animationTurnLength !== null
-        ? this.totalAnimationTime / this.animationTurnLength
-        : 0;
-
     const renderPayload = {
       delta: this.currentDeltaTime,
       total: this.totalAnimationTime,
       last: this.lastAnimationTime,
-      turn: Math.floor(turnDone),
-      percentDone: turnDone % 1,
       zoom
     };
     this.callStrategies("render", renderPayload);
@@ -74,14 +67,13 @@ class PhaseStrategy {
     return renderPayload;
   }
 
-  animateFromTo(start, end, turnLength) {
+  animateFromTo(start, end) {
     console.log("animate from", start, "to", end);
     this.animationStartTime = start;
     this.totalAnimationTime = start;
     this.lastAnimationTime = null;
     this.currentDeltaTime = 0;
     this.animationEndtime = end;
-    this.animationTurnLength = turnLength;
     this.animationPaused = false;
   }
 
@@ -91,6 +83,11 @@ class PhaseStrategy {
 
   unpauseAnimation() {
     this.animationPaused = false;
+  }
+
+  setAnimationTime(time) {
+    this.totalAnimationTime = time;
+    this.lastAnimationTime = time;
   }
 
   updateTotalAnimationTime() {
@@ -106,7 +103,10 @@ class PhaseStrategy {
       }
     } else {
       this.totalAnimationTime += this.currentDeltaTime;
-      if (this.totalAnimationTime >= this.animationEndtime) {
+      if (
+        this.animationEndtime &&
+        this.totalAnimationTime >= this.animationEndtime
+      ) {
         this.totalAnimationTime = this.animationEndtime;
         this.animationPaused = true;
       }

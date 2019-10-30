@@ -10,8 +10,8 @@ import Structure from "../../model/unit/system/structure/Structure.mjs";
 
 const getShipWithStructures = () => {
   const ship = new Ship({});
-  ship.getPosition = () => new Vector();
-  ship.getFacing = () => 0;
+  ship.getShootingPosition = () => new Vector();
+  ship.getShootingFacing = () => 0;
 
   ship.systems.addPrimarySystem([
     new Engine({ id: 6, hitpoints: 10, armor: 3 }, 12, 6, 2),
@@ -94,8 +94,8 @@ test("Gets correct sections", test => {
 
 test("Gets correct hit candidates", test => {
   const ship = new Ship({});
-  ship.getPosition = () => new Vector();
-  ship.getFacing = () => 0;
+  ship.getShootingPosition = () => new Vector();
+  ship.getShootingFacing = () => 0;
   const primarySystems = [
     new Structure({ id: 1, hitpoints: 30, armor: 5 }),
     new Engine({ id: 6, hitpoints: 10, armor: 3 }, 12, 6, 2),
@@ -118,8 +118,8 @@ test("Gets correct hit candidates", test => {
 
 test("Structure protects section behind", test => {
   const ship = new Ship({});
-  ship.getPosition = () => new Vector();
-  ship.getFacing = () => 0;
+  ship.getShootingPosition = () => new Vector();
+  ship.getShootingFacing = () => 0;
   const primarySystems = [
     new Structure({ id: 1, hitpoints: 30, armor: 5 }),
     new Engine({ id: 6, hitpoints: 10, armor: 3 }, 12, 6, 2),

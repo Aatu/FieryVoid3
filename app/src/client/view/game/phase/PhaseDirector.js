@@ -14,7 +14,12 @@ import DeploymentPhaseStrategy from "./phaseStrategy/DeploymentPhaseStrategy";
 import ReplayPhaseStrategy from "./phaseStrategy/ReplayPhaseStrategy";
 import WaitingPhaseStrategy from "./phaseStrategy/WaitingPhaseStrategy";
 import GamePhaseStrategy from "./phaseStrategy/GamePhaseStrategy";
-import AutomaticReplayPhaseStrategy from "./phaseStrategy/AutomaticReplayPhaseStrategy";
+import AutomaticReplayPhaseStrategy from "./phaseStrategy/AutomaticReplayPhaseStrategy/index.js";
+import GameDataCache from "./GameDataCache";
+import {
+  ParticleEmitterContainer,
+  ParticleEmitter
+} from "../animation/particle";
 
 class PhaseDirector {
   constructor(uiState, currentUser, coordinateConverter, gameConnector) {
@@ -35,12 +40,19 @@ class PhaseDirector {
     this.gameConnector = gameConnector;
     this.gameConnector.init(this);
     this.scene = null;
+    this.emitterContainer = null;
 
-    this.gameData = null;
+    this.gameDataCache = new GameDataCache();
   }
 
   init(scene) {
     this.scene = scene;
+    this.emitterContainer = new ParticleEmitterContainer(
+      scene,
+      50000,
+      ParticleEmitter
+    );
+
     this.shipIconContainer = new ShipIconContainer(scene, this.currentUser);
     this.electronicWarfareIndicatorService = new ElectronicWarfareIndicatorService(
       scene,
@@ -63,17 +75,27 @@ class PhaseDirector {
   }
 
   closeReplay() {
-    console.log("CLOSE REPLAY");
     this.phaseStrategy.deactivate();
     this.phaseStrategy = null;
 
-    this.resolvePhaseStrategy(this.gameData);
+    this.resolvePhaseStrategy();
+  }
+
+  startReplay() {
+    const gameDatas = this.gameDataCache.getGameDatasForAutomaticReplay();
+
+    if (!gameDatas) {
+      return;
+    }
+
+    this.activatePhaseStrategy(AutomaticReplayPhaseStrategy);
+    this.relayEvent("newTurn", gameDatas);
   }
 
   receiveGameData(gameData) {
-    window.gameData = gameData;
-    this.gameData = gameData;
-    this.resolvePhaseStrategy(gameData);
+    window.gameData = this.gameDataCache;
+    this.gameDataCache.setCurrent(gameData);
+    this.resolvePhaseStrategy();
   }
 
   receiveReplay(gameDatas) {
@@ -81,10 +103,13 @@ class PhaseDirector {
   }
 
   receiveTurnChange(gameDatas) {
-    this.gameData = gameDatas[gameDatas.length - 1];
+    this.gameDataCache.setCurrent(gameDatas[gameDatas.length - 1]);
+    const replays = [...gameDatas];
+    replays.splice(-1, 1);
+    this.gameDataCache.setReplays(replays);
 
     if (!this.phaseStrategy || this.phaseStrategy.canDisturb()) {
-      this.activatePhaseStrategy(AutomaticReplayPhaseStrategy, this.gameData);
+      this.activatePhaseStrategy(AutomaticReplayPhaseStrategy);
     }
 
     if (this.phaseStrategy) {
@@ -103,7 +128,7 @@ class PhaseDirector {
 
   commitTurn() {
     this.phaseStrategy.commitTurn(this.gameConnector);
-    return this.activatePhaseStrategy(WaitingPhaseStrategy, this.gameData);
+    return this.activatePhaseStrategy(WaitingPhaseStrategy);
   }
 
   render(scene, coordinateConverter, zoom) {
@@ -116,7 +141,9 @@ class PhaseDirector {
     this.uiState.render();
   }
 
-  resolvePhaseStrategy(gameData) {
+  resolvePhaseStrategy() {
+    const gameData = this.gameDataCache.getCurrent();
+
     if (this.phaseStrategy && !this.phaseStrategy.canDisturb()) {
       return;
     }
@@ -149,7 +176,9 @@ class PhaseDirector {
     return this.activatePhaseStrategy(GamePhaseStrategy, gameData);
   }
 
-  activatePhaseStrategy(phaseStrategy, gameData) {
+  activatePhaseStrategy(phaseStrategy) {
+    const gameData = this.gameDataCache.getCurrent();
+
     this.uiState.update(gameData);
     this.shipIconContainer.update(gameData);
     this.movementService.update(gameData, this);
@@ -183,7 +212,8 @@ class PhaseDirector {
       currentUser: this.currentUser,
       gameConnector: this.gameConnector,
       movementPathService: this.movementPathService,
-      weaponFireService: this.weaponFireService
+      weaponFireService: this.weaponFireService,
+      particleEmitterContainer: this.emitterContainer
     };
   }
 }

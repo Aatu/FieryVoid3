@@ -27,50 +27,23 @@ class WeaponTargetingList extends React.Component {
     ship,
     rest
   ) {
-    return {
-      unassigned: systems
-        .filter(
-          system =>
-            !weaponFireService.systemHasFireOrderAgainstShip(system, ship)
-        )
-        .map(system => (
-          <WeaponTargeting
-            key={`weaponTargeting-${system.id}`}
-            uiState={uiState}
-            system={system}
-            target={ship}
-            ship={selectedShip}
-            onSystemClicked={this.targetShip(
-              system,
-              selectedShip,
-              ship,
-              uiState
-            )}
-            {...rest}
-          />
-        )),
-      assigned: systems
-        .filter(system =>
-          weaponFireService.systemHasFireOrderAgainstShip(system, ship)
-        )
-        .map(system => (
-          <WeaponTargeting
-            key={`weaponTargeting-${system.id}`}
-            uiState={uiState}
-            system={system}
-            target={ship}
-            ship={selectedShip}
-            onSystemClicked={this.unTargetShip(
-              system,
-              selectedShip,
-              ship,
-              uiState
-            )}
-            {...rest}
-          />
-        ))
-    };
+    return systems.map(system => (
+      <WeaponTargeting
+        key={`weaponTargeting-${system.id}`}
+        uiState={uiState}
+        system={system}
+        target={ship}
+        ship={selectedShip}
+        onSystemClicked={
+          !weaponFireService.systemHasFireOrderAgainstShip(system, ship)
+            ? this.targetShip(system, selectedShip, ship, uiState)
+            : this.unTargetShip(system, selectedShip, ship, uiState)
+        }
+        {...rest}
+      />
+    ));
   }
+
   targetShip(system, ship, target, uiState) {
     const { weaponFireService } = uiState.services;
 
@@ -121,9 +94,7 @@ class WeaponTargetingList extends React.Component {
 
     return (
       <>
-        <Container>{icons.unassigned}</Container>
-        <InfoHeader>Assigned weapons</InfoHeader>
-        <Container>{icons.assigned}</Container>
+        <Container>{icons}</Container>
       </>
     );
   }

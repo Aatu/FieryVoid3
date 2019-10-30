@@ -6,6 +6,7 @@ import GameMovement from "../ui/movement/GameMovement";
 import DeploymentMovement from "../ui/movement/DeploymentMovement";
 import GameUiModeButtons from "../ui/GameUiModeButtons";
 import LeftPanel from "../ui/leftPanel/LeftPanel";
+import ReplayUI from "../ui/replay/ReplayUI";
 import * as gamePhases from "../../../../model/game/gamePhases";
 
 class GameUiComponent extends React.Component {
@@ -62,6 +63,10 @@ class GameUiComponent extends React.Component {
 
         {uiState.state.gameUiModeButtons && (
           <GameUiModeButtons uiState={uiState} {...uiState.state.gameUiMode} />
+        )}
+
+        {uiState.state.replayUi && (
+          <ReplayUI uiState={uiState} replayContext={uiState.state.replayUi} />
         )}
 
         <LeftPanel uiState={uiState} {...uiState.state} />

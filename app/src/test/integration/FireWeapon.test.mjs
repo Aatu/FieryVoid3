@@ -135,5 +135,6 @@ test.serial("Submit successfull fire order for both players", async test => {
   test.is(biliyaz.systems.getSystemById(7).getRemainingHitpoints(), 10);
 
   test.false(achilles.systems.getSystemById(20).callHandler("isLoaded"));
+
   db.close();
 });

@@ -5,10 +5,12 @@ import WeaponFireService from "../../../../../../model/weapon/WeaponFireService.
 import { getSeededRandomGenerator } from "../../../../../../model/utils/math.mjs";
 
 class ReplayShipWeaponFire extends AnimationUiStrategy {
-  constructor(particleEmitterContainer, replayShipMovement) {
+  constructor(particleEmitterContainer, replayContext) {
     super();
     this.particleEmitterContainer = particleEmitterContainer;
-    this.replayShipMovement = replayShipMovement;
+    this.replayContext = replayContext;
+
+    this.ready = false;
   }
 
   async newTurn(gameDatas) {
@@ -48,7 +50,7 @@ class ReplayShipWeaponFire extends AnimationUiStrategy {
           weapon,
           shipIconContainer.getByShip(ship),
           shipIconContainer.getByShip(target),
-          this.replayShipMovement,
+          this.replayContext,
           getRandom,
           this.particleEmitterContainer,
           weapon.callHandler("getWeaponFireAnimationArguments")
@@ -57,6 +59,8 @@ class ReplayShipWeaponFire extends AnimationUiStrategy {
         this.animations.push(animation);
       });
     });
+
+    this.ready = true;
   }
 
   deactivate() {

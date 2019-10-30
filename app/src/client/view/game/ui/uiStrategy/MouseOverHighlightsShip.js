@@ -10,6 +10,8 @@ class MouseOverHighlightsShip extends UiStrategy {
   mouseOverShip(payload) {
     const { currentUser } = this.services;
 
+    this.highLighted = payload.entity;
+
     if (payload.entity.ship.player.isUsers(currentUser)) {
       payload.entity.replaceEmissive(
         new THREE.Color(39 / 255, 196 / 255, 39 / 255)
@@ -22,7 +24,13 @@ class MouseOverHighlightsShip extends UiStrategy {
   }
 
   mouseOutShip(payload) {
-    payload.entity.revertEmissive();
+    const { shipIconContainer } = this.services;
+    shipIconContainer.getArray().forEach(icon => icon.revertEmissive());
+  }
+
+  mouseOut() {
+    const { shipIconContainer } = this.services;
+    shipIconContainer.getArray().forEach(icon => icon.revertEmissive());
   }
 }
 

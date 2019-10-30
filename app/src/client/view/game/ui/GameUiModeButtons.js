@@ -2,11 +2,17 @@ import * as React from "react";
 import styled from "styled-components";
 import * as gameUiModes from "./gameUiModes";
 import { TooltipMenu, TooltipButton } from "../../../styled";
+import { Replay } from "../../../styled/icon";
 
 const Container = styled.div`
   position: absolute;
   top: 0;
   left: 500px;
+  display: flex;
+`;
+
+const ReplayButton = styled(TooltipButton)`
+  margin-left: 32px;
 `;
 
 class GameUiModeButtons extends React.PureComponent {
@@ -35,6 +41,9 @@ class GameUiModeButtons extends React.PureComponent {
           img="/img/selectShip.png"
           onClick={() => uiState.toggleGameUiMode(gameUiModes.MOVEMENT)}
         />
+        <ReplayButton onClick={() => uiState.startReplay()}>
+          <Replay />
+        </ReplayButton>
       </Container>
     );
   }

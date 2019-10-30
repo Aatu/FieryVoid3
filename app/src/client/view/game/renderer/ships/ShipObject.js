@@ -105,8 +105,8 @@ class ShipObject {
       const sprite = new HexagonSprite(
         coordinateConverter.fromHexToGame(position)
       )
-        .setOpacity(0.2)
-        .setOverlayColor(new THREE.Color(1, 1, 1))
+        .setOpacity(0.5)
+        .setOverlayColor(COLOR_MINE)
         .setOverlayColorAlpha(1);
       this.hexSprites.push(sprite);
       this.hexSpriteContainer.add(sprite.mesh);
@@ -395,7 +395,6 @@ class ShipObject {
     if (mine) {
       this.forceEmissive(new THREE.Color(39 / 255, 196 / 255, 39 / 255));
       //this.line.setColor(new THREE.Color(39 / 255, 196 / 255, 39 / 255));
-      console.log("set", this.hexSprites);
       this.hexSprites.forEach(hexSprite =>
         hexSprite.setOverlayColor(
           new THREE.Color(39 / 255, 196 / 255, 39 / 255)
