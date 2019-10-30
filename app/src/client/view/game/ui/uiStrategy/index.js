@@ -18,6 +18,7 @@ import SelectFirstActiveShip from "./SelectFirstActiveShip";
 import AllShipsMovementPaths from "./AllShipsMovementPaths";
 import AllowSubmittingOnValidGameState from "./AllowSubmittingOnValidGameState";
 import ReplayShipMovement from "./replay/ReplayShipMovement";
+import ReplayShipWeaponFire from "./replay/ReplayShipWeaponFire";
 import AutomaticReplay from "./replay/AutomaticReplay";
 import GameShipTooltipMenuStrategy from "./GameShipTooltipMenuStrategy";
 import ShowUiModeButtons from "./ShowUiModeButtons";
@@ -65,5 +66,6 @@ export {
   ReplayShipMovement,
   AutomaticReplay,
   GameShipTooltipMenuStrategy,
-  ShipClickSelectsShip
+  ShipClickSelectsShip,
+  ReplayShipWeaponFire
 };

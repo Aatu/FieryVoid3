@@ -60,8 +60,7 @@ class WeaponFireService {
 
     return weapon.callHandler("addFireOrder", {
       shooter,
-      target,
-      turn: this.gamedata.turn
+      target
     });
   }
 
@@ -91,19 +90,6 @@ class WeaponFireService {
     }
 
     return true;
-  }
-
-  getAllResolvedFireOrdersForShip(shooter) {
-    return shooter.systems
-      .getSystems()
-      .filter(system => system.isWeapon && system.isWeapon())
-      .reduce(
-        (all, system) => [
-          ...all,
-          ...system.callHandler("getResolvedFireOrders")
-        ],
-        []
-      );
   }
 }
 

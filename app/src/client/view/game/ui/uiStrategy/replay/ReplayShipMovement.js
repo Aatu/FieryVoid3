@@ -20,6 +20,8 @@ class ReplayShipMovement extends AnimationUiStrategy {
 
     await shipIconContainer.shipsLoaded();
 
+    console.log("movement awaited");
+
     shipIconContainer.getArray().forEach(icon => {
       const ship = icon.ship;
       icon.show();
@@ -42,6 +44,18 @@ class ReplayShipMovement extends AnimationUiStrategy {
     }, this);
 
     return super.deactivate();
+  }
+
+  getPositionAtTime(icon, percentDone) {
+    const animation = this.animations.find(
+      animation => animation.shipIcon === icon
+    );
+
+    if (!animation) {
+      return null;
+    }
+
+    return animation.getPositionAndFacing(0, percentDone).position;
   }
 }
 

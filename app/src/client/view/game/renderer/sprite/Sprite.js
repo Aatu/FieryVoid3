@@ -50,22 +50,27 @@ class Sprite {
   setOpacity(opacity) {
     this.opacity = opacity;
     this.uniforms.opacity.value = opacity;
+    return this;
   }
 
   multiplyOpacity(m) {
     this.uniforms.opacity.value = this.opacity * m;
+    return this;
   }
 
   setOverlayColorAlpha(alpha) {
     this.uniforms.overlayAlpha.value = alpha;
+    return this;
   }
 
   setOverlayColor(color) {
     this.uniforms.overlayColor.value = color;
+    return this;
   }
 
   setScale(width, height) {
     this.mesh.scale.set(width, height, 1);
+    return this;
   }
 
   destroy() {
@@ -74,6 +79,7 @@ class Sprite {
 
   setFacing(facing) {
     this.mesh.rotation.z = -degreeToRadian(facing);
+    return this;
   }
 
   getFacing() {

@@ -54,12 +54,20 @@ class ShipMovementAnimation extends Animation {
   cleanUp() {}
 
   render({ turn, percentDone }) {
+    const { position, facing } = this.getPositionAndFacing(turn, percentDone);
+
+    this.shipIcon.setPosition(position);
+    this.shipIcon.setFacing(-facing);
+  }
+
+  getPositionAndFacing(turn, percentDone) {
     const position = this.positionCurves[turn]
       ? this.positionCurves[turn].getPoint(percentDone)
       : this.positionCurves[this.positionCurves.length - 1].getPoint(1);
 
-    this.shipIcon.setPosition(position);
-    this.shipIcon.setFacing(-this.pivotSteps.getFacing(turn, percentDone));
+    const facing = this.pivotSteps.getFacing(turn, percentDone);
+
+    return { position, facing };
   }
 
   movesToCurves(moves) {

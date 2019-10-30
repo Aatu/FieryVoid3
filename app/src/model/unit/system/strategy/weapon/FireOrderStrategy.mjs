@@ -53,27 +53,17 @@ class FireOrderStrategy extends ShipSystemStrategy {
     return this.fireOrders.filter(fireOrder => !fireOrder.result);
   }
 
-  getResolvedFireOrders() {
-    return this.fireOrders.filter(fireOrder => fireOrder.result);
-  }
-
   removeFireOrders() {
     this.fireOrders = [];
   }
 
-  addFireOrder({ shooter, target, weaponSettings, turn }) {
+  addFireOrder({ shooter, target, weaponSettings }) {
     if (this.fireOrders.length === this.numberOfShots) {
       throw new Error(
         `Can only assign ${this.numberOfShots} fire orders for this system`
       );
     }
-    const order = new FireOrder(
-      shooter,
-      target,
-      this.system,
-      turn,
-      weaponSettings
-    );
+    const order = new FireOrder(shooter, target, this.system, weaponSettings);
 
     this.fireOrders.push(order);
     return order;
@@ -95,14 +85,12 @@ class FireOrderStrategy extends ShipSystemStrategy {
   }
 
   advanceTurn(turn) {
-    this.fireOrders = this.fireOrders.filter(
-      fireOrder => fireOrder.turn >= turn - 1
-    );
+    this.fireOrders = [];
   }
 
   censorForUser({ mine }) {
     if (!mine) {
-      this.fireOrders = this.fireOrders.filter(fireOrder => fireOrder.result);
+      this.fireOrders = [];
     }
   }
 }

@@ -1,6 +1,3 @@
-import { InvalidGameDataError, UnauthorizedError } from "../errors/index.mjs";
-import { UnableToAssignEw } from "../../model/unit/ShipElectronicWarfare.mjs";
-
 class PowerHandler {
   receivePower(serverGameData, clientGameData, activeShips, user) {
     activeShips.forEach(serverShip => {

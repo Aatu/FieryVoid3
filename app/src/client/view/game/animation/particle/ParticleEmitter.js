@@ -18,7 +18,7 @@ class ParticleEmitter extends Animation {
       args = {};
     }
 
-    var blending = THREE.NormalBlending; //args.blending || THREE.AdditiveBlending;
+    var blending = args.blending || THREE.AdditiveBlending;
 
     if (!particleCount) {
       particleCount = 1000;
@@ -178,7 +178,7 @@ class ParticleEmitter extends Animation {
     }
 
     this.mesh = new THREE.Points(this.particleGeometry, this.particleMaterial);
-    this.mesh.position.set(0, 0, args.z || 201);
+    this.mesh.position.set(0, 0, 0);
     this.mesh.frustumCulled = false;
     this.needsUpdate = false;
 
@@ -202,7 +202,7 @@ class ParticleEmitter extends Animation {
 
   update(gameData) {}
 
-  render(now, total, last, delta, zoom) {
+  render({ total, zoom }) {
     this.particleMaterial.uniforms.gameTime.value = total;
     this.particleMaterial.uniforms.zoomLevel.value = 1 / zoom;
     this.mesh.material.needsUpdate = true;

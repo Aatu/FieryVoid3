@@ -3,9 +3,8 @@ import ShipSystem from "../unit/system/ShipSystem.mjs";
 import FireOrderResult from "./FireOrderResult.mjs";
 
 class FireOrder {
-  constructor(shooterId, targetId, weaponId, turn, weaponSettigs = {}) {
+  constructor(shooterId, targetId, weaponId, weaponSettigs = {}) {
     this.id = null;
-    this.turn = turn;
     this.shooterId = shooterId instanceof Ship ? shooterId.id : shooterId;
     this.targetId = shooterId instanceof Ship ? targetId.id : targetId;
     this.weaponId = weaponId instanceof ShipSystem ? weaponId.id : weaponId;
@@ -25,7 +24,6 @@ class FireOrder {
   serialize() {
     return {
       id: this.id,
-      turn: this.turn,
       shooterId: this.shooterId,
       targetId: this.targetId,
       weaponId: this.weaponId,
@@ -36,7 +34,6 @@ class FireOrder {
 
   deserialize(data = {}) {
     this.id = data.id || null;
-    this.turn = data.turn;
     this.shooterId = data.shooterId;
     this.targetId = data.targetId;
     this.weaponId = data.weaponId;

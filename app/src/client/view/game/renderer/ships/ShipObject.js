@@ -8,11 +8,13 @@ import {
   LineSprite,
   CircleSprite,
   ShipEWSprite,
-  DottedCircleSprite
+  DottedCircleSprite,
+  HexagonSprite
 } from "../sprite";
 
 import Line from "../Line";
 import Object3d from "../object3d/Object3d";
+import coordinateConverter from "../../../../../model/utils/CoordinateConverter.mjs";
 
 const COLOR_MINE = new THREE.Color(39 / 255, 196 / 255, 39 / 255);
 const COLOR_ENEMY = new THREE.Color(255 / 255, 40 / 255, 40 / 255);
@@ -34,6 +36,8 @@ class ShipObject {
       this.resolveShipObjectLoaded = resolve;
     });
 
+    this.hexSprites = [];
+    this.hexSpriteContainer = new THREE.Object3D();
     this.ghostShipObject = null;
     this.shipSideSprite = null;
     this.shipEWSprite = null;
@@ -81,6 +85,7 @@ class ShipObject {
     }
 
     const opacity = 0.5;
+    /*
     this.line = new Line(this.mesh, {
       start: { x: 0, y: 0, z: 1 },
       end: { x: 0, y: 0, z: this.defaultHeight },
@@ -88,6 +93,7 @@ class ShipObject {
       color: new THREE.Color(1, 1, 1),
       opacity
     });
+    */
 
     this.shipSelectedSprite = new DottedCircleSprite(
       { width: this.overlaySpriteSize, height: this.overlaySpriteSize },
@@ -95,6 +101,18 @@ class ShipObject {
       opacity
     );
 
+    this.ship.hexSizes.forEach(position => {
+      const sprite = new HexagonSprite(
+        coordinateConverter.fromHexToGame(position)
+      )
+        .setOpacity(0.2)
+        .setOverlayColor(new THREE.Color(1, 1, 1))
+        .setOverlayColorAlpha(1);
+      this.hexSprites.push(sprite);
+      this.hexSpriteContainer.add(sprite.mesh);
+    });
+
+    this.mesh.add(this.hexSpriteContainer);
     /*
     this.shipSelectedSprite.setOverlayColor(COLOR_MINE);
     this.shipSelectedSprite.setOverlayColorAlpha(1);
@@ -102,12 +120,14 @@ class ShipObject {
     //shipSelectedSprite.hide();
     */
 
+    /*
     this.shipSideSprite = new CircleSprite(
       { width: this.sideSpriteSize, height: this.sideSpriteSize },
       0.01,
       opacity
     );
     this.mesh.add(this.shipSideSprite.mesh);
+    */
 
     this.shipEWSprite = new ShipEWSprite(
       { width: this.sideSpriteSize * 1.5, height: this.sideSpriteSize },
@@ -160,6 +180,8 @@ class ShipObject {
       degreeToRadian(y + this.startRotation.y),
       degreeToRadian(z + this.startRotation.z)
     );
+
+    this.hexSpriteContainer.rotation.z = degreeToRadian(y);
   }
 
   getRotation() {
@@ -232,8 +254,8 @@ class ShipObject {
   }
 
   setSideSpriteOpacity(opacity) {
-    this.shipSideSprite.multiplyOpacity(opacity);
-    this.line.multiplyOpacity(opacity);
+    //this.shipSideSprite.multiplyOpacity(opacity);
+    //this.line.multiplyOpacity(opacity);
   }
 
   showBDEW() {
@@ -367,15 +389,26 @@ class ShipObject {
 
   async setGhostShipEmissive(mine) {
     await this.isShipObjectLoaded;
-    this.mesh.remove(this.shipSideSprite.mesh);
+    //this.mesh.remove(this.shipSideSprite.mesh);
     //this.mesh.remove(this.line.mesh);
 
     if (mine) {
       this.forceEmissive(new THREE.Color(39 / 255, 196 / 255, 39 / 255));
-      this.line.setColor(new THREE.Color(39 / 255, 196 / 255, 39 / 255));
+      //this.line.setColor(new THREE.Color(39 / 255, 196 / 255, 39 / 255));
+      console.log("set", this.hexSprites);
+      this.hexSprites.forEach(hexSprite =>
+        hexSprite.setOverlayColor(
+          new THREE.Color(39 / 255, 196 / 255, 39 / 255)
+        )
+      );
     } else {
       this.forceEmissive(new THREE.Color(196 / 255, 39 / 255, 39 / 255));
-      this.line.setColor(new THREE.Color(196 / 255, 39 / 255, 39 / 255));
+      //this.line.setColor(new THREE.Color(196 / 255, 39 / 255, 39 / 255));
+      this.hexSprites.forEach(hexSprite =>
+        hexSprite.setOverlayColor(
+          new THREE.Color(196 / 255, 39 / 255, 39 / 255)
+        )
+      );
     }
   }
 

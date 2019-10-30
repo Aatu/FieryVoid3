@@ -28,7 +28,7 @@ class BaseParticle {
     };
   }
 
-  creat(index) {
+  create(index) {
     this.index = index;
     return this;
   }
@@ -51,18 +51,18 @@ class BaseParticle {
     return this;
   }
 
-  setTextur(tex) {
+  setTexture(tex) {
     changeAttribute(this.geometry, this.index, "textureNumber", tex);
 
     return this;
   }
 
-  setSiz(size) {
+  setSize(size) {
     changeAttribute(this.geometry, this.index, "size", size);
     return this;
   }
 
-  setSizeChang(size) {
+  setSizeChange(size) {
     changeAttribute(this.geometry, this.index, "sizeChange", size);
     return this;
   }
@@ -98,18 +98,18 @@ class BaseParticle {
       this.geometry,
       this.index,
       "position",
-      [pos.x, pos.y, 0],
+      [pos.x, pos.y, pos.z],
       true
     );
     return this;
   }
 
-  setAngl(angle) {
+  setAngle(angle) {
     changeAttribute(this.geometry, this.index, "angle", degreeToRadian(angle));
     return this;
   }
 
-  setAngleChang(angle) {
+  setAngleChange(angle) {
     changeAttribute(
       this.geometry,
       this.index,
@@ -123,7 +123,7 @@ class BaseParticle {
     changeAttribute(this.geometry, this.index, "velocity", [
       velocity.x,
       velocity.y,
-      0
+      velocity.z
     ]);
     return this;
   }
@@ -132,17 +132,17 @@ class BaseParticle {
     changeAttribute(this.geometry, this.index, "acceleration", [
       acceleration.x,
       acceleration.y,
-      0
+      acceleration.z
     ]);
     return this;
   }
 
-  deactivat() {
+  deactivate() {
     this.setInitialValues();
     return this;
   }
 
-  setActivationTim(gameTime) {
+  setActivationTime(gameTime) {
     changeAttribute(this.geometry, this.index, "activationGameTime", gameTime);
     return this;
   }

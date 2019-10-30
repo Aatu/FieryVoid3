@@ -1,5 +1,6 @@
 import Ship from "../../Ship.mjs";
 import systems from "../../system/index.mjs";
+import Offset from "../../../hexagon/Offset.mjs";
 
 class Mouros extends Ship {
   setShipProperties() {
@@ -9,6 +10,7 @@ class Mouros extends Ship {
     this.rollcost = 3;
     this.pivotcost = 3;
     this.evasioncost = 3;
+    this.hexSizes = [new Offset(0, 0), new Offset(-1, 0), new Offset(1, 0)];
 
     this.description = ``;
 

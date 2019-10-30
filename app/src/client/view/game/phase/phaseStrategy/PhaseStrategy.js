@@ -71,6 +71,7 @@ class PhaseStrategy {
     };
     this.callStrategies("render", renderPayload);
     shipIconContainer && shipIconContainer.render(renderPayload);
+    return renderPayload;
   }
 
   animateFromTo(start, end, turnLength) {

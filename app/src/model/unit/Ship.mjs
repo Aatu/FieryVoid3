@@ -18,6 +18,7 @@ class Ship {
     this.evasioncost = 1;
     this.frontHitProfile = 30;
     this.sideHitProfile = 50;
+    this.hexSizes = [];
 
     this.shipModel = null;
     this.shipTypeName = "";

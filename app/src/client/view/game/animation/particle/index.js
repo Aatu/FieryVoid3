@@ -1,6 +1,11 @@
 import ParticleEmitterContainer from "./ParticleEmitterContainer";
 import StarParticleEmitter from "./StarParticleEmitter";
 import StarParticle from "./StarParticle";
+import ParticleEmitter from "./ParticleEmitter";
 
-window.ParticleEmitterContainer = ParticleEmitterContainer;
-export { ParticleEmitterContainer, StarParticleEmitter, StarParticle };
+export {
+  ParticleEmitterContainer,
+  StarParticleEmitter,
+  StarParticle,
+  ParticleEmitter
+};

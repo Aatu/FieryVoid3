@@ -1,5 +1,6 @@
 import Ship from "../../Ship.mjs";
 import systems from "../../system/index.mjs";
+import Offset from "../../../hexagon/Offset.mjs";
 
 class Fulcrum extends Ship {
   setShipProperties() {
@@ -8,6 +9,7 @@ class Fulcrum extends Ship {
     this.rollcost = 3;
     this.pivotcost = 3;
     this.evasioncost = 3;
+    this.hexSizes = [new Offset(0, 0)];
 
     this.description = `
        Fulcrum was ordered to fill the role of a fleet destroyer. A ship that packs enough of a punch in 

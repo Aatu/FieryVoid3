@@ -78,9 +78,9 @@ class ParticleEmitterContainer extends Animation {
     });
   }
 
-  render(now, total, last, delta, zoom) {
+  render(payload) {
     this.emitters.forEach(function(emitter) {
-      emitter.emitter.render(now, total, last, delta, zoom);
+      emitter.emitter.render(payload);
     });
   }
 
