@@ -40,8 +40,12 @@ class StandardDamageStrategy extends ShipSystemStrategy {
     const entry = new DamageEntry(damage - armor, armor, fireOrder.id);
     hitSystem.rollCritical(entry);
     hitSystem.addDamage(entry);
-    console.log("hitSystem", hitSystem, entry);
-    console.log("remaining", hitSystem.getRemainingHitpoints());
+
+    fireOrder.result.setDetails({
+      type: "applyDamageFromWeaponFire",
+      damage: damage - armor,
+      armor: armor
+    });
   }
 }
 

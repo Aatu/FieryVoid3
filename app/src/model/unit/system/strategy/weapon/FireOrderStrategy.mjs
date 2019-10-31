@@ -26,7 +26,7 @@ class FireOrderStrategy extends ShipSystemStrategy {
           target,
           weaponSettings,
           gameData,
-          result
+          fireOrder
         })
       ) {
         weapon.callHandler("applyDamageFromWeaponFire", {
@@ -34,8 +34,7 @@ class FireOrderStrategy extends ShipSystemStrategy {
           target,
           weaponSettings,
           gameData,
-          fireOrder,
-          result
+          fireOrder
         });
       }
 

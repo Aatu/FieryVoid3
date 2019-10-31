@@ -5,6 +5,7 @@ export const randomizeHitSystem = systems => {
 
   const roll = Math.floor(Math.random() * totalStructure);
   let structure = 0;
+
   return systems.find(system => {
     if (roll => structure && roll < system.hitpoints + structure) {
       return true;
