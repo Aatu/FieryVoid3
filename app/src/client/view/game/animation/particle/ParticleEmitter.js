@@ -185,22 +185,10 @@ class ParticleEmitter extends Animation {
     this.scene.add(this.mesh);
   }
 
-  start() {
-    this.active = true;
-  }
-
-  stop() {
-    this.active = false;
-  }
-
-  reset() {}
-
   cleanUp() {
     this.mesh.material.dispose();
     this.scene.remove(this.mesh);
   }
-
-  update(gameData) {}
 
   render({ total, zoom }) {
     this.particleMaterial.uniforms.gameTime.value = total;
@@ -208,10 +196,8 @@ class ParticleEmitter extends Animation {
     this.mesh.material.needsUpdate = true;
   }
 
-  done() {
-    if (this.onDoneCallback) {
-      this.onDoneCallback();
-    }
+  hasFree() {
+    return this.free.length > 0;
   }
 
   getParticle() {
@@ -225,6 +211,8 @@ class ParticleEmitter extends Animation {
   }
 
   freeParticles(particleIndices) {
+    particleIndices = [].concat(particleIndices);
+
     particleIndices.forEach(function(i) {
       this.flyParticle.create(i).setInitialValues();
     }, this);

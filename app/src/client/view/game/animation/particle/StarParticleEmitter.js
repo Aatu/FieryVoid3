@@ -162,32 +162,18 @@ class StarParticleEmitter extends Animation {
     this.scene.add(this.mesh);
   }
 
-  start() {
-    this.active = true;
-  }
-
-  stop() {
-    this.active = false;
-  }
-
-  reset() {}
-
   cleanUp() {
     this.mesh.material.dispose();
     this.scene.remove(this.mesh);
   }
-
-  update(gameData) {}
 
   render(now, total, last, delta, zoom) {
     this.particleMaterial.uniforms.gameTime.value = total;
     this.mesh.material.needsUpdate = true;
   }
 
-  done() {
-    if (this.onDoneCallback) {
-      this.onDoneCallback();
-    }
+  hasFree() {
+    return this.free.length > 0;
   }
 
   getParticle() {
@@ -201,6 +187,8 @@ class StarParticleEmitter extends Animation {
   }
 
   freeParticles(particleIndices) {
+    particleIndices = [].concat(particleIndices);
+
     particleIndices.forEach(function(i) {
       this.flyParticle.create(i).setInitialValues();
     }, this);

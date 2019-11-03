@@ -2,6 +2,9 @@ import * as THREE from "three";
 import HexGridRenderer from "./renderer/hexgrid/HexGridRender";
 import StarField from "./terrain/StarField";
 import { ZOOM_MAX, ZOOM_MIN } from "../../../model/gameConfig";
+import BoltInstanceFactory from "./animation/particle/BoltParticleEmitter/BoltInstanceFactory";
+import { loadObject } from "./utils/objectLoader";
+import { degreeToRadian } from "../../../model/utils/math.mjs";
 
 window.THREE = THREE;
 
@@ -80,6 +83,36 @@ class GameScene {
     const hemiLightHelper = new THREE.HemisphereLightHelper(hemiLight, 100);
     this.scene.add(hemiLightHelper);
     */
+
+    const boltTest = async () => {
+      const boltInstanceFactory = new BoltInstanceFactory(this.scene);
+      const boltContainer = await boltInstanceFactory.create();
+
+      console.log(boltContainer);
+
+      const bolt = boltContainer
+        .getFreeIndex()
+        .setOpacity(1)
+        .setPosition({ x: 0, y: 0, z: 0 })
+        .setScale(10, 1)
+        .setRotation({ x: 1, y: 1, z: 1 });
+
+      const test = await loadObject("/img/3d/effect/bolt/scene.gltf");
+      //this.scene.add(test.scene);
+
+      const geometry = test.scene.children[0].geometry;
+      const material = new THREE.MeshBasicMaterial({
+        side: THREE.DoubleSide,
+        wireframe: true
+      });
+      const mesh = new THREE.Mesh(geometry, material);
+      mesh.scale.set(10, 1, 1);
+      //mesh.rotation.set(degreeToRadian(90), 0, -degreeToRadian(45));
+      console.log("rotated", mesh);
+      this.scene.add(mesh);
+    };
+
+    boltTest();
 
     const directionalLight = new THREE.DirectionalLight(0xffffff, 1.0);
     directionalLight.position.set(0, 1, 0).normalize();

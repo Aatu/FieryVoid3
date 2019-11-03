@@ -1,53 +1,79 @@
 import Animation from "../Animation";
 import ParticleEmitter from "./ParticleEmitter";
+import { StarParticleEmitter } from ".";
+import BoltInstanceFactory from "./BoltParticleEmitter/BoltInstanceFactory";
 
 class ParticleEmitterContainer extends Animation {
-  constructor(scene, defaultParticleAmount, emitterClass, emitterArgs) {
+  constructor(scene, defaultParticleAmount) {
     super();
-    this.emitters = [];
     this.scene = scene;
     this.defaultParticleAmount = defaultParticleAmount;
     this.emitterClass = emitterClass || ParticleEmitter;
     this.emitterArgs = emitterArgs || {};
+
+    this.boltInstanceFactory = new BoltInstanceFactory(this.scene);
+
+    this.reservations = [];
+
+    this.emitters = {
+      star: [],
+      bolt: [],
+      effect: []
+    };
   }
 
-  getParticle(animation) {
-    var particle;
-    var emitter = null;
+  createStarParticleEmitter() {
+    return new StarParticleEmitter(this.scene, this.defaultParticleAmount);
+  }
 
-    for (var i in this.emitters) {
-      particle = this.emitters[i].emitter.getParticle();
-      if (particle) {
-        emitter = this.emitters[i];
-      }
+  createEffectParticleEmitter() {
+    return new ParticleEmitter(this.scene, this.defaultParticleAmount);
+  }
+
+  createBoltParticleEmitter() {
+    return this.boltInstanceFactory.create(this.defaultParticleAmount);
+  }
+
+  getStarParticle(reserver) {
+    let emitter = this.emitters.star.find(emitter => emitter.hasFree());
+
+    if (!emitter) {
+      this.emitters.star.push(this.createStarParticleEmitter());
     }
 
-    if (!particle) {
-      this.emitters.push({
-        emitter: new this.emitterClass(
-          this.scene,
-          this.defaultParticleAmount,
-          this.emitterArgs
-        ),
-        reservations: []
-      });
-      return this.getParticle(animation);
-    }
+    const particle = emitter.getParticle();
 
-    var reservation = this.getReservation(
-      emitter.reservations,
-      animation,
-      true
-    );
-    reservation.indexes.push(particle.index);
+    this.reservations.push({ reserver, emitter, index: particle.index });
+
     return particle;
   }
 
   cleanUp() {
-    this.emitters.forEach(function(emitter) {
+    this.emitters.star.forEach(emitter => {
       emitter.emitter.cleanUp();
     });
-    this.emitters = [];
+
+    this.emitters.bolt.forEach(emitter => {
+      emitter.emitter.cleanUp();
+    });
+
+    this.emitters.effect.forEach(emitter => {
+      emitter.emitter.cleanUp();
+    });
+
+    this.emitters = {
+      star: [],
+      bolt: [],
+      effect: []
+    };
+  }
+
+  cleanupReserver(reserver) {
+    this.reservations.forEach(reservation => {
+      if (reservation.reserver === reserver) {
+        reservation.emitter.freeParticles(reservation.index);
+      }
+    });
   }
 
   /*
@@ -58,6 +84,7 @@ class ParticleEmitterContainer extends Animation {
     };
     */
 
+  /*
   setRotation(rotation) {
     this.emitters.forEach(function(emitter) {
       emitter.emitter.mesh.rotation.y = (rotation * Math.PI) / 180;
@@ -78,8 +105,22 @@ class ParticleEmitterContainer extends Animation {
     });
   }
 
+  */
+
   render(payload) {
-    this.emitters.forEach(function(emitter) {
+    this.emitters.forEach(emitter => {
+      emitter.emitter.render(payload);
+    });
+
+    this.emitters.star.forEach(emitter => {
+      emitter.emitter.render(payload);
+    });
+
+    this.emitters.bolt.forEach(emitter => {
+      emitter.emitter.render(payload);
+    });
+
+    this.emitters.effect.forEach(emitter => {
       emitter.emitter.render(payload);
     });
   }
@@ -92,7 +133,6 @@ class ParticleEmitterContainer extends Animation {
         });
          emitter.emitter.freeParticles(reservation.indexes);
     }
-    */
   getReservation(reservations, animation, create) {
     var reservation = reservations.find(function(reservation) {
       return reservation.animation === animation;
@@ -105,6 +145,8 @@ class ParticleEmitterContainer extends Animation {
 
     return reservation;
   }
+  
+    */
 }
 
 export default ParticleEmitterContainer;
