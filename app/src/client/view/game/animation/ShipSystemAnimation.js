@@ -15,7 +15,6 @@ class ShipSystemAnimation extends Animation {
 
   updateSystem(system) {
     if (system.power.isGoingOffline()) {
-      console.log("goind offline", system);
       this.icon.disableSystemAnimation(system, "online");
       this.icon.playSystemAnimation(system, "offline");
     } else if (system.power.isGoingOnline()) {

@@ -42,6 +42,8 @@ class SystemInfoWeaponTargeting extends React.Component {
   render() {
     const { ship, system, uiState, target, hitChange } = this.props;
 
+    console.log("hit change", hitChange);
+
     return (
       <>
         <InfoHeader>TARGET: {target.name}</InfoHeader>
@@ -56,7 +58,10 @@ class SystemInfoWeaponTargeting extends React.Component {
         <Entry>
           <Header>Distance: </Header>
           <InfoValue>
-            {hitChange.distance} hexas, {hitChange.rangeModifier} to hit
+            {hitChange.distance} hexas,{" "}
+            {hitChange.outOfRange
+              ? `out of range`
+              : `${hitChange.rangeModifier} to hit`}
           </InfoValue>
         </Entry>
         <Entry>

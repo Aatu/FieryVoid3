@@ -23,8 +23,6 @@ class ReplayShipMovement extends AnimationUiStrategy {
 
     await shipIconContainer.shipsLoaded();
 
-    console.log("movement awaited");
-
     shipIconContainer.getArray().forEach(icon => {
       const ship = icon.ship;
       icon.show();

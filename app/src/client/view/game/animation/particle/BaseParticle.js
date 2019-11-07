@@ -13,6 +13,12 @@ const changeAttribute = (geometry, index, key, values) => {
   geometry.attributes[key].needsUpdate = true;
 };
 
+export const TEXTURE_GAS = 0;
+export const TEXTURE_BOLT = 1;
+export const TEXTURE_GLOW = 2;
+export const TEXTURE_RING = 3;
+export const TEXTURE_STARLINE = 4;
+
 class BaseParticle {
   constructor(material, geometry) {
     this.material = material;
@@ -20,11 +26,11 @@ class BaseParticle {
     this.index = 0;
 
     this.texture = {
-      gas: 0,
-      bolt: 1,
-      glow: 2,
-      ring: 3,
-      starLine: 4
+      gas: TEXTURE_GAS,
+      bolt: TEXTURE_BOLT,
+      glow: TEXTURE_GLOW,
+      ring: TEXTURE_RING,
+      starLine: TEXTURE_STARLINE
     };
   }
 
@@ -34,7 +40,7 @@ class BaseParticle {
   }
 
   setInitialValues() {
-    this.setPosition({ x: 0, y: 0 });
+    this.setPosition({ x: 0, y: 0, z: 0 });
     this.setColor(new THREE.Color(0, 0, 0));
     this.setOpacity(0.0);
     this.setFadeIn(0.0, 0.0);

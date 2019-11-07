@@ -12,7 +12,7 @@ test("Gets the correct range penalty from range strategy", test => {
 
   test.is(rangeStrategy.getRangeModifier({ distance: 0 }), 20);
   test.is(rangeStrategy.getRangeModifier({ distance: 30 }), -200);
-  test.is(rangeStrategy.getRangeModifier({ distance: 31 }), false);
+  test.is(rangeStrategy.getRangeModifier({ distance: 31 }), -200);
   test.is(rangeStrategy.getRangeModifier({ distance: 3 }), 14);
   test.is(rangeStrategy.getRangeModifier({ distance: 23 }), -123);
 });

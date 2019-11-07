@@ -40,12 +40,11 @@ class StandardHitStrategy extends ShipSystemStrategy {
     let distance = shooter
       .getShootingHexPosition()
       .distanceTo(target.getShootingHexPosition());
-    if (oew === 0) {
-      distance *= 2;
-    }
+
+    const rangeDistance = oew === 0 ? distance * 2 : distance;
 
     const rangeModifier = this.system.callHandler("getRangeModifier", {
-      distance,
+      distance: rangeDistance,
       weaponSettings
     });
 
@@ -56,6 +55,14 @@ class StandardHitStrategy extends ShipSystemStrategy {
       result = 0;
     }
 
+    const onRange = this.system.callHandler("isOnRange", { distance });
+    const absoluteResult = result;
+    result = Math.floor(result);
+
+    if (result < 0) {
+      result = 0;
+    }
+
     return {
       baseToHit,
       fireControl: this.fireControl,
@@ -63,7 +70,9 @@ class StandardHitStrategy extends ShipSystemStrategy {
       oew: oew,
       distance,
       rangeModifier,
-      result: result
+      result: onRange ? result : 0,
+      absoluteResult,
+      outOfRange: !onRange
     };
   }
 }

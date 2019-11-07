@@ -7,6 +7,11 @@ class BoltContainer {
     textureNumberAttribute,
     scaleAttribute,
     quaternionAttribute,
+    colorAttribute,
+    velocityAttribute,
+    activationGameTimeAttribute,
+    deactivationGameTimeAttribute,
+    deactivationFadeAttribute,
     amount,
     mesh,
     scene,
@@ -18,6 +23,11 @@ class BoltContainer {
     this.textureNumberAttribute = textureNumberAttribute;
     this.scaleAttribute = scaleAttribute;
     this.quaternionAttribute = quaternionAttribute;
+    this.colorAttribute = colorAttribute;
+    this.velocityAttribute = velocityAttribute;
+    this.activationGameTimeAttribute = activationGameTimeAttribute;
+    this.deactivationGameTimeAttribute = deactivationGameTimeAttribute;
+    this.deactivationFadeAttribute = deactivationFadeAttribute;
     this.mesh = mesh;
     this.scene = scene;
     this.numberCreated = numberCreated;
@@ -53,23 +63,36 @@ class BoltContainer {
     this.scene.remove(this.mesh);
   }
 
-  remove(tile) {
-    this.opacityAttribute.setX(tile.index, 0);
-    this.used--;
-  }
-
   resetIndex() {
     this.used = 0;
   }
 
   unassignEverything() {
-    this.opacityAttribute.setArray(new Float32Array(this.amount));
+    const opacitys = [];
+
+    for (let i = 0; i < this.amount; i++) {
+      opacitys.push(0);
+    }
+
+    this.opacityAttribute.setArray(opacitys);
     this.opacityAttribute.needsUpdate = true;
 
     this.used = 0;
   }
 
-  getFreeIndex() {
+  freeParticles(particleIndices) {
+    particleIndices = [].concat(particleIndices);
+
+    particleIndices.forEach(function(i) {
+      this.opacityAttribute.setX(i, 0);
+    }, this);
+
+    this.opacityAttribute.needsUpdate = true;
+
+    this.free = this.free.concat(particleIndices);
+  }
+
+  getParticle() {
     if (this.free.length === 0) {
       throw new Error("Container is full");
     }
@@ -102,29 +125,33 @@ class BoltContainer {
     );
     this.quaternionAttribute.needsUpdate = true;
   }
-  /*
-  update(data, index) {
 
-
-    this.textureNumber1Attribute.setXYZW(
-      index,
-      data[3],
-      data[4],
-      data[5],
-      data[6]
-    );
-
-    this.textureNumber2Attribute.setXYZW(
-      index,
-      data[7],
-      data[8],
-      data[9],
-      data[10]
-    );
-
-    this.typeAttribute.setXYZ(index, data[11], data[12], data[13]);
+  setTexture(index, texture) {
+    this.textureNumberAttribute.setX(index, texture);
+    this.textureNumberAttribute.needsUpdate = true;
   }
-  */
+
+  setColor(index, color) {
+    this.colorAttribute.setXYZ(index, color.r, color.g, color.b);
+    this.colorAttribute.needsUpdate = true;
+  }
+
+  setVelocity(index, velocity) {
+    this.velocityAttribute.setXYZ(index, velocity.x, velocity.y, velocity.z);
+    this.velocityAttribute.needsUpdate = true;
+  }
+
+  setActivationTime(index, time) {
+    this.activationGameTimeAttribute.setX(index, time);
+    this.activationGameTimeAttribute.needsUpdate = true;
+  }
+
+  setDeactivationTime(index, time, fade = 0) {
+    this.deactivationGameTimeAttribute.setX(index, time);
+    this.deactivationFadeAttribute.setX(index, fade);
+    this.deactivationGameTimeAttribute.needsUpdate = true;
+    this.deactivationFadeAttribute.needsUpdate = true;
+  }
 }
 
 export default BoltContainer;

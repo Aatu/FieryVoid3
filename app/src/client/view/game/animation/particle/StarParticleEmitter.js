@@ -167,7 +167,7 @@ class StarParticleEmitter extends Animation {
     this.scene.remove(this.mesh);
   }
 
-  render(now, total, last, delta, zoom) {
+  render({ total }) {
     this.particleMaterial.uniforms.gameTime.value = total;
     this.mesh.material.needsUpdate = true;
   }

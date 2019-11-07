@@ -19,6 +19,7 @@ class BoltInstanceFactory {
     });
 
     const texture = new THREE.TextureLoader().load(
+      //"/img/offline.png"
       "/img/effect/effectTextures1024.png"
     );
 
@@ -41,12 +42,12 @@ THREE.LinearMipMapLinearFilter
       },
       transparent: true,
       depthWrite: false,
-      //depthTest: false,
+      depthTest: false,
       side: THREE.DoubleSide,
       blending: THREE.AdditiveBlending,
       vertexShader: boltVertexShader,
-      fragmentShader: boltFragmentShader,
-      wireframe: true
+      fragmentShader: boltFragmentShader
+      //wireframe: true
     });
 
     this.start = Date.now() / 3000;
@@ -55,12 +56,10 @@ THREE.LinearMipMapLinearFilter
   render({ total, zoom }) {
     this.material.uniforms.gameTime.value = total;
     this.material.uniforms.zoomLevel.value = 1 / zoom;
-    this.mesh.material.needsUpdate = true;
+    this.material.needsUpdate = true;
   }
 
-  async create(size = 2000) {
-    await this.ready;
-
+  create(size = 2000) {
     return this.makeInstanced(loadedCube, size);
   }
 
@@ -70,7 +69,6 @@ THREE.LinearMipMapLinearFilter
     }
 
     const cube = await loadObject("/img/3d/effect/bolt/scene.gltf");
-    console.log("cube", cube);
     const cubeGeometry = cube.scene.children[0].geometry;
     //cubeGeometry.rotateY((90 * Math.PI) / 180);
     //cubeGeometry.scale(0.5, 0.5, 0.5);
@@ -86,20 +84,28 @@ THREE.LinearMipMapLinearFilter
       opacityAttribute,
       textureNumberAttribute,
       scaleAttribute,
-      quaternionAttribute;
+      quaternionAttribute,
+      colorAttribute,
+      velocityAttribute,
+      activationGameTimeAttribute,
+      deactivationGameTimeAttribute,
+      deactivationFadeAttribute;
 
     const geometry = new THREE.InstancedBufferGeometry();
     geometry.index = original.index;
     geometry.attributes.position = original.attributes.position;
     geometry.attributes.uv = original.attributes.uv;
 
-    console.log("geometry index", original.index);
-
     const offsets = [];
     const opacitys = [];
     const textureNumbers = [];
     const scales = [];
     const quaternions = [];
+    const colors = [];
+    const velocitys = [];
+    const activations = [];
+    const deactivations = [];
+    const fades = [];
 
     for (let i = 0; i < amount; i++) {
       offsets.push(0, 0, 0.5);
@@ -107,6 +113,11 @@ THREE.LinearMipMapLinearFilter
       textureNumbers.push(-1);
       scales.push(1, 1, 1);
       quaternions.push(0, 1, 0, 0);
+      colors.push(0, 0, 0);
+      velocitys.push(0, 0, 0);
+      activations.push(0);
+      deactivations.push(0);
+      fades.push(0);
     }
 
     offsetAttribute = new THREE.InstancedBufferAttribute(
@@ -134,11 +145,44 @@ THREE.LinearMipMapLinearFilter
       4
     ).setDynamic(true);
 
+    colorAttribute = new THREE.InstancedBufferAttribute(
+      new Float32Array(colors),
+      3
+    ).setDynamic(true);
+
+    velocityAttribute = new THREE.InstancedBufferAttribute(
+      new Float32Array(velocitys),
+      3
+    ).setDynamic(true);
+
+    activationGameTimeAttribute = new THREE.InstancedBufferAttribute(
+      new Float32Array(activations),
+      1
+    ).setDynamic(true);
+
+    deactivationGameTimeAttribute = new THREE.InstancedBufferAttribute(
+      new Float32Array(deactivations),
+      1
+    ).setDynamic(true);
+
+    deactivationFadeAttribute = new THREE.InstancedBufferAttribute(
+      new Float32Array(fades),
+      1
+    ).setDynamic(true);
+
     geometry.addAttribute("offset", offsetAttribute);
     geometry.addAttribute("opacity", opacityAttribute);
     geometry.addAttribute("textureNumber", textureNumberAttribute);
     geometry.addAttribute("scale", scaleAttribute);
     geometry.addAttribute("quaternion", quaternionAttribute);
+    geometry.addAttribute("color", colorAttribute);
+    geometry.addAttribute("velocity", velocityAttribute);
+    geometry.addAttribute("activationGameTime", activationGameTimeAttribute);
+    geometry.addAttribute(
+      "deactivationGameTime",
+      deactivationGameTimeAttribute
+    );
+    geometry.addAttribute("deactivationFade", deactivationFadeAttribute);
 
     const mesh = new THREE.Mesh(geometry, this.material);
     mesh.frustumCulled = false;
@@ -153,6 +197,11 @@ THREE.LinearMipMapLinearFilter
       textureNumberAttribute,
       scaleAttribute,
       quaternionAttribute,
+      colorAttribute,
+      velocityAttribute,
+      activationGameTimeAttribute,
+      deactivationGameTimeAttribute,
+      deactivationFadeAttribute,
       amount,
       mesh,
       this.scene,

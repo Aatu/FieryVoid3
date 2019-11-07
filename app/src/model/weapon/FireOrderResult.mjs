@@ -25,6 +25,10 @@ class FireOrderResult {
   setResolved() {
     this.resolved = true;
   }
+
+  getHitResolution() {
+    return this.details.find(detail => detail.type === "checkFireOrderHits");
+  }
 }
 
 export default FireOrderResult;

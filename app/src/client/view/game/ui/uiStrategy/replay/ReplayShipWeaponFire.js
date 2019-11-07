@@ -17,8 +17,7 @@ class ReplayShipWeaponFire extends AnimationUiStrategy {
     const { shipIconContainer } = this.services;
 
     await shipIconContainer.shipsLoaded();
-
-    console.log("fire awaited");
+    await this.particleEmitterContainer.ready();
 
     const gameData = gameDatas[0];
 
@@ -30,6 +29,7 @@ class ReplayShipWeaponFire extends AnimationUiStrategy {
 
     gameData.ships.getShips().forEach(ship => {
       const fireOrders = weaponFireService.getAllFireOrdersForShip(ship);
+
       fireOrders.forEach(fireOrder => {
         const target = gameData.ships.getShipById(fireOrder.targetId);
         const weapon = ship.systems.getSystemById(fireOrder.weaponId);
@@ -39,8 +39,6 @@ class ReplayShipWeaponFire extends AnimationUiStrategy {
         if (!animationName) {
           return;
         }
-
-        console.log("animationName", animationName);
 
         const animation = new ShipWeaponAnimations[
           `ShipWeapon${animationName.charAt(0).toUpperCase() +
@@ -64,7 +62,6 @@ class ReplayShipWeaponFire extends AnimationUiStrategy {
   }
 
   deactivate() {
-    this.particleEmitterContainer.cleanUp();
     return super.deactivate();
   }
 }

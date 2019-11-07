@@ -24,7 +24,6 @@ class NavigationalMovementPath {
 
   create() {
     let turns = 1000;
-    console.log("starting ", turns, " length navigation path");
     const start = performance.now();
     let position = this.position;
     let velocity = this.velocity;

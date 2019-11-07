@@ -34,8 +34,6 @@ class Ship {
       -hexFacingToAngle(this.getShootingFacing())
     );
 
-    console.log("heading", heading);
-
     if (heading >= 330 || heading <= 30 || (heading >= 150 && heading <= 210)) {
       return this.frontHitProfile;
     } else {

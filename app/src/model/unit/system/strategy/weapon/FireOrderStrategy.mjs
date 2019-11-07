@@ -50,7 +50,7 @@ class FireOrderStrategy extends ShipSystemStrategy {
   }
 
   getFireOrders() {
-    return this.fireOrders.filter(fireOrder => !fireOrder.result);
+    return this.fireOrders;
   }
 
   removeFireOrders() {

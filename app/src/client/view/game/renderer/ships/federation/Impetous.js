@@ -51,7 +51,6 @@ class Impetous extends ShipObject {
 
     */
 
-    console.log(object.object);
     super.replaceSocketByName(
       [
         { name: "engine_mount_2", id: 123 },

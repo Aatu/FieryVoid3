@@ -11,12 +11,8 @@ const texture = new THREE.TextureLoader().load(
 );
 
 class ParticleEmitter extends Animation {
-  constructor(scene, particleCount, args) {
+  constructor(scene, particleCount, args = {}) {
     super();
-
-    if (!args) {
-      args = {};
-    }
 
     var blending = args.blending || THREE.AdditiveBlending;
 
@@ -157,7 +153,8 @@ class ParticleEmitter extends Animation {
       fragmentShader: effectFragmentShader,
       transparent: true,
       blending: blending,
-      depthWrite: false //Try removing this if problems with transparency
+      depthWrite: false,
+      depthTest: false
     });
 
     /*

@@ -52,13 +52,10 @@ class WeaponArcsOnSystemMouseOver extends UiStrategy {
       facing: icon.getFacing()
     });
 
-    console.log("icon facing", icon.getFacing());
-
     arcsList.forEach(arcs => {
       const arcLenght =
         arcs.start === arcs.end ? 360 : getArcLength(arcs.start, arcs.end);
 
-      console.log("arc start", arcs.start, "arcLenght", arcLenght);
       const geometry = new THREE.CircleGeometry(
         distance,
         32,

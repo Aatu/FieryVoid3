@@ -5,6 +5,7 @@ import { ZOOM_MAX, ZOOM_MIN } from "../../../model/gameConfig";
 import BoltInstanceFactory from "./animation/particle/BoltParticleEmitter/BoltInstanceFactory";
 import { loadObject } from "./utils/objectLoader";
 import { degreeToRadian } from "../../../model/utils/math.mjs";
+import { ParticleEmitterContainer } from "./animation/particle";
 
 window.THREE = THREE;
 
@@ -13,7 +14,7 @@ class GameScene {
     this.phaseDirector = phaseDirector;
     this.coordinateConverter = coordinateConverter;
     this.hexGridRenderer = new HexGridRenderer();
-
+    this.particleEmitterContainer = null;
     this.scene = null;
     this.camera = null;
     this.starFieldScene = null;
@@ -37,6 +38,11 @@ class GameScene {
 
     this.scene = new THREE.Scene();
 
+    this.particleEmitterContainer = new ParticleEmitterContainer(
+      this.scene,
+      2000
+    );
+
     this.width = width;
     this.height = height;
 
@@ -54,7 +60,7 @@ class GameScene {
     this.setCameraAngle(-250);
 
     this.coordinateConverter.init(this.camera, this.scene);
-    this.phaseDirector.init(this.scene);
+    this.phaseDirector.init(this.scene, this.particleEmitterContainer);
 
     this.starFieldScene = new THREE.Scene();
     this.starFieldCamera = new THREE.OrthographicCamera(
@@ -84,35 +90,26 @@ class GameScene {
     this.scene.add(hemiLightHelper);
     */
 
+    /*
     const boltTest = async () => {
       const boltInstanceFactory = new BoltInstanceFactory(this.scene);
-      const boltContainer = await boltInstanceFactory.create();
+      await boltInstanceFactory.ready;
+      const boltContainer = boltInstanceFactory.create();
 
       console.log(boltContainer);
 
       const bolt = boltContainer
-        .getFreeIndex()
-        .setOpacity(1)
+        .getParticle()
+        .setOpacity(0.5)
         .setPosition({ x: 0, y: 0, z: 0 })
-        .setScale(10, 1)
-        .setRotation({ x: 1, y: 1, z: 1 });
-
-      const test = await loadObject("/img/3d/effect/bolt/scene.gltf");
-      //this.scene.add(test.scene);
-
-      const geometry = test.scene.children[0].geometry;
-      const material = new THREE.MeshBasicMaterial({
-        side: THREE.DoubleSide,
-        wireframe: true
-      });
-      const mesh = new THREE.Mesh(geometry, material);
-      mesh.scale.set(10, 1, 1);
-      //mesh.rotation.set(degreeToRadian(90), 0, -degreeToRadian(45));
-      console.log("rotated", mesh);
-      this.scene.add(mesh);
+        .setScale(500, 10)
+        .setRotation({ x: 1, y: 1, z: 0 })
+        .setBoltTexture()
+        .setColor({ r: 1, g: 0, b: 0 });
     };
 
     boltTest();
+    */
 
     const directionalLight = new THREE.DirectionalLight(0xffffff, 1.0);
     directionalLight.position.set(0, 1, 0).normalize();
@@ -333,7 +330,7 @@ class GameScene {
     this.zoomCamera(this.zoom);
 
     this.renderer.setSize(window.innerWidth, window.innerHeight);
-    this.starField.cleanUp();
+    this.starField.resize();
   }
 
   changeZoom(zoom) {

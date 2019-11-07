@@ -18,6 +18,10 @@ class StandardRangeStrategy extends ShipSystemStrategy {
     */
   }
 
+  isOnRange({ distance }) {
+    return distance <= this.getMaxRange();
+  }
+
   getMaxRange() {
     return this.rangesAndPenalties[this.rangesAndPenalties.length - 1].range;
   }
@@ -43,7 +47,7 @@ class StandardRangeStrategy extends ShipSystemStrategy {
     });
 
     if (!end) {
-      return false;
+      return -200;
     }
 
     const difference = end.modifier - start.modifier;

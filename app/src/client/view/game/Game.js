@@ -69,8 +69,6 @@ class Game {
 
     const payload = new PositionObject(position, gamePos, hexPos, entity);
 
-    console.log(payload.hex, payload.game);
-
     if (button && button === 2 && entity) {
       this.phaseDirector.relayEvent("shipRightClicked", payload);
     } else if (entity) {

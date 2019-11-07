@@ -34,9 +34,11 @@ class WeaponFireService {
   getAllFireOrdersForShip(shooter) {
     return shooter.systems
       .getSystems()
-      .filter(system => system.isWeapon && system.isWeapon())
       .reduce(
-        (all, system) => [...all, ...system.callHandler("getFireOrders")],
+        (all, system) => [
+          ...all,
+          ...system.callHandler("getFireOrders", {}, [])
+        ],
         []
       );
   }
@@ -49,7 +51,6 @@ class WeaponFireService {
   systemHasFireOrderAgainstShip(system, target) {
     const fireOrders = system.callHandler("getFireOrders");
 
-    console.log(fireOrders, target);
     return fireOrders.some(order => order.targetId === target.id);
   }
 

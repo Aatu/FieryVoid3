@@ -36,6 +36,52 @@ class BoltInstance {
     );
 
     this.boltContainer.setQuaternion(this.index, quaternion);
+    return this;
+  }
+
+  unsetTexture() {
+    this.boltContainer.setTexture(this.index, -1);
+    return this;
+  }
+
+  setGasTexture() {
+    this.boltContainer.setTexture(this.index, 0);
+    return this;
+  }
+
+  setBoltTexture() {
+    this.boltContainer.setTexture(this.index, 1);
+    return this;
+  }
+
+  setHaloTexture() {
+    this.boltContainer.setTexture(this.index, 2);
+    return this;
+  }
+
+  setRayTexture() {
+    this.boltContainer.setTexture(this.index, 3);
+    return this;
+  }
+
+  setColor(color) {
+    this.boltContainer.setColor(this.index, color);
+    return this;
+  }
+
+  setVelocity(velocity) {
+    this.boltContainer.setVelocity(this.index, velocity);
+    return this;
+  }
+
+  setActivationTime(time) {
+    this.boltContainer.setActivationTime(this.index, time);
+    return this;
+  }
+
+  setDeactivationTime(time, fade) {
+    this.boltContainer.setDeactivationTime(this.index, time, fade);
+    return this;
   }
 }
 

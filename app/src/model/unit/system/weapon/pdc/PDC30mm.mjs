@@ -18,10 +18,10 @@ class PDC30mm extends Weapon {
       new StandardRangeStrategy([
         { range: 0, modifier: 0 },
         { range: 3, modifier: 0 },
-        { range: 5, modifier: -20 },
-        { range: 10, modifier: -30 },
-        { range: 15, modifier: -100 },
-        { range: 18, modifier: -200 }
+        { range: 10, modifier: -20 },
+        { range: 15, modifier: -50 },
+        { range: 18, modifier: -100 },
+        { range: 20, modifier: -200 }
       ]),
       new StandardLoadingStrategy(1),
       new StandardDamageStrategy("d2", "d3+2"),

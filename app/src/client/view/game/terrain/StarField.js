@@ -9,7 +9,7 @@ import { getSeededRandomGenerator } from "../../../../model/utils/math";
 class StarField {
   constructor(scene, gameId) {
     this.starCount = 5000;
-    this.emitterContainer = null;
+    this.emitterContainer = new ParticleEmitterContainer(scene, this.starCount);
     this.scene = scene;
     this.lastAnimationTime = null;
     this.totalAnimationTime = 0;
@@ -21,16 +21,9 @@ class StarField {
     this.create();
   }
 
-  create() {
+  async create() {
+    await this.emitterContainer.ready();
     //this.scene.background = new THREE.Color(10 / 255, 10 / 255, 30 / 255);
-
-    this.cleanUp();
-
-    this.emitterContainer = new ParticleEmitterContainer(
-      this.scene,
-      this.starCount,
-      StarParticleEmitter
-    );
 
     //this.webglScene.scene.background = new THREE.Color(10/255, 10/255, 30/255);
     var width = 3000; //this.webglScene.width * 1.5;
@@ -56,34 +49,31 @@ class StarField {
         }
         */
 
-    this.emitterContainer.start();
     this.lastAnimationTime = new Date().getTime();
     this.totalAnimationTime = 0;
     this.zoomChanged = 1;
     return this;
   }
 
+  resize() {}
+
   cleanUp() {
-    if (this.emitterContainer) {
-      this.emitterContainer.cleanUp();
-      this.emitterContainer = null;
-    }
+    this.emitterContainer.release(this);
   }
 
   render() {
-    if (!this.emitterContainer) {
-      this.create();
+    if (!this.emitterContainer.isReady()) {
+      return;
     }
 
     var deltaTime = new Date().getTime() - this.lastAnimationTime;
     this.totalAnimationTime += deltaTime;
-    this.emitterContainer.render(
-      0,
-      this.totalAnimationTime,
-      0,
-      0,
-      this.zoomChanged
-    );
+    this.emitterContainer.render({
+      delta: 0,
+      total: this.totalAnimationTime,
+      last: 0,
+      zoom: this.zoomChanged
+    });
 
     if (this.zoomChanged === 1) {
       this.zoomChanged = 0;
@@ -93,7 +83,7 @@ class StarField {
   }
 
   createStar(width, height) {
-    var particle = this.emitterContainer.getParticle(this);
+    var particle = this.emitterContainer.getStarParticle(this);
 
     var x = (this.getRandom() - 0.5) * width * 1.5;
     var y = (this.getRandom() - 0.5) * height * 1.5;
@@ -114,7 +104,7 @@ class StarField {
   }
 
   createShiningStar(width, height) {
-    var particle = this.emitterContainer.getParticle(this);
+    var particle = this.emitterContainer.getStarParticle(this);
 
     var x = (this.getRandom() - 0.5) * width * 1.5;
     var y = (this.getRandom() - 0.5) * height * 1.5;
@@ -135,7 +125,7 @@ class StarField {
       .setColor(new THREE.Color(1, 1, 1))
       .setParallaxFactor(parallaxFactor);
 
-    particle = this.emitterContainer.getParticle(this);
+    particle = this.emitterContainer.getStarParticle(this);
     particle
       .setActivationTime(0)
       .setSize(size)
@@ -157,7 +147,7 @@ class StarField {
 
     while (shines--) {
       angle += this.getRandom() * 60 + 40;
-      particle = this.emitterContainer.getParticle(this);
+      particle = this.emitterContainer.getStarParticle(this);
       particle
         .setActivationTime(0)
         .setSize(size * this.getRandom() * 10 + 10)
@@ -212,7 +202,7 @@ class StarField {
   }
 
   createGas(position, baseRotation, size) {
-    var particle = this.emitterContainer.getParticle(this);
+    var particle = this.emitterContainer.getStarParticle(this);
 
     position.x += (this.getRandom() - 0.5) * 100;
     position.y += (this.getRandom() - 0.5) * 100;

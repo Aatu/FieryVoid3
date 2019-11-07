@@ -1,5 +1,8 @@
+import Vector from "../../../../model/utils/Vector";
+
 class Animation {
-  constructor() {
+  constructor(getRandom) {
+    this.getRandom = getRandom || Math.random;
     this.active = false;
     this.started = false;
     this.done = false;
@@ -55,6 +58,14 @@ class Animation {
   update(gameData) {}
 
   render(now, total, last, delta, goingBack) {}
+
+  getRandomPosition(distance) {
+    return new Vector(
+      this.getRandom() * distance - distance * 0.5,
+      this.getRandom() * distance - distance * 0.5,
+      this.getRandom() * distance - distance * 0.5
+    );
+  }
 }
 
 export default Animation;

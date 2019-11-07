@@ -3,13 +3,10 @@ import ParticleEmitter from "./ParticleEmitter";
 import { StarParticleEmitter } from ".";
 import BoltInstanceFactory from "./BoltParticleEmitter/BoltInstanceFactory";
 
-class ParticleEmitterContainer extends Animation {
+class ParticleEmitterContainer {
   constructor(scene, defaultParticleAmount) {
-    super();
     this.scene = scene;
     this.defaultParticleAmount = defaultParticleAmount;
-    this.emitterClass = emitterClass || ParticleEmitter;
-    this.emitterArgs = emitterArgs || {};
 
     this.boltInstanceFactory = new BoltInstanceFactory(this.scene);
 
@@ -20,6 +17,33 @@ class ParticleEmitterContainer extends Animation {
       bolt: [],
       effect: []
     };
+
+    this._isReady = false;
+    this.readyPromise = new Promise(async resolve => {
+      await this.boltInstanceFactory.ready;
+      this._isReady = true;
+      resolve(true);
+    });
+  }
+
+  ready() {
+    return this.readyPromise;
+  }
+
+  isReady() {
+    return this._isReady;
+  }
+
+  createParticleEmitter(type) {
+    switch (type) {
+      case "star":
+        return this.createStarParticleEmitter();
+      case "bolt":
+        return this.createBoltParticleEmitter();
+      case "effect":
+      default:
+        return this.createEffectParticleEmitter();
+    }
   }
 
   createStarParticleEmitter() {
@@ -34,11 +58,12 @@ class ParticleEmitterContainer extends Animation {
     return this.boltInstanceFactory.create(this.defaultParticleAmount);
   }
 
-  getStarParticle(reserver) {
-    let emitter = this.emitters.star.find(emitter => emitter.hasFree());
+  getParticle(reserver, type = "effect") {
+    let emitter = this.emitters[type].find(emitter => emitter.hasFree());
 
     if (!emitter) {
-      this.emitters.star.push(this.createStarParticleEmitter());
+      emitter = this.createParticleEmitter(type);
+      this.emitters[type].push(emitter);
     }
 
     const particle = emitter.getParticle();
@@ -48,17 +73,29 @@ class ParticleEmitterContainer extends Animation {
     return particle;
   }
 
+  getStarParticle(reserver) {
+    return this.getParticle(reserver, "star");
+  }
+
+  getBoltParticle(reserver) {
+    return this.getParticle(reserver, "bolt");
+  }
+
+  getEffectParticle(reserver) {
+    return this.getParticle(reserver, "effect");
+  }
+
   cleanUp() {
     this.emitters.star.forEach(emitter => {
-      emitter.emitter.cleanUp();
+      emitter.cleanUp();
     });
 
     this.emitters.bolt.forEach(emitter => {
-      emitter.emitter.cleanUp();
+      emitter.cleanUp();
     });
 
     this.emitters.effect.forEach(emitter => {
-      emitter.emitter.cleanUp();
+      emitter.cleanUp();
     });
 
     this.emitters = {
@@ -68,7 +105,7 @@ class ParticleEmitterContainer extends Animation {
     };
   }
 
-  cleanupReserver(reserver) {
+  release(reserver) {
     this.reservations.forEach(reservation => {
       if (reservation.reserver === reserver) {
         reservation.emitter.freeParticles(reservation.index);
@@ -76,77 +113,17 @@ class ParticleEmitterContainer extends Animation {
     });
   }
 
-  /*
-    ParticleEmitterContainer.prototype.cleanUpAnimation = function (animation) {
-        this.emitters.forEach(function (emitter) {
-           cleanUpAnimationFromEmitter(animation, emitter);
-        });
-    };
-    */
-
-  /*
-  setRotation(rotation) {
-    this.emitters.forEach(function(emitter) {
-      emitter.emitter.mesh.rotation.y = (rotation * Math.PI) / 180;
-    });
-  }
-
-  setPosition(pos) {
-    this.emitters.forEach(function(emitter) {
-      emitter.emitter.mesh.position.x = pos.x;
-      emitter.emitter.mesh.position.y = pos.y;
-      emitter.emitter.mesh.position.z = pos.z;
-    });
-  }
-
-  lookAt(thing) {
-    this.emitters.forEach(function(emitter) {
-      emitter.emitter.mesh.quaternion.copy(thing.quaternion);
-    });
-  }
-
-  */
-
   render(payload) {
-    this.emitters.forEach(emitter => {
-      emitter.emitter.render(payload);
-    });
-
     this.emitters.star.forEach(emitter => {
-      emitter.emitter.render(payload);
-    });
-
-    this.emitters.bolt.forEach(emitter => {
-      emitter.emitter.render(payload);
+      emitter.render(payload);
     });
 
     this.emitters.effect.forEach(emitter => {
-      emitter.emitter.render(payload);
-    });
-  }
-
-  /*
-    function cleanUpAnimationFromEmitter(animation, emitter) {
-        var reservation = getReservation(emitter.reservations);
-         emitter.reservations = emitter.reservations.filter(function (res) {
-            return res !== reservation;
-        });
-         emitter.emitter.freeParticles(reservation.indexes);
-    }
-  getReservation(reservations, animation, create) {
-    var reservation = reservations.find(function(reservation) {
-      return reservation.animation === animation;
+      emitter.render(payload);
     });
 
-    if (!reservation && create) {
-      reservation = { animation: animation, indexes: [] };
-      reservations.push(reservation);
-    }
-
-    return reservation;
+    this.boltInstanceFactory.render(payload);
   }
-  
-    */
 }
 
 export default ParticleEmitterContainer;

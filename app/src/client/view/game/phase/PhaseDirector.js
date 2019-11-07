@@ -45,13 +45,9 @@ class PhaseDirector {
     this.gameDataCache = new GameDataCache();
   }
 
-  init(scene) {
+  init(scene, emitterContainer) {
     this.scene = scene;
-    this.emitterContainer = new ParticleEmitterContainer(
-      scene,
-      50000,
-      ParticleEmitter
-    );
+    this.emitterContainer = emitterContainer;
 
     this.shipIconContainer = new ShipIconContainer(scene, this.currentUser);
     this.electronicWarfareIndicatorService = new ElectronicWarfareIndicatorService(
