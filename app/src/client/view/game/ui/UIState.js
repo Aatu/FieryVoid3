@@ -64,7 +64,6 @@ class UIState {
 
     this.updateState();
     this.customEvent("systemSelected", { systems });
-    console.log("systems selected", this.state.selectedSystems);
   }
 
   deselectSystem(systems) {

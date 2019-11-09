@@ -96,8 +96,6 @@ class GameScene {
       await boltInstanceFactory.ready;
       const boltContainer = boltInstanceFactory.create();
 
-      console.log(boltContainer);
-
       const bolt = boltContainer
         .getParticle()
         .setOpacity(0.5)

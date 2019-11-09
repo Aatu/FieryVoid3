@@ -795,6 +795,13 @@
     "@babel/helper-plugin-utils" "^7.0.0"
     "@babel/plugin-transform-typescript" "^7.3.2"
 
+"@babel/runtime-corejs2@^7.2.0":
+  version "7.7.2"
+  resolved "https://registry.yarnpkg.com/@babel/runtime-corejs2/-/runtime-corejs2-7.7.2.tgz#5a8c4e2f8688ce58adc9eb1d8320b6e7341f96ce"
+  dependencies:
+    core-js "^2.6.5"
+    regenerator-runtime "^0.13.2"
+
 "@babel/runtime@7.4.3":
   version "7.4.3"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.4.3.tgz#79888e452034223ad9609187a0ad1fe0d2ad4bdc"
@@ -2840,6 +2847,10 @@ core-js@^2.0.0, core-js@^2.4.0:
   version "2.6.9"
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.6.9.tgz#6b4b214620c834152e179323727fc19741b084f2"
 
+core-js@^2.6.5:
+  version "2.6.10"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.6.10.tgz#8a5b8391f8cc7013da703411ce5b585706300d7f"
+
 core-util-is@1.0.2, core-util-is@~1.0.0:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/core-util-is/-/core-util-is-1.0.2.tgz#b5fd54220aa2bc5ab57aab7140c940754503c1a7"
@@ -3465,10 +3476,6 @@ dotenv-expand@4.2.0:
 dotenv@6.2.0:
   version "6.2.0"
   resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-6.2.0.tgz#941c0410535d942c8becf28d3f357dbd9d476064"
-
-droll@^0.2.1:
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/droll/-/droll-0.2.1.tgz#c91c000c3502469716667aa804dc4bb74f86d03f"
 
 duplexer3@^0.1.4:
   version "0.1.4"
@@ -6257,6 +6264,25 @@ matcher@^2.0.0:
   dependencies:
     escape-string-regexp "^2.0.0"
 
+mathjs-expression-parser@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/mathjs-expression-parser/-/mathjs-expression-parser-1.0.2.tgz#7f59984cad711d766a1032f0900b01755c5cbc81"
+  dependencies:
+    mathjs "^5.2.3"
+
+mathjs@^5.2.3:
+  version "5.10.3"
+  resolved "https://registry.yarnpkg.com/mathjs/-/mathjs-5.10.3.tgz#e998885f932ea8886db8b40f7f5b199f89b427f1"
+  dependencies:
+    complex.js "2.0.11"
+    decimal.js "10.2.0"
+    escape-latex "1.2.0"
+    fraction.js "4.0.12"
+    javascript-natural-sort "0.7.1"
+    seed-random "2.2.0"
+    tiny-emitter "2.1.0"
+    typed-function "1.1.0"
+
 mathjs@^6.0.3:
   version "6.0.3"
   resolved "https://registry.yarnpkg.com/mathjs/-/mathjs-6.0.3.tgz#3d9e4a8ace012fa3c2078bb3ca1237374fa03136"
@@ -8661,6 +8687,13 @@ ripemd160@^2.0.0, ripemd160@^2.0.1:
     hash-base "^3.0.0"
     inherits "^2.0.1"
 
+rpg-dice-roller@^3.1.5:
+  version "3.1.5"
+  resolved "https://registry.yarnpkg.com/rpg-dice-roller/-/rpg-dice-roller-3.1.5.tgz#b118ede9ee3483e446fd8fad5f9a0a9f77ded045"
+  dependencies:
+    mathjs-expression-parser "^1.0.2"
+    xregexp "^4.2.4"
+
 rsvp@^4.8.4:
   version "4.8.5"
   resolved "https://registry.yarnpkg.com/rsvp/-/rsvp-4.8.5.tgz#c8f155311d167f68f21e168df71ec5b083113734"
@@ -10371,6 +10404,12 @@ xmlchars@^2.1.1:
 xregexp@4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/xregexp/-/xregexp-4.0.0.tgz#e698189de49dd2a18cc5687b05e17c8e43943020"
+
+xregexp@^4.2.4:
+  version "4.2.4"
+  resolved "https://registry.yarnpkg.com/xregexp/-/xregexp-4.2.4.tgz#02a4aea056d65a42632c02f0233eab8e4d7e57ed"
+  dependencies:
+    "@babel/runtime-corejs2" "^7.2.0"
 
 xtend@^4.0.0, xtend@^4.0.1, xtend@~4.0.1:
   version "4.0.2"

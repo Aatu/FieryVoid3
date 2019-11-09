@@ -65,7 +65,7 @@ class CreateGame extends Component {
       gameData.id = response.data.gameId;
       this.setState({ gameData });
     } catch (e) {
-      console.log(e);
+      console.error(e);
     }
   }
 

@@ -220,7 +220,7 @@ class ExplosionEffect extends Animation {
       activationTime + (Math.random() * 0.02) / this.speed + 0.03 / this.speed;
 
     particle
-      .setSize(Math.floor(Math.random() * size) + size / 2)
+      .setSize(Math.floor((Math.random() * size) / 2) + size)
       .setOpacity(Math.random() * 0.2 + 0.6)
       .setFadeIn(activationTime, Math.random() * 0.005 + 0.0025)
       .setFadeOut(
@@ -340,7 +340,7 @@ class ExplosionEffect extends Animation {
         : activationTime + Math.floor((Math.random() * 0.05) / this.speed);
 
       particle
-        .setSize(Math.floor(Math.random() * size) + size / 2)
+        .setSize(Math.floor((Math.random() * size) / 2) + size)
         .setOpacity(Math.random() * 0.1 + 0.4)
         .setFadeIn(activationTime, Math.random() * 0.005 + 0.0025)
         .setFadeOut(fadeOutAt, (Math.random() * 200 + 800) / this.speed)
@@ -363,7 +363,7 @@ class ExplosionEffect extends Animation {
 
     return new THREE.Color().setRGB(
       1,
-      (255 - Math.floor(Math.random() * 255)) / 255,
+      (255 - Math.floor(Math.random() * 155)) / 255,
       Math.floor(Math.random() * 155) / 255
     );
   };

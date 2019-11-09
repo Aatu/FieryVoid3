@@ -29,6 +29,12 @@ class FireOrderResult {
   getHitResolution() {
     return this.details.find(detail => detail.type === "checkFireOrderHits");
   }
+
+  getDamageResolution() {
+    return this.details.find(
+      detail => detail.type === "applyDamageFromWeaponFire"
+    );
+  }
 }
 
 export default FireOrderResult;

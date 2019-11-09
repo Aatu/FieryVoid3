@@ -8,17 +8,21 @@ class TestDamageStrategy extends StandardDamageStrategy {
     this.damage = damage;
   }
 
-  getDamageForWeaponHit({ requiredToHit, rolledToHit }) {
+  _getDamageForWeaponHit({ requiredToHit, rolledToHit }) {
     return this.damage;
   }
 
-  chooseHitSystem({ target, shooter }) {
+  _chooseHitSystem({ target, shooter }) {
     const systems = target.systems.getSystemsForHit(shooter.getPosition());
     return systems.find(system => system instanceof Reactor);
   }
 
-  applyArmorPiercing({ armor }) {
-    return 0;
+  _applyArmorPiercing({ damage }) {
+    return {
+      armor: 0,
+      armorPiercing: 0,
+      finalDamage: damage
+    };
   }
 }
 

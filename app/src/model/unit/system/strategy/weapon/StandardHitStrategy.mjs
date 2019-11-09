@@ -24,7 +24,10 @@ class StandardHitStrategy extends ShipSystemStrategy {
       hitRoll: roll
     });
 
-    return hit;
+    return {
+      requiredToHit: toHit.result,
+      rolledToHit: roll
+    };
   }
 
   getHitChange({ shooter, target, weaponSettings = {} }) {

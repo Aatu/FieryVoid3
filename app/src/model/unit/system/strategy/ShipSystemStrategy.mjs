@@ -1,6 +1,9 @@
+import dice from "rpg-dice-roller";
+
 class ShipSystemStrategy {
   constructor() {
     this.system = null;
+    this.diceRoller = new dice.DiceRoller();
   }
 
   init(system) {

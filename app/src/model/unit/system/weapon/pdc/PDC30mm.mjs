@@ -4,7 +4,7 @@ import WeaponArcStrategy from "../../strategy/weapon/WeaponArcStrategy.mjs";
 import StandardHitStrategy from "../../strategy/weapon/StandardHitStrategy.mjs";
 import StandardRangeStrategy from "../../strategy/weapon/StandardRangeStrategy.mjs";
 import StandardLoadingStrategy from "../../strategy/weapon/StandardLoadingStrategy.mjs";
-import StandardDamageStrategy from "../../strategy/weapon/StandardDamageStrategy.mjs";
+import BurstDamageStrategy from "../../strategy/weapon/BurstDamageStrategy.mjs";
 import RequiresPowerSystemStrategy from "../../strategy/RequiresPowerSystemStrategy.mjs";
 import WeaponAnimationStrategy from "../../strategy/weapon/WeaponAnimationStrategy.mjs";
 
@@ -24,10 +24,10 @@ class PDC30mm extends Weapon {
         { range: 20, modifier: -200 }
       ]),
       new StandardLoadingStrategy(1),
-      new StandardDamageStrategy("d2", "d3+2"),
-      new WeaponAnimationStrategy("Bolt", {
+      new BurstDamageStrategy("d2", "d3+2", "d6", 6, 5),
+      new WeaponAnimationStrategy("BoltBurst", {
         size: 6,
-        speed: 0.2,
+        speed: 0.35,
         color: [0.8, 0.6, 0.2],
         shots: 6
       })

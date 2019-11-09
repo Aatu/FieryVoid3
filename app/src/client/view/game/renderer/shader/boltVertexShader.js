@@ -65,6 +65,10 @@ const boltVertexShader = `
             return 1.0;
         }
 
+        if (gameTime < (deactivationGameTime - deactivationFade)) {
+            return 1.0;
+        }
+
         float fade = gameTime - (deactivationGameTime - deactivationFade);
 
         if (fade > deactivationFade) {
@@ -106,7 +110,7 @@ const boltVertexShader = `
         float currentOpacity = opacity;
 
         if (zoomLevel < 1.0) {
-            currentOpacity += (1.0 - zoomLevel);
+            currentOpacity += (1.0 - zoomLevel) * 0.5;
         }
 
         float elapsedTime = gameTime - activationGameTime;

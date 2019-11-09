@@ -12,7 +12,8 @@ import {
   StandardRangeStrategy,
   FireOrderStrategy,
   StandardLoadingStrategy,
-  WeaponArcStrategy
+  WeaponArcStrategy,
+  BurstDamageStrategy
 } from "./weapon/index.mjs";
 
 export {
@@ -29,5 +30,6 @@ export {
   PowerOutputSystemStrategy,
   ThrustChannelSystemStrategy,
   AllowsEvasionSystemStrategy,
-  ElectronicWarfareProvider
+  ElectronicWarfareProvider,
+  BurstDamageStrategy
 };

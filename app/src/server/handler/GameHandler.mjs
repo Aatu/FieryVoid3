@@ -71,9 +71,9 @@ class GameHandler {
       return;
     }
 
+    this.weaponHandler.advance(gameData);
     this.movementHandler.advance(gameData);
     this.electronicWarfareHandler.advance(gameData);
-    this.weaponHandler.advance(gameData);
     this.powerHandler.advance(gameData);
 
     const toSave = gameData.clone();

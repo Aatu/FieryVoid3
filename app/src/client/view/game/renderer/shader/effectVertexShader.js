@@ -54,7 +54,7 @@ const effectVertexShader = `
         {
             
             if (zoomLevel < 1.0) {
-                currentOpacity += (1.0 - zoomLevel);
+                currentOpacity += (1.0 - zoomLevel) * 0.5;
             }
             
             vColor = vec4( color, currentOpacity );

@@ -27,6 +27,10 @@ class ReplayShipWeaponFire extends AnimationUiStrategy {
 
     const weaponFireService = new WeaponFireService().update(gameData);
 
+    console.log("WEAPON FIRE, new turn", gameDatas);
+
+    const start = performance.now();
+
     gameData.ships.getShips().forEach(ship => {
       const fireOrders = weaponFireService.getAllFireOrdersForShip(ship);
 
@@ -59,10 +63,9 @@ class ReplayShipWeaponFire extends AnimationUiStrategy {
     });
 
     this.ready = true;
-  }
 
-  deactivate() {
-    return super.deactivate();
+    const end = performance.now();
+    console.log("Fire effects took", end - start);
   }
 }
 

@@ -42,8 +42,6 @@ class SystemInfoWeaponTargeting extends React.Component {
   render() {
     const { ship, system, uiState, target, hitChange } = this.props;
 
-    console.log("hit change", hitChange);
-
     return (
       <>
         <InfoHeader>TARGET: {target.name}</InfoHeader>

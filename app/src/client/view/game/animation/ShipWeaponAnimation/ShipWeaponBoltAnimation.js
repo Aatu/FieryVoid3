@@ -17,7 +17,8 @@ class ShipWeaponBoltAnimation extends ShipWeaponAnimation {
   ) {
     super(getRandom);
 
-    const hit = fireOrder.result.getHitResolution();
+    const hit = fireOrder.result.getHitResolution().result;
+    const damage = fireOrder.result.getDamageResolution();
 
     this.particleEmitterContainer = particleEmitterContainer;
 
@@ -41,30 +42,29 @@ class ShipWeaponBoltAnimation extends ShipWeaponAnimation {
       fade = extra * 0.8;
     }
 
-    console.log("ShipWeaponBoltAnimation", fireOrder.result);
+    this.animations = [];
 
-    this.bolt = new BoltEffect(
-      startTime,
-      startPosition,
-      endPosition.clone(),
-      speed,
-      fade,
-      duration,
-      args,
-      getRandom,
-      particleEmitterContainer
+    this.animations.push(
+      new BoltEffect(
+        startTime,
+        startPosition,
+        endPosition.clone(),
+        speed,
+        fade,
+        duration,
+        args,
+        getRandom,
+        particleEmitterContainer
+      )
     );
 
+    this.explosion = null;
+
     if (hit) {
-      this.explosion = new ExplosionEffect(
-        particleEmitterContainer,
-        getRandom,
-        {
-          position: endPosition.clone(),
-          time: startTime + duration,
-          duration: 250 + getRandom() * 250,
-          type: "glow"
-        }
+      this.createDamageExplosion(
+        damage.shots[0],
+        endPosition,
+        startTime + duration
       );
     }
   }
@@ -74,7 +74,7 @@ class ShipWeaponBoltAnimation extends ShipWeaponAnimation {
   }
 
   deactivate() {
-    this.particleEmitterContainer.release(this);
+    this.animations.forEach(animation => animation.deactivate());
   }
 }
 
