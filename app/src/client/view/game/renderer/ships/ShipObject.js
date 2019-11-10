@@ -23,6 +23,7 @@ class ShipObject {
   constructor(ship, scene) {
     this.shipId = ship.id;
     this.ship = ship;
+    this.systemLocations = {};
 
     this.scene = scene;
     this.mesh = new THREE.Object3D();
@@ -49,8 +50,6 @@ class ShipObject {
     this.position = { x: 0, y: 0, z: 0 };
     this.shipZ = null;
 
-    this.movements = null;
-
     this.hidden = false;
 
     this.startRotation = { x: 0, y: 0, z: 0 };
@@ -67,6 +66,13 @@ class ShipObject {
 
   setShipObject(object) {
     this.shipObject = object;
+    //object.name = "shipObject";
+    //object.userData = { icon: this };
+
+    this.shipObject.traverse(child => {
+      child.userData = { icon: this };
+    });
+
     object.addTo(this.mesh);
     this.resolveShipObjectLoaded(true);
   }
@@ -106,11 +112,12 @@ class ShipObject {
         coordinateConverter.fromHexToGame(position)
       )
         .setOpacity(0.5)
-        .setOverlayColor(COLOR_MINE)
         .setOverlayColorAlpha(1);
       this.hexSprites.push(sprite);
       this.hexSpriteContainer.add(sprite.mesh);
     });
+
+    this.hexSpriteContainer.visible = false;
 
     this.mesh.add(this.hexSpriteContainer);
     /*
@@ -136,8 +143,8 @@ class ShipObject {
     this.mesh.add(this.shipEWSprite.mesh);
     this.shipEWSprite.hide();
 
-    this.mesh.name = "ship";
-    this.mesh.userData = { icon: this };
+    //this.mesh.name = "ship";
+    //this.mesh.userData = { icon: this };
     this.scene.add(this.mesh);
     this.hide();
   }
@@ -176,12 +183,12 @@ class ShipObject {
 
     await this.isShipObjectLoaded;
     this.shipObject.object.rotation.set(
-      degreeToRadian(x + this.startRotation.x),
-      degreeToRadian(y + this.startRotation.y),
-      degreeToRadian(z + this.startRotation.z)
+      degreeToRadian(x),
+      degreeToRadian(y),
+      degreeToRadian(z)
     );
 
-    this.hexSpriteContainer.rotation.z = degreeToRadian(y);
+    this.hexSpriteContainer.rotation.z = degreeToRadian(z);
   }
 
   getRotation() {
@@ -217,7 +224,7 @@ class ShipObject {
   }
 
   setFacing(facing) {
-    this.setRotation(0, facing, 0);
+    this.setRotation(0, 0, facing);
   }
 
   setOverlayColorAlpha(alpha) {}
@@ -314,6 +321,7 @@ class ShipObject {
       newEntity.addTo(this.shipObject.object);
 
       this.systemObjects.push(newEntity);
+      this.systemLocations[id] = slot.position;
     });
   }
 

@@ -17,7 +17,7 @@ class Fulcrum extends ShipObject {
       "/img/3d/ships/protectorate/Fulcrum/scene.gltf"
     );
 
-    this.startRotation = { x: 90, y: 90, z: 0 };
+    //this.startRotation = { x: 90, y: 90, z: 0 };
     this.setRotation(this.rotation.x, this.rotation.y, this.rotation.z);
 
     object.object.position.set(0, 0, this.defaultHeight);
@@ -32,7 +32,7 @@ class Fulcrum extends ShipObject {
     );
 
     super.replaceSocketByName(
-      [{ name: "front_plate_center", id: 123 }],
+      [{ name: "front_plate_center", id: 102 }],
       await loadObject3d(
         "/img/3d/systems/weapons/railgun/fixed22GwRailgun/scene.gltf"
       )
@@ -41,11 +41,11 @@ class Fulcrum extends ShipObject {
     super.replaceSocketByName(
       [
         { name: "front_hull_pdc_bottom", id: 14 },
-        { name: "front_hull_pdc_left", id: 15 },
-        { name: "front_hull_pdc_right", id: 13 },
+        { name: "front_hull_pdc_left", id: 13 },
+        { name: "front_hull_pdc_right", id: 15 },
         { name: "rear_hull_pdc_top", id: 214 },
-        { name: "rear_hull_pdc_right", id: 213 },
-        { name: "rear_hull_pdc_left", id: 215 }
+        { name: "rear_hull_pdc_right", id: 215 },
+        { name: "rear_hull_pdc_left", id: 213 }
       ],
       await loadObject3d(
         "/img/3d/systems/weapons/conventional/30mmPDC/scene.gltf"

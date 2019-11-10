@@ -19,6 +19,7 @@ class GameSystemTooltipMenu extends React.PureComponent {
               system.power.setOnline();
               uiState.shipSystemStateChanged(ship, system);
               uiState.shipStateChanged(ship);
+              this.forceUpdate();
             }}
           />
         )}
@@ -30,6 +31,7 @@ class GameSystemTooltipMenu extends React.PureComponent {
               system.power.setOffline();
               uiState.shipSystemStateChanged(ship, system);
               uiState.shipStateChanged(ship);
+              this.forceUpdate();
             }}
           />
         )}

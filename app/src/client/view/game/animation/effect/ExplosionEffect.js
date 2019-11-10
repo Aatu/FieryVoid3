@@ -10,7 +10,7 @@ import { getPointInDirection } from "../../../../../model/utils/math.mjs";
 import * as THREE from "three";
 
 class ExplosionEffect extends Animation {
-  constructor(emitterContainer, getRandom, args = {}) {
+  constructor(emitterContainer, getRandom, args = {}, context) {
     super(getRandom);
 
     this.emitterContainer = emitterContainer;
@@ -24,6 +24,8 @@ class ExplosionEffect extends Animation {
     this.color = args.color;
 
     this.movement = args.velocity || { x: 0, y: 0, z: 0 };
+
+    this.context = context;
     this.create();
   }
 
@@ -113,7 +115,7 @@ class ExplosionEffect extends Animation {
     //amount = 1;
 
     this.emitterContainer
-      .getParticle(this)
+      .getParticle(this.context)
       .setSize(size / 4)
       //.setSizeChange(128)
       .setOpacity(opacity)
@@ -142,7 +144,7 @@ class ExplosionEffect extends Animation {
 
     var size = radius;
 
-    var particle = this.emitterContainer.getParticle(this);
+    var particle = this.emitterContainer.getParticle(this.context);
     var activationTime =
       this.time + Math.floor((Math.random() * 30) / this.speed);
     var fadeInSpeed = args.fadeInSpeed || Math.random() * 50 + 25;
@@ -176,7 +178,7 @@ class ExplosionEffect extends Animation {
     var size = radius;
     //amount = 1;
     while (amount--) {
-      var particle = this.emitterContainer.getParticle(this);
+      var particle = this.emitterContainer.getParticle(this.context);
       var activationTime =
         this.time + Math.floor((Math.random() * 30) / this.speed);
       var fadeOutAt =
@@ -214,7 +216,7 @@ class ExplosionEffect extends Animation {
   createCore(radius, texture) {
     var size = radius;
 
-    var particle = this.emitterContainer.getParticle(this);
+    var particle = this.emitterContainer.getParticle(this.context);
     var activationTime = this.time + (Math.random() * 0.005) / this.speed;
     var fadeOutAt =
       activationTime + (Math.random() * 0.02) / this.speed + 0.03 / this.speed;
@@ -246,7 +248,7 @@ class ExplosionEffect extends Animation {
   createEmpGlow(amount, radius) {
     var size = radius * 2;
     while (amount--) {
-      var particle = this.emitterContainer.getParticle(this);
+      var particle = this.emitterContainer.getParticle(this.context);
       var activationTime = this.time;
       var fadeOutAt = activationTime;
 
@@ -271,7 +273,7 @@ class ExplosionEffect extends Animation {
   createEmpCore(radius, texture) {
     var size = radius;
 
-    var particle = this.emitterContainer.getParticle(this);
+    var particle = this.emitterContainer.getParticle(this.context);
     var activationTime = this.time;
     var fadeOutAt = activationTime;
 
@@ -298,7 +300,7 @@ class ExplosionEffect extends Animation {
   createMain(amount, radius) {
     var size = radius;
     while (amount--) {
-      var particle = this.emitterContainer.getParticle(this);
+      var particle = this.emitterContainer.getParticle(this.context);
       var activationTime =
         this.time + Math.floor((Math.random() * 300) / this.speed);
       var fadeOutAt =
@@ -332,7 +334,7 @@ class ExplosionEffect extends Animation {
   createMainGlow(amount, radius) {
     var size = radius * 2;
     while (amount--) {
-      var particle = this.emitterContainer.getParticle(this);
+      var particle = this.emitterContainer.getParticle(this.context);
       var activationTime =
         this.time + Math.floor((Math.random() * 0.03) / this.speed);
       var fadeOutAt = this.duration

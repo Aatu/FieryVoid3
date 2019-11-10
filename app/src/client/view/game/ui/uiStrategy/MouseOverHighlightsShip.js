@@ -1,5 +1,9 @@
 import UiStrategy from "./UiStrategy";
 import * as THREE from "three";
+import {
+  COLOR_FRIENDLY,
+  COLOR_ENEMY
+} from "../../../../../model/gameConfig.mjs";
 
 class MouseOverHighlightsShip extends UiStrategy {
   deactivate(payload) {
@@ -13,13 +17,9 @@ class MouseOverHighlightsShip extends UiStrategy {
     this.highLighted = payload.entity;
 
     if (payload.entity.ship.player.isUsers(currentUser)) {
-      payload.entity.replaceEmissive(
-        new THREE.Color(39 / 255, 196 / 255, 39 / 255)
-      );
+      payload.entity.replaceEmissive(COLOR_FRIENDLY);
     } else {
-      payload.entity.replaceEmissive(
-        new THREE.Color(196 / 255, 39 / 255, 39 / 255)
-      );
+      payload.entity.replaceEmissive(COLOR_ENEMY);
     }
   }
 

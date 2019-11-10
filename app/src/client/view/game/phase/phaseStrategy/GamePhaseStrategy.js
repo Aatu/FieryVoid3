@@ -21,7 +21,8 @@ import {
   SelectedShipSystemList,
   GameSystemInfoMenuStrategy,
   SystemClickShowsSystemMenu,
-  SelectedShipEwList
+  SelectedShipEwList,
+  UnderHexForShips
 } from "../../ui/uiStrategy";
 
 class GamePhaseStrategy extends PhaseStrategy {
@@ -50,7 +51,8 @@ class GamePhaseStrategy extends PhaseStrategy {
       new SelectedShipSystemList(),
       new GameSystemInfoMenuStrategy(),
       new SystemClickShowsSystemMenu(),
-      new SelectedShipEwList()
+      new SelectedShipEwList(),
+      new UnderHexForShips()
     ];
   }
 

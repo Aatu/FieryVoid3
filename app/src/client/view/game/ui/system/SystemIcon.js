@@ -50,8 +50,12 @@ const System = styled.div`
   background-image: ${props => `url(${props.background})`};
   background-size: cover;
   filter: ${props => {
-    if (props.firing) {
-      return "brightness(4)"; //"grayscale(100%) brightness(6) drop-shadow(0px 0px 5px white)";
+    if (props.targeting) {
+      return "hue-rotate(0deg) brightness(4) grayscale(0)";
+    } else if (props.reserved) {
+      return "hue-rotate(0deg) brightness(1) grayscale(0.7)";
+    } else if (props.firing) {
+      return "hue-rotate(0deg) brightness(4) grayscale(0)"; //"grayscale(100%) brightness(6) drop-shadow(0px 0px 5px white)";
     } else if (props.destroyed) {
       return "blur(1px)";
     } else {
@@ -182,6 +186,7 @@ class SystemIcon extends React.Component {
       onSystemClicked = this.clickSystem,
       selected = false,
       text = null,
+      target = null,
       ...rest
     } = this.props;
     const { mouseOveredSystem } = this.state;
@@ -210,6 +215,12 @@ class SystemIcon extends React.Component {
     );
 
     const firing = weaponFireService.systemHasFireOrder(system);
+    const reserved =
+      target &&
+      weaponFireService.systemHasFireOrder(system) &&
+      !weaponFireService.systemHasFireOrderAgainstShip(system, target);
+    const targeting =
+      target && weaponFireService.systemHasFireOrderAgainstShip(system, target);
 
     return (
       <Container
@@ -225,6 +236,7 @@ class SystemIcon extends React.Component {
             system={system}
             systemInfoMenuProvider={menu}
             element={mouseOveredSystem || activeSystemElement}
+            target={target}
             {...rest}
           />
         )}
@@ -236,6 +248,8 @@ class SystemIcon extends React.Component {
           loading={isLoading(system)}
           selected={selected}
           firing={firing}
+          targeting={targeting}
+          reserved={reserved}
         />
 
         <SystemText selected={selected}>{text}</SystemText>

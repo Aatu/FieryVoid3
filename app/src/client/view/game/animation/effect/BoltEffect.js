@@ -1,9 +1,8 @@
 import * as THREE from "three";
 import Vector from "../../../../../model/utils/Vector";
-import Animation from "../Animation";
 
-class BoltEffect extends Animation {
-  constructor(
+class BoltEffect {
+  create(
     startTime,
     startPosition,
     endPosition,
@@ -12,9 +11,9 @@ class BoltEffect extends Animation {
     duration,
     args,
     getRandom,
-    particleEmitterContainer
+    particleEmitterContainer,
+    context
   ) {
-    super(getRandom);
     this.particleEmitterContainer = particleEmitterContainer;
 
     const velocity = new Vector(endPosition)
@@ -31,7 +30,9 @@ class BoltEffect extends Animation {
       speed,
       fade,
       args,
-      particleEmitterContainer
+      particleEmitterContainer,
+      getRandom,
+      context
     );
   }
 
@@ -44,22 +45,10 @@ class BoltEffect extends Animation {
     speed,
     fade,
     args,
-    particleEmitterContainer
+    particleEmitterContainer,
+    getRandom,
+    context
   ) {
-    /*
-    particleEmitterContainer
-      .getParticle(this)
-      .setActivationTime(0)
-      .setSize(args.size * 0.3)
-      .setOpacity(0.5)
-      .setPosition(startPosition)
-      .setVelocity(velocity)
-      .setColor(new THREE.Color(1, 1, 0.8))
-      .setActivationTime(startTime, 0)
-      .setFadeIn(startTime, 0)
-      .setFadeOut(startTime + duration, 0);
-      */
-
     const directionNormal = endPosition.sub(startPosition).normalize();
     const color = args.color
       ? new THREE.Color(args.color[0], args.color[1], args.color[2])
@@ -68,7 +57,7 @@ class BoltEffect extends Animation {
     const tailLength = args.length ? args.length : args.size * 2;
 
     particleEmitterContainer
-      .getBoltParticle(this)
+      .getBoltParticle(context)
       //.setActivationTime(0)
       .setScale(tailLength, args.size)
       .setOpacity(0.5)
@@ -87,7 +76,7 @@ class BoltEffect extends Animation {
     const coreTime = corePosition / speed;
 
     particleEmitterContainer
-      .getBoltParticle(this)
+      .getBoltParticle(context)
       //.setActivationTime(0)
       .setScale(coreLength, args.size * 0.5)
       .setOpacity(0.5)
@@ -101,10 +90,6 @@ class BoltEffect extends Animation {
       .setDeactivationTime(startTime + coreTime + duration, fade);
 
     return duration + coreTime;
-  }
-
-  deactivate() {
-    this.particleEmitterContainer.release(this);
   }
 }
 

@@ -13,7 +13,8 @@ class ShipWeaponBoltAnimation extends ShipWeaponAnimation {
     replayShipMovement,
     getRandom,
     particleEmitterContainer,
-    args
+    args,
+    weaponAnimationService
   ) {
     super(getRandom);
 
@@ -25,11 +26,14 @@ class ShipWeaponBoltAnimation extends ShipWeaponAnimation {
     let startTime = getRandom() * 2000;
     const speed = args.speed || 1;
 
-    const startPosition = replayShipMovement.getPositionAtTime(shooterIcon, 0);
-    startPosition.z = shooterIcon.shipZ;
+    const startPosition = replayShipMovement
+      .getPositionAtTime(shooterIcon, 0)
+      .add(this.getLocationForSystem(weapon, shooterIcon));
+    startPosition.z += shooterIcon.shipZ;
+
     const endPosition = replayShipMovement
       .getPositionAtTime(targetIcon, 0)
-      .add(this.getRandomPosition(hit ? 100 : 200));
+      .add(this.getRandomPosition(20));
     endPosition.z += targetIcon.shipZ;
 
     const distance = startPosition.distanceTo(endPosition);
@@ -45,7 +49,7 @@ class ShipWeaponBoltAnimation extends ShipWeaponAnimation {
     this.animations = [];
 
     this.animations.push(
-      new BoltEffect(
+      weaponAnimationService.getBoltEffect(
         startTime,
         startPosition,
         endPosition.clone(),
@@ -53,18 +57,21 @@ class ShipWeaponBoltAnimation extends ShipWeaponAnimation {
         fade,
         duration,
         args,
-        getRandom,
-        particleEmitterContainer
+        this
       )
     );
 
     this.explosion = null;
 
+    if (!damage) {
+      return;
+    }
     if (hit) {
-      this.createDamageExplosion(
+      weaponAnimationService.getDamageExplosion(
         damage.shots[0],
         endPosition,
-        startTime + duration
+        startTime + duration,
+        this
       );
     }
   }
@@ -74,7 +81,7 @@ class ShipWeaponBoltAnimation extends ShipWeaponAnimation {
   }
 
   deactivate() {
-    this.animations.forEach(animation => animation.deactivate());
+    this.particleEmitterContainer.release(this);
   }
 }
 

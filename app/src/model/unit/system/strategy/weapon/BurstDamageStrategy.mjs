@@ -17,7 +17,6 @@ class BurstDamageStrategy extends StandardDamageStrategy {
 
   applyDamageFromWeaponFire(payload) {
     const { fireOrder } = payload;
-
     const shots = this._getNumberOfShots(payload);
 
     fireOrder.result.setDetails({
@@ -29,36 +28,26 @@ class BurstDamageStrategy extends StandardDamageStrategy {
   }
 
   _getNumberOfShots({ requiredToHit, rolledToHit }) {
-    console.log(
-      "requiredToHit",
-      requiredToHit,
-      "requiredToHit",
-      rolledToHit,
-      this.grouping
-    );
+    if (rolledToHit > requiredToHit) {
+      return 0;
+    }
 
     if (rolledToHit <= requiredToHit - this.maxShots * this.grouping) {
-      console.log("return max shots", this.maxShots);
       return this.maxShots;
     }
 
     let shots = Math.floor((requiredToHit - rolledToHit) / this.grouping);
-    console.log("initial shots", shots);
 
     if (Number.isInteger(this.shotsFormula)) {
       shots += this.shotsFormula;
-      console.log("shotsFormula is number", shots);
     } else {
       shots += this.diceRoller.roll(this.shotsFormula).total;
-      console.log("shotsFormula is NOT number", shots);
     }
 
     if (shots > this.maxShots) {
-      console.log("shots are over masx", shots);
       shots = this.maxShots;
     }
 
-    console.log("shots are", shots);
     return shots;
   }
 }

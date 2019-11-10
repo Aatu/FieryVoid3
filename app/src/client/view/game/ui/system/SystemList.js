@@ -15,6 +15,7 @@ class SystemList extends React.Component {
 
     return systems.map(system => (
       <SystemIcon
+        scs
         uiState={uiState}
         key={`system-list-${system.id}`}
         system={system}

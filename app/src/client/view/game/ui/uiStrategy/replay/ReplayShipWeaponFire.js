@@ -3,6 +3,7 @@ import { ShipWeaponAnimations } from "../../../animation";
 import AnimationUiStrategy from "../AnimationUiStrategy";
 import WeaponFireService from "../../../../../../model/weapon/WeaponFireService.mjs";
 import { getSeededRandomGenerator } from "../../../../../../model/utils/math.mjs";
+import ShipWeaponAnimationService from "./ShipWeaponAnimationService";
 
 class ReplayShipWeaponFire extends AnimationUiStrategy {
   constructor(particleEmitterContainer, replayContext) {
@@ -26,6 +27,10 @@ class ReplayShipWeaponFire extends AnimationUiStrategy {
     );
 
     const weaponFireService = new WeaponFireService().update(gameData);
+    const weaponAnimationService = new ShipWeaponAnimationService(
+      getRandom,
+      this.particleEmitterContainer
+    );
 
     console.log("WEAPON FIRE, new turn", gameDatas);
 
@@ -55,7 +60,8 @@ class ReplayShipWeaponFire extends AnimationUiStrategy {
           this.replayContext,
           getRandom,
           this.particleEmitterContainer,
-          weapon.callHandler("getWeaponFireAnimationArguments")
+          weapon.callHandler("getWeaponFireAnimationArguments"),
+          weaponAnimationService
         );
 
         this.animations.push(animation);

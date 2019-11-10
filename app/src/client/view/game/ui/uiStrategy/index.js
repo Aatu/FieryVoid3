@@ -33,6 +33,7 @@ import SelectedShipSystemList from "./weapon/SelectedShipSystemList";
 import GameSystemInfoMenuStrategy from "./GameSystemInfoMenuStrategy";
 import SystemClickShowsSystemMenu from "./SystemClickShowsSystemMenu";
 import SelectedShipEwList from "./electronicWarfare/SelectedShipEwList";
+import UnderHexForShips from "./UnderHexForShips";
 
 export {
   SelectedShipEwList,
@@ -69,5 +70,6 @@ export {
   GameShipTooltipMenuStrategy,
   ShipClickSelectsShip,
   ReplayShipWeaponFire,
-  ShowReplayUi
+  ShowReplayUi,
+  UnderHexForShips
 };

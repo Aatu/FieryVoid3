@@ -6,12 +6,12 @@ import HexagonMath from "./HexagonMath.mjs";
 import { distance } from "./math.mjs";
 
 const getShipIcon = object3d => {
-  while (object3d.parent) {
-    if (object3d.name === "ship") {
+  do {
+    if (object3d.userData.icon) {
       return object3d.userData.icon;
     }
     object3d = object3d.parent;
-  }
+  } while (object3d.parent);
 
   return null;
 };
@@ -116,6 +116,7 @@ class CoordinateConverter {
     intersects.forEach(function(intersected) {
       if (intersected.object.name !== "hexgrid") {
         var icon = getShipIcon(intersected.object);
+
         icon && !result.includes(icon) && result.push(icon);
       }
     });

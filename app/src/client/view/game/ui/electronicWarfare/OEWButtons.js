@@ -41,7 +41,6 @@ class OEWButtons extends React.PureComponent {
         {name && <ShipName>{name}</ShipName>}
         <TooltipButton
           img="/img/removeOEW.png"
-          disabled={!ship.electronicWarfare.canAssignOffensiveEw(target, -1)}
           onClick={() => {
             if (ship.electronicWarfare.canAssignOffensiveEw(target, -1)) {
               ship.electronicWarfare.assignOffensiveEw(target, -1);
@@ -52,7 +51,6 @@ class OEWButtons extends React.PureComponent {
         <Amount>{oew}</Amount>
         <TooltipButton
           img="/img/addOEW.png"
-          disabled={!ship.electronicWarfare.canAssignOffensiveEw(target, 1)}
           onClick={() => {
             if (ship.electronicWarfare.canAssignOffensiveEw(target, 1)) {
               ship.electronicWarfare.assignOffensiveEw(target, 1);

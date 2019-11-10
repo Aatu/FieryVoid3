@@ -28,7 +28,7 @@ class PDC30mm extends Weapon {
       new WeaponAnimationStrategy("BoltBurst", {
         size: 6,
         speed: 0.35,
-        color: [0.8, 0.6, 0.2],
+        color: [1.0, 0.8, 0.4],
         shots: 6
       })
     ]);

@@ -16,6 +16,7 @@ const InfoHeader = styled(TooltipHeader)`
 
 const Container = styled.div`
   display: flex;
+  flex-wrap: wrap;
 `;
 
 class WeaponTargetingList extends React.Component {

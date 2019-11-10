@@ -15,7 +15,7 @@ class Caliope extends ShipObject {
     super.create();
     const object = await loadObject3d("/img/3d/caliope/scene.gltf");
     //object.scale.set(2, 2, 2);
-    this.startRotation = { x: 90, y: 90, z: 0 };
+    //this.startRotation = { x: 90, y: 90, z: 0 };
 
     this.setRotation(this.rotation.x, this.rotation.y, this.rotation.z);
     object.object.position.set(0, 0, this.defaultHeight);

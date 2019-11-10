@@ -36,11 +36,6 @@ class BoltContainer {
     for (let i = 0; i < this.amount; i++) {
       this.free.push(i);
     }
-    /*
-      for (let i = 0; i < amount; i++) {
-        this.free.push(i);
-      }
-      */
 
     this.flyBolt = new BoltInstance(this);
   }
@@ -56,7 +51,7 @@ class BoltContainer {
   }
 
   hasFree() {
-    return this.used < this.amount;
+    return this.free.length > 0;
   }
 
   discard() {
@@ -123,6 +118,7 @@ class BoltContainer {
       quaternion.z,
       quaternion.w
     );
+
     this.quaternionAttribute.needsUpdate = true;
   }
 

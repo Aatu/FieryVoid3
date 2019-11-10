@@ -11,14 +11,17 @@ class StandardDamageStrategy extends ShipSystemStrategy {
   }
 
   applyDamageFromWeaponFire(payload) {
-    const { fireOrder } = payload;
-    const result = this._doDamage(payload);
+    const { fireOrder, requiredToHit, rolledToHit } = payload;
+
+    const hit = rolledToHit <= requiredToHit;
+
+    const result = hit ? [this._doDamage(payload)] : [];
 
     fireOrder.result.setDetails({
       type: "applyDamageFromWeaponFire",
-      shotsHit: 1,
+      shotsHit: hit ? 1 : 0,
       totalShots: 1,
-      shots: [result]
+      shots: result
     });
   }
 

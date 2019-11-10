@@ -29,6 +29,7 @@ class WeaponTargeting extends React.Component {
           system={system}
           ship={ship}
           selected={false}
+          target={target}
           weaponTargeting={{
             target: target,
             hitChange: hitChange

@@ -36,13 +36,14 @@ const StructureContainer = styled.div`
   box-sizing: border-box;
   width: calc(100% - 4px);
   height: 16px;
-  background-color: black;
+  background-color: #081313;
   color: ${props => (props.health === 0 ? "transparent" : "white")};
   font-family: arial;
   font-size: 11px;
   text-shadow: black 0 0 6px, black 0 0 6px;
   margin: 1px;
   filter: ${props => (props.health === 0 ? "blur(1px)" : "none")};
+  border: 1px solid black;
 
   :before {
     box-sizing: border-box;
@@ -54,7 +55,6 @@ const StructureContainer = styled.div`
     bottom: 0;
     z-index: 0;
     background-color: ${props => (props.criticals ? "#ed6738" : "#427231")};
-    border: 1px solid black;
   }
 `;
 

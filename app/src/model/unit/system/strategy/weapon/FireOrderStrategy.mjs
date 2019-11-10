@@ -31,22 +31,18 @@ class FireOrderStrategy extends ShipSystemStrategy {
         }
       );
 
-      if (rolledToHit <= requiredToHit) {
-        weapon.callHandler("applyDamageFromWeaponFire", {
-          shooter,
-          target,
-          weaponSettings,
-          gameData,
-          fireOrder,
-          requiredToHit,
-          rolledToHit
-        });
-      }
+      weapon.callHandler("applyDamageFromWeaponFire", {
+        shooter,
+        target,
+        weaponSettings,
+        gameData,
+        fireOrder,
+        requiredToHit,
+        rolledToHit
+      });
 
       weapon.callHandler("onWeaponFired");
       result.setResolved();
-      console.log(result);
-      console.log(fireOrder.result);
     });
   }
 
