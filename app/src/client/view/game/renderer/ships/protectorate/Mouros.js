@@ -31,7 +31,8 @@ class Mouros extends ShipObject {
         { name: "Middle_hull_depress_right", id: 123 }
       ],
       await loadObject3d(
-        "/img/3d/systems/weapons/conventional/30mmPDC/scene.gltf"
+        "/img/3d/systems/weapons/conventional/85mmAutoCannon/scene.gltf"
+        //"/img/3d/systems/weapons/conventional/30mmPDC/scene.gltf"
       )
     );
 
@@ -53,7 +54,7 @@ class Mouros extends ShipObject {
         { name: "railgun_turret_mount_left", id: 123 }
       ],
       await loadObject3d(
-        "/img/3d/systems/weapons/railgun/turreted64GwRailgun/scene.gltf"
+        "/img/3d/systems/weapons/railgun/turreted32GwRailgun/scene.gltf"
       )
     );
 

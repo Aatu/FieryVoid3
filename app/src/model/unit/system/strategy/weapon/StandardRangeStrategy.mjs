@@ -52,7 +52,7 @@ class StandardRangeStrategy extends ShipSystemStrategy {
 
     const difference = end.modifier - start.modifier;
     const distance = end.range - start.range;
-    return (
+    return Math.round(
       start.modifier + (difference * (currentRange - start.range)) / distance
     );
   }

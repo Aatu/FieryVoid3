@@ -65,7 +65,7 @@ test("Gets correct heading", test => {
 test("Gets correct sections", test => {
   const ship = getShipWithStructures();
   test.deepEqual(
-    ship.systems.sections.getHitSection({ x: 200, y: 0 }, { x: 0, y: 0 }, 0),
+    ship.systems.sections.getHitSections({ x: 200, y: 0 }, { x: 0, y: 0 }, 0),
     [
       ship.systems.sections.getFrontSection(),
       ship.systems.sections.getPortFrontSection(),
@@ -74,7 +74,7 @@ test("Gets correct sections", test => {
   );
 
   test.deepEqual(
-    ship.systems.sections.getHitSection({ x: 200, y: 0 }, { x: 0, y: 0 }, 300),
+    ship.systems.sections.getHitSections({ x: 200, y: 0 }, { x: 0, y: 0 }, 300),
     [
       ship.systems.sections.getFrontSection(),
       ship.systems.sections.getStarboardFrontSection(),
@@ -83,7 +83,7 @@ test("Gets correct sections", test => {
   );
 
   test.deepEqual(
-    ship.systems.sections.getHitSection({ x: -200, y: 0 }, { x: 0, y: 0 }, 0),
+    ship.systems.sections.getHitSections({ x: -200, y: 0 }, { x: 0, y: 0 }, 0),
     [
       ship.systems.sections.getAftSection(),
       ship.systems.sections.getPortAftSection(),

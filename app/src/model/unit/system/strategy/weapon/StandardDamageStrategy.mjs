@@ -1,5 +1,5 @@
 import ShipSystemStrategy from "../ShipSystemStrategy.mjs";
-import { randomizeHitSystem } from "./utils/weaponUtils.mjs";
+import HitSystemRandomizer from "./utils/HitSystemRandomizer.mjs";
 import DamageEntry from "../../DamageEntry.mjs";
 
 class StandardDamageStrategy extends ShipSystemStrategy {
@@ -8,6 +8,7 @@ class StandardDamageStrategy extends ShipSystemStrategy {
 
     this.damageFormula = damageFormula;
     this.armorPiercingFormula = armorPiercingFormula;
+    this.hitSystemRandomizer = new HitSystemRandomizer();
   }
 
   applyDamageFromWeaponFire(payload) {
@@ -25,48 +26,142 @@ class StandardDamageStrategy extends ShipSystemStrategy {
     });
   }
 
-  _doDamage({
-    shooter,
-    target,
-    weaponSettings,
-    gameData,
-    fireOrder,
-    requiredToHit,
-    rolledToHit
-  }) {
-    const hitSystem = this._chooseHitSystem({ target, shooter });
-    const damage = this._getDamageForWeaponHit({ requiredToHit, rolledToHit });
-    const { armor, armorPiercing, finalDamage } = this._applyArmorPiercing({
-      armor: hitSystem.getArmor(),
-      damage
+  _doDamage(payload, damageIds = [], ignoreSections = []) {
+    const { target, shooter } = payload;
+
+    const hitSystem = this._chooseHitSystem({
+      target,
+      shooter,
+      ignoreSections
     });
-    const entry = new DamageEntry(finalDamage, armor, fireOrder.id);
+
+    console.log("hitSystem", hitSystem);
+
+    if (!hitSystem) {
+      return damageIds;
+    }
+
+    let armorPiercing = this._getArmorPiercing();
+    let damage = this._getDamageForWeaponHit(payload);
+
+    let result = this._doDamageToSystem(
+      payload,
+      hitSystem,
+      armorPiercing,
+      damage
+    );
+
+    if (result.damageEntry) {
+      damageIds.push(result.damageEntry);
+    }
+
+    armorPiercing = result.armorPiercing;
+    damage = result.damage;
+
+    if (damage === 0) {
+      return damageIds;
+    }
+
+    let overkillSystem = this._findOverkillStructure(hitSystem, target);
+
+    if (!overkillSystem) {
+      return this._doDamage(payload, damageIds, [
+        target.systems.sections.getBySystem(hitSystem)
+      ]);
+    }
+
+    result = this._doDamageToSystem(
+      payload,
+      overkillSystem,
+      armorPiercing,
+      damage
+    );
+
+    if (result.damageEntry) {
+      damageIds.push(result.damageEntry);
+    }
+
+    armorPiercing = result.armorPiercing;
+    damage = result.damage;
+
+    if (damage === 0) {
+      return damageIds;
+    }
+
+    return this._doDamage(payload, damageIds, [
+      target.systems.sections.getBySystem(overkillSystem)
+    ]);
+  }
+
+  _findOverkillStructure(system, ship) {
+    const section = ship.systems.sections.getBySystem(system);
+    const structure = section.getStructure();
+
+    if (!structure || structure.id === system.id) {
+      return null;
+    }
+
+    return structure;
+  }
+
+  _doDamageToSystem({ fireOrder }, hitSystem, damage, armorPiercing) {
+    let armor = hitSystem.getArmor();
+    let finalArmor = armor - armorPiercing;
+    if (finalArmor < 0) {
+      finalArmor = 0;
+    }
+
+    damage -= finalArmor;
+
+    let armorPiercingLeft = armorPiercing - armor;
+    if (armorPiercingLeft < 0) {
+      armorPiercingLeft = 0;
+    }
+
+    if (damage < 0) {
+      damage = 0;
+    }
+
+    if (damage === 0) {
+      return {
+        damageEntry: null,
+        armorPiercing: armorPiercingLeft,
+        damage
+      };
+    }
+
+    let entry = null;
+
+    if (damage > hitSystem.getRemainingHitpoints()) {
+      entry = new DamageEntry(
+        hitSystem.getRemainingHitpoints(),
+        finalArmor,
+        fireOrder.id
+      );
+      damage -= hitSystem.getRemainingHitpoints();
+    } else {
+      entry = new DamageEntry(damage, finalArmor, fireOrder.id);
+
+      damage = 0;
+    }
+
     hitSystem.rollCritical(entry);
+    console.log("adding entry to system", entry);
     hitSystem.addDamage(entry);
 
     return {
-      damage,
-      finalDamage,
-      armor,
-      armorPiercing
+      damageEntry: entry,
+      armorPiercing: armorPiercingLeft,
+      damage
     };
   }
 
-  _applyArmorPiercing({ armor, damage }) {
-    const armorPiercing = this._getArmorPiercing();
-    const finalArmor = armor - armorPiercing >= 0 ? armor - armorPiercing : 0;
-    const finalDamage = finalArmor <= damage ? damage - finalArmor : 0;
-
-    return {
-      armor: finalArmor,
-      armorPiercing,
-      finalDamage
-    };
-  }
-
-  _chooseHitSystem({ target, shooter }) {
-    return randomizeHitSystem(
-      target.systems.getSystemsForHit(shooter.getPosition())
+  _chooseHitSystem({ target, shooter, ignoreSections = [] }) {
+    return this.hitSystemRandomizer.randomizeHitSystem(
+      target.systems.getSystemsForHit(
+        shooter.getShootingPosition(),
+        ignoreSections
+      )
     );
   }
 

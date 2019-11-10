@@ -7,30 +7,30 @@ import StandardLoadingStrategy from "../../strategy/weapon/StandardLoadingStrate
 import StandardDamageStrategy from "../../strategy/weapon/StandardDamageStrategy.mjs";
 import WeaponAnimationStrategy from "../../strategy/weapon/WeaponAnimationStrategy.mjs";
 
-class RailgunFixed22gw extends Weapon {
+class RailgunTurreted64gw extends Weapon {
   constructor(args, arcs) {
     super(args, [
       new FireOrderStrategy(1),
       new WeaponArcStrategy(arcs),
-      new StandardHitStrategy(20),
+      new StandardHitStrategy(35),
       new StandardRangeStrategy([
-        { range: 0, modifier: -200 },
+        { range: 0, modifier: -100 },
         { range: 10, modifier: 0 },
-        { range: 200, modifier: -200 }
+        { range: 300, modifier: -200 }
       ]),
-      new StandardLoadingStrategy(3),
-      new StandardDamageStrategy("3d3", "2d2 + 4"),
+      new StandardLoadingStrategy(4),
+      new StandardDamageStrategy("6d3", "3d2 + 4"),
       new WeaponAnimationStrategy("Bolt", {
-        size: 12,
+        size: 18,
         length: 2000,
-        speed: 5,
+        speed: 6,
         color: [0.8, 0.1, 0.4]
       })
     ]);
   }
 
   getDisplayName() {
-    return "22Gw fixed railgun";
+    return "64Gw turreted railgun";
   }
 
   getBackgroundImage() {
@@ -38,4 +38,4 @@ class RailgunFixed22gw extends Weapon {
   }
 }
 
-export default RailgunFixed22gw;
+export default RailgunTurreted64gw;

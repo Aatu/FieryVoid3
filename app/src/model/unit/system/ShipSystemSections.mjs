@@ -8,7 +8,6 @@ import {
   StarboardAftSection
 } from "./systemSection/index.mjs";
 import { getCompassHeadingOfPoint, addToDirection } from "../../utils/math.mjs";
-import hexagon from "../../hexagon/index.mjs";
 
 class ShipSystemSections {
   constructor() {
@@ -32,7 +31,7 @@ class ShipSystemSections {
     return heading;
   }
 
-  getHitSection(
+  getSectionsThatCanBeHit(
     shooterPosition,
     shipPosition,
     shipFacing,
@@ -68,6 +67,37 @@ class ShipSystemSections {
     });
   }
 
+  getHitSections(
+    shooterPosition,
+    shipPosition,
+    shipFacing,
+    ignoreSections = []
+  ) {
+    const sectionsWithoutIgnore = this.getSectionsThatCanBeHit(
+      shooterPosition,
+      shipPosition,
+      shipFacing
+    );
+
+    if (ignoreSections.length === 0) {
+      return sectionsWithoutIgnore;
+    }
+
+    const sectionsWithIgnore = this.getSectionsThatCanBeHit(
+      shooterPosition,
+      shipPosition,
+      shipFacing,
+      ignoreSections
+    );
+
+    return sectionsWithIgnore.filter(
+      withIgnore =>
+        !sectionsWithoutIgnore.find(
+          withoutIgnore => withoutIgnore.location === withIgnore.location
+        )
+    );
+  }
+
   getPrimarySection() {
     return this.getSection(PrimarySection);
   }
@@ -98,6 +128,12 @@ class ShipSystemSections {
 
   getSection(location) {
     return this.sections.find(section => section instanceof location);
+  }
+
+  getSectionBySystem(system) {
+    return this.sections.find(section =>
+      section.systems.find(otherSystem => system.id === otherSystem.id)
+    );
   }
 }
 

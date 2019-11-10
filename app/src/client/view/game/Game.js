@@ -68,6 +68,7 @@ class Game {
     const hexPos = this.coordinateConverter.fromGameToHex(gamePos, true);
 
     const payload = new PositionObject(position, gamePos, hexPos, entity);
+    console.log(payload.hex);
 
     if (button && button === 2 && entity) {
       this.phaseDirector.relayEvent("shipRightClicked", payload);

@@ -12,25 +12,25 @@ class ShipSystems {
     this.power = new ShipPower(this);
   }
 
-  getSystemsForHit(attackPosition, ignoreSections = []) {
-    return this.sections
-      .getHitSection(
-        attackPosition,
-        this.ship.getShootingPosition(),
-        hexFacingToAngle(this.ship.getShootingFacing()),
-        ignoreSections
-      )
-      .reduce((all, section) => {
+  getSectionsForHit(attackPosition, ignoreSections = []) {
+    return this.sections.getHitSections(
+      attackPosition,
+      this.ship.getShootingPosition(),
+      hexFacingToAngle(this.ship.getShootingFacing()),
+      ignoreSections
+    );
+  }
+
+  getSystemsForHit(attackPosition, ignoreSections) {
+    return this.getSectionsForHit(attackPosition, ignoreSections).reduce(
+      (all, section) => {
         return [
           ...all,
           ...section.getSystems().filter(system => !system.isDestroyed())
         ];
-      }, []);
-  }
-
-  getSystemsForOverkill(attackPosition, system) {
-    //TODO: return structure in same section
-    // if no structure, return getSystemsForHit with hit systems section in ignore list
+      },
+      []
+    );
   }
 
   addSystem(system, section) {

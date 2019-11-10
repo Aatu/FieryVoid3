@@ -1,6 +1,6 @@
 {
     "asset" : {
-        "generator" : "Khronos glTF Blender I/O v0.9.12",
+        "generator" : "Khronos glTF Blender I/O v0.9.36",
         "version" : "2.0"
     },
     "scene" : 0,
@@ -16,6 +16,12 @@
         {
             "mesh" : 0,
             "name" : "Thruster",
+            "rotation" : [
+                0.7071067690849304,
+                0,
+                0,
+                0.7071067690849304
+            ],
             "scale" : [
                 0.5753120183944702,
                 0.5753120183944702,

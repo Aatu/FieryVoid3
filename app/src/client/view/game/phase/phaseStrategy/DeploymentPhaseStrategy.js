@@ -12,7 +12,8 @@ import {
   AllowSubmittingWhenDeploymentDone,
   DebugDrawLineFromSelectedShip,
   SelectedShipNavigationPath,
-  SelectedShipDeploymentMovementUi
+  SelectedShipDeploymentMovementUi,
+  ShipClickSelectsShip
 } from "../../ui/uiStrategy";
 
 class DeploymentPhaseStrategy extends PhaseStrategy {
@@ -20,6 +21,7 @@ class DeploymentPhaseStrategy extends PhaseStrategy {
     super(services);
 
     this.strategies = [
+      new ShipClickSelectsShip(),
       new RightClickShowsShipWindow(),
       new ShowDeploymentAreas(),
       new MouseOverHighlightsShip(),

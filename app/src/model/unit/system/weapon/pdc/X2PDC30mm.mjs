@@ -8,11 +8,11 @@ import BurstDamageStrategy from "../../strategy/weapon/BurstDamageStrategy.mjs";
 import RequiresPowerSystemStrategy from "../../strategy/RequiresPowerSystemStrategy.mjs";
 import WeaponAnimationStrategy from "../../strategy/weapon/WeaponAnimationStrategy.mjs";
 
-class PDC30mm extends Weapon {
+class X2PDC30mm extends Weapon {
   constructor(args, arcs) {
     super(args, [
-      new RequiresPowerSystemStrategy(1),
-      new FireOrderStrategy(1),
+      new RequiresPowerSystemStrategy(2),
+      new FireOrderStrategy(2),
       new WeaponArcStrategy(arcs),
       new StandardHitStrategy(30),
       new StandardRangeStrategy([
@@ -28,14 +28,14 @@ class PDC30mm extends Weapon {
       new WeaponAnimationStrategy("BoltBurst", {
         size: 6,
         speed: 0.35,
-        color: [1.0, 0.9, 0.8],
+        color: [1.0, 0.8, 0.4],
         shots: 6
       })
     ]);
   }
 
   getDisplayName() {
-    return "30mm PDC";
+    return "2x30mm PDC";
   }
 
   getBackgroundImage() {
@@ -43,4 +43,4 @@ class PDC30mm extends Weapon {
   }
 }
 
-export default PDC30mm;
+export default X2PDC30mm;

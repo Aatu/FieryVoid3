@@ -220,7 +220,7 @@ class ShipObject {
   }
 
   getFacing() {
-    return -this.getRotation().y;
+    return -this.getRotation().z;
   }
 
   setFacing(facing) {
@@ -335,7 +335,9 @@ class ShipObject {
     });
   }
 
-  revertOpacity() {
+  async revertOpacity() {
+    await this.isShipObjectLoaded;
+
     this.shipObject.traverse(child => {
       child.material.opacity = this.opacity;
       child.material.needsUpdate = true;
