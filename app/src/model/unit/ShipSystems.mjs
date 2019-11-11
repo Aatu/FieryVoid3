@@ -12,17 +12,17 @@ class ShipSystems {
     this.power = new ShipPower(this);
   }
 
-  getSectionsForHit(attackPosition, ignoreSections = []) {
+  getSectionsForHit(attackPosition, lastSection) {
     return this.sections.getHitSections(
       attackPosition,
       this.ship.getShootingPosition(),
       hexFacingToAngle(this.ship.getShootingFacing()),
-      ignoreSections
+      lastSection
     );
   }
 
-  getSystemsForHit(attackPosition, ignoreSections) {
-    return this.getSectionsForHit(attackPosition, ignoreSections).reduce(
+  getSystemsForHit(attackPosition, lastSection) {
+    return this.getSectionsForHit(attackPosition, lastSection).reduce(
       (all, section) => {
         return [
           ...all,

@@ -17,12 +17,8 @@ class TestDamageStrategy extends StandardDamageStrategy {
     return systems.find(system => system instanceof Reactor);
   }
 
-  _applyArmorPiercing({ damage }) {
-    return {
-      armor: 0,
-      armorPiercing: 0,
-      finalDamage: damage
-    };
+  _getArmorPiercing() {
+    return 1000;
   }
 }
 

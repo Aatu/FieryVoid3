@@ -74,10 +74,11 @@ test("Standard damage strategy overkills all the way to primary structure", test
     )
   );
 
+  ship.systems.getSystemById(400).addDamage(new DamageEntry(400, 0, 0));
   const damageStrategy = new StandardDamageStrategy(400);
 
   damageStrategy.hitSystemRandomizer = {
-    randomizeHitSystem: systems => systems[systems.length - 1]
+    randomizeHitSystem: systems => systems[0]
   };
 
   damageStrategy._doDamage({
@@ -92,7 +93,7 @@ test("Standard damage strategy overkills all the way to primary structure", test
     .getSystems()
     .filter(system => system.isDestroyed())
     .map(system => system.id);
-  test.deepEqual(destroyedIds, [].sort());
+  test.deepEqual(destroyedIds.sort(), [6, 8, 500, 501, 400].sort());
 });
 
 test("Damage strategy returns reasonable damage numbers", test => {
@@ -139,7 +140,7 @@ test("Burst damage strategy applies damage properly", test => {
   const strategy = new BurstDamageStrategy(10, 0, 1, 6, 10);
   const fireOrder = new FireOrder(1, 2, 3);
   fireOrder.setResult(new FireOrderResult());
-  const system = new Reactor({ id: 7, hitpoints: 20, armor: 3 }, 20);
+  const system = new Reactor({ id: 7, hitpoints: 200, armor: 3 }, 20);
 
   strategy.applyDamageFromWeaponFire({
     shooter: { getShootingPosition: () => null },

@@ -31,25 +31,19 @@ class ShipSystemSections {
     return heading;
   }
 
-  getSectionsThatCanBeHit(
-    shooterPosition,
-    shipPosition,
-    shipFacing,
-    ignoreSections = []
-  ) {
-    const heading = this.getHitSectionHeading(
-      shooterPosition,
-      shipPosition,
-      shipFacing
-    );
-
-    return this.sections.filter(section => {
+  getNextSectionForHit(heading, lastSection) {
+    return this.sections.find(section => {
       const location = section.getOffsetHex();
       const intervening = location.getNeighbourAtHeading(heading);
 
-      if (ignoreSections.includes(section)) {
-        return false;
-      }
+      return lastSection.getOffsetHex().equals(intervening);
+    });
+  }
+
+  getSectionsThatCanBeHit(heading) {
+    return this.sections.filter(section => {
+      const location = section.getOffsetHex();
+      const intervening = location.getNeighbourAtHeading(heading);
 
       return this.sections.every(blockingSection => {
         if (!blockingSection.getOffsetHex().equals(intervening)) {
@@ -58,8 +52,6 @@ class ShipSystemSections {
           return true;
         } else if (blockingSection === section) {
           return true;
-        } else if (ignoreSections.includes(blockingSection)) {
-          return true;
         } else {
           return false;
         }
@@ -67,35 +59,34 @@ class ShipSystemSections {
     });
   }
 
-  getHitSections(
-    shooterPosition,
-    shipPosition,
-    shipFacing,
-    ignoreSections = []
-  ) {
-    const sectionsWithoutIgnore = this.getSectionsThatCanBeHit(
+  getHitSections(shooterPosition, shipPosition, shipFacing, lastSection) {
+    const heading = this.getHitSectionHeading(
       shooterPosition,
       shipPosition,
       shipFacing
     );
 
-    if (ignoreSections.length === 0) {
-      return sectionsWithoutIgnore;
+    if (!lastSection) {
+      return this.getSectionsThatCanBeHit(heading);
     }
 
-    const sectionsWithIgnore = this.getSectionsThatCanBeHit(
-      shooterPosition,
-      shipPosition,
-      shipFacing,
-      ignoreSections
-    );
+    let result = [];
 
-    return sectionsWithIgnore.filter(
-      withIgnore =>
-        !sectionsWithoutIgnore.find(
-          withoutIgnore => withoutIgnore.location === withIgnore.location
-        )
-    );
+    while (true) {
+      const newSection = this.getNextSectionForHit(heading, lastSection);
+
+      if (!newSection) {
+        return result;
+      }
+
+      result = result.concat(newSection);
+
+      if (newSection.hasUndestroyedStructure()) {
+        return result;
+      }
+
+      lastSection = newSection;
+    }
   }
 
   getPrimarySection() {

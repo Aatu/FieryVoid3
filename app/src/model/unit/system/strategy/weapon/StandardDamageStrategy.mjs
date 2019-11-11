@@ -26,16 +26,14 @@ class StandardDamageStrategy extends ShipSystemStrategy {
     });
   }
 
-  _doDamage(payload, damageIds = [], ignoreSections = []) {
+  _doDamage(payload, damageIds = [], lastSection) {
     const { target, shooter } = payload;
 
     const hitSystem = this._chooseHitSystem({
       target,
       shooter,
-      ignoreSections
+      lastSection
     });
-
-    console.log("hitSystem", hitSystem);
 
     if (!hitSystem) {
       return damageIds;
@@ -65,9 +63,11 @@ class StandardDamageStrategy extends ShipSystemStrategy {
     let overkillSystem = this._findOverkillStructure(hitSystem, target);
 
     if (!overkillSystem) {
-      return this._doDamage(payload, damageIds, [
-        target.systems.sections.getBySystem(hitSystem)
-      ]);
+      return this._doDamage(
+        payload,
+        damageIds,
+        target.systems.sections.getSectionBySystem(hitSystem)
+      );
     }
 
     result = this._doDamageToSystem(
@@ -88,13 +88,15 @@ class StandardDamageStrategy extends ShipSystemStrategy {
       return damageIds;
     }
 
-    return this._doDamage(payload, damageIds, [
-      target.systems.sections.getBySystem(overkillSystem)
-    ]);
+    return this._doDamage(
+      payload,
+      damageIds,
+      target.systems.sections.getSectionBySystem(overkillSystem)
+    );
   }
 
   _findOverkillStructure(system, ship) {
-    const section = ship.systems.sections.getBySystem(system);
+    const section = ship.systems.sections.getSectionBySystem(system);
     const structure = section.getStructure();
 
     if (!structure || structure.id === system.id) {
@@ -104,7 +106,7 @@ class StandardDamageStrategy extends ShipSystemStrategy {
     return structure;
   }
 
-  _doDamageToSystem({ fireOrder }, hitSystem, damage, armorPiercing) {
+  _doDamageToSystem({ fireOrder }, hitSystem, armorPiercing, damage) {
     let armor = hitSystem.getArmor();
     let finalArmor = armor - armorPiercing;
     if (finalArmor < 0) {
@@ -146,7 +148,6 @@ class StandardDamageStrategy extends ShipSystemStrategy {
     }
 
     hitSystem.rollCritical(entry);
-    console.log("adding entry to system", entry);
     hitSystem.addDamage(entry);
 
     return {
@@ -156,11 +157,15 @@ class StandardDamageStrategy extends ShipSystemStrategy {
     };
   }
 
-  _chooseHitSystem({ target, shooter, ignoreSections = [] }) {
+  _chooseHitSystem({ target, shooter, lastSection }) {
+    if (Array.isArray(lastSection)) {
+      console.log("array");
+      console.trace();
+    }
     return this.hitSystemRandomizer.randomizeHitSystem(
       target.systems.getSystemsForHit(
         shooter.getShootingPosition(),
-        ignoreSections
+        lastSection
       )
     );
   }
