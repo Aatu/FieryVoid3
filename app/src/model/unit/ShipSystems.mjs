@@ -1,6 +1,7 @@
 import ShipPower from "./ShipPower.mjs";
 import ShipSystemSections from "./system/ShipSystemSections.mjs";
 import { hexFacingToAngle } from "../utils/math.mjs";
+import Structure from "./system/structure/Structure.mjs";
 
 class ShipSystems {
   constructor(ship) {
@@ -10,6 +11,40 @@ class ShipSystems {
 
     this.sections = new ShipSystemSections();
     this.power = new ShipPower(this);
+  }
+
+  markDestroyedThisTurn() {
+    this.ship.markDestroyedThisTurn();
+  }
+
+  isDestroyed() {
+    const structuresDestroyed = this.sections.sections.reduce(
+      (total, section) => {
+        const structure = section.getStructure();
+
+        if (structure && structure.isDestroyed()) {
+          return total + 1;
+        }
+
+        return total;
+      },
+      0
+    );
+
+    const structures = this.sections.sections.reduce((total, section) => {
+      if (section.getStructure()) {
+        return total + 1;
+      }
+
+      return total;
+    }, 0);
+
+    const primaryStructure = this.sections.getPrimarySection().getStructure();
+
+    return (
+      (!primaryStructure || primaryStructure.isDestroyed()) &&
+      structuresDestroyed > structures / 2
+    );
   }
 
   getSectionsForHit(attackPosition, lastSection) {
@@ -69,9 +104,10 @@ class ShipSystems {
 
   addAftSystem(systems) {
     systems = [].concat(systems);
-    systems.forEach(system =>
-      this.addSystem(system, this.sections.getAftSection())
-    );
+    systems.forEach(system => {
+      this.addSystem(system, this.sections.getAftSection());
+      system.addShipSystemsReference(this);
+    });
 
     return this;
   }

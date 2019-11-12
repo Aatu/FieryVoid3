@@ -6,6 +6,8 @@ import WeaponArcStrategy from "./WeaponArcStrategy.mjs";
 import TestDamageStrategy from "./TestDamageStrategy.mjs";
 import StandardDamageStrategy from "./StandardDamageStrategy.mjs";
 import BurstDamageStrategy from "./BurstDamageStrategy.mjs";
+import PiercingDamageStrategy from "./PiercingDamageStrategy.mjs";
+import ExplosiveDamageStrategy from "./ExplosiveDamageStrategy.mjs";
 
 export {
   TestDamageStrategy,
@@ -15,5 +17,7 @@ export {
   FireOrderStrategy,
   StandardLoadingStrategy,
   WeaponArcStrategy,
-  BurstDamageStrategy
+  BurstDamageStrategy,
+  PiercingDamageStrategy,
+  ExplosiveDamageStrategy
 };

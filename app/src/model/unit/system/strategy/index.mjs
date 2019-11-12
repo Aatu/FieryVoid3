@@ -13,10 +13,14 @@ import {
   FireOrderStrategy,
   StandardLoadingStrategy,
   WeaponArcStrategy,
-  BurstDamageStrategy
+  BurstDamageStrategy,
+  PiercingDamageStrategy,
+  ExplosiveDamageStrategy
 } from "./weapon/index.mjs";
 
 export {
+  ExplosiveDamageStrategy,
+  PiercingDamageStrategy,
   TestDamageStrategy,
   StandardDamageStrategy,
   StandardHitStrategy,

@@ -112,6 +112,7 @@ class Ship {
     this.electronicWarfare = new ShipElectronicWarfare(this).deserialize(
       shipData.electronicWarfare
     );
+    this.destroyedThisTurn = data.destroyedThisTurn || false;
 
     return this;
   }
@@ -128,12 +129,21 @@ class Ship {
         systems: this.systems.serialize(),
         player: this.player.serialize(),
         electronicWarfare: this.electronicWarfare.serialize()
-      }
+      },
+      destroyedThisTurn: this.destroyedThisTurn
     };
   }
 
   isDestroyed() {
-    return false;
+    return this.systems.isDestroyed();
+  }
+
+  isDestroyedThisTurn() {
+    return this.destroyedThisTurn;
+  }
+
+  markDestroyedThisTurn() {
+    this.destroyedThisTurn = true;
   }
 
   censorForUser(user, mine) {
@@ -150,6 +160,7 @@ class Ship {
     this.electronicWarfare.removeAll();
     //this.electronicWarfare.repeatElectonicWarfare();
 
+    this.destroyedThisTurn = false;
     return this;
   }
 }

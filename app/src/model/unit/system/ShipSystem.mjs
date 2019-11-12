@@ -12,6 +12,12 @@ class ShipSystem {
 
     this.damage = new SystemDamage(this);
     this.power = new SystemPower(this);
+
+    this.shipSystems = null;
+  }
+
+  addShipSystemsReference(shipSystems) {
+    this.shipSystems = shipSystems;
   }
 
   getSystemInfo(ship) {
@@ -63,7 +69,19 @@ class ShipSystem {
   }
 
   addDamage(damage) {
+    const shipWasDestroyed = this.shipSystems
+      ? this.shipSystems.isDestroyed()
+      : undefined;
+
     this.damage.addDamage(damage);
+
+    if (
+      this.shipSystems &&
+      shipWasDestroyed === false &&
+      this.shipSystems.isDestroyed()
+    ) {
+      this.shipSystems.markDestroyedThisTurn();
+    }
   }
 
   rollCritical(damageEntry) {

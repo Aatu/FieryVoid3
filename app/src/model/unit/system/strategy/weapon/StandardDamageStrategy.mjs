@@ -26,8 +26,22 @@ class StandardDamageStrategy extends ShipSystemStrategy {
     });
   }
 
-  _doDamage(payload, damageIds = [], lastSection) {
+  _doDamage(
+    payload,
+    damageIds = [],
+    lastSection,
+    damage = undefined,
+    armorPiercing = undefined
+  ) {
     const { target, shooter } = payload;
+
+    if (armorPiercing === undefined) {
+      armorPiercing = this._getArmorPiercing();
+    }
+
+    if (damage === undefined) {
+      damage = this._getDamageForWeaponHit(payload);
+    }
 
     const hitSystem = this._chooseHitSystem({
       target,
@@ -38,9 +52,6 @@ class StandardDamageStrategy extends ShipSystemStrategy {
     if (!hitSystem) {
       return damageIds;
     }
-
-    let armorPiercing = this._getArmorPiercing();
-    let damage = this._getDamageForWeaponHit(payload);
 
     let result = this._doDamageToSystem(
       payload,
@@ -66,7 +77,9 @@ class StandardDamageStrategy extends ShipSystemStrategy {
       return this._doDamage(
         payload,
         damageIds,
-        target.systems.sections.getSectionBySystem(hitSystem)
+        target.systems.sections.getSectionBySystem(hitSystem),
+        damage,
+        armorPiercing
       );
     }
 
@@ -91,7 +104,9 @@ class StandardDamageStrategy extends ShipSystemStrategy {
     return this._doDamage(
       payload,
       damageIds,
-      target.systems.sections.getSectionBySystem(overkillSystem)
+      target.systems.sections.getSectionBySystem(overkillSystem),
+      damage,
+      armorPiercing
     );
   }
 
@@ -158,10 +173,6 @@ class StandardDamageStrategy extends ShipSystemStrategy {
   }
 
   _chooseHitSystem({ target, shooter, lastSection }) {
-    if (Array.isArray(lastSection)) {
-      console.log("array");
-      console.trace();
-    }
     return this.hitSystemRandomizer.randomizeHitSystem(
       target.systems.getSystemsForHit(
         shooter.getShootingPosition(),

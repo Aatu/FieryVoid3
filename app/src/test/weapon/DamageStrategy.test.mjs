@@ -1,7 +1,9 @@
 import test from "ava";
 import {
   StandardDamageStrategy,
-  BurstDamageStrategy
+  BurstDamageStrategy,
+  PiercingDamageStrategy,
+  ExplosiveDamageStrategy
 } from "../../model/unit/system/strategy/index.mjs";
 import FireOrder from "../../model/weapon/FireOrder.mjs";
 import FireOrderResult from "../../model/weapon/FireOrderResult.mjs";
@@ -24,6 +26,11 @@ const constructShip = (id = 123) => {
     id,
     accelcost: 3
   });
+
+  ship.systems.addFrontSystem([
+    new Structure({ id: 100, hitpoints: 50, armor: 4 })
+  ]);
+
   ship.systems.addPrimarySystem([
     new Engine({ id: 6, hitpoints: 10, armor: 3 }, 12, 6, 2),
     new Reactor({ id: 7, hitpoints: 10, armor: 3 }, 20),
@@ -47,8 +54,80 @@ const constructShip = (id = 123) => {
   return ship;
 };
 
-test("Standard damage strategy overkills all the way to primary structure", test => {
+test("Standard damage strategy overkills all the way trough", test => {
   const ship = constructShip();
+  ship.movement.addMovement(
+    new MovementOrder(
+      -1,
+      movementTypes.END,
+      new Offset(-3, 3),
+      new Offset(0, 0),
+      1,
+      0,
+      1
+    )
+  );
+
+  const shooter = constructShip();
+  shooter.movement.addMovement(
+    new MovementOrder(
+      -1,
+      movementTypes.END,
+      new Offset(-5, 7),
+      new Offset(0, 0),
+      0,
+      0,
+      1
+    )
+  );
+
+  ship.systems.getSystemById(400).addDamage(new DamageEntry(400, 0, 0));
+  const damageStrategy = new StandardDamageStrategy(400, 10);
+
+  damageStrategy.hitSystemRandomizer = {
+    randomizeHitSystem: systems => systems[0]
+  };
+
+  damageStrategy._doDamage({
+    target: ship,
+    shooter,
+    fireOrder: {
+      id: 9090909090
+    }
+  });
+
+  const destroyedIds = ship.systems
+    .getSystems()
+    .filter(system => system.isDestroyed())
+    .map(system => system.id);
+  test.deepEqual(destroyedIds.sort(), [6, 8, 400, 100].sort());
+});
+
+test("Piercing damage strategy will run trough whole ship", test => {
+  const ship = new Ship({
+    id: 999
+  });
+
+  ship.systems.addPrimarySystem([
+    new Engine({ id: 6, hitpoints: 10, armor: 3 }, 12, 6, 2),
+    new Reactor({ id: 7, hitpoints: 10, armor: 3 }, 20),
+    new Structure({ id: 8, hitpoints: 50, armor: 4 })
+  ]);
+
+  ship.systems.addPortAftSystem([
+    new PDC30mm({ id: 501, hitpoints: 5, armor: 3 }),
+    new Structure({ id: 500, hitpoints: 50, armor: 4 })
+  ]);
+
+  ship.systems.addStarboardFrontSystem([
+    new PDC30mm({ id: 201, hitpoints: 5, armor: 3 }),
+    new Structure({ id: 200, hitpoints: 50, armor: 4 })
+  ]);
+
+  ship.systems.addAftSystem([
+    new Structure({ id: 400, hitpoints: 50, armor: 4 })
+  ]);
+
   ship.movement.addMovement(
     new MovementOrder(
       -1,
@@ -75,7 +154,7 @@ test("Standard damage strategy overkills all the way to primary structure", test
   );
 
   ship.systems.getSystemById(400).addDamage(new DamageEntry(400, 0, 0));
-  const damageStrategy = new StandardDamageStrategy(400);
+  const damageStrategy = new PiercingDamageStrategy(5, 400);
 
   damageStrategy.hitSystemRandomizer = {
     randomizeHitSystem: systems => systems[0]
@@ -91,9 +170,81 @@ test("Standard damage strategy overkills all the way to primary structure", test
 
   const destroyedIds = ship.systems
     .getSystems()
-    .filter(system => system.isDestroyed())
+    .filter(system => system.getTotalDamage() === 5)
     .map(system => system.id);
-  test.deepEqual(destroyedIds.sort(), [6, 8, 500, 501, 400].sort());
+  test.deepEqual(destroyedIds.sort(), [200, 201, 500, 501, 6, 8].sort());
+});
+
+test("Piercing damage strategy will run trough as long as there is armor piercing left", test => {
+  const ship = new Ship({
+    id: 999
+  });
+
+  ship.systems.addPrimarySystem([
+    new Engine({ id: 6, hitpoints: 10, armor: 3 }, 12, 6, 2),
+    new Reactor({ id: 7, hitpoints: 10, armor: 3 }, 20),
+    new Structure({ id: 8, hitpoints: 50, armor: 4 })
+  ]);
+
+  ship.systems.addPortAftSystem([
+    new PDC30mm({ id: 501, hitpoints: 5, armor: 3 }),
+    new Structure({ id: 500, hitpoints: 50, armor: 4 })
+  ]);
+
+  ship.systems.addStarboardFrontSystem([
+    new PDC30mm({ id: 201, hitpoints: 5, armor: 3 }),
+    new Structure({ id: 200, hitpoints: 50, armor: 4 })
+  ]);
+
+  ship.systems.addAftSystem([
+    new Structure({ id: 400, hitpoints: 50, armor: 4 })
+  ]);
+
+  ship.movement.addMovement(
+    new MovementOrder(
+      -1,
+      movementTypes.END,
+      new Offset(-3, 3),
+      new Offset(0, 0),
+      0,
+      0,
+      1
+    )
+  );
+
+  const shooter = constructShip();
+  shooter.movement.addMovement(
+    new MovementOrder(
+      -1,
+      movementTypes.END,
+      new Offset(-5, 7),
+      new Offset(0, 0),
+      0,
+      0,
+      1
+    )
+  );
+
+  ship.systems.getSystemById(400).addDamage(new DamageEntry(400, 0, 0));
+  const damageStrategy = new PiercingDamageStrategy(5, 400);
+
+  damageStrategy.hitSystemRandomizer = {
+    randomizeHitSystem: systems => systems[0]
+  };
+
+  damageStrategy._doDamage({
+    target: ship,
+    shooter,
+    fireOrder: {
+      id: 9090909090
+    }
+  });
+
+  const destroyedIds = ship.systems
+    .getSystems()
+    .filter(system => system.getTotalDamage() === 5)
+    .map(system => system.id);
+  test.deepEqual(destroyedIds.sort(), [200, 201, 500, 501, 6, 8].sort());
 });
 
 test("Damage strategy returns reasonable damage numbers", test => {
@@ -153,4 +304,77 @@ test("Burst damage strategy applies damage properly", test => {
   });
 
   test.truthy(fireOrder.result.getDamageResolution());
+});
+
+test("Explosive damage strategy will... um... explode", test => {
+  const ship = new Ship({
+    id: 999
+  });
+
+  ship.systems.addPrimarySystem([
+    new Engine({ id: 6, hitpoints: 10, armor: 3 }, 12, 6, 2),
+    new Reactor({ id: 7, hitpoints: 10, armor: 3 }, 20),
+    new Structure({ id: 8, hitpoints: 50, armor: 4 })
+  ]);
+
+  ship.systems.addPortAftSystem([
+    new PDC30mm({ id: 501, hitpoints: 5, armor: 3 }),
+    new Structure({ id: 500, hitpoints: 50, armor: 4 })
+  ]);
+
+  ship.systems.addStarboardFrontSystem([
+    new PDC30mm({ id: 201, hitpoints: 5, armor: 3 }),
+    new Structure({ id: 200, hitpoints: 50, armor: 4 })
+  ]);
+
+  ship.systems.addAftSystem([
+    new Structure({ id: 400, hitpoints: 50, armor: 4 })
+  ]);
+
+  ship.movement.addMovement(
+    new MovementOrder(
+      -1,
+      movementTypes.END,
+      new Offset(-3, 3),
+      new Offset(0, 0),
+      1,
+      0,
+      1
+    )
+  );
+
+  const shooter = constructShip();
+  shooter.movement.addMovement(
+    new MovementOrder(
+      -1,
+      movementTypes.END,
+      new Offset(-5, 7),
+      new Offset(0, 0),
+      0,
+      0,
+      1
+    )
+  );
+
+  const damageStrategy = new ExplosiveDamageStrategy(5, 400, 4);
+
+  damageStrategy.hitSystemRandomizer = {
+    randomizeHitSystem: systems => systems[0]
+  };
+
+  damageStrategy._doDamage({
+    target: ship,
+    shooter,
+    fireOrder: {
+      id: 9090909090
+    }
+  });
+
+  const expectedDamage = 20;
+
+  const totalDamage = ship.systems
+    .getSystems()
+    .reduce((total, system) => total + system.getTotalDamage(), 0);
+
+  test.deepEqual(totalDamage, expectedDamage);
 });

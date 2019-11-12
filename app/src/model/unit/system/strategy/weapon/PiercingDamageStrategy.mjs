@@ -1,29 +1,34 @@
 import StandardDamageStrategy from "./StandardDamageStrategy.mjs";
-import HitSystemRandomizer from "./utils/HitSystemRandomizer.mjs";
-import DamageEntry from "../../DamageEntry.mjs";
 
-class StandardDamageStrategy extends StandardDamageStrategy {
-  _doDamage(payload, damageIds = [], ignoreSections = []) {
+class PiercingDamageStrategy extends StandardDamageStrategy {
+  _doDamage(
+    payload,
+    damageIds = [],
+    lastSection,
+    damage,
+    armorPiercing = undefined
+  ) {
     const { target, shooter } = payload;
+
+    if (armorPiercing === undefined) {
+      armorPiercing = this._getArmorPiercing();
+    }
 
     const hitSystem = this._chooseHitSystem({
       target,
       shooter,
-      ignoreSections
+      lastSection
     });
 
     if (!hitSystem) {
       return damageIds;
     }
 
-    let armorPiercing = this._getArmorPiercing();
-    let damage = this._getDamageForWeaponHit(payload);
-
     let result = this._doDamageToSystem(
       payload,
       hitSystem,
       armorPiercing,
-      damage
+      this._getDamageForWeaponHit(payload)
     );
 
     if (result.damageEntry) {
@@ -40,16 +45,20 @@ class StandardDamageStrategy extends StandardDamageStrategy {
     let overkillSystem = this._findOverkillStructure(hitSystem, target);
 
     if (!overkillSystem) {
-      return this._doDamage(payload, damageIds, [
-        target.systems.sections.getSectionBySystem(hitSystem)
-      ]);
+      return this._doDamage(
+        payload,
+        damageIds,
+        target.systems.sections.getSectionBySystem(hitSystem),
+        undefined,
+        armorPiercing
+      );
     }
 
     result = this._doDamageToSystem(
       payload,
       overkillSystem,
       armorPiercing,
-      damage
+      this._getDamageForWeaponHit(payload)
     );
 
     if (result.damageEntry) {
@@ -57,16 +66,15 @@ class StandardDamageStrategy extends StandardDamageStrategy {
     }
 
     armorPiercing = result.armorPiercing;
-    damage = this._getDamageForWeaponHit(payload);
 
-    if (damage === 0) {
-      return damageIds;
-    }
-
-    return this._doDamage(payload, damageIds, [
-      target.systems.sections.getSectionBySystem(overkillSystem)
-    ]);
+    return this._doDamage(
+      payload,
+      damageIds,
+      target.systems.sections.getSectionBySystem(overkillSystem),
+      undefined,
+      armorPiercing
+    );
   }
 }
 
-export default StandardDamageStrategy;
+export default PiercingDamageStrategy;
