@@ -14,8 +14,10 @@ class ExplosiveDamageStrategy extends StandardDamageStrategy {
     return this.diceRoller.roll(this.numberOfDamagesFormula).total;
   }
 
-  _doDamage(payload, damageIds = [], lastSection) {
+  _doDamage(payload, damageResult) {
     const { target, shooter } = payload;
+
+    console.log("damageResult", damageResult);
 
     let numberOfDamages = this._getNumberOfDamagesForWeaponHit();
 
@@ -25,16 +27,17 @@ class ExplosiveDamageStrategy extends StandardDamageStrategy {
         shooter
       });
 
-      let result = this._doDamageToSystem(
+      if (!hitSystem) {
+        return;
+      }
+
+      this._doDamageToSystem(
         payload,
+        damageResult,
         hitSystem,
         this._getArmorPiercing(),
         this._getDamageForWeaponHit(payload)
       );
-
-      if (result.damageEntry) {
-        damageIds.push(result.damageEntry);
-      }
     }
   }
 }

@@ -20,25 +20,20 @@ class FireOrderStrategy extends ShipSystemStrategy {
       const target = gameData.ships.getShipById(fireOrder.targetId);
       const weaponSettings = fireOrder.weaponSettings;
 
-      const { requiredToHit, rolledToHit } = weapon.callHandler(
-        "checkFireOrderHits",
-        {
-          shooter,
-          target,
-          weaponSettings,
-          gameData,
-          fireOrder
-        }
-      );
+      weapon.callHandler("checkFireOrderHits", {
+        shooter,
+        target,
+        weaponSettings,
+        gameData,
+        fireOrder
+      });
 
       weapon.callHandler("applyDamageFromWeaponFire", {
         shooter,
         target,
         weaponSettings,
         gameData,
-        fireOrder,
-        requiredToHit,
-        rolledToHit
+        fireOrder
       });
 
       weapon.callHandler("onWeaponFired");

@@ -1,6 +1,8 @@
 import ShipSystemStrategy from "../ShipSystemStrategy.mjs";
 import HitSystemRandomizer from "./utils/HitSystemRandomizer.mjs";
 import DamageEntry from "../../DamageEntry.mjs";
+import FireOrderDamageResultEntry from "../../../../weapon/FireOrderDamageResultEntry.mjs";
+import FireOrderDamageResult from "../../../../weapon/FireOrderDamageResult.mjs";
 
 class StandardDamageStrategy extends ShipSystemStrategy {
   constructor(damageFormula = 0, armorPiercingFormula = 0) {
@@ -12,26 +14,26 @@ class StandardDamageStrategy extends ShipSystemStrategy {
   }
 
   applyDamageFromWeaponFire(payload) {
-    const { fireOrder, requiredToHit, rolledToHit } = payload;
+    const { fireOrder } = payload;
 
-    const hit = rolledToHit <= requiredToHit;
+    const hit = fireOrder.result.getHitResolution().result;
 
-    const result = hit ? [this._doDamage(payload)] : [];
+    const result = new FireOrderDamageResultEntry();
+    if (hit) {
+      this._doDamage(payload, result);
+    }
 
-    fireOrder.result.setDetails({
-      type: "applyDamageFromWeaponFire",
-      shotsHit: hit ? 1 : 0,
-      totalShots: 1,
-      shots: result
-    });
+    fireOrder.result.setDetails(
+      new FireOrderDamageResult(hit ? 1 : 0, 1, [result])
+    );
   }
 
   _doDamage(
     payload,
-    damageIds = [],
+    damageResult,
     lastSection,
-    damage = undefined,
-    armorPiercing = undefined
+    armorPiercing = undefined,
+    damage = undefined
   ) {
     const { target, shooter } = payload;
 
@@ -50,25 +52,22 @@ class StandardDamageStrategy extends ShipSystemStrategy {
     });
 
     if (!hitSystem) {
-      return damageIds;
+      return;
     }
 
     let result = this._doDamageToSystem(
       payload,
+      damageResult,
       hitSystem,
       armorPiercing,
       damage
     );
 
-    if (result.damageEntry) {
-      damageIds.push(result.damageEntry);
-    }
-
     armorPiercing = result.armorPiercing;
     damage = result.damage;
 
     if (damage === 0) {
-      return damageIds;
+      return damageResult;
     }
 
     let overkillSystem = this._findOverkillStructure(hitSystem, target);
@@ -76,37 +75,34 @@ class StandardDamageStrategy extends ShipSystemStrategy {
     if (!overkillSystem) {
       return this._doDamage(
         payload,
-        damageIds,
+        damageResult,
         target.systems.sections.getSectionBySystem(hitSystem),
-        damage,
-        armorPiercing
+        armorPiercing,
+        damage
       );
     }
 
     result = this._doDamageToSystem(
       payload,
+      damageResult,
       overkillSystem,
       armorPiercing,
       damage
     );
 
-    if (result.damageEntry) {
-      damageIds.push(result.damageEntry);
-    }
-
     armorPiercing = result.armorPiercing;
     damage = result.damage;
 
     if (damage === 0) {
-      return damageIds;
+      return;
     }
 
     return this._doDamage(
       payload,
-      damageIds,
+      damageResult,
       target.systems.sections.getSectionBySystem(overkillSystem),
-      damage,
-      armorPiercing
+      armorPiercing,
+      damage
     );
   }
 
@@ -121,7 +117,13 @@ class StandardDamageStrategy extends ShipSystemStrategy {
     return structure;
   }
 
-  _doDamageToSystem({ fireOrder }, hitSystem, armorPiercing, damage) {
+  _doDamageToSystem(
+    { fireOrder },
+    damageResult,
+    hitSystem,
+    armorPiercing,
+    damage
+  ) {
     let armor = hitSystem.getArmor();
     let finalArmor = armor - armorPiercing;
     if (finalArmor < 0) {
@@ -141,7 +143,6 @@ class StandardDamageStrategy extends ShipSystemStrategy {
 
     if (damage === 0) {
       return {
-        damageEntry: null,
         armorPiercing: armorPiercingLeft,
         damage
       };
@@ -162,11 +163,11 @@ class StandardDamageStrategy extends ShipSystemStrategy {
       damage = 0;
     }
 
-    hitSystem.rollCritical(entry);
+    const criticals = hitSystem.rollCritical(entry);
     hitSystem.addDamage(entry);
+    damageResult.add(hitSystem, entry, criticals);
 
     return {
-      damageEntry: entry,
       armorPiercing: armorPiercingLeft,
       damage
     };

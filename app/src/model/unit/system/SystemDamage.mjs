@@ -32,6 +32,7 @@ class SystemDamage {
   }
 
   rollCritical(damageEntry) {
+    return [];
     //TODO: roll if this damage causes any critical hits
     // return gameEvent for log etc
   }

@@ -147,10 +147,6 @@ class MovementValidator {
     test.turn = this.turn;
 
     if (!test.equals(move)) {
-      console.log("move");
-      console.log(move);
-      console.log("test");
-      console.log(test);
       throw new InvalidGameDataError("Speed movement is constructed wrong");
     }
   }
@@ -168,10 +164,6 @@ class MovementValidator {
     test.turn = this.turn;
 
     if (!test.equals(move)) {
-      console.log("move");
-      console.log(move);
-      console.log("test");
-      console.log(test);
       throw new InvalidGameDataError("Pivot movement is constructed wrong");
     }
   }
@@ -188,10 +180,6 @@ class MovementValidator {
     test.turn = this.turn;
 
     if (!test.equals(move)) {
-      console.log("move");
-      console.log(move);
-      console.log("test");
-      console.log(test);
       throw new InvalidGameDataError("Evade movement is constructed wrong");
     }
   }
@@ -199,9 +187,7 @@ class MovementValidator {
   constructRoll(last, move) {
     if (move.value !== true && move.value !== false) {
       throw new InvalidGameDataError(
-        `Roll movement value is out of bounds. Expected true or false, got'${
-          move.value
-        }'`
+        `Roll movement value is out of bounds. Expected true or false, got'${move.value}'`
       );
     }
 
@@ -212,10 +198,6 @@ class MovementValidator {
     test.turn = this.turn;
 
     if (!test.equals(move)) {
-      console.log("move");
-      console.log(move);
-      console.log("test");
-      console.log(test);
       throw new InvalidGameDataError("Roll movement is constructed wrong");
     }
   }

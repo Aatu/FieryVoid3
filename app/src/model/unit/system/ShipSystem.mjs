@@ -85,7 +85,7 @@ class ShipSystem {
   }
 
   rollCritical(damageEntry) {
-    this.damage.rollCritical(damageEntry);
+    return this.damage.rollCritical(damageEntry);
   }
 
   addCritical(critical) {

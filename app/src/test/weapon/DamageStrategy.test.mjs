@@ -20,6 +20,10 @@ import Offset from "../../model/hexagon/Offset.mjs";
 import MovementOrder from "../../model/movement/MovementOrder.mjs";
 import movementTypes from "../../model/movement/MovementTypes.mjs";
 import DamageEntry from "../../model/unit/system/DamageEntry.mjs";
+import FireOrderDamageResult from "../../model/weapon/FireOrderDamageResult.mjs";
+import FireOrderDamageResultEntry from "../../model/weapon/FireOrderDamageResultEntry.mjs";
+import FireOrderHitResult from "../../model/weapon/FireOrderHitResult.mjs";
+import WeaponHitChange from "../../model/weapon/WeaponHitChange.mjs";
 
 const constructShip = (id = 123) => {
   let ship = new Ship({
@@ -88,12 +92,14 @@ test("Standard damage strategy overkills all the way trough", test => {
     randomizeHitSystem: systems => systems[0]
   };
 
-  damageStrategy._doDamage({
+  damageStrategy.applyDamageFromWeaponFire({
     target: ship,
     shooter,
-    fireOrder: {
-      id: 9090909090
-    }
+    fireOrder: new FireOrder().setResult(
+      new FireOrderResult().setDetails(
+        new FireOrderHitResult(true, new WeaponHitChange({ result: 10 }), 10)
+      )
+    )
   });
 
   const destroyedIds = ship.systems
@@ -160,12 +166,14 @@ test("Piercing damage strategy will run trough whole ship", test => {
     randomizeHitSystem: systems => systems[0]
   };
 
-  damageStrategy._doDamage({
+  damageStrategy.applyDamageFromWeaponFire({
     target: ship,
     shooter,
-    fireOrder: {
-      id: 9090909090
-    }
+    fireOrder: new FireOrder().setResult(
+      new FireOrderResult().setDetails(
+        new FireOrderHitResult(true, new WeaponHitChange({ result: 10 }), 10)
+      )
+    )
   });
 
   const destroyedIds = ship.systems
@@ -232,12 +240,14 @@ test("Piercing damage strategy will run trough as long as there is armor piercin
     randomizeHitSystem: systems => systems[0]
   };
 
-  damageStrategy._doDamage({
+  damageStrategy.applyDamageFromWeaponFire({
     target: ship,
     shooter,
-    fireOrder: {
-      id: 9090909090
-    }
+    fireOrder: new FireOrder().setResult(
+      new FireOrderResult().setDetails(
+        new FireOrderHitResult(true, new WeaponHitChange({ result: 10 }), 10)
+      )
+    )
   });
 
   const destroyedIds = ship.systems
@@ -264,24 +274,37 @@ test("Damage strategy returns reasonable damage numbers", test => {
 test("Burst damage strategy amount of shots works", test => {
   test.is(
     new BurstDamageStrategy(10, 0, 1, 6, 10)._getNumberOfShots({
-      requiredToHit: 80,
-      rolledToHit: 55
+      fireOrder: new FireOrder().setResult(
+        new FireOrderResult().setDetails(
+          new FireOrderHitResult(true, new WeaponHitChange({ result: 80 }), 55)
+        )
+      )
     }),
     3
   );
 
   test.is(
     new BurstDamageStrategy(10, 0, 1, 6, 10)._getNumberOfShots({
-      requiredToHit: 80,
-      rolledToHit: 5
+      fireOrder: new FireOrder().setResult(
+        new FireOrderResult().setDetails(
+          new FireOrderHitResult(true, new WeaponHitChange({ result: 80 }), 5)
+        )
+      )
     }),
     6
   );
 
   test.is(
     new BurstDamageStrategy("d2", "d3+2", "d6", 6, 5)._getNumberOfShots({
-      requiredToHit: 130,
-      rolledToHit: 100
+      fireOrder: new FireOrder().setResult(
+        new FireOrderResult().setDetails(
+          new FireOrderHitResult(
+            true,
+            new WeaponHitChange({ result: 130 }),
+            100
+          )
+        )
+      )
     }),
     6
   );
@@ -290,7 +313,11 @@ test("Burst damage strategy amount of shots works", test => {
 test("Burst damage strategy applies damage properly", test => {
   const strategy = new BurstDamageStrategy(10, 0, 1, 6, 10);
   const fireOrder = new FireOrder(1, 2, 3);
-  fireOrder.setResult(new FireOrderResult());
+  fireOrder.setResult(
+    new FireOrderResult().setDetails(
+      new FireOrderHitResult(true, new WeaponHitChange({ result: 80 }), 55)
+    )
+  );
   const system = new Reactor({ id: 7, hitpoints: 200, armor: 3 }, 20);
 
   strategy.applyDamageFromWeaponFire({
@@ -298,9 +325,7 @@ test("Burst damage strategy applies damage properly", test => {
     target: { systems: { getSystemsForHit: () => [system] } },
     weaponSettings: {},
     gameData: {},
-    fireOrder,
-    requiredToHit: 80,
-    rolledToHit: 55
+    fireOrder
   });
 
   test.truthy(fireOrder.result.getDamageResolution());
@@ -362,12 +387,14 @@ test("Explosive damage strategy will... um... explode", test => {
     randomizeHitSystem: systems => systems[0]
   };
 
-  damageStrategy._doDamage({
+  damageStrategy.applyDamageFromWeaponFire({
     target: ship,
     shooter,
-    fireOrder: {
-      id: 9090909090
-    }
+    fireOrder: new FireOrder().setResult(
+      new FireOrderResult().setDetails(
+        new FireOrderHitResult(true, new WeaponHitChange({ result: 10 }), 10)
+      )
+    )
   });
 
   const expectedDamage = 20;

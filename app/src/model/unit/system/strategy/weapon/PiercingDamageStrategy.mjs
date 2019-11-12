@@ -3,10 +3,10 @@ import StandardDamageStrategy from "./StandardDamageStrategy.mjs";
 class PiercingDamageStrategy extends StandardDamageStrategy {
   _doDamage(
     payload,
-    damageIds = [],
+    damageResult,
     lastSection,
-    damage,
-    armorPiercing = undefined
+    armorPiercing = undefined,
+    damage
   ) {
     const { target, shooter } = payload;
 
@@ -21,25 +21,22 @@ class PiercingDamageStrategy extends StandardDamageStrategy {
     });
 
     if (!hitSystem) {
-      return damageIds;
+      return;
     }
 
     let result = this._doDamageToSystem(
       payload,
+      damageResult,
       hitSystem,
       armorPiercing,
       this._getDamageForWeaponHit(payload)
     );
 
-    if (result.damageEntry) {
-      damageIds.push(result.damageEntry);
-    }
-
     armorPiercing = result.armorPiercing;
     damage = this._getDamageForWeaponHit(payload);
 
     if (armorPiercing === 0) {
-      return damageIds;
+      return damageResults;
     }
 
     let overkillSystem = this._findOverkillStructure(hitSystem, target);
@@ -47,32 +44,29 @@ class PiercingDamageStrategy extends StandardDamageStrategy {
     if (!overkillSystem) {
       return this._doDamage(
         payload,
-        damageIds,
+        damageResult,
         target.systems.sections.getSectionBySystem(hitSystem),
-        undefined,
-        armorPiercing
+        armorPiercing,
+        undefined
       );
     }
 
     result = this._doDamageToSystem(
       payload,
+      damageResult,
       overkillSystem,
       armorPiercing,
       this._getDamageForWeaponHit(payload)
     );
 
-    if (result.damageEntry) {
-      damageIds.push(result.damageEntry);
-    }
-
     armorPiercing = result.armorPiercing;
 
     return this._doDamage(
       payload,
-      damageIds,
+      damageResult,
       target.systems.sections.getSectionBySystem(overkillSystem),
-      undefined,
-      armorPiercing
+      armorPiercing,
+      undefined
     );
   }
 }

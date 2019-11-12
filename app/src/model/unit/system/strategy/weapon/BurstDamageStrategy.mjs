@@ -1,4 +1,6 @@
 import StandardDamageStrategy from "./StandardDamageStrategy.mjs";
+import FireOrderDamageResultEntry from "../../../../weapon/FireOrderDamageResultEntry.mjs";
+import FireOrderDamageResult from "../../../../weapon/FireOrderDamageResult.mjs";
 
 class BurstDamageStrategy extends StandardDamageStrategy {
   constructor(
@@ -19,15 +21,23 @@ class BurstDamageStrategy extends StandardDamageStrategy {
     const { fireOrder } = payload;
     const shots = this._getNumberOfShots(payload);
 
-    fireOrder.result.setDetails({
-      type: "applyDamageFromWeaponFire",
-      shotsHit: shots,
-      totalShots: this.maxShots,
-      shots: Array.from(Array(shots)).map(() => this._doDamage(payload))
-    });
+    fireOrder.result.setDetails(
+      new FireOrderDamageResult(
+        shots,
+        this.maxShots,
+        Array.from(Array(shots)).map(() => {
+          const result = new FireOrderDamageResultEntry();
+          this._doDamage(payload, result);
+          return result;
+        })
+      )
+    );
   }
 
-  _getNumberOfShots({ requiredToHit, rolledToHit }) {
+  _getNumberOfShots({ fireOrder }) {
+    const requiredToHit = fireOrder.result.getHitResolution().hitChange.result;
+    const rolledToHit = fireOrder.result.getHitResolution().hitRoll;
+
     if (rolledToHit > requiredToHit) {
       return 0;
     }

@@ -1,7 +1,6 @@
 import ShipPower from "./ShipPower.mjs";
 import ShipSystemSections from "./system/ShipSystemSections.mjs";
 import { hexFacingToAngle } from "../utils/math.mjs";
-import Structure from "./system/structure/Structure.mjs";
 
 class ShipSystems {
   constructor(ship) {

@@ -12,6 +12,7 @@ import hexagon from "../../model/hexagon";
 import TestShip from "../../model/unit/ships/test/TestShip";
 import User from "../../model/User";
 import FireOrder from "../../model/weapon/FireOrder.mjs";
+import WeaponHitChange from "../../model/weapon/WeaponHitChange.mjs";
 
 test.serial("Submit successfull fire order for first player", async test => {
   const db = new TestDatabaseConnection("fire");
@@ -135,6 +136,42 @@ test.serial("Submit successfull fire order for both players", async test => {
   test.is(biliyaz.systems.getSystemById(7).getRemainingHitpoints(), 10);
 
   test.false(achilles.systems.getSystemById(20).callHandler("isLoaded"));
+
+  const replay = await controller.replayHandler.requestReplay(
+    newGameData.id,
+    newGameData.turn - 1,
+    newGameData.turn,
+    user
+  );
+
+  const replayAchilles = replay[0].ships
+    .getShips()
+    .find(ship => ship.name === "UCS Achilles");
+
+  const replayFireOrders = replayAchilles.systems
+    .getSystemById(20)
+    .callHandler("getFireOrders");
+
+  test.deepEqual(
+    replayFireOrders[0].result.getHitResolution().hitChange,
+    new WeaponHitChange({
+      baseToHit: 30,
+      fireControl: 10000,
+      dew: 10,
+      oew: 5,
+      distance: 8,
+      rangeModifier: -5,
+      result: 10000,
+      absoluteResult: 10000,
+      outOfRange: false
+    })
+  );
+
+  test.is(
+    replayFireOrders[0].result.getDamageResolution().shots[0].entries[0]
+      .systemId,
+    7
+  );
 
   db.close();
 });

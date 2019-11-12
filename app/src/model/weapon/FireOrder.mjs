@@ -19,6 +19,7 @@ class FireOrder {
 
   setResult(result) {
     this.result = result;
+    return this;
   }
 
   serialize() {
