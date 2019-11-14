@@ -23,7 +23,8 @@ class CannonFixed120mm extends Weapon {
       new StandardLoadingStrategy(1),
       new StandardDamageStrategy("2d4 + 10"),
       new WeaponAnimationStrategy("Bolt", {
-        size: 10,
+        size: 6,
+        length: 100,
         speed: 0.7,
         color: [1.0, 0.8, 0.4]
       })

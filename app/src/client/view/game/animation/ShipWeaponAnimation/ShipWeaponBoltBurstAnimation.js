@@ -53,7 +53,7 @@ class ShipWeaponBoltBurstAnimation extends ShipWeaponAnimation {
     const shotsHit = damage.shotsHit;
 
     for (let shotNumber = 1; shotNumber <= totalShots; shotNumber++) {
-      const startExtra = (10 / speed) * shotNumber + startTime;
+      const startExtra = (30 / speed) * shotNumber + startTime;
 
       if (
         (missesFirst && shotNumber <= totalShots - shotsHit) ||

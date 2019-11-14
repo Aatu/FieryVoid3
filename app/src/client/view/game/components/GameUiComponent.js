@@ -8,6 +8,7 @@ import GameUiModeButtons from "../ui/GameUiModeButtons";
 import LeftPanel from "../ui/leftPanel/LeftPanel";
 import ReplayUI from "../ui/replay/ReplayUI";
 import * as gamePhases from "../../../../model/game/gamePhases";
+import CombatLog from "../ui/combatLog/CombatLog";
 
 class GameUiComponent extends React.Component {
   render() {
@@ -70,6 +71,14 @@ class GameUiComponent extends React.Component {
         )}
 
         <LeftPanel uiState={uiState} {...uiState.state} />
+
+        {uiState.state.combatLog && (
+          <CombatLog
+            uiState={uiState}
+            replayContext={uiState.state.combatLog.replayContext}
+            gameData={uiState.state.combatLog.gameData}
+          />
+        )}
       </>
     );
   }

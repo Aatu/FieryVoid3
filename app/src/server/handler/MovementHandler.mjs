@@ -2,10 +2,12 @@ import { InvalidGameDataError, UnauthorizedError } from "../errors/index.mjs";
 import MovementValidator from "../services/validation/MovementValidator.mjs";
 import MovementService from "../../model/movement/MovementService.mjs";
 import uuidv4 from "uuid/v4.js";
+import CollisionAvoider from "../services/movement/CollisionAvoider.mjs";
 
 class MovementHandler {
   constructor() {
     this.movementService = new MovementService();
+    this.collisionAvoider = new CollisionAvoider();
   }
 
   receiveMoves(serverGameData, clientGameData, activeShips, user) {
@@ -34,6 +36,13 @@ class MovementHandler {
           .setId(uuidv4())
       );
     });
+
+    //TODO: collision damage from friendly ships
+    this.avoidCollisions(gameData);
+  }
+
+  avoidCollisions(gameData) {
+    this.collisionAvoider.avoidCollisions(gameData);
   }
 }
 

@@ -21,6 +21,17 @@ class FireOrderDamageResultEntry {
       criticalNames: [].concat(criticals).map(c => c.name)
     });
   }
+
+  getDamages(target) {
+    console.log("getDamages");
+    return this.entries.reduce((total, { systemId, damageIds }) => {
+      const system = target.systems.getSystemById(systemId);
+
+      return total.concat(
+        damageIds.map(damageId => system.damage.getDamageById(damageId))
+      );
+    }, []);
+  }
 }
 
 export default FireOrderDamageResultEntry;

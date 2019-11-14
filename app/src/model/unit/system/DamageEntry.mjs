@@ -9,6 +9,17 @@ class DamageEntry {
     this.armor = armor;
     this.fireId = fireId || null;
     this.id = uuidv4();
+    this.destroyedSystem = false;
+
+    this.system = null;
+  }
+
+  setSystem(system) {
+    this.system = system;
+  }
+
+  setDestroyedSystem() {
+    this.destroyedSystem = true;
   }
 
   serialize() {
@@ -16,7 +27,8 @@ class DamageEntry {
       amount: this.amount,
       armor: this.armor,
       fireId: this.fireId,
-      id: this.id
+      id: this.id,
+      destroyedSystem: this.destroyedSystem
     };
   }
 
@@ -25,6 +37,7 @@ class DamageEntry {
     this.amount = data.amount || 0;
     this.armor = data.armor || 0;
     this.fireId = data.fireId || null;
+    this.destroyedSystem = data.destroyedSystem || false;
 
     return this;
   }

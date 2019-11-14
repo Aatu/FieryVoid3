@@ -67,7 +67,7 @@ class CoordinateConverter {
     var z = r;
     var y = -x - z;
 
-    return new hexagon.Cube(x, y, z).round().toOffset(); //.toFVHex();
+    return new hexagon.Cube(x, y, z).round().toOffset();
   }
 
   fromHexToGame(offsetHex) {

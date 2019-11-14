@@ -36,7 +36,7 @@ class PiercingDamageStrategy extends StandardDamageStrategy {
     damage = this._getDamageForWeaponHit(payload);
 
     if (armorPiercing === 0) {
-      return damageResults;
+      return;
     }
 
     let overkillSystem = this._findOverkillStructure(hitSystem, target);

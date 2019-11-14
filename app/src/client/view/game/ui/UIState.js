@@ -26,6 +26,7 @@ class UIState {
       gameUiMode: {},
       gameUiModeButtons: false,
       replayUi: false,
+      combatLog: false,
       systemList: [],
       ewList: [],
       stateVersion: 0
@@ -105,6 +106,11 @@ class UIState {
 
   showReplayUi(value) {
     this.state.replayUi = value;
+    this.updateState();
+  }
+
+  showCombatLog(value) {
+    this.state.combatLog = value;
     this.updateState();
   }
 

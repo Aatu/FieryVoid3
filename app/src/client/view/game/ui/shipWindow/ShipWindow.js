@@ -1,7 +1,6 @@
 import * as React from "react";
 import styled from "styled-components";
 
-import { systemWindowBorder } from "../../../../styled";
 import ShipSection from "./ShipSection";
 
 const ShipWindowContainer = styled.div`

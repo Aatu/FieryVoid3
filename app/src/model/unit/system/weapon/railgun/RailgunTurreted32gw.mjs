@@ -4,8 +4,8 @@ import WeaponArcStrategy from "../../strategy/weapon/WeaponArcStrategy.mjs";
 import StandardHitStrategy from "../../strategy/weapon/StandardHitStrategy.mjs";
 import StandardRangeStrategy from "../../strategy/weapon/StandardRangeStrategy.mjs";
 import StandardLoadingStrategy from "../../strategy/weapon/StandardLoadingStrategy.mjs";
-import StandardDamageStrategy from "../../strategy/weapon/StandardDamageStrategy.mjs";
 import WeaponAnimationStrategy from "../../strategy/weapon/WeaponAnimationStrategy.mjs";
+import PiercingDamageStrategy from "../../strategy/weapon/PiercingDamageStrategy.mjs";
 
 class RailgunTurreted32gw extends Weapon {
   constructor(args, arcs) {
@@ -19,7 +19,7 @@ class RailgunTurreted32gw extends Weapon {
         { range: 220, modifier: -200 }
       ]),
       new StandardLoadingStrategy(3),
-      new StandardDamageStrategy("4d3", "2d2 + 4"),
+      new PiercingDamageStrategy("4d3", "3d3 + 4"),
       new WeaponAnimationStrategy("Bolt", {
         size: 15,
         length: 2000,

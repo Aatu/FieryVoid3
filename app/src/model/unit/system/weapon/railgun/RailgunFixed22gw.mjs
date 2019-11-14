@@ -4,8 +4,8 @@ import WeaponArcStrategy from "../../strategy/weapon/WeaponArcStrategy.mjs";
 import StandardHitStrategy from "../../strategy/weapon/StandardHitStrategy.mjs";
 import StandardRangeStrategy from "../../strategy/weapon/StandardRangeStrategy.mjs";
 import StandardLoadingStrategy from "../../strategy/weapon/StandardLoadingStrategy.mjs";
-import StandardDamageStrategy from "../../strategy/weapon/StandardDamageStrategy.mjs";
 import WeaponAnimationStrategy from "../../strategy/weapon/WeaponAnimationStrategy.mjs";
+import PiercingDamageStrategy from "../../strategy/weapon/PiercingDamageStrategy.mjs";
 
 class RailgunFixed22gw extends Weapon {
   constructor(args, arcs) {
@@ -19,7 +19,7 @@ class RailgunFixed22gw extends Weapon {
         { range: 200, modifier: -200 }
       ]),
       new StandardLoadingStrategy(3),
-      new StandardDamageStrategy("3d3", "2d2 + 4"),
+      new PiercingDamageStrategy("3d3", "2d2 + 4"),
       new WeaponAnimationStrategy("Bolt", {
         size: 12,
         length: 2000,

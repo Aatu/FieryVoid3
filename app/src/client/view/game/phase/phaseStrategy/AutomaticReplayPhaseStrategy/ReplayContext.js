@@ -1,3 +1,5 @@
+import CombatLogBuilder from "./CombatLogBuilder";
+
 class ReplayContext {
   constructor(phaseStrategy) {
     this.firingDuration = 5000;
@@ -5,6 +7,11 @@ class ReplayContext {
     this.replayShipMovement = null;
     this.replayShipWeaponFire = null;
     this.phaseStrategy = phaseStrategy;
+    this.combatLogBuilder = new CombatLogBuilder();
+  }
+
+  getCombatLog(gameData) {
+    return this.combatLogBuilder.createLog(this, gameData);
   }
 
   pauseReplay() {

@@ -34,6 +34,7 @@ class ShipWeaponAnimationService {
   }
 
   getDamageExplosion(damage, endPosition, startTime, context) {
+    console.log("getDamageExplosion", damage);
     return new ExplosionEffect(
       this.particleEmitterContainer,
       this.getRandom,

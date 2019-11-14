@@ -185,6 +185,10 @@ class Cube {
     return parseFloat(number.toFixed(PRECISION));
   }
 
+  normalize() {
+    return this.drawLine(new Cube(0, 0, 0), 1)[0];
+  }
+
   drawLine(target, distance = null) {
     const n = this.distanceTo(target);
 
@@ -198,6 +202,20 @@ class Cube {
     }
 
     return results;
+  }
+
+  rotate(facing) {
+    let result = this;
+
+    const takeStep = cube => {
+      return new Cube(-cube.y, -cube.z, -cube.x);
+    };
+
+    while (facing--) {
+      result = takeStep(result);
+    }
+
+    return result;
   }
 }
 

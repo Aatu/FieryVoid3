@@ -7,7 +7,7 @@ class Mouros extends Ship {
   setShipProperties() {
     this.shipTypeName =
       "OuterLight Industries Mouros 118-A mainstay battleship";
-    this.shipModel = this.accelcost = 3;
+    this.accelcost = 3;
     this.rollcost = 3;
     this.pivotcost = 3;
     this.evasioncost = 3;

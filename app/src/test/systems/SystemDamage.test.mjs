@@ -43,3 +43,20 @@ test("Stuff serializes and deserializes nicely", test => {
   }).deserialize(serialized);
   test.deepEqual(system, system2);
 });
+
+test("Ship system gets destroyed", test => {
+  const system = new ShipSystem({ id: 123, hitpoints: 10, armor: 3 });
+
+  const damage = new DamageEntry(10, 3);
+  system.addDamage(damage);
+  test.true(damage.destroyedSystem);
+  test.true(system.isDestroyed());
+
+  const newSystem = new ShipSystem({
+    id: 123,
+    hitpoints: 10,
+    armor: 3
+  }).deserialize(system.serialize());
+
+  test.true(newSystem.damage.entries[0].destroyedSystem);
+});

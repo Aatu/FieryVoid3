@@ -18,6 +18,11 @@ class ShipMovement {
     this.buildIndex();
   }
 
+  replaceLastMove(move) {
+    this.moves[this.moves.length - 1] = move;
+    this.buildIndex();
+  }
+
   removeMovementExceptEnd(turn) {
     this.moves = this.moves.filter(
       move =>
@@ -216,6 +221,21 @@ class ShipMovement {
         (acc, system) => system.callHandler("getMaxEvasion", null, acc),
         0
       );
+  }
+
+  isOverlapping(otherShip) {
+    const shipPosition = this.ship.getHexPosition();
+    const shipFacing = this.ship.getFacing();
+    const otherShipPosition = otherShip.getHexPosition();
+    const otherShipFacing = otherShip.getFacing();
+
+    return this.ship.hexSizes.some(hex => {
+      return otherShip.hexSizes.some(otherHex =>
+        shipPosition
+          .add(hex.rotate(shipFacing))
+          .equals(otherShipPosition.add(otherHex.rotate(otherShipFacing)))
+      );
+    });
   }
 
   deserialize(data = []) {

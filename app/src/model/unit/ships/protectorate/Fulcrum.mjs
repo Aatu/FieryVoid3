@@ -5,9 +5,9 @@ import Offset from "../../../hexagon/Offset.mjs";
 class Fulcrum extends Ship {
   setShipProperties() {
     this.shipTypeName = "Arakaki Systems Fulcrum IV fleet destroyer";
-    this.shipModel = this.accelcost = 3;
-    this.rollcost = 3;
-    this.pivotcost = 3;
+    this.accelcost = 2;
+    this.rollcost = 4;
+    this.pivotcost = 1;
     this.evasioncost = 3;
     this.hexSizes = [new Offset(0, 0)];
 
@@ -88,7 +88,7 @@ class Fulcrum extends Ship {
     this.systems.addAftSystem([
       new systems.Structure({ id: 200, hitpoints: 30, armor: 4 }),
 
-      new systems.Engine({ id: 202, hitpoints: 20, armor: 3 }, 12, 6, 2),
+      new systems.Engine({ id: 202, hitpoints: 20, armor: 3 }, 14, 6, 2),
       new systems.ManeuveringThruster(
         { id: 201, hitpoints: 10, armor: 3 },
         3,

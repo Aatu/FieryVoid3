@@ -144,6 +144,18 @@ class Offset {
   toString() {
     return `(q: ${this.q}, r: ${this.r})`;
   }
+
+  rotate(facing) {
+    return this.toCube()
+      .rotate(facing)
+      .toOffset();
+  }
+
+  normalize() {
+    return this.toCube()
+      .normalize()
+      .toOffset();
+  }
 }
 
 export default Offset;

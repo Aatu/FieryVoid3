@@ -73,7 +73,12 @@ class ShipSystem {
       ? this.shipSystems.isDestroyed()
       : undefined;
 
+    const systemWasDestroyed = this.isDestroyed();
     this.damage.addDamage(damage);
+
+    if (!systemWasDestroyed && this.isDestroyed()) {
+      damage.setDestroyedSystem();
+    }
 
     if (
       this.shipSystems &&

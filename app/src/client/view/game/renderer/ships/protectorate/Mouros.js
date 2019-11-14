@@ -17,8 +17,7 @@ class Mouros extends ShipObject {
       "/img/3d/ships/protectorate/Mouros/scene.gltf"
     );
 
-    //object.scale.set(2, 2, 2);
-    this.startRotation = { x: 90, y: 90, z: 0 };
+    //this.startRotation = { x: 90, y: 90, z: 0 };
 
     this.setRotation(this.rotation.x, this.rotation.y, this.rotation.z);
 

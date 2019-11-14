@@ -31,6 +31,16 @@ class SystemDamage {
     this.entries.push(damage);
   }
 
+  getDamageById(id) {
+    const entry = this.entries.find(damage => damage.id === id);
+
+    if (entry) {
+      entry.setSystem(this.system);
+    }
+
+    return entry;
+  }
+
   rollCritical(damageEntry) {
     return [];
     //TODO: roll if this damage causes any critical hits

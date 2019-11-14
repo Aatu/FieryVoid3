@@ -73,3 +73,33 @@ test("Move to direction", test => {
   const offset = new hexagon.Offset(1, 1);
   test.deepEqual(offset.moveToDirection(2, 2), new hexagon.Offset(0, -1));
 });
+
+test("Rotate hex", test => {
+  let offset = new hexagon.Offset(1, 0);
+
+  test.deepEqual(offset.rotate(1), new hexagon.Offset(1, -1));
+  test.deepEqual(offset.rotate(2), new hexagon.Offset(0, -1));
+  test.deepEqual(offset.rotate(3), new hexagon.Offset(-1, 0));
+  test.deepEqual(offset.rotate(4), new hexagon.Offset(0, 1));
+  test.deepEqual(offset.rotate(5), new hexagon.Offset(1, 1));
+
+  offset = new hexagon.Offset(2, 0);
+
+  test.deepEqual(offset.rotate(1), new hexagon.Offset(1, -2));
+  test.deepEqual(offset.rotate(2), new hexagon.Offset(-1, -2));
+  test.deepEqual(offset.rotate(3), new hexagon.Offset(-2, 0));
+  test.deepEqual(offset.rotate(4), new hexagon.Offset(-1, 2));
+  test.deepEqual(offset.rotate(5), new hexagon.Offset(1, 2));
+});
+
+test("Normalize hex", test => {
+  test.deepEqual(
+    new hexagon.Offset(5, 0).normalize(),
+    new hexagon.Offset(1, 0)
+  );
+
+  test.deepEqual(
+    new hexagon.Offset(-3, 6).normalize(),
+    new hexagon.Offset(0, 1)
+  );
+});

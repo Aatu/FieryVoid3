@@ -7,7 +7,7 @@ import { RailgunTurreted64gw } from "../../system/weapon/railgun/index.mjs";
 class Impetous extends Ship {
   setShipProperties() {
     this.shipTypeName = "Impetous";
-    this.shipModel = this.accelcost = 3;
+    this.accelcost = 3;
     this.rollcost = 3;
     this.pivotcost = 3;
     this.evasioncost = 3;
