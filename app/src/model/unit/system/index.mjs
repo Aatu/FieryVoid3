@@ -5,6 +5,7 @@ import * as structures from "./structure/index.mjs";
 import * as ewArrays from "./electronicWarfare/index.mjs";
 import * as weapons from "./weapon/index.mjs";
 import * as heat from "./heat/index.mjs";
+import CargoBay from "./cargo/CargoBay.mjs";
 
 const merged = {
   ...thrusters,
@@ -13,7 +14,8 @@ const merged = {
   ...structures,
   ...ewArrays,
   ...weapons,
-  ...heat
+  ...heat,
+  CargoBay
 };
 
 export default merged;

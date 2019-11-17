@@ -6,12 +6,9 @@ class CombatLogEntry {
     this.weapon = weapon;
     this.gameData = gameData;
     this.damages = this.getDamageCaused();
-
-    console.log(this.weapon);
   }
 
   getSystemsDestroyed() {
-    console.log(this.damages);
     return this.damages
       .filter(damage => damage.destroyedSystem)
       .map(damage => damage.system);

@@ -3,10 +3,7 @@ import WeaponFireService from "../../../../../../model/weapon/WeaponFireService.
 
 class CombatLogBuilder {
   createLog(replayContext, gameData) {
-    console.log("gamedata", gameData);
-
     const weaponFireService = new WeaponFireService().update(gameData);
-    console.log("builder");
 
     const entries = [];
 

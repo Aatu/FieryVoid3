@@ -1,0 +1,46 @@
+import test from "ava";
+import CargoBay from "../../model/unit/system/cargo/CargoBay.mjs";
+import Torpedo158MSV from "../../model/unit/system/weapon/ammunition/torpedo/Torpedo158MSV.mjs";
+import Torpedo158Nuclear from "../../model/unit/system/weapon/ammunition/torpedo/Torpedo158Nuclear.mjs";
+
+test("Cargo bay can store stuff", test => {
+  const torpedo1 = new Torpedo158MSV();
+  const torpedo2 = new Torpedo158Nuclear();
+
+  const cargoBay = new CargoBay({ id: 1, hitpoints: 20, armor: 4 }, 50);
+
+  cargoBay.callHandler("addCargo", { cargo: torpedo1, amount: 2 });
+  cargoBay.callHandler("addCargo", { cargo: torpedo2, amount: 1 });
+
+  const newCargoBay = new CargoBay(
+    { id: 1, hitpoints: 20, armor: 4 },
+    50
+  ).deserialize(cargoBay.serialize());
+
+  test.true(
+    newCargoBay.callHandler("hasCargo", { cargo: torpedo1, amount: 2 })
+  );
+  test.false(
+    newCargoBay.callHandler("hasCargo", { cargo: torpedo1, amount: 3 })
+  );
+
+  test.true(
+    newCargoBay.callHandler("hasCargo", { cargo: torpedo2, amount: 1 })
+  );
+  test.false(
+    newCargoBay.callHandler("hasCargo", { cargo: torpedo2, amount: 2 })
+  );
+
+  newCargoBay.callHandler("removeCargo", { cargo: torpedo2, amount: 1 });
+  test.false(
+    newCargoBay.callHandler("hasCargo", { cargo: torpedo2, amount: 1 })
+  );
+
+  newCargoBay.callHandler("removeCargo", { cargo: torpedo1, amount: 1 });
+  test.false(
+    newCargoBay.callHandler("hasCargo", { cargo: torpedo1, amount: 2 })
+  );
+  test.true(
+    newCargoBay.callHandler("hasCargo", { cargo: torpedo1, amount: 1 })
+  );
+});

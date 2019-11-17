@@ -14,8 +14,6 @@ class ShipWeaponAnimation extends Animation {
       return new Vector();
     }
 
-    console.log("found systemLocation", system.id, location);
-
     return location;
   }
 }

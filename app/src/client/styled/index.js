@@ -1,5 +1,6 @@
 import * as colors from "./Colors";
 import * as icons from "./icon";
+import IconAndLabel from "./IconAndLabel";
 
 export {
   Container,
@@ -22,7 +23,8 @@ export {
   TooltipHeader,
   TooltipEntry,
   TooltipMenu,
-  TooltipButton
+  TooltipButton,
+  RelativeTooltip
 } from "./Tooltip";
 export { Button } from "./Button";
 export { Link } from "./Link";
@@ -30,3 +32,5 @@ export { Error } from "./Error";
 
 export { colors };
 export { icons };
+
+export { IconAndLabel };

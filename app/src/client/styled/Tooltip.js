@@ -26,6 +26,51 @@ const Tooltip = styled(Component)`
   filter: brightness(1);
 `;
 
+const RelativeTooltipContainer = styled(Tooltip)`
+  position: absolute;
+  z-index: 20000;
+  ${props =>
+    Object.keys(props.position).reduce((style, key) => {
+      return style + "\n" + key + ":" + props.position[key] + "px;";
+    }, "")}
+  text-align: left;
+  filter: brightness(1);
+`;
+
+export class RelativeTooltip extends React.Component {
+  render() {
+    const { element, children, ...rest } = this.props;
+
+    const getPosition = element => {
+      const boundingBox = element.getBoundingClientRect
+        ? element.getBoundingClientRect()
+        : element.get(0).getBoundingClientRect();
+
+      const position = {};
+
+      if (boundingBox.top > window.innerHeight / 2) {
+        position.bottom = 32;
+      } else {
+        position.top = 32;
+      }
+
+      if (boundingBox.left > window.innerWidth / 2) {
+        position.right = 0;
+      } else {
+        position.left = 0;
+      }
+
+      return position;
+    };
+
+    return (
+      <RelativeTooltipContainer position={getPosition(element)} {...rest}>
+        {children}
+      </RelativeTooltipContainer>
+    );
+  }
+}
+
 const TooltipHeader = styled.div`
   text-transform: uppercase;
   font-size: 16px;

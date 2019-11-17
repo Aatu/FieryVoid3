@@ -9,7 +9,6 @@ const HitChangeContainer = styled.div`
 class HitChange extends React.Component {
   render() {
     const { resolution } = this.props;
-    console.log(resolution);
 
     return (
       <HitChangeContainer>

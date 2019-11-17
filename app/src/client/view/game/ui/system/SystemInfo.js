@@ -5,22 +5,17 @@ import {
   Tooltip,
   TooltipHeader,
   TooltipEntry,
-  colors
+  colors,
+  RelativeTooltip
 } from "../../../../styled";
+import SystemStrategyUi from "./SystemStrategyUi";
 
-const InfoHeader = styled(TooltipHeader)`
+export const InfoHeader = styled(TooltipHeader)`
   font-size: 12px;
 `;
 
-const SystemInfoTooltip = styled(Tooltip)`
-  position: absolute;
-  z-index: 20000;
-  ${props =>
-    Object.keys(props.position).reduce((style, key) => {
-      return style + "\n" + key + ":" + props.position[key] + "px;";
-    }, "")}
+const SystemInfoTooltip = styled(RelativeTooltip)`
   width: ${props => (props.ship ? "300px" : "200px")};
-  text-align: left;
   filter: brightness(1);
 `;
 
@@ -53,10 +48,11 @@ class SystemInfo extends React.Component {
     const Menu = systemInfoMenuProvider ? systemInfoMenuProvider() : null;
 
     return (
-      <SystemInfoTooltip position={getPosition(element)}>
+      <SystemInfoTooltip element={element}>
         <InfoHeader>{system.getDisplayName()}</InfoHeader>
         {Menu && <Menu uiState={uiState} ship={ship} system={system} />}
         {system.getSystemInfo(ship).map(getEntry)}
+        <SystemStrategyUi system={system} uiState={uiState} />
         {weaponTargeting && (
           <SystemInfoWeaponTargeting
             uiState={uiState}
@@ -82,28 +78,6 @@ const getEntry = ({ header, value }) => {
       <InfoValue>{value}</InfoValue>
     </Entry>
   );
-};
-
-const getPosition = element => {
-  const boundingBox = element.getBoundingClientRect
-    ? element.getBoundingClientRect()
-    : element.get(0).getBoundingClientRect();
-
-  const position = {};
-
-  if (boundingBox.top > window.innerHeight / 2) {
-    position.bottom = 32;
-  } else {
-    position.top = 32;
-  }
-
-  if (boundingBox.left > window.innerWidth / 2) {
-    position.right = 0;
-  } else {
-    position.left = 0;
-  }
-
-  return position;
 };
 
 export default SystemInfo;

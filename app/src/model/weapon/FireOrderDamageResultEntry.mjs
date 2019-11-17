@@ -23,7 +23,6 @@ class FireOrderDamageResultEntry {
   }
 
   getDamages(target) {
-    console.log("getDamages");
     return this.entries.reduce((total, { systemId, damageIds }) => {
       const system = target.systems.getSystemById(systemId);
 

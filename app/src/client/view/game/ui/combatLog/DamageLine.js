@@ -7,10 +7,8 @@ const DamageContainer = styled.div``;
 class DamageLine extends React.Component {
   render() {
     const { combatLogEntry } = this.props;
-    console.log(combatLogEntry);
 
     const systemsDestroyed = combatLogEntry.getSystemsDestroyed();
-    console.log("systemsDestroyed", systemsDestroyed);
     return (
       <DamageContainer>
         Damage caused:{" "}
@@ -21,8 +19,10 @@ class DamageLine extends React.Component {
           <>
             {" "}
             Systems destroyed:{" "}
-            {systemsDestroyed.map(system => (
-              <DangerHighlight>{system.getDisplayName()}</DangerHighlight>
+            {systemsDestroyed.map((system, i) => (
+              <DangerHighlight key={`system-destroyed-${i}`}>
+                {system.getDisplayName()}
+              </DangerHighlight>
             ))}
           </>
         )}

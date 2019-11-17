@@ -3,6 +3,8 @@ import systems from "../../system/index.mjs";
 import Offset from "../../../hexagon/Offset.mjs";
 import { X2PDC30mm } from "../../system/weapon/pdc/index.mjs";
 import { RailgunTurreted64gw } from "../../system/weapon/railgun/index.mjs";
+import Torpedo158MSV from "../../system/weapon/ammunition/torpedo/Torpedo158MSV.mjs";
+import Torpedo158Nuclear from "../../system/weapon/ammunition/torpedo/Torpedo158Nuclear.mjs";
 
 class Impetous extends Ship {
   setShipProperties() {
@@ -46,6 +48,21 @@ class Impetous extends Ship {
       ])
     ]);
 
+    const cargoBay = new systems.CargoBay(
+      { id: 204, hitpoints: 20, armor: 4 },
+      50
+    );
+
+    cargoBay.callHandler("addCargo", {
+      cargo: new Torpedo158MSV(),
+      amount: 10
+    });
+
+    cargoBay.callHandler("addCargo", {
+      cargo: new Torpedo158Nuclear(),
+      amount: 2
+    });
+
     this.systems.addAftSystem([
       new systems.ManeuveringThruster(
         { id: 201, hitpoints: 10, armor: 3 },
@@ -53,6 +70,9 @@ class Impetous extends Ship {
         2
       ),
 
+      new systems.TorpedoLauncherDual158({ id: 202, hitpoints: 20, armor: 6 }),
+      new systems.TorpedoLauncherDual158({ id: 203, hitpoints: 20, armor: 6 }),
+      cargoBay,
       new systems.Structure({ id: 200, hitpoints: 90, armor: 5 })
     ]);
 

@@ -18,7 +18,10 @@ import {
   ExplosiveDamageStrategy
 } from "./weapon/index.mjs";
 
+import CargoBaySystemStrategy from "./CargoBaySystemStrategy.mjs";
+
 export {
+  CargoBaySystemStrategy,
   ExplosiveDamageStrategy,
   PiercingDamageStrategy,
   TestDamageStrategy,
