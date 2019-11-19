@@ -5,7 +5,8 @@ import {
   AutomaticReplay,
   ShowReplayUi,
   MouseOverShowsShipTooltip,
-  ShowCombatLog
+  ShowCombatLog,
+  ShowMapIcons
 } from "../../../ui/uiStrategy";
 import ReplayContext from "./ReplayContext";
 
@@ -28,7 +29,8 @@ class AutomaticReplayPhaseStrategy extends PhaseStrategy {
       new AutomaticReplay(this, this.replayContext),
       new ShowReplayUi(this.replayContext),
       new MouseOverShowsShipTooltip(),
-      new ShowCombatLog(this.replayContext)
+      new ShowCombatLog(this.replayContext),
+      new ShowMapIcons()
     ];
   }
 

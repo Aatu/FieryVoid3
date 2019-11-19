@@ -2,9 +2,6 @@ import * as THREE from "three";
 import HexGridRenderer from "./renderer/hexgrid/HexGridRender";
 import StarField from "./terrain/StarField";
 import { ZOOM_MAX, ZOOM_MIN } from "../../../model/gameConfig";
-import BoltInstanceFactory from "./animation/particle/BoltParticleEmitter/BoltInstanceFactory";
-import { loadObject } from "./utils/objectLoader";
-import { degreeToRadian } from "../../../model/utils/math.mjs";
 import { ParticleEmitterContainer } from "./animation/particle";
 
 window.THREE = THREE;
@@ -74,40 +71,6 @@ class GameScene {
 
     this.starFieldCamera.position.set(0, 0, 500);
     this.starFieldCamera.lookAt(0, 0, 0);
-
-    /*
-    this.stats = new Stats();
-    this.stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
-    document.body.appendChild(this.stats.dom);
-    */
-    /*
-    const hemiLight = new THREE.HemisphereLight(0xffffff, 0xffffff, 1.6);
-    hemiLight.color.setHSL(0.6, 1, 0.6);
-    hemiLight.groundColor.setHSL(0.095, 1, 0.75);
-    hemiLight.position.set(0, 50, 50);
-    this.scene.add(hemiLight);
-    const hemiLightHelper = new THREE.HemisphereLightHelper(hemiLight, 100);
-    this.scene.add(hemiLightHelper);
-    */
-
-    /*
-    const boltTest = async () => {
-      const boltInstanceFactory = new BoltInstanceFactory(this.scene);
-      await boltInstanceFactory.ready;
-      const boltContainer = boltInstanceFactory.create();
-
-      const bolt = boltContainer
-        .getParticle()
-        .setOpacity(0.5)
-        .setPosition({ x: 0, y: 0, z: 0 })
-        .setScale(500, 10)
-        .setRotation({ x: 1, y: 1, z: 0 })
-        .setBoltTexture()
-        .setColor({ r: 1, g: 0, b: 0 });
-    };
-
-    boltTest();
-    */
 
     const directionalLight = new THREE.DirectionalLight(0xffffff, 1.0);
     directionalLight.position.set(0, 1, 0).normalize();

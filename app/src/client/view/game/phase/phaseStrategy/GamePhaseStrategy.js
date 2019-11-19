@@ -1,7 +1,6 @@
 import PhaseStrategy from "./PhaseStrategy";
 import {
   ShowShipObjects,
-  RightClickShowsShipWindow,
   MouseOverHighlightsShip,
   MouseOverShowsShipTooltip,
   HighlightSelectedShip,
@@ -12,8 +11,6 @@ import {
   GameShipTooltipMenuStrategy,
   ShowUiModeButtons,
   OwnedShipEw,
-  MouseOverShowsMovementPath,
-  MouseOverShowsElectronicWarfare,
   ShipClickSelectsShip,
   CurrentEW,
   WeaponArcsOnSystemMouseOver,
@@ -22,7 +19,8 @@ import {
   GameSystemInfoMenuStrategy,
   SystemClickShowsSystemMenu,
   SelectedShipEwList,
-  UnderHexForShips
+  UnderHexForShips,
+  ShowMapIcons
 } from "../../ui/uiStrategy";
 
 class GamePhaseStrategy extends PhaseStrategy {
@@ -31,19 +29,16 @@ class GamePhaseStrategy extends PhaseStrategy {
 
     this.strategies = [
       new ShipClickSelectsShip(),
-      //new RightClickShowsShipWindow(),
       new MouseOverHighlightsShip(),
       new ShowShipObjects(),
       new MouseOverShowsShipTooltip(),
       new SelectFirstActiveShip(),
       new HighlightSelectedShip(),
       new SelectedShipMovementUi(),
-      //new MouseOverShowsMovementPath(),
       new AllShipsMovementPaths(),
       new AllowSubmittingOnValidGameState(),
       new GameShipTooltipMenuStrategy(),
       new ShowUiModeButtons(),
-      //new MouseOverShowsElectronicWarfare(),
       new OwnedShipEw(),
       new CurrentEW(),
       new WeaponArcsOnSystemMouseOver(),
@@ -52,7 +47,8 @@ class GamePhaseStrategy extends PhaseStrategy {
       new GameSystemInfoMenuStrategy(),
       new SystemClickShowsSystemMenu(),
       new SelectedShipEwList(),
-      new UnderHexForShips()
+      new UnderHexForShips(),
+      new ShowMapIcons()
     ];
   }
 

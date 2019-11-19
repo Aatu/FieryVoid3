@@ -9,6 +9,7 @@ const Container = styled.div`
   top: 0;
   left: 500px;
   display: flex;
+  z-index: 3;
 `;
 
 const ReplayButton = styled(TooltipButton)`

@@ -8,6 +8,7 @@ import coordinateConverter from "../../../../model/utils/CoordinateConverter";
 import { CircleSprite, LineSprite, ShipFacingSprite } from "../renderer/sprite";
 
 import Line from "../renderer/Line";
+import { COLOR_FRIENDLY, COLOR_ENEMY } from "../../../../model/gameConfig.mjs";
 
 class MovementPath {
   constructor(ship, scene, terrain, ghost, mine) {
@@ -16,9 +17,7 @@ class MovementPath {
     this.terrain = terrain;
     this.ghost = ghost;
 
-    this.color = mine
-      ? new THREE.Color(39 / 255, 196 / 255, 39 / 255)
-      : new THREE.Color(196 / 255, 39 / 255, 39 / 255);
+    this.color = mine ? COLOR_FRIENDLY : COLOR_ENEMY;
 
     //this.color = new THREE.Color(19 / 255, 96 / 255, 19 / 255);
 
@@ -82,7 +81,7 @@ class MovementPath {
       this.objects.push(line2);
     }
 
-    createMovementFacing(this.ghost, lastMove.facing, end);
+    createMovementFacing(this.ghost, lastMove.facing, end, this.color);
   }
 }
 
@@ -106,7 +105,7 @@ const createMovementLine = (
   return new Line(scene, {
     start: { x: position.x, y: position.y, z },
     end: { x: target.x, y: target.y, z },
-    width: 10,
+    width: 30,
     color,
     opacity,
     pulseAmount: 1,
@@ -114,10 +113,18 @@ const createMovementLine = (
   });
 };
 
-const createMovementFacing = (ghost, facing, target) => {
+const createMovementFacing = (ghost, facing, target, color) => {
   ghost.show();
   ghost.setPosition(target);
   ghost.setFacing(-hexFacingToAngle(facing));
+  ghost.setGhostShipEmissive(color);
+  ghost.setOpacity(0.2);
+
+  ghost.mapIcon
+    .setMovementTarget()
+    .replaceColor(color)
+    .setOverlayColorAlpha(1)
+    .show();
   /*
   const size = coordinateConverter.getHexDistance() * 1.5;
   const facingSprite = new ShipFacingSprite(

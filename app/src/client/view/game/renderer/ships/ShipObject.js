@@ -15,6 +15,7 @@ import {
 import Line from "../Line";
 import Object3d from "../object3d/Object3d";
 import coordinateConverter from "../../../../../model/utils/CoordinateConverter.mjs";
+import ShipMapIcon from "./ShipMapIcon";
 
 const COLOR_MINE = new THREE.Color(39 / 255, 196 / 255, 39 / 255);
 const COLOR_ENEMY = new THREE.Color(255 / 255, 40 / 255, 40 / 255);
@@ -37,6 +38,7 @@ class ShipObject {
       this.resolveShipObjectLoaded = resolve;
     });
 
+    this.mapIcon = null;
     this.hexSprites = [];
     this.hexSpriteContainer = new THREE.Object3D();
     this.ghostShipObject = null;
@@ -119,6 +121,9 @@ class ShipObject {
 
     this.hexSpriteContainer.visible = false;
 
+    this.mapIcon = new ShipMapIcon(this);
+    this.mapIcon.addTo(this.mesh);
+
     this.mesh.add(this.hexSpriteContainer);
     /*
     this.shipSelectedSprite.setOverlayColor(COLOR_MINE);
@@ -136,12 +141,14 @@ class ShipObject {
     this.mesh.add(this.shipSideSprite.mesh);
     */
 
+    /*
     this.shipEWSprite = new ShipEWSprite(
       { width: this.sideSpriteSize * 1.5, height: this.sideSpriteSize },
       this.defaultHeight
     );
     this.mesh.add(this.shipEWSprite.mesh);
     this.shipEWSprite.hide();
+    */
 
     //this.mesh.name = "ship";
     //this.mesh.userData = { icon: this };
@@ -189,6 +196,7 @@ class ShipObject {
     );
 
     this.hexSpriteContainer.rotation.z = degreeToRadian(z);
+    this.mapIcon.setRotation(z);
   }
 
   getRotation() {
@@ -199,6 +207,22 @@ class ShipObject {
     await this.isShipObjectLoaded;
     this.opacity = opacity;
     this.replaceOpacity(opacity);
+  }
+
+  hideShip() {
+    if (!this.shipObject) {
+      return;
+    }
+
+    this.shipObject.object.visible = false;
+  }
+
+  showShip() {
+    if (!this.shipObject) {
+      return;
+    }
+
+    this.shipObject.object.visible = true;
   }
 
   hide() {
@@ -265,6 +289,7 @@ class ShipObject {
     //this.line.multiplyOpacity(opacity);
   }
 
+  /*
   showBDEW() {
     var BDEW = this.ship.ew.getBDEW();
     if (!BDEW || this.BDEWSprite) {
@@ -297,6 +322,7 @@ class ShipObject {
     this.BDEWSprite = null;
   }
 
+*/
   async replaceSocketByName(names, entity) {
     names = [].concat(names);
 
@@ -393,32 +419,30 @@ class ShipObject {
 
   setGhostShip(mine) {
     this.ghost = true;
-    this.setGhostShipEmissive(mine);
-    this.setOpacity(0.2);
+    //this.setGhostShipEmissive(mine);
+    //this.setOpacity(0.2);
   }
 
-  async setGhostShipEmissive(mine) {
+  async setGhostShipEmissive(color) {
     await this.isShipObjectLoaded;
-    //this.mesh.remove(this.shipSideSprite.mesh);
-    //this.mesh.remove(this.line.mesh);
 
-    if (mine) {
-      this.forceEmissive(new THREE.Color(39 / 255, 196 / 255, 39 / 255));
-      //this.line.setColor(new THREE.Color(39 / 255, 196 / 255, 39 / 255));
-      this.hexSprites.forEach(hexSprite =>
-        hexSprite.setOverlayColor(
-          new THREE.Color(39 / 255, 196 / 255, 39 / 255)
-        )
-      );
-    } else {
-      this.forceEmissive(new THREE.Color(196 / 255, 39 / 255, 39 / 255));
-      //this.line.setColor(new THREE.Color(196 / 255, 39 / 255, 39 / 255));
-      this.hexSprites.forEach(hexSprite =>
-        hexSprite.setOverlayColor(
-          new THREE.Color(196 / 255, 39 / 255, 39 / 255)
-        )
-      );
-    }
+    this.forceEmissive(color);
+    this.hexSprites.forEach(hexSprite =>
+      hexSprite.setOverlayColor(new THREE.Color(color))
+    );
+  }
+
+  showMapIcon(color) {
+    this.mapIcon
+      .setOverlayColor(color)
+      .setOverlayColorAlpha(1)
+      .show();
+    this.hideShip();
+  }
+
+  hideMapIcon() {
+    this.mapIcon.hide();
+    this.showShip();
   }
 
   isGhostShip() {

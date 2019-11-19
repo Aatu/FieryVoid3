@@ -1,12 +1,17 @@
 import UiStrategy from "./UiStrategy";
 import {
   COLOR_FRIENDLY,
-  COLOR_ENEMY
+  COLOR_ENEMY,
+  ZOOM_FOR_MAPICONS
 } from "../../../../../model/gameConfig.mjs";
 
 class UnderHexForShips extends UiStrategy {
-  update(gameData) {
-    super.update(gameData);
+  constructor() {
+    super();
+
+    this.showing = false;
+  }
+  show() {
     const { shipIconContainer, currentUser } = this.services;
     shipIconContainer.getArray().forEach(icon => {
       icon.hexSpriteContainer.visible = true;
@@ -16,13 +21,36 @@ class UnderHexForShips extends UiStrategy {
 
       icon.hexSprites.forEach(sprite => sprite.setOverlayColor(color));
     });
+
+    this.showing = true;
   }
 
-  deactivate() {
+  hide() {
     const { shipIconContainer } = this.services;
     shipIconContainer.getArray().forEach(icon => {
       icon.hexSpriteContainer.visible = false;
     });
+
+    this.showing = false;
+  }
+
+  update(gameData) {
+    super.update(gameData);
+    this.show();
+  }
+
+  render({ zoom }) {
+    if (zoom > ZOOM_FOR_MAPICONS && this.showing) {
+      this.hide();
+    }
+
+    if (zoom <= ZOOM_FOR_MAPICONS && !this.showing) {
+      this.show();
+    }
+  }
+
+  deactivate() {
+    this.hide();
   }
 }
 

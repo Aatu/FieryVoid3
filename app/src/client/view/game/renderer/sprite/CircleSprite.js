@@ -29,13 +29,15 @@ const createTexture = () => {
 };
 
 class CircleSprite extends Sprite {
-  constructor(size, z, opacity) {
+  constructor(position, size, z, opacity) {
     super(null, size, z);
 
     this.setOpacity(opacity);
 
     createTexture();
+
     this.uniforms.texture.value = texture;
+    this.setPosition(position);
   }
 }
 

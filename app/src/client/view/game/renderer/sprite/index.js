@@ -5,6 +5,7 @@ import ShipFacingSprite from "./ShipFacingSprite";
 import DottedCircleSprite from "./DottedCircleSprite";
 import TextSprite from "./TextSprite";
 import CircleSprite from "./CircleSprite";
+import ShipMapSprite from "./ShipMapSprite";
 
 export {
   LineSprite,
@@ -13,5 +14,6 @@ export {
   ShipFacingSprite,
   DottedCircleSprite,
   TextSprite,
-  CircleSprite
+  CircleSprite,
+  ShipMapSprite
 };

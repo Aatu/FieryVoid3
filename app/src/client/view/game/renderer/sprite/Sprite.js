@@ -28,7 +28,13 @@ class Sprite {
       opacity: { type: "f", value: 1.0 }
     };
 
+    this.color = null;
+
     this.mesh = this.create(size, image);
+  }
+
+  getMaterial() {
+    return baseMaterial;
   }
 
   hide() {
@@ -39,6 +45,19 @@ class Sprite {
   show() {
     this.mesh.visible = true;
     return this;
+  }
+
+  replaceColor(color) {
+    this.uniforms.overlayColor.value = color;
+    return this;
+  }
+
+  revertColor() {
+    if (!this.color) {
+      return;
+    }
+
+    this.uniforms.overlayColor.value = this.color;
   }
 
   setPosition(pos) {
@@ -64,6 +83,7 @@ class Sprite {
   }
 
   setOverlayColor(color) {
+    this.color = color;
     this.uniforms.overlayColor.value = color;
     return this;
   }
@@ -78,15 +98,16 @@ class Sprite {
   }
 
   setFacing(facing) {
-    this.mesh.rotation.z = -degreeToRadian(facing);
+    this.mesh.rotation.z = degreeToRadian(facing);
     return this;
   }
 
   getFacing() {
-    return -radianToDegree(this.mesh.rotation.z);
+    return radianToDegree(this.mesh.rotation.z);
   }
 
   create(size, image) {
+    const material = this.getMaterial();
     const geometry =
       geometries["" + size.width + "-" + size.height] ||
       (() => {
@@ -101,7 +122,7 @@ class Sprite {
 
     this.uniforms.texture.value = image;
 
-    this.material = baseMaterial.clone();
+    this.material = material.clone();
     this.material.uniforms = this.uniforms;
 
     this.material.depthTest = true;

@@ -1,36 +1,46 @@
 import UiStrategy from "./UiStrategy";
-import * as THREE from "three";
 import {
   COLOR_FRIENDLY,
-  COLOR_ENEMY
+  COLOR_ENEMY,
+  COLOR_FRIENDLY_HIGHLIGHT,
+  COLOR_ENEMY_HIGHLIGHT
 } from "../../../../../model/gameConfig.mjs";
 
 class MouseOverHighlightsShip extends UiStrategy {
   deactivate(payload) {
-    const { shipIconContainer } = this.services;
-    shipIconContainer.getArray().forEach(icon => icon.revertEmissive());
+    this.hide();
   }
 
-  mouseOverShip(payload) {
+  show(payload) {
+    console.log(COLOR_FRIENDLY, COLOR_FRIENDLY_HIGHLIGHT);
     const { currentUser } = this.services;
-
-    this.highLighted = payload.entity;
-
     if (payload.entity.ship.player.isUsers(currentUser)) {
       payload.entity.replaceEmissive(COLOR_FRIENDLY);
+      payload.entity.mapIcon.replaceColor(COLOR_FRIENDLY_HIGHLIGHT);
     } else {
       payload.entity.replaceEmissive(COLOR_ENEMY);
+      payload.entity.mapIcon.replaceColor(COLOR_ENEMY_HIGHLIGHT);
     }
   }
 
-  mouseOutShip(payload) {
+  hide() {
     const { shipIconContainer } = this.services;
-    shipIconContainer.getArray().forEach(icon => icon.revertEmissive());
+    shipIconContainer.getArray().forEach(icon => {
+      icon.revertEmissive();
+      icon.mapIcon.revertColor();
+    });
+  }
+
+  mouseOverShip(payload) {
+    this.show(payload);
+  }
+
+  mouseOutShip(payload) {
+    this.hide();
   }
 
   mouseOut() {
-    const { shipIconContainer } = this.services;
-    shipIconContainer.getArray().forEach(icon => icon.revertEmissive());
+    this.hide();
   }
 }
 

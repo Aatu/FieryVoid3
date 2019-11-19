@@ -19,6 +19,7 @@ const ShipTooltipContainer = styled(Tooltip)`
   text-align: left;
   opacity: 0.95;
   position: relative;
+  ${props => (props.interactable ? "z-index: 3;" : "z-index: 1;")}
 `;
 
 export const Entry = styled(TooltipEntry)`
@@ -57,7 +58,7 @@ class ShipTooltip extends React.Component {
         marginTop={20}
         marginLeft={-150}
       >
-        <ShipTooltipContainer>
+        <ShipTooltipContainer interactable={Boolean(Menu)}>
           <InfoHeader>{ship.name}</InfoHeader>
           {Menu && <Menu uiState={uiState} ship={ship} {...rest} />}
           <WeaponTargetingList uiState={uiState} ship={ship} {...rest} />

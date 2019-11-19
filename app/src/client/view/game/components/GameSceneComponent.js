@@ -9,6 +9,19 @@ const WebglCanvas = styled.div`
   background-size: cover;
 `;
 
+const ClickCatcher = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  background-color: transparent;
+`;
+
 const getMousePositionInObservedElement = (event, element) => {
   if (event.touches) {
     return {
@@ -42,6 +55,7 @@ class GameSceneComponent extends React.Component {
     super(props);
     // create a ref to store the textInput DOM element
     this.canvasRef = React.createRef();
+    this.clickCatcherRef = React.createRef();
     this.mouseDownPosition = null;
     this.lastDraggingPosition = null;
     this.draggingThreshold = 5;
@@ -51,7 +65,7 @@ class GameSceneComponent extends React.Component {
     const { game } = this.props;
 
     window.addEventListener("resize", this.onResize);
-    this.canvasRef.current.addEventListener("wheel", this.onWheel);
+    this.clickCatcherRef.current.addEventListener("wheel", this.onWheel);
     window.addEventListener("touchstart", this.onTouchStart);
     document.addEventListener("keydown", this.onKeyDown.bind(this), false);
     document.addEventListener("keyup", this.onKeyUp.bind(this), false);
@@ -63,7 +77,7 @@ class GameSceneComponent extends React.Component {
     document.removeEventListener("keydown", this.onKeyDown.bind(this), false);
     document.removeEventListener("keyup", this.onKeyUp.bind(this), false);
     window.removeEventListener("resize", this.onResize);
-    this.canvasRef.current.removeEventListener("wheel", this.onWheel);
+    this.clickCatcherRef.current.removeEventListener("wheel", this.onWheel);
     window.removeEventListener("touchstart", this.onTouchStart);
   }
 
@@ -90,7 +104,7 @@ class GameSceneComponent extends React.Component {
     event.preventDefault();
     this.mouseDownPosition = getMousePositionInObservedElement(
       event,
-      this.canvasRef.current
+      this.clickCatcherRef.current
     );
   }
 
@@ -101,7 +115,7 @@ class GameSceneComponent extends React.Component {
     const { game } = this.props;
     if (!this.lastDraggingPosition) {
       game.onMouseUp(
-        getMousePositionInObservedElement(event, this.canvasRef.current),
+        getMousePositionInObservedElement(event, this.clickCatcherRef.current),
         event.button
       );
     }
@@ -125,7 +139,7 @@ class GameSceneComponent extends React.Component {
 
     const position = getMousePositionInObservedElement(
       event,
-      this.canvasRef.current
+      this.clickCatcherRef.current
     );
 
     if (
@@ -169,18 +183,21 @@ class GameSceneComponent extends React.Component {
 
   render() {
     return (
-      <WebglCanvas
-        ref={this.canvasRef}
-        onMouseOut={this.onMouseOut.bind(this)}
-        onMouseDown={this.onMouseDown.bind(this)}
-        onMouseUp={this.onMouseUp.bind(this)}
-        onMouseMove={this.onMouseMove.bind(this)}
-        onKeyUp={this.onKeyUp.bind(this)}
-        onContextMenu={e => {
-          e.preventDefault();
-          e.stopPropagation();
-        }}
-      />
+      <>
+        <ClickCatcher
+          ref={this.clickCatcherRef}
+          onMouseOut={this.onMouseOut.bind(this)}
+          onMouseDown={this.onMouseDown.bind(this)}
+          onMouseUp={this.onMouseUp.bind(this)}
+          onMouseMove={this.onMouseMove.bind(this)}
+          onKeyUp={this.onKeyUp.bind(this)}
+          onContextMenu={e => {
+            e.preventDefault();
+            e.stopPropagation();
+          }}
+        />
+        <WebglCanvas ref={this.canvasRef} />
+      </>
     );
   }
 }

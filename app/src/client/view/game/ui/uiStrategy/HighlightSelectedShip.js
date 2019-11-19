@@ -1,5 +1,11 @@
 import UiStrategy from "./UiStrategy";
 import * as THREE from "three";
+import {
+  COLOR_FRIENDLY,
+  COLOR_ENEMY,
+  COLOR_FRIENDLY_HIGHLIGHT,
+  COLOR_ENEMY_HIGHLIGHT
+} from "../../../../../model/gameConfig.mjs";
 
 class HighlightSelectedShip extends UiStrategy {
   constructor() {
@@ -11,12 +17,23 @@ class HighlightSelectedShip extends UiStrategy {
     //currentOpacity = opacity + (sineAmplitude * 0.5 * sin(gameTime/sineFrequency) + sineAmplitude)
   }
 
-  deactivate() {
+  hide() {
     const { shipIconContainer } = this.services;
     if (this.icon) {
       this.icon.revertEmissive();
-      shipIconContainer.getGhostShipIconByShip(this.icon.ship).revertOpacity();
+      this.icon.mapIcon.revertColor();
+      this.icon.hexSprites.forEach(sprite => sprite.revertColor());
+      const ghost = shipIconContainer.getGhostShipIconByShip(this.icon.ship);
+      ghost.revertOpacity();
+      ghost.mapIcon.setMovementTarget();
+      ghost.mapIcon.revertColor();
     }
+
+    this.icon = null;
+  }
+
+  deactivate() {
+    this.hide();
   }
 
   shipSelected(ship) {
@@ -31,11 +48,7 @@ class HighlightSelectedShip extends UiStrategy {
     this.active = true;
     this.activeTime = 0;
 
-    if (this.icon) {
-      this.icon.revertEmissive();
-      shipIconContainer.getGhostShipIconByShip(this.icon.ship).revertOpacity();
-    }
-    this.icon = null;
+    this.hide();
   }
 
   render({ delta }) {
@@ -54,17 +67,29 @@ class HighlightSelectedShip extends UiStrategy {
 
     const ghost = shipIconContainer.getGhostShipIconByShip(this.icon.ship);
 
-    if (ghost.hidden) {
-      this.icon.replaceEmissive(
-        new THREE.Color(
-          (39 * opacity) / 255,
-          (196 * opacity) / 255,
-          (39 * opacity) / 255
-        )
-      );
-    }
+    //if (ghost.hidden) {
 
+    const color = COLOR_FRIENDLY_HIGHLIGHT.clone().multiplyScalar(opacity);
+
+    /*
+    const color = new THREE.Color(
+      (39 * opacity) / 255,
+      (196 * opacity) / 255,
+      (39 * opacity) / 255
+    );
+    */
+
+    //this.icon.replaceEmissive(color);
+    //}
+
+    ghost.setGhostShipEmissive(color);
     ghost.replaceOpacity(opacity);
+    ghost.mapIcon
+      .setMovementTarget()
+      .replaceColor(color)
+      .setOverlayColorAlpha(1);
+    this.icon.hexSprites.forEach(sprite => sprite.replaceColor(color));
+    this.icon.mapIcon.replaceColor(color);
     this.activeTime += delta;
   }
 }

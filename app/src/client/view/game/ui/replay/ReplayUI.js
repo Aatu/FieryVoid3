@@ -8,6 +8,7 @@ const Container = styled.div`
   top: 0;
   left: 500px;
   display: flex;
+  z-index: 3;
 `;
 
 class ReplayUi extends React.PureComponent {

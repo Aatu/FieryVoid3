@@ -7,6 +7,7 @@ const Container = styled.div`
   bottom: 150px;
   opacity: 0.85;
   user-select: none;
+  z-index: 3;
 `;
 
 const Text = css`
