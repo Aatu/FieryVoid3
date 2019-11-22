@@ -6,7 +6,7 @@ import PDC30mm from "./pdc/PDC30mm.mjs";
 
 import CannonFixed120mm from "./cannon/CannonFixed120mm.mjs";
 
-import TorpedoLauncherDual158 from "./launcher/TorpedoLauncherDual158";
+import TorpedoLauncherDual158 from "./launcher/TorpedoLauncherDual158.mjs";
 
 export {
   TestWeapon,

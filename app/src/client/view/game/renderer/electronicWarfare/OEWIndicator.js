@@ -1,8 +1,11 @@
 import * as THREE from "three";
 import Line from "../Line";
-
-const COLOR_OEW_FRIENDLY = new THREE.Color(160 / 255, 150 / 255, 250 / 255);
-const COLOR_OEW_ENEMY = new THREE.Color(255 / 255, 40 / 255, 40 / 255);
+import LineSprite from "../sprite/LineSprite";
+import {
+  COLOR_OEW_FRIENDLY,
+  COLOR_OEW_ENEMY,
+  COLOR_FRIENDLY_HIGHLIGHT
+} from "../../../../../model/gameConfig.mjs";
 
 class OEWIndicator {
   constructor(shipIcon, targetIcon, targetGhost, amount, mine, scene) {
@@ -25,15 +28,23 @@ class OEWIndicator {
   }
 
   createLine() {
-    return new Line(this.scene, {
-      start: { ...this.shipIcon.getPosition(), z: this.getZ() },
-      end: { ...this.targetPosition, z: this.getZ() },
-      width: this.amount * 1 + 5,
-      color: this.mine ? COLOR_OEW_FRIENDLY : COLOR_OEW_ENEMY,
-      opacity: 0.1,
-      pulseAmount: 1,
-      dashSize: 5
-    });
+    const line = new LineSprite(
+      this.shipIcon.getPosition().setZ(this.getZ()),
+      this.targetPosition.setZ(this.getZ()),
+      this.amount * 1 + 5,
+      {
+        color: this.mine ? COLOR_OEW_FRIENDLY : COLOR_OEW_ENEMY,
+        opacity: 0.5,
+        type: "dashed-circle",
+        textureSize: this.amount * 1 + 5,
+        //minFilter: THREE.NearestFilter,
+        pulseAmount: 1
+      }
+    );
+
+    line.addTo(this.scene);
+
+    return line;
   }
 
   getZ() {
@@ -44,10 +55,12 @@ class OEWIndicator {
     this.line.destroy();
   }
 
-  render() {
+  render(zoom) {
     if (!this.visible) {
       return;
     }
+
+    this.line.render(zoom);
 
     const newTargetPosition = this.targetGhost.hidden
       ? this.targetIcon.getPosition()
@@ -60,10 +73,12 @@ class OEWIndicator {
       this.shipPosition = newShipPosition;
       this.targetPosition = newTargetPosition;
       this.line.update(
-        { ...this.shipPosition, z: this.getZ() },
-        { ...this.targetPosition, z: this.getZ() },
+        this.shipPosition.setZ(this.getZ()),
+        this.targetPosition.setZ(this.getZ()),
         this.amount * 1 + 5
       );
+
+      this.line.updateTextureSize(this.amount * 1 + 5);
     }
   }
 
@@ -73,10 +88,12 @@ class OEWIndicator {
     if (this.amount !== amount) {
       this.amount = amount;
       this.line.update(
-        { ...this.shipPosition, z: this.getZ() },
-        { ...this.targetPosition, z: this.getZ() },
+        this.shipPosition.setZ(this.getZ()),
+        this.targetPosition.setZ(this.getZ()),
         this.amount * 1 + 5
       );
+
+      this.line.updateTextureSize(this.amount * 1 + 5);
     }
 
     return this;

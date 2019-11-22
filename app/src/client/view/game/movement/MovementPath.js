@@ -5,10 +5,11 @@ import {
 } from "../../../../model/utils/math";
 import coordinateConverter from "../../../../model/utils/CoordinateConverter";
 
-import { CircleSprite, LineSprite, ShipFacingSprite } from "../renderer/sprite";
+import { CircleSprite, LineSprite } from "../renderer/sprite";
 
 import Line from "../renderer/Line";
 import { COLOR_FRIENDLY, COLOR_ENEMY } from "../../../../model/gameConfig.mjs";
+import Vector from "../../../../model/utils/Vector.mjs";
 
 class MovementPath {
   constructor(ship, scene, terrain, ghost, mine) {
@@ -55,7 +56,7 @@ class MovementPath {
       start,
       middle.equals(end) ? end : middle,
       this.color,
-      0.2,
+      0.5,
       this.ghost.shipZ
     );
 
@@ -102,15 +103,22 @@ const createMovementLine = (
   opacity = 0.8,
   z
 ) => {
-  return new Line(scene, {
-    start: { x: position.x, y: position.y, z },
-    end: { x: target.x, y: target.y, z },
-    width: 30,
-    color,
-    opacity,
-    pulseAmount: 1,
-    dashSize: 15
-  });
+  const line = new LineSprite(
+    new Vector({ x: position.x, y: position.y, z }),
+    new Vector({ x: target.x, y: target.y, z }),
+    30,
+    {
+      color,
+      opacity,
+      type: "dashed-arrow",
+      textureSize: 30,
+      pulseAmount: 1
+    }
+  );
+
+  line.addTo(scene);
+
+  return line;
 };
 
 const createMovementFacing = (ghost, facing, target, color) => {

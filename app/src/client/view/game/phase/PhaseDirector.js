@@ -133,7 +133,7 @@ class PhaseDirector {
     }
 
     this.phaseStrategy.render(coordinateConverter, scene, zoom);
-    this.electronicWarfareIndicatorService.render();
+    this.electronicWarfareIndicatorService.render(zoom);
     this.uiState.render();
   }
 

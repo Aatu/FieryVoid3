@@ -46,6 +46,7 @@ class MovementPathService {
     }
 
     if (path.movementPath) {
+      //TODO: this is inefficient and causes flickering
       path.movementPath.remove(this.scene);
     }
 

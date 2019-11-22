@@ -8,6 +8,8 @@ import lineFragmentShader from "./lineFragmentShader";
 import lineVertexShader from "./lineVertexShader";
 import boltVertexShader from "./boltVertexShader";
 import boltFragmentShader from "./boltFragmentShader";
+import line2dVertexShader from "./line2dVertexShader";
+import line2dFragmentShader from "./line2dFragmentShader";
 
 export {
   starVertexShader,
@@ -19,5 +21,7 @@ export {
   lineFragmentShader,
   lineVertexShader,
   boltVertexShader,
-  boltFragmentShader
+  boltFragmentShader,
+  line2dVertexShader,
+  line2dFragmentShader
 };

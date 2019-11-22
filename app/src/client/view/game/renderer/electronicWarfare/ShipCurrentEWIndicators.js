@@ -33,8 +33,8 @@ class ShipCurrentEWIndicators {
     return this.ship.id === ship.id;
   }
 
-  render() {
-    this.oew.forEach(oew => oew.render());
+  render(zoom) {
+    this.oew.forEach(oew => oew.render(zoom));
   }
 
   createOEW() {

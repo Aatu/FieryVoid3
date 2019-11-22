@@ -37,6 +37,18 @@ class Vector {
     };
   }
 
+  setX(x) {
+    return new Vector(x, this.y, this.z);
+  }
+
+  setY(y) {
+    return new Vector(this.x, y, this.z);
+  }
+
+  setZ(z) {
+    return new Vector(this.x, this.y, z);
+  }
+
   distanceTo(vector) {
     vector = new Vector(vector);
     helperA.set(this.x, this.y, this.z);
@@ -78,6 +90,10 @@ class Vector {
   }
 
   equals(vector) {
+    if (!vector) {
+      return false;
+    }
+
     return this.x === vector.x && this.y === vector.y && this.z === vector.z;
   }
 

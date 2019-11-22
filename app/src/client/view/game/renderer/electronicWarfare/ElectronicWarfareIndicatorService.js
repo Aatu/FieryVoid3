@@ -52,9 +52,9 @@ class ElectronicWarfareIndicatorService {
     return indicator;
   }
 
-  render() {
-    this.indicators.forEach(indicator => indicator.render());
-    this.currentIndicators.forEach(indicator => indicator.render());
+  render(zoom) {
+    this.indicators.forEach(indicator => indicator.render(zoom));
+    this.currentIndicators.forEach(indicator => indicator.render(zoom));
   }
 
   showCurrentForShip(ship) {

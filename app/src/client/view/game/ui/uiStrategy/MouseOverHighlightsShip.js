@@ -12,7 +12,6 @@ class MouseOverHighlightsShip extends UiStrategy {
   }
 
   show(payload) {
-    console.log(COLOR_FRIENDLY, COLOR_FRIENDLY_HIGHLIGHT);
     const { currentUser } = this.services;
     if (payload.entity.ship.player.isUsers(currentUser)) {
       payload.entity.replaceEmissive(COLOR_FRIENDLY);
