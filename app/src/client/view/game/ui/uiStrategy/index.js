@@ -36,8 +36,10 @@ import SelectedShipEwList from "./electronicWarfare/SelectedShipEwList";
 import UnderHexForShips from "./UnderHexForShips";
 import ShowCombatLog from "./replay/ShowCombatLog";
 import ShowMapIcons from "./ShowMapIcons";
+import ShowShipBadges from "./ShowShipBadges";
 
 export {
+  ShowShipBadges,
   SelectedShipEwList,
   SystemClickShowsSystemMenu,
   GameSystemInfoMenuStrategy,

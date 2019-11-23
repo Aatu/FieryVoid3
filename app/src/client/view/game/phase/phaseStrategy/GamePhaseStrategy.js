@@ -20,7 +20,8 @@ import {
   SystemClickShowsSystemMenu,
   SelectedShipEwList,
   UnderHexForShips,
-  ShowMapIcons
+  ShowMapIcons,
+  ShowShipBadges
 } from "../../ui/uiStrategy";
 
 class GamePhaseStrategy extends PhaseStrategy {
@@ -48,7 +49,8 @@ class GamePhaseStrategy extends PhaseStrategy {
       new SystemClickShowsSystemMenu(),
       new SelectedShipEwList(),
       new UnderHexForShips(),
-      new ShowMapIcons()
+      new ShowMapIcons(),
+      new ShowShipBadges()
     ];
   }
 

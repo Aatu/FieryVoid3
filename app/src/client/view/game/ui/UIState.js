@@ -1,4 +1,6 @@
 import * as gameUiModes from "./gameUiModes";
+import { HEX_SIZE } from "../../../../model/gameConfig.mjs";
+import { angleToHexFacing } from "../../../../model/utils/math.mjs";
 
 class UIState {
   constructor() {
@@ -23,6 +25,7 @@ class UIState {
         activeSystem: null,
         activeSystemElement: null
       },
+      shipBadges: [],
       gameUiMode: {},
       gameUiModeButtons: false,
       replayUi: false,
@@ -36,6 +39,75 @@ class UIState {
     this.state.gameUiMode[gameUiModes.ENEMY_WEAPONS] = false;
     this.state.gameUiMode[gameUiModes.WEAPONS] = false;
     this.state.gameUiMode[gameUiModes.MOVEMENT] = false;
+
+    this.updateState();
+  }
+
+  showShipBadge(icon, showName) {
+    const { coordinateConverter } = this.services;
+    const entry = this.state.shipBadges.find(
+      badge => badge.icon.ship.id === icon.ship.id
+    );
+
+    const getPosition = () => {
+      const iconPosition = icon.getPosition();
+      const iconFacing = icon.getFacing();
+      const hexFacing = angleToHexFacing(iconFacing);
+      const offset = HEX_SIZE - 15;
+
+      const hexas = icon.ship.getIconHexas(hexFacing).map(hex => {
+        const gamePos = coordinateConverter
+          .fromHexToGame(hex)
+          .add(iconPosition);
+        gamePos.y -= offset;
+        return coordinateConverter.fromGameToViewPort(gamePos);
+      });
+
+      let lowestY = null;
+      let lowestHexas = [];
+
+      hexas.forEach(hex => {
+        if (lowestY === null || hex.y > lowestY) {
+          lowestHexas = [hex];
+          lowestY = hex.y;
+        } else if (hex.y === lowestY) {
+          lowestHexas.push(hex);
+        }
+      });
+
+      const averageX =
+        lowestHexas.reduce((total, hex) => total + hex.x, 0) /
+        lowestHexas.length;
+
+      const position = {
+        x: averageX,
+        y: lowestY
+      };
+
+      return position;
+    };
+
+    if (entry) {
+      entry.icon = icon;
+      entry.version++;
+      entry.getPosition = getPosition;
+      entry.showName = showName;
+    } else {
+      this.state.shipBadges.push({
+        icon,
+        version: 0,
+        getPosition,
+        showName
+      });
+    }
+
+    this.updateState();
+  }
+
+  hideShipBadge(icon) {
+    this.state.shipBadges = this.state.shipBadges.filter(
+      entry => entry.icon.ship.id !== icon.ship.id
+    );
 
     this.updateState();
   }

@@ -99,6 +99,10 @@ class Ship {
     return lastMove.getHexPosition();
   }
 
+  getIconHexas(hexFacing = 0) {
+    return this.hexSizes.map(hex => hex.rotate(hexFacing));
+  }
+
   deserialize(data = {}) {
     const shipData = data.shipData || {};
     this.id = data.id || null;

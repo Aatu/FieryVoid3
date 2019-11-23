@@ -10,8 +10,8 @@ const Container = styled.div`
   align-items: center;
   svg #svg-path {
     fill: white;
-    ${props => props.overChannel && "fill:#ffad3a;"}
-    ${props => props.can === false && "fill:#ff0000;"}
+    ${props => props.overChannel && "fill:#4c7ca8;"}
+    ${props => props.can === false && "fill: #8f2626;"}
   }
   ${Clickable}
 `;

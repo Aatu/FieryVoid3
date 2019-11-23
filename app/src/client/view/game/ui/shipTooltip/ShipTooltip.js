@@ -19,7 +19,7 @@ const ShipTooltipContainer = styled(Tooltip)`
   text-align: left;
   opacity: 0.95;
   position: relative;
-  ${props => (props.interactable ? "z-index: 3;" : "z-index: 1;")}
+  ${props => (props.interactable ? "z-index: 4;" : "z-index: 1;")}
 `;
 
 export const Entry = styled(TooltipEntry)`

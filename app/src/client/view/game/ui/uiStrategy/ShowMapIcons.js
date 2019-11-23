@@ -3,6 +3,8 @@ import {
   COLOR_FRIENDLY,
   COLOR_ENEMY,
   ZOOM_FOR_MAPICONS,
+  COLOR_FRIENDLY_HIGHLIGHT,
+  COLOR_ENEMY_HIGHLIGHT,
   ZOOM_MAX
 } from "../../../../../model/gameConfig.mjs";
 
@@ -10,7 +12,48 @@ class ShowMapIcons extends AnimationUiStrategy {
   constructor() {
     super();
 
+    this.zoom = 1;
     this.showingIcons = false;
+  }
+
+  showHighligh(icon) {
+    const { currentUser } = this.services;
+    const color = icon.ship.player.isUsers(currentUser)
+      ? COLOR_FRIENDLY_HIGHLIGHT
+      : COLOR_ENEMY_HIGHLIGHT;
+
+    icon.mapIcon.replaceColor(color);
+  }
+
+  hideHighligh() {
+    const { shipIconContainer, currentUser } = this.services;
+    shipIconContainer.getArray().forEach(icon => {
+      const ghost = shipIconContainer.getGhostShipIconByShip(icon.ship);
+      ghost.mapIcon.revertColor();
+      icon.mapIcon.revertColor();
+    });
+  }
+
+  mouseOverShip(payload) {
+    const icon = payload.entity;
+    this.showHighligh(icon);
+  }
+
+  uiStateChanged() {
+    this.shouldShow(this.zoom, true);
+  }
+
+  shipStateChanged() {
+    this.shouldShow(this.zoom, true);
+  }
+
+  mouseOutShip() {
+    this.hideHighligh();
+    this.shouldShow(this.zoom, true);
+  }
+
+  mouseOut() {
+    this.hideHighligh();
   }
 
   showIcons() {
@@ -49,12 +92,16 @@ class ShowMapIcons extends AnimationUiStrategy {
     });
   }
 
-  render({ zoom }) {
-    if (zoom > ZOOM_FOR_MAPICONS && !this.showingIcons) {
+  shouldShow(zoom, force = false) {
+    if (!this.services) {
+      return;
+    }
+
+    if (zoom > ZOOM_FOR_MAPICONS && (force || !this.showingIcons)) {
       this.showIcons();
     }
 
-    if (zoom <= ZOOM_FOR_MAPICONS && this.showingIcons) {
+    if (zoom <= ZOOM_FOR_MAPICONS && (force || this.showingIcons)) {
       this.hideIcons();
     }
 
@@ -68,6 +115,16 @@ class ShowMapIcons extends AnimationUiStrategy {
 
       this.changeScale(extraScale);
     }
+  }
+
+  render({ zoom }) {
+    if (zoom === this.zoom) {
+      return;
+    }
+
+    this.zoom = zoom;
+
+    this.shouldShow(zoom);
   }
 
   deactivate() {

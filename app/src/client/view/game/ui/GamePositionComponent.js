@@ -11,24 +11,32 @@ class GamePositionComponent extends React.Component {
   constructor(props) {
     super(props);
 
+    this.containerRef = React.createRef();
     this.renderCallback = this.onGameRender.bind(this);
+    this.position = null;
     this.state = {
       position: null
     };
   }
 
   onGameRender() {
-    const { getPosition } = this.props;
-    const { position } = this.state;
+    const { getPosition, marginTop = 0, marginLeft = 0 } = this.props;
+
+    if (!this.containerRef.current) {
+      return;
+    }
 
     const newPosition = getPosition();
 
     if (
-      !position ||
-      position.x !== newPosition.x ||
-      position.y !== newPosition.y
+      !this.position ||
+      this.position.x !== newPosition.x ||
+      this.position.y !== newPosition.y
     ) {
-      this.setState({ position: newPosition });
+      this.position = newPosition;
+
+      this.containerRef.current.style.left = `${newPosition.x + marginLeft}px`;
+      this.containerRef.current.style.top = `${newPosition.y + marginTop}px`;
     }
   }
 
@@ -45,23 +53,16 @@ class GamePositionComponent extends React.Component {
   }
 
   render() {
-    const { children, marginTop = 0, marginLeft = 0 } = this.props;
-    const { position } = this.state;
+    const { children } = this.props;
 
-    if (!position) {
-      return null;
-    }
-
-    return (
-      <Container
-        style={{
+    /*
+    style={{
           top: position.y + marginTop + "px",
           left: position.x + marginLeft + "px"
         }}
-      >
-        {children}
-      </Container>
-    );
+        */
+
+    return <Container ref={this.containerRef}>{children}</Container>;
   }
 }
 

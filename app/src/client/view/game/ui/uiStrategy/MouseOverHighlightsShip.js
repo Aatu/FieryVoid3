@@ -15,10 +15,8 @@ class MouseOverHighlightsShip extends UiStrategy {
     const { currentUser } = this.services;
     if (payload.entity.ship.player.isUsers(currentUser)) {
       payload.entity.replaceEmissive(COLOR_FRIENDLY);
-      payload.entity.mapIcon.replaceColor(COLOR_FRIENDLY_HIGHLIGHT);
     } else {
       payload.entity.replaceEmissive(COLOR_ENEMY);
-      payload.entity.mapIcon.replaceColor(COLOR_ENEMY_HIGHLIGHT);
     }
   }
 
@@ -26,7 +24,6 @@ class MouseOverHighlightsShip extends UiStrategy {
     const { shipIconContainer } = this.services;
     shipIconContainer.getArray().forEach(icon => {
       icon.revertEmissive();
-      icon.mapIcon.revertColor();
     });
   }
 

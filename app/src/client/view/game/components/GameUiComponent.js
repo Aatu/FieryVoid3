@@ -9,6 +9,7 @@ import LeftPanel from "../ui/leftPanel/LeftPanel";
 import ReplayUI from "../ui/replay/ReplayUI";
 import * as gamePhases from "../../../../model/game/gamePhases";
 import CombatLog from "../ui/combatLog/CombatLog";
+import ShipBadge from "../ui/shipBadge/ShipBadge";
 
 class GameUiComponent extends React.Component {
   render() {
@@ -78,6 +79,19 @@ class GameUiComponent extends React.Component {
             replayContext={uiState.state.combatLog.replayContext}
             gameData={uiState.state.combatLog.gameData}
           />
+        )}
+
+        {uiState.state.shipBadges.map(
+          ({ version, icon, getPosition, showName }) => (
+            <ShipBadge
+              key={`ship-badge-${icon.ship.id}`}
+              icon={icon}
+              getPosition={getPosition}
+              version={version}
+              uiState={uiState}
+              showName={showName}
+            />
+          )
         )}
       </>
     );

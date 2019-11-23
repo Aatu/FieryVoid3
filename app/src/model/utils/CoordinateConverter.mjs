@@ -25,6 +25,7 @@ class CoordinateConverter {
     this.camera = null;
     this.scene = null;
     this.raycaster = new THREE.Raycaster();
+    console.log("raycaster", this.raycaster.near);
   }
 
   init(camera, scene) {
@@ -93,7 +94,10 @@ class CoordinateConverter {
       z: 0
     };
 
-    this.raycaster.setFromCamera({ x: pos.xR, y: pos.yR }, this.camera);
+    this.raycaster.setFromCamera(
+      { x: pos.xR, y: pos.yR },
+      this.camera.getCamera()
+    );
     var intersects = this.raycaster.intersectObjects(this.scene.children, true);
 
     intersects.forEach(function(intersected) {
@@ -107,12 +111,19 @@ class CoordinateConverter {
     return result;
   }
 
-  getEntitiesIntersected(pos) {
+  getEntitiesIntersected(pos, debug = false) {
     var result = [];
 
-    this.raycaster.setFromCamera({ x: pos.xR, y: pos.yR }, this.camera);
+    this.raycaster.setFromCamera(
+      { x: pos.xR, y: pos.yR },
+      this.camera.getCamera()
+    );
     var intersects = this.raycaster.intersectObjects(this.scene.children, true);
 
+    if (debug) {
+      console.log(pos);
+      console.log(intersects);
+    }
     intersects.forEach(function(intersected) {
       if (intersected.object.name !== "hexgrid") {
         var icon = getShipIcon(intersected.object);
@@ -129,7 +140,7 @@ class CoordinateConverter {
     vector.set(pos.x, pos.y, pos.z || 0);
 
     // map to normalized device coordinate (NDC) space
-    vector.project(this.camera);
+    vector.project(this.camera.getCamera());
 
     // map to 2D screen space
     vector.x = Math.round(((vector.x + 1) * this.width) / 2);

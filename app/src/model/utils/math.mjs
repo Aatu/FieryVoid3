@@ -239,6 +239,23 @@ const hexFacingToAngle = d => {
   }
 };
 
+const angleToHexFacing = d => {
+  switch (d) {
+    case 0:
+      return 0;
+    case 60:
+      return 1;
+    case 120:
+      return 2;
+    case 180:
+      return 3;
+    case 240:
+      return 4;
+    default:
+      return 5;
+  }
+};
+
 export {
   distance,
   distance3d,
@@ -257,5 +274,6 @@ export {
   radianToDegree,
   degreeToRadian,
   getCompassHeadingOfPoint,
-  hexFacingToAngle
+  hexFacingToAngle,
+  angleToHexFacing
 };

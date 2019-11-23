@@ -6,6 +6,7 @@ import { ParticleEmitterContainer } from "./animation/particle";
 import LineSprite from "./renderer/sprite/LineSprite";
 import Vector from "../../../model/utils/Vector.mjs";
 import { loadObject } from "./utils/objectLoader";
+import GameCamera from "./GameCamera";
 
 window.THREE = THREE;
 
@@ -46,18 +47,11 @@ class GameScene {
     this.width = width;
     this.height = height;
 
-    this.camera = new THREE.OrthographicCamera(
-      (this.zoom * this.width) / -2,
-      (this.zoom * this.width) / 2,
-      (this.zoom * this.height) / 2,
-      (this.zoom * this.height) / -2,
-      -40000,
-      30000
-    );
-
-    this.camera.position.set(0, this.cameraAngle, 500);
-    this.camera.lookAt(0, 0, 0);
-    this.setCameraAngle(-250);
+    this.camera = new GameCamera(this.zoom, this.width, this.height, 10000);
+    //this.camera.position.set(0, -this.cameraAngle, 500);
+    //this.camera.position.set(0, 0, 500);
+    //this.camera.lookAt(0, this.cameraAngle, 0);
+    //this.setCameraAngle(-500);
 
     this.coordinateConverter.init(this.camera, this.scene);
     this.phaseDirector.init(this.scene, this.particleEmitterContainer);
@@ -127,6 +121,7 @@ class GameScene {
 
     this.scene.add(new THREE.AmbientLight(0x010101, 0.1));
     this.renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+    this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setSize(this.width, this.height);
     this.renderer.autoClear = false;
     this.renderer.context.getExtension("OES_standard_derivatives");
@@ -143,34 +138,6 @@ class GameScene {
     this.render();
   }
 
-  setCameraAngleRelative(newAngle) {
-    this.setCameraAngle(this.cameraAngle + newAngle);
-  }
-
-  setCameraAngle(newAngle) {
-    if (newAngle > 0) {
-      newAngle = 0;
-    }
-
-    if (newAngle < -500) {
-      newAngle = -500;
-    }
-
-    var currentLookat = new THREE.Vector3(
-      this.camera.position.x,
-      this.camera.position.y - this.cameraAngle,
-      this.camera.position.z - 500
-    );
-    var delta = this.cameraAngle - newAngle;
-    this.camera.position.set(
-      this.camera.position.x,
-      this.camera.position.y - delta,
-      this.camera.position.z
-    );
-    this.camera.lookAt(currentLookat);
-    this.cameraAngle = newAngle;
-  }
-
   scroll(delta) {
     this.moveCamera({
       x: delta.x * (1 / this.zoom),
@@ -183,14 +150,18 @@ class GameScene {
       return;
     }
 
-    this.camera.position.x -= position.x * this.zoom * this.zoom;
-    this.camera.position.y += position.y * this.zoom * this.zoom;
+    this.camera.addPosition({
+      x: position.x * this.zoom * this.zoom * -1,
+      y: position.y * this.zoom * this.zoom
+    });
+    //this.camera.position.x -= position.x * this.zoom * this.zoom;
+    //this.camera.position.y += position.y * this.zoom * this.zoom;
     this.starFieldCamera.position.x -=
       position.x * this.zoom * this.zoom * 0.05;
     this.starFieldCamera.position.y +=
       position.y * this.zoom * this.zoom * 0.05;
 
-    this.phaseDirector.relayEvent("ScrollEvent", this.camera.position);
+    this.phaseDirector.relayEvent("ScrollEvent", this.camera.getPosition());
   }
 
   moveCameraTo(position) {
@@ -198,12 +169,14 @@ class GameScene {
       return;
     }
 
-    this.camera.position.x = position.x;
-    this.camera.position.y = position.y;
+    this.camera.setPosition({ x: position.x, y: position.y });
+
+    //this.camera.position.x = position.x;
+    //this.camera.position.y = position.y;
     this.starFieldCamera.position.x = position.x * 0.1;
     this.starFieldCamera.position.y = position.y * 0.1;
 
-    this.phaseDirector.relayEvent("ScrollEvent", this.camera.position);
+    this.phaseDirector.relayEvent("ScrollEvent", this.camera.getPosition());
   }
 
   zoomCamera(zoom, animationReady) {
@@ -213,12 +186,16 @@ class GameScene {
       return;
     }
 
+    this.camera.zoomCamera(this.zoom, this.width, this.height);
+
+    /*
     this.camera.left = (this.zoom * this.width) / -2;
     this.camera.right = (this.zoom * this.width) / 2;
     this.camera.top = (this.zoom * this.height) / 2;
     this.camera.bottom = (this.zoom * this.height) / -2;
 
     this.camera.updateProjectionMatrix();
+    */
 
     this.coordinateConverter.onZoom(this.zoom);
     this.hexGridRenderer.onZoom(this.zoom);
@@ -242,7 +219,7 @@ class GameScene {
     this.renderer.clear();
     this.renderer.render(this.starFieldScene, this.starFieldCamera);
     this.renderer.clearDepth();
-    this.renderer.render(this.scene, this.camera);
+    this.renderer.render(this.scene, this.camera.getCamera());
 
     this.animateZoom();
     this.starField.render();

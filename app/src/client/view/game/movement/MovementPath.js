@@ -112,7 +112,8 @@ const createMovementLine = (
       opacity,
       type: "dashed-arrow",
       textureSize: 30,
-      pulseAmount: 1
+      pulseAmount: 1,
+      roundTestureRepeate: true
     }
   );
 

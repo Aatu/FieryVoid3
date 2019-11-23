@@ -63,7 +63,7 @@ class Game {
 
     const gamePos = this.coordinateConverter.fromViewPortToGame(position);
     const entity = this.coordinateConverter
-      .getEntitiesIntersected(position)
+      .getEntitiesIntersected(position, true)
       .shift();
     const hexPos = this.coordinateConverter.fromGameToHex(gamePos, true);
 

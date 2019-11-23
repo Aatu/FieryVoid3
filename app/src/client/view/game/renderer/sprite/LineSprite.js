@@ -91,9 +91,15 @@ class LineSprite {
   async updateTextureSize(size) {
     this.args.textureSize = size;
     const distance = this.start.distanceTo(this.end);
-    this.material.uniforms.textureRepeat.value = this.args.textureSize
-      ? Math.round(distance / this.args.textureSize)
+    let testureRepeat = this.args.textureSize
+      ? distance / this.args.textureSize
       : 1;
+
+    if (this.args.roundTestureRepeate) {
+      testureRepeat = Math.round(testureRepeat);
+    }
+
+    this.material.uniforms.textureRepeat.value = testureRepeat;
   }
 
   async update(start, end, lineWidth = 1, force) {
@@ -115,10 +121,14 @@ class LineSprite {
       this.mesh.scale.setX(distance);
       const position = start.add(direction.multiplyScalar(0.5));
       this.mesh.position.set(position.x, position.y, position.z);
-      this.material.uniforms.textureRepeat.value = this.args.textureSize
-        ? Math.round(distance / this.args.textureSize)
+      let testureRepeat = this.args.textureSize
+        ? distance / this.args.textureSize
         : 1;
 
+      if (this.args.roundTestureRepeate) {
+        testureRepeat = Math.round(testureRepeat);
+      }
+      this.material.uniforms.textureRepeat.value = testureRepeat;
       this.material.needsUpdate = true;
     }
 

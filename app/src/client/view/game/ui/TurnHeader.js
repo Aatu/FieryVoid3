@@ -6,16 +6,17 @@ import {
   icons,
   SectionRight,
   Section,
-  colors
+  colors,
+  TooltipButton
 } from "../../../styled";
 import * as gamePhases from "../../../../model/game/gamePhases";
 
-const TurnHeaderContainer = styled(ContainerRoundedRightBottom)`
+const TurnHeaderContainer = styled.div`
   position: absolute;
   top: -1px;
   left: -1px;
-  width: 300px;
   padding-right: 10px;
+  z-index: 3;
 `;
 
 const ReadySection = styled(SectionRight)`
@@ -49,13 +50,9 @@ class TurnHeader extends React.PureComponent {
           </Title>
           {!waiting && (
             <ReadySection>
-              <ReadyContainer ready={ready} onClick={this.onReady.bind(this)}>
-                <icons.CheckMark
-                  size={30}
-                  ready={ready}
-                  color={ready ? "#fff" : colors.border}
-                />
-              </ReadyContainer>
+              <TooltipButton onClick={this.onReady.bind(this)}>
+                <icons.CheckMark />
+              </TooltipButton>
             </ReadySection>
           )}
         </Section>
