@@ -39,7 +39,6 @@ const RelativeTooltipContainer = styled(Tooltip)`
 `;
 
 const TooltipValue = styled.span`
-  padding-left: 5px;
   color: ${colors.lightBlue};
 `;
 
@@ -78,6 +77,7 @@ export class RelativeTooltip extends React.Component {
 }
 
 const TooltipHeader = styled.div`
+  display: flex;
   text-transform: uppercase;
   border-bottom: 1px solid #aaaaaa;
   width: 100%;
@@ -87,6 +87,7 @@ const TooltipHeader = styled.div`
 `;
 
 const TooltipSubHeader = styled.div`
+  display: flex;
   border-bottom: 1px solid #aaaaaa;
   width: 100%;
   margin: 5px 0;
@@ -96,6 +97,7 @@ const TooltipSubHeader = styled.div`
 `;
 
 const TooltipValueHeader = styled.span`
+  padding-right: 5px;
   color: white;
 `;
 

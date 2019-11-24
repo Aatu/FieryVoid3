@@ -65,6 +65,11 @@ class GameShips {
 
     return this;
   }
+
+  setShipLoadouts() {
+    console.log("set loadouts?");
+    this.getShips().forEach(ship => ship.setShipLoadout());
+  }
 }
 
 export default GameShips;

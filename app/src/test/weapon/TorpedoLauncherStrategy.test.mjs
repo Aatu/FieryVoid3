@@ -29,8 +29,8 @@ import CargoBay from "../../model/unit/system/cargo/CargoBay.mjs";
 import Torpedo158MSV from "../../model/unit/system/weapon/ammunition/torpedo/Torpedo158MSV.mjs";
 import Torpedo158Nuclear from "../../model/unit/system/weapon/ammunition/torpedo/Torpedo158Nuclear.mjs";
 
-test("Torpedo launcher can change loaded torpedo", test => {
-  const ship = new Ship({ id: 1 });
+const createShip = (data = { id: 1 }) => {
+  const ship = new Ship(data);
   const torpedoLauncher = new TorpedoLauncherDual158({
     id: 2,
     hitpoints: 10,
@@ -50,13 +50,26 @@ test("Torpedo launcher can change loaded torpedo", test => {
     amount: 2
   });
 
-  const serverShip = new Ship(ship.serialize());
+  return ship;
+};
+
+test("Torpedo launcher can change loaded torpedo", test => {
+  const ship = createShip();
+  const torpedoLauncher = ship.systems.getSystemById(2);
+  const cargoBay = ship.systems.getSystemById(3);
+
+  const serverShip = createShip(ship.serialize());
+
+  test.is(torpedoLauncher.strategies[1].loadedTorpedo, null);
 
   test.true(
     cargoBay.callHandler("hasCargo", { cargo: new Torpedo158MSV(), amount: 10 })
   );
 
-  torpedoLauncher.strategies[1].loadAmmo(new Torpedo158MSV());
+  torpedoLauncher.callHandler("loadAmmo", {
+    ammo: new Torpedo158MSV(),
+    launcherIndex: 1
+  });
 
   test.true(
     cargoBay.callHandler("hasCargo", { cargo: new Torpedo158MSV(), amount: 9 })
@@ -65,5 +78,24 @@ test("Torpedo launcher can change loaded torpedo", test => {
     cargoBay.callHandler("hasCargo", { cargo: new Torpedo158MSV(), amount: 10 })
   );
 
-  test.fail("TODO: test receivePlayerSystemData");
+  serverShip.receivePlayerData(ship);
+  const serverShipCargoBay = serverShip.systems.getSystemById(3);
+  const serverTorpedoLauncher = serverShip.systems.getSystemById(2);
+
+  test.true(
+    serverShipCargoBay.callHandler("hasCargo", {
+      cargo: new Torpedo158MSV(),
+      amount: 9
+    })
+  );
+  test.false(
+    serverShipCargoBay.callHandler("hasCargo", {
+      cargo: new Torpedo158MSV(),
+      amount: 10
+    })
+  );
+
+  test.true(
+    serverTorpedoLauncher.strategies[1].loadedTorpedo instanceof Torpedo158MSV
+  );
 });

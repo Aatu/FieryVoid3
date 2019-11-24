@@ -427,13 +427,9 @@ class UIState {
   }
 
   unsubscribeFromSystemChange(callBack) {
-    console.log("unsibscribe");
-    console.log(this.systemChangeListeners.length);
     this.systemChangeListeners = this.systemChangeListeners.filter(
       listener => listener !== callBack
     );
-
-    console.log(this.systemChangeListeners.length);
   }
 }
 

@@ -36,9 +36,7 @@ class BuyShipsHandler {
 
     if (totalCost > slot.points) {
       throw new InvalidGameDataError(
-        `Ships cost ${totalCost} points, but slot has only ${
-          slot.points
-        } points`
+        `Ships cost ${totalCost} points, but slot has only ${slot.points} points`
       );
     }
 
@@ -132,6 +130,7 @@ class BuyShipsHandler {
     gameData.players.forEach(player => gameData.setPlayerActive(player));
     gameData.setStatus(gameStatuses.ACTIVE);
     gameData.setPhase(gamePhases.DEPLOYMENT);
+    gameData.ships.setShipLoadouts();
   }
 }
 

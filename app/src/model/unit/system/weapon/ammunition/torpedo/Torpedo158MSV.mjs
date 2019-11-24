@@ -1,8 +1,19 @@
 import Torpedo158 from "./Torpedo158.mjs";
 
 class Torpedo158MSV extends Torpedo158 {
-  constructor(args) {
-    super(args, []);
+  constructor() {
+    super({ deltaVelocityPerTurn: 48, turnsToLive: 6 });
+  }
+
+  getCargoInfo() {
+    const previousResponse = super.getCargoInfo();
+
+    return [
+      {
+        value: "A long range torpedo with Multiple Strike Vehicles."
+      },
+      ...previousResponse
+    ];
   }
 
   getDisplayName() {

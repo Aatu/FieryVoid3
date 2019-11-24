@@ -73,6 +73,7 @@ class Ship {
   }
 
   getShootingPosition() {
+    //TODO: I think this is unneccessary. We just need to change processing of weapon fire before generating end moves
     const lastMove = this.movement.getLastEndMoveOrSurrogate();
     if (!lastMove) {
       return null;
@@ -167,6 +168,12 @@ class Ship {
     this.destroyedThisTurn = false;
     return this;
   }
+
+  receivePlayerData(clientShip) {
+    this.systems.receivePlayerData(clientShip);
+  }
+
+  setShipLoadout() {}
 }
 
 export default Ship;

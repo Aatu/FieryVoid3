@@ -1,5 +1,11 @@
 import React from "react";
-import { RelativeTooltip, TooltipHeader } from "../../../../../../styled";
+import {
+  RelativeTooltip,
+  TooltipHeader,
+  TooltipEntry,
+  TooltipValueHeader,
+  TooltipValue
+} from "../../../../../../styled";
 import styled from "styled-components";
 
 const CargoTooltipContainer = styled(RelativeTooltip)`
@@ -13,9 +19,23 @@ class CargoTooltip extends React.Component {
     return (
       <CargoTooltipContainer element={element}>
         <TooltipHeader>{cargo.getDisplayName()}</TooltipHeader>
+        {cargo.getCargoInfo().map(getEntry)}
       </CargoTooltipContainer>
     );
   }
 }
+
+const getEntry = ({ header, value }, i) => {
+  if (value.replace) {
+    value = value.replace(/<br>/gm, "\n");
+  }
+
+  return (
+    <TooltipEntry key={`cargoTooltipEntry-${header}-${i}`}>
+      {header && <TooltipValueHeader>{header}: </TooltipValueHeader>}
+      {value && <TooltipValue>{value}</TooltipValue>}
+    </TooltipEntry>
+  );
+};
 
 export default CargoTooltip;

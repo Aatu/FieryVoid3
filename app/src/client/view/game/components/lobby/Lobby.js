@@ -14,6 +14,7 @@ const LobbyContainer = styled(PanelContainer)`
   max-height: calc(100vh - 40px);
   left: calc(50vw - 600px);
   right: calc(50vw - 600px);
+  z-index: 3;
 `;
 
 class Lobby extends Component {

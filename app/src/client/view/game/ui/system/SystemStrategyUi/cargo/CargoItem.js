@@ -7,6 +7,7 @@ const Container = styled.div`
   position: relative;
   margin: 0;
   padding: 0;
+  ${props => props.onClick && "cursor: pointer;"}
 `;
 
 class CargoItem extends React.Component {
@@ -32,13 +33,14 @@ class CargoItem extends React.Component {
   }
 
   render() {
-    const { cargo, amount, handleOnClick = () => {} } = this.props;
+    const { cargo, amount, handleOnClick = () => {}, ...rest } = this.props;
     const { mouseOveredCargo } = this.state;
     return (
       <Container
         onClick={handleOnClick}
         onMouseOver={this.onCargoMouseOver.bind(this)}
         onMouseOut={this.onCargoMouseOut.bind(this)}
+        {...rest}
       >
         {mouseOveredCargo && (
           <CargoTooltip element={mouseOveredCargo} cargo={cargo} />

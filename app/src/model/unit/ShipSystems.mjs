@@ -182,6 +182,15 @@ class ShipSystems {
     return this;
   }
 
+  receivePlayerData(clientShip) {
+    this.getSystems().forEach(system =>
+      system.callHandler("receivePlayerData", {
+        clientShip,
+        clientSystem: clientShip.systems.getSystemById(system.id)
+      })
+    );
+  }
+
   censorForUser(user, mine) {
     this.getSystems().forEach(system => {
       system.callHandler("censorForUser", { user, mine });

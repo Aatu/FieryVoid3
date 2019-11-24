@@ -39,13 +39,21 @@ class TorpedoLauncher extends React.PureComponent {
     uiState.unsubscribeFromSystemChange(this.systemChangedCallbackInstance);
   }
 
+  unloadAmmo() {
+    return () => {
+      const { ship, launcher, uiState, launcherIndex } = this.props;
+
+      launcher.unloadAmmo({ launcherIndex });
+      uiState.shipSystemStateChanged(ship, launcher.system);
+    };
+  }
+
   loadTorpedo(torpedo) {
     return () => {
-      const { ship, launcher, uiState } = this.props;
+      const { ship, launcher, uiState, launcherIndex } = this.props;
 
-      launcher.loadAmmo(torpedo);
+      launcher.loadAmmo({ ammo: torpedo, launcherIndex });
       uiState.shipSystemStateChanged(ship, launcher.system);
-      this.forceUpdate();
     };
   }
 
@@ -92,9 +100,7 @@ class TorpedoLauncher extends React.PureComponent {
           ))}
           {loadedTorpedo && (
             <CargoItem
-              handleOnClick={this.loadTorpedo(new NoAmmunitionLoaded()).bind(
-                this
-              )}
+              handleOnClick={this.unloadAmmo().bind(this)}
               key={`torpedo-launcer-unload`}
               cargo={new NoAmmunitionLoaded()}
               amount={null}

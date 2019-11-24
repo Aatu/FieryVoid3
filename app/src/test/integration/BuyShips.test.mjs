@@ -7,6 +7,8 @@ import TestShip from "../../model/unit/ships/test/TestShip";
 import hexagon from "../../model/hexagon";
 import MovementOrder from "../../model/movement/MovementOrder";
 import movementTypes from "../../model/movement/movementTypes";
+import Impetous from "../../model/unit/ships/federation/Impetous.mjs";
+import Torpedo158MSV from "../../model/unit/system/weapon/ammunition/torpedo/Torpedo158MSV.mjs";
 
 const compareMovements = (test, moves1, moves2) => {
   test.deepEqual(
@@ -298,4 +300,54 @@ test.serial("Try to buy ships for wrong slot", async test => {
     )
   );
   test.is(error.message, "Slot taken by other user");
+});
+
+test.serial("Ship loadout is set", async test => {
+  const db = new TestDatabaseConnection("buy_ships");
+  await db.resetDatabase();
+  const controller = new GameController(db);
+
+  const user = new User(1, "Nönmän");
+  const user2 = new User(2, "Bädmän");
+
+  const gameData = await constructLobbyGameWithSlotsTaken(
+    user,
+    user2,
+    controller
+  );
+  const slot1 = gameData.slots.getSlots()[0];
+  const slot2 = gameData.slots.getSlots()[1];
+
+  await controller.buyShips(
+    gameData.id,
+    slot1.id,
+    [new Impetous({ name: "UCS Achilles" }).serialize()],
+    user
+  );
+
+  await controller.buyShips(
+    gameData.id,
+    slot2.id,
+    [new TestShip({ name: "GEPS Biliyaz" }).serialize()],
+    user2
+  );
+
+  const newGameData = await controller.getGameData(gameData.id);
+
+  const ships = newGameData.ships.getShips();
+  const achilles = ships.find(ship => ship.name === "UCS Achilles");
+  const cargoBay = achilles.systems.getSystemById(204);
+
+  test.true(
+    cargoBay.callHandler("hasCargo", {
+      cargo: new Torpedo158MSV(),
+      amount: 10
+    })
+  );
+  test.false(
+    cargoBay.callHandler("hasCargo", {
+      cargo: new Torpedo158MSV(),
+      amount: 11
+    })
+  );
 });

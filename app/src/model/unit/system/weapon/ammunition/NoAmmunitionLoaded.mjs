@@ -1,4 +1,6 @@
-class NoAmmunitionLoaded {
+import CargoEntity from "../../cargo/CargoEntity.mjs";
+
+class NoAmmunitionLoaded extends CargoEntity {
   getDisplayName() {
     return "NO AMMUNITION LOADED";
   }

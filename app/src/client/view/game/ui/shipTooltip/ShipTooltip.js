@@ -9,9 +9,11 @@ import {
   TooltipEntry,
   colors
 } from "../../../../styled";
+import TorpedoAttack from "./TorpedoAttack";
 
 const InfoHeader = styled(TooltipHeader)`
-  font-size: 12px;
+  display: flex;
+  justify-content: space-between;
 `;
 
 const ShipTooltipContainer = styled(Tooltip)`
@@ -33,11 +35,44 @@ export const Header = styled.span`
   color: white;
 `;
 
-const InfoValue = styled.span`
-  color: ${colors.lightBlue};
-`;
+export const TOOLTIP_TAB_TORPEDO_ATTACK = "toolti_tab_torpedo_attack";
 
 class ShipTooltip extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { tooltipTab: null };
+  }
+
+  selectTooltipTab(name) {
+    console.log("set tab", name);
+    this.setState({ tooltipTab: name });
+  }
+
+  getMenu() {
+    const { ui, shipTooltipMenuProvider } = this.props;
+
+    const { tooltipTab } = this.state;
+
+    if (!tooltipTab) {
+      const Menu =
+        ui && shipTooltipMenuProvider ? shipTooltipMenuProvider() : null;
+      return Menu;
+    }
+
+    return null;
+  }
+
+  getTabHeader() {
+    const { tooltipTab } = this.state;
+
+    switch (tooltipTab) {
+      case TOOLTIP_TAB_TORPEDO_ATTACK:
+        return "Torpedo attack";
+      default:
+        return "Ship details";
+    }
+  }
+
   render() {
     const {
       ship,
@@ -48,8 +83,9 @@ class ShipTooltip extends React.Component {
       ...rest
     } = this.props;
 
-    const Menu =
-      ui && shipTooltipMenuProvider ? shipTooltipMenuProvider() : null;
+    const { tooltipTab } = this.state;
+
+    const Menu = this.getMenu();
 
     return (
       <GamePositionComponent
@@ -58,11 +94,28 @@ class ShipTooltip extends React.Component {
         marginTop={20}
         marginLeft={-150}
       >
-        <ShipTooltipContainer interactable={Boolean(Menu)}>
-          <InfoHeader>{ship.name}</InfoHeader>
-          {Menu && <Menu uiState={uiState} ship={ship} {...rest} />}
-          <WeaponTargetingList uiState={uiState} ship={ship} {...rest} />
-          <ShipWindow ship={ship} uiState={uiState} {...rest} />
+        <ShipTooltipContainer interactable={Boolean(Menu) || tooltipTab}>
+          <InfoHeader>
+            <div>{ship.name}</div> <div>{this.getTabHeader()}</div>
+          </InfoHeader>
+          {Menu && (
+            <Menu
+              uiState={uiState}
+              ship={ship}
+              selectTooltipTab={this.selectTooltipTab.bind(this)}
+              {...rest}
+            />
+          )}
+          {!tooltipTab && (
+            <>
+              <WeaponTargetingList uiState={uiState} ship={ship} {...rest} />
+              <ShipWindow ship={ship} uiState={uiState} {...rest} />
+            </>
+          )}
+
+          {tooltipTab === TOOLTIP_TAB_TORPEDO_ATTACK && (
+            <TorpedoAttack ship={ship} uiState={uiState} {...rest} />
+          )}
         </ShipTooltipContainer>
       </GamePositionComponent>
     );

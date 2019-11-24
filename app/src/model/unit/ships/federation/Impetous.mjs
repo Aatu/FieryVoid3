@@ -57,7 +57,7 @@ class Impetous extends Ship {
 
       new systems.TorpedoLauncherDual158({ id: 202, hitpoints: 20, armor: 6 }),
       new systems.TorpedoLauncherDual158({ id: 203, hitpoints: 20, armor: 6 }),
-      new systems.CargoBay({ id: 204, hitpoints: 20, armor: 4 }, 50),
+      new systems.CargoBay({ id: 204, hitpoints: 20, armor: 4 }, 500),
       new systems.Structure({ id: 200, hitpoints: 90, armor: 5 })
     ]);
 
@@ -94,6 +94,41 @@ class Impetous extends Ship {
 
       new systems.Thruster({ id: 504, hitpoints: 10, armor: 3 }, 5, [4, 5])
     ]);
+  }
+
+  setShipLoadout() {
+    super.setShipLoadout();
+    const cargoBay = this.systems.getSystemById(204);
+
+    console.log("set loadout");
+
+    cargoBay.callHandler("addCargo", {
+      cargo: new Torpedo158MSV(),
+      amount: 14
+    });
+
+    cargoBay.callHandler("addCargo", {
+      cargo: new Torpedo158Nuclear(),
+      amount: 2
+    });
+
+    this.systems.getSystemById(202).callHandler("loadAmmoInstant", {
+      ammo: new Torpedo158MSV(),
+      launcherIndex: 1
+    });
+    this.systems.getSystemById(202).callHandler("loadAmmoInstant", {
+      ammo: new Torpedo158MSV(),
+      launcherIndex: 2
+    });
+
+    this.systems.getSystemById(203).callHandler("loadAmmoInstant", {
+      ammo: new Torpedo158MSV(),
+      launcherIndex: 1
+    });
+    this.systems.getSystemById(203).callHandler("loadAmmoInstant", {
+      ammo: new Torpedo158MSV(),
+      launcherIndex: 2
+    });
   }
 }
 
