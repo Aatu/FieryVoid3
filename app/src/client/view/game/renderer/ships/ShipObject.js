@@ -73,6 +73,8 @@ class ShipObject {
 
     this.shipObject.traverse(child => {
       child.userData = { icon: this };
+      child.castShadow = true;
+      child.receiveShadow = true;
     });
 
     object.addTo(this.mesh);

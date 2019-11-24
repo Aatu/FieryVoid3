@@ -48,10 +48,6 @@ class GameScene {
     this.height = height;
 
     this.camera = new GameCamera(this.zoom, this.width, this.height, 10000);
-    //this.camera.position.set(0, -this.cameraAngle, 500);
-    //this.camera.position.set(0, 0, 500);
-    //this.camera.lookAt(0, this.cameraAngle, 0);
-    //this.setCameraAngle(-500);
 
     this.coordinateConverter.init(this.camera, this.scene);
     this.phaseDirector.init(this.scene, this.particleEmitterContainer);
@@ -67,24 +63,28 @@ class GameScene {
     );
 
     this.starFieldCamera.position.set(0, 0, 500);
-    this.starFieldCamera.lookAt(0, 0, 0);
+    this.starFieldCamera.lookAt(0, 0, 100);
 
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 1.0);
-    directionalLight.position.set(0, 1, 0).normalize();
-    directionalLight.castShadow = true;
+    this.light = new THREE.PointLight(0xffffff, 1.0, 0);
+    this.light.position.set(0, 0, 0);
+    this.scene.add(this.light);
+
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.005);
+    directionalLight.position.set(0, 0, 1).normalize();
     this.scene.add(directionalLight);
 
-    const directionalLight3 = new THREE.DirectionalLight(0xffffff, 1.0);
+    /*
+    const directionalLight3 = new THREE.DirectionalLight(0xffffff, 0.8);
     directionalLight3.position.set(0, 1, 1).normalize();
     directionalLight3.castShadow = true;
     //this.scene.add(directionalLight3);
-    //this.directionalLight3 = directionalLight3;
+    this.directionalLight3 = directionalLight3;
 
     //const directionalLight4 = new THREE.DirectionalLight(0x609dc1, 0.5);
     const directionalLight4 = new THREE.DirectionalLight(0xfff3a6, 0.02);
     directionalLight4.position.set(0, -1, 1);
-    this.scene.add(directionalLight4);
-
+    //this.scene.add(directionalLight4);
+*/
     /*
     const line = new Line(
       this.scene,
@@ -119,13 +119,14 @@ class GameScene {
     this.scene.add(helper);
     */
 
-    this.scene.add(new THREE.AmbientLight(0x010101, 0.1));
+    //this.scene.add(new THREE.AmbientLight(0x101010));
     this.renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setSize(this.width, this.height);
     this.renderer.autoClear = false;
     this.renderer.context.getExtension("OES_standard_derivatives");
-    this.renderer.shadowMapEnabled = true;
+    this.renderer.shadowMap.enabled = true;
+    this.renderer.shadowMap.type = THREE.PCFShadowMap;
     this.renderer.gammaOutput = true;
     this.renderer.gammaFactor = 2.2;
 

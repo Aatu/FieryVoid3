@@ -1,5 +1,6 @@
 import * as React from "react";
 import styled, { css } from "styled-components";
+import { colors } from "./index";
 
 class Component extends React.Component {
   render() {
@@ -35,6 +36,11 @@ const RelativeTooltipContainer = styled(Tooltip)`
     }, "")}
   text-align: left;
   filter: brightness(1);
+`;
+
+const TooltipValue = styled.span`
+  padding-left: 5px;
+  color: ${colors.lightBlue};
 `;
 
 export class RelativeTooltip extends React.Component {
@@ -73,26 +79,50 @@ export class RelativeTooltip extends React.Component {
 
 const TooltipHeader = styled.div`
   text-transform: uppercase;
-  font-size: 16px;
   border-bottom: 1px solid #aaaaaa;
   width: 100%;
   margin: 5px 0;
   font-weight: bold;
+  font-size: 12px;
+`;
+
+const TooltipSubHeader = styled.div`
+  border-bottom: 1px solid #aaaaaa;
+  width: 100%;
+  margin: 5px 0;
+  font-weight: bold;
+  font-size: 12px;
+  color: ${colors.lightBlue};
+`;
+
+const TooltipValueHeader = styled.span`
+  color: white;
 `;
 
 const TooltipEntry = styled.div`
-    color: ${props => {
-      if (props.type === "good") {
-        return "#6fc126;";
-      } else if (props.type === "bad") {
-        return "#ff7b3f;";
-      } else {
-        return "white;";
-      }
-    }}
-    font-weight: ${props => (props.important ? "bold" : "inherit")};
-    font-size: ${props => (props.important ? "14px" : "12px")};
-    margin-top: ${props => (props.space ? "14px" : "0")};
+  display: flex;
+  align-items: center;
+  color: ${props => {
+    if (props.type === "good") {
+      return "#6fc126;";
+    } else if (props.type === "bad") {
+      return "#ff7b3f;";
+    } else {
+      return "white;";
+    }
+  }}
+  font-weight: ${props => (props.important ? "bold" : "inherit")};
+  font-size: ${props => (props.important ? "14px" : "11px")};
+  margin-top: ${props => (props.space ? "14px" : "0")};
+  text-align: left;
+  color: #5e85bc;
+  font-family: arial;
+`;
+
+const InlineTooltipEntry = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 `;
 
 const TooltipMenu = styled.div`
@@ -144,4 +174,14 @@ const TooltipButton = styled.button`
   }
 `;
 
-export { Tooltip, TooltipHeader, TooltipEntry, TooltipMenu, TooltipButton };
+export {
+  Tooltip,
+  TooltipHeader,
+  TooltipEntry,
+  TooltipMenu,
+  TooltipButton,
+  TooltipSubHeader,
+  TooltipValue,
+  TooltipValueHeader,
+  InlineTooltipEntry
+};

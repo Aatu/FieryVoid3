@@ -1,9 +1,10 @@
 import React from "react";
 import CargoList from "./cargo/CargoList";
+import TorpedoLauncher from "./torpedo/TorpedoLauncher";
 
 class SystemStrategyUi extends React.Component {
   render() {
-    const { uiState, system } = this.props;
+    const { ship, uiState, system } = this.props;
 
     return (
       <>
@@ -13,7 +14,21 @@ class SystemStrategyUi extends React.Component {
             switch (name) {
               case "CargoList":
                 return (
-                  <CargoList key={`cargo-item-${name}-index-${i}`} {...props} />
+                  <CargoList
+                    key={`cargo-item-${name}-index-${i}`}
+                    uiState={uiState}
+                    ship={ship}
+                    {...props}
+                  />
+                );
+              case "TorpedoLauncher":
+                return (
+                  <TorpedoLauncher
+                    key={`torpedo-launcher-${name}-index-${i}`}
+                    uiState={uiState}
+                    ship={ship}
+                    {...props}
+                  />
                 );
             }
           })}

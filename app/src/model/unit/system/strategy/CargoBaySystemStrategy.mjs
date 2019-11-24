@@ -54,6 +54,10 @@ class CargoBaySystemStrategy extends ShipSystemStrategy {
     );
   }
 
+  getCargoByParentClass(parentClass) {
+    return this.cargo.filter(cargo => cargo.object instanceof parentClass);
+  }
+
   hasCargo({ cargo, amount = 1 }) {
     const entry = this.getEntry(cargo);
 
@@ -64,7 +68,7 @@ class CargoBaySystemStrategy extends ShipSystemStrategy {
     return entry.amount >= amount;
   }
 
-  removeCargo({ cargo, amount }) {
+  removeCargo({ cargo, amount = 1 }) {
     const entry = this.getEntry(cargo);
 
     if (!entry || entry.amount < amount) {
@@ -80,15 +84,19 @@ class CargoBaySystemStrategy extends ShipSystemStrategy {
     }
   }
 
-  addCargo({ cargo, amount }) {
+  addCargo({ cargo, amount = 1 }) {
     let entry = this.getEntry(cargo);
 
-    entry = {
-      object: new cargoClasses[cargo.constructor.name](),
-      amount
-    };
+    if (entry) {
+      entry.amount += amount;
+    } else {
+      entry = {
+        object: new cargoClasses[cargo.constructor.name](),
+        amount
+      };
 
-    this.cargo.push(entry);
+      this.cargo.push(entry);
+    }
   }
 }
 

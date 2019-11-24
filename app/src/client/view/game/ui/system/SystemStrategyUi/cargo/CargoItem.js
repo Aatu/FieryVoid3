@@ -32,10 +32,11 @@ class CargoItem extends React.Component {
   }
 
   render() {
-    const { cargo, amount } = this.props;
+    const { cargo, amount, handleOnClick = () => {} } = this.props;
     const { mouseOveredCargo } = this.state;
     return (
       <Container
+        onClick={handleOnClick}
         onMouseOver={this.onCargoMouseOver.bind(this)}
         onMouseOut={this.onCargoMouseOut.bind(this)}
       >

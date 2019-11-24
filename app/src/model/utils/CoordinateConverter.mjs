@@ -25,7 +25,6 @@ class CoordinateConverter {
     this.camera = null;
     this.scene = null;
     this.raycaster = new THREE.Raycaster();
-    console.log("raycaster", this.raycaster.near);
   }
 
   init(camera, scene) {

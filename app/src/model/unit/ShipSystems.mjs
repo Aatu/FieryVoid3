@@ -79,6 +79,7 @@ class ShipSystems {
     this.systems[system.id] = system;
     this.systemsAsArray.push(system);
     section.addSystem(system);
+    system.addShipSystemsReference(this);
 
     return this;
   }
@@ -103,10 +104,9 @@ class ShipSystems {
 
   addAftSystem(systems) {
     systems = [].concat(systems);
-    systems.forEach(system => {
-      this.addSystem(system, this.sections.getAftSection());
-      system.addShipSystemsReference(this);
-    });
+    systems.forEach(system =>
+      this.addSystem(system, this.sections.getAftSection())
+    );
 
     return this;
   }

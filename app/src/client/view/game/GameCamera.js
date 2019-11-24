@@ -36,6 +36,14 @@ class GameCamera {
     return this.current.position;
   }
 
+  getLookAtPosition() {
+    return new THREE.Vector3(
+      this.ortho.position.x,
+      this.ortho.position.y - this.orthoCameraAngle,
+      this.ortho.position.z - this.z
+    );
+  }
+
   addPosition(position) {
     this.ortho.position.x += position.x;
     this.ortho.position.y += position.y;

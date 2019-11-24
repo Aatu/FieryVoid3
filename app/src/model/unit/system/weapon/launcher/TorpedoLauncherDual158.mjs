@@ -10,10 +10,8 @@ class TorpedoLauncherDual158 extends Weapon {
   constructor(args) {
     super(args, [
       new RequiresPowerSystemStrategy(1),
-      new LaunchTorpedoStrategy(3, [
-        new TorpedoLauncherStrategy(new Torpedo158Nuclear(), Torpedo158),
-        new TorpedoLauncherStrategy(new Torpedo158MSV(), Torpedo158)
-      ])
+      new TorpedoLauncherStrategy(1, null, Torpedo158, 3),
+      new TorpedoLauncherStrategy(2, null, Torpedo158, 3)
     ]);
   }
 

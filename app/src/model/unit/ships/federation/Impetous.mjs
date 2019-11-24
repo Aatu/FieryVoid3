@@ -48,21 +48,6 @@ class Impetous extends Ship {
       ])
     ]);
 
-    const cargoBay = new systems.CargoBay(
-      { id: 204, hitpoints: 20, armor: 4 },
-      50
-    );
-
-    cargoBay.callHandler("addCargo", {
-      cargo: new Torpedo158MSV(),
-      amount: 10
-    });
-
-    cargoBay.callHandler("addCargo", {
-      cargo: new Torpedo158Nuclear(),
-      amount: 2
-    });
-
     this.systems.addAftSystem([
       new systems.ManeuveringThruster(
         { id: 201, hitpoints: 10, armor: 3 },
@@ -72,7 +57,7 @@ class Impetous extends Ship {
 
       new systems.TorpedoLauncherDual158({ id: 202, hitpoints: 20, armor: 6 }),
       new systems.TorpedoLauncherDual158({ id: 203, hitpoints: 20, armor: 6 }),
-      cargoBay,
+      new systems.CargoBay({ id: 204, hitpoints: 20, armor: 4 }, 50),
       new systems.Structure({ id: 200, hitpoints: 90, armor: 5 })
     ]);
 

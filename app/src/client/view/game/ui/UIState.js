@@ -9,6 +9,8 @@ class UIState {
 
     this.renderListeners = [];
 
+    this.systemChangeListeners = [];
+
     this.state = {
       lobby: false,
       gameData: null,
@@ -339,6 +341,7 @@ class UIState {
 
   shipSystemStateChanged(ship, system) {
     this.customEvent("shipSystemStateChanged", { ship, system });
+    this.systemChangeListeners.forEach(callBack => callBack(ship, system));
   }
 
   showShipTooltip(icon, ui = false) {
@@ -417,6 +420,20 @@ class UIState {
     this.renderListeners = this.renderListeners.filter(
       listener => listener !== callBack
     );
+  }
+
+  subscribeToSystemChange(callBack) {
+    this.systemChangeListeners.push(callBack);
+  }
+
+  unsubscribeFromSystemChange(callBack) {
+    console.log("unsibscribe");
+    console.log(this.systemChangeListeners.length);
+    this.systemChangeListeners = this.systemChangeListeners.filter(
+      listener => listener !== callBack
+    );
+
+    console.log(this.systemChangeListeners.length);
   }
 }
 

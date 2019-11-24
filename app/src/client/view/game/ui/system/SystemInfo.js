@@ -6,35 +6,35 @@ import {
   TooltipHeader,
   TooltipEntry,
   colors,
-  RelativeTooltip
+  TooltipValue,
+  RelativeTooltip,
+  TooltipValueHeader
 } from "../../../../styled";
 import SystemStrategyUi from "./SystemStrategyUi";
-
-export const InfoHeader = styled(TooltipHeader)`
-  font-size: 12px;
-`;
 
 const SystemInfoTooltip = styled(RelativeTooltip)`
   width: ${props => (props.ship ? "300px" : "200px")};
   filter: brightness(1);
 `;
 
-export const Entry = styled(TooltipEntry)`
-  text-align: left;
-  color: #5e85bc;
-  font-family: arial;
-  font-size: 11px;
-`;
-
-export const Header = styled.span`
-  color: white;
-`;
-
-const InfoValue = styled.span`
-  color: ${colors.lightBlue};
-`;
-
 class SystemInfo extends React.Component {
+  systemChangedCallback(ship, system) {
+    if (ship.id === this.props.ship.id && system.id === this.props.system.id) {
+      this.forceUpdate();
+    }
+  }
+
+  componentDidMount() {
+    const { uiState } = this.props;
+    this.systemChangedCallbackInstance = this.systemChangedCallback.bind(this);
+    uiState.subscribeToSystemChange(this.systemChangedCallbackInstance);
+  }
+
+  componentWillUnmount() {
+    const { uiState } = this.props;
+    uiState.unsubscribeFromSystemChange(this.systemChangedCallbackInstance);
+  }
+
   render() {
     const {
       ship,
@@ -49,10 +49,10 @@ class SystemInfo extends React.Component {
 
     return (
       <SystemInfoTooltip element={element}>
-        <InfoHeader>{system.getDisplayName()}</InfoHeader>
+        <TooltipHeader>{system.getDisplayName()}</TooltipHeader>
         {Menu && <Menu uiState={uiState} ship={ship} system={system} />}
         {system.getSystemInfo(ship).map(getEntry)}
-        <SystemStrategyUi system={system} uiState={uiState} />
+        <SystemStrategyUi ship={ship} system={system} uiState={uiState} />
         {weaponTargeting && (
           <SystemInfoWeaponTargeting
             uiState={uiState}
@@ -73,10 +73,10 @@ const getEntry = ({ header, value }) => {
   }
 
   return (
-    <Entry key={header}>
-      <Header>{header}: </Header>
-      <InfoValue>{value}</InfoValue>
-    </Entry>
+    <TooltipEntry key={header}>
+      <TooltipValueHeader>{header}: </TooltipValueHeader>
+      <TooltipValue>{value}</TooltipValue>
+    </TooltipEntry>
   );
 };
 

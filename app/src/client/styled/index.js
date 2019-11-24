@@ -24,7 +24,11 @@ export {
   TooltipEntry,
   TooltipMenu,
   TooltipButton,
-  RelativeTooltip
+  RelativeTooltip,
+  TooltipSubHeader,
+  TooltipValue,
+  TooltipValueHeader,
+  InlineTooltipEntry
 } from "./Tooltip";
 export { Button } from "./Button";
 export { Link } from "./Link";

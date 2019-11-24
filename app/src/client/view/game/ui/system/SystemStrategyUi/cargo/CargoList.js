@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { InfoHeader } from "../../SystemInfo";
-import { IconAndLabel } from "../../../../../../styled";
+import { IconAndLabel, TooltipSubHeader } from "../../../../../../styled";
 import CargoItem from "./CargoItem";
 
 const CargoListContainer = styled.div`
@@ -41,7 +40,7 @@ class CargoList extends React.Component {
 
     return (
       <>
-        <InfoHeader>Current cargo</InfoHeader>
+        <TooltipSubHeader>Current cargo</TooltipSubHeader>
         <CargoListContainer>
           {list.map(({ cargo, amount }, i) => (
             <CargoItem key={`cargo-item-${i}`} cargo={cargo} amount={amount} />
