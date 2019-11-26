@@ -175,3 +175,37 @@ test.serial("Submit successfull fire order for both players", async test => {
 
   db.close();
 });
+
+test.serial("Submit successfull launch order", async test => {
+  const db = new TestDatabaseConnection("fire");
+  await db.resetDatabase();
+
+  const controller = new GameController(db);
+  const user = new User(1, "Nönmän");
+  const user2 = new User(2, "Bädmän");
+  let gameData = await constructDeployedGame(user, user2, controller);
+  await controller.commitTurn(gameData.id, gameData.serialize(), user2);
+
+  const shooter = gameData.ships
+    .getShips()
+    .find(ship => ship.name === "UCS Achilles");
+
+  const target = gameData.ships
+    .getShips()
+    .find(ship => ship.name === "GEPS Biliyaz");
+
+  const launchers = shooter.systems
+    .getSystemById(202)
+    .callHandler("getLoadedLaunchers", null, []);
+
+  launchers[0].setLaunchTarget(target.id);
+
+  await controller.commitTurn(gameData.id, gameData.serialize(), user);
+  await controller.commitTurn(gameData.id, gameData.serialize(), user2);
+  const newGameData = await controller.getGameData(gameData.id, user);
+
+  const torpedos = newGameData.torpedos.getTorpedoFlights();
+
+  test.true(torpedos.length === 1);
+  db.close();
+});

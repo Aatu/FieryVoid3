@@ -57,7 +57,12 @@ class TorpedoAttack extends React.Component {
   launcherClick(launcher) {
     return () => {
       const { ship } = this.props;
-      launcher.setLaunchTarget(ship);
+      if (launcher.launchTarget === null || launcher.launchTarget !== ship.id) {
+        launcher.setLaunchTarget(ship.id);
+      } else if (launcher.launchTarget && launcher.launchTarget === ship.id) {
+        launcher.setLaunchTarget(null);
+      }
+
       this.forceUpdate();
     };
   }
@@ -72,8 +77,6 @@ class TorpedoAttack extends React.Component {
     );
 
     const launchers = torpedoAttackService.getPossibleTorpedos();
-
-    console.log(launchers);
 
     return (
       <>

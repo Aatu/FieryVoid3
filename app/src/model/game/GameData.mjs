@@ -5,6 +5,7 @@ import GameTerrain from "./GameTerrain.mjs";
 import User from "../User.mjs";
 import * as gameStatuses from "./gameStatuses.mjs";
 import * as gamePhases from "./gamePhases.mjs";
+import GameTorpedos from "./GameTorpedos.mjs";
 
 class GameData {
   constructor(data) {
@@ -136,6 +137,7 @@ class GameData {
         ...this.slots.serialize(),
         terrain: this.terrain.serialize()
       },
+      torpedos: this.torpedos.serialize(),
       ships: this.ships.serialize(),
       activeShips: this.activeShips.serialize(),
       creatorId: this.creatorId,
@@ -153,6 +155,7 @@ class GameData {
     this.players = data.players
       ? data.players.map(player => new User().deserialize(player))
       : [];
+    this.torpedos = new GameTorpedos().deserialize(data.torpedos);
     this.activePlayerIds = gameData.activePlayerIds || [];
     this.slots = new GameSlots(this).deserialize(gameData);
     this.ships = new GameShips(this).deserialize(data.ships);

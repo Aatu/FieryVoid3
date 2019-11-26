@@ -1,6 +1,7 @@
 import ShipSystemStrategy from "../ShipSystemStrategy.mjs";
 import { cargoClasses } from "../../cargo/cargo.mjs";
 import NoAmmunitionLoaded from "../../weapon/ammunition/NoAmmunitionLoaded.mjs";
+import TorpedoFlight from "../../../TorpedoFlight.mjs";
 
 class TorpedoLauncherStrategy extends ShipSystemStrategy {
   constructor(launcherIndex, loadedTorpedo, torpedoClass, loadingTime) {
@@ -11,6 +12,7 @@ class TorpedoLauncherStrategy extends ShipSystemStrategy {
     this.nextTorpedoClass = null;
     this.torpedoClass = torpedoClass;
     this.turnsLoaded = loadingTime;
+
     this.changeAmmo = null;
     this.previousTorpedo = null;
     this.launchTarget = null;
@@ -66,8 +68,16 @@ class TorpedoLauncherStrategy extends ShipSystemStrategy {
     return this;
   }
 
-  loadAmmoInstant(payload) {
-    this.loadAmmo(payload);
+  loadAmmoInstant({ ammo, launcherIndex }) {
+    if (
+      launcherIndex !== this.launcherIndex ||
+      (this.loadedTorpedo &&
+        this.loadedTorpedo.constructor.name === ammo.constructor.name)
+    ) {
+      return;
+    }
+
+    this.loadedTorpedo = ammo;
     this.turnsLoaded = this.loadingTime;
   }
 
@@ -79,24 +89,35 @@ class TorpedoLauncherStrategy extends ShipSystemStrategy {
     //TODO: unload ammo
   }
 
-  setLaunchTarget(ship) {
+  setLaunchTarget(shipId) {
     if (this.turnsLoaded < this.loadingTime || !this.loadedTorpedo) {
       return;
     }
 
-    this.launchTarget = ship.id;
+    this.launchTarget = shipId;
   }
 
-  launchTorpedo() {
-    const payload = {
-      targetId: this.launchTarget,
-      ammo: this.loadedTorpedo
-    };
+  launchTorpedo(payload, previousResponse) {
+    if (
+      this.turnsLoaded < this.loadingTime ||
+      !this.loadedTorpedo ||
+      !this.launchTarget
+    ) {
+      return previousResponse;
+    }
+
+    const result = new TorpedoFlight(
+      this.loadedTorpedo,
+      this.launchTarget,
+      this.system.shipSystems.ship.id,
+      this.system.id,
+      this.launcherIndex
+    );
 
     this.loadedTorpedo = null;
     this.turnsLoaded = 0;
 
-    return payload;
+    return [...previousResponse, result];
   }
 
   loadAmmo({ ammo, launcherIndex }) {
@@ -175,21 +196,25 @@ class TorpedoLauncherStrategy extends ShipSystemStrategy {
       return;
     }
 
-    const serverStrategy = getThisStrategy(clientSystem, this.launcherIndex);
-    const changeAmmo = serverStrategy.changeAmmo;
+    if (this.system.isDisabled()) {
+      return;
+    }
+
+    const clientStrategy = getThisStrategy(clientSystem, this.launcherIndex);
+    const changeAmmo = clientStrategy.changeAmmo;
 
     if (changeAmmo) {
       this.receiveAmmoChange(changeAmmo);
     }
 
-    if (serverStrategy.launchTarget) {
+    if (clientStrategy.launchTarget) {
       if (this.turnsLoaded < this.loadingTime || !this.loadedTorpedo) {
         throw new Error(
           `Trying to set launch target, but weapon is not loaded`
         );
       }
 
-      this.launchTarget = serverStrategy.launchTarget;
+      this.launchTarget = clientStrategy.launchTarget;
     }
   }
 
@@ -230,6 +255,9 @@ class TorpedoLauncherStrategy extends ShipSystemStrategy {
     }
 
     this.turnsLoaded++;
+    this.changeAmmo = null;
+    this.previousTorpedo = null;
+    this.launchTarget = null;
   }
 }
 

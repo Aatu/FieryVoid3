@@ -3,6 +3,9 @@ import ElectronicWarfareHandler from "./ElectronicWarfareHandler.mjs";
 import WeaponHandler from "./WeaponHandler.mjs";
 import PowerHandler from "./PowerHandler.mjs";
 import { UnauthorizedError, InvalidGameDataError } from "../errors/index.mjs";
+import SystemDataHandler from "./SystemDataHandler.mjs";
+import MoveTorpedosHandler from "./MoveTorpedosHandler.mjs";
+import LaunchHandler from "./LaunchHandler.mjs";
 
 class GameHandler {
   constructor() {
@@ -10,6 +13,9 @@ class GameHandler {
     this.electronicWarfareHandler = new ElectronicWarfareHandler();
     this.weaponHandler = new WeaponHandler();
     this.powerHandler = new PowerHandler();
+    this.systemDataHandler = new SystemDataHandler();
+    this.launchHandler = new LaunchHandler();
+    this.moveTorpedosHandler = new MoveTorpedosHandler();
   }
 
   submit(serverGameData, clientGameData, user) {
@@ -22,6 +28,13 @@ class GameHandler {
     if (activeShips.length === 0) {
       throw new InvalidGameDataError("Current user has no active ships");
     }
+
+    this.systemDataHandler.receiveSystemData(
+      serverGameData,
+      clientGameData,
+      activeShips,
+      user
+    );
 
     this.movementHandler.receiveMoves(
       serverGameData,
@@ -71,8 +84,10 @@ class GameHandler {
       return;
     }
 
+    this.launchHandler.advance(gameData);
     this.weaponHandler.advance(gameData);
     this.movementHandler.advance(gameData);
+    this.moveTorpedosHandler.advance(gameData);
     this.electronicWarfareHandler.advance(gameData);
     this.powerHandler.advance(gameData);
 

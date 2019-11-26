@@ -72,8 +72,17 @@ class Ship {
     return lastMove.getPosition();
   }
 
+  getVelocity() {
+    const lastMove = this.movement.getLastMove();
+    if (!lastMove) {
+      return null;
+    }
+
+    return lastMove.getPosition();
+  }
+
   getShootingPosition() {
-    //TODO: I think this is unneccessary. We just need to change processing of weapon fire before generating end moves
+    //This is required, because even though we don't have new end move, we might have bunch of other moves
     const lastMove = this.movement.getLastEndMoveOrSurrogate();
     if (!lastMove) {
       return null;

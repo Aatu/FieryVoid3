@@ -64,6 +64,10 @@ class Vector {
     return new Vector(helperA.x, helperA.y, helperA.z);
   }
 
+  subtract(vector) {
+    return this.sub(vector);
+  }
+
   sub(vector) {
     vector = new Vector(vector);
     helperA.set(this.x, this.y, this.z);

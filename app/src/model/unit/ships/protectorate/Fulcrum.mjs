@@ -9,7 +9,7 @@ class Fulcrum extends Ship {
     this.rollcost = 4;
     this.pivotcost = 1;
     this.evasioncost = 3;
-    this.hexSizes = [new Offset(0, 0)];
+    this.hexSizes = [new Offset(1, 0), new Offset(0, 0), new Offset(-1, 0)];
 
     this.description = `
        Fulcrum was ordered to fill the role of a fleet destroyer. A ship that packs enough of a punch in 

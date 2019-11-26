@@ -5,7 +5,12 @@ import Offset from "../../../hexagon/Offset.mjs";
 class Caliope extends Ship {
   setShipProperties() {
     this.shipTypeName = "OuterLight Industries Caliope OI-E1 cruiser";
-    this.hexSizes = [new Offset(0, 0), new Offset(-1, 0)];
+    this.hexSizes = [
+      new Offset(2, 0),
+      new Offset(1, 0),
+      new Offset(0, 0),
+      new Offset(-1, 0)
+    ];
     this.accelcost = 3;
     this.rollcost = 3;
     this.pivotcost = 3;

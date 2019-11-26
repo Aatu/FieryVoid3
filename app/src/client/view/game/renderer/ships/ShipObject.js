@@ -341,6 +341,10 @@ class ShipObject {
         }
       });
 
+      if (!slot) {
+        return;
+      }
+
       const newEntity = entity.clone().setId(id);
       newEntity.object.position.copy(slot.position);
       newEntity.object.rotation.copy(slot.rotation);

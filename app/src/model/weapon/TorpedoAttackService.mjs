@@ -3,8 +3,6 @@ class TorpedoAttackService {
     this.services = services;
     this.target = target;
     this.gameData = gameData;
-
-    console.log(services, gameData, target);
   }
 
   getPossibleTorpedos() {

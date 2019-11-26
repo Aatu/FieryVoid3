@@ -1,18 +1,42 @@
-import Flight from "./Flight.mjs";
+import Vector from "../utils/Vector.mjs";
+import { cargoClasses } from "./system/cargo/cargo.mjs";
 
-/*
-TorpedoFlight is a flight that is composed of torpedoes.
+class TorpedoFlight {
+  constructor(torpedo, targetId, shooterId, weaponId, launcherIndex) {
+    this.torpedo = torpedo;
+    this.targetId = targetId;
+    this.shooterId = shooterId;
+    this.weaponId = weaponId;
+    this.launcherIndex = launcherIndex;
+    this.position = new Vector();
+    this.velocity = new Vector();
+  }
 
-Torpedoes are automatically controlled flights that have a set target.
-They will try to enter in the same hex as the target and if succesfull will detonate in fire resolution
+  setPosition(position) {
+    this.position = position;
+  }
 
-Torpedo flight will have a total amount of thrust as well as how much they produce per turn.
-If they run out of total thrust produced, they will self destruct.
+  setVelocity(velocity) {
+    this.velocity = velocity;
+  }
 
-Missed torpedos will keep chasing the target
+  serialize() {
+    return {
+      torpedo: this.torpedo.constructor.name,
+      targetId: this.targetId,
+      position: this.position,
+      velocity: this.velocity
+    };
+  }
 
-Torpedos will impact from random direction
-*/
-class TorpedoFlight extends Flight {}
+  deserialize(data) {
+    this.torpedo = new cargoClasses[data.torpedo]();
+    this.targetId = data.targetId;
+    this.position = new Vector(data.position);
+    this.velocity = new Vector(data.velocity);
+
+    return this;
+  }
+}
 
 export default TorpedoFlight;
