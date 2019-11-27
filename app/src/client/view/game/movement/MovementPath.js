@@ -82,7 +82,7 @@ class MovementPath {
       this.objects.push(line2);
     }
 
-    createMovementFacing(this.ghost, lastMove.facing, end, this.color);
+    createMovementFacing(this.ghost, lastMove.facing, start, this.color);
   }
 }
 

@@ -21,7 +21,9 @@ class ShowShipObjects extends AnimationUiStrategy {
         icon.hide();
       } else {
         icon.show();
-        this.animations.push(new ShipIdleMovementAnimation(icon));
+        this.animations.push(
+          new ShipIdleMovementAnimation(icon, gamedata.terrain)
+        );
         this.animations.push(new ShipSystemAnimation(icon));
       }
       return this;

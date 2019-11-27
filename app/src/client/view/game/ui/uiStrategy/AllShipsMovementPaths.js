@@ -27,7 +27,7 @@ class AllShipsMovementPaths extends UiStrategy {
     }
 
     if (
-      !uiState.hasGameUiMode(gameUiModes.MOVEMENT) &&
+      !uiState.hasGameUiMode(gameUiModes.MOVEMENT) ||
       uiState.getSelectedShip() !== ship
     ) {
       return;
@@ -49,10 +49,12 @@ class AllShipsMovementPaths extends UiStrategy {
     } else {
       movementPathService.hideAllMovementPaths();
 
+      /*
       const ship = uiState.getSelectedShip();
       if (ship) {
         movementPathService.showMovementPath(ship);
       }
+      */
     }
   }
 }
