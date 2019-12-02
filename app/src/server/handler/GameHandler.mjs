@@ -4,7 +4,7 @@ import WeaponHandler from "./WeaponHandler.mjs";
 import PowerHandler from "./PowerHandler.mjs";
 import { UnauthorizedError, InvalidGameDataError } from "../errors/index.mjs";
 import SystemDataHandler from "./SystemDataHandler.mjs";
-import MoveTorpedosHandler from "./MoveTorpedosHandler.mjs";
+import TorpedoHandler from "./TorpedoHandler.mjs";
 import LaunchHandler from "./LaunchHandler.mjs";
 
 class GameHandler {
@@ -15,7 +15,7 @@ class GameHandler {
     this.powerHandler = new PowerHandler();
     this.systemDataHandler = new SystemDataHandler();
     this.launchHandler = new LaunchHandler();
-    this.moveTorpedosHandler = new MoveTorpedosHandler();
+    this.torpedoHandler = new TorpedoHandler();
   }
 
   submit(serverGameData, clientGameData, user) {
@@ -84,10 +84,16 @@ class GameHandler {
       return;
     }
 
+    gameData.ships.getShips(ship =>
+      ship.systems
+        .getSystems()
+        .forEach(system => system.setDisabledStateBeforeResolution())
+    );
+
     this.launchHandler.advance(gameData);
     this.movementHandler.advance(gameData);
     this.weaponHandler.advance(gameData);
-    this.moveTorpedosHandler.advance(gameData);
+    this.torpedoHandler.advance(gameData);
     this.electronicWarfareHandler.advance(gameData);
     this.powerHandler.advance(gameData);
 

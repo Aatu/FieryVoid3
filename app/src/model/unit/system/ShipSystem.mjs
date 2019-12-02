@@ -14,6 +14,16 @@ class ShipSystem {
     this.power = new SystemPower(this);
 
     this.shipSystems = null;
+
+    this.wasDisabledBeforeResolution = null;
+  }
+
+  setDisabledStateBeforeResolution() {
+    this.wasDisabledBeforeResolution = this.isDisabled();
+  }
+
+  wasDisabled() {
+    return this.wasDisabledBeforeResolution;
   }
 
   addShipSystemsReference(shipSystems) {

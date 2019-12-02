@@ -67,7 +67,6 @@ class GameShips {
   }
 
   setShipLoadouts() {
-    console.log("set loadouts?");
     this.getShips().forEach(ship => ship.setShipLoadout());
   }
 }

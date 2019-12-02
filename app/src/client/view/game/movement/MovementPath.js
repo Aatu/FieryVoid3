@@ -10,6 +10,7 @@ import { CircleSprite, LineSprite } from "../renderer/sprite";
 import Line from "../renderer/Line";
 import { COLOR_FRIENDLY, COLOR_ENEMY } from "../../../../model/gameConfig.mjs";
 import Vector from "../../../../model/utils/Vector.mjs";
+import MovementService from "../../../../model/movement/MovementService.mjs";
 
 class MovementPath {
   constructor(ship, scene, terrain, ghost, mine) {
@@ -24,6 +25,8 @@ class MovementPath {
 
     this.objects = [];
 
+    this.movementService = new MovementService();
+
     this.create();
   }
 
@@ -36,25 +39,17 @@ class MovementPath {
   }
 
   create() {
-    const startMove = this.ship.movement.getLastEndMoveOrSurrogate();
-    const lastMove = this.ship.movement.getLastMove();
-    const velocity = this.ship.movement.getMovementVector();
-    const positionWithoutGravity = startMove.position.add(velocity);
-
-    const { position } = this.terrain.getGravityVectorForTurn(
-      startMove.position,
-      this.ship.movement.getMovementVector(),
-      startMove.turn
+    const startMove = this.movementService.getNewEndMove(
+      this.ship,
+      this.terrain
     );
-
-    const start = startMove.position.roundToHexCenter();
-    const middle = positionWithoutGravity.roundToHexCenter();
-    const end = position.roundToHexCenter();
+    const start = startMove.position;
+    const end = startMove.position.add(startMove.velocity);
 
     const line = createMovementLine(
       this.scene,
       start,
-      middle.equals(end) ? end : middle,
+      end,
       this.color,
       0.5,
       this.ghost.shipZ
@@ -62,27 +57,7 @@ class MovementPath {
 
     this.objects.push(line);
 
-    if (!middle.equals(end)) {
-      const dot = createMovementMiddleStep(
-        middle,
-        this.color,
-        this.coordinateConverter
-      );
-      this.scene.add(dot.mesh);
-      this.objects.push(dot);
-
-      const line2 = createMovementLine(
-        this.scene,
-        middle,
-        end,
-        new THREE.Color(100 / 255, 100 / 255, 255 / 255),
-        0.5
-      );
-
-      this.objects.push(line2);
-    }
-
-    createMovementFacing(this.ghost, lastMove.facing, start, this.color);
+    createMovementFacing(this.ghost, startMove.facing, end, this.color);
   }
 }
 

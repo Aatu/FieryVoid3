@@ -57,6 +57,13 @@ class BaseParticle {
     return this;
   }
 
+  setSine(frequency, amplitude) {
+    const value = Math.floor(frequency) + amplitude;
+    console.log("sine value", value);
+    changeAttribute(this.geometry, this.index, "sine", value);
+    return this;
+  }
+
   setTexture(tex) {
     changeAttribute(this.geometry, this.index, "textureNumber", tex);
 

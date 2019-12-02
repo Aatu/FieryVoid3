@@ -38,6 +38,8 @@ class StandardRangeStrategy extends ShipSystemStrategy {
     let start = null;
     let end = null;
 
+    console.log(currentRange);
+
     this.rangesAndPenalties.forEach(({ range, modifier }) => {
       if ((start === null || range > start.range) && range < currentRange) {
         start = { range, modifier };

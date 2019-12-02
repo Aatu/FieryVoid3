@@ -13,6 +13,9 @@ import TestShip from "../../model/unit/ships/test/TestShip";
 import User from "../../model/User";
 import FireOrder from "../../model/weapon/FireOrder.mjs";
 import WeaponHitChange from "../../model/weapon/WeaponHitChange.mjs";
+import TorpedoFlight from "../../model/unit/TorpedoFlight.mjs";
+import Torpedo158MSV from "../../model/unit/system/weapon/ammunition/torpedo/Torpedo158MSV.mjs";
+import Vector from "../../model/utils/Vector.mjs";
 
 test.serial("Submit successfull fire order for first player", async test => {
   const db = new TestDatabaseConnection("fire");
@@ -159,10 +162,10 @@ test.serial("Submit successfull fire order for both players", async test => {
       fireControl: 10000,
       dew: 10,
       oew: 5,
-      distance: 8,
-      rangeModifier: -5,
-      result: 10000,
-      absoluteResult: 10000,
+      distance: 55,
+      rangeModifier: -37,
+      result: 9968,
+      absoluteResult: 9968,
       outOfRange: false
     })
   );
@@ -207,5 +210,25 @@ test.serial("Submit successfull launch order", async test => {
   const torpedos = newGameData.torpedos.getTorpedoFlights();
 
   test.true(torpedos.length === 1);
+
+  const actual = torpedos[0];
+  actual.id = null;
+
+  const expected = new TorpedoFlight(
+    new Torpedo158MSV(),
+    target.id,
+    shooter.id,
+    202,
+    1
+  )
+    .setPosition(
+      new Vector({ x: -370.99510030367196, y: 34.46010274282921, z: 0 })
+    )
+    .setVelocity(
+      new Vector({ x: 332.65054027118447, y: -21.789897257170793, z: 0 })
+    );
+
+  expected.id = null;
+  test.deepEqual(actual, expected);
   db.close();
 });

@@ -15,12 +15,14 @@ import {
   WeaponArcStrategy,
   BurstDamageStrategy,
   PiercingDamageStrategy,
-  ExplosiveDamageStrategy
+  ExplosiveDamageStrategy,
+  InterceptorStrategy
 } from "./weapon/index.mjs";
 
 import CargoBaySystemStrategy from "./CargoBaySystemStrategy.mjs";
 
 export {
+  InterceptorStrategy,
   CargoBaySystemStrategy,
   ExplosiveDamageStrategy,
   PiercingDamageStrategy,

@@ -16,13 +16,14 @@ class WeaponArcStrategy extends ShipSystemStrategy {
     return true;
   }
 
-  isOnArc({ shooter, target }) {
+  isPositionOnArc({ targetPosition }) {
+    const shooter = this.system.shipSystems.ship;
     const targetHeading = getCompassHeadingOfPoint(
-      shooter.getShootingPosition(),
-      target.getShootingPosition()
+      shooter.getPosition(),
+      targetPosition
     );
 
-    const shooterFacing = hexFacingToAngle(shooter.getShootingFacing());
+    const shooterFacing = hexFacingToAngle(shooter.getFacing());
     const arcs = this.getArcs({ facing: shooterFacing });
 
     return arcs.some(({ start, end }) => {
@@ -36,6 +37,10 @@ class WeaponArcStrategy extends ShipSystemStrategy {
 
       return false;
     });
+  }
+
+  isOnArc({ target }) {
+    return this.isPositionOnArc({ targetPosition: target.getPosition() });
   }
 
   getArcs({ facing = 0 }) {

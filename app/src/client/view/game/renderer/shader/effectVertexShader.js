@@ -13,6 +13,7 @@ const effectVertexShader = `
     attribute vec3 acceleration;
     attribute float activationGameTime;
     attribute float textureNumber;
+    attribute float sine;
     uniform float zoomLevel;
     uniform float gameTime;
     varying vec4  vColor;
@@ -52,6 +53,13 @@ const effectVertexShader = `
 
         if ( currentOpacity > 0.0 && elapsedTime >= 0.0)
         {
+            float sineAmplitude = sine - floor(sine);
+            float sineFrequency = floor(sine);
+
+            if (sineFrequency > 0.0) {
+                currentOpacity *= (sineAmplitude * 0.5 * sin(elapsedTime/sineFrequency) + sineAmplitude);
+            }
+
             
             if (zoomLevel < 1.0) {
                 currentOpacity += (1.0 - zoomLevel) * 0.5;
@@ -62,6 +70,7 @@ const effectVertexShader = `
             vColor = vec4(0.0, 0.0, 0.0, 0.0);
         }
 
+        
         vAngle = angle + angleChange * elapsedTime;
         textureN = textureNumber;
 

@@ -10,7 +10,7 @@ class StandardHitStrategy extends ShipSystemStrategy {
   }
 
   getBaseHitChange({ shooter, target, weaponSettings }) {
-    return target.getHitProfile(shooter.getShootingPosition());
+    return target.getHitProfile(shooter.getPosition());
   }
 
   checkFireOrderHits({ shooter, target, weaponSettings, fireOrder }) {
@@ -27,6 +27,10 @@ class StandardHitStrategy extends ShipSystemStrategy {
     };
   }
 
+  getFireControl() {
+    return this.fireControl;
+  }
+
   getHitChange({ shooter, target, weaponSettings = {} }) {
     const baseToHit = this.system.callHandler("getBaseHitChange", {
       shooter,
@@ -37,9 +41,7 @@ class StandardHitStrategy extends ShipSystemStrategy {
     const dew = target.electronicWarfare.inEffect.getDefensiveEw();
     const oew = shooter.electronicWarfare.inEffect.getOffensiveEw(target);
 
-    let distance = shooter
-      .getShootingHexPosition()
-      .distanceTo(target.getShootingHexPosition());
+    let distance = shooter.hexDistanceTo(target);
 
     const rangeDistance = oew === 0 ? distance * 2 : distance;
 
@@ -49,7 +51,7 @@ class StandardHitStrategy extends ShipSystemStrategy {
     });
 
     let result =
-      baseToHit + this.fireControl + oew * 5 - dew * 5 + rangeModifier;
+      baseToHit + this.getFireControl() + oew * 5 - dew * 5 + rangeModifier;
 
     if (rangeModifier === false) {
       result = 0;

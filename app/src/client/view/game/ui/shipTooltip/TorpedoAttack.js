@@ -76,7 +76,9 @@ class TorpedoAttack extends React.Component {
       ship
     );
 
-    const launchers = torpedoAttackService.getPossibleTorpedos();
+    const launchers = torpedoAttackService.getPossibleTorpedos(
+      uiState.services.currentUser
+    );
 
     return (
       <>

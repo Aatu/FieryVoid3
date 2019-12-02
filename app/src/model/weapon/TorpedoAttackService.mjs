@@ -5,33 +5,36 @@ class TorpedoAttackService {
     this.gameData = gameData;
   }
 
-  getPossibleTorpedos() {
+  getPossibleTorpedos(currentUser) {
     const torpedoAttackShips = [];
 
-    this.gameData.ships.getShips().forEach(ship => {
-      ship.systems.getSystems().forEach(system => {
-        const launchers = system.callHandler("getLoadedLaunchers", null, []);
+    this.gameData.ships
+      .getShips()
+      .filter(ship => ship.player.isUsers(currentUser))
+      .forEach(ship => {
+        ship.systems.getSystems().forEach(system => {
+          const launchers = system.callHandler("getLoadedLaunchers", null, []);
 
-        if (launchers.length === 0) {
-          return;
-        }
+          if (launchers.length === 0) {
+            return;
+          }
 
-        let entry = torpedoAttackShips.find(attack => attack.ship === ship);
+          let entry = torpedoAttackShips.find(attack => attack.ship === ship);
 
-        if (entry) {
-          entry.launchers = [...entry.launchers, ...launchers];
-        } else {
-          torpedoAttackShips.push({
-            ship,
-            launchers: launchers,
-            distance: this.target
-              .getHexPosition()
-              .distanceTo(ship.getHexPosition()),
-            deltaDistance: getDeltaVelocty(this.target, ship)
-          });
-        }
+          if (entry) {
+            entry.launchers = [...entry.launchers, ...launchers];
+          } else {
+            torpedoAttackShips.push({
+              ship,
+              launchers: launchers,
+              distance: this.target
+                .getHexPosition()
+                .distanceTo(ship.getHexPosition()),
+              deltaDistance: getDeltaVelocty(this.target, ship)
+            });
+          }
+        });
       });
-    });
 
     torpedoAttackShips.sort((a, b) => {
       if (a.distance > b.distance) {

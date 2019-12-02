@@ -7,6 +7,8 @@ import {
   addToDirection,
   hexFacingToAngle
 } from "../utils/math.mjs";
+import HexagonMath from "../utils/HexagonMath.mjs";
+import Offset from "../hexagon/Offset.mjs";
 
 class Ship {
   constructor(data = {}) {
@@ -30,8 +32,8 @@ class Ship {
 
   getHitProfile(position) {
     const heading = addToDirection(
-      getCompassHeadingOfPoint(this.getShootingPosition(), position),
-      -hexFacingToAngle(this.getShootingFacing())
+      getCompassHeadingOfPoint(this.getPosition(), position),
+      -hexFacingToAngle(this.getFacing())
     );
 
     if (heading >= 330 || heading <= 30 || (heading >= 150 && heading <= 210)) {
@@ -54,15 +56,6 @@ class Ship {
     return lastMove.getFacing();
   }
 
-  getShootingFacing() {
-    const lastMove = this.movement.getLastEndMoveOrSurrogate();
-    if (!lastMove) {
-      return null;
-    }
-
-    return lastMove.getFacing();
-  }
-
   getPosition() {
     const lastMove = this.movement.getLastMove();
     if (!lastMove) {
@@ -72,6 +65,39 @@ class Ship {
     return lastMove.getPosition();
   }
 
+  distanceTo(target) {
+    return HexagonMath.getHexWidth() * this.hexDistanceTo(target);
+  }
+
+  hexDistanceTo(target) {
+    const shipPosition = this.getHexPosition();
+    const shipFacing = this.getFacing();
+    const otherShipPosition = target.getHexPosition();
+    const otherShipFacing = target.getFacing();
+
+    let closest = null;
+
+    const hexSizes =
+      this.hexSizes.length > 0 ? this.hexSizes : [new Offset(0, 0)];
+
+    hexSizes.forEach(hex => {
+      const otherHexSizes =
+        target.hexSizes.length > 0 ? target.hexSizes : [new Offset(0, 0)];
+
+      otherHexSizes.forEach(otherHex => {
+        const distance = shipPosition
+          .add(hex.rotate(shipFacing))
+          .distanceTo(otherShipPosition.add(otherHex.rotate(otherShipFacing)));
+
+        if (closest === null || distance < closest) {
+          closest = distance;
+        }
+      });
+    });
+
+    return closest;
+  }
+
   getVelocity() {
     const lastMove = this.movement.getLastMove();
     if (!lastMove) {
@@ -79,25 +105,6 @@ class Ship {
     }
 
     return lastMove.getPosition();
-  }
-
-  getShootingPosition() {
-    //This is required, because even though we don't have new end move, we might have bunch of other moves
-    const lastMove = this.movement.getLastEndMoveOrSurrogate();
-    if (!lastMove) {
-      return null;
-    }
-
-    return lastMove.getPosition();
-  }
-
-  getShootingHexPosition() {
-    const lastMove = this.movement.getLastEndMoveOrSurrogate();
-    if (!lastMove) {
-      return null;
-    }
-
-    return lastMove.getHexPosition();
   }
 
   getHexPosition() {

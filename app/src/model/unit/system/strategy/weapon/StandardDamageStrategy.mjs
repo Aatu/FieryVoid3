@@ -175,10 +175,7 @@ class StandardDamageStrategy extends ShipSystemStrategy {
 
   _chooseHitSystem({ target, shooter, lastSection }) {
     return this.hitSystemRandomizer.randomizeHitSystem(
-      target.systems.getSystemsForHit(
-        shooter.getShootingPosition(),
-        lastSection
-      )
+      target.systems.getSystemsForHit(shooter.getPosition(), lastSection)
     );
   }
 

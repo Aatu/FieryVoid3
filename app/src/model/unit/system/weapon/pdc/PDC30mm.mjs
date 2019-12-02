@@ -7,6 +7,7 @@ import StandardLoadingStrategy from "../../strategy/weapon/StandardLoadingStrate
 import BurstDamageStrategy from "../../strategy/weapon/BurstDamageStrategy.mjs";
 import RequiresPowerSystemStrategy from "../../strategy/RequiresPowerSystemStrategy.mjs";
 import WeaponAnimationStrategy from "../../strategy/weapon/WeaponAnimationStrategy.mjs";
+import InterceptorStrategy from "../../strategy/weapon/InterceptorStrategy.mjs";
 
 class PDC30mm extends Weapon {
   constructor(args, arcs) {
@@ -25,6 +26,7 @@ class PDC30mm extends Weapon {
       ]),
       new StandardLoadingStrategy(1),
       new BurstDamageStrategy("d2", "d3+2", "d6", 6, 5),
+      new InterceptorStrategy(),
       new WeaponAnimationStrategy("BoltBurst", {
         size: 6,
         speed: 0.35,

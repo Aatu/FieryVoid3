@@ -102,7 +102,7 @@ test("Returns systems available for hit with structures blocking", test => {
 
   test.deepEqual(
     ship.systems
-      .getSystemsForHit(shooter.getShootingPosition())
+      .getSystemsForHit(shooter.getPosition())
       .map(system => system.id)
       .sort(),
     [400, 501, 500].sort()
@@ -140,7 +140,7 @@ test("Returns systems available for hit ignoring destroyed structures", test => 
 
   test.deepEqual(
     ship.systems
-      .getSystemsForHit(shooter.getShootingPosition())
+      .getSystemsForHit(shooter.getPosition())
       .map(system => system.id)
       .sort(),
     [501, 500, 300, 301].sort()
@@ -177,7 +177,7 @@ test("Ignores section when looking for overkill system", test => {
   test.deepEqual(
     ship.systems
       .getSystemsForHit(
-        shooter.getShootingPosition(),
+        shooter.getPosition(),
         ship.systems.sections.getSectionBySystem(
           ship.systems.getSystemById(500)
         )
@@ -221,7 +221,7 @@ test("Ignores destroyed section when looking for overkill system", test => {
   test.deepEqual(
     ship.systems
       .getSystemsForHit(
-        shooter.getShootingPosition(),
+        shooter.getPosition(),
         ship.systems.sections.getSectionBySystem(structure)
       )
       .map(system => system.id)
@@ -262,7 +262,7 @@ test("Penetrates whole ship if no structures intevene", test => {
   test.deepEqual(
     ship.systems
       .getSystemsForHit(
-        shooter.getShootingPosition(),
+        shooter.getPosition(),
         ship.systems.sections.getSectionBySystem(structure)
       )
       .map(system => system.id)
@@ -330,7 +330,7 @@ test("No penetrable section available", test => {
   test.deepEqual(
     ship.systems
       .getSystemsForHit(
-        shooter.getShootingPosition(),
+        shooter.getPosition(),
         ship.systems.sections.getSectionBySystem(structure)
       )
       .map(system => system.id),

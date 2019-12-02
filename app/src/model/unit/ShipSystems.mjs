@@ -49,8 +49,8 @@ class ShipSystems {
   getSectionsForHit(attackPosition, lastSection) {
     return this.sections.getHitSections(
       attackPosition,
-      this.ship.getShootingPosition(),
-      hexFacingToAngle(this.ship.getShootingFacing()),
+      this.ship.getPosition(),
+      hexFacingToAngle(this.ship.getFacing()),
       lastSection
     );
   }

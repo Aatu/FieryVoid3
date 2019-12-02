@@ -8,6 +8,7 @@ import StandardDamageStrategy from "./StandardDamageStrategy.mjs";
 import BurstDamageStrategy from "./BurstDamageStrategy.mjs";
 import PiercingDamageStrategy from "./PiercingDamageStrategy.mjs";
 import ExplosiveDamageStrategy from "./ExplosiveDamageStrategy.mjs";
+import InterceptorStrategy from "./InterceptorStrategy.mjs";
 
 export {
   TestDamageStrategy,
@@ -19,5 +20,6 @@ export {
   WeaponArcStrategy,
   BurstDamageStrategy,
   PiercingDamageStrategy,
-  ExplosiveDamageStrategy
+  ExplosiveDamageStrategy,
+  InterceptorStrategy
 };

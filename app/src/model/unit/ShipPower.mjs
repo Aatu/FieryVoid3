@@ -1,3 +1,5 @@
+import { shuffleArray } from "../utils/math.mjs";
+
 class ShipPower {
   constructor(shipSystems) {
     this.shipSystems = shipSystems;
@@ -55,15 +57,7 @@ class ShipPower {
   }
 
   forceValidPower() {
-    const shuffle = a => {
-      for (let i = a.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [a[i], a[j]] = [a[j], a[i]];
-      }
-      return a;
-    };
-
-    const systems = shuffle(this.shipSystems.getSystems());
+    const systems = shuffleArray(this.shipSystems.getSystems());
 
     systems.forEach(system => {
       if (this.canSetOffline(system) && !this.isValidPower()) {

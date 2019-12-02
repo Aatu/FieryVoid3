@@ -142,6 +142,13 @@ class ParticleEmitter extends Animation {
         1
       ).setDynamic(true)
     );
+    this.particleGeometry.addAttribute(
+      "sine",
+      new THREE.Float32BufferAttribute(
+        new Float32Array(particleCount),
+        1
+      ).setDynamic(true)
+    );
 
     this.particleGeometry.dynamic = true;
 

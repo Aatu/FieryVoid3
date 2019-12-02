@@ -1,10 +1,7 @@
 import test from "ava";
-import MoveTorpedosHandler from "../../server/handler/MoveTorpedosHandler.mjs";
+import TorpedoHandler from "../../server/handler/TorpedoHandler.mjs";
 import TorpedoFlight from "../../model/unit/TorpedoFlight.mjs";
-import Ship from "../../model/unit/Ship.mjs";
-import Offset from "../../model/hexagon/Offset.mjs";
 import Vector from "../../model/utils/Vector.mjs";
-import coordinateConverter from "../../model/utils/CoordinateConverter.mjs";
 
 test("Torpedos get moved properly", test => {
   const torpedo = new TorpedoFlight({ deltaVelocityPerTurn: 3 }, 1, 2, 3, 1);
@@ -27,7 +24,7 @@ test("Torpedos get moved properly", test => {
     }
   };
 
-  const handler = new MoveTorpedosHandler();
+  const handler = new TorpedoHandler();
   handler.advance(gameData);
 
   test.deepEqual(torpedo.position.round(), new Vector(140, -50));

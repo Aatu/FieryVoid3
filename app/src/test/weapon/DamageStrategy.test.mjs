@@ -321,7 +321,7 @@ test("Burst damage strategy applies damage properly", test => {
   const system = new Reactor({ id: 7, hitpoints: 200, armor: 3 }, 20);
 
   strategy.applyDamageFromWeaponFire({
-    shooter: { getShootingPosition: () => null },
+    shooter: { getPosition: () => null },
     target: { systems: { getSystemsForHit: () => [system] } },
     weaponSettings: {},
     gameData: {},

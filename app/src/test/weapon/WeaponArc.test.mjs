@@ -9,14 +9,21 @@ test("Ship is on weapon arc", test => {
   let shooterFacing = 0;
   let targetPosition = new Vector(200, 0);
   const shooter = {
-    getShootingPosition: () => shooterPosition,
-    getShootingFacing: () => shooterFacing
+    getPosition: () => shooterPosition,
+    getFacing: () => shooterFacing
   };
-  const target = { getShootingPosition: () => targetPosition };
 
-  test.true(arcStrategy.isOnArc({ shooter, target }));
+  arcStrategy.system = {
+    shipSystems: {
+      ship: shooter
+    }
+  };
+
+  const target = { getPosition: () => targetPosition };
+
+  test.true(arcStrategy.isOnArc({ target }));
   shooterFacing = 5;
-  test.false(arcStrategy.isOnArc({ shooter, target }));
+  test.false(arcStrategy.isOnArc({ target }));
   targetPosition = new Vector(200, 200);
-  test.true(arcStrategy.isOnArc({ shooter, target }));
+  test.true(arcStrategy.isOnArc({ target }));
 });

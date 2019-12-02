@@ -1,4 +1,5 @@
 import Offset from "../../../model/hexagon/Offset.mjs";
+import { shuffleArray } from "../../../model/utils/math.mjs";
 
 class CollisionAvoider {
   avoidCollisions(gameData) {
@@ -9,14 +10,6 @@ class CollisionAvoider {
     } while (!done);
   }
 }
-
-const shuffleArray = a => {
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-};
 
 const isOverlapping = (ship, ships) => {
   return ships.filter(otherShip => {

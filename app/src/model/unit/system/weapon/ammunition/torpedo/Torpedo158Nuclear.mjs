@@ -2,7 +2,11 @@ import Torpedo158 from "./Torpedo158.mjs";
 
 class Torpedo158Nuclear extends Torpedo158 {
   constructor(args) {
-    super({ deltaVelocityPerTurn: 45, turnsToLive: 6 });
+    super({
+      deltaVelocityPerTurn: 40,
+      turnsToLive: 6,
+      maxInterceptVelocity: 200
+    });
   }
 
   getCargoInfo() {
