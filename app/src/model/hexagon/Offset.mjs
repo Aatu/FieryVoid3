@@ -21,6 +21,9 @@ const NEIGHBOURS = [
 
 class Offset {
   constructor(q, r) {
+    if (q === undefined) {
+      console.trace();
+    }
     if (q instanceof Offset || (q.q !== undefined && q.r !== undefined)) {
       const offset = q;
       this.q = offset.q;

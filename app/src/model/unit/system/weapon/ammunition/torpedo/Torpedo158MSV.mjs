@@ -16,6 +16,10 @@ class Torpedo158MSV extends Torpedo158 {
     ];
   }
 
+  getMinRange() {
+    return 3;
+  }
+
   getDisplayName() {
     return "Shrike 1.53m MSV torpedo";
   }

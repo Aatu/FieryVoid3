@@ -10,6 +10,7 @@ class WeaponHitChange {
       dew: this.dew,
       oew: this.oew,
       distance: this.distance,
+      evasion: this.evasion,
       rangeModifier: this.rangeModifier,
       result: this.result,
       absoluteResult: this.absoluteResult,
@@ -27,6 +28,7 @@ class WeaponHitChange {
     this.result = data.result || 0;
     this.absoluteResult = data.absoluteResult || 0;
     this.outOfRange = data.outOfRange || false;
+    this.evasion = data.evasion || 0;
 
     return this;
   }

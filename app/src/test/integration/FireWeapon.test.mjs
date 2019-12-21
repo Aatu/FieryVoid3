@@ -228,6 +228,13 @@ test.serial("Submit successfull launch order", async test => {
       new Vector({ x: 332.65054027118447, y: -21.789897257170793, z: 0 })
     );
 
+  console.log(
+    newGameData.ships
+      .getShips()
+      .find(ship => ship.name === "GEPS Biliyaz")
+      .getPosition()
+  );
+
   expected.id = null;
   test.deepEqual(actual, expected);
   db.close();

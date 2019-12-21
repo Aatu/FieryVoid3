@@ -22,7 +22,7 @@ class Fulcrum extends Ship {
        mounted railgun, three kinetic cannons on a fixed bow mount, considerable six light PDCs 
        and a two missile launchers. All this in well armored spaceframe. 
 
-       A squadron of Fulcrums can turn a fleet battle if employed properly, but their role and 
+       A squadron of Fulcrums can turn a battle if employed properly, but their role and 
        commitment must be well planned. A Fulcrum can function in a role of escort, rail gun attack craft
        or close attack craft, but lack the endurance and heat management to keep up sustained railgun fire
        or the manouvers needed in close quarters. This forces Fulcrums to disengage under fleet

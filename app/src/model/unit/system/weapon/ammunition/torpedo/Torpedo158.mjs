@@ -5,8 +5,8 @@ class Torpedo158 extends CargoEntity {
     deltaVelocityPerTurn,
     turnsToLive,
     maxInterceptVelocity = 140,
-    hitSize = -20,
-    evasion = 2
+    hitSize = 0,
+    evasion = 30
   }) {
     super();
     this.deltaVelocityPerTurn = deltaVelocityPerTurn;
@@ -14,6 +14,10 @@ class Torpedo158 extends CargoEntity {
     this.maxInterceptVelocity = maxInterceptVelocity;
     this.hitSize = hitSize;
     this.evasion = evasion;
+  }
+
+  getMinRange() {
+    return 1;
   }
 
   getHitSize() {

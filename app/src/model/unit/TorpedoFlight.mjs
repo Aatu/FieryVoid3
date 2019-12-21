@@ -14,7 +14,11 @@ class TorpedoFlight {
     this.velocity = new Vector();
 
     this.reachedTarget = false;
-    this.impactAngle = null;
+    this.intercepted = false;
+  }
+
+  setIntercepted() {
+    this.intercepted = true;
   }
 
   setReachedTarget() {
@@ -48,7 +52,8 @@ class TorpedoFlight {
       velocity: this.velocity,
       shooterId: this.shooterId,
       weaponId: this.weaponId,
-      launcherIndex: this.launcherIndex
+      launcherIndex: this.launcherIndex,
+      intercepted: this.intercepted
     };
   }
 
@@ -61,6 +66,7 @@ class TorpedoFlight {
     this.shooterId = data.shooterId;
     this.weaponId = data.weaponId;
     this.launcherIndex = data.launcherIndex;
+    this.intercepted = data.intercepted || false;
 
     return this;
   }

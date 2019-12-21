@@ -18,7 +18,7 @@ class X2PDC30mm extends Weapon {
       new StandardHitStrategy(30),
       new StandardRangeStrategy([
         { range: 0, modifier: 0 },
-        { range: 3, modifier: 0 },
+        { range: 3, modifier: -5 },
         { range: 10, modifier: -20 },
         { range: 15, modifier: -50 },
         { range: 18, modifier: -100 },

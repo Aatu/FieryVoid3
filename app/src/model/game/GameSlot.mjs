@@ -114,10 +114,12 @@ class GameSlot {
     this.id = data.id || this.id;
     this.name = data.name;
     this.userId = data.userId || null;
-    this.deploymentLocation =
-      new hexagon.Offset(data.deploymentLocation) || new hexagon.Offset(0, 0);
-    this.deploymentVector =
-      new hexagon.Offset(data.deploymentVector) || new hexagon.Offset(0, 0);
+    this.deploymentLocation = data.deploymentLocation
+      ? new hexagon.Offset(data.deploymentLocation)
+      : new hexagon.Offset(0, 0);
+    this.deploymentVector = data.deploymentVector
+      ? new hexagon.Offset(data.deploymentVector)
+      : new hexagon.Offset(0, 0);
     this.deploymentRadius = data.deploymentRadius || 10;
     //this.deploymentRadius = 10000;
     this.shipIds = data.shipIds || [];

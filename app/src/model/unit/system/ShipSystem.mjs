@@ -15,9 +15,10 @@ class ShipSystem {
 
     this.shipSystems = null;
 
-    this.wasDisabledBeforeResolution = null;
+    //this.wasDisabledBeforeResolution = null;
   }
 
+  /*
   setDisabledStateBeforeResolution() {
     this.wasDisabledBeforeResolution = this.isDisabled();
   }
@@ -25,6 +26,8 @@ class ShipSystem {
   wasDisabled() {
     return this.wasDisabledBeforeResolution;
   }
+
+  */
 
   addShipSystemsReference(shipSystems) {
     this.shipSystems = shipSystems;

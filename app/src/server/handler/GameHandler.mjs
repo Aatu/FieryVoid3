@@ -84,11 +84,13 @@ class GameHandler {
       return;
     }
 
+    /*
     gameData.ships.getShips(ship =>
       ship.systems
         .getSystems()
         .forEach(system => system.setDisabledStateBeforeResolution())
     );
+    */
 
     this.launchHandler.advance(gameData);
     this.movementHandler.advance(gameData);
