@@ -15,7 +15,7 @@ class ExplosiveDamageStrategy extends StandardDamageStrategy {
   }
 
   _doDamage(payload, damageResult) {
-    const { target, shooter } = payload;
+    const { target, shooterPosition } = payload;
 
     console.log("damageResult", damageResult);
 
@@ -24,7 +24,7 @@ class ExplosiveDamageStrategy extends StandardDamageStrategy {
     while (numberOfDamages--) {
       const hitSystem = this._chooseHitSystem({
         target,
-        shooter
+        shooterPosition
       });
 
       if (!hitSystem) {

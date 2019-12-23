@@ -8,7 +8,7 @@ class PiercingDamageStrategy extends StandardDamageStrategy {
     armorPiercing = undefined,
     damage
   ) {
-    const { target, shooter } = payload;
+    const { target, shooterPosition } = payload;
 
     if (armorPiercing === undefined) {
       armorPiercing = this._getArmorPiercing();
@@ -16,7 +16,7 @@ class PiercingDamageStrategy extends StandardDamageStrategy {
 
     const hitSystem = this._chooseHitSystem({
       target,
-      shooter,
+      shooterPosition,
       lastSection
     });
 

@@ -1,8 +1,8 @@
 import ShipSystemStrategy from "../ShipSystemStrategy.mjs";
 import HitSystemRandomizer from "./utils/HitSystemRandomizer.mjs";
 import DamageEntry from "../../DamageEntry.mjs";
-import FireOrderDamageResultEntry from "../../../../weapon/FireOrderDamageResultEntry.mjs";
 import FireOrderDamageResult from "../../../../weapon/FireOrderDamageResult.mjs";
+import CombatLogDamageResultEntry from "../../../../combatLog/CombatLogDamageResultEntry.mjs";
 
 class StandardDamageStrategy extends ShipSystemStrategy {
   constructor(damageFormula = 0, armorPiercingFormula = 0) {
@@ -18,9 +18,12 @@ class StandardDamageStrategy extends ShipSystemStrategy {
 
     const hit = fireOrder.result.getHitResolution().result;
 
-    const result = new FireOrderDamageResultEntry();
+    const result = new CombatLogDamageResultEntry();
     if (hit) {
-      this._doDamage(payload, result);
+      this._doDamage(
+        { shooterPosition: payload.shooter.getPosition(), ...payload },
+        result
+      );
     }
 
     fireOrder.result.setDetails(
@@ -35,7 +38,7 @@ class StandardDamageStrategy extends ShipSystemStrategy {
     armorPiercing = undefined,
     damage = undefined
   ) {
-    const { target, shooter } = payload;
+    const { target, shooterPosition } = payload;
 
     if (armorPiercing === undefined) {
       armorPiercing = this._getArmorPiercing();
@@ -47,7 +50,7 @@ class StandardDamageStrategy extends ShipSystemStrategy {
 
     const hitSystem = this._chooseHitSystem({
       target,
-      shooter,
+      shooterPosition,
       lastSection
     });
 
@@ -173,9 +176,9 @@ class StandardDamageStrategy extends ShipSystemStrategy {
     };
   }
 
-  _chooseHitSystem({ target, shooter, lastSection }) {
+  _chooseHitSystem({ target, shooterPosition, lastSection }) {
     return this.hitSystemRandomizer.randomizeHitSystem(
-      target.systems.getSystemsForHit(shooter.getPosition(), lastSection)
+      target.systems.getSystemsForHit(shooterPosition, lastSection)
     );
   }
 

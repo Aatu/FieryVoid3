@@ -1,6 +1,6 @@
 import StandardDamageStrategy from "./StandardDamageStrategy.mjs";
-import FireOrderDamageResultEntry from "../../../../weapon/FireOrderDamageResultEntry.mjs";
 import FireOrderDamageResult from "../../../../weapon/FireOrderDamageResult.mjs";
+import CombatLogDamageResultEntry from "../../../../combatLog/CombatLogDamageResultEntry.mjs";
 
 class BurstDamageStrategy extends StandardDamageStrategy {
   constructor(
@@ -26,8 +26,11 @@ class BurstDamageStrategy extends StandardDamageStrategy {
         shots,
         this.maxShots,
         Array.from(Array(shots)).map(() => {
-          const result = new FireOrderDamageResultEntry();
-          this._doDamage(payload, result);
+          const result = new CombatLogDamageResultEntry();
+          this._doDamage(
+            { shooterPosition: payload.shooter.getPosition(), ...payload },
+            result
+          );
           return result;
         })
       )

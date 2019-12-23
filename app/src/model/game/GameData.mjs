@@ -6,6 +6,7 @@ import User from "../User.mjs";
 import * as gameStatuses from "./gameStatuses.mjs";
 import * as gamePhases from "./gamePhases.mjs";
 import GameTorpedos from "./GameTorpedos.mjs";
+import CombatLogData from "../combatLog/CombatLogData.mjs";
 
 class GameData {
   constructor(data) {
@@ -142,7 +143,8 @@ class GameData {
       activeShips: this.activeShips.serialize(),
       creatorId: this.creatorId,
       status: this.status,
-      players: this.players.map(player => player.serialize())
+      players: this.players.map(player => player.serialize()),
+      combatLog: this.combatLog.serialize()
     };
   }
 
@@ -163,6 +165,7 @@ class GameData {
     this.creatorId = data.creatorId;
     this.status = data.status || gameStatuses.LOBBY;
     this.terrain = new GameTerrain(this).deserialize(gameData.terrain);
+    this.combatLog = new CombatLogData(this).deserialize(gamedata.combatLog);
 
     return this;
   }

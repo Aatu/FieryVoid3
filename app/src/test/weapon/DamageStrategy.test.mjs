@@ -21,7 +21,6 @@ import MovementOrder from "../../model/movement/MovementOrder.mjs";
 import movementTypes from "../../model/movement/MovementTypes.mjs";
 import DamageEntry from "../../model/unit/system/DamageEntry.mjs";
 import FireOrderDamageResult from "../../model/weapon/FireOrderDamageResult.mjs";
-import FireOrderDamageResultEntry from "../../model/weapon/FireOrderDamageResultEntry.mjs";
 import FireOrderHitResult from "../../model/weapon/FireOrderHitResult.mjs";
 import WeaponHitChange from "../../model/weapon/WeaponHitChange.mjs";
 

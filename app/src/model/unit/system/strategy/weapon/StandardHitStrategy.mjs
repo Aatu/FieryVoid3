@@ -45,10 +45,12 @@ class StandardHitStrategy extends ShipSystemStrategy {
 
     const rangeDistance = oew === 0 ? distance * 2 : distance;
 
-    const rangeModifier = this.system.callHandler("getRangeModifier", {
-      distance: rangeDistance,
-      weaponSettings
-    });
+    const rangeModifier =
+      this.system.callHandler("getRangeModifier", {
+        distance: rangeDistance,
+        weaponSettings
+      }) *
+      (1 + target.movement.getEvasion() / 10);
 
     let result =
       baseToHit + this.getFireControl() + oew * 5 - dew * 5 + rangeModifier;
@@ -72,6 +74,7 @@ class StandardHitStrategy extends ShipSystemStrategy {
       oew: oew,
       distance,
       rangeModifier,
+      evasion: target.movement.getEvasion(),
       result: onRange ? result : 0,
       absoluteResult,
       outOfRange: !onRange

@@ -17,6 +17,15 @@ class TorpedoFlight {
     this.intercepted = false;
   }
 
+  getRelativeVelocityRatio() {
+    let velocity = this.velocity.length();
+    if (velocity > this.torpedo.maxInterceptVelocity) {
+      velocity = this.torpedo.maxInterceptVelocity;
+    }
+
+    return velocity / this.torpedo.maxInterceptVelocity;
+  }
+
   setIntercepted() {
     this.intercepted = true;
   }

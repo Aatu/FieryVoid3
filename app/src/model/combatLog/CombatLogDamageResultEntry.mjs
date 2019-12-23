@@ -1,4 +1,4 @@
-class FireOrderDamageResultEntry {
+class CombatLogDamageResultEntry {
   constructor() {
     this.entries = [];
   }
@@ -33,4 +33,4 @@ class FireOrderDamageResultEntry {
   }
 }
 
-export default FireOrderDamageResultEntry;
+export default CombatLogDamageResultEntry;

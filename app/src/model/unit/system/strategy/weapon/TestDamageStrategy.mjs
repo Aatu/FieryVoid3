@@ -12,8 +12,8 @@ class TestDamageStrategy extends StandardDamageStrategy {
     return this.damage;
   }
 
-  _chooseHitSystem({ target, shooter }) {
-    const systems = target.systems.getSystemsForHit(shooter.getPosition());
+  _chooseHitSystem({ target, shooterPosition }) {
+    const systems = target.systems.getSystemsForHit(shooterPosition);
     return systems.find(system => system instanceof Reactor);
   }
 
