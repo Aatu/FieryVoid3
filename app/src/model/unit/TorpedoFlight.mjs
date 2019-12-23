@@ -70,6 +70,10 @@ class TorpedoFlight {
 
     return this;
   }
+
+  clone() {
+    return new TorpedoFlight().deserialize(this.serialize());
+  }
 }
 
 export default TorpedoFlight;

@@ -2,8 +2,14 @@ import HexagonMath from "../../model/utils/HexagonMath.mjs";
 import Vector from "../../model/utils/Vector.mjs";
 import { shuffleArray } from "../../model/utils/math.mjs";
 import { getCompassHeadingOfPoint } from "../../model/utils/math.mjs";
+import coordinateConverter from "../../model/utils/CoordinateConverter.mjs";
+import TorpedoMovementService from "../../model/movement/TorpedoMovementService.mjs";
 
 class TorpedoHandler {
+  constructor() {
+    this.torpedoMovementService = new TorpedoMovementService();
+  }
+
   advance(gameData) {
     this.moveTorpedos(gameData);
     this.interceptTorpedos(gameData);
@@ -161,27 +167,30 @@ class TorpedoHandler {
 
   moveTorpedos(gameData) {
     gameData.torpedos.getTorpedoFlights().forEach(flight => {
-      const currentPosition = flight.position.add(flight.velocity);
-
       const target = gameData.ships.getShipById(flight.targetId);
-      const targetPosition = target.getPosition();
-      const torpedoDeltaVelocity =
-        HexagonMath.getHexWidth() * flight.torpedo.deltaVelocityPerTurn;
 
-      const torpedoEngagementRange = HexagonMath.getHexWidth() * 10;
-      const difference = targetPosition.sub(currentPosition);
-      let move = null;
-
-      if (difference.length() < torpedoDeltaVelocity + torpedoEngagementRange) {
-        move = difference;
+      if (
+        this.torpedoMovementService.reachesTargetThisTurn(
+          flight,
+          target.getPosition()
+        )
+      ) {
         flight.setReachedTarget();
-        flight.setVelocity(flight.velocity.add(move));
-      } else {
-        move = difference.normalize().multiplyScalar(torpedoDeltaVelocity);
-        flight.setPosition(currentPosition.add(move));
-
-        flight.setVelocity(flight.velocity.add(move));
+        return;
       }
+
+      const impactAndTurn = this.torpedoMovementService.predictTorpedoHitPositionAndTurn(
+        flight,
+        target
+      );
+
+      if (impactAndTurn === false) {
+        return;
+      }
+
+      const { impactPosition } = impactAndTurn;
+
+      this.torpedoMovementService.moveTorpedo(flight, impactPosition);
     });
   }
 }

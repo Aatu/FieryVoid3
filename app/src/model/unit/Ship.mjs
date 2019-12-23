@@ -104,7 +104,7 @@ class Ship {
       return null;
     }
 
-    return lastMove.getPosition();
+    return lastMove.getVelocity();
   }
 
   getHexPosition() {

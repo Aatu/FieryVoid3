@@ -27,5 +27,5 @@ test("Torpedos get moved properly", test => {
   const handler = new TorpedoHandler();
   handler.advance(gameData);
 
-  test.deepEqual(torpedo.position.round(), new Vector(140, -50));
+  test.deepEqual(torpedo.position.round(), new Vector(100, 0));
 });

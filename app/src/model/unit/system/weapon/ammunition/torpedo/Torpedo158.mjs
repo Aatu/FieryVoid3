@@ -14,6 +14,7 @@ class Torpedo158 extends CargoEntity {
     this.maxInterceptVelocity = maxInterceptVelocity;
     this.hitSize = hitSize;
     this.evasion = evasion;
+    this.engagementRange = 10;
   }
 
   getMinRange() {

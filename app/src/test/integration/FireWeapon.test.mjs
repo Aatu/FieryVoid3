@@ -16,6 +16,8 @@ import WeaponHitChange from "../../model/weapon/WeaponHitChange.mjs";
 import TorpedoFlight from "../../model/unit/TorpedoFlight.mjs";
 import Torpedo158MSV from "../../model/unit/system/weapon/ammunition/torpedo/Torpedo158MSV.mjs";
 import Vector from "../../model/utils/Vector.mjs";
+import Offset from "../../model/hexagon/Offset.mjs";
+import coordinateConverter from "../../model/utils/CoordinateConverter.mjs";
 
 test.serial("Submit successfull fire order for first player", async test => {
   const db = new TestDatabaseConnection("fire");
@@ -186,7 +188,12 @@ test.serial("Submit successfull launch order", async test => {
   const controller = new GameController(db);
   const user = new User(1, "Nönmän");
   const user2 = new User(2, "Bädmän");
-  let gameData = await constructDeployedGame(user, user2, controller);
+  let gameData = await constructDeployedGame(
+    user,
+    user2,
+    controller,
+    new Offset(-100, 0)
+  );
   await controller.commitTurn(gameData.id, gameData.serialize(), user2);
 
   const shooter = gameData.ships
@@ -221,20 +228,20 @@ test.serial("Submit successfull launch order", async test => {
     202,
     1
   )
-    .setPosition(
-      new Vector({ x: -370.99510030367196, y: 34.46010274282921, z: 0 })
-    )
-    .setVelocity(
-      new Vector({ x: 332.65054027118447, y: -21.789897257170793, z: 0 })
-    );
+    .setPosition(new Vector({ x: -2868.709150035953, y: 56.25, z: 0 }))
+    .setVelocity(new Vector({ x: 649.519052838329, y: 0, z: 0 }));
 
+  /*
   console.log(
     newGameData.ships
       .getShips()
       .find(ship => ship.name === "GEPS Biliyaz")
-      .getPosition()
+      .getHexPosition()
   );
 
+  console.log(shooter.getHexPosition());
+  console.log(coordinateConverter.fromGameToHex(actual.position));
+  */
   expected.id = null;
   test.deepEqual(actual, expected);
   db.close();
