@@ -4,6 +4,8 @@ import { shuffleArray } from "../../model/utils/math.mjs";
 import { getCompassHeadingOfPoint } from "../../model/utils/math.mjs";
 import coordinateConverter from "../../model/utils/CoordinateConverter.mjs";
 import TorpedoMovementService from "../../model/movement/TorpedoMovementService.mjs";
+import CombatLogTorpedoAttack from "../../model/combatLog/CombatLogTorpedoAttack.mjs";
+import CombatLogTorpedoMove from "../../model/combatLog/CombatLogTorpedoMove.mjs";
 
 class TorpedoHandler {
   constructor() {
@@ -163,7 +165,26 @@ class TorpedoHandler {
     }
   }
 
-  impactTorpedos(gameData) {}
+  impactTorpedos(gameData) {
+    gameData.torpedos
+      .getTorpedoFlights()
+      .filter(flight => flight.reachedTarget)
+      .forEach(flight => {
+        const target = gameData.ships.getShipById(flight.targetId);
+        const shooter = gameData.ships.getShipById(flight.shooterId);
+
+        const torpedoAttack = new CombatLogTorpedoAttack();
+        gameData.gameLog.addEntry(torpedoAttack);
+
+        flight.torpedo.damageStrategy.applyDamageFromWeaponFire({
+          target,
+          shooter,
+          torpedoFlight: flight,
+          gameData,
+          combatLogEvent: torpedoAttack
+        });
+      });
+  }
 
   moveTorpedos(gameData) {
     gameData.torpedos.getTorpedoFlights().forEach(flight => {
@@ -190,7 +211,11 @@ class TorpedoHandler {
 
       const { impactPosition } = impactAndTurn;
 
+      const startPosition = flight.position.clone();
       this.torpedoMovementService.moveTorpedo(flight, impactPosition);
+      gameData.combatLog.addEntry(
+        new CombatLogTorpedoMove(flight.id, startPosition, flight.position)
+      );
     });
   }
 }

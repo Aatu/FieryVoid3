@@ -1,18 +1,10 @@
 import test from "ava";
 import GameData from "../../model/game/GameData";
-import MovementHandler from "../../server/handler/MovementHandler";
-import MovementValidator from "../../server/services/validation/MovementValidator";
-import MovementService from "../../model/movement/MovementService";
 import movementTypes from "../../model/movement/movementTypes";
 import MovementOrder from "../../model/movement/MovementOrder";
 import hexagon from "../../model/hexagon";
 import TestShip from "../../model/unit/ships/test/TestShip";
 import User from "../../model/User";
-
-import {
-  FirstThrustIgnored,
-  EfficiencyHalved
-} from "../../model/unit/system/criticals";
 
 const startMove = new MovementOrder(
   -1,
@@ -34,9 +26,6 @@ const deployMove = new MovementOrder(
   1
 );
 
-const getMovementService = () =>
-  new MovementService().update({ turn: 1 }, { relayEvent: () => null });
-
 const constructShip = (id = 123, user) => {
   let ship = new TestShip({ id });
   ship.player.setUser(user);
@@ -48,13 +37,6 @@ const constructDeployedShip = (id, user) => {
   const ship = constructShip(id, user);
   ship.movement.addMovement(deployMove);
   return ship;
-};
-
-const compareMovements = (test, moves1, moves2) => {
-  test.deepEqual(
-    moves1.map(move => move.clone().setRequiredThrust(null)),
-    moves2.map(move => move.clone().setRequiredThrust(null))
-  );
 };
 
 test("Get active ships for user", test => {

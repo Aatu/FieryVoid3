@@ -11,6 +11,7 @@ class TorpedoFlight {
     this.weaponId = weaponId;
     this.launcherIndex = launcherIndex;
     this.position = new Vector();
+    this.launchPosition = new Vector();
     this.velocity = new Vector();
 
     this.reachedTarget = false;
@@ -47,6 +48,11 @@ class TorpedoFlight {
     return this;
   }
 
+  setLaunchPosition(position) {
+    this.launchPosition = position;
+    return this;
+  }
+
   setVelocity(velocity) {
     this.velocity = velocity;
     return this;
@@ -62,7 +68,8 @@ class TorpedoFlight {
       shooterId: this.shooterId,
       weaponId: this.weaponId,
       launcherIndex: this.launcherIndex,
-      intercepted: this.intercepted
+      intercepted: this.intercepted,
+      launchPosition: this.launchPosition
     };
   }
 
@@ -71,6 +78,7 @@ class TorpedoFlight {
     this.torpedo = new cargoClasses[data.torpedo]();
     this.targetId = data.targetId;
     this.position = new Vector(data.position);
+    this.launchPosition = new Vector(data.launchPosition);
     this.velocity = new Vector(data.velocity);
     this.shooterId = data.shooterId;
     this.weaponId = data.weaponId;

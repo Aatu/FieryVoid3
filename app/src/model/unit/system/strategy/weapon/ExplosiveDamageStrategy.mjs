@@ -17,8 +17,6 @@ class ExplosiveDamageStrategy extends StandardDamageStrategy {
   _doDamage(payload, damageResult) {
     const { target, shooterPosition } = payload;
 
-    console.log("damageResult", damageResult);
-
     let numberOfDamages = this._getNumberOfDamagesForWeaponHit();
 
     while (numberOfDamages--) {

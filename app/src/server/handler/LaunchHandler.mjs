@@ -1,4 +1,4 @@
-import coordinateConverter from "../../model/utils/CoordinateConverter.mjs";
+import CombatLogTorpedoLaunch from "../../model/combatLog/CombatLogTorpedoLaunch.mjs";
 
 class LaunchHandler {
   advance(gameData) {
@@ -17,7 +17,10 @@ class LaunchHandler {
 
       torpedoFlights.forEach(flight => {
         flight.setPosition(ship.getPosition());
+        flight.setLaunchPosition(ship.getPosition());
         flight.setVelocity(ship.getVelocity());
+
+        gameData.combatLog.addEntry(new CombatLogTorpedoLaunch(flight.id));
       });
 
       gameData.torpedos.addTorpedoFlights(torpedoFlights);

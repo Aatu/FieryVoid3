@@ -65,9 +65,6 @@ class TorpedoMovementService {
       .add(target.getVelocity().multiplyScalar(turns));
 
     for (let torpedoTurn = 1; torpedoTurn < turns; torpedoTurn++) {
-      if (this.reachesTargetThisTurn(testFlight, targetPosition)) {
-        return false;
-      }
       this.moveTorpedo(testFlight, targetPosition);
     }
 

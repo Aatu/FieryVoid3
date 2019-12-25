@@ -22,6 +22,7 @@ class ReplayHandler {
 
     while (currentTurn <= end) {
       let replay = await this.gameDataService.loadReplay(gameId, currentTurn);
+      replay.turn = currentTurn;
       gameDatas.push(replay);
       currentTurn++;
     }

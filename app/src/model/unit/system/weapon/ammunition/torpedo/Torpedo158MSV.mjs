@@ -1,8 +1,11 @@
 import Torpedo158 from "./Torpedo158.mjs";
+import MSVTorpedoDamageStrategy from "./torpedoDamageStrategy.mjs/MSVTorpedoDamageStrategy.mjs";
 
 class Torpedo158MSV extends Torpedo158 {
   constructor() {
     super({ deltaVelocityPerTurn: 48, turnsToLive: 6 });
+
+    this.damageStrategy = new MSVTorpedoDamageStrategy("d6", "d3", 10, 32);
   }
 
   getCargoInfo() {

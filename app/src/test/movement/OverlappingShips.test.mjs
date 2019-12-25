@@ -13,8 +13,6 @@ const nothingCollides = ships =>
       }
 
       if (ship.movement.isOverlapping(otherShip)) {
-        console.log("ship", ship.id, "is colliding with ", otherShip.id);
-        console.log(ship.getHexPosition(), otherShip.getHexPosition());
         return false;
       }
 

@@ -1,5 +1,5 @@
 import StandardDamageStrategy from "../../../../strategy/weapon/StandardDamageStrategy.mjs";
-import CombatLogDamageResultEntry from "../../../../../../combatLog/CombatLogDamageResultEntry.mjs";
+import CombatLogDamageEntry from "../../../../../../combatLog/CombatLogDamageEntry.mjs";
 
 class MSVTorpedoDamageStrategy extends StandardDamageStrategy {
   constructor(
@@ -15,7 +15,7 @@ class MSVTorpedoDamageStrategy extends StandardDamageStrategy {
 
   _getDamageForWeaponHit({ torpedoFlight }) {
     if (Number.isInteger(this.damageFormula)) {
-      return this.damageFormula;
+      return this.damageFormula * torpedoFlight.getRelativeVelocityRatio();
     }
     return (
       this.diceRoller.roll(this.damageFormula).total *
@@ -23,9 +23,20 @@ class MSVTorpedoDamageStrategy extends StandardDamageStrategy {
     );
   }
 
-  applyDamageFromWeaponFire(payload) {
-    const { torpedoFlight, target } = payload;
+  _getArmorPiercing({ torpedoFlight }) {
+    if (Number.isInteger(this.armorPiercingFormula)) {
+      return (
+        this.armorPiercingFormula * torpedoFlight.getRelativeVelocityRatio()
+      );
+    }
 
+    return (
+      this.diceRoller.roll(this.armorPiercingFormula).total *
+      torpedoFlight.getRelativeVelocityRatio()
+    );
+  }
+
+  applyDamageFromWeaponFire({ torpedoFlight, target, combatLogEvent }) {
     const attackPosition = torpedoFlight.position;
     const hitProfile = target.getHitProfile(attackPosition);
 
@@ -34,15 +45,13 @@ class MSVTorpedoDamageStrategy extends StandardDamageStrategy {
 
     let shots = this.numberOfShots;
 
-    if (hit) {
-    }
-
     while (shots--) {
       const roll = Math.ceil(Math.random() * 100);
       const hit = roll <= hitProfile - rangeModifier;
 
       if (hit) {
-        const result = new CombatLogDamageResultEntry();
+        const result = new CombatLogDamageEntry();
+        combatLogEvent.addEntry(result);
         this._doDamage({ shooterPosition: attackPosition, ...payload }, result);
       }
     }

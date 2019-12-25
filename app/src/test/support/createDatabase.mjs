@@ -40,16 +40,13 @@ CREATE TABLE user (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-DROP TABLE IF EXISTS game_event;
-CREATE TABLE game_event (
-  id BINARY(16) NOT NULL,
+DROP TABLE IF EXISTS game_data;
+CREATE TABLE game_data (
+  turn int(11) DEFAULT NULL,
   game_id int(11) NOT NULL,
-  type varchar(45) NOT NULL DEFAULT 'normal',
-  ship_id BINARY(16) NOT NULL,
-  turn int(11) NOT NULL DEFAULT '0',
   data JSON DEFAULT '{}',
   CHECK (JSON_VALID(data)),
-  PRIMARY KEY (id),
+  PRIMARY KEY (game_id, turn),
   KEY (game_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -60,10 +57,8 @@ CREATE TABLE game (
   turn int(11) DEFAULT NULL,
   phase ENUM('deployment','game') DEFAULT 'deployment',
   active_ships JSON DEFAULT '[]',
-  data JSON DEFAULT '{}',
   creator_id int(11) DEFAULT NULL,
   status ENUM('lobby','active','finished', 'abandoned') DEFAULT 'lobby',
-  CHECK (JSON_VALID(data)),
   CHECK (JSON_VALID(active_ships)),
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

@@ -18,6 +18,7 @@ import Torpedo158MSV from "../../model/unit/system/weapon/ammunition/torpedo/Tor
 import Vector from "../../model/utils/Vector.mjs";
 import Offset from "../../model/hexagon/Offset.mjs";
 import coordinateConverter from "../../model/utils/CoordinateConverter.mjs";
+import CombatLogTorpedoLaunch from "../../model/combatLog/CombatLogTorpedoLaunch.mjs";
 
 test.serial("Submit successfull fire order for first player", async test => {
   const db = new TestDatabaseConnection("fire");
@@ -194,6 +195,9 @@ test.serial("Submit successfull launch order", async test => {
     controller,
     new Offset(-100, 0)
   );
+
+  const gameId = gameData.id;
+
   await controller.commitTurn(gameData.id, gameData.serialize(), user2);
 
   const shooter = gameData.ships
@@ -214,11 +218,19 @@ test.serial("Submit successfull launch order", async test => {
   await controller.commitTurn(gameData.id, gameData.serialize(), user2);
   const newGameData = await controller.getGameData(gameData.id, user);
 
+  const shooterTurn2 = newGameData.ships
+    .getShips()
+    .find(ship => ship.name === "UCS Achilles");
+
+  const launchersTurn2 = shooterTurn2.systems.getSystemById(202);
+  test.is(launchersTurn2.strategies[1].launchTarget, null);
+
   const torpedos = newGameData.torpedos.getTorpedoFlights();
 
   test.true(torpedos.length === 1);
 
   const actual = torpedos[0];
+  const flightId = actual.id;
   actual.id = null;
 
   const expected = new TorpedoFlight(
@@ -231,18 +243,116 @@ test.serial("Submit successfull launch order", async test => {
     .setPosition(new Vector({ x: -2868.709150035953, y: 56.25, z: 0 }))
     .setVelocity(new Vector({ x: 649.519052838329, y: 0, z: 0 }));
 
-  /*
-  console.log(
-    newGameData.ships
-      .getShips()
-      .find(ship => ship.name === "GEPS Biliyaz")
-      .getHexPosition()
-  );
-
-  console.log(shooter.getHexPosition());
-  console.log(coordinateConverter.fromGameToHex(actual.position));
-  */
   expected.id = null;
   test.deepEqual(actual, expected);
+
+  const replay = await controller.replayHandler.requestReplay(
+    gameId,
+    1,
+    2,
+    user
+  );
+
+  console.log(replay[0].combatLog);
+
+  test.deepEqual(
+    replay[0].combatLog.entries[0],
+    new CombatLogTorpedoLaunch(flightId)
+  );
+
+  db.close();
+});
+
+test.serial("Execute a successful torpedo attack", async test => {
+  const db = new TestDatabaseConnection("fire");
+  await db.resetDatabase();
+
+  const controller = new GameController(db);
+  const user = new User(1, "Nönmän");
+  const user2 = new User(2, "Bädmän");
+  let gameData = await constructDeployedGame(
+    user,
+    user2,
+    controller,
+    new Offset(-100, 0)
+  );
+
+  const gameId = gameData.id;
+
+  await controller.commitTurn(gameData.id, gameData.serialize(), user2);
+
+  const shooter = gameData.ships
+    .getShips()
+    .find(ship => ship.name === "UCS Achilles");
+
+  const target = gameData.ships
+    .getShips()
+    .find(ship => ship.name === "GEPS Biliyaz");
+
+  const launchers = shooter.systems
+    .getSystemById(202)
+    .callHandler("getLoadedLaunchers", null, []);
+
+  launchers[0].setLaunchTarget(target.id);
+
+  await controller.commitTurn(gameData.id, gameData.serialize(), user);
+  await controller.commitTurn(gameData.id, gameData.serialize(), user2);
+  const newGameData = await controller.getGameData(gameData.id, user);
+
+  const shooterTurn2 = newGameData.ships
+    .getShips()
+    .find(ship => ship.name === "UCS Achilles");
+
+  const launchersTurn2 = shooterTurn2.systems.getSystemById(202);
+  test.is(launchersTurn2.strategies[1].launchTarget, null);
+
+  const torpedos = newGameData.torpedos.getTorpedoFlights();
+
+  test.true(torpedos.length === 1);
+
+  const actual = torpedos[0];
+  const flightId = actual.id;
+  actual.id = null;
+
+  const expected = new TorpedoFlight(
+    new Torpedo158MSV(),
+    target.id,
+    shooter.id,
+    202,
+    1
+  )
+    .setPosition(new Vector({ x: -2868.709150035953, y: 56.25, z: 0 }))
+    .setVelocity(new Vector({ x: 649.519052838329, y: 0, z: 0 }));
+
+  expected.id = null;
+  test.deepEqual(actual, expected);
+
+  const replay = await controller.replayHandler.requestReplay(
+    gameId,
+    1,
+    2,
+    user
+  );
+
+  test.deepEqual(
+    replay[0].combatLog.entries[0],
+    new CombatLogTorpedoLaunch(flightId)
+  );
+
+  console.log("HIIHIHI");
+  await controller.commitTurn(gameData.id, newGameData.serialize(), user);
+  console.log(1);
+  await controller.commitTurn(gameData.id, newGameData.serialize(), user2);
+  console.log(2);
+
+  const replay2 = await controller.replayHandler.requestReplay(
+    gameId,
+    2,
+    3,
+    user
+  );
+
+  console.log(replay2.combatLog);
+
   db.close();
 });

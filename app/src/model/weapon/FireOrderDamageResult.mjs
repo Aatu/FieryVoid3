@@ -1,4 +1,4 @@
-import CombatLogDamageResultEntry from "../combatLog/CombatLogDamageResultEntry.mjs";
+import CombatLogDamageEntry from "../combatLog/CombatLogDamageEntry.mjs";
 
 class FireOrderDamageResult {
   constructor(shotsHit, totalShots, shots = []) {
@@ -20,9 +20,7 @@ class FireOrderDamageResult {
     this.shotsHit = data.shotsHit || 0;
     this.totalShots = data.totalShots || 1;
     this.shots = data.shots
-      ? data.shots.map(shot =>
-          new CombatLogDamageResultEntry().deserialize(shot)
-        )
+      ? data.shots.map(shot => new CombatLogDamageEntry().deserialize(shot))
       : [];
 
     return this;

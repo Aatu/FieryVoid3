@@ -249,15 +249,16 @@ class TorpedoLauncherStrategy extends ShipSystemStrategy {
   }
 
   advanceTurn() {
+    this.changeAmmo = null;
+    this.previousTorpedo = null;
+    this.launchTarget = null;
+
     if (this.system.isDisabled() || !this.loadedTorpedo) {
       this.turnsLoaded = 0;
       return;
     }
 
     this.turnsLoaded++;
-    this.changeAmmo = null;
-    this.previousTorpedo = null;
-    this.launchTarget = null;
   }
 }
 

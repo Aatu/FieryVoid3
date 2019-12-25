@@ -1,10 +1,11 @@
-class CombatLogDamageResultEntry {
+class CombatLogDamageEntry {
   constructor() {
     this.entries = [];
   }
 
   serialize() {
     return {
+      logEntryClass: this.constructor.name,
       entries: this.entries
     };
   }
@@ -33,4 +34,4 @@ class CombatLogDamageResultEntry {
   }
 }
 
-export default CombatLogDamageResultEntry;
+export default CombatLogDamageEntry;
