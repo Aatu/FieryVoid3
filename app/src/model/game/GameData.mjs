@@ -137,9 +137,9 @@ class GameData {
         activePlayerIds: this.activePlayerIds,
         ...this.slots.serialize(),
         terrain: this.terrain.serialize(),
-        combatLog: this.combatLog.serialize()
+        combatLog: this.combatLog.serialize(),
+        torpedos: this.torpedos.serialize()
       },
-      torpedos: this.torpedos.serialize(),
       ships: this.ships.serialize(),
       activeShips: this.activeShips.serialize(),
       creatorId: this.creatorId,
@@ -157,13 +157,14 @@ class GameData {
     this.players = data.players
       ? data.players.map(player => new User().deserialize(player))
       : [];
-    this.torpedos = new GameTorpedos().deserialize(data.torpedos);
     this.activePlayerIds = gameData.activePlayerIds || [];
     this.slots = new GameSlots(this).deserialize(gameData);
     this.ships = new GameShips(this).deserialize(data.ships);
     this.activeShips = new GameActiveShips(this).deserialize(data.activeShips);
     this.creatorId = data.creatorId;
     this.status = data.status || gameStatuses.LOBBY;
+
+    this.torpedos = new GameTorpedos().deserialize(gameData.torpedos);
     this.terrain = new GameTerrain(this).deserialize(gameData.terrain);
     this.combatLog = new CombatLogData().deserialize(gameData.combatLog);
 
@@ -188,6 +189,7 @@ class GameData {
     this.turn++;
     this.players.forEach(player => this.setPlayerActive(player));
     this.combatLog.advanceTurn();
+    this.torpedos.advanceTurn();
 
     this.ships.getShips().forEach(ship => {
       ship.advanceTurn(this.turn);

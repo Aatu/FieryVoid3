@@ -1,4 +1,4 @@
-import { combatLogClasses } from "./combatLogClasses";
+import { combatLogClasses } from "./combatLogClasses.mjs";
 
 class CombatLogData {
   constructor() {

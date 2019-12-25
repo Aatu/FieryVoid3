@@ -1,6 +1,7 @@
 import Ship from "../../Ship.mjs";
 import systems from "../../system/index.mjs";
 import Offset from "../../../hexagon/Offset.mjs";
+import Torpedo72MSV from "../../system/weapon/ammunition/torpedo/Torpedo72MSV.mjs";
 
 class Fulcrum extends Ship {
   setShipProperties() {
@@ -70,7 +71,8 @@ class Fulcrum extends Ship {
         { id: 101, hitpoints: 10, armor: 3 },
         3,
         2
-      )
+      ),
+      new systems.TorpedoLauncherDual72({ id: 108, hitpoints: 10, armor: 4 })
     ]);
 
     this.systems.addPrimarySystem([
@@ -101,7 +103,8 @@ class Fulcrum extends Ship {
         { start: 0, end: 0 }
       ),
 
-      new systems.Radiator({ id: 316, hitpoints: 10, armor: 3 })
+      new systems.Radiator({ id: 316, hitpoints: 10, armor: 3 }),
+      new systems.CargoBay({ id: 317, hitpoints: 10, armor: 4 }, 100)
     ]);
 
     this.systems.addStarboardFrontSystem([
@@ -135,6 +138,24 @@ class Fulcrum extends Ship {
 
       new systems.Radiator({ id: 416, hitpoints: 10, armor: 3 })
     ]);
+  }
+
+  setShipLoadout() {
+    super.setShipLoadout();
+
+    this.systems.getSystemById(317).callHandler("addCargo", {
+      cargo: new Torpedo72MSV(),
+      amount: 12
+    });
+
+    this.systems.getSystemById(108).callHandler("loadAmmoInstant", {
+      ammo: new Torpedo72MSV(),
+      launcherIndex: 1
+    });
+    this.systems.getSystemById(108).callHandler("loadAmmoInstant", {
+      ammo: new Torpedo72MSV(),
+      launcherIndex: 2
+    });
   }
 }
 

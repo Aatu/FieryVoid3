@@ -42,7 +42,7 @@ class MovementService {
   getNewEndMove(ship, terrain) {
     const startMove = ship.movement.getLastEndMoveOrSurrogate();
     const lastMove = ship.movement.getLastMove();
-    const vector = ship.movement.getMovementVector();
+    const vector = lastMove.getVelocity();
     const rollMove = ship.movement.getRollMove();
     const rolled = rollMove ? !startMove.rolled : startMove.rolled;
 

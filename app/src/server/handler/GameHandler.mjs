@@ -92,10 +92,10 @@ class GameHandler {
     );
     */
 
-    this.launchHandler.advance(gameData);
     this.movementHandler.advance(gameData);
     this.weaponHandler.advance(gameData);
     this.torpedoHandler.advance(gameData);
+    this.launchHandler.advance(gameData);
     this.electronicWarfareHandler.advance(gameData);
     this.powerHandler.advance(gameData);
 

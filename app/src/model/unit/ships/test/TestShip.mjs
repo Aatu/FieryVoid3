@@ -9,6 +9,9 @@ class TestShip extends Ship {
     this.pivotcost = 3;
     this.evasioncost = 3;
 
+    this.frontHitProfile = 1000;
+    this.sideHitProfile = 1000;
+
     this.pointCost = 500;
 
     this.systems.addFrontSystem([

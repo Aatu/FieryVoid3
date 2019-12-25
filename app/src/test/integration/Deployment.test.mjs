@@ -137,7 +137,7 @@ test.serial(
 
     test.is(
       error.message,
-      "Invalid deployment for ship UCS Eclipse: not a valid deployment location (q: -3400000, r: 3)"
+      "Invalid deployment for ship UCS Eclipse: not a valid deployment location (-3400000, 3)"
     );
     db.close();
   }
@@ -171,7 +171,7 @@ test.serial("Submit deployment with ships on same hex", async test => {
 
   test.is(
     error.message,
-    "Invalid deployment: multiple ships on same hex (q: -32, r: 3)"
+    "Invalid deployment: multiple ships on same hex (-32, 3)"
   );
   db.close();
 });

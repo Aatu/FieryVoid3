@@ -141,7 +141,7 @@ class MovementValidator {
     }
 
     const test = last.clone();
-    test.setVelocity(new hexagon.Offset(0, 0).moveToDirection(move.value));
+    test.setVelocity(last.getHexVelocity().moveToDirection(move.value));
     test.type = movementTypes.SPEED;
     test.value = move.value;
     test.turn = this.turn;
@@ -157,7 +157,6 @@ class MovementValidator {
     }
 
     const test = last.clone();
-    test.setVelocity(new Vector(0, 0));
     test.type = movementTypes.PIVOT;
     test.facing = addToHexFacing(test.facing, move.value);
     test.value = move.value;
@@ -174,7 +173,6 @@ class MovementValidator {
     }
 
     const test = last.clone();
-    test.setVelocity(new Vector(0, 0));
     test.type = movementTypes.EVADE;
     test.value = move.value;
     test.turn = this.turn;
@@ -192,7 +190,6 @@ class MovementValidator {
     }
 
     const test = last.clone();
-    test.setVelocity(new Vector(0, 0));
     test.type = movementTypes.ROLL;
     test.value = !last.rolled;
     test.turn = this.turn;

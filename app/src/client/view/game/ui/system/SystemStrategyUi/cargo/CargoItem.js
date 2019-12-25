@@ -33,8 +33,16 @@ class CargoItem extends React.Component {
   }
 
   render() {
-    const { cargo, amount, handleOnClick = () => {}, ...rest } = this.props;
+    const {
+      cargo,
+      amount,
+      handleOnClick = () => {},
+      tooltipAdditionalContent,
+      text,
+      ...rest
+    } = this.props;
     const { mouseOveredCargo } = this.state;
+
     return (
       <Container
         onClick={handleOnClick}
@@ -43,13 +51,17 @@ class CargoItem extends React.Component {
         {...rest}
       >
         {mouseOveredCargo && (
-          <CargoTooltip element={mouseOveredCargo} cargo={cargo} />
+          <CargoTooltip
+            element={mouseOveredCargo}
+            cargo={cargo}
+            additionalContent={tooltipAdditionalContent}
+          />
         )}
         <IconAndLabel
           ref={c => (this.element = c)}
           background={cargo.getBackgroundImage()}
         >
-          {amount}
+          {text ? text : amount}
         </IconAndLabel>
       </Container>
     );

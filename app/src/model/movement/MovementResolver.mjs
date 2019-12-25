@@ -64,7 +64,7 @@ class MovementResolver {
         null,
         movementTypes.ROLL,
         endMove.position,
-        new hexagon.Offset(0, 0),
+        endMove.velocity,
         endMove.facing,
         endMove.rolled,
         this.turn,
@@ -113,7 +113,7 @@ class MovementResolver {
         null,
         movementTypes.EVADE,
         endMove.position,
-        new hexagon.Offset(0, 0),
+        endMove.velocity,
         endMove.facing,
         endMove.rolled,
         this.turn,
@@ -150,11 +150,12 @@ class MovementResolver {
 
   pivot(pivotDirection, commit = true) {
     const lastMove = this.ship.movement.getLastMove();
+
     const pivotMove = new MovementOrder(
       null,
       movementTypes.PIVOT,
       lastMove.position,
-      new hexagon.Offset(0, 0),
+      lastMove.velocity,
       addToHexFacing(lastMove.facing, pivotDirection),
       lastMove.rolled,
       this.turn,
@@ -189,7 +190,7 @@ class MovementResolver {
       null,
       movementTypes.SPEED,
       lastMove.position,
-      new hexagon.Offset(0, 0).moveToDirection(direction),
+      lastMove.getHexVelocity().moveToDirection(direction),
       lastMove.facing,
       lastMove.rolled,
       this.turn,
@@ -218,7 +219,6 @@ class MovementResolver {
   }
 
   cancel() {
-    console.log("cancel");
     const toCancel = this.ship.movement.getLastMove();
 
     if (!toCancel || !toCancel.isCancellable()) {
@@ -241,7 +241,6 @@ class MovementResolver {
   }
 
   revert() {
-    console.log("revert");
     this.ship.movement
       .getMovement()
       .filter(move => move.isCancellable() || move.isEvade())

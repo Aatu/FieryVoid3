@@ -41,7 +41,7 @@ class StandardDamageStrategy extends ShipSystemStrategy {
     const { target, shooterPosition } = payload;
 
     if (armorPiercing === undefined) {
-      armorPiercing = this._getArmorPiercing();
+      armorPiercing = this._getArmorPiercing(payload);
     }
 
     if (damage === undefined) {
@@ -154,14 +154,10 @@ class StandardDamageStrategy extends ShipSystemStrategy {
     let entry = null;
 
     if (damage > hitSystem.getRemainingHitpoints()) {
-      entry = new DamageEntry(
-        hitSystem.getRemainingHitpoints(),
-        finalArmor,
-        fireOrder.id
-      );
+      entry = new DamageEntry(hitSystem.getRemainingHitpoints(), finalArmor);
       damage -= hitSystem.getRemainingHitpoints();
     } else {
-      entry = new DamageEntry(damage, finalArmor, fireOrder.id);
+      entry = new DamageEntry(damage, finalArmor);
 
       damage = 0;
     }

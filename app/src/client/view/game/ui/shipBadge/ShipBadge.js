@@ -115,6 +115,17 @@ class ShipBadge extends React.PureComponent {
                 <Icon background="/img/dewBadge.png" />
                 {icon.ship.electronicWarfare.inEffect.getDefensiveEw()}
               </BadgeIconAndLabel>
+
+              {isMine && (
+                <BadgeIconAndLabel>
+                  <Icon background="/img/ccewBadge2.png" />
+                  {icon.ship.electronicWarfare.getCcEw()}
+                </BadgeIconAndLabel>
+              )}
+              <BadgeIconAndLabel>
+                <Icon background="/img/ccewBadge.png" />
+                {icon.ship.electronicWarfare.inEffect.getCcEw()}
+              </BadgeIconAndLabel>
             </Badges>
           </BackgroundContainer>
         </ShipBadgeContainer>

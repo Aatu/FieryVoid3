@@ -34,7 +34,7 @@ class CreateGame extends Component {
         team: 1,
         points: 3000,
         userId: user.id,
-        deploymentLocation: new hexagon.Offset(-30, 0),
+        deploymentLocation: new hexagon.Offset(-150, 0),
         deploymentVector: new hexagon.Offset(10, 0)
       })
     );
@@ -45,7 +45,7 @@ class CreateGame extends Component {
         team: 2,
         points: 3000,
         userId: null,
-        deploymentLocation: new hexagon.Offset(30, 0),
+        deploymentLocation: new hexagon.Offset(150, 0),
         deploymentVector: new hexagon.Offset(-10, 0)
       })
     );

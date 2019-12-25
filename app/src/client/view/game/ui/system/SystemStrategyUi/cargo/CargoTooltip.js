@@ -14,12 +14,13 @@ const CargoTooltipContainer = styled(RelativeTooltip)`
 
 class CargoTooltip extends React.Component {
   render() {
-    const { element, cargo } = this.props;
+    const { element, cargo, additionalContent } = this.props;
 
     return (
       <CargoTooltipContainer element={element}>
         <TooltipHeader>{cargo.getDisplayName()}</TooltipHeader>
         {cargo.getCargoInfo().map(getEntry)}
+        {additionalContent}
       </CargoTooltipContainer>
     );
   }

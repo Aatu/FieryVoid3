@@ -1,11 +1,8 @@
 import HexagonMath from "../../model/utils/HexagonMath.mjs";
-import Vector from "../../model/utils/Vector.mjs";
-import { shuffleArray } from "../../model/utils/math.mjs";
-import { getCompassHeadingOfPoint } from "../../model/utils/math.mjs";
-import coordinateConverter from "../../model/utils/CoordinateConverter.mjs";
 import TorpedoMovementService from "../../model/movement/TorpedoMovementService.mjs";
 import CombatLogTorpedoAttack from "../../model/combatLog/CombatLogTorpedoAttack.mjs";
 import CombatLogTorpedoMove from "../../model/combatLog/CombatLogTorpedoMove.mjs";
+import CombatLogTorpedoOutOfTime from "../../model/combatLog/CombatLogTorpedoOutOfTime.mjs";
 
 class TorpedoHandler {
   constructor() {
@@ -173,15 +170,27 @@ class TorpedoHandler {
         const target = gameData.ships.getShipById(flight.targetId);
         const shooter = gameData.ships.getShipById(flight.shooterId);
 
-        const torpedoAttack = new CombatLogTorpedoAttack();
-        gameData.gameLog.addEntry(torpedoAttack);
+        const torpedoAttack = new CombatLogTorpedoAttack(flight.id);
+        gameData.combatLog.addEntry(torpedoAttack);
+
+        const relativeVelocity = this.torpedoMovementService.getTorpedoRelativeVelocity(
+          flight,
+          target
+        );
+
+        torpedoAttack.addNote(
+          `Relative velocity ${relativeVelocity} hex/turn (${Math.round(
+            flight.getRelativeVelocityRatio(relativeVelocity) * 100
+          )}% optimal)`
+        );
 
         flight.torpedo.damageStrategy.applyDamageFromWeaponFire({
           target,
           shooter,
           torpedoFlight: flight,
           gameData,
-          combatLogEvent: torpedoAttack
+          combatLogEvent: torpedoAttack,
+          relativeVelocity
         });
       });
   }
@@ -190,6 +199,13 @@ class TorpedoHandler {
     gameData.torpedos.getTorpedoFlights().forEach(flight => {
       const target = gameData.ships.getShipById(flight.targetId);
 
+      flight.turnsActive++;
+
+      if (flight.noLongerActive()) {
+        gameData.combatLog.addEntry(new CombatLogTorpedoOutOfTime(flight.id));
+        return;
+      }
+
       if (
         this.torpedoMovementService.reachesTargetThisTurn(
           flight,
@@ -197,6 +213,9 @@ class TorpedoHandler {
         )
       ) {
         flight.setReachedTarget();
+        this.torpedoMovementService.addSimulatedAccelerationForImpactTurn(
+          flight
+        );
         return;
       }
 

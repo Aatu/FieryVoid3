@@ -90,10 +90,10 @@ class TorpedoLauncher extends React.PureComponent {
         </TooltipEntry>
 
         <TorpedoList>
-          {launcher.getPossibleTorpedosToLoad().map(({ object, amount }) => (
+          {launcher.getPossibleTorpedosToLoad().map(({ object, amount }, i) => (
             <CargoItem
               handleOnClick={this.loadTorpedo(object).bind(this)}
-              key={`torpedo-launcer-possible-torpedo-${object.constructor.name}`}
+              key={`torpedo-launcer-${i}-possible-torpedo-${object.constructor.name}`}
               cargo={object}
               amount={amount}
             />

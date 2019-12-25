@@ -70,7 +70,6 @@ class HighlightSelectedShip extends UiStrategy {
     //if (ghost.hidden) {
 
     const color = COLOR_FRIENDLY_HIGHLIGHT.clone().multiplyScalar(opacity);
-
     /*
     const color = new THREE.Color(
       (39 * opacity) / 255,
@@ -88,7 +87,7 @@ class HighlightSelectedShip extends UiStrategy {
       .setMovementTarget()
       .replaceColor(color)
       .setOverlayColorAlpha(1);
-    this.icon.hexSprites.forEach(sprite => sprite.replaceColor(color));
+    this.icon.hexSprites.forEach(sprite => sprite.replaceColor(color.clone()));
     this.icon.mapIcon.replaceColor(color);
     this.activeTime += delta;
   }

@@ -1,6 +1,9 @@
 import Ship from "../../Ship.mjs";
 import systems from "../../system/index.mjs";
 import Offset from "../../../hexagon/Offset.mjs";
+import Torpedo72MSV from "../../system/weapon/ammunition/torpedo/Torpedo72MSV.mjs";
+import Torpedo158MSV from "../../system/weapon/ammunition/torpedo/Torpedo158MSV.mjs";
+import Torpedo158Nuclear from "../../system/weapon/ammunition/torpedo/Torpedo158Nuclear.mjs";
 
 class Caliope extends Ship {
   setShipProperties() {
@@ -102,12 +105,75 @@ class Caliope extends Ship {
     ]);
 
     this.systems.addPortAftSystem([
-      new systems.Radiator({ id: 401, hitpoints: 10, armor: 3 })
+      new systems.Radiator({ id: 401, hitpoints: 10, armor: 3 }),
+      new systems.CargoBay({ id: 402, hitpoints: 20, armor: 4 }, 300),
+      new systems.TorpedoLauncher158({ id: 403, hitpoints: 10, armor: 4 }),
+      new systems.TorpedoLauncherDual72({ id: 404, hitpoints: 10, armor: 4 })
     ]);
 
     this.systems.addStarboardAftSystem([
-      new systems.Radiator({ id: 201, hitpoints: 10, armor: 3 })
+      new systems.Radiator({ id: 201, hitpoints: 10, armor: 3 }),
+      new systems.CargoBay({ id: 202, hitpoints: 20, armor: 4 }, 300),
+      new systems.TorpedoLauncher158({ id: 203, hitpoints: 10, armor: 4 }),
+      new systems.TorpedoLauncherDual72({ id: 204, hitpoints: 10, armor: 4 })
     ]);
+  }
+
+  setShipLoadout() {
+    super.setShipLoadout();
+
+    this.systems.getSystemById(202).callHandler("addCargo", {
+      cargo: new Torpedo158MSV(),
+      amount: 6
+    });
+    this.systems.getSystemById(202).callHandler("addCargo", {
+      cargo: new Torpedo158Nuclear(),
+      amount: 1
+    });
+    this.systems.getSystemById(202).callHandler("addCargo", {
+      cargo: new Torpedo72MSV(),
+      amount: 12
+    });
+
+    this.systems.getSystemById(402).callHandler("addCargo", {
+      cargo: new Torpedo158MSV(),
+      amount: 6
+    });
+    this.systems.getSystemById(402).callHandler("addCargo", {
+      cargo: new Torpedo158Nuclear(),
+      amount: 1
+    });
+    this.systems.getSystemById(402).callHandler("addCargo", {
+      cargo: new Torpedo72MSV(),
+      amount: 12
+    });
+
+    this.systems.getSystemById(403).callHandler("loadAmmoInstant", {
+      ammo: new Torpedo158MSV(),
+      launcherIndex: 1
+    });
+    this.systems.getSystemById(203).callHandler("loadAmmoInstant", {
+      ammo: new Torpedo158MSV(),
+      launcherIndex: 1
+    });
+
+    this.systems.getSystemById(204).callHandler("loadAmmoInstant", {
+      ammo: new Torpedo72MSV(),
+      launcherIndex: 1
+    });
+    this.systems.getSystemById(204).callHandler("loadAmmoInstant", {
+      ammo: new Torpedo72MSV(),
+      launcherIndex: 2
+    });
+
+    this.systems.getSystemById(404).callHandler("loadAmmoInstant", {
+      ammo: new Torpedo72MSV(),
+      launcherIndex: 1
+    });
+    this.systems.getSystemById(404).callHandler("loadAmmoInstant", {
+      ammo: new Torpedo72MSV(),
+      launcherIndex: 2
+    });
   }
 }
 

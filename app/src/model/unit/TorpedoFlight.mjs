@@ -16,10 +16,14 @@ class TorpedoFlight {
 
     this.reachedTarget = false;
     this.intercepted = false;
+    this.turnsActive = 0;
   }
 
-  getRelativeVelocityRatio() {
-    let velocity = this.velocity.length();
+  noLongerActive() {
+    return this.torpedo.turnsToLive < this.turnsActive;
+  }
+
+  getRelativeVelocityRatio(velocity) {
     if (velocity > this.torpedo.maxInterceptVelocity) {
       velocity = this.torpedo.maxInterceptVelocity;
     }
@@ -69,7 +73,8 @@ class TorpedoFlight {
       weaponId: this.weaponId,
       launcherIndex: this.launcherIndex,
       intercepted: this.intercepted,
-      launchPosition: this.launchPosition
+      launchPosition: this.launchPosition,
+      turnsActive: this.turnsActive
     };
   }
 
@@ -84,6 +89,7 @@ class TorpedoFlight {
     this.weaponId = data.weaponId;
     this.launcherIndex = data.launcherIndex;
     this.intercepted = data.intercepted || false;
+    this.turnsActive = data.turnsActive || 0;
 
     return this;
   }

@@ -43,15 +43,12 @@ class TorpedoObject {
       return new Vector();
     }
 
-    console.log(slot);
-
     return new Vector(slot.position);
   }
 
   async create() {
     const scene = await torpedoMesh;
 
-    console.log(scene);
     const torpedo = scene.scene.children[0].clone();
 
     this.torpedo = torpedo;
@@ -70,7 +67,6 @@ class TorpedoObject {
     });
     */
 
-    console.log("engine pos", this.getEnginePosition());
     const enginePosition = this.getEnginePosition();
 
     this.particleEmitter.mesh.position.set(

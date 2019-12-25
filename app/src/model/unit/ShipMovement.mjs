@@ -173,18 +173,6 @@ class ShipMovement {
     return move.value;
   }
 
-  getMovementVector() {
-    return this.moves.reduce((vector, move) => {
-      if (move.isDeploy() || move.isEnd() || move.isStart()) {
-        return move.velocity;
-      } else if (move.isSpeed()) {
-        return vector.add(move.velocity);
-      }
-
-      return vector;
-    }, new Vector(0, 0));
-  }
-
   getThrustOutput() {
     return this.ship.systems
       .getSystems()

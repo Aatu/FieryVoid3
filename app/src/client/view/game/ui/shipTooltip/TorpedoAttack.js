@@ -10,6 +10,9 @@ import {
   IconAndLabel
 } from "../../../../styled";
 import CargoItem from "../system/SystemStrategyUi/cargo/CargoItem";
+import TorpedoAttackTooltip from "./TorpedoAttackTooltip";
+import TorpedoMovementService from "../../../../../model/movement/TorpedoMovementService.mjs";
+import TorpedoFlight from "../../../../../model/unit/TorpedoFlight.mjs";
 
 const Container = styled.div`
   z-index: 3;
@@ -68,17 +71,19 @@ class TorpedoAttack extends React.Component {
   }
 
   render() {
-    const { uiState, ship } = this.props;
+    const { uiState, ship: target } = this.props;
 
     const torpedoAttackService = new TorpedoAttackService(
       uiState.services,
       uiState.gameData,
-      ship
+      target
     );
 
     const launchers = torpedoAttackService.getPossibleTorpedos(
       uiState.services.currentUser
     );
+
+    const torpedoMovementService = new TorpedoMovementService();
 
     return (
       <>
@@ -87,27 +92,53 @@ class TorpedoAttack extends React.Component {
           <Cell>Distance</Cell>
           <Cell>Δ Distance</Cell>
         </TooltipSubHeader>
-        {launchers.map((torpedoShipEntry, i) => (
-          <Container key={`torpedo-launching-ship-${i}`}>
-            <TooltipHeader>
-              <Cell>{torpedoShipEntry.ship.name}</Cell>
-              <Cell>{torpedoShipEntry.distance}</Cell>
-              <Cell>{torpedoShipEntry.deltaDistance}</Cell>
-            </TooltipHeader>
-            <TorpedoList>
-              {torpedoShipEntry.launchers.map((launcher, i) => (
-                <TorpedoCargoItem
-                  launcher={launcher}
-                  ship={ship}
-                  handleOnClick={this.launcherClick(launcher).bind(this)}
-                  key={`torpedo-attack--torpedo-${torpedoShipEntry.ship.id}-${i}`}
-                  cargo={launcher.loadedTorpedo}
-                  amount={null}
-                />
-              ))}
-            </TorpedoList>
-          </Container>
-        ))}
+        {launchers.map((torpedoShipEntry, i) => {
+          return (
+            <Container key={`torpedo-launching-ship-${i}`}>
+              <TooltipHeader>
+                <Cell>{torpedoShipEntry.ship.name}</Cell>
+                <Cell>{torpedoShipEntry.distance}</Cell>
+                <Cell>{torpedoShipEntry.deltaDistance}</Cell>
+              </TooltipHeader>
+              <TorpedoList>
+                {torpedoShipEntry.launchers.map((launcher, i) => {
+                  const strikePrediction = torpedoMovementService.predictTorpedoHitPositionAndTurn(
+                    new TorpedoFlight(launcher.loadedTorpedo)
+                      .setPosition(torpedoShipEntry.ship.getPosition())
+                      .setVelocity(torpedoShipEntry.ship.getVelocity()),
+                    target
+                  );
+
+                  if (!strikePrediction) {
+                    return null;
+                  }
+
+                  return (
+                    <TorpedoCargoItem
+                      launcher={launcher}
+                      ship={torpedoShipEntry.ship}
+                      handleOnClick={this.launcherClick(launcher).bind(this)}
+                      key={`torpedo-attack--torpedo-${torpedoShipEntry.ship.id}-${i}`}
+                      cargo={launcher.loadedTorpedo}
+                      amount={null}
+                      text={`${Math.round(
+                        strikePrediction.effectiveness * 100
+                      )}%`}
+                      tooltipAdditionalContent={
+                        <TorpedoAttackTooltip
+                          shooter={torpedoShipEntry.ship}
+                          target={target}
+                          torpedo={launcher.loadedTorpedo}
+                          strikePrediction={strikePrediction}
+                        />
+                      }
+                    />
+                  );
+                })}
+              </TorpedoList>
+            </Container>
+          );
+        })}
       </>
     );
   }

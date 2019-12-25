@@ -1,8 +1,8 @@
 import * as React from "react";
-import styled from "styled-components";
 import { TooltipMenu, TooltipButton } from "../../../../styled";
 import OEWButtons from "../electronicWarfare/OEWButtons";
 import { TOOLTIP_TAB_TORPEDO_ATTACK } from "./ShipTooltip";
+import CCEWButtons from "../electronicWarfare/CCEWButtons";
 
 class GameShipTooltipMenu extends React.PureComponent {
   render() {
@@ -20,15 +20,21 @@ class GameShipTooltipMenu extends React.PureComponent {
           />
         )}
 
+        {ship.player.isUsers(currentUser) && (
+          <CCEWButtons
+            ship={ship}
+            uiState={uiState}
+            ccew={selectedShip.electronicWarfare.getCcEw()}
+          />
+        )}
+
         {!ship.player.isUsers(currentUser) && selectedShip && (
-          <>
-            <OEWButtons
-              ship={selectedShip}
-              target={ship}
-              uiState={uiState}
-              oew={selectedShip.electronicWarfare.getOffensiveEw(ship)}
-            />
-          </>
+          <OEWButtons
+            ship={selectedShip}
+            target={ship}
+            uiState={uiState}
+            oew={selectedShip.electronicWarfare.getOffensiveEw(ship)}
+          />
         )}
 
         {!ship.player.isUsers(currentUser) && (

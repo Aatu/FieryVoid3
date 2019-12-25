@@ -1,5 +1,6 @@
 import coordinateConverter from "../utils/CoordinateConverter.mjs";
 import HexagonMath from "../utils/HexagonMath.mjs";
+import Vector from "../utils/Vector.mjs";
 
 class TorpedoMovementService {
   reachesTargetThisTurn(flight, targetPosition) {
@@ -36,6 +37,14 @@ class TorpedoMovementService {
     flight.setVelocity(flight.velocity.add(move));
   }
 
+  addSimulatedAccelerationForImpactTurn(flight) {
+    flight.velocity
+      .normalize()
+      .multiplyScalar(
+        HexagonMath.getHexWidth() * flight.torpedo.deltaVelocityPerTurn
+      );
+  }
+
   predictTorpedoHitPositionAndTurn(flight, target) {
     const turns = flight.torpedo.turnsToLive * 2;
 
@@ -47,9 +56,31 @@ class TorpedoMovementService {
       );
 
       if (impactPosition !== false) {
+        let effectiveness = 0;
+        let note = "";
+
+        if (
+          impactTurn > flight.torpedo.armingTime &&
+          impactTurn <= flight.torpedo.turnsToLive
+        ) {
+          effectiveness = impactPosition.relativeVelocityRatio;
+        }
+
+        if (impactTurn <= flight.torpedo.armingTime) {
+          note = "No time to arm torpedo";
+        }
+
+        if (impactTurn > flight.torpedo.turnsToLive) {
+          note = "Out of range";
+        }
+
         return {
           impactTurn,
-          impactPosition
+          impactPosition: impactPosition.position,
+          relativeVelocity: impactPosition.relativeVelocity,
+          relativeVelocityRatio: impactPosition.relativeVelocityRatio,
+          effectiveness,
+          note
         };
       }
     }
@@ -69,10 +100,34 @@ class TorpedoMovementService {
     }
 
     if (this.reachesTargetThisTurn(testFlight, targetPosition)) {
-      return targetPosition;
+      this.addSimulatedAccelerationForImpactTurn(testFlight);
+
+      const relativeVelocity = this.getTorpedoRelativeVelocity(
+        testFlight,
+        target
+      );
+
+      return {
+        position: targetPosition,
+        relativeVelocity,
+        relativeVelocityRatio: testFlight.getRelativeVelocityRatio(
+          relativeVelocity
+        )
+      };
     } else {
       return false;
     }
+  }
+
+  getTorpedoRelativeVelocity(flight, target) {
+    const relativeVelocity = Math.round(
+      target
+        .getVelocity()
+        .sub(flight.velocity)
+        .length() / HexagonMath.getHexWidth()
+    );
+
+    return relativeVelocity;
   }
 }
 

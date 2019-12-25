@@ -13,30 +13,35 @@ class MSVTorpedoDamageStrategy extends StandardDamageStrategy {
     this.numberOfShots = numberOfShots;
   }
 
-  _getDamageForWeaponHit({ torpedoFlight }) {
+  _getDamageForWeaponHit({ torpedoFlight, relativeVelocity }) {
     if (Number.isInteger(this.damageFormula)) {
-      return this.damageFormula * torpedoFlight.getRelativeVelocityRatio();
+      return (
+        this.damageFormula *
+        torpedoFlight.getRelativeVelocityRatio(relativeVelocity)
+      );
     }
     return (
       this.diceRoller.roll(this.damageFormula).total *
-      torpedoFlight.getRelativeVelocityRatio()
+      torpedoFlight.getRelativeVelocityRatio(relativeVelocity)
     );
   }
 
-  _getArmorPiercing({ torpedoFlight }) {
+  _getArmorPiercing({ torpedoFlight, relativeVelocity }) {
     if (Number.isInteger(this.armorPiercingFormula)) {
       return (
-        this.armorPiercingFormula * torpedoFlight.getRelativeVelocityRatio()
+        this.armorPiercingFormula *
+        torpedoFlight.getRelativeVelocityRatio(relativeVelocity)
       );
     }
 
     return (
       this.diceRoller.roll(this.armorPiercingFormula).total *
-      torpedoFlight.getRelativeVelocityRatio()
+      torpedoFlight.getRelativeVelocityRatio(relativeVelocity)
     );
   }
 
-  applyDamageFromWeaponFire({ torpedoFlight, target, combatLogEvent }) {
+  applyDamageFromWeaponFire(payload) {
+    const { torpedoFlight, target, combatLogEvent } = payload;
     const attackPosition = torpedoFlight.position;
     const hitProfile = target.getHitProfile(attackPosition);
 
@@ -45,13 +50,19 @@ class MSVTorpedoDamageStrategy extends StandardDamageStrategy {
 
     let shots = this.numberOfShots;
 
+    const hitChance = hitProfile - rangeModifier;
+
+    combatLogEvent.addNote(
+      `MSV with ${this.numberOfShots} projectiles with hit chance of ${hitChance}% each.`
+    );
+
     while (shots--) {
       const roll = Math.ceil(Math.random() * 100);
-      const hit = roll <= hitProfile - rangeModifier;
+      const hit = roll <= hitChance;
 
       if (hit) {
         const result = new CombatLogDamageEntry();
-        combatLogEvent.addEntry(result);
+        combatLogEvent.addDamage(result);
         this._doDamage({ shooterPosition: attackPosition, ...payload }, result);
       }
     }

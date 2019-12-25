@@ -145,7 +145,7 @@ class Offset {
   }
 
   toString() {
-    return `(q: ${this.q}, r: ${this.r})`;
+    return `(${this.q}, ${this.r})`;
   }
 
   rotate(facing) {

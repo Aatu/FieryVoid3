@@ -57,6 +57,9 @@ class CoordinateConverter {
   }
 
   fromGameToHex(gameCoordinates) {
+    if (!gameCoordinates) {
+      console.trace();
+    }
     var q =
       ((1 / 3) * Math.sqrt(3) * gameCoordinates.x -
         (1 / 3) * gameCoordinates.y) /
@@ -119,10 +122,6 @@ class CoordinateConverter {
     );
     var intersects = this.raycaster.intersectObjects(this.scene.children, true);
 
-    if (debug) {
-      console.log(pos);
-      console.log(intersects);
-    }
     intersects.forEach(function(intersected) {
       if (intersected.object.name !== "hexgrid") {
         var icon = getShipIcon(intersected.object);

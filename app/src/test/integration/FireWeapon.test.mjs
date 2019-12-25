@@ -19,6 +19,7 @@ import Vector from "../../model/utils/Vector.mjs";
 import Offset from "../../model/hexagon/Offset.mjs";
 import coordinateConverter from "../../model/utils/CoordinateConverter.mjs";
 import CombatLogTorpedoLaunch from "../../model/combatLog/CombatLogTorpedoLaunch.mjs";
+import CombatLogTorpedoAttack from "../../model/combatLog/CombatLogTorpedoAttack.mjs";
 
 test.serial("Submit successfull fire order for first player", async test => {
   const db = new TestDatabaseConnection("fire");
@@ -161,14 +162,14 @@ test.serial("Submit successfull fire order for both players", async test => {
   test.deepEqual(
     replayFireOrders[0].result.getHitResolution().hitChange,
     new WeaponHitChange({
-      baseToHit: 30,
+      baseToHit: 1000,
       fireControl: 10000,
       dew: 10,
       oew: 5,
       distance: 55,
       rangeModifier: -37,
-      result: 9968,
-      absoluteResult: 9968,
+      result: 10938,
+      absoluteResult: 10938,
       outOfRange: false
     })
   );
@@ -240,8 +241,9 @@ test.serial("Submit successfull launch order", async test => {
     202,
     1
   )
-    .setPosition(new Vector({ x: -2868.709150035953, y: 56.25, z: 0 }))
-    .setVelocity(new Vector({ x: 649.519052838329, y: 0, z: 0 }));
+    .setPosition(new Vector({ x: -2219.190097197624, y: 56.25, z: 0 }))
+    .setVelocity(new Vector({ x: 649.519052838329, y: 0, z: 0 }))
+    .setLaunchPosition(new Vector(-2219.190097197624, 56.25));
 
   expected.id = null;
   test.deepEqual(actual, expected);
@@ -253,12 +255,9 @@ test.serial("Submit successfull launch order", async test => {
     user
   );
 
-  console.log(replay[0].combatLog);
-
-  test.deepEqual(
-    replay[0].combatLog.entries[0],
+  test.deepEqual(replay[0].combatLog.entries, [
     new CombatLogTorpedoLaunch(flightId)
-  );
+  ]);
 
   db.close();
 });
@@ -299,51 +298,8 @@ test.serial("Execute a successful torpedo attack", async test => {
   await controller.commitTurn(gameData.id, gameData.serialize(), user2);
   const newGameData = await controller.getGameData(gameData.id, user);
 
-  const shooterTurn2 = newGameData.ships
-    .getShips()
-    .find(ship => ship.name === "UCS Achilles");
-
-  const launchersTurn2 = shooterTurn2.systems.getSystemById(202);
-  test.is(launchersTurn2.strategies[1].launchTarget, null);
-
-  const torpedos = newGameData.torpedos.getTorpedoFlights();
-
-  test.true(torpedos.length === 1);
-
-  const actual = torpedos[0];
-  const flightId = actual.id;
-  actual.id = null;
-
-  const expected = new TorpedoFlight(
-    new Torpedo158MSV(),
-    target.id,
-    shooter.id,
-    202,
-    1
-  )
-    .setPosition(new Vector({ x: -2868.709150035953, y: 56.25, z: 0 }))
-    .setVelocity(new Vector({ x: 649.519052838329, y: 0, z: 0 }));
-
-  expected.id = null;
-  test.deepEqual(actual, expected);
-
-  const replay = await controller.replayHandler.requestReplay(
-    gameId,
-    1,
-    2,
-    user
-  );
-
-  test.deepEqual(
-    replay[0].combatLog.entries[0],
-    new CombatLogTorpedoLaunch(flightId)
-  );
-
-  console.log("HIIHIHI");
   await controller.commitTurn(gameData.id, newGameData.serialize(), user);
-  console.log(1);
   await controller.commitTurn(gameData.id, newGameData.serialize(), user2);
-  console.log(2);
 
   const replay2 = await controller.replayHandler.requestReplay(
     gameId,
@@ -352,7 +308,12 @@ test.serial("Execute a successful torpedo attack", async test => {
     user
   );
 
-  console.log(replay2.combatLog);
+  test.deepEqual(replay2[0].combatLog.entries[0].notes, [
+    "Relative velocity 60 hex/turn (43% optimal)",
+    "MSV with 32 projectiles with hit chance of 990% each."
+  ]);
+
+  test.true(replay2[0].combatLog.entries[0] instanceof CombatLogTorpedoAttack);
 
   db.close();
 });

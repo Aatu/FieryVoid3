@@ -2,6 +2,7 @@ import * as React from "react";
 import styled, { css } from "styled-components";
 import SystemList from "../system/SystemList";
 import EwList from "../electronicWarfare/EwList";
+import CCEWButtons from "../electronicWarfare/CCEWButtons";
 
 const Container = styled.div`
   position: absolute;
@@ -23,18 +24,27 @@ class LeftPanel extends React.PureComponent {
   render() {
     const { uiState, systemList, ewList, ...rest } = this.props;
 
+    if (!uiState.state.selectedShip) {
+      return null;
+    }
     return (
       <Container>
-        {ewList && (
-          <SubContainer>
+        <SubContainer>
+          {ewList && (
             <EwList
               ship={uiState.state.selectedShip}
               uiState={uiState}
               ewList={ewList}
               {...rest}
             />
-          </SubContainer>
-        )}
+          )}
+
+          <CCEWButtons
+            ship={uiState.state.selectedShip}
+            uiState={uiState}
+            ccew={uiState.state.selectedShip.electronicWarfare.getCcEw()}
+          />
+        </SubContainer>
 
         {systemList && (
           <SubContainer>

@@ -29,6 +29,10 @@ class ShipElectronicWarfare {
     );
   }
 
+  canAssignCcEw(amount) {
+    return this.canAssignEw(ewTypes.EW_CC, this.ship.id, amount);
+  }
+
   assignCcEw(amount) {
     this.assingEw(ewTypes.EW_CC, this.ship.id, amount);
   }
