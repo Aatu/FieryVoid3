@@ -213,9 +213,12 @@ class TorpedoHandler {
         )
       ) {
         flight.setReachedTarget();
+        /*
         this.torpedoMovementService.addSimulatedAccelerationForImpactTurn(
-          flight
+          flight,
+          target.getPosition()
         );
+        */
         return;
       }
 

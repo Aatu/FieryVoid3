@@ -1,6 +1,5 @@
 import Ship from "../unit/Ship.mjs";
 import ShipSystem from "../unit/system/ShipSystem.mjs";
-import FireOrderResult from "./FireOrderResult.mjs";
 
 class FireOrder {
   constructor(shooterId, targetId, weaponId, weaponSettigs = {}) {
@@ -9,7 +8,7 @@ class FireOrder {
     this.targetId = shooterId instanceof Ship ? targetId.id : targetId;
     this.weaponId = weaponId instanceof ShipSystem ? weaponId.id : weaponId;
     this.weaponSettigs = weaponSettigs;
-    this.result = null;
+    this.resolved = false;
   }
 
   setId(id) {
@@ -17,8 +16,8 @@ class FireOrder {
     return this;
   }
 
-  setResult(result) {
-    this.result = result;
+  setResolved() {
+    this.resolved = true;
     return this;
   }
 
@@ -29,7 +28,7 @@ class FireOrder {
       targetId: this.targetId,
       weaponId: this.weaponId,
       weaponSettigs: this.weaponSettigs,
-      result: this.result ? this.result.serialize() : null
+      resolved: this.resolved
     };
   }
 
@@ -39,7 +38,7 @@ class FireOrder {
     this.targetId = data.targetId;
     this.weaponId = data.weaponId;
     this.weaponSettigs = data.weaponSettigs || {};
-    this.result = data.result ? new FireOrderResult(data.result) : null;
+    this.resolved = data.resolved;
 
     return this;
   }

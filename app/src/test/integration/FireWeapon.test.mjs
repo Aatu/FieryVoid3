@@ -20,6 +20,9 @@ import Offset from "../../model/hexagon/Offset.mjs";
 import coordinateConverter from "../../model/utils/CoordinateConverter.mjs";
 import CombatLogTorpedoLaunch from "../../model/combatLog/CombatLogTorpedoLaunch.mjs";
 import CombatLogTorpedoAttack from "../../model/combatLog/CombatLogTorpedoAttack.mjs";
+import CombatLogTorpedoMove from "../../model/combatLog/CombatLogTorpedoMove.mjs";
+import CombatLogDamageEntry from "../../model/combatLog/CombatLogDamageEntry.mjs";
+import CombatLogWeaponFireHitResult from "../../model/combatLog/CombatLogWeaponFireHitResult.mjs";
 
 test.serial("Submit successfull fire order for first player", async test => {
   const db = new TestDatabaseConnection("fire");
@@ -160,7 +163,8 @@ test.serial("Submit successfull fire order for both players", async test => {
     .callHandler("getFireOrders");
 
   test.deepEqual(
-    replayFireOrders[0].result.getHitResolution().hitChange,
+    replay[0].combatLog.entries[0].hitResult.hitChange,
+
     new WeaponHitChange({
       baseToHit: 1000,
       fireControl: 10000,
@@ -174,11 +178,7 @@ test.serial("Submit successfull fire order for both players", async test => {
     })
   );
 
-  test.is(
-    replayFireOrders[0].result.getDamageResolution().shots[0].entries[0]
-      .systemId,
-    7
-  );
+  test.is(replay[0].combatLog.entries[0].damages[0].entries[0].systemId, 7);
 
   db.close();
 });
@@ -241,11 +241,16 @@ test.serial("Submit successfull launch order", async test => {
     202,
     1
   )
-    .setPosition(new Vector({ x: -2219.190097197624, y: 56.25, z: 0 }))
-    .setVelocity(new Vector({ x: 649.519052838329, y: 0, z: 0 }))
+    .setPosition(
+      new Vector({ x: -532.0588797479802, y: -1.7240963760748045, z: 0 })
+    )
+    .setVelocity(
+      new Vector({ x: 1687.1312174496434, y: -57.974096376074804, z: 0 })
+    )
     .setLaunchPosition(new Vector(-2219.190097197624, 56.25));
 
   expected.id = null;
+  expected.turnsActive = 1;
   test.deepEqual(actual, expected);
 
   const replay = await controller.replayHandler.requestReplay(
@@ -256,7 +261,12 @@ test.serial("Submit successfull launch order", async test => {
   );
 
   test.deepEqual(replay[0].combatLog.entries, [
-    new CombatLogTorpedoLaunch(flightId)
+    new CombatLogTorpedoLaunch(flightId),
+    new CombatLogTorpedoMove(
+      flightId,
+      new Vector(-2219.190097197624, 56.25),
+      new Vector(-532.0588797479802, -1.7240963760748045)
+    )
   ]);
 
   db.close();
@@ -309,7 +319,7 @@ test.serial("Execute a successful torpedo attack", async test => {
   );
 
   test.deepEqual(replay2[0].combatLog.entries[0].notes, [
-    "Relative velocity 60 hex/turn (43% optimal)",
+    "Relative velocity 108 hex/turn (77% optimal)",
     "MSV with 32 projectiles with hit chance of 990% each."
   ]);
 

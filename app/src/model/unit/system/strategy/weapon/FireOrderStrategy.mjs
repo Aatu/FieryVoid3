@@ -1,6 +1,7 @@
 import ShipSystemStrategy from "../ShipSystemStrategy.mjs";
 import FireOrder from "../../../../weapon/FireOrder.mjs";
-import FireOrderResult from "../../../../weapon/FireOrderResult.mjs";
+import CombatLogWeaponOutOfArc from "../../../../combatLog/CombatLogWeaponOutOfArc.mjs";
+import CombatLogWeaponFire from "../../../../combatLog/CombatLogWeaponFire.mjs";
 
 class FireOrderStrategy extends ShipSystemStrategy {
   constructor(numberOfShots = 1) {
@@ -13,19 +14,25 @@ class FireOrderStrategy extends ShipSystemStrategy {
 
   executeFireOrders({ gameData }) {
     this.fireOrders.forEach(fireOrder => {
-      const result = new FireOrderResult();
-      fireOrder.setResult(result);
       const weapon = this.system;
       const shooter = gameData.ships.getShipById(fireOrder.shooterId);
       const target = gameData.ships.getShipById(fireOrder.targetId);
       const weaponSettings = fireOrder.weaponSettings;
 
-      weapon.callHandler("checkFireOrderHits", {
+      if (!this.system.callHandler("isOnArc", { shooter, target })) {
+        gameData.combatLog.addEntry(new CombatLogWeaponOutOfArc(fireOrder.id));
+        return false;
+      }
+
+      const combatLogEntry = new CombatLogWeaponFire(fireOrder.id);
+
+      const hitResolution = weapon.callHandler("checkFireOrderHits", {
         shooter,
         target,
         weaponSettings,
         gameData,
-        fireOrder
+        fireOrder,
+        combatLogEntry
       });
 
       weapon.callHandler("applyDamageFromWeaponFire", {
@@ -33,11 +40,14 @@ class FireOrderStrategy extends ShipSystemStrategy {
         target,
         weaponSettings,
         gameData,
-        fireOrder
+        fireOrder,
+        combatLogEntry,
+        hitResolution
       });
 
       weapon.callHandler("onWeaponFired");
-      result.setResolved();
+      fireOrder.setResolved();
+      gameData.combatLog.addEntry(combatLogEntry);
     });
   }
 

@@ -1,6 +1,6 @@
-import WeaponHitChange from "./WeaponHitChange.mjs";
+import WeaponHitChange from "../weapon/WeaponHitChange.mjs";
 
-class FireOrderHitResult {
+class CombatLogWeaponFireHitResult {
   constructor(result, hitChange, hitRoll) {
     this.result = result;
     this.hitChange = hitChange;
@@ -9,7 +9,6 @@ class FireOrderHitResult {
 
   serialize() {
     return {
-      name: "FireOrderHitResult",
       result: this.result,
       hitChange: this.hitChange.serialize(),
       hitRoll: this.hitRoll
@@ -25,4 +24,4 @@ class FireOrderHitResult {
   }
 }
 
-export default FireOrderHitResult;
+export default CombatLogWeaponFireHitResult;

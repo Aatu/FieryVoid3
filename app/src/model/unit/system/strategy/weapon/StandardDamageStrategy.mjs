@@ -1,7 +1,6 @@
 import ShipSystemStrategy from "../ShipSystemStrategy.mjs";
 import HitSystemRandomizer from "./utils/HitSystemRandomizer.mjs";
 import DamageEntry from "../../DamageEntry.mjs";
-import FireOrderDamageResult from "../../../../weapon/FireOrderDamageResult.mjs";
 import CombatLogDamageEntry from "../../../../combatLog/CombatLogDamageEntry.mjs";
 
 class StandardDamageStrategy extends ShipSystemStrategy {
@@ -14,21 +13,22 @@ class StandardDamageStrategy extends ShipSystemStrategy {
   }
 
   applyDamageFromWeaponFire(payload) {
-    const { fireOrder } = payload;
+    const { fireOrder, combatLogEntry, hitResolution } = payload;
 
-    const hit = fireOrder.result.getHitResolution().result;
+    const hit = hitResolution.result;
 
     const result = new CombatLogDamageEntry();
+    combatLogEntry.addDamage(result);
+
     if (hit) {
+      combatLogEntry.setShots(1, 1);
       this._doDamage(
         { shooterPosition: payload.shooter.getPosition(), ...payload },
         result
       );
+    } else {
+      combatLogEntry.setShots(0, 1);
     }
-
-    fireOrder.result.setDetails(
-      new FireOrderDamageResult(hit ? 1 : 0, 1, [result])
-    );
   }
 
   _doDamage(

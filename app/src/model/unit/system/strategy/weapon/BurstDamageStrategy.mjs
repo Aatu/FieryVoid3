@@ -1,5 +1,4 @@
 import StandardDamageStrategy from "./StandardDamageStrategy.mjs";
-import FireOrderDamageResult from "../../../../weapon/FireOrderDamageResult.mjs";
 import CombatLogDamageEntry from "../../../../combatLog/CombatLogDamageEntry.mjs";
 
 class BurstDamageStrategy extends StandardDamageStrategy {
@@ -18,28 +17,25 @@ class BurstDamageStrategy extends StandardDamageStrategy {
   }
 
   applyDamageFromWeaponFire(payload) {
-    const { fireOrder } = payload;
+    const { fireOrder, combatLogEntry } = payload;
     const shots = this._getNumberOfShots(payload);
 
-    fireOrder.result.setDetails(
-      new FireOrderDamageResult(
-        shots,
-        this.maxShots,
-        Array.from(Array(shots)).map(() => {
-          const result = new CombatLogDamageEntry();
-          this._doDamage(
-            { shooterPosition: payload.shooter.getPosition(), ...payload },
-            result
-          );
-          return result;
-        })
-      )
-    );
+    combatLogEntry.setShots(shots, this.maxShots);
+
+    Array.from(Array(shots)).map(() => {
+      const result = new CombatLogDamageEntry();
+      combatLogEntry.addDamage(result);
+      this._doDamage(
+        { shooterPosition: payload.shooter.getPosition(), ...payload },
+        result
+      );
+      return result;
+    });
   }
 
-  _getNumberOfShots({ fireOrder }) {
-    const requiredToHit = fireOrder.result.getHitResolution().hitChange.result;
-    const rolledToHit = fireOrder.result.getHitResolution().hitRoll;
+  _getNumberOfShots({ hitResolution }) {
+    const requiredToHit = hitResolution.hitChange.result;
+    const rolledToHit = hitResolution.hitRoll;
 
     if (rolledToHit > requiredToHit) {
       return 0;

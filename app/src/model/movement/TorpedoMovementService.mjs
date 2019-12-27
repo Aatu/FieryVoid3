@@ -37,13 +37,18 @@ class TorpedoMovementService {
     flight.setVelocity(flight.velocity.add(move));
   }
 
-  addSimulatedAccelerationForImpactTurn(flight) {
-    flight.velocity
-      .normalize()
-      .multiplyScalar(
-        HexagonMath.getHexWidth() * flight.torpedo.deltaVelocityPerTurn
-      );
+  /*
+  addSimulatedAccelerationForImpactTurn(flight, targetPosition) {
+    const difference = flight.position
+      .add(flight.velocity)
+      .sub(targetPosition)
+      .length();
+
+    flight.velocity = flight.velocity.add(
+      flight.velocity.normalize().multiplyScalar(difference)
+    );
   }
+  */
 
   predictTorpedoHitPositionAndTurn(flight, target) {
     const turns = flight.torpedo.turnsToLive * 2;
@@ -100,7 +105,7 @@ class TorpedoMovementService {
     }
 
     if (this.reachesTargetThisTurn(testFlight, targetPosition)) {
-      this.addSimulatedAccelerationForImpactTurn(testFlight);
+      //this.addSimulatedAccelerationForImpactTurn(testFlight, targetPosition);
 
       const relativeVelocity = this.getTorpedoRelativeVelocity(
         testFlight,

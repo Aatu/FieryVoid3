@@ -79,10 +79,6 @@ class WeaponFireService {
       return false;
     }
 
-    if (!weapon.callHandler("isOnArc", { shooter, target })) {
-      return false;
-    }
-
     if (!weapon.callHandler("isLoaded")) {
       return false;
     }
