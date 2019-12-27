@@ -13,7 +13,7 @@ const HealthBar = styled.div`
   border: 2px solid black;
   box-sizing: border-box;
 
-  background-color: black;
+  background-color: #7a2020;
 
   :before {
     content: "";

@@ -64,6 +64,12 @@ class Vector {
     return new Vector(helperA.x, helperA.y, helperA.z);
   }
 
+  dot(vector) {
+    helperA.set(this.x, this.y, this.z);
+    helperB.set(vector.x, vector.y, vector.z);
+    return helperA.dot(helperB);
+  }
+
   subtract(vector) {
     return this.sub(vector);
   }

@@ -6,6 +6,7 @@ import { UnauthorizedError, InvalidGameDataError } from "../errors/index.mjs";
 import SystemDataHandler from "./SystemDataHandler.mjs";
 import TorpedoHandler from "./TorpedoHandler.mjs";
 import LaunchHandler from "./LaunchHandler.mjs";
+import CombatLogShipVelocity from "../../model/combatLog/CombatLogShipVelocity.mjs";
 
 class GameHandler {
   constructor() {
@@ -84,20 +85,16 @@ class GameHandler {
       return;
     }
 
-    /*
-    gameData.ships.getShips(ship =>
-      ship.systems
-        .getSystems()
-        .forEach(system => system.setDisabledStateBeforeResolution())
-    );
-    */
-
     this.movementHandler.advance(gameData);
     this.launchHandler.advance(gameData);
     this.weaponHandler.advance(gameData);
     this.torpedoHandler.advance(gameData);
     this.electronicWarfareHandler.advance(gameData);
     this.powerHandler.advance(gameData);
+
+    gameData.ships.getShips().forEach(ship => {
+      gameData.combatLog.addEntry(new CombatLogShipVelocity(ship.id));
+    });
 
     const toSave = gameData.clone();
 

@@ -6,6 +6,7 @@ import {
   TooltipValue
 } from "../../../../styled";
 import coordinateConverter from "../../../../../model/utils/CoordinateConverter.mjs";
+import HexagonMath from "../../../../../model/utils/HexagonMath.mjs";
 
 const getTorpedoTooltip = (shooter, target, torpedo, strikePrediction) => {
   if (strikePrediction) {
@@ -20,9 +21,10 @@ const getTorpedoTooltip = (shooter, target, torpedo, strikePrediction) => {
       },
       {
         header: "Relative velocity",
-        value: `${strikePrediction.relativeVelocity} h/t`
-      },
-
+        value: `${strikePrediction.impactVelocity /
+          HexagonMath.getHexWidth()} h/t`
+      }
+      /*
       {
         header: "Strike position",
         value: coordinateConverter
@@ -33,6 +35,7 @@ const getTorpedoTooltip = (shooter, target, torpedo, strikePrediction) => {
         header: "Strike effectiveness",
         value: `${Math.round(strikePrediction.effectiveness * 100)}%`
       }
+      */
     ];
 
     if (strikePrediction.note) {

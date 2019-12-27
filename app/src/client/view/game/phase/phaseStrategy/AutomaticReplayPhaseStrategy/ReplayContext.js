@@ -2,16 +2,25 @@ import CombatLogBuilder from "./CombatLogBuilder";
 
 class ReplayContext {
   constructor(phaseStrategy) {
-    this.firingDuration = 5000;
-    this.movementDuration = 5000;
+    this.firingDuration = 0;
+    this.movementDuration = 0;
+    this.velocityDuration = 0;
     this.replayShipMovement = null;
     this.replayShipWeaponFire = null;
     this.phaseStrategy = phaseStrategy;
     this.combatLogBuilder = new CombatLogBuilder();
   }
 
-  getCombatLog(gameData) {
-    return this.combatLogBuilder.createLog(this, gameData);
+  setMovementDuration(duration) {
+    this.movementDuration = duration;
+  }
+
+  setVelocityDuration(duration) {
+    this.velocityDuration = duration;
+  }
+
+  getVelocityStart() {
+    return this.movementDuration + this.firingDuration;
   }
 
   pauseReplay() {
@@ -28,34 +37,8 @@ class ReplayContext {
 
   rewindToMovement() {}
 
-  getMovementTurnDone({ total }) {
-    if (total < this.firingDuration) {
-      return 0;
-    }
-
-    const turnDone = (total - this.firingDuration) / this.movementDuration;
-    return turnDone;
-  }
-
   getTurnLength() {
-    return this.firingDuration + this.movementDuration;
-  }
-
-  setReplayShipMovement(movement) {
-    this.replayShipMovement = movement;
-  }
-
-  setReplayShipWeaponFire(fire) {
-    this.replayShipWeaponFire = fire;
-  }
-
-  animationsReady() {
-    return (
-      this.replayShipMovement &&
-      this.replayShipWeaponFire &&
-      this.replayShipMovement.ready &&
-      this.replayShipWeaponFire.ready
-    );
+    return this.firingDuration + this.movementDuration + this.velocityDuration;
   }
 
   getPositionAtTime(icon, percentDone) {

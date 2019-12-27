@@ -10,6 +10,7 @@ import coordinateConverter from "../../model/utils/CoordinateConverter.mjs";
 import Vector from "../../model/utils/Vector.mjs";
 import Torpedo158MSV from "../../model/unit/system/weapon/ammunition/torpedo/Torpedo158MSV.mjs";
 
+/*
 test("Torpedo moves properly", test => {
   const torpedoMovementService = new TorpedoMovementService();
   const torpedo = new Torpedo158({ deltaVelocityPerTurn: 10, turnsToLive: 5 });
@@ -165,5 +166,58 @@ test("Predict torpedo hit turn and position", test => {
         .impactPosition
     ),
     new Offset(130, 0)
+  );
+});
+*/
+
+test("Torpedo impact is predicted properly", test => {
+  const torpedoMovementService = new TorpedoMovementService();
+
+  test.deepEqual(
+    torpedoMovementService.torpedoMath(
+      new Vector(0, 0),
+      new Vector(-2, -4),
+      new Vector(10, 10),
+      new Vector(-2, 2),
+      2.1
+    ),
+    {
+      accelerationAngle: 1.384322896202497,
+      impactTime: 7.167319835911543,
+      impactVelocity: 9.222714809910437,
+      accelerationVector: new Vector(0.18539462167234408, 0.9826641513024488)
+    }
+  );
+
+  test.deepEqual(
+    torpedoMovementService.torpedoMath(
+      new Vector(0, 0),
+      new Vector(-2, 4),
+      new Vector(10, 10),
+      new Vector(-2, 2),
+      2.1
+    ),
+    {
+      accelerationAngle: 0.34851989732158073,
+      impactTime: 3.183239604036988,
+      impactVelocity: 7.603829523554417,
+      accelerationVector: new Vector(0.9398792076817462, 0.34150706430105826)
+    }
+  );
+
+  test.deepEqual(
+    torpedoMovementService.torpedoMath(
+      new Vector(0, 0),
+      new Vector(0, 0),
+      new Vector(10, 10),
+      new Vector(-2, 2),
+      2.1
+    ),
+    {
+      accelerationAngle: 0.34851989732158073,
+      impactTime: 3.183239604036988,
+      impactVelocity: 7.603829523554417,
+      accelerationVector: new Vector(0.9398792076817462, 0.34150706430105826)
+    }
   );
 });

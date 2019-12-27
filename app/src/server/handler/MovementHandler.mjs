@@ -3,6 +3,7 @@ import MovementValidator from "../services/validation/MovementValidator.mjs";
 import MovementService from "../../model/movement/MovementService.mjs";
 import uuidv4 from "uuid/v4.js";
 import CollisionAvoider from "../services/movement/CollisionAvoider.mjs";
+import CombatLogShipMovement from "../../model/combatLog/CombatLogShipMovement.mjs";
 
 class MovementHandler {
   constructor() {
@@ -35,6 +36,7 @@ class MovementHandler {
           .getNewEndMove(ship, gameData.terrain)
           .setId(uuidv4())
       );
+      gameData.combatLog.addEntry(new CombatLogShipMovement(ship.id));
     });
 
     //TODO: collision damage from friendly ships

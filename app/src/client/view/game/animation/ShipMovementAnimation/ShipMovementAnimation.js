@@ -4,7 +4,7 @@ import ShipEvasionMovementPath from "./ShipEvasionMovementPath";
 import PivotSteps from "./PivotSteps";
 
 class ShipMovementAnimation extends Animation {
-  constructor(shipIcon, moves) {
+  constructor(shipIcon, moves, start, end) {
     super();
 
     this.shipIcon = shipIcon;
@@ -12,8 +12,10 @@ class ShipMovementAnimation extends Animation {
 
     this.doneCallback = null;
 
-    this.duration = 5000;
-    this.time = this.time;
+    this.start = start;
+    this.end = end;
+
+    this.duration = end - start;
 
     this.positionCurves = this.movesToCurves(moves);
     this.pivotSteps = new PivotSteps(moves);
@@ -53,7 +55,29 @@ class ShipMovementAnimation extends Animation {
 
   cleanUp() {}
 
-  render({ turn, percentDone }) {
+  getMovementTurnDone({ total }) {
+    if (total < this.start) {
+      return 0;
+    }
+
+    if (total > this.end) {
+      return 1;
+    }
+
+    const time = total - this.start;
+    return time / this.duration;
+  }
+
+  render(payload) {
+    const turnDone = this.getMovementTurnDone(payload);
+
+    if (turnDone === 1) {
+      return;
+    }
+
+    const turn = Math.floor(turnDone);
+    const percentDone = turnDone < 1 ? turnDone % 1 : 1;
+
     const { position, facing } = this.getPositionAndFacing(turn, percentDone);
 
     this.shipIcon.setPosition(position);
@@ -97,24 +121,34 @@ class ShipMovementAnimation extends Animation {
   }
 
   buildPositionCurve(start, end) {
+    const startPosition = start.position.add(start.velocity);
+
+    const point1 = startPosition.roundToHexCenter();
+    const control1 = startPosition.roundToHexCenter();
+    const control2 = end.position.roundToHexCenter();
+    const point2 = end.position.roundToHexCenter();
+
+    /*
     const point1 = start.position.roundToHexCenter();
     const control1 = start.position.add(start.velocity.multiplyScalar(0.5));
     const control2 = end.position.sub(end.velocity.multiplyScalar(0.5));
     const point2 = end.position.roundToHexCenter();
+    */
 
+    /*
     return new THREE.QuadraticBezierCurve3(
       new THREE.Vector3(point1.x, point1.y, point1.z),
       new THREE.Vector3(control1.x, control1.y, control1.z),
       new THREE.Vector3(point2.x, point2.y, point2.z)
     );
-    /*
+    */
+
     return new THREE.CubicBezierCurve3(
       new THREE.Vector3(point1.x, point1.y, point1.z),
       new THREE.Vector3(control1.x, control1.y, control1.z),
       new THREE.Vector3(control2.x, control2.y, control2.z),
       new THREE.Vector3(point2.x, point2.y, point2.z)
     );
-    */
   }
 }
 

@@ -9,6 +9,7 @@ import {
   ShowMapIcons
 } from "../../../ui/uiStrategy";
 import ReplayContext from "./ReplayContext";
+import ReplayTurnActions from "../../../ui/uiStrategy/replay/ReplayTurnActions";
 
 class AutomaticReplayPhaseStrategy extends PhaseStrategy {
   constructor(services) {
@@ -17,15 +18,17 @@ class AutomaticReplayPhaseStrategy extends PhaseStrategy {
     this.emitterContainer = services.particleEmitterContainer;
 
     this.replayContext = new ReplayContext(this);
+    this.replayTurnActions = new ReplayTurnActions(this.replayContext);
+    /*
     this.replayShipMovement = new ReplayShipMovement(this.replayContext);
     this.replayShipWeaponFire = new ReplayShipWeaponFire(
       this.emitterContainer,
       this.replayContext
     );
+    */
 
     this.strategies = [
-      this.replayShipMovement,
-      this.replayShipWeaponFire,
+      this.replayTurnActions,
       new AutomaticReplay(this, this.replayContext),
       new ShowReplayUi(this.replayContext),
       new MouseOverShowsShipTooltip(),

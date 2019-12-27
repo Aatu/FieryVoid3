@@ -6,6 +6,8 @@ import CombatLogTorpedoMove from "./CombatLogTorpedoMove.mjs";
 import CombatLogTorpedoOutOfTime from "./CombatLogTorpedoOutOfTime.mjs";
 import CombatLogWeaponOutOfArc from "./CombatLogWeaponOutOfArc.mjs";
 import CombatLogWeaponFire from "./CombatLogWeaponFire.mjs";
+import CombatLogShipMovement from "./CombatLogShipMovement.mjs";
+import CombatLogShipVelocity from "./CombatLogShipVelocity.mjs";
 
 export const combatLogClasses = {
   CombatLogTorpedoAttack,
@@ -15,5 +17,7 @@ export const combatLogClasses = {
   CombatLogTorpedoMove,
   CombatLogTorpedoOutOfTime,
   CombatLogWeaponOutOfArc,
-  CombatLogWeaponFire
+  CombatLogWeaponFire,
+  CombatLogShipMovement,
+  CombatLogShipVelocity
 };

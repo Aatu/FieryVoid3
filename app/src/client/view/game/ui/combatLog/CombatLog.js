@@ -17,6 +17,8 @@ class CombatLog extends React.Component {
   render() {
     const { replayContext, gameData } = this.props;
 
+    return null;
+
     replayContext.getCombatLog(gameData);
 
     return (

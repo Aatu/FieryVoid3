@@ -15,8 +15,8 @@ class RailgunFixed22gw extends Weapon {
       new StandardHitStrategy(20),
       new StandardRangeStrategy([
         { range: 0, modifier: -200 },
-        { range: 10, modifier: 0 },
-        { range: 200, modifier: -200 }
+        { range: 40, modifier: 0 },
+        { range: 400, modifier: -200 }
       ]),
       new StandardLoadingStrategy(3),
       new PiercingDamageStrategy("3d3", "2d2 + 4"),
