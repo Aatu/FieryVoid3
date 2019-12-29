@@ -126,6 +126,10 @@ class ShipSystem {
     return response;
   }
 
+  getStrategiesByInstance(instance) {
+    return this.strategies.filter(strategy => strategy instanceof instance);
+  }
+
   deserialize(data = {}) {
     this.damage.deserialize(data.damage);
     this.power.deserialize(data.power);

@@ -14,7 +14,7 @@ class GameSystemTooltipMenu extends React.PureComponent {
       <TooltipMenu>
         {myShip && ship.systems.power.canSetOnline(system) && (
           <TooltipButton
-            img="/img/offline.png"
+            img="/img/goOnline.png"
             onClick={() => {
               system.power.setOnline();
               uiState.shipSystemStateChanged(ship, system);
@@ -35,6 +35,43 @@ class GameSystemTooltipMenu extends React.PureComponent {
             }}
           />
         )}
+
+        {myShip &&
+          !system.isDisabled() &&
+          system.callHandler("isBoostable", null, false) && (
+            <TooltipButton
+              img="/img/plus.png"
+              disabled={!system.callHandler("canBoost", null, false)}
+              onClick={() => {
+                if ((!system.callHandler("canBoost"), null, false)) {
+                  return;
+                }
+
+                system.callHandler("boost");
+                uiState.shipSystemStateChanged(ship, system);
+                uiState.shipStateChanged(ship);
+                this.forceUpdate();
+              }}
+            />
+          )}
+
+        {myShip &&
+          !system.isDisabled() &&
+          system.callHandler("isBoostable", null, false) && (
+            <TooltipButton
+              img="/img/minus.png"
+              disabled={!system.callHandler("canDeBoost", null, false)}
+              onClick={() => {
+                if (!system.callHandler("canDeBoost", null, false)) {
+                  return;
+                }
+                system.callHandler("deBoost");
+                uiState.shipSystemStateChanged(ship, system);
+                uiState.shipStateChanged(ship);
+                this.forceUpdate();
+              }}
+            />
+          )}
       </TooltipMenu>
     );
   }

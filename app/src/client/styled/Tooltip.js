@@ -103,7 +103,6 @@ const TooltipValueHeader = styled.span`
 
 const TooltipEntry = styled.div`
   display: flex;
-  align-items: center;
   color: ${props => {
     if (props.type === "good") {
       return "#6fc126;";
@@ -137,8 +136,7 @@ const selectedTooltipButton = css`
 `;
 
 const disabledTooltipButton = css`
-  filter: brightness(1) grayscale(100%);
-  opacity: 0.5;
+  filter: brightness(0.25) grayscale(100%);
 `;
 
 const hoverTooltipButton = css`

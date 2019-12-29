@@ -13,14 +13,36 @@ class BoostableSystemStrategy extends ShipSystemStrategy {
     return true;
   }
 
+  getMessages(payload, previousResponse = []) {
+    previousResponse.push({
+      header: "Boostable",
+      value: "Boost with additional power"
+    });
+
+    previousResponse.push({
+      header: "Current boost level",
+      value: this.boostLevel
+    });
+
+    return previousResponse;
+  }
+
   canBoost(payload, previousResponse) {
     const remainginPower = this.system.shipSystems.power.getRemainingPowerOutput();
+
+    if (this.system.isDisabled()) {
+      return false;
+    }
 
     if (this.maxLevel !== null && this.boostLevel >= this.maxLevel) {
       return false;
     }
 
     return remainginPower >= this.getPowerRequiredForBoost();
+  }
+
+  canDeBoost(payload, previousResponse) {
+    return this.boostLevel > 0;
   }
 
   getPowerRequiredForBoost(payload, previousResponse = 0) {
@@ -51,6 +73,48 @@ class BoostableSystemStrategy extends ShipSystemStrategy {
 
     this.boostLevel--;
     this.system.callHandler("onSystemPowerLevelDecrease");
+  }
+
+  receivePlayerData({ clientShip, clientSystem }) {
+    if (!clientSystem) {
+      return;
+    }
+
+    if (this.system.isDisabled()) {
+      return;
+    }
+
+    const clientStrategy = clientSystem.getStrategiesByInstance(
+      BoostableSystemStrategy
+    )[0];
+
+    const targetBoostlevel = clientStrategy.boostLevel;
+
+    if (this.boostLevel > targetBoostlevel) {
+      while (true) {
+        if (this.boostLevel === targetBoostlevel) {
+          return;
+        }
+
+        if (!this.canDeBoost()) {
+          return;
+        }
+
+        this.deBoost();
+      }
+    } else if (this.boostLevel < targetBoostlevel) {
+      while (true) {
+        if (this.boostLevel === targetBoostlevel) {
+          return;
+        }
+
+        if (!this.canBoost()) {
+          return;
+        }
+
+        this.boost();
+      }
+    }
   }
 
   serialize(payload, previousResponse = []) {

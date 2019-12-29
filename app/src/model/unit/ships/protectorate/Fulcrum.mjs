@@ -78,7 +78,7 @@ class Fulcrum extends Ship {
     this.systems.addPrimarySystem([
       new systems.EwArray({ id: 12, hitpoints: 30, armor: 4 }, 12),
 
-      new systems.Reactor({ id: 7, hitpoints: 20, armor: 3 }, 20),
+      new systems.Reactor({ id: 7, hitpoints: 20, armor: 3 }, 35),
       new systems.Structure({ id: 11, hitpoints: 30, armor: 4 }),
 
       new systems.PDC30mm(

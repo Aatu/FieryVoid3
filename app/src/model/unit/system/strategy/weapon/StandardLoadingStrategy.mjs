@@ -7,6 +7,15 @@ class StandardLoadingStrategy extends ShipSystemStrategy {
     this.turnsLoaded = loadingTime;
   }
 
+  getMessages(payload, previousResponse = []) {
+    previousResponse.push({
+      header: "Cooldown",
+      value: `${this.turnsLoaded} / ${this.loadingTime}`
+    });
+
+    return previousResponse;
+  }
+
   usesLoading() {
     return true;
   }

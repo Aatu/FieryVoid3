@@ -6,6 +6,8 @@ import StandardRangeStrategy from "../../strategy/weapon/StandardRangeStrategy.m
 import StandardLoadingStrategy from "../../strategy/weapon/StandardLoadingStrategy.mjs";
 import StandardDamageStrategy from "../../strategy/weapon/StandardDamageStrategy.mjs";
 import WeaponAnimationStrategy from "../../strategy/weapon/WeaponAnimationStrategy.mjs";
+import RequiresPowerSystemStrategy from "../../strategy/RequiresPowerSystemStrategy.mjs";
+import BoostableSystemStrategy from "../../strategy/BoostableSystemStrategy.mjs";
 
 class CannonFixed120mm extends Weapon {
   constructor(args, arcs) {
@@ -20,7 +22,9 @@ class CannonFixed120mm extends Weapon {
         { range: 20, modifier: -30 },
         { range: 50, modifier: -200 }
       ]),
-      new StandardLoadingStrategy(1),
+      new StandardLoadingStrategy(2),
+      new RequiresPowerSystemStrategy(4),
+      new BoostableSystemStrategy(4, 1),
       new StandardDamageStrategy("2d4 + 10"),
       new WeaponAnimationStrategy("Bolt", {
         size: 6,

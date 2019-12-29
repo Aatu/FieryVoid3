@@ -7,7 +7,8 @@ import {
   Tooltip,
   TooltipHeader,
   TooltipEntry,
-  colors
+  TooltipValue,
+  TooltipValueHeader
 } from "../../../../styled";
 import TorpedoAttack from "./TorpedoAttack";
 
@@ -44,7 +45,6 @@ class ShipTooltip extends React.Component {
   }
 
   selectTooltipTab(name) {
-    console.log("set tab", name);
     this.setState({ tooltipTab: name });
   }
 
@@ -84,6 +84,7 @@ class ShipTooltip extends React.Component {
     } = this.props;
 
     const { tooltipTab } = this.state;
+    const { currentUser } = uiState.services;
 
     const Menu = this.getMenu();
 
@@ -108,7 +109,17 @@ class ShipTooltip extends React.Component {
           )}
           {!tooltipTab && (
             <>
-              <WeaponTargetingList uiState={uiState} ship={ship} {...rest} />
+              {Menu && (
+                <WeaponTargetingList uiState={uiState} ship={ship} {...rest} />
+              )}
+              {ship.player.isUsers(currentUser) && (
+                <TooltipEntry>
+                  <TooltipValueHeader>Power available: </TooltipValueHeader>
+                  <TooltipValue>
+                    {ship.systems.power.getRemainingPowerOutput()}
+                  </TooltipValue>
+                </TooltipEntry>
+              )}
               <ShipWindow ship={ship} uiState={uiState} {...rest} />
             </>
           )}

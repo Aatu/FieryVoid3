@@ -182,3 +182,29 @@ test("Engine boost affects thrust output", test => {
   engine.callHandler("deBoost");
   test.is(engine.callHandler("getThrustOutput"), 12);
 });
+
+test("Boosted system passes its state to server", test => {
+  const reactor1 = new Reactor({ id: 1, hitpoints: 10, armor: 3 }, 30);
+  const coilgun = new CoilgunLightFixed(
+    { id: 213, hitpoints: 5, armor: 3 },
+    { start: 180, end: 0 }
+  );
+
+  const systems = new ShipSystems().addPrimarySystem([reactor1, coilgun]);
+
+  const serverSystems = new ShipSystems().addPrimarySystem([
+    new Reactor({ id: 1, hitpoints: 10, armor: 3 }, 30),
+    new CoilgunLightFixed(
+      { id: 213, hitpoints: 5, armor: 3 },
+      { start: 180, end: 0 }
+    )
+  ]);
+
+  coilgun.callHandler("boost");
+  coilgun.callHandler("boost");
+  serverSystems.receivePlayerData({ systems });
+  test.is(serverSystems.getSystemById(213).callHandler("getBoost"), 2);
+  coilgun.callHandler("deBoost");
+  serverSystems.receivePlayerData({ systems });
+  test.is(serverSystems.getSystemById(213).callHandler("getBoost"), 1);
+});
