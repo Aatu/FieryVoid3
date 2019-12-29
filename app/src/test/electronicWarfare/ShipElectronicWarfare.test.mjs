@@ -2,6 +2,7 @@ import test from "ava";
 import systems from "../../model/unit/system";
 import ShipElectronicWarfare from "../../model/unit/ShipElectronicWarfare";
 import { OutputReduced2 } from "../../model/unit/system/criticals";
+import TestShip from "../../model/unit/ships/test/TestShip.mjs";
 
 const constructTestShipElectronicWarfare = allSystems =>
   new ShipElectronicWarfare({
@@ -175,4 +176,58 @@ test("System serializes and deserializes nicely", test => {
   test.is(shipEw2.getDefensiveEw(), 1);
   test.is(shipEw2.getOffensiveEw("tuupero"), 3);
   test.is(shipEw2.getOffensiveEw("nuupero"), 2);
+});
+
+test("Electronic warfare array can be boosted", test => {
+  const ship = new TestShip();
+  const ewArray = ship.systems.getSystemById(11);
+  ship.systems.getSystemById(5).power.setOffline();
+  ship.systems.getSystemById(6).power.setOffline();
+  test.true(ship.electronicWarfare.canAssignCcEw(10));
+  test.false(ship.electronicWarfare.canAssignCcEw(11));
+  test.true(ewArray.callHandler("canBoost"));
+  ewArray.callHandler("boost");
+  test.true(ship.electronicWarfare.canAssignCcEw(11));
+  ewArray.callHandler("deBoost");
+  test.false(ship.electronicWarfare.canAssignCcEw(11));
+});
+
+test("When deboosting electronic warfare array, extra ew will be removed", test => {
+  const ship = new TestShip({ id: 1 });
+  const ship2 = new TestShip({ id: 2 });
+
+  const ewArray = ship.systems.getSystemById(11);
+  ship.systems.getSystemById(5).power.setOffline();
+  ship.systems.getSystemById(6).power.setOffline();
+  ewArray.callHandler("boost");
+
+  ship.electronicWarfare.assignOffensiveEw(ship2, 5);
+  ship.electronicWarfare.assignCcEw(6);
+  ewArray.callHandler("deBoost");
+
+  test.is(ship.electronicWarfare.getCcEw(), 6);
+  test.is(ship.electronicWarfare.getDefensiveEw(), 0);
+  test.is(ship.electronicWarfare.getOffensiveEw(ship2), 4);
+  ewArray.power.setOffline();
+  test.is(ship.electronicWarfare.getCcEw(), 0);
+  test.is(ship.electronicWarfare.getDefensiveEw(), 0);
+  test.is(ship.electronicWarfare.getOffensiveEw(ship2), 0);
+});
+
+test("When setting ew array ofline, it will remove assigned ew", test => {
+  const ship = new TestShip({ id: 1 });
+  const ship2 = new TestShip({ id: 2 });
+
+  const ewArray = ship.systems.getSystemById(11);
+
+  ship.electronicWarfare.assignOffensiveEw(ship2, 5);
+  ship.electronicWarfare.assignCcEw(5);
+
+  test.is(ship.electronicWarfare.getCcEw(), 5);
+  test.is(ship.electronicWarfare.getDefensiveEw(), 0);
+  test.is(ship.electronicWarfare.getOffensiveEw(ship2), 5);
+  ewArray.power.setOffline();
+  test.is(ship.electronicWarfare.getCcEw(), 0);
+  test.is(ship.electronicWarfare.getDefensiveEw(), 0);
+  test.is(ship.electronicWarfare.getOffensiveEw(ship2), 0);
 });

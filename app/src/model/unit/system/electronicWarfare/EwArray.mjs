@@ -1,9 +1,15 @@
 import ShipSystem from "../ShipSystem.mjs";
 import { ElectronicWarfareProvider } from "../strategy/index.mjs";
+import BoostablePlusOneOutputSystemStrategy from "../strategy/BoostablePlusOneOutputSystemStrategy.mjs";
+import RequiresPowerSystemStrategy from "../strategy/RequiresPowerSystemStrategy.mjs";
 
 class EwArray extends ShipSystem {
-  constructor(args, output) {
-    super(args, [new ElectronicWarfareProvider(output)]);
+  constructor(args, output, power = 5) {
+    super(args, [
+      new ElectronicWarfareProvider(output),
+      new BoostablePlusOneOutputSystemStrategy(),
+      new RequiresPowerSystemStrategy(power)
+    ]);
   }
 
   getDisplayName() {

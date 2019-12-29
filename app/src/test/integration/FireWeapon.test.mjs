@@ -242,10 +242,10 @@ test.serial("Submit successfull launch order", async test => {
     1
   )
     .setPosition(
-      new Vector({ x: -532.0588797479802, y: -1.7240963760748045, z: 0 })
+      new Vector({ x: -1521.8067248341451, y: 52.64349005371673, z: 0 })
     )
     .setVelocity(
-      new Vector({ x: 1687.1312174496434, y: -57.974096376074804, z: 0 })
+      new Vector({ x: 697.3833723634787, y: -3.606509946283266, z: 0 })
     )
     .setLaunchPosition(new Vector(-2219.190097197624, 56.25));
 
@@ -299,25 +299,29 @@ test.serial("Execute a successful torpedo attack", async test => {
     .find(ship => ship.name === "GEPS Biliyaz");
 
   const launchers = shooter.systems
-    .getSystemById(202)
+    .getSystemById(203)
     .callHandler("getLoadedLaunchers", null, []);
 
   launchers[0].setLaunchTarget(target.id);
 
   await controller.commitTurn(gameData.id, gameData.serialize(), user);
   await controller.commitTurn(gameData.id, gameData.serialize(), user2);
-  const newGameData = await controller.getGameData(gameData.id, user);
+  let newGameData = await controller.getGameData(gameData.id, user);
 
+  await controller.commitTurn(gameData.id, newGameData.serialize(), user);
+  await controller.commitTurn(gameData.id, newGameData.serialize(), user2);
+  newGameData = await controller.getGameData(gameData.id, user);
   await controller.commitTurn(gameData.id, newGameData.serialize(), user);
   await controller.commitTurn(gameData.id, newGameData.serialize(), user2);
 
   const replay2 = await controller.replayHandler.requestReplay(
     gameId,
-    2,
     3,
+    4,
     user
   );
 
+  console.log(replay2[0].combatLog.entries);
   test.deepEqual(replay2[0].combatLog.entries[0].notes, [
     "Relative velocity 108 hex/turn (77% optimal)",
     "MSV with 32 projectiles with hit chance of 990% each."

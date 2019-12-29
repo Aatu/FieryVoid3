@@ -1,6 +1,7 @@
 import Ship from "../../Ship.mjs";
 import systems from "../../system/index.mjs";
 import Torpedo158MSV from "../../system/weapon/ammunition/torpedo/Torpedo158MSV.mjs";
+import Torpedo72MSV from "../../system/weapon/ammunition/torpedo/Torpedo72MSV.mjs";
 
 class TestShip extends Ship {
   setShipProperties() {
@@ -37,6 +38,7 @@ class TestShip extends Ship {
       new systems.Reactor({ id: 7, hitpoints: 20, armor: 3 }, 20),
       new systems.EwArray({ id: 11, hitpoints: 10, armor: 3 }, 10),
       new systems.TorpedoLauncherDual158({ id: 202, hitpoints: 20, armor: 6 }),
+      new systems.TorpedoLauncherDual72({ id: 203, hitpoints: 20, armor: 6 }),
       new systems.CargoBay({ id: 204, hitpoints: 20, armor: 4 }, 500)
     ]);
   }
@@ -51,12 +53,26 @@ class TestShip extends Ship {
       amount: 14
     });
 
+    cargoBay.callHandler("addCargo", {
+      cargo: new Torpedo72MSV(),
+      amount: 14
+    });
+
     this.systems.getSystemById(202).callHandler("loadAmmoInstant", {
       ammo: new Torpedo158MSV(),
       launcherIndex: 1
     });
     this.systems.getSystemById(202).callHandler("loadAmmoInstant", {
       ammo: new Torpedo158MSV(),
+      launcherIndex: 2
+    });
+
+    this.systems.getSystemById(203).callHandler("loadAmmoInstant", {
+      ammo: new Torpedo72MSV(),
+      launcherIndex: 1
+    });
+    this.systems.getSystemById(203).callHandler("loadAmmoInstant", {
+      ammo: new Torpedo72MSV(),
       launcherIndex: 2
     });
   }

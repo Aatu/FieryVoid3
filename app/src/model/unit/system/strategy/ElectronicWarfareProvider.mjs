@@ -148,6 +148,14 @@ class ElectronicWarfareProvider extends ShipSystemStrategy {
     return this.entries.reduce((total, entry) => total + entry.getAmount(), 0);
   }
 
+  getOutputForBoost(payload, previousResponse = 0) {
+    if (previousResponse > this.output) {
+      return previousResponse;
+    }
+
+    return this.output;
+  }
+
   getEwOutput(payload, previousResponse = 0) {
     if (this.system.isDisabled()) {
       return previousResponse;
@@ -175,7 +183,7 @@ class ElectronicWarfareProvider extends ShipSystemStrategy {
       output = 0;
     }
 
-    return previousResponse + output;
+    return previousResponse + this.system.callHandler("getBoost") + output;
   }
 
   isEwArray(payload, previousResponse = 0) {
@@ -200,6 +208,22 @@ class ElectronicWarfareProvider extends ShipSystemStrategy {
     if (!mine) {
       this.entries = [];
     }
+  }
+
+  onSystemOffline() {
+    this.onSystemPowerLevelDecrease();
+  }
+
+  onSystemPowerLevelDecrease() {
+    if (
+      !this.system ||
+      !this.system.shipSystems ||
+      !this.system.shipSystems.ship
+    ) {
+      return;
+    }
+
+    this.system.shipSystems.ship.electronicWarfare.repeatElectonicWarfare();
   }
 }
 

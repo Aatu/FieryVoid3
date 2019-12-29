@@ -1,5 +1,6 @@
 import MovementOrder from "../movement/MovementOrder.mjs";
 import Vector from "../utils/Vector.mjs";
+import ThrustBill from "../movement/ThrustBill.mjs";
 
 class ShipMovement {
   constructor(ship) {
@@ -224,6 +225,40 @@ class ShipMovement {
           .equals(otherShipPosition.add(otherHex.rotate(otherShipFacing)))
       );
     });
+  }
+
+  hasValidMovement() {
+    const bill = new ThrustBill(
+      this.ship,
+      this.getThrustOutput(),
+      this.getMovement()
+    );
+
+    const result = bill.pay();
+    return result;
+  }
+
+  revertMovementsUntilValidMovement() {
+    const canRevert = () =>
+      this.getMovement().some(move => move.isPlayerAdded());
+
+    while (true) {
+      if (this.hasValidMovement()) {
+        return;
+      }
+
+      if (!canRevert()) {
+        throw new Error(
+          "Ship does not have valid movement, but can not revert either"
+        );
+      }
+
+      this.removeMovement(
+        this.getMovement()
+          .filter(move => move.isCancellable() || move.isEvade())
+          .pop()
+      );
+    }
   }
 
   deserialize(data = []) {

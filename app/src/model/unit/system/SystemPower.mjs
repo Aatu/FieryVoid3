@@ -55,6 +55,7 @@ class SystemPower {
     );
 
     this.entries.push(new PowerEntry(POWER_TYPE_GO_OFFLINE));
+    this.system.callHandler("onSystemOffline");
   }
 
   canSetOffline() {

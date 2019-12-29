@@ -20,8 +20,10 @@ import {
 } from "./weapon/index.mjs";
 
 import CargoBaySystemStrategy from "./CargoBaySystemStrategy.mjs";
+import BoostablePlusOneOutputSystemStrategy from "./BoostablePlusOneOutputSystemStrategy.mjs";
 
 export {
+  BoostablePlusOneOutputSystemStrategy,
   InterceptorStrategy,
   CargoBaySystemStrategy,
   ExplosiveDamageStrategy,

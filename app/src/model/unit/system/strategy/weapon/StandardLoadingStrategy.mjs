@@ -3,7 +3,6 @@ import ShipSystemStrategy from "../ShipSystemStrategy.mjs";
 class StandardLoadingStrategy extends ShipSystemStrategy {
   constructor(loadingTime) {
     super();
-
     this.loadingTime = loadingTime;
     this.turnsLoaded = loadingTime;
   }
@@ -25,7 +24,7 @@ class StandardLoadingStrategy extends ShipSystemStrategy {
   }
 
   isLoaded() {
-    return this.turnsLoaded >= this.loadingTime;
+    return this.turnsLoaded >= this.getLoadingTime();
   }
 
   serialize(payload, previousResponse = []) {
@@ -51,7 +50,9 @@ class StandardLoadingStrategy extends ShipSystemStrategy {
       return;
     }
 
-    this.turnsLoaded++;
+    const boost = this.system.callHandler("getBoost", null, 0);
+    const loadingStep = 1 + boost;
+    this.turnsLoaded += loadingStep;
 
     if (this.turnsLoaded > this.loadingTime) {
       this.turnsLoaded = this.loadingTime;

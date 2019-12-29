@@ -13,30 +13,24 @@ class MSVTorpedoDamageStrategy extends StandardDamageStrategy {
     this.numberOfShots = numberOfShots;
   }
 
-  _getDamageForWeaponHit({ torpedoFlight, relativeVelocity }) {
+  _getDamageForWeaponHit({ torpedoFlight }) {
     if (Number.isInteger(this.damageFormula)) {
-      return (
-        this.damageFormula *
-        torpedoFlight.getRelativeVelocityRatio(relativeVelocity)
-      );
+      return this.damageFormula * torpedoFlight.strikeEffectivenes;
     }
     return (
       this.diceRoller.roll(this.damageFormula).total *
-      torpedoFlight.getRelativeVelocityRatio(relativeVelocity)
+      torpedoFlight.strikeEffectivenes
     );
   }
 
-  _getArmorPiercing({ torpedoFlight, relativeVelocity }) {
+  _getArmorPiercing({ torpedoFlight }) {
     if (Number.isInteger(this.armorPiercingFormula)) {
-      return (
-        this.armorPiercingFormula *
-        torpedoFlight.getRelativeVelocityRatio(relativeVelocity)
-      );
+      return this.armorPiercingFormula * torpedoFlight.strikeEffectivenes;
     }
 
     return (
       this.diceRoller.roll(this.armorPiercingFormula).total *
-      torpedoFlight.getRelativeVelocityRatio(relativeVelocity)
+      torpedoFlight.strikeEffectivenes
     );
   }
 

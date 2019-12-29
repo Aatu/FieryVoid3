@@ -151,36 +151,48 @@ class TorpedoMovementService {
     flight.position = flight.position.add(flight.velocity);
   }
 
-  reachesTargetThisTurn(flight, target) {
-    return (
-      this.torpedoMath(
-        flight.position,
-        flight.velocity,
-        target.getPosition(),
-        target.getVelocity(),
-        flight.torpedo.deltaVelocityPerTurn * HexagonMath.getHexWidth()
-      ).impactTime < 1
-    );
-  }
-
   predictTorpedoHitPositionAndTurn(flight, target) {
-    console.log(
-      "flight",
-      flight.position,
-      flight.velocity,
-      "target",
-      target.getPosition(),
-      target.getVelocity(),
-      "torpedoAcceleration",
-      flight.torpedo.deltaVelocityPerTurn * HexagonMath.getHexWidth()
-    );
-    return this.torpedoMath(
+    const result = this.torpedoMath(
       flight.position,
       flight.velocity,
       target.getPosition(),
       target.getVelocity(),
       flight.torpedo.deltaVelocityPerTurn * HexagonMath.getHexWidth()
     );
+
+    const maxInterceptVelocity = flight.torpedo.maxInterceptVelocity;
+
+    let velocity = result.impactVelocity;
+
+    if (velocity > maxInterceptVelocity) {
+      velocity = maxInterceptVelocity;
+    }
+
+    let effectiveness = velocity / maxInterceptVelocity;
+    let notes = "";
+
+    if (
+      Math.floor(result.impactTurn) + flight.turnsActive <
+      flight.torpedo.armingTime
+    ) {
+      effectiveness = 0;
+      notes = "Insufficient time to arm torpedo";
+    }
+
+    if (
+      Math.floor(result.impactTurn) + flight.turnsActive >
+      flight.torpedo.turnsToLive
+    ) {
+      effectiveness = 0;
+      notes = "Out of range";
+    }
+
+    return {
+      ...result,
+      notes,
+      effectiveImpactVelocity: velocity,
+      effectiveness
+    };
   }
 
   torpedoMath(
@@ -302,7 +314,6 @@ class TorpedoMovementService {
     const dVelocity = shooterVelocity.sub(targetVelocity);
     const dPosition = shooterPosition.sub(targetPosition);
 
-    /*
     console.log(
       "shooterToTargetDistance",
       shooterToTargetDistance,
@@ -329,7 +340,6 @@ class TorpedoMovementService {
       "T",
       T
     );
-    */
 
     const sinTheta =
       -(2 * (T * dVelocity.y + dPosition.y)) /

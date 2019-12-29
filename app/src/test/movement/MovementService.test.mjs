@@ -13,6 +13,7 @@ import Engine from "../../model/unit/system/engine/Engine.mjs";
 import Reactor from "../../model/unit/system/reactor/Reactor.mjs";
 import DamageEntry from "../../model/unit/system/DamageEntry.mjs";
 import ManeuveringThruster from "../../model/unit/system/thruster/ManeuveringThruster.mjs";
+import { OutputReduced6 } from "../../model/unit/system/criticals/index.mjs";
 
 const startMove = new MovementOrder(
   -1,
@@ -440,4 +441,28 @@ test("Get an end move", test => {
       ).round()
     ]
   );
+});
+
+test("Boosted movements get deleted when engine deboosts", test => {
+  const movementService = getMovementService();
+  const ship = constructDeployedShip();
+  ship.systems.getSystemById(5).addDamage(new DamageEntry(50));
+  const engine = ship.systems.getSystemById(6);
+  engine.addCritical(new OutputReduced6());
+
+  movementService.thrust(ship, 2);
+  movementService.thrust(ship, 2);
+  test.falsy(movementService.canThrust(ship, 0).result);
+
+  engine.callHandler("boost");
+  engine.callHandler("boost");
+  engine.callHandler("boost");
+
+  test.true(movementService.canThrust(ship, 0).result);
+  test.is(ship.movement.getMovement().length, 4);
+
+  movementService.thrust(ship, 1);
+  engine.callHandler("deBoost");
+  test.is(ship.movement.getMovement().length, 4);
+  test.falsy(movementService.canThrust(ship, 0).result);
 });

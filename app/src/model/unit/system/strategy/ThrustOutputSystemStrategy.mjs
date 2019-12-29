@@ -13,6 +13,14 @@ class ThrustOutputSystemStrategy extends ShipSystemStrategy {
     this.output = output || 0;
   }
 
+  getOutputForBoost(payload, previousResponse = 0) {
+    if (previousResponse > this.output) {
+      return previousResponse;
+    }
+
+    return this.output;
+  }
+
   getThrustOutput(payload, previousResponse = 0) {
     if (this.system.isDisabled()) {
       return previousResponse;
@@ -40,7 +48,7 @@ class ThrustOutputSystemStrategy extends ShipSystemStrategy {
       output = 0;
     }
 
-    return previousResponse + output;
+    return previousResponse + this.system.callHandler("getBoost") + output;
   }
 
   getPossibleCriticals(payload, previousResponse = []) {
@@ -51,6 +59,22 @@ class ThrustOutputSystemStrategy extends ShipSystemStrategy {
       { weight: 3, className: OutputReduced6 },
       { weight: 1, className: OutputReduced8 }
     ];
+  }
+
+  onSystemOffline() {
+    this.onSystemPowerLevelDecrease();
+  }
+
+  onSystemPowerLevelDecrease() {
+    if (
+      !this.system ||
+      !this.system.shipSystems ||
+      !this.system.shipSystems.ship
+    ) {
+      return;
+    }
+
+    this.system.shipSystems.ship.movement.revertMovementsUntilValidMovement();
   }
 }
 

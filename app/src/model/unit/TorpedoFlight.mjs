@@ -15,8 +15,14 @@ class TorpedoFlight {
     this.velocity = new Vector();
 
     this.reachedTarget = false;
+    this.strikeEffectivenes = 0;
+    this.effectiveImpactVelocity = 0;
     this.intercepted = false;
     this.turnsActive = 0;
+  }
+
+  hasArmed() {
+    return this.turnsActive > this.torpedo.armingTime;
   }
 
   noLongerActive() {
@@ -35,8 +41,10 @@ class TorpedoFlight {
     this.intercepted = true;
   }
 
-  setReachedTarget() {
+  setReachedTarget(setReachedTarget, effectiveImpactVelocity) {
     this.reachedTarget = true;
+    this.strikeEffectiveness = setReachedTarget;
+    this.effectiveImpactVelocity = effectiveImpactVelocity;
   }
 
   getInterceptTries() {

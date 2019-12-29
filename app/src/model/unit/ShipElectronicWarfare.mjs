@@ -155,6 +155,23 @@ class ShipElectronicWarfare {
 
     entries
       .filter(entry => entry.getAmount() > 0)
+      .sort((a, b) => {
+        if (
+          a.type === ewTypes.EW_OFFENSIVE &&
+          b.type !== ewTypes.EW_OFFENSIVE
+        ) {
+          return 1;
+        }
+
+        if (
+          a.type !== ewTypes.EW_OFFENSIVE &&
+          b.type === ewTypes.EW_OFFENSIVE
+        ) {
+          return -1;
+        }
+
+        return 0;
+      })
       .map(entry => {
         negativeEntries
           .filter(

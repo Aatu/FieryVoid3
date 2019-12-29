@@ -1,6 +1,6 @@
 import TestWeapon from "./TestWeapon.mjs";
 
-import RailgunFixed22gw from "./railgun/RailgunFixed22gw.mjs";
+import CoilgunLightFixed from "./railgun/CoilgunLightFixed.mjs";
 
 import PDC30mm from "./pdc/PDC30mm.mjs";
 
@@ -12,7 +12,7 @@ import TorpedoLauncherDual72 from "./launcher/TorpedoLauncherDual72.mjs";
 
 export {
   TestWeapon,
-  RailgunFixed22gw,
+  CoilgunLightFixed,
   PDC30mm,
   CannonFixed120mm,
   TorpedoLauncherDual158,

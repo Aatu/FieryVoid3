@@ -99,6 +99,10 @@ class FireOrderStrategy extends ShipSystemStrategy {
       this.fireOrders = [];
     }
   }
+
+  onSystemOffline() {
+    this.removeFireOrders();
+  }
 }
 
 export default FireOrderStrategy;

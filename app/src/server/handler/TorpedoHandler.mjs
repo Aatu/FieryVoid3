@@ -3,6 +3,7 @@ import TorpedoMovementService from "../../model/movement/TorpedoMovementService.
 import CombatLogTorpedoAttack from "../../model/combatLog/CombatLogTorpedoAttack.mjs";
 import CombatLogTorpedoMove from "../../model/combatLog/CombatLogTorpedoMove.mjs";
 import CombatLogTorpedoOutOfTime from "../../model/combatLog/CombatLogTorpedoOutOfTime.mjs";
+import CombatLogTorpedoNotArmed from "../../model/combatLog/CombatLogTorpedoNotArmed.mjs";
 
 class TorpedoHandler {
   constructor() {
@@ -173,15 +174,10 @@ class TorpedoHandler {
         const torpedoAttack = new CombatLogTorpedoAttack(flight.id);
         gameData.combatLog.addEntry(torpedoAttack);
 
-        const relativeVelocity = this.torpedoMovementService.getTorpedoRelativeVelocity(
-          flight,
-          target
-        );
-
         torpedoAttack.addNote(
-          `Relative velocity ${relativeVelocity} hex/turn (${Math.round(
-            flight.getRelativeVelocityRatio(relativeVelocity) * 100
-          )}% optimal)`
+          `Relative velocity ${
+            flight.effectiveImpactVelocity
+          } h/t (${Math.round(flight.strikeEffectivenes * 100)}% optimal)`
         );
 
         flight.torpedo.damageStrategy.applyDamageFromWeaponFire({
@@ -189,8 +185,7 @@ class TorpedoHandler {
           shooter,
           torpedoFlight: flight,
           gameData,
-          combatLogEvent: torpedoAttack,
-          relativeVelocity
+          combatLogEvent: torpedoAttack
         });
       });
   }
@@ -206,35 +201,36 @@ class TorpedoHandler {
         return;
       }
 
-      if (
-        this.torpedoMovementService.reachesTargetThisTurn(
-          flight,
-          target.getPosition()
-        )
-      ) {
-        flight.setReachedTarget();
-        /*
-        this.torpedoMovementService.addSimulatedAccelerationForImpactTurn(
-          flight,
-          target.getPosition()
-        );
-        */
-        return;
-      }
-
-      const impactAndTurn = this.torpedoMovementService.predictTorpedoHitPositionAndTurn(
+      const {
+        impactTurn,
+        effectiveness,
+        effectiveImpactVelocity,
+        ...rest
+      } = this.torpedoMovementService.predictTorpedoHitPositionAndTurn(
         flight,
         target
       );
 
-      if (impactAndTurn === false) {
-        return;
+      console.log(impactTurn, effectiveness, effectiveImpactVelocity, rest);
+
+      if (impactTurn < 1) {
+        if (!flight.hasArmed()) {
+          gameData.combatLog.addEntry(
+            new CombatLogTorpedoNotArmed(
+              flight.id,
+              flight.turnsActive,
+              flight.torpedo.armingTime
+            )
+          );
+          return;
+        } else {
+          flight.setReachedTarget(effectiveness, effectiveImpactVelocity);
+          return;
+        }
       }
 
-      const { impactPosition } = impactAndTurn;
-
       const startPosition = flight.position.clone();
-      this.torpedoMovementService.moveTorpedo(flight, impactPosition);
+      this.torpedoMovementService.moveTorpedo(flight, target);
       gameData.combatLog.addEntry(
         new CombatLogTorpedoMove(flight.id, startPosition, flight.position)
       );

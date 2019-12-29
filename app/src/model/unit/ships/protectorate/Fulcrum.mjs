@@ -44,11 +44,11 @@ class Fulcrum extends Ship {
     this.shipModel = "Fulcrum";
     this.pointCost = 500;
 
-    //RailgunFixed22gw, PDC30mm, CannonFixed120mm
+    //CoilgunLightFixed, PDC30mm, CannonFixed120mm
     this.systems.addFrontSystem([
       new systems.Structure({ id: 100, hitpoints: 30, armor: 4 }),
 
-      new systems.RailgunFixed22gw(
+      new systems.CoilgunLightFixed(
         { id: 102, hitpoints: 10, armor: 3 },
         { start: 330, end: 30 }
       ),

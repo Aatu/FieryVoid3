@@ -6,8 +6,10 @@ import StandardRangeStrategy from "../../strategy/weapon/StandardRangeStrategy.m
 import StandardLoadingStrategy from "../../strategy/weapon/StandardLoadingStrategy.mjs";
 import WeaponAnimationStrategy from "../../strategy/weapon/WeaponAnimationStrategy.mjs";
 import PiercingDamageStrategy from "../../strategy/weapon/PiercingDamageStrategy.mjs";
+import BoostableSystemStrategy from "../../strategy/BoostableSystemStrategy.mjs";
+import RequiresPowerSystemStrategy from "../../strategy/RequiresPowerSystemStrategy.mjs";
 
-class RailgunFixed22gw extends Weapon {
+class CoilgunLightFixed extends Weapon {
   constructor(args, arcs) {
     super(args, [
       new FireOrderStrategy(1),
@@ -19,6 +21,8 @@ class RailgunFixed22gw extends Weapon {
         { range: 400, modifier: -200 }
       ]),
       new StandardLoadingStrategy(3),
+      new RequiresPowerSystemStrategy(8),
+      new BoostableSystemStrategy(8, 2),
       new PiercingDamageStrategy("3d3", "2d2 + 4"),
       new WeaponAnimationStrategy("Bolt", {
         size: 12,
@@ -30,7 +34,7 @@ class RailgunFixed22gw extends Weapon {
   }
 
   getDisplayName() {
-    return "22Gw fixed railgun";
+    return "Fixed light coilgun";
   }
 
   getBackgroundImage() {
@@ -38,4 +42,4 @@ class RailgunFixed22gw extends Weapon {
   }
 }
 
-export default RailgunFixed22gw;
+export default CoilgunLightFixed;
