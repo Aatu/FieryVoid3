@@ -41,13 +41,15 @@ class PhaseDirector {
     this.gameConnector.init(this);
     this.scene = null;
     this.emitterContainer = null;
+    this.camera = null;
 
     this.gameDataCache = new GameDataCache();
   }
 
-  init(scene, emitterContainer) {
+  init(scene, emitterContainer, camera) {
     this.scene = scene;
     this.emitterContainer = emitterContainer;
+    this.camera = camera;
 
     this.shipIconContainer = new ShipIconContainer(scene, this.currentUser);
     this.electronicWarfareIndicatorService = new ElectronicWarfareIndicatorService(
@@ -209,7 +211,8 @@ class PhaseDirector {
       gameConnector: this.gameConnector,
       movementPathService: this.movementPathService,
       weaponFireService: this.weaponFireService,
-      particleEmitterContainer: this.emitterContainer
+      particleEmitterContainer: this.emitterContainer,
+      gameCamera: this.camera
     };
   }
 }

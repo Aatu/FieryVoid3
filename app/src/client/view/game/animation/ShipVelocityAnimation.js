@@ -28,6 +28,21 @@ class ShipVelocityAnimation extends Animation {
 
   cleanUp() {}
 
+  getPositionAt(time) {
+    const turnDone = this.getMovementTurnDone({ total: time });
+
+    if (turnDone === -1) {
+      throw new Error("Don't ask ShipVelocityAnimation");
+    }
+
+    const percentDone = turnDone < 1 ? turnDone % 1 : 1;
+
+    return {
+      facing: this.endMove.facing,
+      position: this.positionCurve.getPoint(percentDone)
+    };
+  }
+
   getMovementTurnDone({ total }) {
     if (total < this.start) {
       return -1;

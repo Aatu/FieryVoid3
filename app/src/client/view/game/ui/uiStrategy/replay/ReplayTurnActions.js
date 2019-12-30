@@ -11,6 +11,8 @@ import ShipWeaponAnimationService from "./ShipWeaponAnimationService";
 import CombatLogShipMovement from "../../../../../../model/combatLog/CombatLogShipMovement.mjs";
 import ShipVelocityAnimation from "../../../animation/ShipVelocityAnimation";
 import CombatLogShipVelocity from "../../../../../../model/combatLog/CombatLogShipVelocity.mjs";
+import CameraPositionAnimation from "../../../animation/CameraPositionAnimation";
+import CombatLogWeaponFire from "../../../../../../model/combatLog/CombatLogWeaponFire.mjs";
 
 const getMovesForShip = (gameDatas, ship) =>
   gameDatas.reduce((moves, gameData) => {
@@ -39,14 +41,8 @@ class ReplayTurnActions extends AnimationUiStrategy {
 
     const gameData = gameDatas[0];
 
-    const getRandom = getSeededRandomGenerator(
+    this.getRandom = getSeededRandomGenerator(
       "id" + gameData.id + "turn" + gameData.turn
-    );
-
-    const weaponFireService = new WeaponFireService().update(gameData);
-    const weaponAnimationService = new ShipWeaponAnimationService(
-      getRandom,
-      particleEmitterContainer
     );
 
     gameData.combatLog.entries.forEach(combatLogEntry => {
@@ -54,10 +50,85 @@ class ReplayTurnActions extends AnimationUiStrategy {
         this.buildMovementAnimation(combatLogEntry, gameDatas);
       } else if (combatLogEntry instanceof CombatLogShipVelocity) {
         this.buildVelocityAnimation(combatLogEntry, gameDatas);
+      } else if (combatLogEntry instanceof CombatLogWeaponFire) {
+        this.buildWeaponFireAnimation(combatLogEntry, gameDatas);
       }
     });
 
-    console.log(gameData.combatLog);
+    //console.log(gameData.combatLog);
+    console.log("context", this.replayContext);
+  }
+
+  buildWeaponFireAnimation(combatLogEntry, gameDatas) {
+    const {
+      shipIconContainer,
+      gameCamera,
+      particleEmitterContainer
+    } = this.services;
+    const gameData = gameDatas[0];
+    const start = this.replayContext.getNextFireStart();
+    const cameraDuration = 2000;
+    const fireStart = start + cameraDuration;
+
+    console.log(combatLogEntry);
+
+    const weaponFireService = new WeaponFireService().update(gameData);
+    const weaponAnimationService = new ShipWeaponAnimationService(
+      this.getRandom,
+      particleEmitterContainer
+    );
+
+    const fireOrder = weaponFireService.getFireOrderById(
+      combatLogEntry.fireOrderId
+    );
+
+    const shooter = gameData.ships.getShipById(fireOrder.shooterId);
+    const weapon = shooter.systems.getSystemById(fireOrder.weaponId);
+    const target = gameData.ships.getShipById(fireOrder.targetId);
+
+    const targetIcon = shipIconContainer.getByShip(target);
+
+    console.log(fireOrder);
+
+    const { facing, position } = this.replayContext.getShootingPosition(
+      targetIcon,
+      this.animations
+    );
+
+    console.log(position);
+
+    this.animations.push(
+      new CameraPositionAnimation(position, start, fireStart, gameCamera)
+    );
+
+    const animationName = weapon.callHandler("getWeaponFireAnimationName");
+
+    if (!animationName) {
+      return;
+    }
+
+    const animation = new ShipWeaponAnimations[
+      `ShipWeapon${animationName.charAt(0).toUpperCase() +
+        animationName.slice(1)}Animation`
+    ](
+      fireStart,
+      combatLogEntry,
+      fireOrder,
+      weapon,
+      shipIconContainer.getByShip(shooter),
+      targetIcon,
+      this.replayContext.wrapGetShootingPosition(this.animations),
+      this.getRandom,
+      particleEmitterContainer,
+      weapon.callHandler("getWeaponFireAnimationArguments"),
+      weaponAnimationService
+    );
+
+    this.animations.push(animation);
+
+    this.replayContext.addFireAnimationDuration(
+      cameraDuration + animation.getDuration()
+    );
   }
 
   buildVelocityAnimation(combatLogEntry, gameDatas) {

@@ -1,17 +1,6 @@
 import FireOrder from "./FireOrder.mjs";
 
 class WeaponFireService {
-  /*
-    TODO:
-
-    Weapon firing sequence
-        - weapon fires as many times as it has shots assigned
-        - compare DEW and OEW
-        - calculate the hit change using targets to hit profile, weapons range strategy (affected by evasion), and weapon hit strategy
-        - RNG if hit actually lands
-        - Apply damage, criticals and heat according to weapon damage strategy
-    */
-
   constructor() {
     this.gamedata = null;
   }
@@ -29,6 +18,10 @@ class WeaponFireService {
         (all, ship) => [...all, ...this.getAllFireOrdersForShip(ship)],
         []
       );
+  }
+
+  getFireOrderById(id) {
+    return this.getAllFireOrders().find(order => order.id === id);
   }
 
   getAllFireOrdersForShip(shooter) {

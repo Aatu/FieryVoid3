@@ -1,14 +1,13 @@
 import CombatLogBuilder from "./CombatLogBuilder";
+import { ShipMovementAnimation } from "../../../animation";
+import ShipVelocityAnimation from "../../../animation/ShipVelocityAnimation";
 
 class ReplayContext {
   constructor(phaseStrategy) {
     this.firingDuration = 0;
     this.movementDuration = 0;
     this.velocityDuration = 0;
-    this.replayShipMovement = null;
-    this.replayShipWeaponFire = null;
     this.phaseStrategy = phaseStrategy;
-    this.combatLogBuilder = new CombatLogBuilder();
   }
 
   setMovementDuration(duration) {
@@ -23,6 +22,14 @@ class ReplayContext {
     return this.movementDuration + this.firingDuration;
   }
 
+  getNextFireStart() {
+    return this.movementDuration + this.firingDuration;
+  }
+
+  addFireAnimationDuration(duration) {
+    this.firingDuration += duration;
+  }
+
   pauseReplay() {
     this.phaseStrategy.pauseAnimation();
   }
@@ -32,7 +39,8 @@ class ReplayContext {
   }
 
   rewindToFiring() {
-    this.phaseStrategy.setAnimationTime(0);
+    console.log("duartion", this.movementDuration);
+    this.phaseStrategy.setAnimationTime(this.movementDuration - 1);
   }
 
   rewindToMovement() {}
@@ -41,8 +49,24 @@ class ReplayContext {
     return this.firingDuration + this.movementDuration + this.velocityDuration;
   }
 
-  getPositionAtTime(icon, percentDone) {
-    return this.replayShipMovement.getPositionAtTime(icon, percentDone);
+  wrapGetShootingPosition(animations) {
+    return icon => {
+      return this.getShootingPosition(icon, animations);
+    };
+  }
+
+  getShootingPosition(icon, animations) {
+    let animation = animations.find(
+      animation =>
+        animation instanceof ShipMovementAnimation &&
+        animation.shipIcon === icon
+    );
+
+    if (!animation) {
+      throw new Error("Animation not found");
+    }
+
+    return animation.getEndPosition();
   }
 }
 

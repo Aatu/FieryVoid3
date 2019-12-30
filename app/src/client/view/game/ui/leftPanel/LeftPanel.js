@@ -27,6 +27,7 @@ class LeftPanel extends React.PureComponent {
     if (!uiState.state.selectedShip) {
       return null;
     }
+
     return (
       <Container>
         <SubContainer>

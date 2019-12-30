@@ -26,6 +26,10 @@ class CombatLogWeaponFire {
     this.totalShots = totalShots;
   }
 
+  causedDamage() {
+    return this.damages.length > 0;
+  }
+
   serialize() {
     return {
       logEntryClass: this.constructor.name,

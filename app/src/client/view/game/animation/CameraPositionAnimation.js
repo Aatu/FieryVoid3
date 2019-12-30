@@ -1,13 +1,17 @@
 import { Animation } from ".";
+import * as THREE from "three";
+import { getPointBetween } from "../../../../model/utils/math.mjs";
 
 class CameraPositionAnimation extends Animation {
-  constructor(position, time, endTime) {
+  constructor(position, time, endTime, gameCamera) {
     super();
     Animation.call(this);
     this.time = time;
     this.position = position;
     this.lastTime = null;
     this.endTime = 0;
+
+    this.gameCamera = gameCamera;
 
     this.duration = 1000;
 
@@ -36,22 +40,19 @@ class CameraPositionAnimation extends Animation {
 
     if (total > this.time && total < this.time + this.duration && !paused) {
       if (this.startPosition === null) {
-        this.startPosition = {
-          x: window.webglScene.camera.position.x,
-          y: window.webglScene.camera.position.y
-        };
+        this.startPosition = this.gameCamera.getLookAtPosition();
       }
       var done = 1 - (this.time + this.duration - total) / this.duration;
       var point = this.curve.getPoint(done).y;
 
-      var position = mathlib.getPointBetween(
+      var position = getPointBetween(
         this.startPosition,
         this.position,
         point,
         true
       );
 
-      doMove(position);
+      this.doMove(position);
     } else {
       this.startPosition = null;
     }
@@ -67,14 +68,14 @@ class CameraPositionAnimation extends Animation {
       this.lastTime < this.time &&
       total > this.time
     ) {
-      doMove(this.position);
+      this.doMove(this.position);
     }
 
     this.lastTime = total;
   }
 
   doMove(position) {
-    window.webglScene.moveCameraTo(position);
+    this.gameCamera.setByLookAtPosition(position);
   }
 }
 

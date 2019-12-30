@@ -55,6 +55,19 @@ class ShipMovementAnimation extends Animation {
 
   cleanUp() {}
 
+  getEndPosition() {
+    return this.getPositionAndFacing(1, 1);
+  }
+
+  getPositionAt(time) {
+    const turnDone = this.getMovementTurnDone({ total: time });
+
+    const turn = Math.floor(turnDone);
+    const percentDone = turnDone < 1 ? turnDone % 1 : 1;
+
+    this.getPositionAndFacing(turn, percentDone);
+  }
+
   getMovementTurnDone({ total }) {
     if (total < this.start) {
       return 0;

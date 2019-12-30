@@ -6,11 +6,13 @@ import ExplosionEffect from "../effect/ExplosionEffect";
 
 class ShipWeaponBoltAnimation extends ShipWeaponAnimation {
   constructor(
+    time,
+    combatLogEntry,
     fireOrder,
     weapon,
     shooterIcon,
     targetIcon,
-    replayShipMovement,
+    getPosition,
     getRandom,
     particleEmitterContainer,
     args,
@@ -18,31 +20,32 @@ class ShipWeaponBoltAnimation extends ShipWeaponAnimation {
   ) {
     super(getRandom);
 
-    const hit = fireOrder.result.getHitResolution().result;
-    const damage = fireOrder.result.getDamageResolution();
+    console.log(combatLogEntry);
+    const hit = Boolean(combatLogEntry.shotsHit);
 
     this.particleEmitterContainer = particleEmitterContainer;
+    console.log("hi?", particleEmitterContainer);
 
-    let startTime = getRandom() * 2000;
+    let startTime = time + getRandom() * 2000;
     const speed = args.speed || 1;
 
-    const startPosition = replayShipMovement
-      .getPositionAtTime(shooterIcon, 0)
-      .add(this.getLocationForSystem(weapon, shooterIcon));
+    const startPosition = getPosition(shooterIcon, startTime).position.add(
+      this.getLocationForSystem(weapon, shooterIcon)
+    );
     startPosition.z += shooterIcon.shipZ;
 
-    const endPosition = replayShipMovement
-      .getPositionAtTime(targetIcon, 0)
-      .add(this.getRandomPosition(20));
+    const endPosition = getPosition(targetIcon, startTime).position.add(
+      this.getRandomPosition(20)
+    );
     endPosition.z += targetIcon.shipZ;
 
     const distance = startPosition.distanceTo(endPosition);
-    let duration = distance / speed;
+    this.duration = distance / speed;
     let fade = 0;
 
     if (!hit) {
       const extra = getRandom() * 300 + 300;
-      duration += extra;
+      this.duration += extra;
       fade = extra * 0.8;
     }
 
@@ -55,7 +58,7 @@ class ShipWeaponBoltAnimation extends ShipWeaponAnimation {
         endPosition.clone(),
         speed,
         fade,
-        duration,
+        this.duration,
         args,
         this
       )
@@ -63,20 +66,24 @@ class ShipWeaponBoltAnimation extends ShipWeaponAnimation {
 
     this.explosion = null;
 
-    if (!damage) {
+    if (!combatLogEntry.causedDamage()) {
       return;
     }
+
     if (hit) {
       weaponAnimationService.getDamageExplosion(
-        damage.shots[0],
+        args.explosionSize,
         endPosition,
-        startTime + duration,
+        startTime + this.duration,
         this
       );
+
+      this.duration += 1000;
     }
   }
 
   getDuration() {
+    console.log("get duration", this.duration);
     return this.duration;
   }
 

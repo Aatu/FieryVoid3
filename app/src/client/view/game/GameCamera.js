@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import Vector from "../../../model/utils/Vector.mjs";
 
 class GameCamera {
   constructor(zoom, width, height, z) {
@@ -33,15 +34,20 @@ class GameCamera {
   }
 
   getPosition() {
-    return this.current.position;
+    return new Vector(this.current.position);
   }
 
   getLookAtPosition() {
-    return new THREE.Vector3(
+    return new Vector(
       this.ortho.position.x,
       this.ortho.position.y - this.orthoCameraAngle,
       this.ortho.position.z - this.z
     );
+  }
+
+  setByLookAtPosition(position) {
+    this.ortho.position.x = position.x;
+    this.ortho.position.y = position.y + this.orthoCameraAngle;
   }
 
   addPosition(position) {

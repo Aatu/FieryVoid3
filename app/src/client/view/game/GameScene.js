@@ -52,7 +52,11 @@ class GameScene {
     this.camera = new GameCamera(this.zoom, this.width, this.height, 10000);
 
     this.coordinateConverter.init(this.camera, this.scene);
-    this.phaseDirector.init(this.scene, this.particleEmitterContainer);
+    this.phaseDirector.init(
+      this.scene,
+      this.particleEmitterContainer,
+      this.camera
+    );
 
     this.starFieldScene = new THREE.Scene();
     this.starFieldCamera = new THREE.OrthographicCamera(

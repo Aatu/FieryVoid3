@@ -6,11 +6,13 @@ import ExplosionEffect from "../effect/ExplosionEffect";
 
 class ShipWeaponBoltBurstAnimation extends ShipWeaponAnimation {
   constructor(
+    time,
+    combatLogEntry,
     fireOrder,
     weapon,
     shooterIcon,
     targetIcon,
-    replayShipMovement,
+    getPosition,
     getRandom,
     particleEmitterContainer,
     args,
@@ -24,16 +26,16 @@ class ShipWeaponBoltBurstAnimation extends ShipWeaponAnimation {
     const damage = fireOrder.result.getDamageResolution();
     const missesFirst = this.getRandom() > 0.5;
     const speed = args.speed || 1;
-    let startTime = getRandom() * 2000;
+    let startTime = time + getRandom() * 2000;
 
-    const startPosition = replayShipMovement
-      .getPositionAtTime(shooterIcon, 0)
-      .add(this.getLocationForSystem(weapon, shooterIcon));
+    const startPosition = getPosition(shooterIcon, startTime).position.add(
+      this.getLocationForSystem(weapon, shooterIcon)
+    );
     startPosition.z += shooterIcon.shipZ;
 
-    let endPosition = replayShipMovement
-      .getPositionAtTime(targetIcon, 0)
-      .add(this.getRandomPosition(20));
+    let endPosition = getPosition(targetIcon, startTime).position.add(
+      this.getRandomPosition(20)
+    );
     endPosition.z += targetIcon.shipZ;
 
     const distance = startPosition.distanceTo(endPosition);

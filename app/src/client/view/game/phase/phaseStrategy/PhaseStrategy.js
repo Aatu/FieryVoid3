@@ -87,7 +87,8 @@ class PhaseStrategy {
 
   setAnimationTime(time) {
     this.totalAnimationTime = time;
-    this.lastAnimationTime = time;
+    this.lastAnimationTime = null;
+    this.currentDeltaTime = 0;
   }
 
   updateTotalAnimationTime() {
