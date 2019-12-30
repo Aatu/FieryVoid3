@@ -24,7 +24,11 @@ class FireOrderStrategy extends ShipSystemStrategy {
         return false;
       }
 
-      const combatLogEntry = new CombatLogWeaponFire(fireOrder.id);
+      const combatLogEntry = new CombatLogWeaponFire(
+        fireOrder.id,
+        fireOrder.targetId,
+        fireOrder.shooterId
+      );
 
       const hitResolution = weapon.callHandler("checkFireOrderHits", {
         shooter,

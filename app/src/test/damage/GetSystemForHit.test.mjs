@@ -2,7 +2,7 @@ import test from "ava";
 import HitSystemRandomizer from "../../model/unit/system/strategy/weapon/utils/HitSystemRandomizer.mjs";
 import Structure from "../../model/unit/system/structure/Structure.mjs";
 import { PDC30mm } from "../../model/unit/system/weapon/pdc/index.mjs";
-import { RailgunTurreted32gw } from "../../model/unit/system/weapon/railgun/index.mjs";
+import { RailgunTurreted32gw } from "../../model/unit/system/weapon/coilgun/index.mjs";
 import Ship from "../../model/unit/Ship.mjs";
 import Thruster from "../../model/unit/system/thruster/Thruster.mjs";
 import Engine from "../../model/unit/system/engine/Engine.mjs";

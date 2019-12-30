@@ -1,6 +1,7 @@
 class CombatLogShipMovement {
   constructor(shipId) {
     this.shipId = shipId;
+    this.replayOrder = 1;
   }
 
   serialize() {

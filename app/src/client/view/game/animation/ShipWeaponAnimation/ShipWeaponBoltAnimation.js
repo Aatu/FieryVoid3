@@ -26,7 +26,7 @@ class ShipWeaponBoltAnimation extends ShipWeaponAnimation {
     this.particleEmitterContainer = particleEmitterContainer;
     console.log("hi?", particleEmitterContainer);
 
-    let startTime = time + getRandom() * 2000;
+    let startTime = time;
     const speed = args.speed || 1;
 
     const startPosition = getPosition(shooterIcon, startTime).position.add(

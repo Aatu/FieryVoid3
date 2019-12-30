@@ -60,7 +60,7 @@ class OEWIndicator {
       return;
     }
 
-    this.line.render(zoom);
+    //this.line.render(zoom);
 
     const newTargetPosition = this.targetGhost.hidden
       ? this.targetIcon.getPosition()

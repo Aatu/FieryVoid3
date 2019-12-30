@@ -1,7 +1,7 @@
 import Ship from "../../Ship.mjs";
 import systems from "../../system/index.mjs";
 import Offset from "../../../hexagon/Offset.mjs";
-import { RailgunTurreted32gw } from "../../system/weapon/railgun/index.mjs";
+import { RailgunTurreted32gw } from "../../system/weapon/coilgun/index.mjs";
 
 class Mouros extends Ship {
   setShipProperties() {

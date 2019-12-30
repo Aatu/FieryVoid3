@@ -45,7 +45,7 @@ class ReplayTurnActions extends AnimationUiStrategy {
       "id" + gameData.id + "turn" + gameData.turn
     );
 
-    gameData.combatLog.entries.forEach(combatLogEntry => {
+    gameData.combatLog.getForReplay().forEach(combatLogEntry => {
       if (combatLogEntry instanceof CombatLogShipMovement) {
         this.buildMovementAnimation(combatLogEntry, gameDatas);
       } else if (combatLogEntry instanceof CombatLogShipVelocity) {
@@ -55,7 +55,7 @@ class ReplayTurnActions extends AnimationUiStrategy {
       }
     });
 
-    //console.log(gameData.combatLog);
+    console.log(gameData.combatLog.getForReplay());
     console.log("context", this.replayContext);
   }
 

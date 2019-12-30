@@ -9,18 +9,17 @@ import WeaponAnimationStrategy from "../../strategy/weapon/WeaponAnimationStrate
 import RequiresPowerSystemStrategy from "../../strategy/RequiresPowerSystemStrategy.mjs";
 import BoostableSystemStrategy from "../../strategy/BoostableSystemStrategy.mjs";
 
-class CannonFixed120mm extends Weapon {
+class RailgunFixed120mm extends Weapon {
   constructor(args, arcs) {
     super(args, [
       new FireOrderStrategy(1),
       new WeaponArcStrategy(arcs),
       new StandardHitStrategy(10),
       new StandardRangeStrategy([
-        { range: 0, modifier: -20 },
-        { range: 6, modifier: 0 },
-        { range: 10, modifier: -20 },
-        { range: 20, modifier: -30 },
-        { range: 50, modifier: -200 }
+        { range: 0, modifier: -50 },
+        { range: 20, modifier: 0 },
+        { range: 100, modifier: -50 },
+        { range: 200, modifier: -200 }
       ]),
       new StandardLoadingStrategy(2),
       new RequiresPowerSystemStrategy(4),
@@ -29,7 +28,7 @@ class CannonFixed120mm extends Weapon {
       new WeaponAnimationStrategy("Bolt", {
         size: 6,
         length: 100,
-        speed: 0.7,
+        speed: 1.3,
         color: [1.0, 0.8, 0.4]
       })
     ]);
@@ -44,4 +43,4 @@ class CannonFixed120mm extends Weapon {
   }
 }
 
-export default CannonFixed120mm;
+export default RailgunFixed120mm;

@@ -53,7 +53,7 @@ class Mouros extends ShipObject {
         { name: "railgun_turret_mount_left", id: 123 }
       ],
       await loadObject3d(
-        "/img/3d/systems/weapons/railgun/turreted32GwRailgun/scene.gltf"
+        "/img/3d/systems/weapons/coilgun/turreted32GwRailgun/scene.gltf"
       )
     );
 

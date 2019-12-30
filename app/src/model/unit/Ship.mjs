@@ -9,6 +9,7 @@ import {
 } from "../utils/math.mjs";
 import HexagonMath from "../utils/HexagonMath.mjs";
 import Offset from "../hexagon/Offset.mjs";
+import coordinateConverter from "../utils/CoordinateConverter.mjs";
 
 class Ship {
   constructor(data = {}) {
@@ -56,6 +57,19 @@ class Ship {
     return lastMove.getFacing();
   }
 
+  getFinalPosition() {
+    const lastMove = this.movement.getLastMove();
+    if (!lastMove) {
+      return null;
+    }
+
+    return lastMove.getPosition().add(lastMove.velocity);
+  }
+
+  getFinalHexPosition() {
+    return coordinateConverter.fromGameToHex(this.getFinalPosition());
+  }
+
   getPosition() {
     const lastMove = this.movement.getLastMove();
     if (!lastMove) {
@@ -65,16 +79,21 @@ class Ship {
     return lastMove.getPosition();
   }
 
+  getHexPosition() {
+    return coordinateConverter.fromGameToHex(this.getPosition());
+  }
+
   distanceTo(target) {
     return HexagonMath.getHexWidth() * this.hexDistanceTo(target);
   }
 
-  hexDistanceTo(target) {
-    const shipPosition = this.getHexPosition();
-    const shipFacing = this.getFacing();
-    const otherShipPosition = target.getHexPosition();
-    const otherShipFacing = target.getFacing();
-
+  _calculateHexDistanceTo(
+    shipPosition,
+    shipFacing,
+    otherShipPosition,
+    otherShipFacing,
+    target
+  ) {
     let closest = null;
 
     const hexSizes =
@@ -98,6 +117,36 @@ class Ship {
     return closest;
   }
 
+  finalHexDistanceTo(target) {
+    const shipPosition = this.getFinalHexPosition();
+    const shipFacing = this.getFacing();
+    const otherShipPosition = target.getFinalHexPosition();
+    const otherShipFacing = target.getFacing();
+
+    return this._calculateHexDistanceTo(
+      shipPosition,
+      shipFacing,
+      otherShipPosition,
+      otherShipFacing,
+      target
+    );
+  }
+
+  hexDistanceTo(target) {
+    const shipPosition = this.getHexPosition();
+    const shipFacing = this.getFacing();
+    const otherShipPosition = target.getHexPosition();
+    const otherShipFacing = target.getFacing();
+
+    return this._calculateHexDistanceTo(
+      shipPosition,
+      shipFacing,
+      otherShipPosition,
+      otherShipFacing,
+      target
+    );
+  }
+
   getVelocity() {
     const lastMove = this.movement.getLastMove();
     if (!lastMove) {
@@ -105,15 +154,6 @@ class Ship {
     }
 
     return lastMove.getVelocity();
-  }
-
-  getHexPosition() {
-    const lastMove = this.movement.getLastMove();
-    if (!lastMove) {
-      return null;
-    }
-
-    return lastMove.getHexPosition();
   }
 
   getIconHexas(hexFacing = 0) {

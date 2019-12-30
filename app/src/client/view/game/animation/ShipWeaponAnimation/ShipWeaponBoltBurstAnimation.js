@@ -26,7 +26,7 @@ class ShipWeaponBoltBurstAnimation extends ShipWeaponAnimation {
     const damage = fireOrder.result.getDamageResolution();
     const missesFirst = this.getRandom() > 0.5;
     const speed = args.speed || 1;
-    let startTime = time + getRandom() * 2000;
+    let startTime = time;
 
     const startPosition = getPosition(shooterIcon, startTime).position.add(
       this.getLocationForSystem(weapon, shooterIcon)

@@ -1,5 +1,4 @@
-import CoilgunLightFixed from "./CoilgunLightFixed.mjs";
-import RailgunTurreted64gw from "./RailgunTurreted64gw.mjs";
-import RailgunTurreted32gw from "./RailgunTurreted32gw.mjs";
+import RailgunFixed120mm from "./RailgunFixed120mm.mjs";
+import RailgunTurreted2x140mm from "./RailgunTurreted2x140mm.mjs";
 
-export { CoilgunLightFixed, RailgunTurreted64gw, RailgunTurreted32gw };
+export { RailgunFixed120mm, RailgunTurreted2x140mm };

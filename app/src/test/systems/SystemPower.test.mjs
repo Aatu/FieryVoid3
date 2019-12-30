@@ -4,7 +4,7 @@ import Reactor from "../../model/unit/system/reactor/Reactor.mjs";
 import PDC30mm from "../../model/unit/system/weapon/pdc/PDC30mm.mjs";
 
 import ShipSystems from "../../model/unit/ShipSystems.mjs";
-import CoilgunLightFixed from "../../model/unit/system/weapon/railgun/CoilgunLightFixed.mjs";
+import CoilgunLightFixed from "../../model/unit/system/weapon/coilgun/CoilgunLightFixed.mjs";
 import { OutputReduced8 } from "../../model/unit/system/criticals/index.mjs";
 
 test("System can change its power states", test => {

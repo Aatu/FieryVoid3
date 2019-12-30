@@ -170,10 +170,10 @@ test("Predict torpedo hit turn and position", test => {
 });
 */
 
+/*
 test("Torpedo impact is predicted properly", test => {
   const torpedoMovementService = new TorpedoMovementService();
 
-  /*
   test.deepEqual(
     torpedoMovementService.torpedoMath(
       new Vector(0, 0),
@@ -221,7 +221,6 @@ test("Torpedo impact is predicted properly", test => {
       accelerationVector: new Vector(0.18583994800731418, 1.2212458408542375)
     }
   );
-*/
   test.deepEqual(
     torpedoMovementService.torpedoMath(
       new Vector(-1527.8075543423627, 52.86648115797515),
@@ -238,3 +237,5 @@ test("Torpedo impact is predicted properly", test => {
     }
   );
 });
+
+*/

@@ -14,6 +14,7 @@ class Caliope extends ShipObject {
   async create() {
     super.create();
     const object = await loadObject3d("/img/3d/caliope/scene.gltf");
+    console.log("caliope");
     //object.scale.set(2, 2, 2);
     //this.startRotation = { x: 90, y: 90, z: 0 };
 
@@ -34,40 +35,48 @@ class Caliope extends ShipObject {
 
     super.replaceSocketByName(
       [
-        { name: "engine_pylon_top_front", id: 312 },
-        { name: "engine_pylon_left_front", id: 201 },
-        { name: "engine_pylon_right_front", id: 401 }
+        { name: "engine_pylon_top_front", id: 412 },
+        { name: "engine_pylon_left_front", id: 501 },
+        { name: "engine_pylon_right_front", id: 301 }
       ],
       radiator
     );
 
     super.replaceSocketByName(
       [
-        { name: "engine_pylon_top", id: 123 },
-        { name: "engine_pylon_left", id: 123 },
-        { name: "engine_pylon_right", id: 123 }
+        { name: "engine_pylon_top", id: 421 },
+        { name: "engine_pylon_left", id: 521 },
+        { name: "engine_pylon_right", id: 321 }
       ],
       autoCannon
     );
 
     super.replaceSocketByName(
       [
-        { name: "main_hull_front_left_bottom", id: 123 },
-        { name: "main_hull_front_left_top", id: 123 },
-        { name: "main_hull_front_right_bottom", id: 123 },
-        { name: "main_hull_front_right_top", id: 123 }
+        { name: "main_hull_front_left_bottom", id: 603 },
+        { name: "main_hull_front_left_top", id: 604 },
+        { name: "main_hull_front_right_bottom", id: 203 },
+        { name: "main_hull_front_right_top", id: 204 }
+      ],
+      autoCannon
+    );
+
+    super.replaceSocketByName(
+      [
+        { name: "front_hull_right_side", id: 213 },
+        { name: "front_hull_left_side", id: 612 }
       ],
       await loadObject3d(
-        "/img/3d/systems/weapons/conventional/140mmCannonTurret/scene.gltf"
+        "/img/3d/systems/weapons/railgun/2x140mmRailgunTurret/scene.gltf"
       )
     );
 
     super.replaceSocketByName(
       [
-        { name: "font_hull_bottom", id: 123 },
-        { name: "font_hull_top", id: 123 },
-        { name: "main_hull_front_left_side", id: 123 },
-        { name: "main_hull_front_right_side", id: 123 }
+        { name: "font_hull_bottom", id: 115 },
+        { name: "font_hull_top", id: 114 },
+        { name: "main_hull_front_left_side", id: 602 },
+        { name: "main_hull_front_right_side", id: 202 }
       ],
       await loadObject3d(
         "/img/3d/systems/weapons/conventional/30mmPDC/scene.gltf"
@@ -83,6 +92,7 @@ class Caliope extends ShipObject {
       await loadObject3d("/img/3d/systems/thrusters/5mThruster/scene.gltf")
     );
 
+    console.log("caliope loaded");
     this.setShipObject(object);
 
     /*

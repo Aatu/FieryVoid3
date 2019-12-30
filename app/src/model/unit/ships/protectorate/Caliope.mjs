@@ -60,14 +60,24 @@ class Caliope extends Ship {
     this.pointCost = 500;
 
     this.systems.addFrontSystem([
+      new systems.Thruster({ id: 103, hitpoints: 10, armor: 3 }, 5, 3),
+      new systems.PDC30mm(
+        { id: 114, hitpoints: 5, armor: 3 },
+        { start: 200, end: 160 }
+      ),
+
+      new systems.PDC30mm(
+        { id: 115, hitpoints: 5, armor: 3 },
+        { start: 200, end: 160 }
+      ),
+      new systems.Thruster({ id: 104, hitpoints: 10, armor: 3 }, 5, 3),
+      new systems.Structure({ id: 111, hitpoints: 30, armor: 4 }),
+
       new systems.ManeuveringThruster(
         { id: 101, hitpoints: 10, armor: 3 },
         3,
         2
-      ),
-      new systems.Thruster({ id: 103, hitpoints: 10, armor: 3 }, 5, 3),
-      new systems.Thruster({ id: 104, hitpoints: 10, armor: 3 }, 5, 3),
-      new systems.Structure({ id: 111, hitpoints: 30, armor: 4 })
+      )
     ]);
 
     this.systems.addPrimarySystem([
@@ -80,97 +90,144 @@ class Caliope extends Ship {
     ]);
 
     this.systems.addStarboardFrontSystem([
-      new systems.Thruster({ id: 8, hitpoints: 10, armor: 3 }, 5, [1, 2])
+      new systems.Thruster({ id: 201, hitpoints: 10, armor: 3 }, 5, [1, 2]),
+
+      new systems.RailgunTurreted2x140mm(
+        { id: 213, hitpoints: 8, armor: 4 },
+        { start: 330, end: 90 }
+      ),
+      new systems.PDC30mm(
+        { id: 202, hitpoints: 4, armor: 3 },
+        { start: 0, end: 180 }
+      ),
+      new systems.AutoCannon85mm(
+        { id: 203, hitpoints: 6, armor: 3 },
+        { start: 330, end: 160 }
+      ),
+      new systems.AutoCannon85mm(
+        { id: 204, hitpoints: 6, armor: 3 },
+        { start: 330, end: 160 }
+      )
     ]);
 
     this.systems.addPortFrontSystem([
-      new systems.Thruster({ id: 9, hitpoints: 10, armor: 3 }, 5, [4, 5])
+      new systems.RailgunTurreted2x140mm(
+        { id: 612, hitpoints: 8, armor: 4 },
+        { start: 270, end: 30 }
+      ),
+      new systems.Thruster({ id: 601, hitpoints: 10, armor: 3 }, 5, [4, 5]),
+
+      new systems.AutoCannon85mm(
+        { id: 603, hitpoints: 6, armor: 3 },
+        { start: 200, end: 30 }
+      ),
+      new systems.PDC30mm(
+        { id: 602, hitpoints: 4, armor: 3 },
+        { start: 180, end: 0 }
+      ),
+      new systems.AutoCannon85mm(
+        { id: 604, hitpoints: 6, armor: 3 },
+        { start: 200, end: 30 }
+      )
     ]);
 
     this.systems.addAftSystem([
       new systems.ManeuveringThruster(
-        { id: 301, hitpoints: 10, armor: 3 },
+        { id: 401, hitpoints: 10, armor: 3 },
         3,
         2
       ),
 
-      new systems.Thruster({ id: 31, hitpoints: 10, armor: 3 }, 5, 0),
-      new systems.Thruster({ id: 32, hitpoints: 10, armor: 3 }, 5, 0),
-      new systems.Thruster({ id: 33, hitpoints: 10, armor: 3 }, 5, 0),
+      new systems.Thruster({ id: 431, hitpoints: 10, armor: 3 }, 5, 0),
+      new systems.Thruster({ id: 432, hitpoints: 10, armor: 3 }, 5, 0),
+      new systems.Thruster({ id: 433, hitpoints: 10, armor: 3 }, 5, 0),
 
-      new systems.Structure({ id: 311, hitpoints: 30, armor: 4 }),
-      new systems.HeatSink({ id: 313, hitpoints: 10, armor: 3 }),
-      new systems.HeatSink({ id: 314, hitpoints: 10, armor: 3 }),
-      new systems.Radiator({ id: 312, hitpoints: 10, armor: 3 })
+      new systems.Structure({ id: 411, hitpoints: 30, armor: 4 }),
+      new systems.HeatSink({ id: 413, hitpoints: 10, armor: 3 }),
+      new systems.HeatSink({ id: 414, hitpoints: 10, armor: 3 }),
+      new systems.Radiator({ id: 412, hitpoints: 10, armor: 3 }),
+      new systems.Reactor({ id: 407, hitpoints: 10, armor: 3 }, 30),
+      new systems.AutoCannon85mm(
+        { id: 421, hitpoints: 6, armor: 3 },
+        { start: 0, end: 0 }
+      )
     ]);
 
     this.systems.addPortAftSystem([
-      new systems.Radiator({ id: 401, hitpoints: 10, armor: 3 }),
-      new systems.CargoBay({ id: 402, hitpoints: 20, armor: 4 }, 300),
-      new systems.TorpedoLauncher158({ id: 403, hitpoints: 10, armor: 4 }),
-      new systems.TorpedoLauncherDual72({ id: 404, hitpoints: 10, armor: 4 })
+      new systems.Radiator({ id: 501, hitpoints: 10, armor: 3 }),
+      new systems.CargoBay({ id: 502, hitpoints: 20, armor: 4 }, 300),
+      new systems.TorpedoLauncher158({ id: 503, hitpoints: 10, armor: 4 }),
+      new systems.TorpedoLauncherDual72({ id: 504, hitpoints: 10, armor: 4 }),
+      new systems.AutoCannon85mm(
+        { id: 521, hitpoints: 6, armor: 3 },
+        { start: 160, end: 30 }
+      )
     ]);
 
     this.systems.addStarboardAftSystem([
-      new systems.Radiator({ id: 201, hitpoints: 10, armor: 3 }),
-      new systems.CargoBay({ id: 202, hitpoints: 20, armor: 4 }, 300),
-      new systems.TorpedoLauncher158({ id: 203, hitpoints: 10, armor: 4 }),
-      new systems.TorpedoLauncherDual72({ id: 204, hitpoints: 10, armor: 4 })
+      new systems.Radiator({ id: 301, hitpoints: 10, armor: 3 }),
+      new systems.CargoBay({ id: 302, hitpoints: 20, armor: 4 }, 300),
+      new systems.TorpedoLauncher158({ id: 303, hitpoints: 10, armor: 4 }),
+      new systems.TorpedoLauncherDual72({ id: 304, hitpoints: 10, armor: 4 }),
+      new systems.AutoCannon85mm(
+        { id: 321, hitpoints: 6, armor: 3 },
+        { start: 330, end: 200 }
+      )
     ]);
   }
 
   setShipLoadout() {
     super.setShipLoadout();
 
-    this.systems.getSystemById(202).callHandler("addCargo", {
+    this.systems.getSystemById(302).callHandler("addCargo", {
       cargo: new Torpedo158MSV(),
       amount: 6
     });
-    this.systems.getSystemById(202).callHandler("addCargo", {
+    this.systems.getSystemById(302).callHandler("addCargo", {
       cargo: new Torpedo158Nuclear(),
       amount: 1
     });
-    this.systems.getSystemById(202).callHandler("addCargo", {
+    this.systems.getSystemById(302).callHandler("addCargo", {
       cargo: new Torpedo72MSV(),
       amount: 12
     });
 
-    this.systems.getSystemById(402).callHandler("addCargo", {
+    this.systems.getSystemById(502).callHandler("addCargo", {
       cargo: new Torpedo158MSV(),
       amount: 6
     });
-    this.systems.getSystemById(402).callHandler("addCargo", {
+    this.systems.getSystemById(502).callHandler("addCargo", {
       cargo: new Torpedo158Nuclear(),
       amount: 1
     });
-    this.systems.getSystemById(402).callHandler("addCargo", {
+    this.systems.getSystemById(502).callHandler("addCargo", {
       cargo: new Torpedo72MSV(),
       amount: 12
     });
 
-    this.systems.getSystemById(403).callHandler("loadAmmoInstant", {
+    this.systems.getSystemById(303).callHandler("loadAmmoInstant", {
       ammo: new Torpedo158MSV(),
       launcherIndex: 1
     });
-    this.systems.getSystemById(203).callHandler("loadAmmoInstant", {
+    this.systems.getSystemById(503).callHandler("loadAmmoInstant", {
       ammo: new Torpedo158MSV(),
       launcherIndex: 1
     });
 
-    this.systems.getSystemById(204).callHandler("loadAmmoInstant", {
+    this.systems.getSystemById(304).callHandler("loadAmmoInstant", {
       ammo: new Torpedo72MSV(),
       launcherIndex: 1
     });
-    this.systems.getSystemById(204).callHandler("loadAmmoInstant", {
+    this.systems.getSystemById(304).callHandler("loadAmmoInstant", {
       ammo: new Torpedo72MSV(),
       launcherIndex: 2
     });
 
-    this.systems.getSystemById(404).callHandler("loadAmmoInstant", {
+    this.systems.getSystemById(504).callHandler("loadAmmoInstant", {
       ammo: new Torpedo72MSV(),
       launcherIndex: 1
     });
-    this.systems.getSystemById(404).callHandler("loadAmmoInstant", {
+    this.systems.getSystemById(504).callHandler("loadAmmoInstant", {
       ammo: new Torpedo72MSV(),
       launcherIndex: 2
     });

@@ -1,4 +1,5 @@
 import { combatLogClasses } from "./combatLogClasses.mjs";
+import CombatLogWeaponFire from "./CombatLogWeaponFire.mjs";
 
 class CombatLogData {
   constructor() {
@@ -27,6 +28,36 @@ class CombatLogData {
 
   advanceTurn() {
     this.entries = [];
+  }
+
+  getForReplay() {
+    console.log("log entries", this.entries);
+    return [...this.entries]
+      .filter(entry => entry.replayOrder)
+      .sort((a, b) => {
+        if (a.replayOrder > b.replayOrder) {
+          return 1;
+        }
+
+        if (a.replayOrder < b.replayOrder) {
+          return -1;
+        }
+
+        if (
+          a instanceof CombatLogWeaponFire &&
+          b instanceof CombatLogWeaponFire
+        ) {
+          if (a.targetId > b.targetId) {
+            return 1;
+          }
+
+          if (a.targetId < b.targetId) {
+            return -1;
+          }
+        }
+
+        return 0;
+      });
   }
 }
 

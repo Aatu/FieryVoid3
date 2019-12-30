@@ -9,40 +9,40 @@ import RequiresPowerSystemStrategy from "../../strategy/RequiresPowerSystemStrat
 import WeaponAnimationStrategy from "../../strategy/weapon/WeaponAnimationStrategy.mjs";
 import InterceptorStrategy from "../../strategy/weapon/InterceptorStrategy.mjs";
 
-class PDC30mm extends Weapon {
+class AutoCannon85mm extends Weapon {
   constructor(args, arcs) {
     super(args, [
-      new RequiresPowerSystemStrategy(1),
+      new RequiresPowerSystemStrategy(2),
       new FireOrderStrategy(1),
       new WeaponArcStrategy(arcs),
-      new StandardHitStrategy(30),
+      new StandardHitStrategy(20),
       new StandardRangeStrategy([
         { range: 0, modifier: 0 },
         { range: 3, modifier: -5 },
-        { range: 10, modifier: -20 },
-        { range: 15, modifier: -50 },
-        { range: 18, modifier: -100 },
-        { range: 20, modifier: -200 }
+        { range: 15, modifier: -20 },
+        { range: 20, modifier: -50 },
+        { range: 25, modifier: -100 },
+        { range: 35, modifier: -200 }
       ]),
       new StandardLoadingStrategy(1),
-      new BurstDamageStrategy("d2", "d3+2", 0, 6, 5),
+      new BurstDamageStrategy("2d4+2", 0, 0, 3, 10),
       new InterceptorStrategy(),
       new WeaponAnimationStrategy("BoltBurst", {
         size: 6,
         speed: 0.35,
         color: [1.0, 0.9, 0.8],
-        shots: 6
+        shots: 3
       })
     ]);
   }
 
   getDisplayName() {
-    return "30mm PDC";
+    return "85mm Autocannon";
   }
 
   getBackgroundImage() {
-    return "/img/system/gatlingPulseCannon.png";
+    return "/img/system/lightParticleBeamShip.png";
   }
 }
 
-export default PDC30mm;
+export default AutoCannon85mm;

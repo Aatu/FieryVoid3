@@ -196,7 +196,6 @@ class SystemIcon extends React.Component {
       return (
         <Container>
           <System background={getBackgroundImage(system)} destroyed />
-          <HealthBar health="0" />
         </Container>
       );
     }

@@ -25,7 +25,7 @@ class X2PDC30mm extends Weapon {
         { range: 20, modifier: -200 }
       ]),
       new StandardLoadingStrategy(1),
-      new BurstDamageStrategy("d2", "d3+2", "d6", 6, 5),
+      new BurstDamageStrategy("d2", "d3+2", 0, 6, 5),
       new InterceptorStrategy(2),
       new WeaponAnimationStrategy("BoltBurst", {
         size: 6,

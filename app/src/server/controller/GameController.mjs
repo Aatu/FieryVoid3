@@ -26,7 +26,6 @@ class GameController {
   }
 
   async openConnection(connection, user, gameId) {
-    console.log("open connection");
     this.gameClients.subscribeToGame(connection, user, gameId);
     const gameData = await this.gameDataService.loadGame(gameId);
     if (gameData.turn > 1) {
@@ -44,7 +43,6 @@ class GameController {
   }
 
   closeConnection(connection, user, gameId) {
-    console.log("close connection");
     this.gameClients.unSubscribeFromGame(connection, gameId);
   }
 

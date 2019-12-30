@@ -44,7 +44,6 @@ class Fulcrum extends Ship {
     this.shipModel = "Fulcrum";
     this.pointCost = 500;
 
-    //CoilgunLightFixed, PDC30mm, CannonFixed120mm
     this.systems.addFrontSystem([
       new systems.Structure({ id: 100, hitpoints: 30, armor: 4 }),
 
@@ -52,15 +51,15 @@ class Fulcrum extends Ship {
         { id: 102, hitpoints: 10, armor: 3 },
         { start: 330, end: 30 }
       ),
-      new systems.CannonFixed120mm(
+      new systems.RailgunFixed120mm(
         { id: 103, hitpoints: 10, armor: 3 },
         { start: 330, end: 30 }
       ),
-      new systems.CannonFixed120mm(
+      new systems.RailgunFixed120mm(
         { id: 104, hitpoints: 10, armor: 3 },
         { start: 330, end: 30 }
       ),
-      new systems.CannonFixed120mm(
+      new systems.RailgunFixed120mm(
         { id: 105, hitpoints: 10, armor: 3 },
         { start: 330, end: 30 }
       ),

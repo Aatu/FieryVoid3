@@ -198,9 +198,8 @@ class MovementResolver {
     );
 
     let movements = this.ship.movement.getMovement();
-    const opposite = this.getOpposite(movements, thrustMove);
-    if (opposite) {
-      movements = movements.filter(move => move !== opposite);
+    if (lastMove.isSpeed() && lastMove.value === addToHexFacing(direction, 3)) {
+      movements.pop();
     } else {
       movements.push(thrustMove);
     }
@@ -247,10 +246,6 @@ class MovementResolver {
       .forEach(move => this.ship.movement.removeMovement(move));
 
     this.movementService.shipStateChanged(this.ship);
-  }
-
-  getOpposite(movements, move) {
-    return movements.find(other => other.isOpposite(move));
   }
 }
 

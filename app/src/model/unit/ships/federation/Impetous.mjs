@@ -2,7 +2,7 @@ import Ship from "../../Ship.mjs";
 import systems from "../../system/index.mjs";
 import Offset from "../../../hexagon/Offset.mjs";
 import { X2PDC30mm } from "../../system/weapon/pdc/index.mjs";
-import { RailgunTurreted64gw } from "../../system/weapon/railgun/index.mjs";
+import { RailgunTurreted64gw } from "../../system/weapon/coilgun/index.mjs";
 import Torpedo158MSV from "../../system/weapon/ammunition/torpedo/Torpedo158MSV.mjs";
 import Torpedo158Nuclear from "../../system/weapon/ammunition/torpedo/Torpedo158Nuclear.mjs";
 
