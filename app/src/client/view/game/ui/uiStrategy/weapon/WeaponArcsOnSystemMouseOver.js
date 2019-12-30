@@ -5,12 +5,7 @@ import {
   addToDirection,
   getArcLength
 } from "../../../../../../model/utils/math";
-
-const material = new THREE.MeshBasicMaterial({
-  color: new THREE.Color("rgb(20,80,128)"),
-  opacity: 0.5,
-  transparent: true
-});
+import abstractCanvas from "../../../utils/abstractCanvas";
 
 class WeaponArcsOnSystemMouseOver extends UiStrategy {
   constructor() {
@@ -45,11 +40,39 @@ class WeaponArcsOnSystemMouseOver extends UiStrategy {
     const { coordinateConverter, shipIconContainer } = this.services;
     const icon = shipIconContainer.getByShip(ship);
 
-    const distance =
-      system.callHandler("getMaxRange") * coordinateConverter.getHexDistance();
+    const maxRange = system.callHandler("getMaxRange");
+    const distance = maxRange * coordinateConverter.getHexDistance();
 
     const arcsList = system.callHandler("getArcs", {
       facing: icon.getFacing()
+    });
+
+    const canvas = abstractCanvas.create(maxRange + 1, 1);
+    const context = canvas.getContext("2d");
+
+    for (let range = 0; range <= maxRange; range++) {
+      const rangePenalty = system.callHandler("getRangeModifier", {
+        distance: range
+      });
+
+      const opacity = (100 + rangePenalty) / 100;
+
+      if (opacity < 0) {
+        opacity = 0;
+      }
+
+      context.fillStyle =
+        "rgba(" + 2 + "," + 80 + "," + 128 + "," + opacity + ")";
+      context.fillRect(range, 0, 1, 1);
+    }
+
+    const texture = new THREE.CanvasTexture(canvas);
+
+    const material = new THREE.MeshBasicMaterial({
+      color: new THREE.Color("rgb(20,80,128)"),
+      opacity: 1,
+      transparent: true,
+      map: texture
     });
 
     arcsList.forEach(arcs => {
@@ -63,6 +86,15 @@ class WeaponArcsOnSystemMouseOver extends UiStrategy {
         degreeToRadian(arcLenght)
       );
 
+      geometry.faceVertexUvs = [
+        geometry.faceVertexUvs[0].map(intial => [
+          new THREE.Vector2(1, 0),
+          new THREE.Vector2(1, 0),
+          new THREE.Vector2(0, 0)
+        ])
+      ];
+
+      geometry.uvsNeedUpdate = true;
       const circle = new THREE.Mesh(geometry, material);
       circle.position.z = -1;
       icon.mesh.add(circle);

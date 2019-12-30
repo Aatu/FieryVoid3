@@ -16,7 +16,7 @@ class RailgunFixed120mm extends Weapon {
       new WeaponArcStrategy(arcs),
       new StandardHitStrategy(10),
       new StandardRangeStrategy([
-        { range: 0, modifier: -50 },
+        { range: 0, modifier: -100 },
         { range: 20, modifier: 0 },
         { range: 100, modifier: -50 },
         { range: 200, modifier: -200 }

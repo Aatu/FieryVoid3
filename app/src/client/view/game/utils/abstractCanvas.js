@@ -4,6 +4,8 @@ const create = (width, height, debug) => {
   canvas.height = height;
   canvas.style.zIndex = 1000;
   canvas.style.position = "absolute";
+  canvas.style.top = "3px";
+  canvas.style.left = "3px";
   canvas.style.border = "1px solid red";
 
   if (debug) {
