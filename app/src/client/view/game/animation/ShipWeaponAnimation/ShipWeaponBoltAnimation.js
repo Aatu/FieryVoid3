@@ -20,17 +20,20 @@ class ShipWeaponBoltAnimation extends ShipWeaponAnimation {
   ) {
     super(getRandom);
 
-    console.log(combatLogEntry);
     const hit = Boolean(combatLogEntry.shotsHit);
 
     this.particleEmitterContainer = particleEmitterContainer;
-    console.log("hi?", particleEmitterContainer);
 
-    let startTime = time;
+    this.extraWait = getRandom() * 2000;
+    let startTime = time + this.extraWait;
     const speed = args.speed || 1;
 
     const startPosition = getPosition(shooterIcon, startTime).position.add(
-      this.getLocationForSystem(weapon, shooterIcon)
+      this.getLocationForSystem(
+        weapon,
+        shooterIcon,
+        getPosition(shooterIcon, startTime).facing
+      )
     );
     startPosition.z += shooterIcon.shipZ;
 
@@ -41,6 +44,7 @@ class ShipWeaponBoltAnimation extends ShipWeaponAnimation {
 
     const distance = startPosition.distanceTo(endPosition);
     this.duration = distance / speed;
+
     let fade = 0;
 
     if (!hit) {
@@ -83,8 +87,7 @@ class ShipWeaponBoltAnimation extends ShipWeaponAnimation {
   }
 
   getDuration() {
-    console.log("get duration", this.duration);
-    return this.duration;
+    return this.duration + this.extraWait;
   }
 
   deactivate() {

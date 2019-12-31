@@ -14,7 +14,7 @@ class Caliope extends ShipObject {
   async create() {
     super.create();
     const object = await loadObject3d("/img/3d/caliope/scene.gltf");
-    console.log("caliope");
+
     //object.scale.set(2, 2, 2);
     //this.startRotation = { x: 90, y: 90, z: 0 };
 
@@ -92,7 +92,6 @@ class Caliope extends ShipObject {
       await loadObject3d("/img/3d/systems/thrusters/5mThruster/scene.gltf")
     );
 
-    console.log("caliope loaded");
     this.setShipObject(object);
 
     /*

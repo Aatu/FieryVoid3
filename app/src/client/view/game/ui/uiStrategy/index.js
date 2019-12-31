@@ -34,7 +34,6 @@ import GameSystemInfoMenuStrategy from "./GameSystemInfoMenuStrategy";
 import SystemClickShowsSystemMenu from "./SystemClickShowsSystemMenu";
 import SelectedShipEwList from "./electronicWarfare/SelectedShipEwList";
 import UnderHexForShips from "./UnderHexForShips";
-import ShowCombatLog from "./replay/ShowCombatLog";
 import ShowMapIcons from "./ShowMapIcons";
 import ShowShipBadges from "./ShowShipBadges";
 
@@ -76,6 +75,5 @@ export {
   ReplayShipWeaponFire,
   ShowReplayUi,
   UnderHexForShips,
-  ShowCombatLog,
   ShowMapIcons
 };

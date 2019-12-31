@@ -4,6 +4,7 @@ class CombatLogGroupedWeaponFire {
   constructor(targetId) {
     this.targetId = targetId;
     this.entries = [];
+    this.replayOrder = 5;
   }
 
   addEntry(fire) {

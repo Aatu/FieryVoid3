@@ -5,5 +5,6 @@ export const Highlight = styled.span`
 `;
 
 export const DangerHighlight = styled.span`
-  color: #f67171;
+  color: #db4949;
+  font-weight: bold;
 `;

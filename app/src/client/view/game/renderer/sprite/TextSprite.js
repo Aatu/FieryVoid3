@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import abstractCanvas from "../../utils/abstractCanvas";
 
 const TEXTURE_SIZE = 256;
 
@@ -17,7 +18,7 @@ class TextSprite {
     this.fontSize = args.fontSize || "32px";
     this.font = args.font || "Arial Black";
 
-    var canvas = window.AbstractCanvas.create(size, size);
+    var canvas = abstractCanvas.create(size, size);
     var context = canvas.getContext("2d");
     context.save();
     context.fillStyle = this.color;
@@ -40,7 +41,9 @@ class TextSprite {
 
     this.material = new THREE.MeshBasicMaterial({
       map: texture,
-      transparent: true
+      transparent: true,
+      depthTest: false,
+      depthWrite: false
     });
 
     this.mesh = new THREE.Mesh(geometry, this.material);

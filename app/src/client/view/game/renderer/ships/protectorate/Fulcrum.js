@@ -17,7 +17,6 @@ class Fulcrum extends ShipObject {
       "/img/3d/ships/protectorate/Fulcrum/scene.gltf"
     );
 
-    console.log("fulcrum");
     //this.startRotation = { x: 90, y: 90, z: 0 };
     this.setRotation(this.rotation.x, this.rotation.y, this.rotation.z);
 
@@ -58,7 +57,6 @@ class Fulcrum extends ShipObject {
       await loadObject3d("/img/3d/systems/thrusters/5mThruster/scene.gltf")
     );
 
-    console.log("fullcrum loaded");
     this.setShipObject(object);
   }
 }

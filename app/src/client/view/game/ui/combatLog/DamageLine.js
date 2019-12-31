@@ -6,15 +6,23 @@ const DamageContainer = styled.div``;
 
 class DamageLine extends React.Component {
   render() {
-    const { combatLogEntry } = this.props;
+    const { target, gameData, combatLogEntry } = this.props;
 
-    const systemsDestroyed = combatLogEntry.getSystemsDestroyed();
+    const damages = combatLogEntry.getDamages(target);
+    const systemsDestroyed = combatLogEntry.getDestroyedSystems(target);
+
+    const totalDamage = damages.reduce((total, current) => {
+      return total + current.amount;
+    }, 0);
+
+    const totalArmor = damages.reduce((total, current) => {
+      return total + current.armor;
+    }, 0);
+
     return (
       <DamageContainer>
-        Damage caused:{" "}
-        <DangerHighlight>{combatLogEntry.getTotalDamage()}</DangerHighlight>.
-        Mitigated by armor{" "}
-        <Highlight>{combatLogEntry.getTotalArmor()}</Highlight>.
+        Damage caused: <DangerHighlight>{totalDamage}</DangerHighlight>.
+        Mitigated by armor <Highlight>{totalArmor}</Highlight>.
         {systemsDestroyed.length > 0 && (
           <>
             {" "}

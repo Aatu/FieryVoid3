@@ -68,15 +68,15 @@ class FireOrderStrategy extends ShipSystemStrategy {
   }
 
   addFireOrder({ shooter, target, weaponSettings }) {
-    if (this.fireOrders.length === this.numberOfShots) {
-      throw new Error(
-        `Can only assign ${this.numberOfShots} fire orders for this system`
-      );
-    }
-    const order = new FireOrder(shooter, target, this.system, weaponSettings);
+    this.fireOrders = [];
 
-    this.fireOrders.push(order);
-    return order;
+    let shots = this.numberOfShots;
+    while (shots--) {
+      const order = new FireOrder(shooter, target, this.system, weaponSettings);
+      this.fireOrders.push(order);
+    }
+
+    return this.fireOrders;
   }
 
   serialize(payload, previousResponse = []) {

@@ -9,7 +9,6 @@ class CombatLogWeaponFire {
     this.damages = [];
     this.notes = [];
     this.hitResult = null;
-    this.replayOrder = 5;
   }
 
   addNote(note) {
@@ -31,6 +30,28 @@ class CombatLogWeaponFire {
 
   causedDamage() {
     return this.damages.length > 0;
+  }
+
+  getDamages(target) {
+    return this.damages.reduce((all, current) => {
+      return [
+        ...all,
+        ...current.entries.reduce((all, damageEntry) => {
+          const system = target.systems.getSystemById(damageEntry.systemId);
+
+          return [
+            ...all,
+            ...damageEntry.damageIds.map(id => system.damage.getDamageById(id))
+          ];
+        }, [])
+      ];
+    }, []);
+  }
+
+  getDestroyedSystems(target) {
+    return this.getDamages(target)
+      .filter(damage => damage.destroyedSystem)
+      .map(damage => damage.system);
   }
 
   serialize() {

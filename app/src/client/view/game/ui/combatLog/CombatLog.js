@@ -11,20 +11,24 @@ const LogContainer = styled.div`
   background: rgba(0, 0, 0, 0.5);
   overflow-y: scroll;
   padding-top: 8px;
+  z-index: 3;
+  scrollbar-width: 0;
+
+  &::-webkit-scrollbar {
+    width: 0;
+  }
 `;
 
 class CombatLog extends React.Component {
   render() {
-    const { replayContext, gameData } = this.props;
-
-    return null;
-
-    replayContext.getCombatLog(gameData);
+    const { replayContext, gameData, log } = this.props;
 
     return (
       <LogContainer>
-        {replayContext.getCombatLog(gameData).map((logEntry, i) => (
+        {log.map((logEntry, i) => (
           <CombatLogLine
+            gameData={gameData}
+            replayContext={replayContext}
             key={`combatlog-line-${i}`}
             combatLogEntry={logEntry}
           />

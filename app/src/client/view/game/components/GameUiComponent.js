@@ -78,6 +78,7 @@ class GameUiComponent extends React.Component {
             uiState={uiState}
             replayContext={uiState.state.combatLog.replayContext}
             gameData={uiState.state.combatLog.gameData}
+            log={uiState.state.combatLog.log}
           />
         )}
 

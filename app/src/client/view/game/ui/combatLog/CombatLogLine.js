@@ -3,6 +3,8 @@ import styled from "styled-components";
 import HitChange from "./HitChange";
 import { Highlight, DangerHighlight } from "./styled";
 import DamageLine from "./DamageLine";
+import CombatLogWeaponFire from "../../../../../model/combatLog/CombatLogWeaponFire.mjs";
+import WeaponFireService from "../../../../../model/weapon/WeaponFireService.mjs";
 
 const LineContainer = styled.div`
   color: #d6d6d6;
@@ -24,13 +26,21 @@ const IndentedSubline = styled(SubLine)`
 `;
 
 class CombatLogLine extends React.Component {
-  render() {
-    const { combatLogEntry } = this.props;
+  getWeaponFireLine() {
+    const { combatLogEntry, gameData, replayContext } = this.props;
 
-    const hit = combatLogEntry.fireOrder.result.getHitResolution().result;
-    const shooterName = combatLogEntry.shooter.name.trim();
-    const targetName = combatLogEntry.target.name.trim();
-    const weaponName = combatLogEntry.weapon.getDisplayName();
+    const weaponFireService = new WeaponFireService().update(gameData);
+    const fireOrder = weaponFireService.getFireOrderById(
+      combatLogEntry.fireOrderId
+    );
+    const target = gameData.ships.getShipById(fireOrder.targetId);
+    const shooter = gameData.ships.getShipById(fireOrder.shooterId);
+    const weapon = shooter.systems.getSystemById(fireOrder.weaponId);
+
+    const hit = combatLogEntry.hitResult.result;
+    const shooterName = shooter.name.trim();
+    const targetName = target.name.trim();
+    const weaponName = weapon.getDisplayName();
 
     return (
       <LineContainer>
@@ -38,17 +48,29 @@ class CombatLogLine extends React.Component {
           <DangerHighlight>FIRE:&nbsp;</DangerHighlight>
           {shooterName} fires <Highlight>&nbsp;{weaponName}&nbsp;</Highlight> at{" "}
           {targetName}.
-          <HitChange
-            resolution={combatLogEntry.fireOrder.result.getHitResolution()}
-          />
+          <HitChange resolution={combatLogEntry.hitResult} />
         </SubLine>
         {hit && (
           <IndentedSubline>
-            <DamageLine combatLogEntry={combatLogEntry} />
+            <DamageLine
+              target={target}
+              gameData={gameData}
+              combatLogEntry={combatLogEntry}
+            />
           </IndentedSubline>
         )}
       </LineContainer>
     );
+  }
+
+  render() {
+    const { combatLogEntry } = this.props;
+
+    if (combatLogEntry instanceof CombatLogWeaponFire) {
+      return this.getWeaponFireLine();
+    } else {
+      return null;
+    }
   }
 }
 

@@ -35,7 +35,7 @@ class RailgunFixed120mm extends Weapon {
   }
 
   getDisplayName() {
-    return "120mm fixed cannon";
+    return "120mm fixed railgun";
   }
 
   getBackgroundImage() {

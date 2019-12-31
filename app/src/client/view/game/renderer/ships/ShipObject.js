@@ -43,7 +43,7 @@ class ShipObject {
     this.hexSpriteContainer = new THREE.Object3D();
     this.ghostShipObject = null;
     this.shipSideSprite = null;
-    this.shipEWSprite = null;
+    //this.shipEWSprite = null;
     this.shipSelectedSprite = null;
     this.line = null;
 
@@ -68,8 +68,6 @@ class ShipObject {
 
   setShipObject(object) {
     this.shipObject = object;
-    //object.name = "shipObject";
-    //object.userData = { icon: this };
 
     this.shipObject.traverse(child => {
       child.userData = { icon: this };
@@ -255,17 +253,19 @@ class ShipObject {
 
   setOverlayColorAlpha(alpha) {}
 
+  /*
   getMovements(turn) {
     return this.movements.filter(function(movement) {
       return turn === undefined || movement.turn === turn;
     }, this);
   }
+*/
 
   setScale(width, height) {
     //console.log("ShipObject.setScale is not yet implemented")
     //console.trace();
   }
-
+  /*
   showEW() {
     if (this.shipEWSprite) {
       this.shipEWSprite.show();
@@ -277,6 +277,7 @@ class ShipObject {
       this.shipEWSprite.hide();
     }
   }
+  */
 
   showSideSprite(value) {
     //console.log("ShipObject.showSideSprite is not yet implemented")

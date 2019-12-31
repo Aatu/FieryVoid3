@@ -39,7 +39,6 @@ class ReplayContext {
   }
 
   rewindToFiring() {
-    console.log("duartion", this.movementDuration);
     this.phaseStrategy.setAnimationTime(this.movementDuration - 1);
   }
 

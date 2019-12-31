@@ -183,8 +183,29 @@ class UIState {
     this.updateState();
   }
 
-  showCombatLog(value) {
-    this.state.combatLog = value;
+  startCombatLog(replayContext, gameData) {
+    if (this.state.combatLog !== false) {
+      throw new Error("Combat log already started");
+    }
+
+    this.state.combatLog = {
+      gameData,
+      replayContext,
+      log: []
+    };
+  }
+
+  addToCombatLog(value) {
+    if (this.state.combatLog === false) {
+      throw new Error("Start combat log first");
+    }
+
+    this.state.combatLog.log.push(value);
+    this.updateState();
+  }
+
+  hideCombatLog() {
+    this.state.combatLog = false;
     this.updateState();
   }
 
