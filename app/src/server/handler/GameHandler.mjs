@@ -30,6 +30,13 @@ class GameHandler {
       throw new InvalidGameDataError("Current user has no active ships");
     }
 
+    this.powerHandler.receivePower(
+      serverGameData,
+      clientGameData,
+      activeShips,
+      user
+    );
+
     this.systemDataHandler.receiveSystemData(
       serverGameData,
       clientGameData,
@@ -52,13 +59,6 @@ class GameHandler {
     );
 
     this.weaponHandler.receiveFireOrders(
-      serverGameData,
-      clientGameData,
-      activeShips,
-      user
-    );
-
-    this.powerHandler.receivePower(
       serverGameData,
       clientGameData,
       activeShips,

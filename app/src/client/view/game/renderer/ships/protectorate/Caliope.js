@@ -26,13 +26,6 @@ class Caliope extends ShipObject {
       "/img/3d/systems/weapons/conventional/85mmAutoCannon/scene.gltf"
     );
 
-    /*
-    console.log("radiator", radiator);
-    const mixer = new THREE.AnimationMixer(radiator);
-    const clips = radiator.children[0].animations;
-    console.log(mixer, clips);
-    */
-
     super.replaceSocketByName(
       [
         { name: "engine_pylon_top_front", id: 412 },

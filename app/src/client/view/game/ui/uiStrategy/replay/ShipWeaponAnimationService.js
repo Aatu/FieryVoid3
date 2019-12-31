@@ -42,7 +42,7 @@ class ShipWeaponAnimationService {
         time: startTime,
         duration: 250 + this.getRandom() * 250,
         type: "glow",
-        size: size | 10
+        size: size || 10
       },
       context
     );

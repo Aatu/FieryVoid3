@@ -17,7 +17,7 @@ class ShipWeaponAnimation extends Animation {
     }
 
     const object = new THREE.Object3D();
-    object.rotation.z = degreeToRadian(facing);
+    object.rotation.z = degreeToRadian(-facing);
     return location.clone().applyQuaternion(object.quaternion);
   }
 }

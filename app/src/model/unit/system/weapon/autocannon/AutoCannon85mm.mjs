@@ -28,10 +28,10 @@ class AutoCannon85mm extends Weapon {
       new BurstDamageStrategy("2d4+2", 0, 0, 3, 10),
       new InterceptorStrategy(),
       new WeaponAnimationStrategy("BoltBurst", {
-        size: 6,
-        speed: 0.35,
-        color: [1.0, 0.9, 0.8],
-        shots: 3
+        size: 8,
+        speed: 0.5,
+        color: [1.0, 0.7, 0.7],
+        explosionSize: 5
       })
     ]);
   }

@@ -32,8 +32,7 @@ class GameController {
       const gameDatas = await this.replayHandler.requestReplay(
         gameId,
         gameData.turn - 1,
-        gameData.turn,
-        user
+        gameData.turn
       );
 
       this.gameClients.sendReplay(gameDatas, user, connection);
@@ -75,12 +74,7 @@ class GameController {
   }
 
   async requestReplay(gameId, { start = null, end = null }, user) {
-    const gameDatas = this.replayHandler.requestReplay(
-      gameId,
-      start,
-      end,
-      user
-    );
+    const gameDatas = this.replayHandler.requestReplay(gameId, start, end);
 
     this.gameClients.sendReplay(gameDatas, user);
   }
@@ -154,16 +148,28 @@ class GameController {
 
     this.gameHandler.submit(serverGameData, clientGameData, user);
     toSave.push(serverGameData.clone());
-    toSend.push(serverGameData.clone());
 
     if (this.gameHandler.isReady(serverGameData)) {
       toSave.push(this.gameHandler.advance(serverGameData));
       toSave.push(serverGameData);
+
+      await this.gameDataService.saveGame(key, toSave);
+
+      const turn = serverGameData.turn;
+      const replays = await this.replayHandler.requestReplay(
+        gameId,
+        turn - 1,
+        turn
+      );
+
+      this.gameClients.sendTurnChange(replays);
+    } else {
       toSend.push(serverGameData.clone());
-      this.gameClients.sendTurnChange(toSend);
+      //TODO: toSend is not actually sent anywhere here
+      await this.gameDataService.saveGame(key, toSave);
     }
 
-    await this.gameDataService.saveGame(key, toSave);
+    return toSend;
   }
 }
 

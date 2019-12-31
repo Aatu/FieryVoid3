@@ -49,8 +49,6 @@ class SelectedShipMovementPath extends UiStrategy {
     if (ship) {
       this.shipStateChanged(ship);
     }
-
-    console.log("mouseOutShip selected", ship);
   }
 
   shipDeselected() {

@@ -21,8 +21,9 @@ class WeaponHandler {
             throw new InvalidGameDataError("Invalid fire order");
           }
 
-          const order = serverFireService.addFireOrder(shooter, target, weapon);
-          order.setId(uuidv4());
+          serverFireService
+            .addFireOrder(shooter, target, weapon)
+            .forEach(order => order.setId(uuidv4()));
         });
     });
   }

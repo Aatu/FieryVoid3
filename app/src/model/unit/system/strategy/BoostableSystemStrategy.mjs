@@ -50,10 +50,18 @@ class BoostableSystemStrategy extends ShipSystemStrategy {
   }
 
   getBoost(payload, previousResponse = 0) {
+    if (this.system.isDisabled()) {
+      return previousResponse;
+    }
+
     return previousResponse + this.boostLevel;
   }
 
   getPowerRequirement(payload, previousResponse = 0) {
+    if (this.system.isDisabled()) {
+      return previousResponse;
+    }
+
     const power = this.boostLevel * this.power;
     return power + previousResponse;
   }

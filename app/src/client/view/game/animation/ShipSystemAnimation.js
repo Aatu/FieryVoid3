@@ -20,6 +20,9 @@ class ShipSystemAnimation extends Animation {
     } else if (system.power.isGoingOnline()) {
       this.icon.disableSystemAnimation(system, "offline");
       this.icon.playSystemAnimation(system, "online");
+    } else if (system.isDisabled()) {
+      this.icon.disableSystemAnimation(system, "online");
+      this.icon.setSystemAnimation(system, "offline", 100);
     } else if (system.power.isOffline()) {
       this.icon.disableSystemAnimation(system, "online");
       this.icon.setSystemAnimation(system, "offline", 100);

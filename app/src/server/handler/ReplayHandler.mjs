@@ -5,7 +5,7 @@ class ReplayHandler {
     this.gameDataService = gameDataService;
   }
 
-  async requestReplay(gameId, start = 1, end = null, user) {
+  async requestReplay(gameId, start = 1, end = null) {
     const gameData = await this.gameDataService.loadGame(gameId);
     const gameDatas = [];
     let currentTurn = start;

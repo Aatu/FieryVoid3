@@ -184,10 +184,6 @@ class UIState {
   }
 
   startCombatLog(replayContext, gameData) {
-    if (this.state.combatLog !== false) {
-      throw new Error("Combat log already started");
-    }
-
     this.state.combatLog = {
       gameData,
       replayContext,

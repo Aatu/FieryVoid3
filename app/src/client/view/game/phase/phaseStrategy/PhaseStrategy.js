@@ -68,7 +68,6 @@ class PhaseStrategy {
   }
 
   animateFromTo(start, end) {
-    console.log("animate from", start, "to", end);
     this.animationStartTime = start;
     this.totalAnimationTime = start;
     this.lastAnimationTime = null;

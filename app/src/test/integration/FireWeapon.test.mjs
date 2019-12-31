@@ -132,7 +132,13 @@ test.serial("Submit successfull fire order for both players", async test => {
   );
 
   await controller.commitTurn(gameData.id, gameData.serialize(), user);
-  await controller.commitTurn(gameData.id, gameData.serialize(), user2);
+
+  const commitTurnResponse = await controller.commitTurn(
+    gameData.id,
+    gameData.serialize(),
+    user2
+  );
+
   const newGameData = await controller.getGameData(gameData.id, user);
 
   const biliyaz = newGameData.ships

@@ -31,7 +31,7 @@ class PDC30mm extends Weapon {
         size: 6,
         speed: 0.35,
         color: [1.0, 0.9, 0.8],
-        shots: 6
+        explosionSize: 3
       })
     ]);
   }

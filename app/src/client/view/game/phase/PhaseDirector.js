@@ -20,6 +20,7 @@ import {
   ParticleEmitterContainer,
   ParticleEmitter
 } from "../animation/particle";
+import GameData from "../../../../model/game/GameData.mjs";
 
 class PhaseDirector {
   constructor(uiState, currentUser, coordinateConverter, gameConnector) {

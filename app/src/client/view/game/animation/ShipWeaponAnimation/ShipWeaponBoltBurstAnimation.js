@@ -22,14 +22,18 @@ class ShipWeaponBoltBurstAnimation extends ShipWeaponAnimation {
     this.animations = [];
     this.particleEmitterContainer = particleEmitterContainer;
 
-    const hit = fireOrder.result.getHitResolution().result;
-    const damage = fireOrder.result.getDamageResolution();
     const missesFirst = this.getRandom() > 0.5;
     const speed = args.speed || 1;
-    let startTime = time;
+
+    this.extraWait = getRandom() * 2000;
+    let startTime = time + this.extraWait;
 
     const startPosition = getPosition(shooterIcon, startTime).position.add(
-      this.getLocationForSystem(weapon, shooterIcon)
+      this.getLocationForSystem(
+        weapon,
+        shooterIcon,
+        getPosition(shooterIcon, startTime).facing
+      )
     );
     startPosition.z += shooterIcon.shipZ;
 
@@ -39,23 +43,19 @@ class ShipWeaponBoltBurstAnimation extends ShipWeaponAnimation {
     endPosition.z += targetIcon.shipZ;
 
     const distance = startPosition.distanceTo(endPosition);
-    let duration = distance / speed;
+    this.duration = distance / speed;
 
     let offsetVector = this.getRandomPosition(5);
 
     const missExtra = getRandom() * 300 + 300;
     const missFade = missExtra * 0.8;
-    let hitIndex = 0;
 
-    if (!damage) {
-      return;
-    }
+    const totalShots = combatLogEntry.totalShots;
+    const shotsHit = combatLogEntry.shotsHit;
 
-    const totalShots = damage.totalShots;
-    const shotsHit = damage.shotsHit;
-
+    this.startExtra = 0;
     for (let shotNumber = 1; shotNumber <= totalShots; shotNumber++) {
-      const startExtra = (30 / speed) * shotNumber + startTime;
+      this.startExtra = (30 / speed) * shotNumber;
 
       if (
         (missesFirst && shotNumber <= totalShots - shotsHit) ||
@@ -63,12 +63,12 @@ class ShipWeaponBoltBurstAnimation extends ShipWeaponAnimation {
       ) {
         this.animations.push(
           weaponAnimationService.getBoltEffect(
-            startExtra,
+            this.startExtra + startTime,
             startPosition,
             endPosition.clone(),
             speed,
             missFade,
-            duration + missExtra,
+            this.duration + missExtra,
             args,
             this
           )
@@ -76,25 +76,23 @@ class ShipWeaponBoltBurstAnimation extends ShipWeaponAnimation {
       } else {
         this.animations.push(
           weaponAnimationService.getBoltEffect(
-            startExtra,
+            this.startExtra + startTime,
             startPosition,
             endPosition.clone(),
             speed,
             0,
-            duration,
+            this.duration,
             args,
             this
           )
         );
 
         weaponAnimationService.getDamageExplosion(
-          damage.shots[hitIndex],
+          args.explosionSize,
           endPosition,
-          startExtra + duration,
+          this.startExtra + startTime + this.duration,
           this
         );
-
-        hitIndex++;
       }
 
       endPosition = endPosition.add(offsetVector);
@@ -102,7 +100,7 @@ class ShipWeaponBoltBurstAnimation extends ShipWeaponAnimation {
   }
 
   getDuration() {
-    return this.duration;
+    return this.duration + this.extraWait + this.startExtra + 1000;
   }
 
   deactivate() {

@@ -1,7 +1,5 @@
 import PhaseStrategy from "../PhaseStrategy";
 import {
-  ReplayShipWeaponFire,
-  ReplayShipMovement,
   AutomaticReplay,
   ShowReplayUi,
   MouseOverShowsShipTooltip,
@@ -18,13 +16,6 @@ class AutomaticReplayPhaseStrategy extends PhaseStrategy {
 
     this.replayContext = new ReplayContext(this);
     this.replayTurnActions = new ReplayTurnActions(this.replayContext);
-    /*
-    this.replayShipMovement = new ReplayShipMovement(this.replayContext);
-    this.replayShipWeaponFire = new ReplayShipWeaponFire(
-      this.emitterContainer,
-      this.replayContext
-    );
-    */
 
     this.strategies = [
       this.replayTurnActions,

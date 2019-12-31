@@ -57,6 +57,10 @@ class BurstDamageStrategy extends StandardDamageStrategy {
       shots = this.maxShots;
     }
 
+    if (shots <= 0) {
+      shots = 1;
+    }
+
     return shots;
   }
 }
