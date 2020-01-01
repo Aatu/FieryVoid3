@@ -53,22 +53,9 @@ class CargoBaySystemStrategy extends ShipSystemStrategy {
   }
 
   getCargoEntry(cargo) {
-    const entry = this.cargo.find(
+    return this.cargo.find(
       stored => stored.object.constructor === cargo.constructor
     );
-
-    console.log("looking for", cargo);
-    console.log("this cargo", this.cargo);
-
-    if (!entry) {
-      return null;
-    }
-
-    console.log("found", entry);
-    return {
-      ...entry,
-      system: this.system
-    };
   }
 
   getCargoByParentClass(parentClass) {

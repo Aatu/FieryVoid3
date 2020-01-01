@@ -384,21 +384,25 @@ class AmmunitionStrategy extends ShipSystemStrategy {
             return true;
           }
 
-          const cargo = this.system.shipSystems
+          const cargoSystem = this.system.shipSystems
             .getSystems()
-            .map(system =>
+            .find(system =>
               system.callHandler("getCargoEntry", target.object, null)
-            )
-            .filter(Boolean)
-            .pop();
+            );
 
-          if (!cargo) {
+          if (!cargoSystem) {
             console.log(
               target.object.constructor.name,
               "was not found in any cargobay"
             );
             return true;
           }
+
+          const cargo = cargoSystem.callHandler(
+            "getCargoEntry",
+            target.object,
+            null
+          );
 
           let missing = target.amount - loaded.amount;
 
@@ -408,14 +412,14 @@ class AmmunitionStrategy extends ShipSystemStrategy {
 
           if (cargo.amount >= missing) {
             loaded.amount += missing;
-            cargo.system.callHandler("removeCargo", {
+            cargoSystem.callHandler("removeCargo", {
               cargo: cargo.object,
               amount: missing
             });
             ammoTransferredIn += missing;
           } else if (cargo.amount < missing) {
             loaded.amount += cargo.amount;
-            cargo.system.callHandler("removeCargo", {
+            cargoSystem.callHandler("removeCargo", {
               cargo: cargo.object,
               amount: cargo.amount
             });
