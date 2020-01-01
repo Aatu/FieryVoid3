@@ -9,7 +9,7 @@ class StandardLoadingStrategy extends ShipSystemStrategy {
 
   getMessages(payload, previousResponse = []) {
     previousResponse.push({
-      header: "Cooldown",
+      header: "Charging",
       value: `${this.turnsLoaded} / ${this.loadingTime}`
     });
 

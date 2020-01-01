@@ -38,7 +38,7 @@ const RelativeTooltipContainer = styled(Tooltip)`
   filter: brightness(1);
 `;
 
-const TooltipValue = styled.span`
+const TooltipValue = styled.div`
   color: ${colors.lightBlue};
 `;
 
@@ -96,7 +96,7 @@ const TooltipSubHeader = styled.div`
   color: ${colors.lightBlue};
 `;
 
-const TooltipValueHeader = styled.span`
+const TooltipValueHeader = styled.div`
   padding-right: 5px;
   color: white;
 `;
@@ -112,9 +112,10 @@ const TooltipEntry = styled.div`
       return "white;";
     }
   }}
+  margin: 2px 0;
   font-weight: ${props => (props.important ? "bold" : "inherit")};
   font-size: ${props => (props.important ? "14px" : "11px")};
-  margin-top: ${props => (props.space ? "14px" : "0")};
+  ${props => props.space && "margin-top: 14px"};
   text-align: left;
   color: #5e85bc;
   font-family: arial;

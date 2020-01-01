@@ -48,10 +48,27 @@ class CargoBaySystemStrategy extends ShipSystemStrategy {
     return this.space;
   }
 
-  getEntry(cargo) {
-    return this.cargo.find(
-      stored => stored.object.constructor.name === cargo.constructor.name
+  hasCargoSpaceAvailable() {
+    return this.getTotalCargoSpace();
+  }
+
+  getCargoEntry(cargo) {
+    const entry = this.cargo.find(
+      stored => stored.object.constructor === cargo.constructor
     );
+
+    console.log("looking for", cargo);
+    console.log("this cargo", this.cargo);
+
+    if (!entry) {
+      return null;
+    }
+
+    console.log("found", entry);
+    return {
+      ...entry,
+      system: this.system
+    };
   }
 
   getCargoByParentClass(parentClass) {
@@ -59,7 +76,7 @@ class CargoBaySystemStrategy extends ShipSystemStrategy {
   }
 
   hasCargo({ cargo, amount = 1 }) {
-    const entry = this.getEntry(cargo);
+    const entry = this.getCargoEntry(cargo);
 
     if (!entry) {
       return false;
@@ -69,7 +86,7 @@ class CargoBaySystemStrategy extends ShipSystemStrategy {
   }
 
   removeCargo({ cargo, amount = 1 }) {
-    const entry = this.getEntry(cargo);
+    const entry = this.getCargoEntry(cargo);
 
     if (!entry || entry.amount < amount) {
       throw new Error("Check hasCargo first!");
@@ -85,7 +102,7 @@ class CargoBaySystemStrategy extends ShipSystemStrategy {
   }
 
   addCargo({ cargo, amount = 1 }) {
-    let entry = this.getEntry(cargo);
+    let entry = this.getCargoEntry(cargo);
 
     if (entry) {
       entry.amount += amount;

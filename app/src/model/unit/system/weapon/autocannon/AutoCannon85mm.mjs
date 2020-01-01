@@ -8,6 +8,8 @@ import BurstDamageStrategy from "../../strategy/weapon/BurstDamageStrategy.mjs";
 import RequiresPowerSystemStrategy from "../../strategy/RequiresPowerSystemStrategy.mjs";
 import WeaponAnimationStrategy from "../../strategy/weapon/WeaponAnimationStrategy.mjs";
 import InterceptorStrategy from "../../strategy/weapon/InterceptorStrategy.mjs";
+import AmmunitionStrategy from "../../strategy/weapon/AmmunitionStrategy.mjs";
+import { Ammo85mmAP, Ammo85mmHE } from "../ammunition/conventional/index.mjs";
 
 class AutoCannon85mm extends Weapon {
   constructor(args, arcs) {
@@ -27,6 +29,7 @@ class AutoCannon85mm extends Weapon {
       new StandardLoadingStrategy(1),
       new BurstDamageStrategy("2d4+2", 0, 0, 3, 10),
       new InterceptorStrategy(),
+      new AmmunitionStrategy([Ammo85mmAP, Ammo85mmHE], 3, 15, 6),
       new WeaponAnimationStrategy("BoltBurst", {
         size: 8,
         speed: 0.5,
