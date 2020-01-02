@@ -68,6 +68,7 @@ class AmmunitionStrategy extends ShipSystemStrategy {
       }
     ];
   }
+
   getTooltipMenuButton(payload, previousResponse = []) {
     return [
       ...previousResponse,
@@ -84,56 +85,59 @@ class AmmunitionStrategy extends ShipSystemStrategy {
   serialize(payload, previousResponse = []) {
     return {
       ...previousResponse,
-      targetLoad: this.targetLoad.map(entry => ({
-        className: entry.object.constructor.name,
-        amount: entry.amount
-      })),
-      loaded: this.loaded.map(entry => ({
-        className: entry.object.constructor.name,
-        amount: entry.amount
-      })),
-      changeTargetLoad: this.changeTargetLoad
-        ? this.changeTargetLoad.map(entry => ({
-            className: entry.object.constructor.name,
-            amount: entry.amount
-          }))
-        : null,
-      turnsOffline: this.turnsOffline,
-      selectedAmmo: this.selectedAmmo.constructor.name,
-      changeSelectedAmmo: this.changeSelectedAmmo
-        ? this.changeSelectedAmmo.constructor.name
-        : null
+      ammunitionStrategy: {
+        targetLoad: this.targetLoad.map(entry => ({
+          className: entry.object.constructor.name,
+          amount: entry.amount
+        })),
+        loaded: this.loaded.map(entry => ({
+          className: entry.object.constructor.name,
+          amount: entry.amount
+        })),
+        changeTargetLoad: this.changeTargetLoad
+          ? this.changeTargetLoad.map(entry => ({
+              className: entry.object.constructor.name,
+              amount: entry.amount
+            }))
+          : null,
+        turnsOffline: this.turnsOffline,
+        selectedAmmo: this.selectedAmmo.constructor.name,
+        changeSelectedAmmo: this.changeSelectedAmmo
+          ? this.changeSelectedAmmo.constructor.name
+          : null
+      }
     };
   }
 
   deserialize(data = {}) {
-    this.targetLoad = data.targetLoad
-      ? data.targetLoad.map(entry => ({
+    const ammoData = data.ammunitionStrategy || {};
+    this.targetLoad = ammoData.targetLoad
+      ? ammoData.targetLoad.map(entry => ({
           object: new cargoClasses[entry.className](),
           amount: entry.amount
         }))
       : [];
 
-    this.loaded = data.loaded
-      ? data.loaded.map(entry => ({
+    this.loaded = ammoData.loaded
+      ? ammoData.loaded.map(entry => ({
           object: new cargoClasses[entry.className](),
           amount: entry.amount
         }))
       : [];
 
-    this.changeTargetLoad = data.changeTargetLoad
-      ? data.changeTargetLoad.map(entry => ({
+    this.changeTargetLoad = ammoData.changeTargetLoad
+      ? ammoData.changeTargetLoad.map(entry => ({
           object: new cargoClasses[entry.className](),
           amount: entry.amount
         }))
       : null;
 
-    this.turnsOffline = data.turnsOffline || 0;
-    this.selectedAmmo = data.selectedAmmo
-      ? new cargoClasses[data.selectedAmmo]()
+    this.turnsOffline = ammoData.turnsOffline || 0;
+    this.selectedAmmo = ammoData.selectedAmmo
+      ? new cargoClasses[ammoData.selectedAmmo]()
       : new this.ammunitionClasses[this.ammunitionClasses.length - 1]();
-    this.changeSelectedAmmo = data.changeSelectedAmmo
-      ? new cargoClasses[data.changeSelectedAmmo]()
+    this.changeSelectedAmmo = ammoData.changeSelectedAmmo
+      ? new cargoClasses[ammoData.changeSelectedAmmo]()
       : null;
 
     return this;
@@ -187,8 +191,9 @@ class AmmunitionStrategy extends ShipSystemStrategy {
 
   addToLoading({ object, amount }) {
     if (!this.changeTargetLoad) {
-      console.log("target load!");
-      this.changeTargetLoad = this.targetLoad;
+      this.changeTargetLoad = this.targetLoad.map(entry => ({
+        ...entry
+      }));
     }
 
     let entry = this.changeTargetLoad.find(
@@ -230,7 +235,9 @@ class AmmunitionStrategy extends ShipSystemStrategy {
       return;
     }
 
-    if (this.system.isDisabled()) {
+    if (this.system.power.isOffline()) {
+      //this is fine
+    } else if (this.system.isDisabled()) {
       return;
     }
 
@@ -284,7 +291,18 @@ class AmmunitionStrategy extends ShipSystemStrategy {
     }
   }
 
+  shouldBeOffline(payload, previousResponse = false) {
+    if (previousResponse === true) {
+      return true;
+    }
+
+    return this.loaded.every(
+      ({ amount }) => amount < this.getAmmoNeededForFireOrder()
+    );
+  }
+
   canFire(payload, previousResponse = true) {
+    TÄMÄ ON SÄRKI
     const entry = this.loaded.find(
       load => load.object.constructor === this.selectedAmmo.constructor
     );
@@ -300,7 +318,7 @@ class AmmunitionStrategy extends ShipSystemStrategy {
     return previousResponse;
   }
 
-  afterWeaponFire() {
+  onWeaponFired() {
     const entry = this.loaded.find(
       load => load.object.constructor === this.selectedAmmo.constructor
     );
@@ -318,12 +336,10 @@ class AmmunitionStrategy extends ShipSystemStrategy {
   }
 
   advanceTurn() {
-    if (this.system.isDestroyed()) {
-      return;
-    }
-
     if (this.system.power.isOffline()) {
       this.turnsOffline++;
+    } else if (this.system.isDisabled()) {
+      return;
     } else {
       this.turnsOffline = 0;
     }
@@ -356,8 +372,6 @@ class AmmunitionStrategy extends ShipSystemStrategy {
   _load() {
     let ammoTransferredIn = 0;
     let ammoTransferredOut = 0;
-
-    console.log(JSON.stringify(this.loaded));
 
     while (true) {
       if (ammoTransferredOut === this.intakeInTurn) {
@@ -433,7 +447,7 @@ class AmmunitionStrategy extends ShipSystemStrategy {
             return true;
           }
 
-          if (loaded.amount === target.amount) {
+          if (loaded.amount >= target.amount) {
             return true;
           }
 
@@ -482,7 +496,6 @@ class AmmunitionStrategy extends ShipSystemStrategy {
       }
     }
 
-    console.log(JSON.stringify(this.loaded));
     this._changeSelectedAmmoIfOutOfAmmo();
   }
 }

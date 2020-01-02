@@ -45,7 +45,7 @@ class SystemPower {
     return this.entries.some(entry => entry.isGoingOffline());
   }
 
-  setOffline() {
+  forceOffline() {
     if (this.isOffline() || !this.canSetOffline()) {
       return;
     }
@@ -55,6 +55,10 @@ class SystemPower {
     );
 
     this.entries.push(new PowerEntry(POWER_TYPE_GO_OFFLINE));
+  }
+
+  setOffline() {
+    this.forceOffline();
     this.system.callHandler("onSystemOffline");
   }
 
@@ -65,6 +69,10 @@ class SystemPower {
   }
 
   canSetOnline() {
+    if (this.system.callHandler("shouldBeOffline", null, false)) {
+      return false;
+    }
+
     return (
       this.isOffline() && this.system.callHandler("canSetOnline", null, false)
     );

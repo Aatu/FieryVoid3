@@ -15,7 +15,6 @@ import SystemStrategyUi from "./SystemStrategyUi";
 const SystemInfoTooltip = styled(RelativeTooltip)`
   width: ${props => (props.ship ? "300px" : "200px")};
   filter: brightness(1);
-  background-color: #181c2a;
 `;
 
 class SystemInfo extends React.Component {

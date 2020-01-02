@@ -7,6 +7,8 @@ const WebglCanvas = styled.div`
   width: 100%;
   height: 100%;
   background-size: cover;
+  background-color: #121e2c;
+  box-shadow: inset 0px 0px 200px rgba(0, 0, 0, 1);
 `;
 
 const ClickCatcher = styled.div`

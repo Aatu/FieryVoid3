@@ -8,6 +8,11 @@ class PowerHandler {
 
   advance(gameData) {
     gameData.ships.getShips().forEach(ship => {
+      ship.systems
+        .getSystems()
+        .filter(system => system.callHandler("shouldBeOffline", null, false))
+        .forEach(system => system.power.forceOffline());
+
       if (!ship.systems.power.isValidPower()) {
         ship.systems.power.forceValidPower();
       }

@@ -78,7 +78,9 @@ class OEWIndicator {
         this.amount * 1 + 5
       );
 
-      this.line.updateTextureSize(this.amount * 1 + 5);
+      if (this.line && this.line.updateTextureSize) {
+        this.line.updateTextureSize(this.amount * 1 + 5);
+      }
     }
   }
 
@@ -93,7 +95,9 @@ class OEWIndicator {
         this.amount * 1 + 5
       );
 
-      this.line.updateTextureSize(this.amount * 1 + 5);
+      if (this.line && this.line.updateTextureSize) {
+        this.line.updateTextureSize(this.amount * 1 + 5);
+      }
     }
 
     return this;

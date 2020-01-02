@@ -261,36 +261,13 @@ class ShipObject {
   }
 */
 
-  setScale(width, height) {
-    //console.log("ShipObject.setScale is not yet implemented")
-    //console.trace();
-  }
-  /*
-  showEW() {
-    if (this.shipEWSprite) {
-      this.shipEWSprite.show();
-    }
-  }
+  setScale(width, height) {}
 
-  hideEW() {
-    if (this.shipEWSprite) {
-      this.shipEWSprite.hide();
-    }
-  }
-  */
+  showSideSprite(value) {}
 
-  showSideSprite(value) {
-    //console.log("ShipObject.showSideSprite is not yet implemented")
-  }
+  setHighlighted(value) {}
 
-  setHighlighted(value) {
-    //console.log("ShipObject.showSideSprite is not yet implemented")
-  }
-
-  setSideSpriteOpacity(opacity) {
-    //this.shipSideSprite.multiplyOpacity(opacity);
-    //this.line.multiplyOpacity(opacity);
-  }
+  setSideSpriteOpacity(opacity) {}
 
   /*
   showBDEW() {

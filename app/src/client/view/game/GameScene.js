@@ -75,7 +75,7 @@ class GameScene {
     this.light.position.set(0, 0, 0);
     this.scene.add(this.light);
 
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.005);
+    const directionalLight = new THREE.DirectionalLight(0x35527a, 0.005);
     directionalLight.position.set(0, 0, 1).normalize();
     this.scene.add(directionalLight);
 
@@ -135,7 +135,7 @@ class GameScene {
     this.scene.add(helper);
     */
 
-    //this.scene.add(new THREE.AmbientLight(0x101010));
+    //this.scene.add(new THREE.AmbientLight(0x0a0f17));
     this.renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setSize(this.width, this.height);

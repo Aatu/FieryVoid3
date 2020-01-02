@@ -18,6 +18,9 @@ class TestShip extends Ship {
     this.systems.addFrontSystem([
       new systems.TestWeapon({ id: 20, hitpoints: 6, armor: 2 }, [
         { start: 0, end: 0 }
+      ]),
+      new systems.RailgunTurreted2x140mm({ id: 101, hitpoints: 6, armor: 2 }, [
+        { start: 0, end: 0 }
       ])
     ]);
 
@@ -35,7 +38,7 @@ class TestShip extends Ship {
       ),
       new systems.Engine({ id: 5, hitpoints: 10, armor: 3 }, 12, 6, 2),
       new systems.Engine({ id: 6, hitpoints: 10, armor: 3 }, 12, 6, 2),
-      new systems.Reactor({ id: 7, hitpoints: 20, armor: 3 }, 20),
+      new systems.Reactor({ id: 7, hitpoints: 20, armor: 3 }, 26),
       new systems.EwArray({ id: 11, hitpoints: 10, armor: 3 }, 10),
       new systems.TorpedoLauncherDual158({ id: 202, hitpoints: 20, armor: 6 }),
       new systems.TorpedoLauncherDual72({ id: 203, hitpoints: 20, armor: 6 }),

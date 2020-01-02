@@ -81,12 +81,12 @@ test("Weapon that uses ammo consumes ammo when firing", test => {
 
   test.deepEqual(autoCannon.callHandler("getSelectedAmmo"), new Ammo85mmHE());
   autoCannon.callHandler("loadTargetInstant");
-  autoCannon.callHandler("afterWeaponFire");
+  autoCannon.callHandler("onWeaponFired");
   test.deepEqual(autoCannon.callHandler("getAmmoInMagazine"), [
     { object: new Ammo85mmAP(), amount: 6 },
     { object: new Ammo85mmHE(), amount: 6 }
   ]);
-  autoCannon.callHandler("afterWeaponFire");
+  autoCannon.callHandler("onWeaponFired");
 
   autoCannon.deserialize(autoCannon.serialize());
   test.deepEqual(autoCannon.callHandler("getAmmoInMagazine"), [
@@ -94,7 +94,7 @@ test("Weapon that uses ammo consumes ammo when firing", test => {
     { object: new Ammo85mmHE(), amount: 3 }
   ]);
 
-  autoCannon.callHandler("afterWeaponFire");
+  autoCannon.callHandler("onWeaponFired");
   test.deepEqual(autoCannon.callHandler("getAmmoInMagazine"), [
     { object: new Ammo85mmAP(), amount: 6 }
   ]);
@@ -178,8 +178,8 @@ test("You can completely unload a weapon", test => {
     { object: new Ammo85mmHE(), amount: 0 }
   ]);
 
-  const serverShip = createShip();
-  const serverCannon = serverShip.systems.getSystemById(1);
+  let serverShip = createShip();
+  let serverCannon = serverShip.systems.getSystemById(1);
 
   serverCannon.callHandler("loadTargetInstant");
   serverCannon.callHandler("receivePlayerData", { clientSystem: autoCannon });
@@ -187,11 +187,14 @@ test("You can completely unload a weapon", test => {
   serverCannon.callHandler("advanceTurn");
   serverCannon.callHandler("advanceTurn");
 
-  console.log(serverCannon.callHandler("getAmmoInMagazine"));
   test.deepEqual(serverCannon.callHandler("getAmmoInMagazine"), [
     { object: new Ammo85mmHE(), amount: 9 }
   ]);
-  /*
+
+  let serialized = serverCannon.serialize();
+  serverShip = createShip();
+  serverCannon = serverShip.systems.getSystemById(1);
+  serverCannon.deserialize(serialized);
   serverCannon.callHandler("advanceTurn");
 
   test.deepEqual(serverCannon.callHandler("getAmmoInMagazine"), [
@@ -201,10 +204,13 @@ test("You can completely unload a weapon", test => {
   serverCannon.callHandler("advanceTurn");
 
   test.deepEqual(serverCannon.callHandler("getAmmoInMagazine"), []);
+
   serverCannon.deserialize(serverCannon.serialize());
 
-  test.deepEqual(serverCannon.callHandler("getLoadingTarget"), []);
-  */
+  test.deepEqual(serverCannon.callHandler("getLoadingTarget"), [
+    { object: new Ammo85mmAP(), amount: 0 },
+    { object: new Ammo85mmHE(), amount: 0 }
+  ]);
 });
 
 test("You can change the selected ammo", test => {

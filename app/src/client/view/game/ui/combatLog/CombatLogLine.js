@@ -33,6 +33,7 @@ class CombatLogLine extends React.Component {
     const fireOrder = weaponFireService.getFireOrderById(
       combatLogEntry.fireOrderId
     );
+
     const target = gameData.ships.getShipById(fireOrder.targetId);
     const shooter = gameData.ships.getShipById(fireOrder.shooterId);
     const weapon = shooter.systems.getSystemById(fireOrder.weaponId);

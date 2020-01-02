@@ -244,10 +244,6 @@ class TorpedoLauncherStrategy extends ShipSystemStrategy {
     return ammo;
   }
 
-  afterWeaponFire() {
-    this.loadedTorpedo = null;
-  }
-
   advanceTurn() {
     this.changeAmmo = null;
     this.previousTorpedo = null;

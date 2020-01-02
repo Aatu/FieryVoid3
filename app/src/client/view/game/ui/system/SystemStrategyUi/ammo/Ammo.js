@@ -146,8 +146,6 @@ class Ammo extends React.Component {
       return null;
     }
 
-    console.log("loading target", ammoStrategy.changeTargetLoad);
-
     return (
       <>
         {!loadingOpen && (

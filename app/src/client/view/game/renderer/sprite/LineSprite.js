@@ -91,15 +91,15 @@ class LineSprite {
   async updateTextureSize(size) {
     this.args.textureSize = size;
     const distance = this.start.distanceTo(this.end);
-    let testureRepeat = this.args.textureSize
+    let textureRepeat = this.args.textureSize
       ? distance / this.args.textureSize
       : 1;
 
     if (this.args.roundTestureRepeate) {
-      testureRepeat = Math.round(testureRepeat);
+      textureRepeat = Math.round(textureRepeat);
     }
 
-    this.material.uniforms.textureRepeat.value = testureRepeat;
+    this.material.uniforms.textureRepeat.value = textureRepeat;
   }
 
   async update(start, end, lineWidth = 1, force) {

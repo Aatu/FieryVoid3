@@ -81,11 +81,7 @@ class CargoBaySystemStrategy extends ShipSystemStrategy {
 
     entry.amount -= amount;
 
-    if (entry.amount === 0) {
-      this.cargo.filter(
-        stored => stored.object.constructor.name !== cargo.constructor.name
-      );
-    }
+    this.cargo = this.cargo.filter(entry => entry.amount > 0);
   }
 
   addCargo({ cargo, amount = 1 }) {
