@@ -1,6 +1,7 @@
 import * as React from "react";
 import styled, { css } from "styled-components";
 import { colors } from "./index";
+import { tooltipButtonColor } from "./Colors";
 
 class Component extends React.Component {
   render() {
@@ -25,6 +26,7 @@ const Tooltip = styled(Component)`
   padding-bottom: 8px;
   border: 1px solid #121212;
   filter: brightness(1);
+  cursor: initial;
 `;
 
 const RelativeTooltipContainer = styled(Tooltip)`
@@ -112,6 +114,7 @@ const TooltipEntry = styled.div`
       return "white;";
     }
   }}
+  box-sizing: border-box;
   margin: 2px 0;
   font-weight: ${props => (props.important ? "bold" : "inherit")};
   font-size: ${props => (props.important ? "14px" : "11px")};
@@ -119,6 +122,30 @@ const TooltipEntry = styled.div`
   text-align: left;
   color: #5e85bc;
   font-family: arial;
+  
+  ${props =>
+    props.clickable &&
+    css`
+      cursor: pointer;
+      color: white;
+      background-color: ${tooltipButtonColor};
+      border: 1px solid black;
+    `}
+
+  &:hover {
+    ${props =>
+      props.clickable &&
+      css`
+        border: 1px solid white;
+      `}
+  }
+`;
+
+const CenteredTooltipEntry = styled(TooltipEntry)`
+  justify-content: center;
+  ${TooltipValueHeader} {
+    padding-right: 0;
+  }
 `;
 
 const InlineTooltipEntry = styled.div`
@@ -184,5 +211,6 @@ export {
   TooltipSubHeader,
   TooltipValue,
   TooltipValueHeader,
-  InlineTooltipEntry
+  InlineTooltipEntry,
+  CenteredTooltipEntry
 };

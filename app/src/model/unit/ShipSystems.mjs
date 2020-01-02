@@ -196,6 +196,18 @@ class ShipSystems {
       system.callHandler("censorForUser", { user, mine });
     });
   }
+
+  callAllSystemHandlers(name, payload) {
+    return this.getSystems()
+      .reduce(
+        (total, system) => [
+          ...total,
+          ...[].concat(system.callHandler(name, payload))
+        ],
+        []
+      )
+      .filter(Boolean);
+  }
 }
 
 export default ShipSystems;

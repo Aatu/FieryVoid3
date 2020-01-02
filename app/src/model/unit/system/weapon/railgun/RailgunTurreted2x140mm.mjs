@@ -8,6 +8,9 @@ import StandardDamageStrategy from "../../strategy/weapon/StandardDamageStrategy
 import WeaponAnimationStrategy from "../../strategy/weapon/WeaponAnimationStrategy.mjs";
 import RequiresPowerSystemStrategy from "../../strategy/RequiresPowerSystemStrategy.mjs";
 import BoostableSystemStrategy from "../../strategy/BoostableSystemStrategy.mjs";
+import Ammo140mmAP from "../ammunition/conventional/Ammo140mmAP.mjs";
+import Ammo140mmHE from "../ammunition/conventional/Ammo140mmHE.mjs";
+import AmmunitionStrategy from "../../strategy/weapon/AmmunitionStrategy.mjs";
 
 class RailgunTurreted2x140mm extends Weapon {
   constructor(args, arcs) {
@@ -18,13 +21,13 @@ class RailgunTurreted2x140mm extends Weapon {
       new StandardRangeStrategy([
         { range: 0, modifier: -50 },
         { range: 10, modifier: 0 },
-        { range: 125, modifier: -50 },
-        { range: 250, modifier: -200 }
+        { range: 200, modifier: -200 }
       ]),
       new StandardLoadingStrategy(2),
       new RequiresPowerSystemStrategy(6),
       new BoostableSystemStrategy(6, 1),
       new StandardDamageStrategy("2d5 + 10"),
+      new AmmunitionStrategy([Ammo140mmAP, Ammo140mmHE], 1, 9, 4),
       new WeaponAnimationStrategy("Bolt", {
         size: 6,
         length: 100,

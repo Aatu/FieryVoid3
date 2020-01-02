@@ -16,6 +16,14 @@ class StandardLoadingStrategy extends ShipSystemStrategy {
     return previousResponse;
   }
 
+  canFire(payload, previousResponse = true) {
+    if (!this.isLoaded()) {
+      return false;
+    }
+
+    return previousResponse;
+  }
+
   usesLoading() {
     return true;
   }

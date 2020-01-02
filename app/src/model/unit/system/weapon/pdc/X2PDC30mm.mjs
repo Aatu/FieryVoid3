@@ -8,6 +8,8 @@ import BurstDamageStrategy from "../../strategy/weapon/BurstDamageStrategy.mjs";
 import RequiresPowerSystemStrategy from "../../strategy/RequiresPowerSystemStrategy.mjs";
 import WeaponAnimationStrategy from "../../strategy/weapon/WeaponAnimationStrategy.mjs";
 import InterceptorStrategy from "../../strategy/weapon/InterceptorStrategy.mjs";
+import { Ammo30mm } from "../ammunition/conventional/index.mjs";
+import AmmunitionStrategy from "../../strategy/weapon/AmmunitionStrategy.mjs";
 
 class X2PDC30mm extends Weapon {
   constructor(args, arcs) {
@@ -27,6 +29,7 @@ class X2PDC30mm extends Weapon {
       new StandardLoadingStrategy(1),
       new BurstDamageStrategy("d2", "d3+2", 0, 6, 5),
       new InterceptorStrategy(2),
+      new AmmunitionStrategy([Ammo30mm], 6, 36, 12),
       new WeaponAnimationStrategy("BoltBurst", {
         size: 6,
         speed: 0.35,

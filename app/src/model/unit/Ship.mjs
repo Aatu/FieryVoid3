@@ -229,7 +229,9 @@ class Ship {
     this.systems.receivePlayerData(clientShip);
   }
 
-  setShipLoadout() {}
+  setShipLoadout() {
+    this.systems.callAllSystemHandlers("loadTargetInstant");
+  }
 }
 
 export default Ship;

@@ -8,6 +8,8 @@ import StandardDamageStrategy from "../../strategy/weapon/StandardDamageStrategy
 import WeaponAnimationStrategy from "../../strategy/weapon/WeaponAnimationStrategy.mjs";
 import RequiresPowerSystemStrategy from "../../strategy/RequiresPowerSystemStrategy.mjs";
 import BoostableSystemStrategy from "../../strategy/BoostableSystemStrategy.mjs";
+import { Ammo120mmHE, Ammo120mmAP } from "../ammunition/conventional/index.mjs";
+import AmmunitionStrategy from "../../strategy/weapon/AmmunitionStrategy.mjs";
 
 class RailgunFixed120mm extends Weapon {
   constructor(args, arcs) {
@@ -17,14 +19,14 @@ class RailgunFixed120mm extends Weapon {
       new StandardHitStrategy(10),
       new StandardRangeStrategy([
         { range: 0, modifier: -100 },
-        { range: 20, modifier: 0 },
-        { range: 100, modifier: -50 },
-        { range: 200, modifier: -200 }
+        { range: 30, modifier: 0 },
+        { range: 190, modifier: -200 }
       ]),
       new StandardLoadingStrategy(2),
       new RequiresPowerSystemStrategy(4),
       new BoostableSystemStrategy(4, 1),
       new StandardDamageStrategy("2d4 + 10"),
+      new AmmunitionStrategy([Ammo120mmAP, Ammo120mmHE], 1, 12, 4),
       new WeaponAnimationStrategy("Bolt", {
         size: 6,
         length: 100,

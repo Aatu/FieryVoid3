@@ -9,10 +9,6 @@ class Weapon extends ShipSystem {
     return true;
   }
 
-  canTarget(ship, target) {
-    return true;
-  }
-
   showOnSystemList() {
     return true;
   }

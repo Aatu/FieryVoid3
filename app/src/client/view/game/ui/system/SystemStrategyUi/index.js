@@ -1,6 +1,7 @@
 import React from "react";
 import CargoList from "./cargo/CargoList";
 import TorpedoLauncher from "./torpedo/TorpedoLauncher";
+import Ammo from "./ammo/Ammo";
 
 class SystemStrategyUi extends React.Component {
   render() {
@@ -12,6 +13,15 @@ class SystemStrategyUi extends React.Component {
           .callHandler("getUiComponents", null, [])
           .map(({ name, props }, i) => {
             switch (name) {
+              case "Ammo":
+                return (
+                  <Ammo
+                    key={`ammo-${name}-index-${i}`}
+                    uiState={uiState}
+                    ship={ship}
+                    {...props}
+                  />
+                );
               case "CargoList":
                 return (
                   <CargoList

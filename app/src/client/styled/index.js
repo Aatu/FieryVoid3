@@ -28,7 +28,8 @@ export {
   TooltipSubHeader,
   TooltipValue,
   TooltipValueHeader,
-  InlineTooltipEntry
+  InlineTooltipEntry,
+  CenteredTooltipEntry
 } from "./Tooltip";
 export { Button } from "./Button";
 export { Link } from "./Link";

@@ -57,7 +57,7 @@ class ShipTooltipDetails extends React.Component {
           {ship.player.isUsers(currentUser) &&
             this.getEntry(
               "Power available",
-              `${ship.systems.power.getRemainingPowerOutput()}/${ship.systems.power.getPowerOutput()}`
+              ship.systems.power.getRemainingPowerOutput()
             )}
 
           {ship.player.isUsers(currentUser) &&

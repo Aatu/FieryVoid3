@@ -42,7 +42,7 @@ class WeaponFireService {
   }
 
   systemHasFireOrderAgainstShip(system, target) {
-    const fireOrders = system.callHandler("getFireOrders");
+    const fireOrders = system.callHandler("getFireOrders", null, []);
 
     return fireOrders.some(order => order.targetId === target.id);
   }
@@ -67,12 +67,13 @@ class WeaponFireService {
       shooter.isDestroyed() ||
       target.isDestroyed() ||
       weapon.isDisabled() ||
-      !weapon.canTarget()
+      !weapon.callHandler("usesFireOrders", null, false)
     ) {
       return false;
     }
 
-    if (!weapon.callHandler("isLoaded")) {
+    if (!weapon.callHandler("canFire", null, true)) {
+      console.log("weapon can not fire");
       return false;
     }
 

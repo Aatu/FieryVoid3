@@ -56,25 +56,30 @@ class AmmunitionStrategy extends ShipSystemStrategy {
       };
     });
   }
-  /*
+
   getUiComponents(payload, previousResponse = []) {
     return [
       ...previousResponse,
       {
-        name: "TorpedoLauncher",
+        name: "Ammo",
         props: {
-          launcherIndex: this.launcherIndex,
-          loadedTorpedo: this.loadedTorpedo,
-          loadingTime: this.loadingTime,
-          turnsLoaded: this.turnsLoaded,
-          torpedoClass: this.torpedoClass,
-          launchTarget: this.launchTarget,
-          launcher: this
+          ammoStrategy: this
         }
       }
     ];
   }
-  */
+  getTooltipMenuButton(payload, previousResponse = []) {
+    return [
+      ...previousResponse,
+      {
+        img: this.getSelectedAmmo().getBackgroundImage(),
+        onClickHandler: () => {
+          this.toggleSelectedAmmo();
+        },
+        onDisabledHandler: () => false
+      }
+    ];
+  }
 
   serialize(payload, previousResponse = []) {
     return {
@@ -134,8 +139,35 @@ class AmmunitionStrategy extends ShipSystemStrategy {
     return this;
   }
 
+  getAmmoNeededForFireOrder() {
+    const numberOfShots = this.system.callHandler("getNumberOfShots");
+
+    return this.ammoPerFireOrder * numberOfShots;
+  }
+
+  toggleSelectedAmmo() {
+    let index = null;
+    this.loaded.forEach((entry, i) => {
+      if (this.getSelectedAmmo().constructor === entry.object.constructor) {
+        index = i;
+      }
+    });
+
+    if (index + 1 > this.loaded.length - 1) {
+      index = 0;
+    } else {
+      index = index + 1;
+    }
+
+    this.changeSelectedAmmo = this.loaded[index].object;
+  }
+
   getSelectedAmmo() {
-    return this.selectedAmmo;
+    return this.changeSelectedAmmo || this.selectedAmmo;
+  }
+
+  getLoadingTarget() {
+    return this.changeTargetLoad || this.targetLoad;
   }
 
   getAmmoInMagazine() {
@@ -144,6 +176,45 @@ class AmmunitionStrategy extends ShipSystemStrategy {
 
   loadTargetInstant() {
     this.loaded = this.targetLoad;
+  }
+
+  getLoadingTargetAmount() {
+    return this.getLoadingTarget().reduce(
+      (total, { amount }) => total + amount,
+      0
+    );
+  }
+
+  addToLoading({ object, amount }) {
+    if (!this.changeTargetLoad) {
+      console.log("target load!");
+      this.changeTargetLoad = this.targetLoad;
+    }
+
+    let entry = this.changeTargetLoad.find(
+      entry => entry.object.constructor === object.constructor
+    );
+
+    if (!entry && amount > 0) {
+      entry = {
+        object,
+        amount: 0
+      };
+
+      this.changeTargetLoad.push(entry);
+    } else if (!entry && amount < 0) {
+      return;
+    }
+
+    if (this.getLoadingTargetAmount() + amount > this.capacity) {
+      return;
+    }
+
+    if (entry.amount + amount < 0) {
+      return;
+    }
+
+    entry.amount += amount;
   }
 
   setNewLoadingTarget(target) {
@@ -194,26 +265,26 @@ class AmmunitionStrategy extends ShipSystemStrategy {
       ) {
         throw new Error(`Total capacity exeeded`);
       }
+
+      this.targetLoad = changeTargetLoad;
     }
 
-    if (
-      changeSelectedAmmo &&
-      !this.ammunitionClasses
-        .map(ammo => ammo.constructor.name)
-        .includes(changeSelectedAmmo)
-    ) {
-      throw new Error(
-        `Illegal selected ammo: '${changeSelectedAmmo}', allowed '${this.ammunitionClasses.join(
-          ", "
-        )}'`
-      );
-    }
+    if (changeSelectedAmmo) {
+      if (
+        !this.ammunitionClasses.some(
+          ammoClass => changeSelectedAmmo instanceof ammoClass
+        )
+      ) {
+        throw new Error(
+          `Illegal selected ammo: '${changeSelectedAmmo.constructor.name}'`
+        );
+      }
 
-    this.targetLoad = changeTargetLoad;
-    this.selectedAmmo = changeSelectedAmmo;
+      this.selectedAmmo = changeSelectedAmmo;
+    }
   }
 
-  canFire() {
+  canFire(payload, previousResponse = true) {
     const entry = this.loaded.find(
       load => load.object.constructor === this.selectedAmmo.constructor
     );
@@ -222,11 +293,11 @@ class AmmunitionStrategy extends ShipSystemStrategy {
       return false;
     }
 
-    if (entry.amount < this.ammoPerFireOrder) {
+    if (entry.amount < this.getAmmoNeededForFireOrder()) {
       return false;
     }
 
-    return true;
+    return previousResponse;
   }
 
   afterWeaponFire() {
@@ -243,7 +314,26 @@ class AmmunitionStrategy extends ShipSystemStrategy {
     entry.amount -= this.ammoPerFireOrder;
 
     this.loaded = this.loaded.filter(entry => entry.amount > 0);
+    this._changeSelectedAmmoIfOutOfAmmo();
+  }
 
+  advanceTurn() {
+    if (this.system.isDestroyed()) {
+      return;
+    }
+
+    if (this.system.power.isOffline()) {
+      this.turnsOffline++;
+    } else {
+      this.turnsOffline = 0;
+    }
+
+    if (this.turnsOffline > this.startLoadingAfter) {
+      this._load();
+    }
+  }
+
+  _changeSelectedAmmoIfOutOfAmmo() {
     if (this.loaded.length === 0) {
       return;
     }
@@ -263,31 +353,14 @@ class AmmunitionStrategy extends ShipSystemStrategy {
     }
   }
 
-  advanceTurn() {
-    if (this.system.isDestroyed()) {
-      return;
-    }
-
-    console.log("advanceTurn");
-    if (this.system.power.isOffline()) {
-      this.turnsOffline++;
-      console.log("now has been offline", this.turnsOffline);
-    }
-
-    if (this.turnsOffline > this.startLoadingAfter) {
-      this._load();
-    }
-  }
-
   _load() {
-    console.log("load!, intake", this.intakeInTurn);
     let ammoTransferredIn = 0;
     let ammoTransferredOut = 0;
 
-    console.log("UNLOADING EXTRA");
+    console.log(JSON.stringify(this.loaded));
+
     while (true) {
       if (ammoTransferredOut === this.intakeInTurn) {
-        console.log("unloaded max amount of ammo");
         break;
       }
 
@@ -298,10 +371,6 @@ class AmmunitionStrategy extends ShipSystemStrategy {
           );
 
           if (target && target.amount >= loaded.amount) {
-            console.log(
-              loaded.object.constructor.name,
-              "needs either to be loaded, or is perfectly loaded"
-            );
             return true;
           }
 
@@ -310,13 +379,9 @@ class AmmunitionStrategy extends ShipSystemStrategy {
             extra = this.intakeInTurn - ammoTransferredOut;
           }
 
-          console.log(
-            loaded.object.constructor.name,
-            "nees to be unloaded, current amount",
-            loaded.amount,
-            "extra",
-            extra
-          );
+          if (extra === 0) {
+            return true;
+          }
 
           const systemWithSpace = this.system.shipSystems
             .getSystems()
@@ -325,9 +390,6 @@ class AmmunitionStrategy extends ShipSystemStrategy {
             );
 
           if (!systemWithSpace) {
-            console.log(
-              "did not find any system with cargo space to unload to"
-            );
             return true;
           }
 
@@ -338,23 +400,19 @@ class AmmunitionStrategy extends ShipSystemStrategy {
             amount: extra
           });
           ammoTransferredOut += extra;
-          console.log("unloading", loaded.object.constructor.name, extra);
           loaded.amount -= extra;
 
           return false;
         })
       ) {
-        console.log("FINISH UNLOAD");
         break;
       }
     }
 
     this.loaded = this.loaded.filter(entry => entry.amount > 0);
 
-    console.log("LOADING");
     while (true) {
       if (ammoTransferredIn === this.intakeInTurn) {
-        console.log("LOADED MAX AMOUNT");
         break;
       }
 
@@ -364,23 +422,18 @@ class AmmunitionStrategy extends ShipSystemStrategy {
             loaded => target.object.constructor === loaded.object.constructor
           );
 
-          if (!loaded) {
+          if (!loaded && target.amount > 0) {
             loaded = {
               object: target.object,
               amount: 0
             };
 
             this.loaded.push(loaded);
+          } else if (!loaded && target.amount === 0) {
+            return true;
           }
 
           if (loaded.amount === target.amount) {
-            console.log(
-              loaded.object.constructor.name,
-              "has correct amount: ",
-              loaded.amount,
-              "target",
-              target.amount
-            );
             return true;
           }
 
@@ -391,10 +444,6 @@ class AmmunitionStrategy extends ShipSystemStrategy {
             );
 
           if (!cargoSystem) {
-            console.log(
-              target.object.constructor.name,
-              "was not found in any cargobay"
-            );
             return true;
           }
 
@@ -432,6 +481,9 @@ class AmmunitionStrategy extends ShipSystemStrategy {
         break;
       }
     }
+
+    console.log(JSON.stringify(this.loaded));
+    this._changeSelectedAmmoIfOutOfAmmo();
   }
 }
 

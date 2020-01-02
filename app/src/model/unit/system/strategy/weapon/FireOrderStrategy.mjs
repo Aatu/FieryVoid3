@@ -55,6 +55,10 @@ class FireOrderStrategy extends ShipSystemStrategy {
     });
   }
 
+  usesFireOrders() {
+    return true;
+  }
+
   getNumberOfShots() {
     return this.numberOfShots;
   }

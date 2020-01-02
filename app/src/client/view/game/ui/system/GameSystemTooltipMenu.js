@@ -1,5 +1,5 @@
 import * as React from "react";
-import { TooltipMenu, TooltipButton } from "../../../../styled";
+import { TooltipMenu, TooltipButton, TooltipValue } from "../../../../styled";
 import OEWButtons from "../electronicWarfare/OEWButtons";
 
 class GameSystemTooltipMenu extends React.PureComponent {
@@ -72,6 +72,22 @@ class GameSystemTooltipMenu extends React.PureComponent {
               }}
             />
           )}
+
+        {system
+          .callHandler("getTooltipMenuButton", { uiState }, [])
+          .map(({ img, disabledHandler, onClickHandler }, i) => (
+            <TooltipButton
+              key={`custom-system-tooltip-button-${i}`}
+              img={img}
+              disabled={disabledHandler}
+              onClick={() => {
+                onClickHandler();
+                uiState.shipSystemStateChanged(ship, system);
+                uiState.shipStateChanged(ship);
+                this.forceUpdate();
+              }}
+            />
+          ))}
       </TooltipMenu>
     );
   }

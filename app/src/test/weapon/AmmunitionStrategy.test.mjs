@@ -167,3 +167,57 @@ test("Empty magazine target loading can be changed", test => {
     { object: new Ammo85mmHE(), amount: 12 }
   ]);
 });
+
+test("You can completely unload a weapon", test => {
+  const ship = createShip();
+  const autoCannon = ship.systems.getSystemById(1);
+  const cargoBay = ship.systems.getSystemById(2);
+
+  autoCannon.callHandler("setNewLoadingTarget", [
+    { object: new Ammo85mmAP(), amount: 0 },
+    { object: new Ammo85mmHE(), amount: 0 }
+  ]);
+
+  const serverShip = createShip();
+  const serverCannon = serverShip.systems.getSystemById(1);
+
+  serverCannon.callHandler("loadTargetInstant");
+  serverCannon.callHandler("receivePlayerData", { clientSystem: autoCannon });
+  serverCannon.power.setOffline();
+  serverCannon.callHandler("advanceTurn");
+  serverCannon.callHandler("advanceTurn");
+
+  console.log(serverCannon.callHandler("getAmmoInMagazine"));
+  test.deepEqual(serverCannon.callHandler("getAmmoInMagazine"), [
+    { object: new Ammo85mmHE(), amount: 9 }
+  ]);
+  /*
+  serverCannon.callHandler("advanceTurn");
+
+  test.deepEqual(serverCannon.callHandler("getAmmoInMagazine"), [
+    { object: new Ammo85mmHE(), amount: 3 }
+  ]);
+
+  serverCannon.callHandler("advanceTurn");
+
+  test.deepEqual(serverCannon.callHandler("getAmmoInMagazine"), []);
+  serverCannon.deserialize(serverCannon.serialize());
+
+  test.deepEqual(serverCannon.callHandler("getLoadingTarget"), []);
+  */
+});
+
+test("You can change the selected ammo", test => {
+  const ship = createShip();
+  const autoCannon = ship.systems.getSystemById(1);
+  const cargoBay = ship.systems.getSystemById(2);
+
+  test.deepEqual(autoCannon.callHandler("getSelectedAmmo"), new Ammo85mmHE());
+  autoCannon.callHandler("setNewSelectedAmmo", new Ammo85mmAP());
+  const serverShip = createShip();
+  const serverCannon = serverShip.systems.getSystemById(1);
+
+  serverCannon.callHandler("loadTargetInstant");
+  serverCannon.callHandler("receivePlayerData", { clientSystem: autoCannon });
+  test.deepEqual(serverCannon.callHandler("getSelectedAmmo"), new Ammo85mmAP());
+});
