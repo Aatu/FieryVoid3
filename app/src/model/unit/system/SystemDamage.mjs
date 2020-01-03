@@ -44,14 +44,12 @@ class SystemDamage {
     return entry;
   }
 
-  rollCritical(damageEntry) {
-    return [];
-    //TODO: roll if this damage causes any critical hits
-    // return gameEvent for log etc
-  }
-
   addCritical(critical) {
     this.criticals.push(critical);
+  }
+
+  filterReplaced(critical) {
+    this.criticals = this.criticals.filter(old => !old.isReplacedBy(critical));
   }
 
   hasCritical(object) {
@@ -68,12 +66,22 @@ class SystemDamage {
     }
   }
 
+  getCriticals() {
+    return this.criticals;
+  }
+
   hasAnyCritical() {
     return this.criticals.length > 0;
   }
 
   getTotalDamage() {
     return this.entries.reduce((acc, entry) => acc + entry.getDamage(), 0);
+  }
+
+  getNewDamage() {
+    return this.entries
+      .filter(entry => entry.new)
+      .reduce((acc, entry) => acc + entry.getDamage(), 0);
   }
 
   isDestroyed() {

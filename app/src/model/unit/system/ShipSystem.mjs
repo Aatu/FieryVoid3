@@ -99,10 +99,6 @@ class ShipSystem {
     }
   }
 
-  rollCritical(damageEntry) {
-    return this.damage.rollCritical(damageEntry);
-  }
-
   addCritical(critical) {
     this.damage.addCritical(critical);
   }

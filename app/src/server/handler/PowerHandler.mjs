@@ -3,6 +3,10 @@ class PowerHandler {
     activeShips.forEach(serverShip => {
       const clientShip = clientGameData.ships.getShipById(serverShip.id);
       serverShip.systems.power.copyPower(clientShip);
+
+      if (!serverShip.systems.power.isValidPower()) {
+        serverShip.systems.power.forceValidPower();
+      }
     });
   }
 
@@ -12,10 +16,6 @@ class PowerHandler {
         .getSystems()
         .filter(system => system.callHandler("shouldBeOffline", null, false))
         .forEach(system => system.power.forceOffline());
-
-      if (!ship.systems.power.isValidPower()) {
-        ship.systems.power.forceValidPower();
-      }
     });
   }
 }

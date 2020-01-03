@@ -15,11 +15,10 @@ class CombatLogDamageEntry {
     return this;
   }
 
-  add(system, damage, criticals) {
+  add(system, damage) {
     this.entries.push({
       systemId: system.id,
-      damageIds: [].concat(damage).map(d => d.id),
-      criticalNames: [].concat(criticals).map(c => c.name)
+      damageIds: [].concat(damage).map(d => d.id)
     });
   }
 

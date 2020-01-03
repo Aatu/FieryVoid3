@@ -7,6 +7,10 @@ class ExplosiveDamageStrategy extends StandardDamageStrategy {
     this.numberOfDamagesFormula = numberOfDamagesFormula;
   }
 
+  _getDamageTypeMessage() {
+    return "Explosive";
+  }
+
   _getNumberOfDamagesForWeaponHit() {
     if (Number.isInteger(this.numberOfDamagesFormula)) {
       return this.numberOfDamagesFormula;

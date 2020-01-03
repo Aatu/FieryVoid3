@@ -1,5 +1,9 @@
-import Critical from "./Critical.mjs";
+import OutputReduced from "./OutputReduced.mjs";
 
-class OutputReduced2 extends Critical {}
+class OutputReduced2 extends OutputReduced {
+  constructor(duration) {
+    super(2, duration);
+  }
+}
 
 export default OutputReduced2;

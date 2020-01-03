@@ -7,6 +7,7 @@ import SystemDataHandler from "./SystemDataHandler.mjs";
 import TorpedoHandler from "./TorpedoHandler.mjs";
 import LaunchHandler from "./LaunchHandler.mjs";
 import CombatLogShipVelocity from "../../model/combatLog/CombatLogShipVelocity.mjs";
+import CriticalHandler from "./CriticalHandler.mjs";
 
 class GameHandler {
   constructor() {
@@ -17,6 +18,7 @@ class GameHandler {
     this.systemDataHandler = new SystemDataHandler();
     this.launchHandler = new LaunchHandler();
     this.torpedoHandler = new TorpedoHandler();
+    this.criticalHandler = new CriticalHandler();
   }
 
   submit(serverGameData, clientGameData, user) {
@@ -90,6 +92,7 @@ class GameHandler {
     this.weaponHandler.advance(gameData);
     this.torpedoHandler.advance(gameData);
     this.electronicWarfareHandler.advance(gameData);
+    this.criticalHandler.advance(gameData);
     this.powerHandler.advance(gameData);
 
     gameData.ships.getShips().forEach(ship => {

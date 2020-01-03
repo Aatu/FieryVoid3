@@ -26,7 +26,7 @@ class RailgunTurreted2x140mm extends Weapon {
       new StandardLoadingStrategy(2),
       new RequiresPowerSystemStrategy(6),
       new BoostableSystemStrategy(6, 1),
-      new StandardDamageStrategy("2d5 + 10"),
+      new StandardDamageStrategy(),
       new AmmunitionStrategy([Ammo140mmAP, Ammo140mmHE], 1, 9, 4),
       new WeaponAnimationStrategy("Bolt", {
         size: 6,

@@ -1,6 +1,10 @@
 import StandardDamageStrategy from "./StandardDamageStrategy.mjs";
 
 class PiercingDamageStrategy extends StandardDamageStrategy {
+  _getDamageTypeMessage() {
+    return "Piercing";
+  }
+
   _doDamage(
     payload,
     damageResult,

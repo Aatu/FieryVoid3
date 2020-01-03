@@ -15,7 +15,9 @@ class GameSystemTooltipMenu extends React.PureComponent {
         {myShip && ship.systems.power.canSetOnline(system) && (
           <TooltipButton
             img="/img/goOnline.png"
-            onClick={() => {
+            onClick={e => {
+              e.preventDefault();
+              e.stopPropagation();
               system.power.setOnline();
               uiState.shipSystemStateChanged(ship, system);
               uiState.shipStateChanged(ship);
@@ -27,7 +29,9 @@ class GameSystemTooltipMenu extends React.PureComponent {
         {myShip && ship.systems.power.canSetOffline(system) && (
           <TooltipButton
             img="/img/goOffline.png"
-            onClick={() => {
+            onClick={e => {
+              e.preventDefault();
+              e.stopPropagation();
               system.power.setOffline();
               uiState.shipSystemStateChanged(ship, system);
               uiState.shipStateChanged(ship);
@@ -42,7 +46,9 @@ class GameSystemTooltipMenu extends React.PureComponent {
             <TooltipButton
               img="/img/plus.png"
               disabled={!system.callHandler("canBoost", null, false)}
-              onClick={() => {
+              onClick={e => {
+                e.preventDefault();
+                e.stopPropagation();
                 if ((!system.callHandler("canBoost"), null, false)) {
                   return;
                 }
@@ -61,7 +67,9 @@ class GameSystemTooltipMenu extends React.PureComponent {
             <TooltipButton
               img="/img/minus.png"
               disabled={!system.callHandler("canDeBoost", null, false)}
-              onClick={() => {
+              onClick={e => {
+                e.preventDefault();
+                e.stopPropagation();
                 if (!system.callHandler("canDeBoost", null, false)) {
                   return;
                 }
@@ -80,7 +88,9 @@ class GameSystemTooltipMenu extends React.PureComponent {
               key={`custom-system-tooltip-button-${i}`}
               img={img}
               disabled={disabledHandler}
-              onClick={() => {
+              onClick={e => {
+                e.preventDefault();
+                e.stopPropagation();
                 onClickHandler();
                 uiState.shipSystemStateChanged(ship, system);
                 uiState.shipStateChanged(ship);

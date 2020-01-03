@@ -40,7 +40,9 @@ class TorpedoLauncher extends React.PureComponent {
   }
 
   unloadAmmo() {
-    return () => {
+    return e => {
+      e.preventDefault();
+      e.stopPropagation();
       const { ship, launcher, uiState, launcherIndex } = this.props;
 
       launcher.unloadAmmo({ launcherIndex });
@@ -49,7 +51,9 @@ class TorpedoLauncher extends React.PureComponent {
   }
 
   loadTorpedo(torpedo) {
-    return () => {
+    return e => {
+      e.preventDefault();
+      e.stopPropagation();
       const { ship, launcher, uiState, launcherIndex } = this.props;
 
       launcher.loadAmmo({ ammo: torpedo, launcherIndex });
@@ -76,13 +80,13 @@ class TorpedoLauncher extends React.PureComponent {
             <TooltipValue>{`${turnsLoaded}/${loadingTime}`}</TooltipValue>
           </TooltipEntry>
 
-          <TooltipEntry>
-            <TooltipValueHeader>Loaded ammo: </TooltipValueHeader>
+          <InlineTooltipEntry>
+            <TooltipValueHeader>Loaded: </TooltipValueHeader>
             <CargoItem
               cargo={loadedTorpedo ? loadedTorpedo : new NoAmmunitionLoaded()}
               amount={null}
             />
-          </TooltipEntry>
+          </InlineTooltipEntry>
         </InlineTooltipEntry>
 
         <TooltipEntry>

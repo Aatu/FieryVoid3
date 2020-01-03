@@ -40,22 +40,6 @@ class LeftPanel extends React.PureComponent {
             />
           )}
         </SubContainer>
-
-        {systemList && (
-          <SubContainer>
-            <CCEWButtons
-              ship={uiState.state.selectedShip}
-              uiState={uiState}
-              ccew={uiState.state.selectedShip.electronicWarfare.getCcEw()}
-            />
-            <SystemList
-              ship={uiState.state.selectedShip}
-              uiState={uiState}
-              systems={systemList}
-              {...rest}
-            />
-          </SubContainer>
-        )}
       </Container>
     );
   }

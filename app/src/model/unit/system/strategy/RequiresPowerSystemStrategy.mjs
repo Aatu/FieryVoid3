@@ -1,4 +1,5 @@
 import ShipSystemStrategy from "./ShipSystemStrategy.mjs";
+import { ForcedOffline } from "../criticals/index.mjs";
 
 class RequiresPowerSystemStrategy extends ShipSystemStrategy {
   constructor(power) {
@@ -28,6 +29,36 @@ class RequiresPowerSystemStrategy extends ShipSystemStrategy {
 
   canSetOnline() {
     return true;
+  }
+
+  shouldBeOffline(payload, previousResponse = false) {
+    if (previousResponse === true) {
+      return true;
+    }
+
+    return this.system.hasCritical(ForcedOffline);
+  }
+
+  getPossibleCriticals(payload, previousResponse = []) {
+    return [
+      ...previousResponse,
+      {
+        severity: 20,
+        critical: new ForcedOffline(1)
+      },
+      {
+        severity: 40,
+        critical: new ForcedOffline(2)
+      },
+      {
+        severity: 60,
+        critical: new ForcedOffline(3)
+      },
+      {
+        severity: 80,
+        critical: new ForcedOffline(4)
+      }
+    ];
   }
 }
 

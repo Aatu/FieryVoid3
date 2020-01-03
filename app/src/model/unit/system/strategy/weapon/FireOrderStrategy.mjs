@@ -4,10 +4,11 @@ import CombatLogWeaponOutOfArc from "../../../../combatLog/CombatLogWeaponOutOfA
 import CombatLogWeaponFire from "../../../../combatLog/CombatLogWeaponFire.mjs";
 
 class FireOrderStrategy extends ShipSystemStrategy {
-  constructor(numberOfShots = 1) {
+  constructor(numberOfShots = 1, resolutionPriority = 10) {
     super();
 
     this.numberOfShots = numberOfShots;
+    this.resolutionPriority = resolutionPriority;
 
     this.fireOrders = [];
   }
@@ -65,6 +66,14 @@ class FireOrderStrategy extends ShipSystemStrategy {
 
   getNumberOfShots() {
     return this.numberOfShots;
+  }
+
+  getFireOrderResolutionPriority() {
+    return this.resolutionPriority;
+  }
+
+  hasFireOrder() {
+    return this.fireOrders.length > 0;
   }
 
   getFireOrders() {

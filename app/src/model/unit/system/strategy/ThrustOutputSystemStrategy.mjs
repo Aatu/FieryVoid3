@@ -5,6 +5,7 @@ import {
   OutputReduced6,
   OutputReduced8
 } from "../criticals/index.mjs";
+import OutputReduced from "../criticals/OutputReduced.mjs";
 
 class ThrustOutputSystemStrategy extends ShipSystemStrategy {
   constructor(output) {
@@ -28,21 +29,10 @@ class ThrustOutputSystemStrategy extends ShipSystemStrategy {
 
     let output = this.output;
 
-    if (this.system.hasCritical(OutputReduced2)) {
-      output -= 2;
-    }
-
-    if (this.system.hasCritical(OutputReduced4)) {
-      output -= 4;
-    }
-
-    if (this.system.hasCritical(OutputReduced6)) {
-      output -= 6;
-    }
-
-    if (this.system.hasCritical(OutputReduced8)) {
-      output -= 8;
-    }
+    output -= this.system.damage
+      .getCriticals()
+      .filter(critical => critical instanceof OutputReduced)
+      .reduce((total, current) => total + current.getOutputReduction(), 0);
 
     if (output < 0) {
       output = 0;
@@ -54,10 +44,23 @@ class ThrustOutputSystemStrategy extends ShipSystemStrategy {
   getPossibleCriticals(payload, previousResponse = []) {
     return [
       ...previousResponse,
-      { weight: 10, className: OutputReduced2 },
-      { weight: 7, className: OutputReduced4 },
-      { weight: 3, className: OutputReduced6 },
-      { weight: 1, className: OutputReduced8 }
+      { severity: 20, critical: new OutputReduced(2, 2) },
+      {
+        severity: 30,
+        critical: new OutputReduced(Math.ceil(this.output / 4), 2)
+      },
+      {
+        severity: 60,
+        critical: new OutputReduced(Math.ceil(this.output / 3), 2)
+      },
+      {
+        severity: 70,
+        critical: new OutputReduced(Math.ceil(this.output / 2), 2)
+      },
+      { severity: 30, critical: new OutputReduced(2) },
+      { severity: 70, critical: new OutputReduced(Math.ceil(this.output / 4)) },
+      { severity: 80, critical: new OutputReduced(Math.ceil(this.output / 3)) },
+      { severity: 90, critical: new OutputReduced(Math.ceil(this.output / 2)) }
     ];
   }
 

@@ -13,6 +13,7 @@ class BoostableSystemStrategy extends ShipSystemStrategy {
     return true;
   }
 
+  /*
   getMessages(payload, previousResponse = []) {
     previousResponse.push({
       header: "Boostable",
@@ -26,6 +27,7 @@ class BoostableSystemStrategy extends ShipSystemStrategy {
 
     return previousResponse;
   }
+  */
 
   canBoost(payload, previousResponse) {
     const remainginPower = this.system.shipSystems.power.getRemainingPowerOutput();

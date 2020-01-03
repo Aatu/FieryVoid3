@@ -12,6 +12,61 @@ class StandardDamageStrategy extends ShipSystemStrategy {
     this.hitSystemRandomizer = new HitSystemRandomizer();
   }
 
+  _getDamageMessage() {
+    let messages = [];
+
+    if (this.damageFormula) {
+      messages.push(this.damageFormula);
+    }
+
+    const ammo = this.system.callHandler("getSelectedAmmo", null, null);
+
+    if (ammo) {
+      messages.push(ammo.damageFormula);
+    }
+
+    return messages.join(" + ammo: ");
+  }
+
+  _getArmorPiercingMessage() {
+    let messages = [];
+
+    if (this.armorPiercingFormula) {
+      messages.push(this.armorPiercingFormula);
+    }
+
+    const ammo = this.system.callHandler("getSelectedAmmo", null, null);
+
+    if (ammo) {
+      messages.push(ammo.armorPiercingFormula);
+    }
+
+    return messages.join(" + ammo: ");
+  }
+
+  _getDamageTypeMessage() {
+    return "Standard";
+  }
+
+  getMessages(payload, previousResponse = []) {
+    previousResponse.push({
+      header: "Damage type",
+      value: this._getDamageTypeMessage()
+    });
+
+    previousResponse.push({
+      header: "Damage",
+      value: this._getDamageMessage()
+    });
+
+    previousResponse.push({
+      header: "Armor piercing",
+      value: this._getArmorPiercingMessage()
+    });
+
+    return previousResponse;
+  }
+
   applyDamageFromWeaponFire(payload) {
     const { fireOrder, combatLogEntry, hitResolution } = payload;
 
@@ -162,9 +217,8 @@ class StandardDamageStrategy extends ShipSystemStrategy {
       damage = 0;
     }
 
-    const criticals = hitSystem.rollCritical(entry);
     hitSystem.addDamage(entry);
-    damageResult.add(hitSystem, entry, criticals);
+    damageResult.add(hitSystem, entry);
 
     return {
       armorPiercing: armorPiercingLeft,
@@ -179,18 +233,45 @@ class StandardDamageStrategy extends ShipSystemStrategy {
   }
 
   _getDamageForWeaponHit({ requiredToHit, rolledToHit }) {
+    let damage = 0;
     if (Number.isInteger(this.damageFormula)) {
-      return this.damageFormula;
+      damage = this.damageFormula;
+    } else if (this.damageFormula !== null) {
+      damage = this.diceRoller.roll(this.damageFormula).total;
     }
-    return this.diceRoller.roll(this.damageFormula).total;
+
+    if (!this.system) {
+      return damage;
+    }
+
+    const ammo = this.system.callHandler("getSelectedAmmo", null, null);
+
+    if (!ammo) {
+      return damage;
+    }
+
+    return damage + ammo.getDamage(this.diceRoller);
   }
 
   _getArmorPiercing() {
+    let armorPiercing = 0;
     if (Number.isInteger(this.armorPiercingFormula)) {
-      return this.armorPiercingFormula;
+      armorPiercing = this.armorPiercingFormula;
+    } else if (this.armorPiercingFormula !== null) {
+      armorPiercing = this.diceRoller.roll(this.armorPiercingFormula).total;
     }
 
-    return this.diceRoller.roll(this.armorPiercingFormula).total;
+    if (!this.system) {
+      return armorPiercing;
+    }
+
+    const ammo = this.system.callHandler("getSelectedAmmo", null, null);
+
+    if (!ammo) {
+      return armorPiercing;
+    }
+
+    return armorPiercing + ammo.getArmorPiercing(this.diceRoller);
   }
 }
 

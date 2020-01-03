@@ -22,6 +22,14 @@ class Critical {
     }
   }
 
+  excludes(critical) {
+    return false;
+  }
+
+  isReplacedBy(critical) {
+    return false;
+  }
+
   isFixed() {
     return this.turnsRemaining === 0;
   }

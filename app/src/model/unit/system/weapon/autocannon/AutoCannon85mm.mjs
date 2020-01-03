@@ -28,7 +28,7 @@ class AutoCannon85mm extends Weapon {
         { range: 35, modifier: -200 }
       ]),
       new StandardLoadingStrategy(1),
-      new BurstDamageStrategy("2d4+2", 0, 0, 3, 10),
+      new BurstDamageStrategy(null, null, 0, 3, 10),
       new InterceptorStrategy(),
       new AmmunitionStrategy([Ammo85mmAP, Ammo85mmHE], 3, 15, 6),
       new WeaponAnimationStrategy("BoltBurst", {

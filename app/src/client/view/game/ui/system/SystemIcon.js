@@ -222,14 +222,10 @@ class SystemIcon extends React.Component {
       target && weaponFireService.systemHasFireOrderAgainstShip(system, target);
 
     return (
-      <Container
-        onClick={onSystemClicked.bind(this)}
-        onMouseOver={this.onSystemMouseOver.bind(this)}
-        onMouseOut={this.onSystemMouseOut.bind(this)}
-        onContextMenu={this.onContextMenu.bind(this)}
-      >
-        {displayMenu && (
+      <>
+        {displayMenu && scs && (
           <SystemInfo
+            scs
             uiState={uiState}
             ship={ship}
             system={system}
@@ -239,21 +235,41 @@ class SystemIcon extends React.Component {
             {...rest}
           />
         )}
-        <System
-          ref={c => (this.element = c)}
-          scs={scs}
-          background={getBackgroundImage(system)}
-          offline={isOffline(ship, system)}
-          loading={isLoading(system)}
-          selected={selected}
-          firing={firing}
-          targeting={targeting}
-          reserved={reserved}
-        />
+        <Container
+          onClick={onSystemClicked.bind(this)}
+          onMouseOver={this.onSystemMouseOver.bind(this)}
+          onMouseOut={this.onSystemMouseOut.bind(this)}
+          onContextMenu={this.onContextMenu.bind(this)}
+          scs
+        >
+          {displayMenu && !scs && (
+            <SystemInfo
+              scs
+              uiState={uiState}
+              ship={ship}
+              system={system}
+              systemInfoMenuProvider={menu}
+              element={mouseOveredSystem || activeSystemElement}
+              target={target}
+              {...rest}
+            />
+          )}
+          <System
+            ref={c => (this.element = c)}
+            scs={scs}
+            background={getBackgroundImage(system)}
+            offline={isOffline(ship, system)}
+            loading={isLoading(system)}
+            selected={selected}
+            firing={firing}
+            targeting={targeting}
+            reserved={reserved}
+          />
 
-        <SystemText selected={selected}>{text}</SystemText>
-        <HealthBar health={getStructureLeft(system)} />
-      </Container>
+          <SystemText selected={selected}>{text}</SystemText>
+          <HealthBar health={getStructureLeft(system)} />
+        </Container>
+      </>
     );
   }
 }

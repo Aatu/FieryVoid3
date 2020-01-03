@@ -33,6 +33,39 @@ class BurstDamageStrategy extends StandardDamageStrategy {
     });
   }
 
+  _getDamageTypeMessage() {
+    return "Burst";
+  }
+
+  getMessages(payload, previousResponse = []) {
+    previousResponse.push({
+      header: "Damage type",
+      value: this._getDamageTypeMessage()
+    });
+
+    previousResponse.push({
+      header: "Burst size",
+      value: this.maxShots
+    });
+
+    previousResponse.push({
+      header: "Burst grouping",
+      value: this.grouping
+    });
+
+    previousResponse.push({
+      header: "Damage",
+      value: this._getDamageMessage()
+    });
+
+    previousResponse.push({
+      header: "Armor piercing",
+      value: this._getArmorPiercingMessage()
+    });
+
+    return previousResponse;
+  }
+
   _getNumberOfShots({ hitResolution }) {
     const requiredToHit = hitResolution.hitChange.result;
     const rolledToHit = hitResolution.hitRoll;

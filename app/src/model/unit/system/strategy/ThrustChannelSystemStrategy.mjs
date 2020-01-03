@@ -108,8 +108,16 @@ class ThrustChannelSystemStrategy extends ShipSystemStrategy {
   getPossibleCriticals(payload, previousResponse = []) {
     return [
       ...previousResponse,
-      { weight: 10, className: FirstThrustIgnored },
-      { weight: 5, className: EfficiencyHalved }
+      {
+        severity: 20,
+        critical: new FirstThrustIgnored(Math.round(Math.random() * 2))
+      },
+      {
+        severity: 30,
+        critical: new EfficiencyHalved(Math.round(Math.random() * 2))
+      },
+      { severity: 50, critical: new FirstThrustIgnored() },
+      { severity: 80, critical: new EfficiencyHalved() }
     ];
   }
 }

@@ -96,7 +96,10 @@ class Ammo extends React.Component {
           <NewTargetContainer key={`new-loading-${i}`}>
             <LoadingButton
               img="/img/minus.png"
-              onClick={() => {
+              onClick={e => {
+                e.preventDefault();
+                e.stopPropagation();
+
                 ammoStrategy.addToLoading({ object, amount: -1 });
                 this.forceUpdate();
               }}
@@ -108,7 +111,10 @@ class Ammo extends React.Component {
             />
             <LoadingButton
               img="/img/plus.png"
-              onClick={() => {
+              onClick={e => {
+                e.preventDefault();
+                e.stopPropagation();
+
                 ammoStrategy.addToLoading({ object, amount: 1 });
                 this.forceUpdate();
               }}
@@ -164,7 +170,11 @@ class Ammo extends React.Component {
 
             <CenteredTooltipEntry
               clickable
-              onClick={() => this.setState({ loadingOpen: true })}
+              onClick={e => {
+                e.preventDefault();
+                e.stopPropagation();
+                this.setState({ loadingOpen: true });
+              }}
             >
               <TooltipValueHeader>CLICK TO LOAD NEW AMMO</TooltipValueHeader>
             </CenteredTooltipEntry>
@@ -203,13 +213,20 @@ class Ammo extends React.Component {
             {this.getNewLoadOutButtons()}
             <CenteredTooltipEntry
               clickable
-              onClick={() => this.setState({ loadingOpen: false })}
+              onClick={e => {
+                e.preventDefault();
+                e.stopPropagation();
+                this.setState({ loadingOpen: false });
+              }}
             >
               <TooltipValueHeader>CLOSE</TooltipValueHeader>
             </CenteredTooltipEntry>
             <CenteredTooltipEntry
               clickable
-              onClick={() => {
+              onClick={e => {
+                e.preventDefault();
+                e.stopPropagation();
+
                 ship.systems
                   .getSystems()
                   .filter(

@@ -12,9 +12,10 @@ import {
 } from "../../../../styled";
 import SystemStrategyUi from "./SystemStrategyUi";
 
-const SystemInfoTooltip = styled(RelativeTooltip)`
-  width: ${props => (props.ship ? "300px" : "200px")};
-  filter: brightness(1);
+const SystemTooltip = styled(Tooltip)`
+  top: 0px;
+  right: 335px;
+  width: 200px;
 `;
 
 class SystemInfo extends React.Component {
@@ -35,11 +36,29 @@ class SystemInfo extends React.Component {
     uiState.unsubscribeFromSystemChange(this.systemChangedCallbackInstance);
   }
 
+  getContainer(children) {
+    const { element, scs } = this.props;
+    if (scs) {
+      return <SystemTooltip>{children}</SystemTooltip>;
+    }
+    return <RelativeTooltip element={element}>{children}</RelativeTooltip>;
+  }
+
+  getWarnings() {
+    const { system } = this.props;
+    const warnings = [];
+    if (system.isDestroyed()) {
+      warnings.push("Destroyed");
+    }
+    if (system.power.isOffline()) {
+      warnings.push("Offline");
+    }
+    return warnings;
+  }
   render() {
     const {
       ship,
       system,
-      element,
       systemInfoMenuProvider,
       uiState,
       weaponTargeting
@@ -47,9 +66,12 @@ class SystemInfo extends React.Component {
 
     const Menu = systemInfoMenuProvider ? systemInfoMenuProvider() : null;
 
-    return (
-      <SystemInfoTooltip element={element}>
+    const warnings = this.getWarnings();
+
+    return this.getContainer(
+      <>
         <TooltipHeader>{system.getDisplayName()}</TooltipHeader>
+        {warnings.length > 0 && <div>LOL HI</div>}
         {Menu && <Menu uiState={uiState} ship={ship} system={system} />}
         {system.getSystemInfo(ship).map(getEntry)}
         <SystemStrategyUi ship={ship} system={system} uiState={uiState} />
@@ -62,7 +84,7 @@ class SystemInfo extends React.Component {
             hitChange={weaponTargeting.hitChange}
           />
         )}
-      </SystemInfoTooltip>
+      </>
     );
   }
 }

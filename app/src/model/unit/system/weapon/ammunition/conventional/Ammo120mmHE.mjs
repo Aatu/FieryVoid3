@@ -1,6 +1,10 @@
-import CargoEntity from "../../../cargo/CargoEntity.mjs";
+import Ammo from "../Ammo.mjs";
 
-class Ammo120mmHE extends CargoEntity {
+class Ammo120mmHE extends Ammo {
+  constructor() {
+    super("2d4 + 10", 0);
+  }
+
   getDisplayName() {
     return "120mm high explosive railgun projectile";
   }

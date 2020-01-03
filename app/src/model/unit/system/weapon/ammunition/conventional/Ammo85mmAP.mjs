@@ -1,6 +1,10 @@
-import CargoEntity from "../../../cargo/CargoEntity.mjs";
+import Ammo from "../Ammo.mjs";
 
-class Ammo85mmAP extends CargoEntity {
+class Ammo85mmAP extends Ammo {
+  constructor() {
+    super("d3", "2d3+2");
+  }
+
   getSpaceRequired() {
     return 0.02;
   }
