@@ -17,7 +17,7 @@ test("Chooses random system from available", test => {
   ];
 
   systemRandomizer.rollForSystem = totalStructure => {
-    test.is(totalStructure, 100);
+    test.is(totalStructure, 99);
     return roll;
   };
 
@@ -35,6 +35,6 @@ test("Chooses random system from available", test => {
   roll = 76;
   test.is(systemRandomizer.randomizeHitSystem(systems).id, 3);
 
-  roll = 100;
+  roll = 99;
   test.is(systemRandomizer.randomizeHitSystem(systems).id, 5);
 });

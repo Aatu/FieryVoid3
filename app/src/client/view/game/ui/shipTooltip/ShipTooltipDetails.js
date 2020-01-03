@@ -39,7 +39,7 @@ class ShipTooltipDetails extends React.Component {
         <Row>
           {this.getEntry(
             "Hit profile",
-            `Front: ${ship.frontHitProfile}, Side: ${ship.sideHitProfile}`
+            `Front: ${ship.getFrontHitProfile()}, Side: ${ship.getSideHitProfile()}`
           )}
           {this.getEntry(
             "DEW",

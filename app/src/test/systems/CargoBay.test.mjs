@@ -9,8 +9,8 @@ test("Cargo bay can store stuff", test => {
 
   const cargoBay = new CargoBay({ id: 1, hitpoints: 20, armor: 4 }, 50);
 
-  cargoBay.callHandler("addCargo", { cargo: torpedo1, amount: 2 });
-  cargoBay.callHandler("addCargo", { cargo: torpedo2, amount: 1 });
+  cargoBay.callHandler("addCargo", { object: torpedo1, amount: 2 });
+  cargoBay.callHandler("addCargo", { object: torpedo2, amount: 1 });
 
   const newCargoBay = new CargoBay(
     { id: 1, hitpoints: 20, armor: 4 },
@@ -18,29 +18,29 @@ test("Cargo bay can store stuff", test => {
   ).deserialize(cargoBay.serialize());
 
   test.true(
-    newCargoBay.callHandler("hasCargo", { cargo: torpedo1, amount: 2 })
+    newCargoBay.callHandler("hasCargo", { object: torpedo1, amount: 2 })
   );
   test.false(
-    newCargoBay.callHandler("hasCargo", { cargo: torpedo1, amount: 3 })
+    newCargoBay.callHandler("hasCargo", { object: torpedo1, amount: 3 })
   );
 
   test.true(
-    newCargoBay.callHandler("hasCargo", { cargo: torpedo2, amount: 1 })
+    newCargoBay.callHandler("hasCargo", { object: torpedo2, amount: 1 })
   );
   test.false(
-    newCargoBay.callHandler("hasCargo", { cargo: torpedo2, amount: 2 })
-  );
-
-  newCargoBay.callHandler("removeCargo", { cargo: torpedo2, amount: 1 });
-  test.false(
-    newCargoBay.callHandler("hasCargo", { cargo: torpedo2, amount: 1 })
+    newCargoBay.callHandler("hasCargo", { object: torpedo2, amount: 2 })
   );
 
-  newCargoBay.callHandler("removeCargo", { cargo: torpedo1, amount: 1 });
+  newCargoBay.callHandler("removeCargo", { object: torpedo2, amount: 1 });
   test.false(
-    newCargoBay.callHandler("hasCargo", { cargo: torpedo1, amount: 2 })
+    newCargoBay.callHandler("hasCargo", { object: torpedo2, amount: 1 })
+  );
+
+  newCargoBay.callHandler("removeCargo", { object: torpedo1, amount: 1 });
+  test.false(
+    newCargoBay.callHandler("hasCargo", { object: torpedo1, amount: 2 })
   );
   test.true(
-    newCargoBay.callHandler("hasCargo", { cargo: torpedo1, amount: 1 })
+    newCargoBay.callHandler("hasCargo", { object: torpedo1, amount: 1 })
   );
 });

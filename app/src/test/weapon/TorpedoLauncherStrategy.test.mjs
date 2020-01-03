@@ -17,12 +17,12 @@ const createShip = (data = { id: 1 }) => {
   ship.systems.addPrimarySystem([torpedoLauncher, cargoBay]);
 
   cargoBay.callHandler("addCargo", {
-    cargo: new Torpedo158MSV(),
+    object: new Torpedo158MSV(),
     amount: 10
   });
 
   cargoBay.callHandler("addCargo", {
-    cargo: new Torpedo158Nuclear(),
+    object: new Torpedo158Nuclear(),
     amount: 2
   });
 
@@ -39,7 +39,10 @@ test("Torpedo launcher can change loaded torpedo", test => {
   test.is(torpedoLauncher.strategies[1].loadedTorpedo, null);
 
   test.true(
-    cargoBay.callHandler("hasCargo", { cargo: new Torpedo158MSV(), amount: 10 })
+    cargoBay.callHandler("hasCargo", {
+      object: new Torpedo158MSV(),
+      amount: 10
+    })
   );
 
   torpedoLauncher.callHandler("loadAmmo", {
@@ -48,10 +51,13 @@ test("Torpedo launcher can change loaded torpedo", test => {
   });
 
   test.true(
-    cargoBay.callHandler("hasCargo", { cargo: new Torpedo158MSV(), amount: 9 })
+    cargoBay.callHandler("hasCargo", { object: new Torpedo158MSV(), amount: 9 })
   );
   test.false(
-    cargoBay.callHandler("hasCargo", { cargo: new Torpedo158MSV(), amount: 10 })
+    cargoBay.callHandler("hasCargo", {
+      object: new Torpedo158MSV(),
+      amount: 10
+    })
   );
 
   serverShip.receivePlayerData(ship);
@@ -60,13 +66,13 @@ test("Torpedo launcher can change loaded torpedo", test => {
 
   test.true(
     serverShipCargoBay.callHandler("hasCargo", {
-      cargo: new Torpedo158MSV(),
+      object: new Torpedo158MSV(),
       amount: 9
     })
   );
   test.false(
     serverShipCargoBay.callHandler("hasCargo", {
-      cargo: new Torpedo158MSV(),
+      object: new Torpedo158MSV(),
       amount: 10
     })
   );

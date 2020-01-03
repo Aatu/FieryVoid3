@@ -5,6 +5,11 @@ import PowerOutputSystemStrategy from "./PowerOutputSystemStrategy.mjs";
 import ThrustChannelSystemStrategy from "./ThrustChannelSystemStrategy.mjs";
 import AllowsEvasionSystemStrategy from "./AllowsEvasionSystemStrategy.mjs";
 import ElectronicWarfareProvider from "./ElectronicWarfareProvider.mjs";
+import LargerHitProfileOnlineSystemStrategy from "./LargerHitProfileOnlineSystemStrategy.mjs";
+import CargoBaySystemStrategy from "./CargoBaySystemStrategy.mjs";
+import BoostablePlusOneOutputSystemStrategy from "./BoostablePlusOneOutputSystemStrategy.mjs";
+import ArmorBoostOfflineSystemStrategy from "./ArmorBoostOfflineSystemStrategy.mjs";
+
 import {
   TestDamageStrategy,
   StandardDamageStrategy,
@@ -19,10 +24,9 @@ import {
   InterceptorStrategy
 } from "./weapon/index.mjs";
 
-import CargoBaySystemStrategy from "./CargoBaySystemStrategy.mjs";
-import BoostablePlusOneOutputSystemStrategy from "./BoostablePlusOneOutputSystemStrategy.mjs";
-
 export {
+  ArmorBoostOfflineSystemStrategy,
+  LargerHitProfileOnlineSystemStrategy,
   BoostablePlusOneOutputSystemStrategy,
   InterceptorStrategy,
   CargoBaySystemStrategy,

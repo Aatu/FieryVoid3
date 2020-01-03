@@ -1,6 +1,10 @@
 import CargoEntity from "../../../cargo/CargoEntity.mjs";
 
 class Ammo85mmAP extends CargoEntity {
+  getSpaceRequired() {
+    return 0.02;
+  }
+
   getDisplayName() {
     return "85mm armor piercing shell";
   }

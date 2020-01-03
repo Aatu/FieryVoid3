@@ -1,9 +1,15 @@
 import ShipSystem from "../ShipSystem.mjs";
-import { RequiresPowerSystemStrategy } from "../strategy/index.mjs";
+import {
+  RequiresPowerSystemStrategy,
+  LargerHitProfileOnlineSystemStrategy
+} from "../strategy/index.mjs";
 
 class Radiator extends ShipSystem {
-  constructor(args) {
-    super(args, [new RequiresPowerSystemStrategy(1)]);
+  constructor(args, extraProfile = 20) {
+    super(args, [
+      new RequiresPowerSystemStrategy(1),
+      new LargerHitProfileOnlineSystemStrategy(extraProfile, extraProfile, 5)
+    ]);
   }
 
   getDisplayName() {

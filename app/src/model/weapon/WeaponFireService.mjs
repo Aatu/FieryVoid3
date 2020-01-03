@@ -73,7 +73,6 @@ class WeaponFireService {
     }
 
     if (!weapon.callHandler("canFire", null, true)) {
-      console.log("weapon can not fire");
       return false;
     }
 

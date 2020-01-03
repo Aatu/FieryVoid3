@@ -42,8 +42,8 @@ class CargoList extends React.Component {
       <>
         <TooltipSubHeader>Current cargo</TooltipSubHeader>
         <CargoListContainer>
-          {list.map(({ cargo, amount }, i) => (
-            <CargoItem key={`cargo-item-${i}`} cargo={cargo} amount={amount} />
+          {list.map(({ object, amount }, i) => (
+            <CargoItem key={`cargo-item-${i}`} cargo={object} amount={amount} />
           ))}
         </CargoListContainer>
       </>

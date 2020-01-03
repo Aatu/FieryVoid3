@@ -1,7 +1,29 @@
 class Critical {
-  constructor() {
-    this.duration = null;
-    this.name = this.constructor.name;
+  constructor(duration = null) {
+    this.duration = Number.isInteger(duration) ? duration + 1 : null;
+    this.turnsRemaining = this.duration;
+  }
+
+  serialize() {
+    return {
+      className: this.getClassName(),
+      turnsRemaining: this.turnsRemaining
+    };
+  }
+
+  deserialize(data) {
+    this.turnsRemaining = data.turnsRemaining || null;
+    return this;
+  }
+
+  advanceTurn() {
+    if (this.turnsRemaining !== null && this.turnsRemaining > 0) {
+      this.turnsRemaining--;
+    }
+  }
+
+  isFixed() {
+    return this.turnsRemaining === 0;
   }
 
   getDuration() {
@@ -9,7 +31,7 @@ class Critical {
   }
 
   getClassName() {
-    return this.name;
+    return this.constructor.name;
   }
 }
 

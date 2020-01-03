@@ -11,6 +11,11 @@ class DamageEntry {
     this.destroyedSystem = false;
 
     this.system = null;
+    this.new = true;
+  }
+
+  isNew() {
+    return this.new;
   }
 
   setSystem(system) {
@@ -35,6 +40,7 @@ class DamageEntry {
     this.amount = data.amount || 0;
     this.armor = data.armor || 0;
     this.destroyedSystem = data.destroyedSystem || false;
+    this.new = false;
 
     return this;
   }

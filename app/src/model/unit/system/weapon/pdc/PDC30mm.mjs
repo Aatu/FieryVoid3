@@ -10,10 +10,11 @@ import WeaponAnimationStrategy from "../../strategy/weapon/WeaponAnimationStrate
 import InterceptorStrategy from "../../strategy/weapon/InterceptorStrategy.mjs";
 import Ammo30mm from "../ammunition/conventional/Ammo30mm.mjs";
 import AmmunitionStrategy from "../../strategy/weapon/AmmunitionStrategy.mjs";
+import ArmorBoostOfflineSystemStrategy from "../../strategy/ArmorBoostOfflineSystemStrategy.mjs";
 
 class PDC30mm extends Weapon {
-  constructor(args, arcs) {
-    super(args, [
+  constructor({ id }, arcs) {
+    super({ id, armor: 1, hitpoints: 4 }, [
       new RequiresPowerSystemStrategy(1),
       new FireOrderStrategy(1),
       new WeaponArcStrategy(arcs),
@@ -35,7 +36,8 @@ class PDC30mm extends Weapon {
         speed: 0.35,
         color: [1.0, 0.9, 0.8],
         explosionSize: 3
-      })
+      }),
+      new ArmorBoostOfflineSystemStrategy(3)
     ]);
   }
 

@@ -31,6 +31,24 @@ class Ship {
 
   setShipProperties() {}
 
+  getFrontHitProfile() {
+    return (
+      this.frontHitProfile +
+      this.systems
+        .callAllSystemHandlers("getHitProfile", { front: true })
+        .reduce((total, entry) => total + entry, 0)
+    );
+  }
+
+  getSideHitProfile() {
+    return (
+      this.sideHitProfile +
+      this.systems
+        .callAllSystemHandlers("getHitProfile", { front: false })
+        .reduce((total, entry) => total + entry, 0)
+    );
+  }
+
   getHitProfile(position) {
     const heading = addToDirection(
       getCompassHeadingOfPoint(this.getPosition(), position),
@@ -38,9 +56,9 @@ class Ship {
     );
 
     if (heading >= 330 || heading <= 30 || (heading >= 150 && heading <= 210)) {
-      return this.frontHitProfile;
+      return this.getFrontHitProfile();
     } else {
-      return this.sideHitProfile;
+      return this.getSideHitProfile();
     }
   }
 

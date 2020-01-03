@@ -73,9 +73,9 @@ const getEntry = ({ header, value }) => {
   }
 
   return (
-    <TooltipEntry key={header}>
-      <TooltipValueHeader>{header}: </TooltipValueHeader>
-      <TooltipValue>{value}</TooltipValue>
+    <TooltipEntry key={header || value}>
+      {header && <TooltipValueHeader>{header}: </TooltipValueHeader>}
+      {value && <TooltipValue>{value}</TooltipValue>}
     </TooltipEntry>
   );
 };

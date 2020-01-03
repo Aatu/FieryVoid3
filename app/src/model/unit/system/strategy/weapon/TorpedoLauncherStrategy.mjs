@@ -131,12 +131,12 @@ class TorpedoLauncherStrategy extends ShipSystemStrategy {
 
     const system = this.system.shipSystems
       .getSystems()
-      .find(system => system.callHandler("hasCargo", { cargo: ammo }, false));
+      .find(system => system.callHandler("hasCargo", { object: ammo }, false));
 
-    system.callHandler("removeCargo", { cargo: ammo });
+    system.callHandler("removeCargo", { object: ammo });
 
     if (this.loadedTorpedo) {
-      system.callHandler("addCargo", { cargo: this.loadedTorpedo });
+      system.callHandler("addCargo", { object: this.loadedTorpedo });
     }
 
     if (
@@ -175,16 +175,16 @@ class TorpedoLauncherStrategy extends ShipSystemStrategy {
     const ammo = new cargoClasses[changeAmmo.ammo]();
 
     const cargoBay = this.system.shipSystems.getSystemById(changeAmmo.from);
-    if (!cargoBay.callHandler("hasCargo", { cargo: ammo })) {
+    if (!cargoBay.callHandler("hasCargo", { object: ammo })) {
       throw new Error(
         `Trying to take cargo form ${cargoBay.id}, but no appropriate cargo found`
       );
     }
 
-    cargoBay.callHandler("removeCargo", { cargo: ammo });
+    cargoBay.callHandler("removeCargo", { object: ammo });
 
     if (this.loadedTorpedo) {
-      cargoBay.callHandler("addCargo", { cargo: this.loadedTorpedo });
+      cargoBay.callHandler("addCargo", { object: this.loadedTorpedo });
     }
 
     this.loadedTorpedo = ammo;

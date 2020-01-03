@@ -340,7 +340,7 @@ test.serial("Ship loadout is set", async test => {
 
   test.true(
     cargoBay.callHandler("hasCargo", {
-      cargo: new Torpedo158MSV(),
+      object: new Torpedo158MSV(),
       amount: 12
     })
   );

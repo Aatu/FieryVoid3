@@ -62,24 +62,6 @@ class Ammo extends React.Component {
     uiState.unsubscribeFromSystemChange(this.systemChangedCallbackInstance);
   }
 
-  unloadAmmo() {
-    return () => {
-      const { ship, launcher, uiState, launcherIndex } = this.props;
-
-      launcher.unloadAmmo({ launcherIndex });
-      uiState.shipSystemStateChanged(ship, launcher.system);
-    };
-  }
-
-  loadTorpedo(torpedo) {
-    return () => {
-      const { ship, launcher, uiState, launcherIndex } = this.props;
-
-      launcher.loadAmmo({ ammo: torpedo, launcherIndex });
-      uiState.shipSystemStateChanged(ship, launcher.system);
-    };
-  }
-
   getNewLoadOutButtons() {
     const { ammoStrategy, uiState, ship } = this.props;
 
@@ -120,7 +102,6 @@ class Ammo extends React.Component {
               }}
             />
             <CargoItem
-              handleOnClick={this.loadTorpedo(object).bind(this)}
               key={`torpedo-launcer-${i}-possible-torpedo-${object.constructor.name}`}
               cargo={object}
               amount={amount}
@@ -153,9 +134,7 @@ class Ammo extends React.Component {
             <TooltipHeader>AMMO MAGAZINE</TooltipHeader>
             <TooltipEntry>
               <TooltipValueHeader>Ammo needed to fire</TooltipValueHeader>
-              <TooltipValue>
-                {ammoStrategy.getAmmoNeededForFireOrder()}
-              </TooltipValue>
+              <TooltipValue>{ammoStrategy.ammoPerFireOrder}</TooltipValue>
             </TooltipEntry>
             <MagazineTooltipEntry>
               <TooltipEntry>
@@ -172,7 +151,6 @@ class Ammo extends React.Component {
 
               {ammoStrategy.getAmmoInMagazine().map(({ object, amount }, i) => (
                 <CargoItem
-                  handleOnClick={this.loadTorpedo(object).bind(this)}
                   key={`torpedo-launcer-${i}-possible-torpedo-${object.constructor.name}`}
                   cargo={object}
                   amount={amount}

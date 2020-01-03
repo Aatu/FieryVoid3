@@ -1,6 +1,10 @@
 import CargoEntity from "../../../cargo/CargoEntity.mjs";
 
 class Ammo85mmHE extends CargoEntity {
+  getSpaceRequired() {
+    return 0.02;
+  }
+
   getDisplayName() {
     return "85mm high explosive shell";
   }

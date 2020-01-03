@@ -65,12 +65,9 @@ class ShipSystem {
   }
 
   getArmor() {
-    const armorMod = this.callHandler("applyArmorPiercing");
-    if (armorMod) {
-      return this.armor + armorMod;
-    }
+    const armorMod = this.callHandler("getArmorModifier", null, 0);
 
-    return this.armor;
+    return this.armor + armorMod;
   }
 
   getRemainingHitpoints() {

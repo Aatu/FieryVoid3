@@ -20,12 +20,12 @@ const createShip = (data = { id: 1 }) => {
   ship.systems.addPrimarySystem([autoCannon, cargoBay]);
 
   cargoBay.callHandler("addCargo", {
-    cargo: new Ammo85mmAP(),
+    object: new Ammo85mmAP(),
     amount: 50
   });
 
   cargoBay.callHandler("addCargo", {
-    cargo: new Ammo85mmHE(),
+    object: new Ammo85mmHE(),
     amount: 50
   });
 

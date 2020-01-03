@@ -15,7 +15,7 @@ class CargoBaySystemStrategy extends ShipSystemStrategy {
         name: "CargoList",
         props: {
           list: this.cargo.map(cargo => ({
-            cargo: cargo.object,
+            object: cargo.object,
             amount: cargo.amount
           }))
         }
@@ -48,13 +48,24 @@ class CargoBaySystemStrategy extends ShipSystemStrategy {
     return this.space;
   }
 
-  hasCargoSpaceAvailable() {
-    return this.getTotalCargoSpace();
+  getAvailableCargoSpace() {
+    return this.space - this.getCargoSpaceUsed();
   }
 
-  getCargoEntry(cargo) {
+  getCargoSpaceUsed() {
+    return this.cargo.reduce(
+      (total, { object, amount }) => total + object.getSpaceRequired() * amount,
+      0
+    );
+  }
+
+  hasSpaceFor({ object, amount }) {
+    return this.getAvailableCargoSpace() >= object.getSpaceRequired() * amount;
+  }
+
+  getCargoEntry(object) {
     return this.cargo.find(
-      stored => stored.object.constructor === cargo.constructor
+      stored => stored.object.constructor === object.constructor
     );
   }
 
@@ -62,8 +73,8 @@ class CargoBaySystemStrategy extends ShipSystemStrategy {
     return this.cargo.filter(cargo => cargo.object instanceof parentClass);
   }
 
-  hasCargo({ cargo, amount = 1 }) {
-    const entry = this.getCargoEntry(cargo);
+  hasCargo({ object, amount = 1 }) {
+    const entry = this.getCargoEntry(object);
 
     if (!entry) {
       return false;
@@ -72,8 +83,8 @@ class CargoBaySystemStrategy extends ShipSystemStrategy {
     return entry.amount >= amount;
   }
 
-  removeCargo({ cargo, amount = 1 }) {
-    const entry = this.getCargoEntry(cargo);
+  removeCargo({ object, amount = 1 }) {
+    const entry = this.getCargoEntry(object);
 
     if (!entry || entry.amount < amount) {
       throw new Error("Check hasCargo first!");
@@ -84,14 +95,18 @@ class CargoBaySystemStrategy extends ShipSystemStrategy {
     this.cargo = this.cargo.filter(entry => entry.amount > 0);
   }
 
-  addCargo({ cargo, amount = 1 }) {
-    let entry = this.getCargoEntry(cargo);
+  addCargo({ object, amount = 1 }) {
+    if (!this.hasSpaceFor({ object, amount })) {
+      throw new Error("No space in cargo bay");
+    }
+
+    let entry = this.getCargoEntry(object);
 
     if (entry) {
       entry.amount += amount;
     } else {
       entry = {
-        object: new cargoClasses[cargo.constructor.name](),
+        object: new cargoClasses[object.constructor.name](),
         amount
       };
 

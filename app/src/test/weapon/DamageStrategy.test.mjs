@@ -121,12 +121,12 @@ test("Piercing damage strategy will run trough whole ship", test => {
   ]);
 
   ship.systems.addPortAftSystem([
-    new PDC30mm({ id: 501, hitpoints: 5, armor: 3 }),
+    new PDC30mm({ id: 501 }),
     new Structure({ id: 500, hitpoints: 50, armor: 4 })
   ]);
 
   ship.systems.addStarboardFrontSystem([
-    new PDC30mm({ id: 201, hitpoints: 5, armor: 3 }),
+    new PDC30mm({ id: 201 }),
     new Structure({ id: 200, hitpoints: 50, armor: 4 })
   ]);
 
@@ -182,7 +182,7 @@ test("Piercing damage strategy will run trough whole ship", test => {
     .getSystems()
     .filter(system => system.getTotalDamage() === 5)
     .map(system => system.id);
-  test.deepEqual(destroyedIds.sort(), [200, 201, 500, 501, 6, 8].sort());
+  test.deepEqual(destroyedIds.sort(), [200, 500, 6, 8].sort());
 });
 
 test("Piercing damage strategy will run trough as long as there is armor piercing left", test => {
@@ -258,7 +258,7 @@ test("Piercing damage strategy will run trough as long as there is armor piercin
     .getSystems()
     .filter(system => system.getTotalDamage() === 5)
     .map(system => system.id);
-  test.deepEqual(destroyedIds.sort(), [200, 201, 500, 501, 6, 8].sort());
+  test.deepEqual(destroyedIds.sort(), [200, 500, 6, 8].sort());
 });
 
 test("Damage strategy returns reasonable damage numbers", test => {

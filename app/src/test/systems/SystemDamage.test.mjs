@@ -18,16 +18,6 @@ test("System takes critical damage", test => {
   test.true(system.hasCritical(FirstThrustIgnored));
 });
 
-test("Critical with duration disappears when turn changes", test => {
-  const system = new ShipSystem({ id: 123, hitpoints: 10, armor: 3 });
-  const testCrit = new FirstThrustIgnored();
-  testCrit.duration = 1;
-  system.addCritical(testCrit);
-  test.true(system.hasCritical(FirstThrustIgnored));
-  system.advanceTurn();
-  test.false(system.hasCritical(FirstThrustIgnored));
-});
-
 test("Stuff serializes and deserializes nicely", test => {
   const system = new ShipSystem({ id: 123, hitpoints: 10, armor: 3 });
   const testCrit = new FirstThrustIgnored();
@@ -35,6 +25,8 @@ test("Stuff serializes and deserializes nicely", test => {
   system.addDamage(new DamageEntry(3));
 
   const serialized = system.serialize();
+
+  system.damage.entries.forEach(entry => (entry.new = false));
 
   const system2 = new ShipSystem({
     id: 123,

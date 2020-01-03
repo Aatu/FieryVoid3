@@ -1,5 +1,6 @@
 import ShipSystemStrategy from "../ShipSystemStrategy.mjs";
 import { cargoClasses } from "../../cargo/cargo.mjs";
+import CargoService from "../../../../cargo/CargoService.mjs";
 
 class AmmunitionStrategy extends ShipSystemStrategy {
   constructor(
@@ -141,12 +142,6 @@ class AmmunitionStrategy extends ShipSystemStrategy {
       : null;
 
     return this;
-  }
-
-  getAmmoNeededForFireOrder() {
-    const numberOfShots = this.system.callHandler("getNumberOfShots");
-
-    return this.ammoPerFireOrder * numberOfShots;
   }
 
   toggleSelectedAmmo() {
@@ -296,22 +291,21 @@ class AmmunitionStrategy extends ShipSystemStrategy {
       return true;
     }
 
-    return this.loaded.every(
-      ({ amount }) => amount < this.getAmmoNeededForFireOrder()
-    );
+    return this.loaded.every(({ amount }) => amount < this.ammoPerFireOrder);
   }
 
   canFire(payload, previousResponse = true) {
-    TÄMÄ ON SÄRKI
     const entry = this.loaded.find(
       load => load.object.constructor === this.selectedAmmo.constructor
     );
 
     if (!entry) {
+      console.log("no entry");
       return false;
     }
 
-    if (entry.amount < this.getAmmoNeededForFireOrder()) {
+    if (entry.amount < this.ammoPerFireOrder) {
+      console.log("no ammo", entry);
       return false;
     }
 
@@ -373,6 +367,9 @@ class AmmunitionStrategy extends ShipSystemStrategy {
     let ammoTransferredIn = 0;
     let ammoTransferredOut = 0;
 
+    const ship = this.system.shipSystems.ship;
+    const cargoService = new CargoService();
+
     while (true) {
       if (ammoTransferredOut === this.intakeInTurn) {
         break;
@@ -397,22 +394,22 @@ class AmmunitionStrategy extends ShipSystemStrategy {
             return true;
           }
 
-          const systemWithSpace = this.system.shipSystems
-            .getSystems()
-            .find(system =>
-              system.callHandler("hasCargoSpaceAvailable", {}, false)
-            );
-
-          if (!systemWithSpace) {
-            return true;
-          }
-
-          //TODO: Check that the cargo space can accommodate this much
-
-          systemWithSpace.callHandler("addCargo", {
-            cargo: loaded.object,
+          const spaceAvailable = cargoService.hasSpaceForHowMany(ship, {
+            object: loaded.object,
             amount: extra
           });
+
+          if (spaceAvailable === 0) {
+            return true;
+          } else if (spaceAvailable < extra) {
+            extra = spaceAvailable;
+          }
+
+          cargoService.divideCargo(ship, {
+            object: loaded.object,
+            amount: extra
+          });
+
           ammoTransferredOut += extra;
           loaded.amount -= extra;
 
@@ -476,14 +473,14 @@ class AmmunitionStrategy extends ShipSystemStrategy {
           if (cargo.amount >= missing) {
             loaded.amount += missing;
             cargoSystem.callHandler("removeCargo", {
-              cargo: cargo.object,
+              object: cargo.object,
               amount: missing
             });
             ammoTransferredIn += missing;
           } else if (cargo.amount < missing) {
             loaded.amount += cargo.amount;
             cargoSystem.callHandler("removeCargo", {
-              cargo: cargo.object,
+              object: cargo.object,
               amount: cargo.amount
             });
             ammoTransferredIn += cargo.amount;

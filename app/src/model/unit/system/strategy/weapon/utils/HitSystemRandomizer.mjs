@@ -5,7 +5,7 @@ class HitSystemRandomizer {
 
   randomizeHitSystem(systems) {
     const totalStructure = systems.reduce(
-      (total, system) => total + system.hitpoints,
+      (total, system) => total + this.getSystemHitSize(system),
       0
     );
 
@@ -14,13 +14,20 @@ class HitSystemRandomizer {
     let tested = 0;
 
     return systems.find(system => {
-      if (roll > tested && roll <= system.hitpoints + tested) {
+      if (roll > tested && roll <= this.getSystemHitSize(system) + tested) {
         return true;
       }
 
-      tested += system.hitpoints;
+      tested += this.getSystemHitSize(system);
       return false;
     });
+  }
+
+  getSystemHitSize(system) {
+    return (
+      system.hitpoints *
+      system.callHandler("getHitSystemSizeMultiplier", null, 1)
+    );
   }
 }
 

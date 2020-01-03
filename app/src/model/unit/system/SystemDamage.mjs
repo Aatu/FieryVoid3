@@ -1,5 +1,6 @@
 import DamageEntry from "./DamageEntry.mjs";
-import CriticalEntry from "./CriticalEntry.mjs";
+import * as criticals from "./criticals/index.mjs";
+import Critical from "./criticals/Critical.mjs";
 
 class SystemDamage {
   constructor(system) {
@@ -21,7 +22,9 @@ class SystemDamage {
       : [];
 
     this.criticals = data.criticals
-      ? data.criticals.map(entry => new CriticalEntry().deserialize(entry))
+      ? data.criticals.map(entry =>
+          new criticals[entry.className]().deserialize(entry)
+        )
       : [];
 
     return this;
@@ -48,11 +51,21 @@ class SystemDamage {
   }
 
   addCritical(critical) {
-    this.criticals.push(new CriticalEntry(critical));
+    this.criticals.push(critical);
   }
 
-  hasCritical(name) {
-    return this.criticals.some(crit => crit.is(name));
+  hasCritical(object) {
+    switch (typeof object) {
+      case "object":
+        return this.criticals.some(
+          crit => crit.constructor === object.constructor
+        );
+      case "function":
+        return this.criticals.some(crit => crit instanceof object);
+
+      case "string":
+        return this.criticals.some(crit => crit.constructor.name === object);
+    }
   }
 
   hasAnyCritical() {
@@ -71,9 +84,8 @@ class SystemDamage {
     this.entries = this.entries
       .map(entry => entry.advanceTurn())
       .filter(Boolean);
-    this.criticals = this.criticals
-      .map(entry => entry.advanceTurn())
-      .filter(Boolean);
+    this.criticals.forEach(critical => critical.advanceTurn());
+    this.criticals = this.criticals.filter(critical => !critical.isFixed());
   }
 }
 

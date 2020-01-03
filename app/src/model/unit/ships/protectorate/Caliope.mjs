@@ -4,6 +4,13 @@ import Offset from "../../../hexagon/Offset.mjs";
 import Torpedo72MSV from "../../system/weapon/ammunition/torpedo/Torpedo72MSV.mjs";
 import Torpedo158MSV from "../../system/weapon/ammunition/torpedo/Torpedo158MSV.mjs";
 import Torpedo158Nuclear from "../../system/weapon/ammunition/torpedo/Torpedo158Nuclear.mjs";
+import Ammo140mmAP from "../../system/weapon/ammunition/conventional/Ammo140mmAP.mjs";
+import Ammo120mmAP from "../../system/weapon/ammunition/conventional/Ammo120mmAP.mjs";
+import Ammo140mmHE from "../../system/weapon/ammunition/conventional/Ammo140mmHE.mjs";
+import Ammo85mmAP from "../../system/weapon/ammunition/conventional/Ammo85mmAP.mjs";
+import Ammo85mmHE from "../../system/weapon/ammunition/conventional/Ammo85mmHE.mjs";
+import CargoService from "../../../cargo/CargoService.mjs";
+import Ammo30mm from "../../system/weapon/ammunition/conventional/Ammo30mm.mjs";
 
 class Caliope extends Ship {
   setShipProperties() {
@@ -179,30 +186,45 @@ class Caliope extends Ship {
   setShipLoadout() {
     super.setShipLoadout();
 
-    this.systems.getSystemById(302).callHandler("addCargo", {
-      cargo: new Torpedo158MSV(),
-      amount: 6
+    const cargoService = new CargoService();
+    cargoService.divideCargo(this, {
+      object: new Torpedo72MSV(),
+      amount: 24
     });
-    this.systems.getSystemById(302).callHandler("addCargo", {
-      cargo: new Torpedo158Nuclear(),
-      amount: 1
-    });
-    this.systems.getSystemById(302).callHandler("addCargo", {
-      cargo: new Torpedo72MSV(),
+
+    cargoService.divideCargo(this, {
+      object: new Torpedo158MSV(),
       amount: 12
     });
 
-    this.systems.getSystemById(502).callHandler("addCargo", {
-      cargo: new Torpedo158MSV(),
-      amount: 6
+    cargoService.divideCargo(this, {
+      object: new Torpedo158Nuclear(),
+      amount: 2
     });
-    this.systems.getSystemById(502).callHandler("addCargo", {
-      cargo: new Torpedo158Nuclear(),
-      amount: 1
+
+    cargoService.divideCargo(this, {
+      object: new Ammo30mm(),
+      amount: 800
     });
-    this.systems.getSystemById(502).callHandler("addCargo", {
-      cargo: new Torpedo72MSV(),
-      amount: 12
+
+    cargoService.divideCargo(this, {
+      object: new Ammo140mmAP(),
+      amount: 40
+    });
+
+    cargoService.divideCargo(this, {
+      object: new Ammo140mmHE(),
+      amount: 80
+    });
+
+    cargoService.divideCargo(this, {
+      object: new Ammo85mmAP(),
+      amount: 200
+    });
+
+    cargoService.divideCargo(this, {
+      object: new Ammo85mmHE(),
+      amount: 400
     });
 
     this.systems.getSystemById(303).callHandler("loadAmmoInstant", {

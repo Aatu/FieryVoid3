@@ -52,12 +52,12 @@ class TestShip extends Ship {
     const cargoBay = this.systems.getSystemById(204);
 
     cargoBay.callHandler("addCargo", {
-      cargo: new Torpedo158MSV(),
+      object: new Torpedo158MSV(),
       amount: 14
     });
 
     cargoBay.callHandler("addCargo", {
-      cargo: new Torpedo72MSV(),
+      object: new Torpedo72MSV(),
       amount: 14
     });
 

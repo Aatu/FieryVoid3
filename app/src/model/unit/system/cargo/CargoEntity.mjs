@@ -1,4 +1,8 @@
 class CargoEntity {
+  getSpaceRequired() {
+    return 0.1;
+  }
+
   getCargoInfo() {
     return [];
   }

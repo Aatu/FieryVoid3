@@ -2,6 +2,10 @@ import Ship from "../../Ship.mjs";
 import systems from "../../system/index.mjs";
 import Offset from "../../../hexagon/Offset.mjs";
 import Torpedo72MSV from "../../system/weapon/ammunition/torpedo/Torpedo72MSV.mjs";
+import CargoService from "../../../cargo/CargoService.mjs";
+import Ammo30mm from "../../system/weapon/ammunition/conventional/Ammo30mm.mjs";
+import Ammo120mmAP from "../../system/weapon/ammunition/conventional/Ammo120mmAP.mjs";
+import Ammo120mmHE from "../../system/weapon/ammunition/conventional/Ammo120mmHE.mjs";
 
 class Fulcrum extends Ship {
   setShipProperties() {
@@ -142,9 +146,25 @@ class Fulcrum extends Ship {
   setShipLoadout() {
     super.setShipLoadout();
 
-    this.systems.getSystemById(317).callHandler("addCargo", {
-      cargo: new Torpedo72MSV(),
+    const cargoService = new CargoService();
+    cargoService.divideCargo(this, {
+      object: new Torpedo72MSV(),
       amount: 12
+    });
+
+    cargoService.divideCargo(this, {
+      object: new Ammo30mm(),
+      amount: 120
+    });
+
+    cargoService.divideCargo(this, {
+      object: new Ammo120mmAP(),
+      amount: 20
+    });
+
+    cargoService.divideCargo(this, {
+      object: new Ammo120mmHE(),
+      amount: 20
     });
 
     this.systems.getSystemById(108).callHandler("loadAmmoInstant", {
