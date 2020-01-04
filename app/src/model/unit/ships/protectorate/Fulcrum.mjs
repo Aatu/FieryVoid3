@@ -49,7 +49,12 @@ class Fulcrum extends Ship {
     this.pointCost = 500;
 
     this.systems.addFrontSystem([
-      new systems.Structure({ id: 100, hitpoints: 30, armor: 5 }),
+      new systems.Structure({
+        id: 100,
+        hitpoints: 30,
+        armor: 5,
+        heatStorage: 30
+      }),
 
       new systems.CoilgunLightFixed({ id: 102 }, { start: 330, end: 30 }),
       new systems.RailgunFixed120mm({ id: 103 }, { start: 330, end: 30 }),
@@ -67,22 +72,19 @@ class Fulcrum extends Ship {
     ]);
 
     this.systems.addPrimarySystem([
-      new systems.EwArray({ id: 12, hitpoints: 30, armor: 4 }, 12),
+      new systems.EwArray({ id: 12, hitpoints: 12, armor: 6 }, 7, 5),
 
-      new systems.Reactor({ id: 7, hitpoints: 20, armor: 3 }, 35),
+      new systems.Reactor({ id: 7, hitpoints: 15, armor: 7 }, 35),
       new systems.Structure({
         id: 11,
         hitpoints: 30,
         armor: 6,
         cargoSpace: 100,
-        heatSink: 30,
+        heatStorage: 70,
         radiator: 5
       }),
 
-      new systems.PDC30mm(
-        { id: 14, hitpoints: 5, armor: 3 },
-        { start: 0, end: 0 }
-      )
+      new systems.PDC30mm({ id: 14 }, { start: 0, end: 0 })
     ]);
 
     this.systems.addAftSystem([
@@ -90,7 +92,8 @@ class Fulcrum extends Ship {
         id: 200,
         hitpoints: 40,
         armor: 6,
-        heatSink: 20
+        heatStorage: 20,
+        radiator: 10
       }),
 
       new systems.Engine({ id: 202, hitpoints: 20, armor: 3 }, 14, 6, 2),

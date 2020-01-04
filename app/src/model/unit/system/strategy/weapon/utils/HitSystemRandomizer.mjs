@@ -4,6 +4,10 @@ class HitSystemRandomizer {
   }
 
   randomizeHitSystem(systems) {
+    if (systems.length === 0) {
+      return null;
+    }
+
     const totalStructure = systems.reduce(
       (total, system) => total + this.getSystemHitSize(system),
       0

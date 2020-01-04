@@ -24,7 +24,7 @@ class CoilgunLightFixed extends Weapon {
       new StandardLoadingStrategy(4),
       new RequiresPowerSystemStrategy(6),
       new BoostableSystemStrategy(6, 2),
-      new PiercingDamageStrategy("3d3", "2d2 + 4"),
+      new PiercingDamageStrategy("d3 + 3", "d6 + 20"),
       new WeaponAnimationStrategy("Bolt", {
         size: 12,
         length: 2000,

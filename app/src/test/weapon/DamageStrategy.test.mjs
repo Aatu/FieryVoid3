@@ -109,7 +109,7 @@ test("Standard damage strategy overkills all the way trough", test => {
   test.deepEqual(destroyedIds.sort(), [6, 8, 400, 100].sort());
 });
 
-test("Piercing damage strategy will run trough whole ship", test => {
+test("Piercing damage strategy will damage multiple systems", test => {
   const ship = new Ship({
     id: 999
   });
@@ -160,10 +160,20 @@ test("Piercing damage strategy will run trough whole ship", test => {
   );
 
   ship.systems.getSystemById(400).addDamage(new DamageEntry(400, 0, 0));
-  const damageStrategy = new PiercingDamageStrategy(5, 400);
+  const damageStrategy = new PiercingDamageStrategy(1, 400, 10);
 
+  let i = 0;
   damageStrategy.hitSystemRandomizer = {
-    randomizeHitSystem: systems => systems[0]
+    randomizeHitSystem: systems => {
+      if (i > systems.length - 1) {
+        i = 0;
+      }
+
+      const system = systems[i];
+      i++;
+
+      return system;
+    }
   };
 
   damageStrategy.applyDamageFromWeaponFire({
@@ -180,12 +190,12 @@ test("Piercing damage strategy will run trough whole ship", test => {
 
   const destroyedIds = ship.systems
     .getSystems()
-    .filter(system => system.getTotalDamage() === 5)
+    .filter(system => system.getTotalDamage() > 0)
     .map(system => system.id);
-  test.deepEqual(destroyedIds.sort(), [200, 500, 6, 8].sort());
+  test.deepEqual(destroyedIds.sort(), [400, 500, 501, 6, 7, 8].sort());
 });
 
-test("Piercing damage strategy will run trough as long as there is armor piercing left", test => {
+test("Piercing damage strategy will stop when armor piercing runs out", test => {
   const ship = new Ship({
     id: 999
   });
@@ -197,12 +207,12 @@ test("Piercing damage strategy will run trough as long as there is armor piercin
   ]);
 
   ship.systems.addPortAftSystem([
-    new PDC30mm({ id: 501, hitpoints: 5, armor: 3 }),
+    new PDC30mm({ id: 501 }),
     new Structure({ id: 500, hitpoints: 50, armor: 4 })
   ]);
 
   ship.systems.addStarboardFrontSystem([
-    new PDC30mm({ id: 201, hitpoints: 5, armor: 3 }),
+    new PDC30mm({ id: 201 }),
     new Structure({ id: 200, hitpoints: 50, armor: 4 })
   ]);
 
@@ -236,10 +246,20 @@ test("Piercing damage strategy will run trough as long as there is armor piercin
   );
 
   ship.systems.getSystemById(400).addDamage(new DamageEntry(400, 0, 0));
-  const damageStrategy = new PiercingDamageStrategy(5, 400);
+  const damageStrategy = new PiercingDamageStrategy(1, 3, 10);
 
+  let i = 0;
   damageStrategy.hitSystemRandomizer = {
-    randomizeHitSystem: systems => systems[0]
+    randomizeHitSystem: systems => {
+      if (i > systems.length - 1) {
+        i = 0;
+      }
+
+      const system = systems[i];
+      i++;
+
+      return system;
+    }
   };
 
   damageStrategy.applyDamageFromWeaponFire({
@@ -256,9 +276,9 @@ test("Piercing damage strategy will run trough as long as there is armor piercin
 
   const destroyedIds = ship.systems
     .getSystems()
-    .filter(system => system.getTotalDamage() === 5)
+    .filter(system => system.getTotalDamage() > 0)
     .map(system => system.id);
-  test.deepEqual(destroyedIds.sort(), [200, 500, 6, 8].sort());
+  test.deepEqual(destroyedIds.sort(), [400, 501].sort());
 });
 
 test("Damage strategy returns reasonable damage numbers", test => {

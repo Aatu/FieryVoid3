@@ -208,6 +208,46 @@ class ShipSystems {
       )
       .filter(Boolean);
   }
+
+  getTotalHeat() {
+    return this.getSystems().reduce(
+      (total, system) => total + system.heat.getHeat(),
+      0
+    );
+  }
+
+  getTotalHeatStorage() {
+    return this.getSystems().reduce(
+      (total, system) => total + system.heat.getMaxHeatStoreCapacity(),
+      0
+    );
+  }
+
+  getTotalHeatStored() {
+    return this.getSystems()
+      .filter(system => system.heat.isHeatStorage())
+      .reduce((total, system) => total + system.heat.getHeat(), 0);
+  }
+
+  getPassiveHeatChange() {
+    const producedAndTransferred = this.getSystems().reduce((total, system) => {
+      const heatGenerated = system.heat.getHeatGenerated();
+      const heatTransfer = system.heat.getMaxTransferHeat();
+
+      if (heatGenerated > heatTransfer) {
+        return total + heatTransfer;
+      }
+
+      return total + heatGenerated;
+    }, 0);
+
+    const heatRadiated = this.getSystems().reduce(
+      (total, system) => total + system.heat.getRadiateHeatCapacity(),
+      0
+    );
+
+    return producedAndTransferred - heatRadiated;
+  }
 }
 
 export default ShipSystems;

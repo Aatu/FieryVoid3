@@ -40,12 +40,13 @@ class ShipSystem {
         header: "Heat",
         value: this.heat.getHeat()
       });
-      heatMessages.push({
-        header: "Overheat",
-        value: this.heat.getOverHeat()
-      });
 
       if (!this.heat.isHeatStorage()) {
+        heatMessages.push({
+          header: "Overheat",
+          value: this.heat.getOverHeat()
+        });
+
         heatMessages.push({
           header: "Transfers heat away",
           value: this.heat.getMaxTransferHeat()

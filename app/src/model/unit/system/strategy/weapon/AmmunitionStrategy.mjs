@@ -58,6 +58,18 @@ class AmmunitionStrategy extends ShipSystemStrategy {
     });
   }
 
+  getIconText(payload, previousResponse = "") {
+    if (this.system.isDisabled()) {
+      return previousResponse;
+    }
+
+    if (this.system.callHandler("isLoaded", null, null) === false) {
+      return previousResponse;
+    }
+
+    return this.getSelectedAmmo().getIconText();
+  }
+
   getUiComponents({ myShip }, previousResponse = []) {
     if (!myShip) {
       return previousResponse;

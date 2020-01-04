@@ -7,6 +7,20 @@ class OutputReduced extends Critical {
     this.outputReduction = outputReduction;
   }
 
+  serialize() {
+    return {
+      ...super.serialize(),
+      outputReduction: this.outputReduction
+    };
+  }
+
+  deserialize(data = {}) {
+    super.deserialize(data);
+    this.outputReduction = data.outputReduction || 1;
+
+    return this;
+  }
+
   getMessage() {
     if (this.duration !== 0) {
       return `Charging time increased by ${this.outputReduction} for ${this.turnsRemaining} turns`;

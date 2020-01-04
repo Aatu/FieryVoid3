@@ -38,6 +38,10 @@ class Ammo extends CargoEntity {
       ...previousResponse
     ];
   }
+
+  getIconText() {
+    return "";
+  }
 }
 
 export default Ammo;

@@ -7,6 +7,20 @@ class LoadingTimeIncreased extends Critical {
     this.loadingTimeIncrease = loadingTimeIncrease;
   }
 
+  serialize() {
+    return {
+      ...super.serialize(),
+      loadingTimeIncrease: this.loadingTimeIncrease
+    };
+  }
+
+  deserialize(data = {}) {
+    super.deserialize(data);
+    this.loadingTimeIncrease = data.loadingTimeIncrease || 1;
+
+    return this;
+  }
+
   getMessage() {
     if (this.duration !== 0) {
       return `Charging time increased by ${this.loadingTimeIncrease} for ${this.turnsRemaining} turns`;

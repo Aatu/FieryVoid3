@@ -70,9 +70,12 @@ class SystemHeat {
     return this.system.callHandler("canStoreHeat", null, false);
   }
 
+  getMaxHeatStoreCapacity() {
+    return this.system.callHandler("getHeatStoreAmount", null, 0);
+  }
+
   getHeatStoreCapacity() {
-    const capacity =
-      this.system.callHandler("getHeatStoreAmount", null, 0) - this.heat;
+    const capacity = this.getMaxHeatStoreCapacity() - this.heat;
 
     if (capacity <= 0) {
       return 0;
@@ -91,6 +94,10 @@ class SystemHeat {
   }
 
   getOverHeat() {
+    if (this.isHeatStorage()) {
+      return 0;
+    }
+
     const heat = this.getHeatPerStructure();
     const overheat = heat - this.overheatLimitPerStructure;
 

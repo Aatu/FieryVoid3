@@ -16,6 +16,10 @@ class Ammo140mmAP extends Ammo {
   getBackgroundImage() {
     return "/img/ammo/140mmAP.png";
   }
+
+  getIconText() {
+    return "AP";
+  }
 }
 
 export default Ammo140mmAP;

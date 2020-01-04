@@ -102,10 +102,10 @@ class Caliope extends Ship {
         armor: 4,
         cargoSpace: 300,
         heatStorage: 80,
-        radiator: 5
+        radiator: 15
       }),
       new systems.EwArray({ id: 12, hitpoints: 15, armor: 6 }, 8),
-      new systems.HeatSink({ id: 13, hitpoints: 10, armor: 3 }, 30)
+      new systems.HeatSink({ id: 13, hitpoints: 10, armor: 3 }, 100)
     ]);
 
     this.systems.addStarboardFrontSystem([

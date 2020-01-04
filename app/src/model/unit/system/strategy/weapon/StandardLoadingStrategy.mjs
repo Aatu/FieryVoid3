@@ -50,14 +50,14 @@ class StandardLoadingStrategy extends ShipSystemStrategy {
     return Math.ceil(left / loadingPerTurn);
   }
 
-  getIconText() {
+  getIconText(payload, previousResponse = "") {
     if (this.system.isDisabled()) {
-      return "";
+      return previousResponse;
     }
 
     const left = this._getTurnsUntilLoaded();
     if (left === 0) {
-      return "L";
+      return previousResponse;
     }
 
     return `-${left}T`;
@@ -85,6 +85,14 @@ class StandardLoadingStrategy extends ShipSystemStrategy {
 
   getTurnsLoaded() {
     return this.turnsLoaded;
+  }
+
+  isReady(payload, previousResponse = null) {
+    if (previousResponse === false) {
+      return false;
+    }
+
+    return this.isLoaded();
   }
 
   isLoaded() {
@@ -139,13 +147,13 @@ class StandardLoadingStrategy extends ShipSystemStrategy {
       ...previousResponse,
       {
         severity: 40,
-        critical: new LoadingTimeIncreased(1, this.loadingTime)
+        critical: new LoadingTimeIncreased(this.loadingTime, 1)
       },
       {
         severity: 80,
-        critical: new LoadingTimeIncreased(1, this.loadingTime * 3)
+        critical: new LoadingTimeIncreased(this.loadingTime * 3, 1)
       },
-      { severity: 100, critical: new LoadingTimeIncreased(1) }
+      { severity: 100, critical: new LoadingTimeIncreased(null, 1) }
     ];
   }
 }

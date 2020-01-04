@@ -16,6 +16,10 @@ class Ammo120mmHE extends Ammo {
   getBackgroundImage() {
     return "/img/ammo/120mmHE.png";
   }
+
+  getIconText() {
+    return "HE";
+  }
 }
 
 export default Ammo120mmHE;

@@ -75,7 +75,16 @@ class SystemDamage {
   }
 
   getTotalDamage() {
-    return this.entries.reduce((acc, entry) => acc + entry.getDamage(), 0);
+    const damage = this.entries.reduce(
+      (acc, entry) => acc + entry.getDamage(),
+      0
+    );
+
+    if (damage > this.system.hitpoints) {
+      return this.system.hitpoints;
+    }
+
+    return damage;
   }
 
   getPercentUnDamaged() {

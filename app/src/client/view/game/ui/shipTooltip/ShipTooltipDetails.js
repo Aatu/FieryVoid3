@@ -69,6 +69,18 @@ class ShipTooltipDetails extends React.Component {
           {ship.player.isUsers(currentUser) &&
             this.getEntry("Planned CCEW", ship.electronicWarfare.getCcEw())}
         </Row>
+
+        <Row>
+          {this.getEntry(
+            "Heat stored",
+            `${ship.systems.getTotalHeatStored()}/${ship.systems.getTotalHeatStorage()}`
+          )}
+
+          {this.getEntry(
+            "Passive heat change",
+            ship.systems.getPassiveHeatChange()
+          )}
+        </Row>
       </Container>
     );
   }
