@@ -10,6 +10,10 @@ class GameSystemTooltipMenu extends React.PureComponent {
     const myShip = ship.player.is(currentUser);
     const selectedShip = uiState.getSelectedShip();
 
+    if (system.isDestroyed()) {
+      return null;
+    }
+
     return (
       <TooltipMenu>
         {myShip && ship.systems.power.canSetOnline(system) && (
@@ -82,7 +86,7 @@ class GameSystemTooltipMenu extends React.PureComponent {
           )}
 
         {system
-          .callHandler("getTooltipMenuButton", { uiState }, [])
+          .callHandler("getTooltipMenuButton", { uiState, myShip }, [])
           .map(({ img, disabledHandler, onClickHandler }, i) => (
             <TooltipButton
               key={`custom-system-tooltip-button-${i}`}

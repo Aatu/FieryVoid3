@@ -72,7 +72,7 @@ class GameScene {
     this.starFieldCamera.lookAt(0, 0, 100);
 
     this.light = new THREE.PointLight(0xffffff, 1.0, 0);
-    this.light.position.set(0, 0, 0);
+    this.light.position.set(0, 0, 100000);
     this.scene.add(this.light);
 
     const directionalLight = new THREE.DirectionalLight(0x35527a, 0.005);

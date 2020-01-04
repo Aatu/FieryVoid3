@@ -129,8 +129,6 @@ const getDistanceBetweenShipsInHex = (s1, s2) => {
 };
 
 const getAngleBetween = (angle1, angle2, right) => {
-  //console.log(angle1  + " " + angle2);
-
   let difference;
   if (right) {
     if (angle1 > angle2) {

@@ -4,71 +4,72 @@ class CriticalHandler {
       ship.systems
         .getSystems()
         .filter(system => !system.isDestroyed())
-        .forEach(system => {
-          const newDamage = system.damage.getNewDamage();
-          const hitpoints = system.hitpoints;
-
-          if (newDamage === 0) {
-            return;
-          }
-
-          const damage = system.damage.getTotalDamage() - newDamage;
-          console.log("damage", damage, "new", newDamage);
-
-          const ceil = this.getCeil(damage, newDamage, hitpoints);
-          const floor = this.getFloor(ceil);
-
-          console.log("floor", floor, "ceil", ceil);
-
-          const possibleCriticals = system
-            .callHandler("getPossibleCriticals", null, [])
-            .filter(({ critical }) =>
-              system.damage
-                .getCriticals()
-                .every(otherCritical => !otherCritical.excludes(critical))
-            )
-            .sort((a, b) => {
-              if (a.severity > b.severity) {
-                return 1;
-              }
-
-              if (a.severity < b.severity) {
-                return -1;
-              }
-
-              return 0;
-            });
-
-          if (possibleCriticals.length === 0) {
-            return;
-          }
-
-          const attainableCriticals = possibleCriticals.filter(
-            ({ severity }) => severity > floor && severity <= ceil
-          );
-
-          let newCritical = null;
-
-          if (attainableCriticals.length === 0) {
-            const possible = possibleCriticals.pop();
-            if (possible.severity <= floor) {
-              newCritical = possible.critical;
-            } else {
-              return;
-            }
-          } else {
-            newCritical = this.randomizeCritical(attainableCriticals);
-          }
-
-          system.damage.filterReplaced(newCritical);
-          system.addCritical(newCritical);
-        });
+        .forEach(system => this.checkCriticalForSystem(system));
     });
   }
 
-  getCeil(damage, newDamage, hitpoints) {
+  checkCriticalForSystem(system) {
+    const newDamage = system.damage.getNewDamage();
+    const overheat = system.heat.getOverHeat();
+    const hitpoints = system.hitpoints;
+
+    if (newDamage === 0 && overheat === 0) {
+      return;
+    }
+
+    const damage = system.damage.getTotalDamage() - newDamage;
+
+    const ceil = this.getCeil(damage, newDamage, overheat, hitpoints);
+    const floor = this.getFloor(ceil);
+
+    const possibleCriticals = system
+      .callHandler("getPossibleCriticals", null, [])
+      .filter(({ critical }) =>
+        system.damage
+          .getCriticals()
+          .every(otherCritical => !otherCritical.excludes(critical))
+      )
+      .sort((a, b) => {
+        if (a.severity > b.severity) {
+          return 1;
+        }
+
+        if (a.severity < b.severity) {
+          return -1;
+        }
+
+        return 0;
+      });
+
+    if (possibleCriticals.length === 0) {
+      return;
+    }
+
+    const attainableCriticals = possibleCriticals.filter(
+      ({ severity }) => severity > floor && severity <= ceil
+    );
+
+    let newCritical = null;
+
+    if (attainableCriticals.length === 0) {
+      const possible = possibleCriticals.pop();
+      if (possible.severity <= floor) {
+        newCritical = possible.critical;
+      } else {
+        return;
+      }
+    } else {
+      newCritical = this.randomizeCritical(attainableCriticals);
+    }
+
+    system.damage.filterReplaced(newCritical);
+    system.addCritical(newCritical);
+  }
+
+  getCeil(damage, newDamage, overheat, hitpoints) {
     const ceil =
       Math.round(((damage * 0.5 + newDamage * 1.5) / hitpoints) * 50) +
+      overheat * 5 +
       this.getRandomBonus();
 
     if (ceil > 100) {

@@ -4,6 +4,10 @@ class Critical {
     this.turnsRemaining = this.duration;
   }
 
+  getMessage() {
+    return "";
+  }
+
   serialize() {
     return {
       className: this.getClassName(),

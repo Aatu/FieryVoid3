@@ -1,12 +1,17 @@
 import SystemDamage from "./SystemDamage.mjs";
 import SystemPower from "./SystemPower.mjs";
+import SystemHeat from "./SystemHeat.mjs";
 
 class ShipSystem {
   constructor(args = {}, strategies = []) {
     this.id = args.id;
     this.hitpoints = args.hitpoints;
-    this.armor = args.armor;
+    this.armor = args.armor || 0;
     this.strategies = strategies;
+
+    if (!this.hitpoints) {
+      throw new Error("System must have hitpoints");
+    }
 
     this.strategies.forEach(strategy => strategy.init(this));
 
@@ -15,31 +20,46 @@ class ShipSystem {
 
     this.shipSystems = null;
 
-    //this.wasDisabledBeforeResolution = null;
+    this.heat = new SystemHeat(this);
   }
 
-  /*
-  setDisabledStateBeforeResolution() {
-    this.wasDisabledBeforeResolution = this.isDisabled();
+  addStrategy(strategy) {
+    this.strategies.push(strategy);
+    strategy.init(this);
   }
-
-  wasDisabled() {
-    return this.wasDisabledBeforeResolution;
-  }
-
-  */
 
   addShipSystemsReference(shipSystems) {
     this.shipSystems = shipSystems;
   }
 
   getSystemInfo(ship) {
+    const heatMessages = [];
+
+    if (this.heat.shouldDisplayHeat()) {
+      heatMessages.push({
+        header: "Heat",
+        value: this.heat.getHeat()
+      });
+      heatMessages.push({
+        header: "Overheat",
+        value: this.heat.getOverHeat()
+      });
+
+      if (!this.heat.isHeatStorage()) {
+        heatMessages.push({
+          header: "Transfers heat away",
+          value: this.heat.getMaxTransferHeat()
+        });
+      }
+    }
+
     return [
       {
         header: "Hitpoints",
         value: `${this.getRemainingHitpoints()}/${this.hitpoints}`
       },
       { header: "Armor", value: `${this.getArmor()}` },
+      ...heatMessages,
       ...this.callHandler("getMessages", null, [])
     ];
   }
@@ -53,7 +73,7 @@ class ShipSystem {
   }
 
   getIconText() {
-    return null;
+    return this.callHandler("getIconText", null, "");
   }
 
   isDestroyed() {
@@ -126,6 +146,7 @@ class ShipSystem {
   deserialize(data = {}) {
     this.damage.deserialize(data.damage);
     this.power.deserialize(data.power);
+    this.heat.deserialize(data.heat);
     this.callHandler("deserialize", data);
     return this;
   }
@@ -134,6 +155,7 @@ class ShipSystem {
     return {
       damage: this.damage.serialize(),
       power: this.power.serialize(),
+      heat: this.heat.serialize(),
       ...this.callHandler("serialize")
     };
   }
@@ -141,6 +163,7 @@ class ShipSystem {
   advanceTurn(turn) {
     this.damage.advanceTurn();
     this.power.advanceTurn();
+    this.heat.advanceTurn();
     this.callHandler("advanceTurn", turn);
   }
 

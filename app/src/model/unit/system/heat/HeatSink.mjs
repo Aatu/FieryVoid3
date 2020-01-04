@@ -1,8 +1,9 @@
 import ShipSystem from "../ShipSystem.mjs";
+import StoreHeatStrategy from "../strategy/StoreHeatStrategy.mjs";
 
 class HeatSink extends ShipSystem {
-  constructor(args) {
-    super(args, []);
+  constructor(args, heatStorage) {
+    super(args, [new StoreHeatStrategy(heatStorage)]);
   }
 
   getDisplayName() {

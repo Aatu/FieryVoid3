@@ -158,8 +158,6 @@ test.serial("Submit movement for both players, success", async test => {
   movementService.thrust(biliyazInitial, 3);
   movementService.thrust(biliyazInitial, 3);
 
-  //console.log(ship1.movement.getMovement());
-
   await controller.commitTurn(gameData.id, gameData.serialize(), user);
   await controller.commitTurn(gameData.id, gameData.serialize(), user2);
   const newGameData = await controller.getGameData(gameData.id);

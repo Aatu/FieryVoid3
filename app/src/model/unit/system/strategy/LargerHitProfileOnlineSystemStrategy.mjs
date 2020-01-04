@@ -43,10 +43,17 @@ class LargerHitProfileOnlineSystemStrategy extends ShipSystemStrategy {
       header: "Modifies system hit allocation size",
       value: `x${this.hitSizeMultiplier}`
     });
-    previousResponse.push({
-      value: `NOTE: System has to be offline more than one turn before profile increase ceases`
-    });
 
+    if (this.turnsOffline > 1) {
+      previousResponse.push({
+        value: `NOTE: System has been offline long enough for the profile increase to cease.`
+      });
+    } else {
+      previousResponse.push({
+        value: `NOTE: System has to be offline ${2 -
+          this.turnsOffline} turn(s) before profile increase ceases.`
+      });
+    }
     return previousResponse;
   }
 
@@ -63,7 +70,7 @@ class LargerHitProfileOnlineSystemStrategy extends ShipSystemStrategy {
   }
 
   advanceTurn() {
-    if (this.system.power.isDisabled()) {
+    if (this.system.isDisabled()) {
       this.turnsOffline++;
     } else {
       this.turnsOffline = 0;

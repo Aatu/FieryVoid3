@@ -58,7 +58,15 @@ class AmmunitionStrategy extends ShipSystemStrategy {
     });
   }
 
-  getUiComponents(payload, previousResponse = []) {
+  getUiComponents({ myShip }, previousResponse = []) {
+    if (!myShip) {
+      return previousResponse;
+    }
+
+    if (this.system.isDestroyed()) {
+      return previousResponse;
+    }
+
     return [
       ...previousResponse,
       {
@@ -70,7 +78,15 @@ class AmmunitionStrategy extends ShipSystemStrategy {
     ];
   }
 
-  getTooltipMenuButton(payload, previousResponse = []) {
+  getTooltipMenuButton({ myShip }, previousResponse = []) {
+    if (!myShip) {
+      return previousResponse;
+    }
+
+    if (this.system.isDisabled()) {
+      return previousResponse;
+    }
+
     return [
       ...previousResponse,
       {
@@ -300,12 +316,10 @@ class AmmunitionStrategy extends ShipSystemStrategy {
     );
 
     if (!entry) {
-      console.log("no entry");
       return false;
     }
 
     if (entry.amount < this.ammoPerFireOrder) {
-      console.log("no ammo", entry);
       return false;
     }
 

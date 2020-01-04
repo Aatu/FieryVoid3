@@ -7,11 +7,14 @@ import RangePenalty from "./range/RangePenalty";
 class SystemStrategyUi extends React.Component {
   render() {
     const { ship, uiState, system } = this.props;
+    const { currentUser } = uiState.services;
+
+    const myShip = ship.player.is(currentUser);
 
     return (
       <>
         {system
-          .callHandler("getUiComponents", null, [])
+          .callHandler("getUiComponents", { myShip }, [])
           .map(({ name, props }, i) => {
             switch (name) {
               case "RangePenalty":

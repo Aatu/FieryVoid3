@@ -8,6 +8,7 @@ import TorpedoHandler from "./TorpedoHandler.mjs";
 import LaunchHandler from "./LaunchHandler.mjs";
 import CombatLogShipVelocity from "../../model/combatLog/CombatLogShipVelocity.mjs";
 import CriticalHandler from "./CriticalHandler.mjs";
+import HeatHandler from "./HeatHandler.mjs";
 
 class GameHandler {
   constructor() {
@@ -19,6 +20,7 @@ class GameHandler {
     this.launchHandler = new LaunchHandler();
     this.torpedoHandler = new TorpedoHandler();
     this.criticalHandler = new CriticalHandler();
+    this.heatHandler = new HeatHandler();
   }
 
   submit(serverGameData, clientGameData, user) {
@@ -92,6 +94,7 @@ class GameHandler {
     this.weaponHandler.advance(gameData);
     this.torpedoHandler.advance(gameData);
     this.electronicWarfareHandler.advance(gameData);
+    this.heatHandler.advance(gameData);
     this.criticalHandler.advance(gameData);
     this.powerHandler.advance(gameData);
 

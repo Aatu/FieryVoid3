@@ -26,6 +26,10 @@ class SystemPower {
   }
 
   isOffline() {
+    if (this.system.isDestroyed()) {
+      return false;
+    }
+
     return (
       (this.entries.some(entry => entry.isOffline()) ||
         this.isGoingOffline()) &&

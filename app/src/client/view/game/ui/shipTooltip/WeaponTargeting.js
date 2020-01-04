@@ -24,6 +24,7 @@ class WeaponTargeting extends React.Component {
     return (
       <Container>
         <SystemIcon
+          scs
           targeting
           uiState={uiState}
           key={`system-weaponTargeting-${ship.id}-${system.id}`}

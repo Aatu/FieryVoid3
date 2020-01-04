@@ -67,7 +67,7 @@ class Caliope extends Ship {
     this.pointCost = 500;
 
     this.systems.addFrontSystem([
-      new systems.Thruster({ id: 103, hitpoints: 10, armor: 3 }, 5, 3),
+      new systems.Thruster({ id: 103, hitpoints: 10, armor: 3 }, 5, 0),
       new systems.PDC30mm(
         { id: 114, hitpoints: 5, armor: 3 },
         { start: 200, end: 160 }
@@ -77,8 +77,14 @@ class Caliope extends Ship {
         { id: 115, hitpoints: 5, armor: 3 },
         { start: 200, end: 160 }
       ),
-      new systems.Thruster({ id: 104, hitpoints: 10, armor: 3 }, 5, 3),
-      new systems.Structure({ id: 111, hitpoints: 30, armor: 4 }),
+      new systems.Thruster({ id: 104, hitpoints: 10, armor: 3 }, 5, 0),
+      new systems.Structure({
+        id: 111,
+        hitpoints: 40,
+        armor: 5,
+        heatSink: 20,
+        radiator: 3
+      }),
 
       new systems.ManeuveringThruster(
         { id: 101, hitpoints: 10, armor: 3 },
@@ -88,12 +94,18 @@ class Caliope extends Ship {
     ]);
 
     this.systems.addPrimarySystem([
-      new systems.Engine({ id: 6, hitpoints: 20, armor: 3 }, 12, 6, 2),
-      new systems.Reactor({ id: 7, hitpoints: 10, armor: 3 }, 20),
-      new systems.Structure({ id: 11, hitpoints: 30, armor: 4 }),
-      new systems.EwArray({ id: 12, hitpoints: 30, armor: 4 }, 8),
-      new systems.HeatSink({ id: 13, hitpoints: 10, armor: 3 }),
-      new systems.HeatSink({ id: 14, hitpoints: 10, armor: 3 })
+      new systems.Engine({ id: 6, hitpoints: 20, armor: 5 }, 24, 6, 2),
+      new systems.Reactor({ id: 7, hitpoints: 10, armor: 8 }, 20),
+      new systems.Structure({
+        id: 11,
+        hitpoints: 60,
+        armor: 4,
+        cargoSpace: 300,
+        heatStorage: 80,
+        radiator: 5
+      }),
+      new systems.EwArray({ id: 12, hitpoints: 15, armor: 6 }, 8),
+      new systems.HeatSink({ id: 13, hitpoints: 10, armor: 3 }, 30)
     ]);
 
     this.systems.addStarboardFrontSystem([
@@ -145,14 +157,18 @@ class Caliope extends Ship {
         2
       ),
 
-      new systems.Thruster({ id: 431, hitpoints: 10, armor: 3 }, 5, 0),
-      new systems.Thruster({ id: 432, hitpoints: 10, armor: 3 }, 5, 0),
-      new systems.Thruster({ id: 433, hitpoints: 10, armor: 3 }, 5, 0),
+      new systems.Thruster({ id: 431, hitpoints: 15, armor: 3 }, 8, 3),
+      new systems.Thruster({ id: 432, hitpoints: 15, armor: 3 }, 8, 3),
+      new systems.Thruster({ id: 433, hitpoints: 15, armor: 3 }, 8, 3),
 
-      new systems.Structure({ id: 411, hitpoints: 30, armor: 4 }),
-      new systems.HeatSink({ id: 413, hitpoints: 10, armor: 3 }),
-      new systems.HeatSink({ id: 414, hitpoints: 10, armor: 3 }),
-      new systems.Radiator({ id: 412, hitpoints: 10, armor: 3 }),
+      new systems.Structure({
+        id: 411,
+        hitpoints: 80,
+        armor: 4,
+        heatStorage: 100,
+        radiator: 5
+      }),
+      new systems.Radiator10x40({ id: 412, hitpoints: 10, armor: 3 }),
       new systems.Reactor({ id: 407, hitpoints: 10, armor: 3 }, 30),
       new systems.AutoCannon85mm(
         { id: 421, hitpoints: 6, armor: 3 },
@@ -161,8 +177,8 @@ class Caliope extends Ship {
     ]);
 
     this.systems.addPortAftSystem([
-      new systems.Radiator({ id: 501, hitpoints: 10, armor: 3 }),
-      new systems.CargoBay({ id: 502, hitpoints: 20, armor: 4 }, 300),
+      new systems.Radiator10x40({ id: 501 }),
+      new systems.CargoBay({ id: 502, hitpoints: 20, armor: 4 }, 150),
       new systems.TorpedoLauncher158({ id: 503, hitpoints: 10, armor: 4 }),
       new systems.TorpedoLauncherDual72({ id: 504, hitpoints: 10, armor: 4 }),
       new systems.AutoCannon85mm(
@@ -172,8 +188,8 @@ class Caliope extends Ship {
     ]);
 
     this.systems.addStarboardAftSystem([
-      new systems.Radiator({ id: 301, hitpoints: 10, armor: 3 }),
-      new systems.CargoBay({ id: 302, hitpoints: 20, armor: 4 }, 300),
+      new systems.Radiator10x40({ id: 301 }),
+      new systems.CargoBay({ id: 302, hitpoints: 20, armor: 4 }, 150),
       new systems.TorpedoLauncher158({ id: 303, hitpoints: 10, armor: 4 }),
       new systems.TorpedoLauncherDual72({ id: 304, hitpoints: 10, armor: 4 }),
       new systems.AutoCannon85mm(

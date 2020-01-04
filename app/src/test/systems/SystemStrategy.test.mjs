@@ -16,7 +16,7 @@ test("ShipSystem calls its strategies", test => {
     return { ...response, number: number * 10, strat2: true };
   };
 
-  const system = new ShipSystem();
+  const system = new ShipSystem({ id: 1, hitpoints: 10 });
   system.strategies = [testStrategy1, testStrategy2];
   const response = system.callHandler("onTest", { number: 1 });
   test.deepEqual(response, { number: 20, strat1: true, strat2: true });

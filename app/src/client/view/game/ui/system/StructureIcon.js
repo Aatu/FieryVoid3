@@ -13,7 +13,6 @@ const HealthBar = styled.div`
   border: 2px solid black;
   box-sizing: border-box;
 
-  ${props => props.destroyed && "display: none;"}
   background-color: #7a2020;
 
   :before {
@@ -36,7 +35,6 @@ const SystemText = styled.div`
   font-size: 10px;
   color: white;
   display: flex;
-  ${props => props.destroyed && "display: none;"}
   align-items: flex-end;
   justify-content: center;
   text-shadow: black 0 0 6px, black 0 0 6px, black 0 0 6px, black 0 0 6px;
@@ -59,7 +57,7 @@ const System = styled.div`
     } else if (props.firing) {
       return "hue-rotate(0deg) brightness(4) grayscale(0)"; //"grayscale(100%) brightness(6) drop-shadow(0px 0px 5px white)";
     } else if (props.destroyed) {
-      return "blur(1px) brightness(0.5)";
+      return "blur(1px)";
     } else {
       return "none";
     }
@@ -83,7 +81,15 @@ const System = styled.div`
       return "0";
     }};
 
-    background-color: transparent;
+    background-color: ${props => {
+      if (props.destroyed || props.offline) {
+        return "black";
+      } else if (props.loading) {
+        return "orange";
+      }
+
+      return "transparent";
+    }};
 
     background-image: ${props => {
       if (props.offline) {
@@ -101,7 +107,41 @@ const Container = styled.div`
   margin: 3px 1px;
 `;
 
-class SystemIcon extends React.Component {
+const StructureText = styled.div`
+  z-index: 1;
+`;
+
+const StructureContainer = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: calc(100% - 4px);
+  height: 16px;
+  background-color: #081313;
+  color: ${props => (props.health === 0 ? "transparent" : "white")};
+  font-family: arial;
+  font-size: 11px;
+  text-shadow: black 0 0 6px, black 0 0 6px;
+  margin: 1px;
+  filter: ${props => (props.health === 0 ? "blur(1px)" : "none")};
+  border: 1px solid black;
+
+  :before {
+    box-sizing: border-box;
+    content: "";
+    position: absolute;
+    width: ${props => `${props.health}%`};
+    height: 100%;
+    left: 0;
+    bottom: 0;
+    z-index: 0;
+    background-color: ${props => (props.criticals ? "#ed6738" : "#427231")};
+  }
+`;
+
+class StructureIcon extends React.Component {
   constructor(props) {
     super(props);
 
@@ -116,13 +156,13 @@ class SystemIcon extends React.Component {
     event.stopPropagation();
     event.preventDefault();
 
-    const { uiState, system, ship, scs } = this.props;
+    const { uiState, system, ship } = this.props;
 
     uiState.customEvent("systemClicked", {
       ship,
       system,
       element: this.element,
-      scs
+      scs: true
     });
   }
 
@@ -184,11 +224,6 @@ class SystemIcon extends React.Component {
       ...rest
     } = this.props;
     const { mouseOveredSystem } = this.state;
-    const { weaponFireService } = uiState.services;
-
-    if (!text) {
-      text = system.getIconText();
-    }
 
     const menu = activeSystem ? systemInfoMenuProvider : null;
 
@@ -199,17 +234,9 @@ class SystemIcon extends React.Component {
           activeSystemElement === this.element)
     );
 
-    const firing = weaponFireService.systemHasFireOrder(system);
-    const reserved =
-      target &&
-      weaponFireService.systemHasFireOrder(system) &&
-      !weaponFireService.systemHasFireOrderAgainstShip(system, target);
-    const targeting =
-      target && weaponFireService.systemHasFireOrderAgainstShip(system, target);
-
     return (
       <>
-        {displayMenu && scs && (
+        {displayMenu && (
           <SystemInfo
             scs
             uiState={uiState}
@@ -221,57 +248,26 @@ class SystemIcon extends React.Component {
             {...rest}
           />
         )}
-        <Container
+        <StructureContainer
+          ref={c => (this.element = c)}
           onClick={onSystemClicked.bind(this)}
           onMouseOver={this.onSystemMouseOver.bind(this)}
           onMouseOut={this.onSystemMouseOut.bind(this)}
           onContextMenu={this.onContextMenu.bind(this)}
-          scs
+          health={getStructureLeft(system)}
+          criticals={system.hasAnyCritical()}
         >
-          {displayMenu && !scs && (
-            <SystemInfo
-              scs
-              uiState={uiState}
-              ship={ship}
-              system={system}
-              systemInfoMenuProvider={menu}
-              element={mouseOveredSystem || activeSystemElement}
-              target={target}
-              {...rest}
-            />
-          )}
-          <System
-            ref={c => (this.element = c)}
-            scs={scs}
-            background={system.getBackgroundImage()}
-            offline={isOffline(ship, system)}
-            loading={isLoading(system)}
-            selected={selected}
-            firing={firing}
-            targeting={targeting}
-            reserved={reserved}
-            destroyed={system.isDestroyed()}
-          />
-
-          <SystemText destroyed={system.isDestroyed()} selected={selected}>
-            {text}
-          </SystemText>
-          <HealthBar
-            destroyed={system.isDestroyed()}
-            criticals={system.hasAnyCritical()}
-            health={getStructureLeft(system)}
-          />
-        </Container>
+          <StructureText>
+            {system.getRemainingHitpoints()} / {system.hitpoints} A{" "}
+            {system.getArmor()}
+          </StructureText>
+        </StructureContainer>
       </>
     );
   }
 }
 
-const isLoading = system => undefined; //ASK FROM SYSTEM system.weapon && !weaponManager.isLoaded(system);
-
-const isOffline = (ship, system) => system.power.isOffline();
-
 const getStructureLeft = system =>
   ((system.hitpoints - system.getTotalDamage()) / system.hitpoints) * 100;
 
-export default SystemIcon;
+export default StructureIcon;

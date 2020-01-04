@@ -78,6 +78,10 @@ class SystemDamage {
     return this.entries.reduce((acc, entry) => acc + entry.getDamage(), 0);
   }
 
+  getPercentUnDamaged() {
+    return 1 - this.getTotalDamage() / this.system.hitpoints;
+  }
+
   getNewDamage() {
     return this.entries
       .filter(entry => entry.new)
@@ -93,7 +97,9 @@ class SystemDamage {
       .map(entry => entry.advanceTurn())
       .filter(Boolean);
     this.criticals.forEach(critical => critical.advanceTurn());
-    this.criticals = this.criticals.filter(critical => !critical.isFixed());
+    this.criticals = this.criticals.filter(
+      critical => !critical.isFixed(this.system)
+    );
   }
 }
 

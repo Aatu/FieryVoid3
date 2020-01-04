@@ -9,12 +9,22 @@ class StandardLoadingStrategy extends ShipSystemStrategy {
   }
 
   getMessages(payload, previousResponse = []) {
-    const boost = this.system.callHandler("getBoost", null, 0);
-    const loading = 1 + boost;
+    const boostLoading = this._getBoostLoading();
+    let loading = 1 + boostLoading;
+
+    if (!Number.isInteger(loading)) {
+      loading = loading.toFixed(1);
+    }
+
+    let turnsLoaded = this.turnsLoaded;
+
+    if (!Number.isInteger(turnsLoaded)) {
+      turnsLoaded = turnsLoaded.toFixed(1);
+    }
 
     previousResponse.push({
       header: "Charging",
-      value: `${this.turnsLoaded} / ${this.loadingTime} +${loading} per turn`
+      value: `${turnsLoaded} / ${this.loadingTime} +${loading} per turn`
     });
 
     const boostPower = this.system.callHandler(
@@ -31,6 +41,10 @@ class StandardLoadingStrategy extends ShipSystemStrategy {
     }
 
     return previousResponse;
+  }
+
+  getIconText() {
+    return this.getTurnsLoaded() + "/" + this.getLoadingTime();
   }
 
   canFire(payload, previousResponse = true) {
@@ -84,13 +98,24 @@ class StandardLoadingStrategy extends ShipSystemStrategy {
       return;
     }
 
-    const boost = this.system.callHandler("getBoost", null, 0);
-    const loadingStep = 1 + boost;
+    const loadingStep = 1 + this._getBoostLoading();
     this.turnsLoaded += loadingStep;
 
     if (this.turnsLoaded > this.loadingTime) {
       this.turnsLoaded = this.loadingTime;
     }
+  }
+
+  _getBoostLoading() {
+    let boost = this.system.callHandler("getBoost", null, 0);
+
+    if (!boost) {
+      return 0;
+    }
+
+    boost = boost / (this.getLoadingTime() - 1);
+    boost = Math.ceil(boost * 10) / 10;
+    return boost;
   }
 
   getPossibleCriticals(payload, previousResponse = []) {

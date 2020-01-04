@@ -122,10 +122,10 @@ test("Weapon can be boosted", test => {
   coilgun.callHandler("boost");
   test.false(coilgun.callHandler("canBoost"));
 
-  test.is(systems.power.getRemainingPowerOutput(), 0);
+  test.is(systems.power.getRemainingPowerOutput(), 4);
   coilgun.callHandler("deBoost");
   test.true(coilgun.callHandler("canBoost"));
-  test.is(systems.power.getRemainingPowerOutput(), 8);
+  test.is(systems.power.getRemainingPowerOutput(), 10);
 
   reactor1.addCritical(new OutputReduced8());
 
@@ -154,12 +154,14 @@ test("Weapon boost affects its loading time", test => {
 
   coilgun.callHandler("boost");
   coilgun.callHandler("onWeaponFired");
-  test.is(coilgun.callHandler("getLoadingTime", null, 0), 3);
+  test.is(coilgun.callHandler("getLoadingTime", null, 0), 4);
   test.is(coilgun.callHandler("getTurnsLoaded", null, 0), 0);
   systems.advanceTurn();
-  test.is(coilgun.callHandler("getTurnsLoaded", null, 0), 2);
+  test.is(coilgun.callHandler("getTurnsLoaded", null, 0), 1.4);
   systems.advanceTurn();
-  test.is(coilgun.callHandler("getTurnsLoaded", null, 0), 3);
+  test.is(coilgun.callHandler("getTurnsLoaded", null, 0), 2.8);
+  systems.advanceTurn();
+  test.is(coilgun.callHandler("getTurnsLoaded", null, 0), 4);
   test.true(coilgun.callHandler("isLoaded"));
 });
 

@@ -11,6 +11,7 @@ import InterceptorStrategy from "../../strategy/weapon/InterceptorStrategy.mjs";
 import AmmunitionStrategy from "../../strategy/weapon/AmmunitionStrategy.mjs";
 import { Ammo85mmAP, Ammo85mmHE } from "../ammunition/conventional/index.mjs";
 import ArmorBoostOfflineSystemStrategy from "../../strategy/ArmorBoostOfflineSystemStrategy.mjs";
+import FireOrderHeatStrategy from "../../strategy/FireOrderHeatStrategy.mjs";
 
 class AutoCannon85mm extends Weapon {
   constructor({ id }, arcs) {
@@ -37,7 +38,8 @@ class AutoCannon85mm extends Weapon {
         color: [1.0, 0.7, 0.7],
         explosionSize: 5
       }),
-      new ArmorBoostOfflineSystemStrategy(3)
+      new ArmorBoostOfflineSystemStrategy(3),
+      new FireOrderHeatStrategy(8)
     ]);
   }
 

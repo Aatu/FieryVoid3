@@ -11,10 +11,11 @@ import BoostableSystemStrategy from "../../strategy/BoostableSystemStrategy.mjs"
 import Ammo140mmAP from "../ammunition/conventional/Ammo140mmAP.mjs";
 import Ammo140mmHE from "../ammunition/conventional/Ammo140mmHE.mjs";
 import AmmunitionStrategy from "../../strategy/weapon/AmmunitionStrategy.mjs";
+import OutputHeatOnlineStrategy from "../../strategy/OutputHeatOnlineStrategy.mjs";
 
 class RailgunTurreted2x140mm extends Weapon {
-  constructor(args, arcs) {
-    super(args, [
+  constructor({ id }, arcs) {
+    super({ id, hitpoints: 12, armor: 3 }, [
       new FireOrderStrategy(2),
       new WeaponArcStrategy(arcs),
       new StandardHitStrategy(10),
@@ -23,7 +24,7 @@ class RailgunTurreted2x140mm extends Weapon {
         { range: 10, modifier: 0 },
         { range: 200, modifier: -200 }
       ]),
-      new StandardLoadingStrategy(2),
+      new StandardLoadingStrategy(3),
       new RequiresPowerSystemStrategy(6),
       new BoostableSystemStrategy(6, 1),
       new StandardDamageStrategy(),
@@ -33,7 +34,8 @@ class RailgunTurreted2x140mm extends Weapon {
         length: 100,
         speed: 1.3,
         color: [1.0, 0.8, 0.4]
-      })
+      }),
+      new OutputHeatOnlineStrategy(8, 5)
     ]);
   }
 

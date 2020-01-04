@@ -18,6 +18,19 @@ const SystemTooltip = styled(Tooltip)`
   width: 200px;
 `;
 
+const Warning = styled.div`
+  color: ${colors.textDanger};
+  font-weight: bold;
+
+  animation: blinker 2s linear infinite;
+
+  @keyframes blinker {
+    50% {
+      opacity: 0.5;
+    }
+  }
+`;
+
 class SystemInfo extends React.Component {
   systemChangedCallback(ship, system) {
     if (ship.id === this.props.ship.id && system.id === this.props.system.id) {
@@ -48,12 +61,17 @@ class SystemInfo extends React.Component {
     const { system } = this.props;
     const warnings = [];
     if (system.isDestroyed()) {
-      warnings.push("Destroyed");
+      warnings.push("DESTROYED");
     }
     if (system.power.isOffline()) {
-      warnings.push("Offline");
+      warnings.push("OFFLINE");
     }
-    return warnings;
+
+    const criticals = system.damage
+      .getCriticals()
+      .map(critical => critical.getMessage());
+
+    return [...warnings, ...criticals].join(", ");
   }
   render() {
     const {
@@ -68,11 +86,28 @@ class SystemInfo extends React.Component {
 
     const warnings = this.getWarnings();
 
+    /*
+    {warnings.length > 0 && (
+          <TooltipEntry>
+            {warnings.map((warning, i) => (
+              <Warning key={`warning-${i}`}>{warning}</Warning>
+            ))}
+          </TooltipEntry>
+        )}
+        */
+
     return this.getContainer(
       <>
         <TooltipHeader>{system.getDisplayName()}</TooltipHeader>
-        {warnings.length > 0 && <div>LOL HI</div>}
+
         {Menu && <Menu uiState={uiState} ship={ship} system={system} />}
+
+        {warnings && (
+          <TooltipEntry>
+            <Warning>{warnings}</Warning>
+          </TooltipEntry>
+        )}
+
         {system.getSystemInfo(ship).map(getEntry)}
         <SystemStrategyUi ship={ship} system={system} uiState={uiState} />
         {weaponTargeting && (

@@ -42,7 +42,13 @@ class TestShip extends Ship {
       new systems.EwArray({ id: 11, hitpoints: 10, armor: 3 }, 10),
       new systems.TorpedoLauncherDual158({ id: 202, hitpoints: 20, armor: 6 }),
       new systems.TorpedoLauncherDual72({ id: 203, hitpoints: 20, armor: 6 }),
-      new systems.CargoBay({ id: 204, hitpoints: 20, armor: 4 }, 500)
+      new systems.CargoBay({ id: 204, hitpoints: 20, armor: 4 }, 500),
+      new systems.Structure({
+        id: 205,
+        hitpoints: 40,
+        armor: 5,
+        heatStorage: 200
+      })
     ]);
   }
 

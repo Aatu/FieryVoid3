@@ -17,6 +17,35 @@ class ThrustChannelSystemStrategy extends ShipSystemStrategy {
 
     this.output = output || 0;
     this.direction = direction || 0; // 0, 3, [4,5], [1,2], 6
+    this.channeled = 0;
+  }
+
+  resetChanneledThrust() {
+    this.channeled = 0;
+  }
+
+  addChanneledThrust(channel) {
+    this.channeled += channel;
+  }
+
+  serialize(payload, previousResponse = []) {
+    return {
+      ...previousResponse,
+      thrustChannelSystemStrategy: {
+        channeled: this.channeled
+      }
+    };
+  }
+
+  getIconText() {
+    return this.channeled + "/" + this.output;
+  }
+
+  deserialize(data = {}) {
+    const thisData = data.thrustChannelSystemStrategy || {};
+    this.channeled = thisData.channeled || 0;
+
+    return this;
   }
 
   getDirectionString() {
@@ -38,6 +67,16 @@ class ThrustChannelSystemStrategy extends ShipSystemStrategy {
       value: this.getDirectionString()
     });
 
+    previousResponse.push({
+      header: "Channeled",
+      value: this.channeled
+    });
+
+    previousResponse.push({
+      header: "Heat generated",
+      value: this.getHeatGenerated()
+    });
+
     return previousResponse;
   }
 
@@ -49,13 +88,15 @@ class ThrustChannelSystemStrategy extends ShipSystemStrategy {
     return previousResponse + this.output;
   }
 
-  getThrustDirection(payload, previousResponse = null) {
-    if (previousResponse !== null) {
-      throw new Error(
-        "System implementing multiple getThrustDirection handlers is not supported"
-      );
-    }
+  generatesHeat() {
+    return true;
+  }
 
+  getHeatGenerated(payload, previousResponse = 0) {
+    return previousResponse + this.channeled * 2;
+  }
+
+  getThrustDirection(payload, previousResponse = null) {
     return this.direction;
   }
 
@@ -103,6 +144,10 @@ class ThrustChannelSystemStrategy extends ShipSystemStrategy {
       this.direction === direction ||
       (Array.isArray(this.direction) && this.direction.includes(direction))
     );
+  }
+
+  advanceTurn() {
+    this.channeled = 0;
   }
 
   getPossibleCriticals(payload, previousResponse = []) {

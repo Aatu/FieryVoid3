@@ -8,10 +8,11 @@ import WeaponAnimationStrategy from "../../strategy/weapon/WeaponAnimationStrate
 import PiercingDamageStrategy from "../../strategy/weapon/PiercingDamageStrategy.mjs";
 import BoostableSystemStrategy from "../../strategy/BoostableSystemStrategy.mjs";
 import RequiresPowerSystemStrategy from "../../strategy/RequiresPowerSystemStrategy.mjs";
+import OutputHeatOnlineStrategy from "../../strategy/OutputHeatOnlineStrategy.mjs";
 
 class CoilgunLightFixed extends Weapon {
-  constructor(args, arcs) {
-    super(args, [
+  constructor({ id }, arcs) {
+    super({ id, hitpoints: 10, armor: 5 }, [
       new FireOrderStrategy(1),
       new WeaponArcStrategy(arcs),
       new StandardHitStrategy(20),
@@ -20,9 +21,9 @@ class CoilgunLightFixed extends Weapon {
         { range: 40, modifier: 0 },
         { range: 400, modifier: -200 }
       ]),
-      new StandardLoadingStrategy(3),
-      new RequiresPowerSystemStrategy(8),
-      new BoostableSystemStrategy(8, 2),
+      new StandardLoadingStrategy(4),
+      new RequiresPowerSystemStrategy(6),
+      new BoostableSystemStrategy(6, 2),
       new PiercingDamageStrategy("3d3", "2d2 + 4"),
       new WeaponAnimationStrategy("Bolt", {
         size: 12,
@@ -30,7 +31,8 @@ class CoilgunLightFixed extends Weapon {
         speed: 5,
         color: [0.8, 0.1, 0.4],
         explosionSize: 20
-      })
+      }),
+      new OutputHeatOnlineStrategy(6, 5)
     ]);
   }
 

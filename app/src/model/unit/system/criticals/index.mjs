@@ -8,8 +8,10 @@ import OutputReduced8 from "./OutputReduced8.mjs";
 import OutputReduced from "./OutputReduced.mjs";
 import LoadingTimeIncreased from "./LoadingTimeIncreased.mjs";
 import ForcedOffline from "./ForcedOffline.mjs";
+import ForcedOfflineOverheat from "./ForcedOfflineOverheat.mjs";
 
 export {
+  ForcedOfflineOverheat,
   ForcedOffline,
   LoadingTimeIncreased,
   FirstThrustIgnored,

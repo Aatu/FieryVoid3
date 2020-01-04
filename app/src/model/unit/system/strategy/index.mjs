@@ -9,6 +9,8 @@ import LargerHitProfileOnlineSystemStrategy from "./LargerHitProfileOnlineSystem
 import CargoBaySystemStrategy from "./CargoBaySystemStrategy.mjs";
 import BoostablePlusOneOutputSystemStrategy from "./BoostablePlusOneOutputSystemStrategy.mjs";
 import ArmorBoostOfflineSystemStrategy from "./ArmorBoostOfflineSystemStrategy.mjs";
+import OutputHeatOnlineStrategy from "./OutputHeatOnlineStrategy.mjs";
+import FireOrderHeatStrategy from "./FireOrderHeatStrategy.mjs";
 
 import {
   TestDamageStrategy,
@@ -25,6 +27,8 @@ import {
 } from "./weapon/index.mjs";
 
 export {
+  FireOrderHeatStrategy,
+  OutputHeatOnlineStrategy,
   ArmorBoostOfflineSystemStrategy,
   LargerHitProfileOnlineSystemStrategy,
   BoostablePlusOneOutputSystemStrategy,

@@ -3,6 +3,7 @@ import styled from "styled-components";
 import SystemIcon from "../system/SystemIcon";
 import { colors } from "../../../../styled";
 import * as systemLocation from "../../../../../model/unit/system/systemSection/systemLocation";
+import StructureIcon from "../system/StructureIcon";
 
 const ShipSectionContainer = styled.div`
   display: flex;
@@ -80,216 +81,17 @@ class ShipSection extends React.Component {
         ))}
 
         {structure && (
-          <StructureContainer
-            health={getStructureLeft(structure)}
-            criticals={hasCriticals(structure)}
-          >
-            <StructureText>
-              {structure.getRemainingHitpoints()} / {structure.hitpoints} A{" "}
-              {structure.getArmor()}
-            </StructureText>
-          </StructureContainer>
+          <StructureIcon
+            uiState={uiState}
+            system={structure}
+            ship={ship}
+            selected={uiState.isSelectedSystem(structure)}
+            {...rest}
+          />
         )}
       </ShipSectionContainer>
     );
   }
 }
-
-const getStructureLeft = system => {
-  return (system.getRemainingHitpoints() / system.hitpoints) * 100;
-};
-
-const hasCriticals = system => system.hasAnyCritical();
-
-const orderSystems = (section, location) => {
-  const systems = section.getNonStructureSystems();
-
-  if (
-    [
-      systemLocation.SYSTEM_LOCATION_STARBOARD_AFT,
-      systemLocation.SYSTEM_LOCATION_STARBOARD_FRONT
-    ].includes(location)
-  ) {
-    return orderSystemsThreeWide(systems);
-  } else if (
-    [
-      systemLocation.SYSTEM_LOCATION_PORT_AFT,
-      systemLocation.SYSTEM_LOCATION_PORT_FRONT
-    ].includes(location)
-  ) {
-    return reverseRowsOfThree(orderSystemsThreeWide(systems));
-  } else if (
-    [
-      systemLocation.SYSTEM_LOCATION_FRONT,
-      systemLocation.SYSTEM_LOCATION_AFT,
-      systemLocation.SYSTEM_LOCATION_PRIMARY
-    ].includes(location)
-  ) {
-    return orderSystemsFourWide(systems);
-  } else {
-    return orderWide(systems);
-  }
-};
-
-const reverseRowsOfThree = systems => {
-  let list = [];
-
-  systems.forEach((system, i) => {
-    const j = i % 3;
-    if (j === 0) {
-      list[i + 2] = system;
-    } else if (j === 1) {
-      list[i] = system;
-    } else {
-      list[i - 2] = system;
-    }
-  });
-
-  return list;
-};
-
-const orderWide = systems => {
-  if (systems.length === 3) {
-    return orderSystemsThreeWide(systems);
-  } else if (systems.length === 4) {
-    return orderSystemsFourWide(systems);
-  } else {
-    return systems;
-  }
-};
-
-const orderSystemsFourWide = systems => {
-  let list = [];
-
-  while (true) {
-    const { picked, remaining } = pick(systems, 4);
-
-    if (picked.length === 0) {
-      break;
-    }
-
-    systems = remaining;
-
-    list = list.concat(picked);
-  }
-
-  while (true) {
-    const { picked, remaining } = pick(systems, 2);
-
-    if (picked.length === 0) {
-      break;
-    }
-
-    systems = remaining;
-
-    const secondPick = pick(systems, 2);
-
-    if (secondPick.picked.length > 0) {
-      systems = secondPick.remaining;
-      list = list.concat([
-        picked[0],
-        secondPick.picked[0],
-        secondPick.picked[1],
-        picked[1]
-      ]);
-    } else {
-      list = list.concat([picked[0], systems.pop(), systems.pop(), picked[1]]);
-      list = list.filter(system => system);
-    }
-  }
-
-  list = list.concat(systems);
-
-  return list;
-};
-
-const orderSystemsThreeWide = systems => {
-  let list = [];
-
-  while (true) {
-    const { picked, remaining } = pick(systems, 3);
-
-    if (picked.length === 0) {
-      break;
-    }
-
-    systems = remaining;
-
-    list = list.concat(picked);
-  }
-
-  while (true) {
-    const { picked, remaining } = pick(systems, 2);
-
-    if (picked.length === 0) {
-      break;
-    }
-
-    const { three, remainingSystems } = findFriendForTwo(picked, remaining);
-
-    systems = remainingSystems;
-
-    list = list.concat(three);
-  }
-
-  list = list.concat(systems);
-
-  return list;
-};
-
-const findFriendForTwo = (two, systems) => {
-  const onePick = pick(systems, 1);
-
-  if (onePick.picked.length === 1) {
-    return {
-      three: [two[0], onePick.picked[0], two[1]],
-      remainingSystems: onePick.remaining
-    };
-  }
-
-  if (systems.length > 0) {
-    return {
-      three: [two[0], systems.pop(), two[1]],
-      remainingSystems: systems
-    };
-  }
-
-  return { three: [two[0], two[1]], remainingSystems: systems };
-};
-
-const pick = (systems, amount = 3) => {
-  const one = systems.find(system => {
-    const count = systems.reduce((all, otherSystem) => {
-      if (otherSystem.name === system.name) {
-        return all + 1;
-      }
-
-      return all;
-    }, 0);
-
-    if (amount === 1) {
-      return count === amount;
-    } else {
-      return count >= amount;
-    }
-  });
-
-  if (!one) {
-    return { picked: [], remaining: systems };
-  }
-
-  let picked = [];
-  const remaining = systems.filter(otherSystem => {
-    if (otherSystem.name === one.name && amount > 0) {
-      amount--;
-      picked.push(otherSystem);
-      return false;
-    }
-
-    return true;
-  });
-
-  return { picked, remaining };
-};
 
 export default ShipSection;

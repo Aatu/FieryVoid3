@@ -10,10 +10,11 @@ import RequiresPowerSystemStrategy from "../../strategy/RequiresPowerSystemStrat
 import BoostableSystemStrategy from "../../strategy/BoostableSystemStrategy.mjs";
 import { Ammo120mmHE, Ammo120mmAP } from "../ammunition/conventional/index.mjs";
 import AmmunitionStrategy from "../../strategy/weapon/AmmunitionStrategy.mjs";
+import OutputHeatOnlineStrategy from "../../strategy/OutputHeatOnlineStrategy.mjs";
 
 class RailgunFixed120mm extends Weapon {
-  constructor(args, arcs) {
-    super(args, [
+  constructor({ id }, arcs) {
+    super({ id, hitpoints: 8, armor: 4 }, [
       new FireOrderStrategy(1),
       new WeaponArcStrategy(arcs),
       new StandardHitStrategy(10),
@@ -22,9 +23,9 @@ class RailgunFixed120mm extends Weapon {
         { range: 30, modifier: 0 },
         { range: 190, modifier: -200 }
       ]),
-      new StandardLoadingStrategy(2),
+      new StandardLoadingStrategy(3),
       new RequiresPowerSystemStrategy(4),
-      new BoostableSystemStrategy(4, 1),
+      new BoostableSystemStrategy(3, 1),
       new StandardDamageStrategy(null),
       new AmmunitionStrategy([Ammo120mmAP, Ammo120mmHE], 1, 12, 4),
       new WeaponAnimationStrategy("Bolt", {
@@ -32,7 +33,8 @@ class RailgunFixed120mm extends Weapon {
         length: 100,
         speed: 1.3,
         color: [1.0, 0.8, 0.4]
-      })
+      }),
+      new OutputHeatOnlineStrategy(6, 3)
     ]);
   }
 

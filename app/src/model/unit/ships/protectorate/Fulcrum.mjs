@@ -49,24 +49,12 @@ class Fulcrum extends Ship {
     this.pointCost = 500;
 
     this.systems.addFrontSystem([
-      new systems.Structure({ id: 100, hitpoints: 30, armor: 4 }),
+      new systems.Structure({ id: 100, hitpoints: 30, armor: 5 }),
 
-      new systems.CoilgunLightFixed(
-        { id: 102, hitpoints: 10, armor: 3 },
-        { start: 330, end: 30 }
-      ),
-      new systems.RailgunFixed120mm(
-        { id: 103, hitpoints: 10, armor: 3 },
-        { start: 330, end: 30 }
-      ),
-      new systems.RailgunFixed120mm(
-        { id: 104, hitpoints: 10, armor: 3 },
-        { start: 330, end: 30 }
-      ),
-      new systems.RailgunFixed120mm(
-        { id: 105, hitpoints: 10, armor: 3 },
-        { start: 330, end: 30 }
-      ),
+      new systems.CoilgunLightFixed({ id: 102 }, { start: 330, end: 30 }),
+      new systems.RailgunFixed120mm({ id: 103 }, { start: 330, end: 30 }),
+      new systems.RailgunFixed120mm({ id: 104 }, { start: 330, end: 30 }),
+      new systems.RailgunFixed120mm({ id: 105 }, { start: 330, end: 30 }),
 
       new systems.Thruster({ id: 106, hitpoints: 10, armor: 3 }, 3, 0),
       new systems.Thruster({ id: 107, hitpoints: 10, armor: 3 }, 3, 0),
@@ -82,7 +70,14 @@ class Fulcrum extends Ship {
       new systems.EwArray({ id: 12, hitpoints: 30, armor: 4 }, 12),
 
       new systems.Reactor({ id: 7, hitpoints: 20, armor: 3 }, 35),
-      new systems.Structure({ id: 11, hitpoints: 30, armor: 4 }),
+      new systems.Structure({
+        id: 11,
+        hitpoints: 30,
+        armor: 6,
+        cargoSpace: 100,
+        heatSink: 30,
+        radiator: 5
+      }),
 
       new systems.PDC30mm(
         { id: 14, hitpoints: 5, armor: 3 },
@@ -91,7 +86,12 @@ class Fulcrum extends Ship {
     ]);
 
     this.systems.addAftSystem([
-      new systems.Structure({ id: 200, hitpoints: 30, armor: 4 }),
+      new systems.Structure({
+        id: 200,
+        hitpoints: 40,
+        armor: 6,
+        heatSink: 20
+      }),
 
       new systems.Engine({ id: 202, hitpoints: 20, armor: 3 }, 14, 6, 2),
       new systems.ManeuveringThruster(
@@ -106,7 +106,7 @@ class Fulcrum extends Ship {
         { start: 0, end: 0 }
       ),
 
-      new systems.Radiator({ id: 316, hitpoints: 10, armor: 3 }),
+      new systems.Radiator5x40({ id: 316 }),
       new systems.CargoBay({ id: 317, hitpoints: 10, armor: 4 }, 100)
     ]);
 
@@ -123,7 +123,7 @@ class Fulcrum extends Ship {
         { start: 0, end: 180 }
       ),
 
-      new systems.Radiator({ id: 216, hitpoints: 10, armor: 3 })
+      new systems.Radiator5x40({ id: 216 })
     ]);
 
     this.systems.addPortFrontSystem([
@@ -139,7 +139,7 @@ class Fulcrum extends Ship {
         { start: 180, end: 0 }
       ),
 
-      new systems.Radiator({ id: 416, hitpoints: 10, armor: 3 })
+      new systems.Radiator5x40({ id: 416 })
     ]);
   }
 

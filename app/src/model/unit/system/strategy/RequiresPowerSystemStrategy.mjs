@@ -2,12 +2,14 @@ import ShipSystemStrategy from "./ShipSystemStrategy.mjs";
 import { ForcedOffline } from "../criticals/index.mjs";
 
 class RequiresPowerSystemStrategy extends ShipSystemStrategy {
-  constructor(power) {
+  constructor(power, getsCriticals = true) {
     super();
     this.power = power || 0;
     if (this.power <= 0) {
       throw new Error("Power must be more than zero");
     }
+
+    this.getsCriticals = getsCriticals;
   }
 
   getMessages(payload, previousResponse = []) {
@@ -40,6 +42,10 @@ class RequiresPowerSystemStrategy extends ShipSystemStrategy {
   }
 
   getPossibleCriticals(payload, previousResponse = []) {
+    if (!this.getsCriticals) {
+      return previousResponse;
+    }
+
     return [
       ...previousResponse,
       {

@@ -113,6 +113,19 @@ class ShipMovement {
         move.index = lastIndex;
       }
     });
+
+    this.ship.systems.callAllSystemHandlers("resetChanneledThrust");
+
+    this.moves.forEach(move => {
+      const fulfilments = move.requiredThrust.getFulfilments();
+      fulfilments.forEach(fulfilment => {
+        fulfilment.forEach(({ amount, thrusterId }) => {
+          this.ship.systems
+            .getSystemById(thrusterId)
+            .callHandler("addChanneledThrust", amount);
+        });
+      });
+    });
   }
 
   getLastEndMove() {

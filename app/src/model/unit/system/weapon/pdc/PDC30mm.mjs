@@ -11,6 +11,7 @@ import InterceptorStrategy from "../../strategy/weapon/InterceptorStrategy.mjs";
 import Ammo30mm from "../ammunition/conventional/Ammo30mm.mjs";
 import AmmunitionStrategy from "../../strategy/weapon/AmmunitionStrategy.mjs";
 import ArmorBoostOfflineSystemStrategy from "../../strategy/ArmorBoostOfflineSystemStrategy.mjs";
+import FireOrderHeatStrategy from "../../strategy/FireOrderHeatStrategy.mjs";
 
 class PDC30mm extends Weapon {
   constructor({ id }, arcs) {
@@ -37,7 +38,8 @@ class PDC30mm extends Weapon {
         color: [1.0, 0.9, 0.8],
         explosionSize: 3
       }),
-      new ArmorBoostOfflineSystemStrategy(3)
+      new ArmorBoostOfflineSystemStrategy(3),
+      new FireOrderHeatStrategy(6)
     ]);
   }
 

@@ -37,6 +37,7 @@ const RangeStep = styled.div`
   background-repeat: no-repeat;
   background-position: bottom 0 left 0;
   opacity: 0.25;
+  filter: blur(1px);
 
   &:hover {
     opacity: 0.5;
