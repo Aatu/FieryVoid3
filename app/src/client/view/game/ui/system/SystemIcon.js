@@ -77,7 +77,7 @@ const System = styled.div`
     height: 100%;
     opacity: ${props => {
       if (props.destroyed || props.offline || props.loading) {
-        return "0.5";
+        return "0.8";
       }
 
       return "0";

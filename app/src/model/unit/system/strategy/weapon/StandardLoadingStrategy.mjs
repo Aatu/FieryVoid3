@@ -43,8 +43,24 @@ class StandardLoadingStrategy extends ShipSystemStrategy {
     return previousResponse;
   }
 
+  _getTurnsUntilLoaded() {
+    const left = this.loadingTime - this.turnsLoaded;
+    const loadingPerTurn = 1 + this._getBoostLoading();
+
+    return Math.ceil(left / loadingPerTurn);
+  }
+
   getIconText() {
-    return this.getTurnsLoaded() + "/" + this.getLoadingTime();
+    if (this.system.isDisabled()) {
+      return "";
+    }
+
+    const left = this._getTurnsUntilLoaded();
+    if (left === 0) {
+      return "L";
+    }
+
+    return `-${left}T`;
   }
 
   canFire(payload, previousResponse = true) {
