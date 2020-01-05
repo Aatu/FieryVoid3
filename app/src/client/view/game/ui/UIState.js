@@ -57,11 +57,9 @@ class UIState {
       const hexFacing = angleToHexFacing(iconFacing);
       const offset = HEX_SIZE - 15;
 
-      const hexas = icon.ship.getIconHexas(hexFacing).map(hex => {
-        const gamePos = coordinateConverter
-          .fromHexToGame(hex)
-          .add(iconPosition);
+      const hexas = icon.getShipHexas().map(gamePos => {
         gamePos.y -= offset;
+
         return coordinateConverter.fromGameToViewPort(gamePos);
       });
 

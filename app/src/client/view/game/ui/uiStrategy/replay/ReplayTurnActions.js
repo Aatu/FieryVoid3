@@ -15,6 +15,7 @@ import CameraPositionAnimation from "../../../animation/CameraPositionAnimation"
 import CombatLogWeaponFire from "../../../../../../model/combatLog/CombatLogWeaponFire.mjs";
 import CombatLogGroupedWeaponFire from "../../../../../../model/combatLog/CombatLogGroupedWeaponFire.mjs";
 import SystemDestroyedTextAnimation from "../../../animation/SystemDestroyedTextAnimation";
+import Vector from "../../../../../../model/utils/Vector.mjs";
 
 const getMovesForShip = (gameDatas, ship) =>
   gameDatas.reduce((moves, gameData) => {
@@ -146,7 +147,7 @@ class ReplayTurnActions extends AnimationUiStrategy {
 
       if (systemsDestroyed.length > 0) {
         this.systemDestroyedTextAnimation.add(
-          position,
+          new Vector(position.x, position.y, position.z + targetIcon.shipZ),
           systemsDestroyed.map(system => system.getDisplayName()),
           fireStart + duration - 1000
         );

@@ -10,15 +10,25 @@ const getSprite = (name, position, scene) => {
   let sprite = null;
 
   if (name.structure) {
-    sprite = new TextSprite(name.toUpperCase(), "rgba(255, 100, 45, 0.7)", 0, {
-      fontSize: "24px",
-      size: 512
-    });
+    sprite = new TextSprite(
+      name.toUpperCase(),
+      "rgba(255, 100, 45, 0.7)",
+      position.z + 30,
+      {
+        fontSize: "24px",
+        size: 512
+      }
+    );
   } else {
-    sprite = new TextSprite(name.toUpperCase(), "rgba(255, 255, 255, 0.7)", 0, {
-      fontSize: "18px",
-      size: 512
-    });
+    sprite = new TextSprite(
+      name.toUpperCase(),
+      "rgba(255, 255, 255, 0.7)",
+      position.z + 30,
+      {
+        fontSize: "18px",
+        size: 512
+      }
+    );
   }
 
   sprite.setPosition(position);

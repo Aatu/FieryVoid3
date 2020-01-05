@@ -124,6 +124,10 @@ class Vector {
   toString() {
     return `(x:${this.x}, y:${this.y}, z:${this.z})`;
   }
+
+  toThree() {
+    return new THREE.Vector3(this.x, this.y, this.z);
+  }
 }
 
 export default Vector;

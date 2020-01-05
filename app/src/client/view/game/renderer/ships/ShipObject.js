@@ -16,6 +16,7 @@ import Line from "../Line";
 import Object3d from "../object3d/Object3d";
 import coordinateConverter from "../../../../../model/utils/CoordinateConverter.mjs";
 import ShipMapIcon from "./ShipMapIcon";
+import { angleToHexFacing } from "../../../../../model/utils/math.mjs";
 
 const COLOR_MINE = new THREE.Color(39 / 255, 196 / 255, 39 / 255);
 const COLOR_ENEMY = new THREE.Color(255 / 255, 40 / 255, 40 / 255);
@@ -93,15 +94,15 @@ class ShipObject {
     }
 
     const opacity = 0.5;
-    /*
+
     this.line = new Line(this.mesh, {
-      start: { x: 0, y: 0, z: 1 },
+      start: { x: 0, y: 0, z: 0 },
       end: { x: 0, y: 0, z: this.defaultHeight },
-      width: 1,
+      width: 5,
       color: new THREE.Color(1, 1, 1),
-      opacity
+      opacity: 0.1
     });
-    */
+    this.line.hide();
 
     this.shipSelectedSprite = new DottedCircleSprite(
       { width: this.overlaySpriteSize, height: this.overlaySpriteSize },
@@ -473,6 +474,43 @@ class ShipObject {
 
     //console.log("disable", name, system);
     object.disableAnimation(name);
+  }
+
+  getShipHexas() {
+    const iconPosition = this.getPosition();
+    const iconFacing = this.getFacing();
+    const hexFacing = angleToHexFacing(iconFacing);
+
+    return this.ship
+      .getIconHexas(hexFacing)
+      .map(hex => coordinateConverter.fromHexToGame(hex).add(iconPosition));
+  }
+
+  getCenter() {
+    const hexas = this.getShipHexas();
+
+    const lowest = new Vector();
+    const highest = new Vector();
+
+    hexas.forEach(position => {
+      if (position.x < lowest.x) {
+        lowest.x = position.x;
+      }
+
+      if (position.y < lowest.y) {
+        lowest.y = position.y;
+      }
+
+      if (position.x > highest.x) {
+        highest.x = position.x;
+      }
+
+      if (position.y < highest.y) {
+        highest.y = position.y;
+      }
+    });
+
+    return lowest.add(highest).multiplyScalar(0.5);
   }
 }
 

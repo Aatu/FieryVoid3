@@ -13,6 +13,17 @@ const ShipBadgeContainer = styled.div`
   font-family: arial;
   margin-left: -50%;
   font-size: 12px;
+
+  animation: fadein 2s;
+
+  @keyframes fadein {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
 `;
 
 const DewBadge = styled(IconAndLabel)`

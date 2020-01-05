@@ -3,7 +3,8 @@ import {
   AutomaticReplay,
   ShowReplayUi,
   MouseOverShowsShipTooltip,
-  ShowMapIcons
+  ShowMapIcons,
+  UnderHexForShips
 } from "../../../ui/uiStrategy";
 import ReplayContext from "./ReplayContext";
 import ReplayTurnActions from "../../../ui/uiStrategy/replay/ReplayTurnActions";
@@ -22,6 +23,7 @@ class AutomaticReplayPhaseStrategy extends PhaseStrategy {
       new AutomaticReplay(this, this.replayContext),
       new ShowReplayUi(this.replayContext),
       new MouseOverShowsShipTooltip(),
+      new UnderHexForShips(),
       new ShowMapIcons()
     ];
   }

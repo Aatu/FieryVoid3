@@ -19,6 +19,7 @@ class CurrentOEWIndicator extends OEWIndicator {
   }
 
   getZ() {
+    return 0;
     return this.mine ? 15 : 30;
   }
 }

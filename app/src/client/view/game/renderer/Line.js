@@ -146,22 +146,25 @@ class Line {
     this.dashAttribute.needsUpdate = true;
   }
 
-  setColor(color) {
+  setColorAttribute(color) {
+    const colors = [];
+    for (let i = 0; i < this.getVertexAmount(); i++) {
+      colors.push(color.r, color.g, color.b);
+    }
+    this.colorAttribute = new THREE.BufferAttribute(
+      new Float32Array(colors),
+      3
+    ).setDynamic(true);
+    this.mesh.geometry.addAttribute("color", this.colorAttribute);
+
+    this.colorAttribute.needsUpdate = true;
+  }
+
+  async setColor(color) {
+    await this.ready;
     this.color = color;
-    if (!this.colorAttribute) {
-      const colors = [];
-      for (let i = 0; i < this.getVertexAmount(); i++) {
-        colors.push(this.color.r, this.color.g, this.color.b);
-      }
-      this.colorAttribute = new THREE.BufferAttribute(
-        new Float32Array(colors),
-        3
-      ).setDynamic(true);
-      this.mesh.geometry.addAttribute("color", this.colorAttribute);
-    } else {
-      for (let i = 0; i < this.getVertexAmount(); i++) {
-        this.colorAttribute.setXYZ(i, this.color.r, this.color.g, this.color.b);
-      }
+    for (let i = 0; i < this.getVertexAmount(); i++) {
+      this.colorAttribute.setXYZ(i, this.color.r, this.color.g, this.color.b);
     }
 
     this.colorAttribute.needsUpdate = true;
@@ -211,11 +214,11 @@ class Line {
 
     this.scene.add(mesh);
     this.mesh = mesh;
-    this.setColor(this.color);
+    this.resolveReady(true);
+    this.setColorAttribute(this.color);
     this.setOpacity(this.opacity);
     this.setDashed(this.dashSize);
     this.setPulse(this.pulseAmount, this.pulseSpeed);
-    this.resolveReady(true);
   }
 
   updateMesh() {

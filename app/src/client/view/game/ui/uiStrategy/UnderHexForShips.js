@@ -11,6 +11,7 @@ class UnderHexForShips extends UiStrategy {
 
     this.showing = false;
   }
+
   show() {
     const { shipIconContainer, currentUser } = this.services;
     shipIconContainer.getArray().forEach(icon => {
@@ -20,6 +21,8 @@ class UnderHexForShips extends UiStrategy {
         : COLOR_ENEMY;
 
       icon.hexSprites.forEach(sprite => sprite.setOverlayColor(color));
+      icon.line.setColor(color);
+      icon.line.show();
     });
 
     this.showing = true;
@@ -29,6 +32,8 @@ class UnderHexForShips extends UiStrategy {
     const { shipIconContainer } = this.services;
     shipIconContainer.getArray().forEach(icon => {
       icon.hexSpriteContainer.visible = false;
+
+      icon.line.hide();
     });
 
     this.showing = false;

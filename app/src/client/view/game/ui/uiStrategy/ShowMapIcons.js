@@ -58,7 +58,7 @@ class ShowMapIcons extends AnimationUiStrategy {
 
   showIcons() {
     this.changeScale(1);
-    const { shipIconContainer, currentUser } = this.services;
+    const { shipIconContainer, currentUser, gameCamera } = this.services;
     shipIconContainer.getArray().forEach(icon => {
       const color = icon.ship.player.isUsers(currentUser)
         ? COLOR_FRIENDLY
@@ -69,11 +69,12 @@ class ShowMapIcons extends AnimationUiStrategy {
       icon.showMapIcon(color);
     });
     this.showingIcons = true;
+    gameCamera.changeToMapView();
   }
 
   hideIcons() {
     this.changeScale(1);
-    const { shipIconContainer } = this.services;
+    const { shipIconContainer, gameCamera } = this.services;
     shipIconContainer.getArray().forEach(icon => {
       icon.hideMapIcon();
       const ghost = shipIconContainer.getGhostShipIconByShip(icon.ship);
@@ -81,6 +82,7 @@ class ShowMapIcons extends AnimationUiStrategy {
     });
 
     this.showingIcons = false;
+    gameCamera.changeToCloseView();
   }
 
   changeScale(scale) {
