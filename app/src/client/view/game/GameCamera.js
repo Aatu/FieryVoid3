@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import Vector from "../../../model/utils/Vector.mjs";
 import { degreeToRadian } from "../../../model/utils/math.mjs";
+import { ZOOM_PERSPECTIVE_MIN } from "../../../model/gameConfig.mjs";
 
 class GameCamera {
   constructor(zoom, width, height, z) {
@@ -74,6 +75,11 @@ class GameCamera {
     const current = this.solvePerspectiveSize();
     const perspectiveZoom = current.height / (height * zoom);
     this.perspectiveCameraDistance /= perspectiveZoom;
+
+    if (this.perspectiveCameraDistance < ZOOM_PERSPECTIVE_MIN) {
+      this.perspectiveCameraDistance = ZOOM_PERSPECTIVE_MIN;
+    }
+
     this.setPerspectiveCameraPositionByLookat(this.getLookAtPosition());
   }
 

@@ -17,6 +17,7 @@ import Object3d from "../object3d/Object3d";
 import coordinateConverter from "../../../../../model/utils/CoordinateConverter.mjs";
 import ShipMapIcon from "./ShipMapIcon";
 import { angleToHexFacing } from "../../../../../model/utils/math.mjs";
+import { radianToDegree } from "../../../../../model/utils/math.mjs";
 
 const COLOR_MINE = new THREE.Color(39 / 255, 196 / 255, 39 / 255);
 const COLOR_ENEMY = new THREE.Color(255 / 255, 40 / 255, 40 / 255);
@@ -26,6 +27,8 @@ class ShipObject {
     this.shipId = ship.id;
     this.ship = ship;
     this.systemLocations = {};
+
+    this.bumpMap = null;
 
     this.scene = scene;
     this.mesh = new THREE.Object3D();
@@ -55,14 +58,14 @@ class ShipObject {
 
     this.hidden = false;
 
-    this.startRotation = { x: 0, y: 0, z: 0 };
-    this.rotation = { x: 0, y: 0, z: 0 };
-
     this.emissiveReplaced = [];
 
     this.ghost = false;
     this.forcedEmissiveColor = null;
     this.opacity = 1;
+
+    this.rotation = 0;
+    this.roll = 0;
 
     this.consumeShipdata(this.ship);
   }
@@ -70,10 +73,17 @@ class ShipObject {
   setShipObject(object) {
     this.shipObject = object;
 
+    if (this.bumpMap) {
+      object.scene.children.forEach(mesh => {
+        mesh.material.bumpMap = this.bumpMap;
+        mesh.material.bumpScale = 0.5;
+        mesh.material.bumpMap.flipY = false;
+        mesh.material.needsUpdate = true;
+      });
+    }
+
     this.shipObject.traverse(child => {
       child.userData = { icon: this };
-      child.castShadow = true;
-      child.receiveShadow = true;
     });
 
     object.addTo(this.mesh);
@@ -186,22 +196,51 @@ class ShipObject {
     return new Vector(this.position);
   }
 
-  async setRotation(x, y, z) {
-    this.rotation = { x, y, z };
-
+  async setRotation() {
     await this.isShipObjectLoaded;
-    this.shipObject.object.rotation.set(
-      degreeToRadian(x),
-      degreeToRadian(y),
-      degreeToRadian(z)
+
+    this.shipObject.object.quaternion.setFromAxisAngle(
+      new THREE.Vector3(0, 0, 1),
+      degreeToRadian(this.rotation)
     );
 
-    this.hexSpriteContainer.rotation.z = degreeToRadian(z);
-    this.mapIcon.setRotation(z);
+    const tmpQuaternion = new THREE.Quaternion();
+    tmpQuaternion
+      .setFromAxisAngle(
+        new THREE.Vector3(1, 0, 0).normalize(),
+        degreeToRadian(this.roll)
+      )
+      .normalize();
+
+    this.shipObject.object.quaternion.multiply(tmpQuaternion);
+    this.hexSpriteContainer.rotation.z = degreeToRadian(this.rotation);
+    this.mapIcon.setRotation(this.rotation);
   }
 
-  getRotation() {
-    return this.rotation;
+  async setFacing(rotation) {
+    if (this.rotation === rotation) {
+      return;
+    }
+
+    this.rotation = rotation;
+    this.setRotation();
+  }
+
+  getFacing() {
+    return -this.rotation;
+  }
+
+  async setRoll(roll) {
+    if (this.roll === roll) {
+      return;
+    }
+
+    this.roll = roll;
+    this.setRotation();
+  }
+
+  getRoll() {
+    return this.roll;
   }
 
   async setOpacity(opacity) {
@@ -242,14 +281,6 @@ class ShipObject {
 
     this.scene.add(this.mesh);
     this.hidden = false;
-  }
-
-  getFacing() {
-    return -this.getRotation().z;
-  }
-
-  setFacing(facing) {
-    this.setRotation(0, 0, facing);
   }
 
   setOverlayColorAlpha(alpha) {}

@@ -167,6 +167,15 @@ class ShipMovement {
     return move.clone();
   }
 
+  isRolled() {
+    const end = this.getLastEndMoveOrSurrogate();
+    return end.rolled;
+  }
+
+  isRolling() {
+    return this.getRollMove();
+  }
+
   getRollMove() {
     const move = this.moves.find(move => move.isRoll());
 

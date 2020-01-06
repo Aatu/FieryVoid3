@@ -1,5 +1,6 @@
 import THREE from "three";
 import coordinateConverter from "./CoordinateConverter.mjs";
+import { degreeToRadian } from "./math.mjs";
 
 const helperA = new THREE.Vector3();
 const helperB = new THREE.Vector3();
@@ -47,6 +48,13 @@ class Vector {
 
   setZ(z) {
     return new Vector(this.x, this.y, z);
+  }
+
+  setFromAngle(a) {
+    return new Vector(
+      Math.cos(degreeToRadian(a)),
+      Math.sin(degreeToRadian(a))
+    ).normalize();
   }
 
   distanceTo(vector) {
@@ -129,5 +137,7 @@ class Vector {
     return new THREE.Vector3(this.x, this.y, this.z);
   }
 }
+
+window.Vector = Vector;
 
 export default Vector;

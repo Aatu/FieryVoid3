@@ -17,9 +17,6 @@ class Fulcrum extends ShipObject {
       "/img/3d/ships/protectorate/Fulcrum/scene.gltf"
     );
 
-    //this.startRotation = { x: 90, y: 90, z: 0 };
-    this.setRotation(this.rotation.x, this.rotation.y, this.rotation.z);
-
     object.object.position.set(0, 0, this.defaultHeight);
 
     super.replaceSocketByName(
