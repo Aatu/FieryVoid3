@@ -107,6 +107,12 @@ class Vector {
     return helperA.length();
   }
 
+  applyMatrix4(matrix) {
+    helperA.set(this.x, this.y, this.z);
+
+    return new Vector(helperA.applyMatrix4(matrix));
+  }
+
   equals(vector) {
     if (!vector) {
       return false;
@@ -137,7 +143,5 @@ class Vector {
     return new THREE.Vector3(this.x, this.y, this.z);
   }
 }
-
-window.Vector = Vector;
 
 export default Vector;

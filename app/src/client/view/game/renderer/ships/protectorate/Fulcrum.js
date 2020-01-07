@@ -2,6 +2,8 @@ import ShipObject from "../ShipObject";
 import { loadObject3d } from "../../object3d/Object3d";
 import * as THREE from "three";
 
+const textureLoader = new THREE.TextureLoader();
+
 class Fulcrum extends ShipObject {
   constructor(ship, scene) {
     super(ship, scene);
@@ -15,6 +17,9 @@ class Fulcrum extends ShipObject {
     super.create();
     const object = await loadObject3d(
       "/img/3d/ships/protectorate/Fulcrum/scene.gltf"
+    );
+    this.bumpMap = await textureLoader.load(
+      "/img/3d/ships/protectorate/Fulcrum/heightMap.png"
     );
 
     object.object.position.set(0, 0, this.defaultHeight);

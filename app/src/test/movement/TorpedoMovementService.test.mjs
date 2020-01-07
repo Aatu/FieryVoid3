@@ -239,3 +239,37 @@ test("Torpedo impact is predicted properly", test => {
 });
 
 */
+
+test("Test torpedo movement standardize function", test => {
+  const torpedoMovementService = new TorpedoMovementService();
+
+  const result = torpedoMovementService.standardize(
+    new Vector(-1527.8075543423627, 52.86648115797515),
+    new Vector(691.3825428552611, -3.3835188420248485),
+    new Vector(-562.9165124598852, 0),
+    new Vector(-649.519052838329, 0)
+  );
+
+  test.deepEqual(result, {
+    newTargetPosition: new Vector(966.3382366102873, 0),
+    newShooterVelocity: new Vector(1339.0785580469899, 69.97966070341435),
+    φ: -0.05473537736695087
+  });
+});
+
+test("Test torpedo math", test => {
+  const torpedoMovementService = new TorpedoMovementService();
+
+  const result = torpedoMovementService.torpedoMath(
+    new Vector(-1527.8075543423627, 52.86648115797515),
+    new Vector(691.3825428552611, -3.3835188420248485),
+    new Vector(-562.9165124598852, 0),
+    new Vector(-649.519052838329, 0),
+    909.3266739736607
+  );
+
+  test.deepEqual(result, {
+    angle: 5.970119272801,
+    impactTurn: 0.6024862787564024
+  });
+});
