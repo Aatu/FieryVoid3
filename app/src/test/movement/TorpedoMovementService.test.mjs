@@ -133,6 +133,7 @@ test("Torpedo strikes target properly", test => {
     torpedoMovementService.reachesTargetThisTurn(flight, target.getPosition())
   );
 });
+ */
 
 test("Predict torpedo hit turn and position", test => {
   const torpedoMovementService = new TorpedoMovementService();
@@ -154,26 +155,24 @@ test("Predict torpedo hit turn and position", test => {
     )
   );
 
-  test.is(
-    torpedoMovementService.predictTorpedoHitPositionAndTurn(flight, target)
-      .impactTurn,
-    2
+  const result = torpedoMovementService.predictTorpedoHitPositionAndTurn(
+    flight,
+    target
   );
 
+  console.log(result);
+
+  test.is(Math.floor(result.impactTurn), 2);
+
   test.deepEqual(
-    coordinateConverter.fromGameToHex(
-      torpedoMovementService.predictTorpedoHitPositionAndTurn(flight, target)
-        .impactPosition
-    ),
+    coordinateConverter.fromGameToHex(result.impactPosition),
     new Offset(130, 0)
   );
 });
-*/
 
-/*
 test("Torpedo impact is predicted properly", test => {
   const torpedoMovementService = new TorpedoMovementService();
-
+  /*
   test.deepEqual(
     torpedoMovementService.torpedoMath(
       new Vector(0, 0),
@@ -183,10 +182,10 @@ test("Torpedo impact is predicted properly", test => {
       2.1
     ),
     {
-      accelerationAngle: 1.384322896202497,
-      impactTurn: 7.167319835911543,
-      impactVelocity: 9.222714809910437,
-      accelerationVector: new Vector(0.18539462167234408, 0.9826641513024488)
+      accelerationAngle: 1.3843228976223712,
+      impactTurn: 7.167319821001909,
+      impactVelocity: 8.565338154491847,
+      accelerationVector: new Vector(0.1853946202770851, 0.982664151565689)
     }
   );
 
@@ -199,10 +198,10 @@ test("Torpedo impact is predicted properly", test => {
       2.1
     ),
     {
-      accelerationAngle: 0.34851989732158073,
-      impactTurn: 3.183239604036988,
-      impactVelocity: 7.603829523554417,
-      accelerationVector: new Vector(0.9398792076817462, 0.34150706430105826)
+      accelerationAngle: 6.63170520061493,
+      impactTurn: 3.1832395775454327,
+      impactVelocity: 9.84450993877127,
+      accelerationVector: new Vector(0.9398792090089263, 0.3415070606484659)
     }
   );
 
@@ -215,12 +214,13 @@ test("Torpedo impact is predicted properly", test => {
       2.1
     ),
     {
-      accelerationAngle: 1.4197824327299757,
-      impactTurn: 3.6792564499022196,
-      impactVelocity: 8.191312662338385,
-      accelerationVector: new Vector(0.18583994800731418, 1.2212458408542375)
+      accelerationAngle: 1.483176005605391,
+      impactTurn: 4.192483970472102,
+      impactVelocity: 4.818176441871593,
+      accelerationVector: new Vector(0.08750824933468117, 0.9961637949144605)
     }
   );
+
   test.deepEqual(
     torpedoMovementService.torpedoMath(
       new Vector(-1527.8075543423627, 52.86648115797515),
@@ -230,15 +230,29 @@ test("Torpedo impact is predicted properly", test => {
       909.3266739736607
     ),
     {
-      accelerationAngle: 1.4197824327299757,
-      impactTurn: 3.6792564499022196,
-      impactVelocity: 8.191312662338385,
-      accelerationVector: new Vector(0.18583994800731418, 1.2212458408542375)
+      accelerationVector: new Vector(0.9513937748501475, -0.3079770854729078),
+      accelerationAngle: 5.970119272801,
+      impactTurn: 0.6024862787564024,
+      impactVelocity: 2511.767037426202
+    }
+  );
+*/
+  test.deepEqual(
+    torpedoMovementService.torpedoMath(
+      new Vector(0, 0),
+      new Vector(0, 0),
+      new Vector(1082.5317547305483, 0),
+      new Vector(866.0254037844386, 0),
+      1039.2304845413264
+    ),
+    {
+      accelerationVector: new Vector(1, 0),
+      accelerationAngle: 0,
+      impactTurn: 2.4999999999999996,
+      impactVelocity: 866.0254037844384
     }
   );
 });
-
-*/
 
 test("Test torpedo movement standardize function", test => {
   const torpedoMovementService = new TorpedoMovementService();
@@ -269,7 +283,27 @@ test("Test torpedo math", test => {
   );
 
   test.deepEqual(result, {
-    angle: 5.970119272801,
-    impactTurn: 0.6024862787564024
+    accelerationVector: new Vector(0.9513937748501475, -0.3079770854729078),
+    accelerationAngle: 5.970119272801,
+    impactTurn: 0.6024862787564024,
+    impactVelocity: 2511.767037426202
   });
+});
+
+test("Torpedo math notices and reports NaN", test => {
+  const torpedoMovementService = new TorpedoMovementService();
+
+  const error = test.throws(() =>
+    torpedoMovementService.torpedoMath(
+      new Vector(-1527.8075543423627, 52.86648115797515),
+      new Vector(691.3825428552611, -3.3835188420248485),
+      new Vector(-562.9165124598852, 0),
+      new Vector(-649.519052838329, 0),
+      0
+    )
+  );
+  test.is(
+    error.message,
+    "Torpedo math encountered NaN with values '(x:-1527.8075543423627, y:52.86648115797515, z:0), '(x:691.3825428552611, y:-3.3835188420248485, z:0), '(x:-562.9165124598852, y:0, z:0), '(x:-649.519052838329, y:0, z:0),'0'"
+  );
 });
