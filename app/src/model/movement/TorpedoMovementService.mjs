@@ -20,13 +20,6 @@ class TorpedoMovementService {
   }
 
   predictTorpedoHitPositionAndTurn(flight, target) {
-    console.log(
-      flight.position,
-      flight.velocity,
-      target.getPosition(),
-      target.getVelocity(),
-      flight.torpedo.deltaVelocityPerTurn * HexagonMath.getHexWidth()
-    );
     const result = this.torpedoMath(
       flight.position,
       flight.velocity,
@@ -100,6 +93,10 @@ class TorpedoMovementService {
     targetVelocity,
     torpedoAcceleration
   ) {
+    if (torpedoAcceleration <= 0) {
+      throw new Error("Torpedoacceleration is <= 0");
+    }
+
     const { newTargetPosition, newShooterVelocity, φ } = this.standardize(
       shooterPosition,
       shooterVelocity,
@@ -194,10 +191,10 @@ class TorpedoMovementService {
     }
 
     const impactPosition = shooterPosition
-      .add(shooterVelocity.multiplyScalar(impactTurn))
+      .add(shooterVelocity.multiplyScalar(result.impactTurn))
       .add(
         accelerationVector.multiplyScalar(
-          0.5 * torpedoAcceleration * Math.pow(impactTime, 2)
+          0.5 * torpedoAcceleration * Math.pow(result.impactTurn, 2)
         )
       );
 

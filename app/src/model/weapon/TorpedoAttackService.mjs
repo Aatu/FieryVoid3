@@ -5,8 +5,12 @@ class TorpedoAttackService {
     this.gameData = gameData;
   }
 
-  getPossibleTorpedos(currentUser) {
+  getPossibleTorpedos(currentUser, target) {
     const torpedoAttackShips = [];
+
+    if (target.player.isUsers(currentUser)) {
+      return [];
+    }
 
     this.gameData.ships
       .getShips()

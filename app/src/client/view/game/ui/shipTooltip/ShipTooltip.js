@@ -54,7 +54,7 @@ class ShipTooltip extends React.Component {
   getMenu() {
     const { ui, shipTooltipMenuProvider } = this.props;
 
-    const { tooltipTab } = this.state;
+    const tooltipTab = this.getTooltipTab();
 
     if (!tooltipTab) {
       const Menu =
@@ -76,6 +76,20 @@ class ShipTooltip extends React.Component {
     }
   }
 
+  getTooltipTab() {
+    const { ship, uiState } = this.props;
+    const { tooltipTab } = this.state;
+    const { currentUser } = uiState.services;
+
+    const myShip = ship.player.isUsers(currentUser);
+
+    if (tooltipTab === TOOLTIP_TAB_TORPEDO_ATTACK && myShip) {
+      return null;
+    }
+
+    return tooltipTab;
+  }
+
   render() {
     const {
       ship,
@@ -86,12 +100,10 @@ class ShipTooltip extends React.Component {
       ...rest
     } = this.props;
 
-    const { tooltipTab } = this.state;
-    const { currentUser } = uiState.services;
-
-    const interactable = Boolean(Menu) || tooltipTab;
+    const tooltipTab = this.getTooltipTab();
 
     const Menu = this.getMenu();
+    const interactable = Boolean(Menu) || tooltipTab;
 
     /*
     <GamePositionComponent
@@ -103,7 +115,7 @@ class ShipTooltip extends React.Component {
       */
 
     return (
-      <ShipTooltipContainer interactable={Boolean(Menu) || tooltipTab}>
+      <ShipTooltipContainer interactable={interactable}>
         <InfoHeader>
           <div>{ship.name}</div> <div>{this.getTabHeader()}</div>
         </InfoHeader>

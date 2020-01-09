@@ -80,7 +80,8 @@ class TorpedoAttack extends React.Component {
     );
 
     const launchers = torpedoAttackService.getPossibleTorpedos(
-      uiState.services.currentUser
+      uiState.services.currentUser,
+      target
     );
 
     const torpedoMovementService = new TorpedoMovementService();
