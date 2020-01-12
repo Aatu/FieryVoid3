@@ -99,6 +99,9 @@ class ReplayTurnActions extends AnimationUiStrategy {
       const ship = gameData.ships.getShipById(intercept.shipId);
       const weapon = ship.systems.getSystemById(intercept.weaponId);
 
+      if (!intercept.isSucessfull()) {
+        return;
+      }
       const animationName = weapon.callHandler("getWeaponFireAnimationName");
 
       if (!animationName) {
@@ -141,13 +144,13 @@ class ReplayTurnActions extends AnimationUiStrategy {
     } = this.services;
     const gameData = gameDatas[0];
 
-    const attackDuration = 3000;
+    const attackDuration = 6000;
 
     const start = this.replayContext.getNextTorpedoAttackStart();
     const cameraDuration = 2000;
     const fireStart = start + cameraDuration;
 
-    let longestDuration = 3000;
+    let longestDuration = 6000;
 
     const target = gameData.ships.getShipById(combatLogEntry.targetId);
     const targetIcon = shipIconContainer.getByShip(target);
@@ -175,7 +178,7 @@ class ReplayTurnActions extends AnimationUiStrategy {
       );
 
       const interceptTime = intercepted
-        ? fireStart + 2500 + this.getRandom() * 400
+        ? fireStart + 5000 + this.getRandom() * 1000
         : null;
 
       const targetPosition = new Vector(position)
@@ -195,6 +198,9 @@ class ReplayTurnActions extends AnimationUiStrategy {
         true
       );
 
+      const velocity = flight.velocity
+        .multiplyScalar(1 / 6000)
+        .multiplyScalar(0.5);
       const interceptPosition = animation.getInterceptPosition();
 
       this.animations.push(animation);
@@ -216,8 +222,10 @@ class ReplayTurnActions extends AnimationUiStrategy {
               position: interceptPosition,
               time: interceptTime,
               duration: 250 + this.getRandom() * 250,
-              type: "gas",
-              size: this.getRandom() * 5 + 10
+              type: "glow",
+              size: this.getRandom() * 5 + 5,
+              color: new THREE.Color(1.0, 0.9, 0.8),
+              velocity
             },
             this
           )
@@ -232,7 +240,7 @@ class ReplayTurnActions extends AnimationUiStrategy {
               time: endTime,
               duration: 250 + this.getRandom() * 250,
               type: "gas",
-              size: this.getRandom() * 8 + 15,
+              size: this.getRandom() * 8 + 25,
               color: new THREE.Color(51 / 255, 163 / 255, 255 / 255)
             },
             this

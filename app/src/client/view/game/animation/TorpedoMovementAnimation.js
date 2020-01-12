@@ -138,10 +138,8 @@ class TorpedoMovementAnimation extends Animation {
       );
     }
 
-    return new THREE.CubicBezierCurve3(
+    return new THREE.LineCurve3(
       new THREE.Vector3(point1.x, point1.y, point1.z),
-      new THREE.Vector3(control1.x, control1.y, control1.z),
-      new THREE.Vector3(control1.x, control1.y, control1.z),
       new THREE.Vector3(point2.x, point2.y, point2.z)
     );
   }
