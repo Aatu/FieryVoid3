@@ -11,6 +11,7 @@ import {
   TEXTURE_GAS
 } from "../../animation/particle/BaseParticle";
 import { getSeededRandomGenerator } from "../../../../../model/utils/math.mjs";
+import { degreeToRadian } from "../../../../../model/utils/math.mjs";
 
 const torpedoMesh = loadObject("/img/3d/torpedo/scene.gltf");
 
@@ -21,11 +22,42 @@ class TorpedoObject {
     this.torpedo = null;
 
     this.object = new THREE.Object3D();
-    this.scene.add(this.object);
     this.particleEmitter = new ParticleEmitter(this.object, 10);
     this.create();
     this.lastAnimationTime = null;
     this.totalAnimationTime = 0;
+
+    this.hidden = true;
+  }
+
+  hide() {
+    if (this.hidden) {
+      return;
+    }
+
+    this.scene.remove(this.object);
+    this.hidden = true;
+  }
+
+  show() {
+    if (!this.hidden) {
+      return;
+    }
+
+    this.scene.add(this.object);
+    this.hidden = false;
+  }
+
+  setFacing(facing) {
+    this.object.quaternion.setFromAxisAngle(
+      new THREE.Vector3(0, 0, 1),
+      degreeToRadian(facing)
+    );
+  }
+
+  setPosition(position) {
+    this.object.position.set(position.x, position.y, position.z);
+    return this;
   }
 
   getEnginePosition() {
@@ -197,11 +229,6 @@ class TorpedoObject {
     });
 
     this.lastAnimationTime = Date.now();
-  }
-
-  setPosition(position) {
-    this.object.position.set(position.x, position.y, position.z);
-    return this;
   }
 
   destroy() {

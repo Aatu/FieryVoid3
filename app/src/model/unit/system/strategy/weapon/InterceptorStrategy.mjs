@@ -4,10 +4,15 @@ import { getDistanceBetweenDirections } from "../../../../utils/math.mjs";
 import WeaponHitChange from "../../../../weapon/WeaponHitChange.mjs";
 
 class InterceptorStrategy extends ShipSystemStrategy {
-  constructor(numberOfIntercepts = 1) {
+  constructor(numberOfIntercepts = 1, heatPerIntercept = 0) {
     super();
 
     this.numberOfIntercepts = numberOfIntercepts;
+    this.heatPerIntercept = heatPerIntercept;
+  }
+
+  getHeatPerIntercept() {
+    return this.heatPerIntercept;
   }
 
   canIntercept() {
@@ -23,13 +28,13 @@ class InterceptorStrategy extends ShipSystemStrategy {
     const ship = this.system.shipSystems.ship;
 
     if (target !== ship) {
-      const torpedoDistanceToTarget = torpedoFlight
-        .getPosition()
-        .distanceTo(target.getPosition());
+      const torpedoDistanceToTarget = torpedoFlight.position.distanceTo(
+        target.getPosition()
+      );
 
       const interceptorDistanceToTorpedo = ship
         .getPosition()
-        .distanceTo(torpedoFlight.getPosition());
+        .distanceTo(torpedoFlight.position);
 
       const interceptorDistanceToTarget = ship
         .getPosition()
@@ -39,14 +44,14 @@ class InterceptorStrategy extends ShipSystemStrategy {
         torpedoDistanceToTarget > interceptorDistanceToTorpedo &&
         interceptorDistanceToTarget < torpedoDistanceToTarget
       ) {
-        distance += Math.floor(ship.hexDistanceTo(target) / 2);
-      } else {
         distance += ship.hexDistanceTo(target);
+      } else {
+        distance += ship.hexDistanceTo(target) * 2;
       }
     }
 
-    if (distance < torpedoFlight.torpedo.getMinRange()) {
-      distance = torpedoFlight.torpedo.getMinRange();
+    if (distance < torpedoFlight.getStrikeDistance(target)) {
+      distance = torpedoFlight.getStrikeDistance(target);
     }
 
     const rangeModifier =
@@ -57,22 +62,22 @@ class InterceptorStrategy extends ShipSystemStrategy {
 
     const fireControl = this.system.callHandler("getFireControl", null, 0);
 
-    const dew = ship.electronicWarfare.inEffect.getDefensiveEw();
+    const ccew = ship.electronicWarfare.getCcEw();
 
     const torpedoHitSize = torpedoFlight.torpedo.getHitSize();
 
     return new WeaponHitChange({
       baseToHit: torpedoHitSize,
       fireControl: fireControl,
-      dew,
-      oew: 0,
+      dew: 0,
+      oew: ccew,
       distance: distance,
       rangeModifier: rangeModifier,
       evasion: torpedoFlight.torpedo.getEvasion(),
       result: Math.round(
-        torpedoHitSize + rangeModifier + fireControl + dew * 5
+        torpedoHitSize + rangeModifier + fireControl + ccew * 5
       ),
-      absoluteResult: torpedoHitSize + rangeModifier + fireControl + dew * 5
+      absoluteResult: torpedoHitSize + rangeModifier + fireControl + ccew * 5
     });
   }
 }

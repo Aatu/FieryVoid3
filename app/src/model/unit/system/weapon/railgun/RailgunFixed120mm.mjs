@@ -28,7 +28,7 @@ class RailgunFixed120mm extends Weapon {
       new BoostableSystemStrategy(3, 1),
       new StandardDamageStrategy(null),
       new AmmunitionStrategy([Ammo120mmAP, Ammo120mmHE], 1, 12, 4),
-      new WeaponAnimationStrategy("Bolt", {
+      new WeaponAnimationStrategy("UniversalBolt", {
         size: 6,
         length: 100,
         speed: 1.3,

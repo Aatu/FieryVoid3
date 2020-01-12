@@ -34,8 +34,10 @@ import SelectedShipEwList from "./electronicWarfare/SelectedShipEwList";
 import UnderHexForShips from "./UnderHexForShips";
 import ShowMapIcons from "./ShowMapIcons";
 import ShowShipBadges from "./ShowShipBadges";
+import ShowTorpedoObjects from "./ShowTorpedoObjects";
 
 export {
+  ShowTorpedoObjects,
   ShowShipBadges,
   SelectedShipEwList,
   SystemClickShowsSystemMenu,

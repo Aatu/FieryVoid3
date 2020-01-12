@@ -54,7 +54,7 @@ class PhaseStrategy {
     this.updateDeltaTime(this.animationPaused);
     this.updateTotalAnimationTime(this.animationPaused);
 
-    const { shipIconContainer } = this.services;
+    const { shipIconContainer, torpedoIconContainer } = this.services;
 
     const renderPayload = {
       delta: this.currentDeltaTime,
@@ -64,12 +64,14 @@ class PhaseStrategy {
     };
     this.callStrategies("render", renderPayload);
     shipIconContainer && shipIconContainer.render(renderPayload);
+    torpedoIconContainer && torpedoIconContainer.render(renderPayload);
     return renderPayload;
   }
 
   animateFromTo(start, end) {
     this.animationStartTime = start;
     this.totalAnimationTime = start;
+    this.animationReversed = false;
     this.lastAnimationTime = null;
     this.currentDeltaTime = 0;
     this.animationEndtime = end;
@@ -81,6 +83,12 @@ class PhaseStrategy {
   }
 
   unpauseAnimation() {
+    this.animationReversed = false;
+    this.animationPaused = false;
+  }
+
+  unpauseAndRewindAnimation() {
+    this.animationReversed = true;
     this.animationPaused = false;
   }
 

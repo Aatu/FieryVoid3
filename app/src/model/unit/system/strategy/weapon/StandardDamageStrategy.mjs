@@ -12,6 +12,10 @@ class StandardDamageStrategy extends ShipSystemStrategy {
     this.hitSystemRandomizer = new HitSystemRandomizer();
   }
 
+  getTotalBurstSize() {
+    return 1;
+  }
+
   _getDamageMessage() {
     let messages = [];
 

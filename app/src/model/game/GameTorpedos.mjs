@@ -5,6 +5,10 @@ class GameTorpedos {
     this.flights = [];
   }
 
+  getTorpedoFlightById(id) {
+    return this.flights.find(flight => flight.id === id);
+  }
+
   addTorpedoFlights(flights) {
     flights = [].concat(flights);
 

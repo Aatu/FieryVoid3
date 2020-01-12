@@ -1,29 +1,14 @@
-import * as shipObjects from "../ships";
-import { distance } from "../../../../../model/utils/math";
 import TorpedoObject from "../ships/TorpedoObject";
 
-const buildShipArray = iconsAsObject => {
-  return Object.keys(iconsAsObject).map(key => iconsAsObject[key]);
-};
-
-const createIcon = (ship, scene) => {
-  return new shipObjects[ship.shipModel](ship, scene);
-};
-
-const createGhostShipIcon = (ship, scene, currentUser) => {
-  const icon = new shipObjects[ship.shipModel](ship, scene);
-  icon.setGhostShip(ship.player.is(currentUser));
-  icon.hide();
-
-  return icon;
-};
-
 class TorpedoIconContainer {
-  constructor(scene, currentUser) {
+  constructor(scene) {
     this.scene = scene;
-    this.currentUser = currentUser;
 
-    this.ghostShipIcons = [];
+    this.icons = [];
+  }
+
+  getArray() {
+    return this.icons;
   }
 
   hasIcon(id) {
@@ -31,39 +16,22 @@ class TorpedoIconContainer {
   }
 
   getIconByTorpedoFlight(flight) {
-    return this.getIconById(flight.id);
+    let icon = this.getIconById(flight.id);
+    if (!icon) {
+      icon = new TorpedoObject(flight, this.scene);
+      this.icons.push(icon);
+    }
+
+    return icon;
   }
 
   getIconById(id) {
-    return this.icons.find((icon = icon.flight.id === id));
-  }
-
-  update(gamedata) {
-    gamedata.torpedos.getTorpedoFlights().forEach(torpedoFlight => {
-      if (!this.hasIcon(torpedoFlight.id)) {
-        this.icons.push = new TorpedoObject(torpedoFlight, this.scene);
-      } else {
-        this.getIconByTorpedoFlight(torpedoFlight).update(torpedoFlight);
-      }
-    });
-
-    this.icons = this.icons.filter(icon => {
-      const found = gamedata.torpedos
-        .getTorpedoFlights()
-        .find(torpedo => torpedo.id === icon.flight.id);
-
-      if (!found) {
-        icon.destroy();
-        return false;
-      } else {
-        return true;
-      }
-    });
+    return this.icons.find(icon => icon.torpedoFlight.id === id);
   }
 
   render(renderPayload) {
-    this.iconsAsArray.forEach(icon => icon.render(renderPayload));
+    this.icons.forEach(icon => icon.render(renderPayload));
   }
 }
 
-export default ShipIconContainer;
+export default TorpedoIconContainer;

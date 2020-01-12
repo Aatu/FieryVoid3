@@ -21,7 +21,8 @@ import {
   SelectedShipEwList,
   UnderHexForShips,
   ShowMapIcons,
-  ShowShipBadges
+  ShowShipBadges,
+  ShowTorpedoObjects
 } from "../../ui/uiStrategy";
 
 class GamePhaseStrategy extends PhaseStrategy {
@@ -50,7 +51,8 @@ class GamePhaseStrategy extends PhaseStrategy {
       new SelectedShipEwList(),
       new UnderHexForShips(),
       new ShowMapIcons(),
-      new ShowShipBadges()
+      new ShowShipBadges(),
+      new ShowTorpedoObjects()
     ];
   }
 

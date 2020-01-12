@@ -5,8 +5,10 @@ import ExplosionEffect from "../effect/ExplosionEffect";
 import { degreeToRadian } from "../../../../../model/utils/math.mjs";
 
 class ShipWeaponAnimation extends Animation {
-  constructor(getRandom) {
-    super(getRandom);
+  constructor(props) {
+    super(props.getRandom);
+    this.particleEmitterContainer = props.particleEmitterContainer;
+    this.props = props;
   }
 
   getLocationForSystem(system, icon, facing) {
@@ -18,7 +20,10 @@ class ShipWeaponAnimation extends Animation {
 
     const object = new THREE.Object3D();
     object.rotation.z = degreeToRadian(-facing);
-    return location.clone().applyQuaternion(object.quaternion);
+    const result = location.clone();
+    result.applyQuaternion(object.quaternion);
+    result.z += icon.shipZ;
+    return result;
   }
 }
 

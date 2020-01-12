@@ -11,6 +11,10 @@ const Container = styled.div`
   z-index: 3;
 `;
 
+const RotatedButton = styled(TooltipButton)`
+  transform: rotate(180deg);
+`;
+
 class ReplayUi extends React.PureComponent {
   render() {
     const { uiState, replayContext } = this.props;
@@ -18,6 +22,10 @@ class ReplayUi extends React.PureComponent {
     return (
       <Container>
         <Button onClick={() => replayContext.rewindToFiring()}>Firing</Button>
+
+        <RotatedButton onClick={() => replayContext.resumeReplayRewind()}>
+          <Play />
+        </RotatedButton>
         <TooltipButton onClick={() => replayContext.pauseReplay()}>
           <Pause />
         </TooltipButton>

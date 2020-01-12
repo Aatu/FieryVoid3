@@ -2,6 +2,7 @@ import * as THREE from "three";
 import Animation from "../Animation";
 import ShipEvasionMovementPath from "./ShipEvasionMovementPath";
 import PivotSteps from "./PivotSteps";
+import Vector from "../../../../../model/utils/Vector.mjs";
 
 class ShipMovementAnimation extends Animation {
   constructor(shipIcon, moves, start, end) {
@@ -49,6 +50,12 @@ class ShipMovementAnimation extends Animation {
     Animation.call(this);
   }
 
+  doesMove() {
+    return new Vector(this.positionCurves[0].getPoint(0)).equals(
+      new Vector(this.positionCurves[0].getPoint(1))
+    );
+  }
+
   deactivate() {}
 
   update(gameData) {}
@@ -65,7 +72,7 @@ class ShipMovementAnimation extends Animation {
     const turn = Math.floor(turnDone);
     const percentDone = turnDone < 1 ? turnDone % 1 : 1;
 
-    this.getPositionAndFacing(turn, percentDone);
+    return this.getPositionAndFacing(turn, percentDone);
   }
 
   getMovementTurnDone({ total }) {

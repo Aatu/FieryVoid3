@@ -16,6 +16,10 @@ class BurstDamageStrategy extends StandardDamageStrategy {
     this.grouping = grouping;
   }
 
+  getTotalBurstSize() {
+    return this.maxShots;
+  }
+
   applyDamageFromWeaponFire(payload) {
     const { fireOrder, combatLogEntry } = payload;
     const shots = this._getNumberOfShots(payload);

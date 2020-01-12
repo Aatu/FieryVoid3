@@ -1,6 +1,7 @@
 import Vector from "../utils/Vector.mjs";
 import { cargoClasses } from "./system/cargo/cargo.mjs";
 import uuidv4 from "uuid/v4.js";
+import HexagonMath from "../utils/HexagonMath.mjs";
 
 class TorpedoFlight {
   constructor(torpedo, targetId, shooterId, weaponId, launcherIndex) {
@@ -15,8 +16,7 @@ class TorpedoFlight {
     this.velocity = new Vector();
 
     this.reachedTarget = false;
-    this.strikeEffectivenes = 0;
-    this.effectiveImpactVelocity = 0;
+    this.strikeEffectiveness = 0;
     this.intercepted = false;
     this.turnsActive = 0;
   }
@@ -27,6 +27,10 @@ class TorpedoFlight {
 
   noLongerActive() {
     return this.torpedo.turnsToLive < this.turnsActive;
+  }
+
+  getTorpedoGameDeltaVelocity() {
+    return this.torpedo.deltaVelocityPerTurn * HexagonMath.getHexWidth();
   }
 
   getRelativeVelocityRatio(velocity) {
@@ -41,14 +45,17 @@ class TorpedoFlight {
     this.intercepted = true;
   }
 
-  setReachedTarget(setReachedTarget, effectiveImpactVelocity) {
+  setReachedTarget(strikeEffectiveness) {
     this.reachedTarget = true;
-    this.strikeEffectiveness = setReachedTarget;
-    this.effectiveImpactVelocity = effectiveImpactVelocity;
+    this.strikeEffectiveness = strikeEffectiveness;
   }
 
   getInterceptTries() {
-    this.torpedo.getInterceptTries(this.velocity);
+    return this.torpedo.getInterceptTries(this.strikeEffectiveness);
+  }
+
+  getStrikeDistance(target) {
+    return this.torpedo.getStrikeDistance(this, target);
   }
 
   setImpactAngle(angle) {

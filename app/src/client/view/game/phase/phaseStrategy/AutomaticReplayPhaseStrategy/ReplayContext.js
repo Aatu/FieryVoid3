@@ -6,8 +6,18 @@ class ReplayContext {
   constructor(phaseStrategy) {
     this.firingDuration = 0;
     this.movementDuration = 0;
+    this.torpedoMovementDuration = 0;
     this.velocityDuration = 0;
+    this.torpedoAttackDuration = 0;
     this.phaseStrategy = phaseStrategy;
+  }
+
+  getTorpedoMovementStart() {
+    return this.movementDuration;
+  }
+
+  setTorpedoMovementDuration(duration) {
+    this.torpedoMovementDuration = duration;
   }
 
   setMovementDuration(duration) {
@@ -19,15 +29,39 @@ class ReplayContext {
   }
 
   getVelocityStart() {
-    return this.movementDuration + this.firingDuration;
+    return (
+      this.movementDuration +
+      this.torpedoMovementDuration +
+      this.firingDuration +
+      this.torpedoAttackDuration
+    );
   }
 
   getNextFireStart() {
-    return this.movementDuration + this.firingDuration;
+    return (
+      this.movementDuration + this.torpedoMovementDuration + this.firingDuration
+    );
   }
 
   addFireAnimationDuration(duration) {
     this.firingDuration += duration;
+  }
+
+  getNextTorpedoAttackStart() {
+    return (
+      this.movementDuration +
+      this.torpedoMovementDuration +
+      this.firingDuration +
+      this.torpedoAttackDuration
+    );
+  }
+
+  addTorpedoAttackAnimationDuration(duration) {
+    this.torpedoAttackDuration += duration;
+  }
+
+  resumeReplayRewind() {
+    this.phaseStrategy.unpauseAndRewindAnimation();
   }
 
   pauseReplay() {
@@ -39,13 +73,20 @@ class ReplayContext {
   }
 
   rewindToFiring() {
-    this.phaseStrategy.setAnimationTime(this.movementDuration - 1);
+    this.phaseStrategy.setAnimationTime(
+      this.movementDuration + this.torpedoMovementDuration - 1
+    );
   }
 
   rewindToMovement() {}
 
   getTurnLength() {
-    return this.firingDuration + this.movementDuration + this.velocityDuration;
+    return (
+      this.firingDuration +
+      this.movementDuration +
+      this.velocityDuration +
+      this.torpedoAttackDuration
+    );
   }
 
   wrapGetShootingPosition(animations) {

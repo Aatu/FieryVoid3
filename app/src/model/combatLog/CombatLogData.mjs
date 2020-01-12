@@ -1,6 +1,9 @@
 import { combatLogClasses } from "./combatLogClasses.mjs";
 import CombatLogWeaponFire from "./CombatLogWeaponFire.mjs";
 import CombatLogGroupedWeaponFire from "./CombatLogGroupedWeaponFire.mjs";
+import CombatLogTorpedoAttack from "./CombatLogTorpedoAttack.mjs";
+import CombatLogGroupedTorpedoAttack from "./CombatLogGroupedTorpedoAttack.mjs";
+import CombatLogTorpedoIntercept from "./CombatLogTorpedoIntercept.mjs";
 
 class CombatLogData {
   constructor() {
@@ -31,16 +34,12 @@ class CombatLogData {
     this.entries = [];
   }
 
-  /*
-  getForCombatlog() {
-    return this.getForReplay.reduce((all, current) => {
-      if (current instanceof CombatLogGroupedWeaponFire) {
-        return [...all, ...current.entries];
-      }
-      return [...all, current];
-    }, []);
+  getInterceptsFor(torpedoAttack) {
+    return this.entries
+      .filter(entry => entry instanceof CombatLogTorpedoIntercept)
+      .filter(entry => entry.torpedoFlightId === torpedoAttack.torpedoFlightId);
   }
-*/
+
   getForReplay() {
     const entries = [...this.entries];
     const groupedFires = [];
@@ -60,9 +59,27 @@ class CombatLogData {
         entry.addEntry(fire);
       });
 
+    const groupedTorpedos = [];
+
+    entries
+      .filter(entry => entry instanceof CombatLogTorpedoAttack)
+      .forEach(torpedo => {
+        let entry = groupedTorpedos.find(
+          grouped => grouped.targetId === torpedo.targetId
+        );
+
+        if (!entry) {
+          entry = new CombatLogGroupedTorpedoAttack(torpedo.targetId);
+          groupedTorpedos.push(entry);
+        }
+
+        entry.addEntry(torpedo);
+      });
+
     return [
       ...this.entries.filter(entry => !(entry instanceof CombatLogWeaponFire)),
-      ...groupedFires
+      ...groupedFires,
+      ...groupedTorpedos
     ]
       .filter(entry => entry.replayOrder)
       .sort((a, b) => {

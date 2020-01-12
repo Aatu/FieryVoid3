@@ -22,7 +22,6 @@ class PDC30mm extends Weapon {
       new StandardHitStrategy(30),
       new StandardRangeStrategy([
         { range: 0, modifier: 0 },
-        { range: 3, modifier: -5 },
         { range: 10, modifier: -20 },
         { range: 15, modifier: -50 },
         { range: 18, modifier: -100 },
@@ -30,9 +29,9 @@ class PDC30mm extends Weapon {
       ]),
       new StandardLoadingStrategy(1),
       new BurstDamageStrategy(null, null, 0, 6, 5),
-      new InterceptorStrategy(),
+      new InterceptorStrategy(1, 2),
       new AmmunitionStrategy([Ammo30mm], 6, 24, 12),
-      new WeaponAnimationStrategy("BoltBurst", {
+      new WeaponAnimationStrategy("UniversalBolt", {
         size: 6,
         speed: 0.35,
         color: [1.0, 0.9, 0.8],

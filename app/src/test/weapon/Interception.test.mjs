@@ -19,6 +19,9 @@ import WeaponHitChange from "../../model/weapon/WeaponHitChange.mjs";
 
 const createShipAndTorpedo = () => {
   const ship = new Ship({ id: 1 });
+  ship.frontHitProfile = 50;
+  ship.sideHitProfile = 50;
+
   ship.systems.addPrimarySystem([
     new PDC30mm({ id: 14, hitpoints: 5, armor: 3 }, { start: 0, end: 0 }),
     new Reactor({ id: 7, hitpoints: 10, armor: 3 }, 20),
@@ -172,6 +175,7 @@ test("Better interceptor is used first", test => {
 test("Intercept hit change is calculated properly", test => {
   const gameData = createShipAndTorpedo();
   const ship = gameData.ships.getShips()[0];
+  ship.electronicWarfare.assignCcEw(8);
   const pdc = ship.systems.getSystemById(14);
 
   const torpedoFlight = gameData.torpedos.getTorpedoFlights()[0];
@@ -184,16 +188,16 @@ test("Intercept hit change is calculated properly", test => {
   test.deepEqual(
     result,
     new WeaponHitChange({
-      absoluteResult: 34,
+      absoluteResult: 30,
       baseToHit: 0,
-      dew: 8,
+      dew: 0,
       distance: 5,
       evasion: 30,
       fireControl: 30,
-      oew: 0,
+      oew: 8,
       outOfRange: false,
-      rangeModifier: -36,
-      result: 34
+      rangeModifier: -40,
+      result: 30
     })
   );
 
@@ -206,16 +210,16 @@ test("Intercept hit change is calculated properly", test => {
   test.deepEqual(
     result2,
     new WeaponHitChange({
-      absoluteResult: 50,
+      absoluteResult: 54,
       baseToHit: 0,
-      dew: 8,
-      distance: 3,
+      dew: 0,
+      distance: 2,
       evasion: 30,
       fireControl: 30,
-      oew: 0,
+      oew: 8,
       outOfRange: false,
-      rangeModifier: -20,
-      result: 50
+      rangeModifier: -16,
+      result: 54
     })
   );
 });

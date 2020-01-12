@@ -5,7 +5,14 @@ class Torpedo72MSV extends Torpedo72 {
   constructor() {
     super({ deltaVelocityPerTurn: 42, turnsToLive: 4 });
 
-    this.damageStrategy = new MSVTorpedoDamageStrategy("2d2", "d3", 7, 25);
+    this.damageStrategy = new MSVTorpedoDamageStrategy("2d2", "d3", 15, 25);
+  }
+
+  getStrikeDistance(flight, target) {
+    return this.damageStrategy.getStrikeDistance({
+      target,
+      torpedoFlight: flight
+    });
   }
 
   getCargoInfo() {

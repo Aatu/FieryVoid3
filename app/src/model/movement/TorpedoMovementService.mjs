@@ -4,17 +4,29 @@ import Vector from "../utils/Vector.mjs";
 import THREE from "three";
 
 class TorpedoMovementService {
+  reachesTargetThisTurn(flight, target) {
+    const { impactTurn } = this.torpedoMath(
+      flight.position,
+      flight.velocity,
+      target.getPosition(),
+      target.getVelocity(),
+      flight.getTorpedoGameDeltaVelocity()
+    );
+
+    return impactTurn < 1;
+  }
+
   moveTorpedo(flight, target) {
     const { accelerationVector } = this.torpedoMath(
       flight.position,
       flight.velocity,
       target.getPosition(),
       target.getVelocity(),
-      flight.torpedo.deltaVelocityPerTurn * HexagonMath.getHexWidth()
+      flight.getTorpedoGameDeltaVelocity()
     );
 
     flight.velocity = flight.velocity.add(
-      accelerationVector.multiplyScalar(flight.torpedo.deltaVelocityPerTurn)
+      accelerationVector.multiplyScalar(flight.getTorpedoGameDeltaVelocity())
     );
     flight.position = flight.position.add(flight.velocity);
   }
@@ -25,7 +37,7 @@ class TorpedoMovementService {
       flight.velocity,
       target.getPosition(),
       target.getVelocity(),
-      flight.torpedo.deltaVelocityPerTurn * HexagonMath.getHexWidth()
+      flight.getTorpedoGameDeltaVelocity()
     );
 
     const maxInterceptVelocity = flight.torpedo.maxInterceptVelocity;
@@ -95,6 +107,10 @@ class TorpedoMovementService {
   ) {
     if (torpedoAcceleration <= 0) {
       throw new Error("Torpedoacceleration is <= 0");
+    }
+
+    if (shooterPosition.equals(targetPosition)) {
+      throw new Error("Shooter and target positions can not be same");
     }
 
     const { newTargetPosition, newShooterVelocity, φ } = this.standardize(

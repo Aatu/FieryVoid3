@@ -22,17 +22,15 @@ class AutoCannon85mm extends Weapon {
       new StandardHitStrategy(20),
       new StandardRangeStrategy([
         { range: 0, modifier: 0 },
-        { range: 3, modifier: -5 },
-        { range: 15, modifier: -20 },
-        { range: 20, modifier: -50 },
-        { range: 25, modifier: -100 },
-        { range: 35, modifier: -200 }
+        { range: 10, modifier: -20 },
+        { range: 25, modifier: -50 },
+        { range: 50, modifier: -200 }
       ]),
       new StandardLoadingStrategy(1),
       new BurstDamageStrategy(null, null, 0, 3, 10),
       new InterceptorStrategy(),
       new AmmunitionStrategy([Ammo85mmAP, Ammo85mmHE], 3, 15, 6),
-      new WeaponAnimationStrategy("BoltBurst", {
+      new WeaponAnimationStrategy("UniversalBolt", {
         size: 8,
         speed: 0.5,
         color: [1.0, 0.7, 0.7],

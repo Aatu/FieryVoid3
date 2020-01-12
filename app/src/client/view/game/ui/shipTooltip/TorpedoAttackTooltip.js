@@ -17,12 +17,13 @@ const getTorpedoTooltip = (shooter, target, torpedo, strikePrediction) => {
       },
       {
         header: `Impact in`,
-        value: `+${strikePrediction.impactTurn} turns`
+        value: `+${Math.floor(strikePrediction.impactTurn)} turns`
       },
       {
         header: "Relative velocity",
-        value: `${strikePrediction.impactVelocity /
-          HexagonMath.getHexWidth()} h/t`
+        value: `${Math.round(
+          strikePrediction.impactVelocity / HexagonMath.getHexWidth()
+        )} h/t`
       }
       /*
       {

@@ -5,6 +5,7 @@ import { Highlight, DangerHighlight } from "./styled";
 import DamageLine from "./DamageLine";
 import CombatLogWeaponFire from "../../../../../model/combatLog/CombatLogWeaponFire.mjs";
 import WeaponFireService from "../../../../../model/weapon/WeaponFireService.mjs";
+import CombatLogTorpedoAttack from "../../../../../model/combatLog/CombatLogTorpedoAttack.mjs";
 
 const LineContainer = styled.div`
   color: #d6d6d6;
@@ -26,6 +27,42 @@ const IndentedSubline = styled(SubLine)`
 `;
 
 class CombatLogLine extends React.Component {
+  getTorpedoAttackLine() {
+    const { combatLogEntry, gameData, replayContext } = this.props;
+
+    const weaponFireService = new WeaponFireService().update(gameData);
+
+    const target = gameData.ships.getShipById(combatLogEntry.targetId);
+    const flight = gameData.torpedos.getTorpedoFlightById(
+      combatLogEntry.torpedoFlightId
+    );
+
+    console.log(combatLogEntry, target, flight);
+    const targetName = target.name.trim();
+
+    return (
+      <LineContainer>
+        <SubLine>
+          <DangerHighlight>TORPEDO STRIKE:&nbsp;</DangerHighlight>
+          <Highlight>&nbsp;{flight.torpedo.getDisplayName()}&nbsp;</Highlight>
+          strikes {targetName}
+        </SubLine>
+        {combatLogEntry.notes.length > 0 && (
+          <IndentedSubline>{combatLogEntry.notes.join(". ")}</IndentedSubline>
+        )}
+        {combatLogEntry.damages.length > 0 && (
+          <IndentedSubline>
+            <DamageLine
+              target={target}
+              gameData={gameData}
+              combatLogEntry={combatLogEntry}
+            />
+          </IndentedSubline>
+        )}
+      </LineContainer>
+    );
+  }
+
   getWeaponFireLine() {
     const { combatLogEntry, gameData, replayContext } = this.props;
 
@@ -69,6 +106,8 @@ class CombatLogLine extends React.Component {
 
     if (combatLogEntry instanceof CombatLogWeaponFire) {
       return this.getWeaponFireLine();
+    } else if (combatLogEntry instanceof CombatLogTorpedoAttack) {
+      return this.getTorpedoAttackLine();
     } else {
       return null;
     }

@@ -2,6 +2,8 @@ import React from "react";
 import styled from "styled-components";
 import GamePositionComponent from "../GamePositionComponent";
 import { Tooltip, IconAndLabel } from "../../../../styled";
+import TorpedoMovementService from "../../../../../model/movement/TorpedoMovementService.mjs";
+import GameData from "../../../../../model/game/GameData.mjs";
 
 const ShipBadgeContainer = styled.div`
   text-align: left;
@@ -92,11 +94,29 @@ const WarningBadge = styled(BadgeIcon)`
   }
 `;
 
+const getNumberOfMissilesImpacting = (ship, gameData) => {
+  const torpedoMovementService = new TorpedoMovementService();
+  const gameDataObject = new GameData(gameData);
+
+  return gameDataObject.torpedos
+    .getTorpedoFlights()
+    .filter(flight => flight.targetId === ship.id)
+    .filter(flight =>
+      torpedoMovementService.reachesTargetThisTurn(flight, ship)
+    ).length;
+};
+
 class ShipBadge extends React.PureComponent {
   render() {
     const { icon, version, getPosition, uiState, showName } = this.props;
     const { currentUser } = uiState.services;
     const isMine = icon.ship.player.is(currentUser);
+
+    console.log("render ship badge");
+    const missiles = getNumberOfMissilesImpacting(
+      icon.ship,
+      uiState.state.gameData
+    );
 
     return (
       <GamePositionComponent
@@ -110,6 +130,13 @@ class ShipBadge extends React.PureComponent {
             {false && showName && <ShipName>{icon.ship.name}</ShipName>}
 
             <Badges>
+              {isMine && missiles > 0 && (
+                <WarningBadge>
+                  <Icon background="/img/system/missile1.png" />
+                  {missiles}
+                </WarningBadge>
+              )}
+
               {isMine && !icon.ship.systems.power.isValidPower() && (
                 <WarningBadge>
                   <Icon background="/img/offline.png" />

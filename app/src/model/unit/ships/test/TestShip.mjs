@@ -10,8 +10,8 @@ class TestShip extends Ship {
     this.pivotcost = 3;
     this.evasioncost = 3;
 
-    this.frontHitProfile = 1000;
-    this.sideHitProfile = 1000;
+    this.frontHitProfile = 100;
+    this.sideHitProfile = 100;
 
     this.pointCost = 500;
 
@@ -21,7 +21,9 @@ class TestShip extends Ship {
       ]),
       new systems.RailgunTurreted2x140mm({ id: 101, hitpoints: 6, armor: 2 }, [
         { start: 0, end: 0 }
-      ])
+      ]),
+      new systems.PDC30mm({ id: 102 }, [{ start: 0, end: 0 }]),
+      new systems.PDC30mm({ id: 103 }, [{ start: 0, end: 0 }])
     ]);
 
     this.systems.addPrimarySystem([
@@ -38,7 +40,7 @@ class TestShip extends Ship {
       ),
       new systems.Engine({ id: 5, hitpoints: 10, armor: 3 }, 12, 6, 2),
       new systems.Engine({ id: 6, hitpoints: 10, armor: 3 }, 12, 6, 2),
-      new systems.Reactor({ id: 7, hitpoints: 20, armor: 3 }, 26),
+      new systems.Reactor({ id: 7, hitpoints: 20, armor: 3 }, 28),
       new systems.EwArray({ id: 11, hitpoints: 10, armor: 3 }, 10),
       new systems.TorpedoLauncherDual158({ id: 202, hitpoints: 20, armor: 6 }),
       new systems.TorpedoLauncherDual72({ id: 203, hitpoints: 20, armor: 6 }),

@@ -4,6 +4,8 @@ import CombatLogTorpedoAttack from "../../model/combatLog/CombatLogTorpedoAttack
 import CombatLogTorpedoMove from "../../model/combatLog/CombatLogTorpedoMove.mjs";
 import CombatLogTorpedoOutOfTime from "../../model/combatLog/CombatLogTorpedoOutOfTime.mjs";
 import CombatLogTorpedoNotArmed from "../../model/combatLog/CombatLogTorpedoNotArmed.mjs";
+import coordinateConverter from "../../model/utils/CoordinateConverter.mjs";
+import CombatLogTorpedoIntercept from "../../model/combatLog/CombatLogTorpedoIntercept.mjs";
 
 class TorpedoHandler {
   constructor() {
@@ -60,11 +62,12 @@ class TorpedoHandler {
 
         const used = usedWeapons.reduce(
           (total, usedWeapon) => (usedWeapon === weapon ? total + 1 : total),
-          []
+          0
         );
 
         return numberOfIntercepts > used;
       })
+      .filter(weapon => weapon.heat.getOverHeat() < 1)
       .sort((a, b) => {
         const changeA = a.callHandler(
           "getInterceptChance",
@@ -85,6 +88,14 @@ class TorpedoHandler {
           return -1;
         }
 
+        if (a.heat.getOverHeat() < b.heat.getOverHeat()) {
+          return 1;
+        }
+
+        if (a.heat.getOverHeat() > b.heat.getOverHeat()) {
+          return -1;
+        }
+
         return 0;
       })
       .pop();
@@ -97,14 +108,13 @@ class TorpedoHandler {
       .getTorpedoFlights()
       .filter(flight => flight.reachedTarget);
 
-    let interceptTry = 5;
-
-    while (interceptTry--) {
+    for (let interceptTry = 5; interceptTry >= 1; interceptTry--) {
       const usedWeapons = [];
 
       let interception = null;
       do {
         interception = impactingTorpedos
+          .filter(flight => !flight.intercepted)
           .filter(flight => flight.getInterceptTries() >= interceptTry)
           .map(flight => {
             const target = gameData.ships.getShipById(flight.targetId);
@@ -117,21 +127,20 @@ class TorpedoHandler {
             );
 
             if (!weapon) {
-              return;
+              return null;
             }
 
             return {
-              torpedoFlight,
+              torpedoFlight: flight,
               interceptor: weapon,
-              interceptChange: weapon
-                ? weapon.callHandler(
-                    "getInterceptChance",
-                    { target, torpedoFlight: torpedoFlight, interceptTry },
-                    0
-                  )
-                : 0
+              interceptChange: weapon.callHandler(
+                "getInterceptChance",
+                { target, torpedoFlight: flight, interceptTry },
+                0
+              )
             };
           })
+          .filter(Boolean)
           .filter(
             interceptDetails => interceptDetails.interceptChange.result > 0
           )
@@ -152,12 +161,30 @@ class TorpedoHandler {
           .pop();
 
         if (interception) {
-          usedWeapons.push(interception.weapon);
+          const weapon = interception.interceptor;
+          usedWeapons.push(weapon);
+
           const roll = Math.ceil(Math.random() * 100);
 
+          const logEntry = new CombatLogTorpedoIntercept(
+            interception.torpedoFlight.id,
+            weapon.shipSystems.ship.id,
+            weapon.id,
+            interception.interceptChange,
+            roll
+          );
+
           if (roll <= interception.interceptChange.result) {
-            torpedoFlight.setIntercepted(weapon, interceptChange);
+            interception.torpedoFlight.setIntercepted();
           }
+
+          weapon.heat.changeHeat(
+            weapon.callHandler("getHeatPerIntercept", null, 0)
+          );
+
+          weapon.callHandler("onIntercept");
+
+          gameData.combatLog.addEntry(logEntry);
         }
       } while (interception);
     }
@@ -171,13 +198,16 @@ class TorpedoHandler {
         const target = gameData.ships.getShipById(flight.targetId);
         const shooter = gameData.ships.getShipById(flight.shooterId);
 
-        const torpedoAttack = new CombatLogTorpedoAttack(flight.id);
+        const torpedoAttack = new CombatLogTorpedoAttack(flight.id, target.id);
         gameData.combatLog.addEntry(torpedoAttack);
 
+        if (flight.intercepted) {
+          torpedoAttack.addNote(`Torpedo intercepted`);
+          return;
+        }
+
         torpedoAttack.addNote(
-          `Relative velocity ${
-            flight.effectiveImpactVelocity
-          } h/t (${Math.round(flight.strikeEffectivenes * 100)}% optimal)`
+          `Effectiveness ${Math.round(flight.strikeEffectiveness * 100)}%`
         );
 
         flight.torpedo.damageStrategy.applyDamageFromWeaponFire({
@@ -204,14 +234,11 @@ class TorpedoHandler {
       const {
         impactTurn,
         effectiveness,
-        effectiveImpactVelocity,
         ...rest
       } = this.torpedoMovementService.predictTorpedoHitPositionAndTurn(
         flight,
         target
       );
-
-      console.log(impactTurn, effectiveness, effectiveImpactVelocity, rest);
 
       if (impactTurn < 1) {
         if (!flight.hasArmed()) {
@@ -224,15 +251,21 @@ class TorpedoHandler {
           );
           return;
         } else {
-          flight.setReachedTarget(effectiveness, effectiveImpactVelocity);
+          flight.setReachedTarget(effectiveness);
           return;
         }
       }
 
       const startPosition = flight.position.clone();
       this.torpedoMovementService.moveTorpedo(flight, target);
+
       gameData.combatLog.addEntry(
-        new CombatLogTorpedoMove(flight.id, startPosition, flight.position)
+        new CombatLogTorpedoMove(
+          flight.id,
+          startPosition,
+          flight.position.clone(),
+          flight.velocity.clone()
+        )
       );
     });
   }

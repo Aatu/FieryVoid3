@@ -21,12 +21,14 @@ import {
   ParticleEmitter
 } from "../animation/particle";
 import GameData from "../../../../model/game/GameData.mjs";
+import TorpedoIconContainer from "../renderer/icon/TorpedoIconContainer";
 
 class PhaseDirector {
   constructor(uiState, currentUser, coordinateConverter, gameConnector) {
     this.uiState = uiState;
     this.currentUser = currentUser;
     this.shipIconContainer = null;
+    this.torpedoIconContainer = null;
     this.electronicWarfareIndicatorService = null;
     this.timeline = [];
 
@@ -53,6 +55,7 @@ class PhaseDirector {
     this.camera = camera;
 
     this.shipIconContainer = new ShipIconContainer(scene, this.currentUser);
+    this.torpedoIconContainer = new TorpedoIconContainer(scene);
     this.electronicWarfareIndicatorService = new ElectronicWarfareIndicatorService(
       scene,
       this.shipIconContainer,
@@ -202,6 +205,7 @@ class PhaseDirector {
     return {
       phaseState: this.phaseState,
       shipIconContainer: this.shipIconContainer,
+      torpedoIconContainer: this.torpedoIconContainer,
       electronicWarfareIndicatorService: this.electronicWarfareIndicatorService,
       scene: this.scene,
       shipWindowManager: this.shipWindowManager,

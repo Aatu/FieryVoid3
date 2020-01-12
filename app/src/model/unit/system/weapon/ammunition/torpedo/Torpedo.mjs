@@ -20,6 +20,10 @@ class Torpedo extends CargoEntity {
     this.damageStrategy = null;
   }
 
+  getStrikeDistance(flight, target) {
+    return 1;
+  }
+
   getHitSize() {
     return this.hitSize;
   }
@@ -28,12 +32,13 @@ class Torpedo extends CargoEntity {
     return this.evasion;
   }
 
-  getInterceptTries(velocity) {
-    if (velocity > this.maxInterceptVelocity) {
-      velocity = this.maxInterceptVelocity;
+  getInterceptTries(effectiveness) {
+    const tries = Math.round(5 * (1 - effectiveness));
+    if (tries < 1) {
+      return 1;
     }
 
-    return Math.ceil(this.maxInterceptVelocity / velocity);
+    return tries;
   }
 
   getCargoInfo() {
