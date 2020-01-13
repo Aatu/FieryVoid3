@@ -5,6 +5,7 @@ class HeatHandler {
     gameData.ships.getShips().forEach(ship => {
       this.warmSystems(ship);
       this.collectHeat(ship);
+      this.markNewOverheat(ship);
       this.overHeatSystems(ship);
       this.radiateHeat(ship);
     });
@@ -57,6 +58,13 @@ class HeatHandler {
     }
   }
 
+  markNewOverheat(ship) {
+    ship.systems
+      .getSystems()
+      .filter(system => !system.isDestroyed())
+      .forEach(system => system.heat.markNewOverheat());
+  }
+
   getOverheatRandomExtra() {
     return Math.random() * 0.2;
   }
@@ -66,7 +74,7 @@ class HeatHandler {
       .getSystems()
       .filter(system => !system.isDestroyed())
       .forEach(system => {
-        let overHeat = system.heat.getOverHeat();
+        let overHeat = system.heat.getOverHeatPercentage();
 
         if (overHeat === 0) {
           return;

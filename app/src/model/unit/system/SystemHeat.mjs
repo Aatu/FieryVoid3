@@ -2,21 +2,26 @@ class SystemHeat {
   constructor(system) {
     this.system = system;
     this.heat = 0;
+    this.overheat = 0;
 
-    this.heatTransferPerStructure = 1;
+    this.heatTransferPerStructure = 0.5;
     this.overheatLimitPerStructure = 1;
+
+    this.overheatTransferRatio = 0.5;
 
     this.heatTransferred = 0;
   }
 
   serialize() {
     return {
-      heat: this.heat
+      heat: this.heat,
+      overheat: this.overheat
     };
   }
 
   deserialize(data = {}) {
     this.heat = data.heat || 0;
+    this.overheat = data.overheat || 0;
 
     return this;
   }
@@ -33,15 +38,25 @@ class SystemHeat {
     return this.system.hitpoints * this.heatTransferPerStructure;
   }
 
+  getTransferOverHeat() {
+    return this.overheat * this.overheatTransferRatio;
+  }
+
   getTransferHeat() {
     const max = this.getMaxTransferHeat() - this.heatTransferred;
 
-    if (max < 0) {
+    if (max <= 0) {
       return 0;
     }
 
     if (max > this.heat) {
-      return this.heat;
+      let overheatTransfer = max - this.heat;
+
+      if (overheatTransfer > this.getTransferOverHeat()) {
+        overheatTransfer = this.getTransferOverHeat();
+      }
+
+      return this.heat + overheatTransfer;
     }
 
     return max;
@@ -85,27 +100,46 @@ class SystemHeat {
   }
 
   changeHeat(change) {
-    this.heat += change;
-
     if (change < 0) {
+      if (change > this.heat) {
+        this.overheat += change + this.heat;
+        this.heat = 0;
+      } else {
+        this.heat += change;
+      }
+
       this.heatTransferred += Math.abs(change);
+    } else {
+      this.heat += change;
     }
     return this;
   }
 
-  getOverHeat() {
+  markNewOverheat() {
+    if (this.isHeatStorage()) {
+      return;
+    }
+
+    this.overheat += this.heat;
+    this.heat = 0;
+  }
+
+  getOverheat() {
     if (this.isHeatStorage()) {
       return 0;
     }
 
-    const heat = this.getHeatPerStructure();
-    const overheat = heat - this.overheatLimitPerStructure;
+    return this.overheat;
+  }
 
-    if (overheat <= 0) {
+  getOverHeatPercentage() {
+    if (this.isHeatStorage()) {
       return 0;
     }
 
-    return overheat;
+    return (
+      this.overheat / (this.system.hitpoints * this.overheatLimitPerStructure)
+    );
   }
 
   getRadiateHeatCapacity() {
