@@ -1,4 +1,3 @@
-import CombatLogBuilder from "./CombatLogBuilder";
 import { ShipMovementAnimation } from "../../../animation";
 import ShipVelocityAnimation from "../../../animation/ShipVelocityAnimation";
 

@@ -1,6 +1,7 @@
 import SystemDamage from "./SystemDamage.mjs";
 import SystemPower from "./SystemPower.mjs";
 import SystemHeat from "./SystemHeat.mjs";
+import ShipSystemLog from "./ShipSystemLog/ShipSystemLog.mjs";
 
 class ShipSystem {
   constructor(args = {}, strategies = []) {
@@ -21,6 +22,7 @@ class ShipSystem {
     this.shipSystems = null;
 
     this.heat = new SystemHeat(this);
+    this.log = new ShipSystemLog(this);
   }
 
   addStrategy(strategy) {
@@ -148,7 +150,9 @@ class ShipSystem {
     this.damage.deserialize(data.damage);
     this.power.deserialize(data.power);
     this.heat.deserialize(data.heat);
+    this.log.deserialize(data.log);
     this.callHandler("deserialize", data);
+
     return this;
   }
 
@@ -157,6 +161,7 @@ class ShipSystem {
       damage: this.damage.serialize(),
       power: this.power.serialize(),
       heat: this.heat.serialize(),
+      log: this.log.serialize(),
       ...this.callHandler("serialize")
     };
   }
