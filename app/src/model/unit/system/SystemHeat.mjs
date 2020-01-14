@@ -78,7 +78,9 @@ class SystemHeat {
   }
 
   generateHeat() {
-    this.heat += this.getHeatGenerated();
+    const newHeat = this.getHeatGenerated();
+    this.heat += newHeat;
+    return newHeat;
   }
 
   isHeatStorage() {
@@ -132,14 +134,16 @@ class SystemHeat {
     return this.overheat;
   }
 
-  getOverHeatPercentage() {
+  getOverheatTreshold() {
+    return this.system.hitpoints * this.overheatLimitPerStructure;
+  }
+
+  getOverheatPercentage() {
     if (this.isHeatStorage()) {
       return 0;
     }
 
-    return (
-      this.overheat / (this.system.hitpoints * this.overheatLimitPerStructure)
-    );
+    return this.overheat / this.getOverheatTreshold();
   }
 
   getRadiateHeatCapacity() {

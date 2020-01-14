@@ -10,7 +10,7 @@ class ForcedOfflineOverheat extends Critical {
   }
 
   isFixed(system) {
-    return system.heat.getOverHeatPercentage() < 0.5;
+    return system.heat.getOverheatPercentage() < 0.5;
   }
 }
 

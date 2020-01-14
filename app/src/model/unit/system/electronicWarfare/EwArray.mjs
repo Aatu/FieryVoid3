@@ -10,7 +10,7 @@ class EwArray extends ShipSystem {
       new ElectronicWarfareProvider(output),
       new BoostablePlusOneOutputSystemStrategy(),
       new RequiresPowerSystemStrategy(power),
-      new OutputHeatOnlineStrategy(output, output)
+      new OutputHeatOnlineStrategy(Math.ceil(output / 2), Math.ceil(output / 3))
     ]);
   }
 

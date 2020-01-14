@@ -14,6 +14,7 @@ class RequiresPowerSystemStrategy extends ShipSystemStrategy {
 
   getMessages(payload, previousResponse = []) {
     previousResponse.push({
+      sort: "AAAA",
       header: "Power requirement",
       value: this.power
     });

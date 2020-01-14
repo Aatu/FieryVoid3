@@ -1,4 +1,5 @@
 import ForcedOfflineOverheat from "../../model/unit/system/criticals/ForcedOfflineOverheat.mjs";
+import ShipSystemLogEntryHeat from "../../model/unit/system/ShipSystemLog/ShipSystemLogEntryHeat.mjs";
 
 class HeatHandler {
   advance(gameData) {
@@ -12,7 +13,14 @@ class HeatHandler {
   }
 
   warmSystems(ship) {
-    ship.systems.getSystems().forEach(system => system.heat.generateHeat());
+    ship.systems.getSystems().forEach(system => {
+      const logEntry = system.log.getOpenLogEntryByClass(
+        ShipSystemLogEntryHeat
+      );
+
+      logEntry.setInitialHeat(system.heat.getOverheat());
+      logEntry.setHeatGenerated(system.heat.generateHeat());
+    });
   }
 
   collectHeat(ship) {
@@ -62,7 +70,14 @@ class HeatHandler {
     ship.systems
       .getSystems()
       .filter(system => !system.isDestroyed())
-      .forEach(system => system.heat.markNewOverheat());
+      .forEach(system => {
+        system.heat.markNewOverheat();
+        const logEntry = system.log.getOpenLogEntryByClass(
+          ShipSystemLogEntryHeat
+        );
+
+        logEntry.setNewOverHeat(system.heat.getOverheat());
+      });
   }
 
   getOverheatRandomExtra() {
@@ -74,7 +89,7 @@ class HeatHandler {
       .getSystems()
       .filter(system => !system.isDestroyed())
       .forEach(system => {
-        let overHeat = system.heat.getOverHeatPercentage();
+        let overHeat = system.heat.getOverheatPercentage();
 
         if (overHeat === 0) {
           return;
@@ -117,6 +132,20 @@ class HeatHandler {
         });
       });
     }
+
+    ship.systems
+      .getSystems()
+      .filter(system => !system.isDestroyed())
+      .forEach(system => {
+        system.heat.markNewOverheat();
+        const logEntry = system.log.getOpenLogEntryByClass(
+          ShipSystemLogEntryHeat
+        );
+
+        logEntry.setHeatRadiated(
+          system.callHandler("getRadiatedHeat", null, null)
+        );
+      });
   }
 }
 

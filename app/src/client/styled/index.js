@@ -19,6 +19,7 @@ export { Title, SubTitle } from "./Title";
 export { Clickable } from "./Clickable";
 export { InputAndLabel } from "./InputAndLabel";
 export {
+  buildTooltipEntries,
   Tooltip,
   TooltipHeader,
   TooltipEntry,

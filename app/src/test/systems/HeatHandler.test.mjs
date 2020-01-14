@@ -134,10 +134,10 @@ test("System overheats", test => {
     }
   });
 
-  test.is(heater1.heat.getOverHeatPercentage(), 2.5);
+  test.is(heater1.heat.getOverheatPercentage(), 2.5);
   test.true(heater1.hasCritical(ForcedOfflineOverheat));
-  test.is(heater2.heat.getOverHeatPercentage(), 1);
-  test.is(heater3.heat.getOverHeatPercentage(), 0.5);
+  test.is(heater2.heat.getOverheatPercentage(), 1);
+  test.is(heater3.heat.getOverheatPercentage(), 0.5);
 });
 
 test("System overheat is reduced at reduced rate", test => {
@@ -158,7 +158,7 @@ test("System overheat is reduced at reduced rate", test => {
     }
   });
 
-  test.is(heater1.heat.getOverHeatPercentage(), 0);
+  test.is(heater1.heat.getOverheatPercentage(), 0);
   test.is(heater1.heat.getHeat(), 0);
 
   heater1.advanceTurn();
@@ -174,7 +174,7 @@ test("System overheat is reduced at reduced rate", test => {
 
   test.is(heater1.heat.getHeat(), 0);
   test.is(heater1.heat.getOverheat(), 2);
-  test.is(heater1.heat.getOverHeatPercentage(), 0.5);
+  test.is(heater1.heat.getOverheatPercentage(), 0.5);
 
   heater1.advanceTurn();
   heatSink.advanceTurn();
@@ -187,7 +187,7 @@ test("System overheat is reduced at reduced rate", test => {
 
   test.is(heater1.heat.getHeat(), 0);
   test.is(heater1.heat.getOverheat(), 1);
-  test.is(heater1.heat.getOverHeatPercentage(), 0.25);
+  test.is(heater1.heat.getOverheatPercentage(), 0.25);
 });
 
 test("Damaged radiator radiates less heat", test => {

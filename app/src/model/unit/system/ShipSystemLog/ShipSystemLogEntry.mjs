@@ -12,6 +12,10 @@ class ShipSystemLogEntry {
     return this.message;
   }
 
+  isOpen() {
+    return this.turn === null;
+  }
+
   serialize() {
     return {
       className: this.constructor.name,

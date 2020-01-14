@@ -12,6 +12,7 @@ class FireOrderHeatStrategy extends ShipSystemStrategy {
 
   getMessages(payload, previousResponse = []) {
     previousResponse.push({
+      sort: "heat",
       header: "Generates heat when fired",
       value: `${this.heatPerFireOrder}`
     });

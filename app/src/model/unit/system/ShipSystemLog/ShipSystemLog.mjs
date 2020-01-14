@@ -7,6 +7,19 @@ class ShipSystemLog {
     this.log = [];
   }
 
+  getOpenLogEntryByClass(className) {
+    let entry = this.log
+      .filter(entry => entry.isOpen())
+      .find(entry => entry instanceof className);
+
+    if (!entry) {
+      entry = new className();
+      this.log.push(entry);
+    }
+
+    return entry;
+  }
+
   serialize() {
     return {
       log: this.log.map(entry => entry.serialize())

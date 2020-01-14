@@ -49,6 +49,10 @@ class PDC30mm extends Weapon {
   getBackgroundImage() {
     return "/img/system/gatlingPulseCannon.png";
   }
+
+  getSystemDescription() {
+    return "Fast tracking 30mm rotary autocannon for point defense. Uses conventional bullets with chemical propellant.";
+  }
 }
 
 export default PDC30mm;

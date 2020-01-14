@@ -25,6 +25,10 @@ class ShipSystem {
     this.log = new ShipSystemLog(this);
   }
 
+  getSystemDescription() {
+    return "";
+  }
+
   addStrategy(strategy) {
     this.strategies.push(strategy);
     strategy.init(this);
@@ -38,30 +42,34 @@ class ShipSystem {
     const heatMessages = [];
 
     if (this.heat.shouldDisplayHeat()) {
-      heatMessages.push({
-        header: "Heat",
-        value: this.heat.getHeat()
-      });
-
       if (!this.heat.isHeatStorage()) {
         heatMessages.push({
-          header: "Overheat",
-          value: this.heat.getOverHeatPercentage()
-        });
-
-        heatMessages.push({
-          header: "Transfers heat away",
-          value: this.heat.getMaxTransferHeat()
+          sort: "heat",
+          value: [
+            {
+              header: "Overheat",
+              value: `${this.heat.getOverheat()}/${this.heat.getOverheatTreshold()} (${this.heat.getOverheatPercentage()}%)`
+            },
+            {
+              header: "Cooling",
+              value: this.heat.getMaxTransferHeat()
+            }
+          ]
         });
       }
     }
 
     return [
       {
-        header: "Hitpoints",
-        value: `${this.getRemainingHitpoints()}/${this.hitpoints}`
+        sort: "AAA",
+        value: [
+          {
+            header: "Hitpoints",
+            value: `${this.getRemainingHitpoints()}/${this.hitpoints}`
+          },
+          { header: "Armor", value: `${this.getArmor()}` }
+        ]
       },
-      { header: "Armor", value: `${this.getArmor()}` },
       ...heatMessages,
       ...this.callHandler("getMessages", null, [])
     ];

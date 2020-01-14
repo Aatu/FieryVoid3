@@ -67,7 +67,7 @@ class TorpedoHandler {
 
         return numberOfIntercepts > used;
       })
-      .filter(weapon => weapon.heat.getOverHeatPercentage() < 1)
+      .filter(weapon => weapon.heat.getOverheatPercentage() < 1)
       .sort((a, b) => {
         const changeA = a.callHandler(
           "getInterceptChance",
@@ -88,11 +88,11 @@ class TorpedoHandler {
           return -1;
         }
 
-        if (a.heat.getOverHeatPercentage() < b.heat.getOverHeatPercentage()) {
+        if (a.heat.getOverheatPercentage() < b.heat.getOverheatPercentage()) {
           return 1;
         }
 
-        if (a.heat.getOverHeatPercentage() > b.heat.getOverHeatPercentage()) {
+        if (a.heat.getOverheatPercentage() > b.heat.getOverheatPercentage()) {
           return -1;
         }
 

@@ -9,8 +9,9 @@ class OutputHeatOnlineStrategy extends ShipSystemStrategy {
 
   getMessages(payload, previousResponse = []) {
     previousResponse.push({
-      header: "Generates heat",
-      value: `${this.heatOutput} + ${this.heatOutputPerBoostLevel} per boost level`
+      sort: "heat",
+      header: "Generates heat when online",
+      value: `${this.getHeatGenerated()}`
     });
 
     return previousResponse;

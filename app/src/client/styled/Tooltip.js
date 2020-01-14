@@ -80,6 +80,7 @@ export class RelativeTooltip extends React.Component {
 
 const TooltipHeader = styled.div`
   display: flex;
+  justify-content: space-between;
   text-transform: uppercase;
   border-bottom: 1px solid #aaaaaa;
   width: 100%;
@@ -105,17 +106,10 @@ const TooltipValueHeader = styled.div`
 
 const TooltipEntry = styled.div`
   display: flex;
-  color: ${props => {
-    if (props.type === "good") {
-      return "#6fc126;";
-    } else if (props.type === "bad") {
-      return "#ff7b3f;";
-    } else {
-      return "white;";
-    }
-  }}
   box-sizing: border-box;
   margin: 2px 0;
+
+  ${props => props.noMargin && "margin: 0;"}
   font-weight: ${props => (props.important ? "bold" : "inherit")};
   font-size: ${props => (props.important ? "14px" : "11px")};
   ${props => props.space && "margin-top: 14px"};
@@ -152,6 +146,7 @@ const InlineTooltipEntry = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  width: 100%;
 `;
 
 const TooltipMenu = styled.div`
@@ -202,7 +197,53 @@ const TooltipButton = styled.button`
   }
 `;
 
+const buildTooltipEntries = (entries, subKey = "") => {
+  return entries
+    .sort((a, b) => {
+      if (!a.sort && b.sort) {
+        return 1;
+      }
+
+      if (a.sort && !b.sort) {
+        return -1;
+      }
+
+      if (a.sort > b.sort) {
+        return 1;
+      }
+
+      if (a.sort < b.sort) {
+        return -1;
+      }
+
+      return 0;
+    })
+    .map(({ value, header }, index) => {
+      if (value && value.replace) {
+        value = value.replace(/<br>/gm, "\n");
+      }
+
+      return (
+        <TooltipEntry
+          noMargin={subKey !== ""}
+          key={`shiptoolitip-${index}-${subKey}`}
+        >
+          {header && <TooltipValueHeader>{header}: </TooltipValueHeader>}
+          {value && Array.isArray(value) && (
+            <InlineTooltipEntry>
+              {buildTooltipEntries(value, subKey + "-" + index)}
+            </InlineTooltipEntry>
+          )}
+          {value && !Array.isArray(value) && (
+            <TooltipValue>{value}</TooltipValue>
+          )}
+        </TooltipEntry>
+      );
+    });
+};
+
 export {
+  buildTooltipEntries,
   Tooltip,
   TooltipHeader,
   TooltipEntry,
