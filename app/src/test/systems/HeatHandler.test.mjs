@@ -28,6 +28,7 @@ test("Heat is generated", test => {
     }
   });
 
+  console.log(heater.log);
   test.is(heater.heat.getOverheat(), 10);
 });
 

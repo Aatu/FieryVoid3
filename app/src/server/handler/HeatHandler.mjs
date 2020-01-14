@@ -18,7 +18,10 @@ class HeatHandler {
         ShipSystemLogEntryHeat
       );
 
-      logEntry.setInitialHeat(system.heat.getOverheat());
+      logEntry.setInitialOverheat(
+        system.heat.getOverheat(),
+        system.heat.getOverheatPercentage()
+      );
       logEntry.setHeatGenerated(system.heat.generateHeat());
     });
   }
@@ -76,12 +79,15 @@ class HeatHandler {
           ShipSystemLogEntryHeat
         );
 
-        logEntry.setNewOverHeat(system.heat.getOverheat());
+        logEntry.setNewOverheat(
+          system.heat.getOverheat(),
+          system.heat.getOverheatPercentage()
+        );
       });
   }
 
   getOverheatRandomExtra() {
-    return Math.random() * 0.2;
+    return Math.random() * 0.5;
   }
 
   overHeatSystems(ship) {
@@ -95,10 +101,13 @@ class HeatHandler {
           return;
         }
 
-        overHeat += this.getOverheatRandomExtra();
-
-        if (overHeat >= 1 && !system.hasCritical(ForcedOfflineOverheat)) {
+        if (overHeat >= 2.0 && !system.hasCritical(ForcedOfflineOverheat)) {
           system.addCritical(new ForcedOfflineOverheat());
+          const logEntry = system.log.getOpenLogEntryByClass(
+            ShipSystemLogEntryHeat
+          );
+
+          logEntry.setForcedOffline();
         }
       });
   }
@@ -137,7 +146,6 @@ class HeatHandler {
       .getSystems()
       .filter(system => !system.isDestroyed())
       .forEach(system => {
-        system.heat.markNewOverheat();
         const logEntry = system.log.getOpenLogEntryByClass(
           ShipSystemLogEntryHeat
         );

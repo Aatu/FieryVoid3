@@ -4,59 +4,77 @@ class ShipSystemLogEntryHeat extends ShipSystemLogEntry {
   constructor() {
     super();
 
-    this.initialHeat = 0;
+    this.initialOverheat = 0;
+    this.initialOverheatPercentage = 0;
     this.heatGenerated = null;
     this.heatCooled = null;
     this.heatRadiated = null;
     this.overheat = null;
-    this.forcedOfflineTurns = null;
+    this.overheatPercentage = null;
+    this.isForcedOffline = null;
   }
 
-  setInitialHeat(heat) {
-    this.initialHeat = heat;
+  setInitialOverheat(heat, percentage) {
+    this.initialOverheat = heat;
+    this.initialOverheatPercentage = percentage;
   }
 
   setHeatGenerated(heat) {
     this.heatGenerated = heat;
   }
 
-  setNewOverheat(heat) {
+  setNewOverheat(heat, percentage) {
     this.overheat = heat;
+    this.overheatPercentage = percentage;
+
+    this.heatCooled = this.heatGenerated + this.initialOverheat - this.overheat;
+  }
+
+  setHeatRadiated(heat) {
+    this.heatRadiated = heat;
+  }
+
+  setForcedOffline() {
+    this.isForcedOffline = true;
   }
 
   serialize() {
     return {
       ...super.serialize(),
-      initialHeat: this.initialHeat,
+      initialOverheat: this.initialOverheat,
+      initialOverheatPercentage: this.initialOverheatPercentage,
       heatGenerated: this.heatGenerated,
       heatCooled: this.heatCooled,
       heatRadiated: this.heatRadiated,
       overheat: this.overheat,
-      forcedOfflineTurns: this.forcedOfflineTurns
+      overheatPercentage: this.overheatPercentage,
+      isForcedOffline: this.isForcedOffline
     };
   }
 
   deserialize(data = {}) {
     super.deserialize(data);
-    this.initialHeat = data.initialHeat || 0;
+    this.initialOverheat = data.initialOverheat || 0;
+    this.initialOverheatPercentage = data.initialOverheatPercentage || 0;
     this.heatGenerated = data.heatGenerated || null;
     this.heatCooled = data.heatCooled || null;
     this.heatRadiated = data.heatRadiated || null;
     this.overheat = data.overheat || null;
-    this.forcedOfflineTurns = data.forcedOfflineTurns || null;
+    this.overheatPercentage = data.overheatPercentage || null;
+    this.isForcedOffline = data.isForcedOffline || null;
 
     return this;
   }
 
   getMessage() {
     return [
-      `Initial heat: ${this.initialHeat}`,
+      `Initial overheat: ${this.initialOverheat}`,
       this.heatGenerated ? `Heat generated: ${this.heatGenerated}` : null,
       this.heatCooled ? `Cooled: ${this.heatCooled}` : null,
       this.heatRadiated ? `Heat radiated: ${this.heatRadiated}` : null,
       this.overheat ? `Overheating: ${this.overheat}%` : null,
-      this.forcedOfflineTurns
-        ? `forced offline for ${this.forcedOfflineTurns} turns.`
+      this.isForcedOffline
+        ? `forced offline for ${this.isForcedOffline} turns.`
         : null
     ];
   }
