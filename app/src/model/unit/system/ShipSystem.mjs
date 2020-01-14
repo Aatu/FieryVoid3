@@ -46,7 +46,7 @@ class ShipSystem {
       if (!this.heat.isHeatStorage()) {
         heatMessages.push({
           header: "Overheat",
-          value: this.heat.getOverHeat()
+          value: this.heat.getOverHeatPercentage()
         });
 
         heatMessages.push({
