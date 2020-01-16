@@ -27,6 +27,18 @@ class HeatHandler {
   }
 
   collectHeat(ship) {
+    ship.systems
+      .getSystems()
+      .filter(system => !system.isDestroyed())
+      .filter(system => system.heat.getHeatStoreCapacity() >= 1)
+      .forEach(system => {
+        const logEntry = system.log.getOpenLogEntryByClass(
+          ShipSystemLogEntryHeat
+        );
+
+        logEntry.setIntialHeatStored(system.heat.getHeat());
+      });
+
     while (true) {
       const storages = ship.systems
         .getSystems()
@@ -64,6 +76,12 @@ class HeatHandler {
           heat--;
           storage.heat.changeHeat(1);
           system.heat.changeHeat(-1);
+
+          const logEntry = storage.log.getOpenLogEntryByClass(
+            ShipSystemLogEntryHeat
+          );
+
+          logEntry.addNewHeatStored(1);
         });
       });
     }
@@ -138,6 +156,12 @@ class HeatHandler {
           heat--;
           storage.heat.changeHeat(-1);
           radiator.heat.radiateHeat(1);
+
+          const logEntry = storage.log.getOpenLogEntryByClass(
+            ShipSystemLogEntryHeat
+          );
+
+          logEntry.addHeatGivenToRadiators(1);
         });
       });
     }

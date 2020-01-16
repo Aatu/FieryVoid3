@@ -1,6 +1,6 @@
 class ShipSystemLogEntry {
-  constructor(message) {
-    this.message = message;
+  constructor(system) {
+    this.system = system;
     this.turn = null;
   }
 
@@ -9,23 +9,25 @@ class ShipSystemLogEntry {
   }
 
   getMessage() {
-    return this.message;
+    return [];
   }
 
   isOpen() {
     return this.turn === null;
   }
 
+  isTurn(turn) {
+    return this.turn === turn;
+  }
+
   serialize() {
     return {
       className: this.constructor.name,
-      message: this.message,
       turn: this.turn
     };
   }
 
   deserialize(data = {}) {
-    this.message = data.message || "";
     this.turn = data.turn || null;
 
     return this;

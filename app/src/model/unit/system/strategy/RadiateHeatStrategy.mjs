@@ -8,6 +8,10 @@ class RadiateHeatStrategy extends ShipSystemStrategy {
     this.heatRadiated = 0;
   }
 
+  isRadiator() {
+    return true;
+  }
+
   getMessages(payload, previousResponse = []) {
     previousResponse.push({
       header: "Radiates heat",

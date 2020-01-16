@@ -232,6 +232,10 @@ class Ship {
     this.systems.censorForUser(user, mine);
   }
 
+  endTurn(turn) {
+    this.systems.endTurn(turn);
+  }
+
   advanceTurn(turn) {
     this.movement.removeMovementForOtherTurns(turn);
     this.systems.advanceTurn(turn);

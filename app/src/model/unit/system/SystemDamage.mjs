@@ -16,7 +16,7 @@ class SystemDamage {
     };
   }
 
-  deserialize(data) {
+  deserialize(data = {}) {
     this.entries = data.entries
       ? data.entries.map(entry => new DamageEntry().deserialize(entry))
       : [];

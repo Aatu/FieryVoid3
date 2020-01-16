@@ -173,6 +173,12 @@ class ShipSystems {
     }));
   }
 
+  endTurn(turn) {
+    this.getSystems().forEach(system => {
+      system.endTurn(turn);
+    });
+  }
+
   advanceTurn(turn) {
     this.getSystems().forEach(system => {
       system.advanceTurn(turn);

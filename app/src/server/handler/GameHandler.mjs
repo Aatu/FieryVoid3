@@ -102,6 +102,8 @@ class GameHandler {
       gameData.combatLog.addEntry(new CombatLogShipVelocity(ship.id));
     });
 
+    gameData.endTurn();
+
     const toSave = gameData.clone();
 
     gameData.advanceTurn();

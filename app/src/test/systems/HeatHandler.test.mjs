@@ -11,6 +11,7 @@ import ShipSystem from "../../model/unit/system/ShipSystem.mjs";
 import OutputHeatOnlineStrategy from "../../model/unit/system/strategy/OutputHeatOnlineStrategy.mjs";
 import HeatHandler from "../../server/handler/HeatHandler.mjs";
 import ForcedOfflineOverheat from "../../model/unit/system/criticals/ForcedOfflineOverheat.mjs";
+import ShipSystemLogEntryHeat from "../../model/unit/system/ShipSystemLog/ShipSystemLogEntryHeat.mjs";
 
 test("Heat is generated", test => {
   const ship = new Ship({ id: 1 });
@@ -28,7 +29,14 @@ test("Heat is generated", test => {
     }
   });
 
-  console.log(heater.log);
+  test.deepEqual(
+    heater.log.getOpenLogEntryByClass(ShipSystemLogEntryHeat).getMessage(),
+    [
+      "Generated 10 and cooled 0 units of heat.",
+      "Current system heat is 10. Overheating 250%.",
+      "System forced offline until overheat is less than 50%."
+    ]
+  );
   test.is(heater.heat.getOverheat(), 10);
 });
 
@@ -40,7 +48,6 @@ test("Heat is generated and stored", test => {
   const heatSink = new HeatSink({ id: 2, hitpoints: 10, armor: 2 }, 20);
 
   ship.systems.addPrimarySystem([heater, heatSink]);
-
   const heatHandler = new HeatHandler();
 
   heatHandler.advance({
@@ -51,6 +58,22 @@ test("Heat is generated and stored", test => {
 
   test.is(heater.heat.getOverheat(), 6);
   test.is(heatSink.heat.getHeat(), 4);
+
+  test.deepEqual(
+    heater.log.getOpenLogEntryByClass(ShipSystemLogEntryHeat).getMessage(),
+    [
+      "Generated 10 and cooled 4 units of heat.",
+      "Current system heat is 6. Overheating 75%."
+    ]
+  );
+
+  test.deepEqual(
+    heatSink.log.getOpenLogEntryByClass(ShipSystemLogEntryHeat).getMessage(),
+    [
+      "Added 4 units of heat. Transfered 0 units of heat to radiators.",
+      "Currently storing 4 units of heat."
+    ]
+  );
 });
 
 test("Heat is generated, stored and radiated", test => {
@@ -71,9 +94,34 @@ test("Heat is generated, stored and radiated", test => {
     }
   });
 
+  heater.deserialize(heater.serialize());
+  heatSink.deserialize(heatSink.serialize());
+  radiator.deserialize(radiator.serialize());
+
   test.is(heater.heat.getOverheat(), 6);
   test.is(heatSink.heat.getHeat(), 0);
   test.is(radiator.callHandler("getRadiatedHeat"), 4);
+
+  test.deepEqual(
+    heater.log.getOpenLogEntryByClass(ShipSystemLogEntryHeat).getMessage(),
+    [
+      "Generated 10 and cooled 4 units of heat.",
+      "Current system heat is 6. Overheating 75%."
+    ]
+  );
+
+  test.deepEqual(
+    heatSink.log.getOpenLogEntryByClass(ShipSystemLogEntryHeat).getMessage(),
+    [
+      "Added 4 units of heat. Transfered 4 units of heat to radiators.",
+      "Currently storing 0 units of heat."
+    ]
+  );
+
+  test.deepEqual(
+    radiator.log.getOpenLogEntryByClass(ShipSystemLogEntryHeat).getMessage(),
+    ["Radiated 4 units of heat."]
+  );
 });
 
 test("Heat is generated, stored and radiated, complicately", test => {

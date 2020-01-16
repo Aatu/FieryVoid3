@@ -34,14 +34,13 @@ class Routes extends Component {
 
     return (
       <Router>
-        <PrivateRoute authed={Boolean(user)} exact path="/" component={Home} />
+        <Route authed={Boolean(user)} exact path="/" component={Home} />
         <PrivateRoute
           authed={Boolean(user)}
           exact
           path="/createGame"
           component={CreateGame}
         />
-        <Route exact path="/login" component={Login} />
         <Route exact path="/logout" component={Logout} />
         <Route exact path="/register" component={Register} />
         <PrivateRoute

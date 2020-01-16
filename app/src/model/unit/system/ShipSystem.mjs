@@ -174,10 +174,15 @@ class ShipSystem {
     };
   }
 
+  endTurn(turn) {
+    this.log.endTurn(turn);
+  }
+
   advanceTurn(turn) {
-    this.damage.advanceTurn();
-    this.power.advanceTurn();
-    this.heat.advanceTurn();
+    this.damage.advanceTurn(turn);
+    this.power.advanceTurn(turn);
+    this.heat.advanceTurn(turn);
+    this.log.advanceTurn(turn);
     this.callHandler("advanceTurn", turn);
   }
 

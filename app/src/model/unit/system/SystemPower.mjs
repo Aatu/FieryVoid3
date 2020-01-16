@@ -17,7 +17,7 @@ class SystemPower {
     };
   }
 
-  deserialize(data) {
+  deserialize(data = {}) {
     this.entries = data.entries
       ? data.entries.map(entry => new PowerEntry().deserialize(entry))
       : [];

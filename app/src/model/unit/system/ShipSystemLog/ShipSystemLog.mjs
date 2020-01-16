@@ -13,7 +13,7 @@ class ShipSystemLog {
       .find(entry => entry instanceof className);
 
     if (!entry) {
-      entry = new className();
+      entry = new className(this.system);
       this.log.push(entry);
     }
 
@@ -26,16 +26,28 @@ class ShipSystemLog {
     };
   }
 
+  getMessagesForTurn(turn) {
+    return this.log
+      .filter(entry => entry.isTurn(turn))
+      .reduce((all, entry) => [...all, ...entry.getMessage()], []);
+  }
+
   deserialize(data = {}) {
     this.log = data.log || [];
     this.log = this.log.map(entry =>
-      new systemLogEntryClasses[entry.className]().deserialize(entry)
+      new systemLogEntryClasses[entry.className](this.system).deserialize(entry)
     );
 
     return this;
   }
 
-  addEntry() {}
+  endTurn(turn) {
+    this.log
+      .filter(entry => entry.isOpen())
+      .forEach(entry => entry.setTurn(turn));
+  }
+
+  advanceTurn(turn) {}
 }
 
 export default ShipSystemLog;

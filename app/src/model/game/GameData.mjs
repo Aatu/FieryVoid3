@@ -185,6 +185,12 @@ class GameData {
     return this;
   }
 
+  endTurn() {
+    this.ships.getShips().forEach(ship => {
+      ship.endTurn(this.turn);
+    });
+  }
+
   advanceTurn() {
     this.turn++;
     this.players.forEach(player => this.setPlayerActive(player));

@@ -49,7 +49,8 @@ class TestShip extends Ship {
         id: 205,
         hitpoints: 40,
         armor: 5,
-        heatStorage: 200
+        heatStorage: 200,
+        radiator: 5
       })
     ]);
   }
