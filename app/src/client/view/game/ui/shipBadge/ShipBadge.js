@@ -112,7 +112,6 @@ class ShipBadge extends React.PureComponent {
     const { currentUser } = uiState.services;
     const isMine = icon.ship.player.is(currentUser);
 
-    console.log("render ship badge");
     const missiles = getNumberOfMissilesImpacting(
       icon.ship,
       uiState.state.gameData

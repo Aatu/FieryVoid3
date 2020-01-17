@@ -7,7 +7,7 @@ import Ammo140mmAP from "../../model/unit/system/weapon/ammunition/conventional/
 import Ammo140mmHE from "../../model/unit/system/weapon/ammunition/conventional/Ammo140mmHE.mjs";
 
 test.serial("Test weapon heats up", async test => {
-  const db = new TestDatabaseConnection("power");
+  const db = new TestDatabaseConnection("heat");
   await db.resetDatabase();
 
   const controller = new GameController(db);

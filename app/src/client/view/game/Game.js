@@ -11,6 +11,8 @@ class Game {
     this.gameId = gameId;
     this.currentUser = user;
 
+    console.log("game user", user);
+
     this.uiState = uiState;
     this.coordinateConverter = coordinateConverter;
 
@@ -32,6 +34,10 @@ class Game {
 
     this.mouseOvered = null;
     this.mouseOveredHex = null;
+  }
+
+  getUiState() {
+    return this.uiState;
   }
 
   initRender(element) {

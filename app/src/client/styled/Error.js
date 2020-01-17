@@ -3,12 +3,11 @@ import { Section, colors } from ".";
 
 const Error = styled(Section)`
   color: ${colors.textDanger};
-  font-size: 10px;
+  font-size: 12px;
   margin-top: 2px;
   height: 11px;
   overflow: hidden;
-  font-family: bookman;
-  text-transform: uppercase;
+  font-weight: bolder;
 `;
 
 export { Error };

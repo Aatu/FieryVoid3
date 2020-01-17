@@ -18,15 +18,27 @@ const text = css`
 const greyButton = css`
   background-color: #222;
   padding: 5px 0px;
-  width: 240px;
   color: white;
   text-decoration: none;
   font-family: arial;
   font-size: 12px;
   text-transform: uppercase;
   display: flex;
+  flex-grow: 1;
+  flex-basis: 100%;
   border: none;
-  margin: 0 10px;
+  margin: 0;
+
+  margin-left: 10px;
+  margin-right: 10px;
+
+  &:last-child {
+    margin-right: 0px;
+  }
+
+  &:first-child {
+    margin-left: 0px;
+  }
 
   justify-content: center;
 

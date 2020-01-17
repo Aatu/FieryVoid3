@@ -41,8 +41,27 @@ class UIState {
     this.state.gameUiMode[gameUiModes.ENEMY_WEAPONS] = false;
     this.state.gameUiMode[gameUiModes.WEAPONS] = false;
     this.state.gameUiMode[gameUiModes.MOVEMENT] = false;
+  }
 
-    this.updateState();
+  setDispatch(dispatch) {
+    this.dispatch = dispatch;
+  }
+
+  getReducer() {
+    return this.reducer.bind(this);
+  }
+
+  getInitialState() {
+    return this.state;
+  }
+
+  reducer(state, action) {
+    this.state = {
+      ...state,
+      ...action
+    };
+
+    return this.state;
   }
 
   showShipBadge(icon, showName) {
@@ -217,11 +236,6 @@ class UIState {
     return this.state.replay;
   }
 
-  init(setState) {
-    this.setState = setState;
-    this.updateState();
-  }
-
   update(gameData) {
     this.gameData = gameData;
     if (this.state.selectedShip) {
@@ -291,12 +305,8 @@ class UIState {
   }
 
   updateState() {
-    if (!this.setState) {
-      return;
-    }
-
-    this.state.stateVersion++;
-    this.setState({ uiState: this });
+    //this.state.stateVersion++;
+    this.dispatch(this.state);
     this.customEvent("uiStateChanged");
   }
 

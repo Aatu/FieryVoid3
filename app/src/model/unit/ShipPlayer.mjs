@@ -6,7 +6,7 @@ class ShipPlayer {
   }
 
   is(user) {
-    return this.user.id === user.id;
+    return user && this.user.id === user.id;
   }
 
   setUser(user) {
@@ -14,7 +14,7 @@ class ShipPlayer {
   }
 
   isUsers(user) {
-    return this.user && this.user.id === user.id;
+    return user && this.user && this.user.id === user.id;
   }
 
   deserialize(user) {

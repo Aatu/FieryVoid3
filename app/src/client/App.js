@@ -1,20 +1,14 @@
 import React, { Component } from "react";
 import Router from "./Router";
-import { Provider } from "react-redux";
 
-import getStore from "./state/store";
-import { getCurrentUser } from "./state/ducks/user";
-
-const store = getStore();
-
-store.dispatch(getCurrentUser());
+import StoreProvider from "./state/StoreProvider";
 
 class App extends Component {
   render() {
     return (
-      <Provider store={store}>
+      <StoreProvider>
         <Router />
-      </Provider>
+      </StoreProvider>
     );
   }
 }

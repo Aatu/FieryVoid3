@@ -1,43 +1,35 @@
-import * as React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import GameSceneComponent from "./GameSceneComponent";
 import Game from "../Game";
 import UIState from "../ui/UIState";
-import { connect } from "react-redux";
 import GameUiComponent from "./GameUiComponent";
+import { StateStore } from "../../../state/StoreProvider";
+import GameStoreProvider from "../GameStoreProvider";
+import LoginFloater from "../../login/LoginFloater";
 
-class GameComponent extends React.Component {
-  constructor(props) {
-    super(props);
-    const { match, user } = props;
-    this.uiState = new UIState();
-    this.state = this.uiState.state;
-    this.game = new Game(match.params.gameid, user, this.uiState);
+const GameComponent = ({ match }) => {
+  const { currentUser } = useContext(StateStore);
+  const [uiState, setUiState] = useState(null);
+  const [game, setGame] = useState(null);
+
+  useEffect(() => {
+    const newUiState = new UIState();
+    const newGame = new Game(match.params.gameid, currentUser, newUiState);
+    setUiState(newUiState);
+    setGame(newGame);
+  }, [currentUser, setUiState, setGame]);
+
+  if (!uiState || !game || currentUser === undefined) {
+    return null;
   }
 
-  componentDidMount() {
-    this.uiState.init(this.setState.bind(this));
-  }
+  return (
+    <GameStoreProvider uiState={uiState}>
+      <GameSceneComponent game={game} />
+      <GameUiComponent game={game} />
+      <LoginFloater />
+    </GameStoreProvider>
+  );
+};
 
-  render() {
-    const { user } = this.props;
-
-    if (user === undefined) {
-      return null;
-    }
-
-    return (
-      <>
-        <GameSceneComponent game={this.game} />
-        <GameUiComponent
-          game={this.game}
-          uiState={this.state.uiState}
-          user={user}
-        />
-      </>
-    );
-  }
-}
-
-export default connect(({ user }) => ({
-  user: user.current
-}))(GameComponent);
+export default GameComponent;

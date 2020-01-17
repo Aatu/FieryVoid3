@@ -97,6 +97,7 @@ class ShipTooltip extends React.Component {
       uiState,
       ui,
       shipTooltipMenuProvider,
+      className,
       ...rest
     } = this.props;
 
@@ -115,7 +116,7 @@ class ShipTooltip extends React.Component {
       */
 
     return (
-      <ShipTooltipContainer interactable={interactable}>
+      <ShipTooltipContainer className={className} interactable={interactable}>
         <InfoHeader>
           <div>{ship.name}</div> <div>{this.getTabHeader()}</div>
         </InfoHeader>

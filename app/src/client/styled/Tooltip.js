@@ -10,10 +10,8 @@ class Component extends React.Component {
   }
 }
 
-const Tooltip = styled(Component)`
-  z-index: 7001;
+const TooltipContainer = styled(Component)`
   opacity: 0.95;
-  position: absolute;
   text-align: center;
   font-family: arial;
   font-size: 12px;
@@ -27,6 +25,11 @@ const Tooltip = styled(Component)`
   border: 1px solid #121212;
   filter: brightness(1);
   cursor: initial;
+`;
+
+const Tooltip = styled(TooltipContainer)`
+  z-index: 7001;
+  position: absolute;
 `;
 
 const RelativeTooltipContainer = styled(Tooltip)`
@@ -243,6 +246,7 @@ const buildTooltipEntries = (entries, subKey = "") => {
 };
 
 export {
+  TooltipContainer,
   buildTooltipEntries,
   Tooltip,
   TooltipHeader,

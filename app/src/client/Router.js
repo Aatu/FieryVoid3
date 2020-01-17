@@ -1,12 +1,11 @@
-import React, { Component } from "react";
+import React, { Component, useContext } from "react";
 import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
-import { connect } from "react-redux";
 import Home from "./view/home";
 import Game from "./view/game";
-import Login from "./view/login";
 import Register from "./view/register";
 import Logout from "./view/logout";
 import CreateGame from "./view/createGame";
+import { StateStore } from "./state/StoreProvider";
 
 const PrivateRoute = ({ component: Component, authed, ...rest }) => {
   return (
@@ -27,14 +26,16 @@ const PrivateRoute = ({ component: Component, authed, ...rest }) => {
 
 class Routes extends Component {
   render() {
-    const { user } = this.props;
+    const state = this.context;
+    const user = state.currentUser;
+
     if (user === undefined) {
       return null;
     }
 
     return (
       <Router>
-        <Route authed={Boolean(user)} exact path="/" component={Home} />
+        <Route exact path="/" component={Home} />
         <PrivateRoute
           authed={Boolean(user)}
           exact
@@ -42,15 +43,12 @@ class Routes extends Component {
           component={CreateGame}
         />
         <Route exact path="/logout" component={Logout} />
-        <Route exact path="/register" component={Register} />
-        <PrivateRoute
-          authed={Boolean(user)}
-          path="/game/:gameid"
-          component={Game}
-        />
+        <Route path="/game/:gameid" component={Game} />
       </Router>
     );
   }
 }
 
-export default connect(state => ({ user: state.user.current }))(Routes);
+Routes.contextType = StateStore;
+
+export default Routes;

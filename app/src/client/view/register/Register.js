@@ -1,9 +1,7 @@
-import * as React from "react";
-import { Redirect } from "react-router-dom";
+import React, { useContext } from "react";
 import { Formik } from "formik";
 import * as Yup from "yup";
-import { connect } from "react-redux";
-import { getCurrentUser } from "../../state/ducks/user";
+import { getCurrentUser } from "../../state/actions";
 import { login as loginUser, register as registerUser } from "../../api/user";
 
 import {
@@ -13,6 +11,7 @@ import {
   Button,
   Error
 } from "../../styled";
+import { DispatchStore } from "../../state/StoreProvider";
 
 class Register extends React.Component {
   constructor(props) {
@@ -22,8 +21,9 @@ class Register extends React.Component {
       error: null
     };
   }
+
   onSubmit = async (values, { setSubmitting }) => {
-    const { getCurrentUser } = this.props;
+    const dispatch = useContext(DispatchStore);
     this.setState({ error: null });
 
     let { username, password } = values;
@@ -33,7 +33,7 @@ class Register extends React.Component {
     try {
       await registerUser(username, password);
       await loginUser(username, password);
-      await getCurrentUser();
+      await getCurrentUser(dispatch);
     } catch (error) {
       this.setState({ error: error.data });
     }
@@ -42,11 +42,6 @@ class Register extends React.Component {
 
   render() {
     const { error } = this.state;
-    const { user, location } = this.props;
-
-    if (user) {
-      return <Redirect to={{ pathname: "/", state: { from: location } }} />;
-    }
 
     return (
       <Formik
@@ -128,9 +123,4 @@ class Register extends React.Component {
   }
 }
 
-export default connect(
-  ({ user }) => ({
-    user: user.current
-  }),
-  { getCurrentUser }
-)(Register);
+export default Register;

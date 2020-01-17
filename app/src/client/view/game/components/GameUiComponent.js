@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useContext } from "react";
 import Lobby from "./lobby";
 import ShipTooltip from "../ui/shipTooltip";
 import TurnHeader from "../ui/TurnHeader";
@@ -10,93 +10,84 @@ import ReplayUI from "../ui/replay/ReplayUI";
 import * as gamePhases from "../../../../model/game/gamePhases";
 import CombatLog from "../ui/combatLog/CombatLog";
 import ShipBadge from "../ui/shipBadge/ShipBadge";
+import { StateStore } from "../../../state/StoreProvider";
+import { GameStateStore } from "../GameStoreProvider";
 
-class GameUiComponent extends React.Component {
-  render() {
-    const { uiState, game, user } = this.props;
+const GameUiComponent = ({ game }) => {
+  const { currentUser } = useContext(StateStore);
+  const state = useContext(GameStateStore);
+  const uiState = game.getUiState();
 
-    if (!uiState) {
-      return null;
-    }
+  return (
+    <>
+      {state.lobby && (
+        <Lobby
+          uiState={uiState}
+          gameData={state.gameData}
+          game={game}
+          currentUser={currentUser}
+        />
+      )}
 
-    return (
-      <>
-        {uiState.state.lobby && (
-          <Lobby
+      {state.shipTooltip.map((tooltip, index) => (
+        <ShipTooltip
+          key={`tooltip-ship-${index}`}
+          uiState={uiState}
+          {...state}
+          {...tooltip}
+        />
+      ))}
+
+      {state.gameData &&
+        (state.gameData.phase === gamePhases.GAME ||
+          state.gameData.phase === gamePhases.DEPLOYMENT) && (
+          <TurnHeader
             uiState={uiState}
             gameData={uiState.state.gameData}
-            game={game}
-            currentUser={user}
+            ready={uiState.state.turnReady}
+            waiting={uiState.state.waiting}
           />
         )}
 
-        {uiState.state.shipTooltip.map((tooltip, index) => (
-          <ShipTooltip
-            key={`tooltip-ship-${index}`}
-            uiState={uiState}
-            {...uiState.state}
-            {...tooltip}
-          />
-        ))}
+      {state.shipMovement && state.shipMovement.type === "deploy" && (
+        <DeploymentMovement {...state.shipMovement} uiState={uiState} />
+      )}
 
-        {uiState.state.gameData &&
-          (uiState.state.gameData.phase === gamePhases.GAME ||
-            uiState.state.gameData.phase === gamePhases.DEPLOYMENT) && (
-            <TurnHeader
-              uiState={uiState}
-              gameData={uiState.state.gameData}
-              ready={uiState.state.turnReady}
-              waiting={uiState.state.waiting}
-            />
-          )}
+      {state.shipMovement && state.shipMovement.type === "game" && (
+        <GameMovement {...state.shipMovement} uiState={uiState} />
+      )}
 
-        {uiState.state.shipMovement &&
-          uiState.state.shipMovement.type === "deploy" && (
-            <DeploymentMovement
-              {...uiState.state.shipMovement}
-              uiState={uiState}
-            />
-          )}
+      {state.gameUiModeButtons && (
+        <GameUiModeButtons uiState={uiState} {...state.gameUiMode} />
+      )}
 
-        {uiState.state.shipMovement &&
-          uiState.state.shipMovement.type === "game" && (
-            <GameMovement {...uiState.state.shipMovement} uiState={uiState} />
-          )}
+      {state.replayUi && (
+        <ReplayUI uiState={uiState} replayContext={state.replayUi} />
+      )}
 
-        {uiState.state.gameUiModeButtons && (
-          <GameUiModeButtons uiState={uiState} {...uiState.state.gameUiMode} />
-        )}
+      <LeftPanel uiState={uiState} {...state} />
 
-        {uiState.state.replayUi && (
-          <ReplayUI uiState={uiState} replayContext={uiState.state.replayUi} />
-        )}
+      {uiState.state.combatLog && (
+        <CombatLog
+          uiState={uiState}
+          replayContext={state.combatLog.replayContext}
+          gameData={state.combatLog.gameData}
+          log={state.combatLog.log}
+        />
+      )}
 
-        <LeftPanel uiState={uiState} {...uiState.state} />
-
-        {uiState.state.combatLog && (
-          <CombatLog
-            uiState={uiState}
-            replayContext={uiState.state.combatLog.replayContext}
-            gameData={uiState.state.combatLog.gameData}
-            log={uiState.state.combatLog.log}
-          />
-        )}
-
-        {uiState.state.shipBadges.map(
-          ({ version, icon, getPosition, showName }) => (
-            <ShipBadge
-              key={`ship-badge-${icon.ship.id}`}
-              icon={icon}
-              getPosition={getPosition}
-              version={version}
-              uiState={uiState}
-              showName={showName}
-            />
-          )
-        )}
-      </>
-    );
-  }
-}
+      {state.shipBadges.map(({ version, icon, getPosition, showName }) => (
+        <ShipBadge
+          key={`ship-badge-${icon.ship.id}`}
+          icon={icon}
+          getPosition={getPosition}
+          version={version}
+          uiState={uiState}
+          showName={showName}
+        />
+      ))}
+    </>
+  );
+};
 
 export default GameUiComponent;

@@ -17,22 +17,24 @@ class MSVTorpedoDamageStrategy extends StandardDamageStrategy {
 
   _getDamageForWeaponHit({ torpedoFlight }) {
     if (Number.isInteger(this.damageFormula)) {
-      return this.damageFormula * torpedoFlight.strikeEffectiveness;
+      return Math.ceil(this.damageFormula * torpedoFlight.strikeEffectiveness);
     }
-    return (
+    return Math.ceil(
       this.diceRoller.roll(this.damageFormula).total *
-      torpedoFlight.strikeEffectiveness
+        torpedoFlight.strikeEffectiveness
     );
   }
 
   _getArmorPiercing({ torpedoFlight }) {
     if (Number.isInteger(this.armorPiercingFormula)) {
-      return this.armorPiercingFormula * torpedoFlight.strikeEffectiveness;
+      return Math.round(
+        this.armorPiercingFormula * torpedoFlight.strikeEffectiveness
+      );
     }
 
-    return (
+    return Math.round(
       this.diceRoller.roll(this.armorPiercingFormula).total *
-      torpedoFlight.strikeEffectiveness
+        torpedoFlight.strikeEffectiveness
     );
   }
 

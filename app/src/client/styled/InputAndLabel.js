@@ -40,28 +40,39 @@ class InputAndLabel extends React.Component {
 
 const Container = styled.div`
   display: flex;
-  padding: 10px;
   flex-direction: column;
   flex-grow: 1;
-  max-width: calc(50% - 20px);
+  flex-basis: 100%;
+  margin: 5px 0 5px 0;
+
+  margin-left: 10px;
+  margin-right: 10px;
+
+  &:last-child {
+    margin-right: 0px;
+  }
+
+  &:first-child {
+    margin-left: 0px;
+  }
 `;
 
 const Label = styled.span`
   display: flex;
-  width: calc(50% - 10px);
+  flex-grow: 1;
+  flex-basis: 100%;
   max-width: 300px;
   color: #deebff;
-  font-family: arial;
-  font-size: 14px;
   align-items: center;
+  margin-right: 10px;
 `;
 
 const Input = styled.input`
-  width: calc(50% - 10px);
+  flex-grow: 1;
+  flex-basis: 100%;
   color: #0a3340;
   background-color: white;
   padding: 3px 6px;
-  font-size: 14px;
   border: 1px solid #04161c;
   border-radius: 3px;
 `;

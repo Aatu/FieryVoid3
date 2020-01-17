@@ -30,14 +30,11 @@ class CombatLogLine extends React.Component {
   getTorpedoAttackLine() {
     const { combatLogEntry, gameData, replayContext } = this.props;
 
-    const weaponFireService = new WeaponFireService().update(gameData);
-
     const target = gameData.ships.getShipById(combatLogEntry.targetId);
     const flight = gameData.torpedos.getTorpedoFlightById(
       combatLogEntry.torpedoFlightId
     );
 
-    console.log(combatLogEntry, target, flight);
     const targetName = target.name.trim();
 
     return (

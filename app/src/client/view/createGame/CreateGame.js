@@ -1,5 +1,4 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
+import React, { Component, useContext } from "react";
 import { Redirect } from "react-router-dom";
 import styled from "styled-components";
 import GameData from "../../../model/game/GameData";
@@ -15,6 +14,7 @@ import {
   Button,
   Link
 } from "../../styled";
+import { StateStore } from "../../state/StoreProvider";
 
 const Container = styled(PanelContainer)`
   width: 1200px;
@@ -24,7 +24,8 @@ class CreateGame extends Component {
   constructor(props) {
     super(props);
 
-    const { user } = this.props;
+    const state = useContext(StateStore);
+    const user = state.currentUser;
 
     const gameData = new GameData();
 
@@ -111,6 +112,4 @@ class CreateGame extends Component {
   }
 }
 
-export default connect(({ user }) => ({
-  user: user.current
-}))(CreateGame);
+export default CreateGame;

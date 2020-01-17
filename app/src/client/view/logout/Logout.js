@@ -1,35 +1,26 @@
-import * as React from "react";
+import React, { useContext, useEffect } from "react";
 import { Redirect } from "react-router-dom";
 
-import { connect } from "react-redux";
-import { getCurrentUser } from "../../state/ducks/user";
+import { getCurrentUser } from "../../state/actions";
 import { logout as logoutUser } from "../../api/user";
+import { DispatchStore, StateStore } from "../../state/StoreProvider";
 
-class Logout extends React.Component {
-  componentDidMount = async () => {
-    const { getCurrentUser } = this.props;
-    await logoutUser();
-    await getCurrentUser();
-  };
+const Logout = ({ location }) => {
+  const dispatch = useContext(DispatchStore);
+  const { currentUser } = useContext(StateStore);
 
-  render() {
-    const { user, location } = this.props;
+  useEffect(() => {
+    (async () => {
+      await logoutUser();
+      await getCurrentUser(dispatch);
+    })();
+  }, [dispatch]);
 
-    console.log("logout, user", user);
-
-    if (!user) {
-      return (
-        <Redirect to={{ pathname: "/login", state: { from: location } }} />
-      );
-    }
-
-    return null;
+  if (!currentUser) {
+    return <Redirect to={{ pathname: "/", state: { from: location } }} />;
   }
-}
 
-export default connect(
-  ({ user }) => ({
-    user: user.current
-  }),
-  { getCurrentUser }
-)(Logout);
+  return null;
+};
+
+export default Logout;
