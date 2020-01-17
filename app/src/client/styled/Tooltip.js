@@ -20,8 +20,7 @@ const TooltipContainer = styled(Component)`
   border-radius: 7px;
   -moz-border-radius: 7px;
   -webkit-border-radius: 7px;
-  padding: 3px 15px 3px 15px;
-  padding-bottom: 8px;
+  padding: 3px 8px 8px 8px;
   border: 1px solid #121212;
   filter: brightness(1);
   cursor: initial;
@@ -86,8 +85,8 @@ const TooltipHeader = styled.div`
   justify-content: space-between;
   text-transform: uppercase;
   border-bottom: 1px solid #aaaaaa;
-  width: 100%;
-  margin: 5px 0;
+  width: calc(100% - 16px);
+  margin: 5px 8px;
   font-weight: bold;
   font-size: 12px;
 `;
@@ -95,8 +94,8 @@ const TooltipHeader = styled.div`
 const TooltipSubHeader = styled.div`
   display: flex;
   border-bottom: 1px solid #aaaaaa;
-  width: 100%;
-  margin: 5px 0;
+  width: calc(100% - 16px);
+  margin: 5px 8px;
   font-weight: bold;
   font-size: 12px;
   color: ${colors.lightBlue};
@@ -110,7 +109,7 @@ const TooltipValueHeader = styled.div`
 const TooltipEntry = styled.div`
   display: flex;
   box-sizing: border-box;
-  margin: 2px 0;
+  margin: 2px 8px;
 
   ${props => props.noMargin && "margin: 0;"}
   font-weight: ${props => (props.important ? "bold" : "inherit")};
@@ -153,6 +152,7 @@ const InlineTooltipEntry = styled.div`
 `;
 
 const TooltipMenu = styled.div`
+  margin: 0 8px;
   display: flex;
 `;
 

@@ -18,13 +18,15 @@ import NoAmmunitionLoaded from "../../../../../../../model/unit/system/weapon/am
 
 const RangeContainer = styled.div`
   display: flex;
-  width: 100%;
+  width: calc(100% - 16px);
   height: 32px;
   align-items: flex-end;
+  margin: 0 8px;
 `;
 
 const RangeNumbersContainer = styled.div`
-  width: 100%;
+  width: calc(100% - 16px);
+  margin: 0 8px;
   display: flex;
   justify-content: space-between;
 `;

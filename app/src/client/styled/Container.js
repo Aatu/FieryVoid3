@@ -64,6 +64,7 @@ const Section = styled.div`
   display: flex;
   margin: 0;
   padding: 0;
+  flex-wrap: wrap;
 `;
 
 const SectionRight = styled(Section)`
@@ -71,7 +72,15 @@ const SectionRight = styled(Section)`
   justify-content: flex-end;
 `;
 
+const Cell50 = styled.div`
+  display: flex;
+  margin: 0 8px;
+  flex-grow: 1;
+  flex-basis: calc(50% - 16px);
+`;
+
 export {
+  Cell50,
   Container,
   ContainerRoundedRightBottom,
   Backdrop,

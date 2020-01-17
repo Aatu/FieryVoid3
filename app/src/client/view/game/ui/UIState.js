@@ -268,6 +268,10 @@ class UIState {
   }
 
   customEvent(name, payload) {
+    if (!this.phaseDirector) {
+      return;
+    }
+
     this.phaseDirector.relayEvent(name, payload);
   }
 

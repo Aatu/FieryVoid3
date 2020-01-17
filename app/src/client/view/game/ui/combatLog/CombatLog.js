@@ -23,7 +23,6 @@ class CombatLog extends React.Component {
   render() {
     const { replayContext, gameData, log } = this.props;
 
-    console.log("render combatlog");
     return (
       <LogContainer>
         {log.map((logEntry, i) => (

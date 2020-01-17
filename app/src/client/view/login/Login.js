@@ -12,7 +12,8 @@ import {
   Section,
   Link,
   TooltipContainer,
-  TooltipHeader
+  TooltipHeader,
+  Cell50
 } from "../../styled";
 import { StateStore, DispatchStore } from "../../state/StoreProvider";
 
@@ -59,48 +60,54 @@ const Login = ({ className }) => {
           >
             <TooltipHeader>Login</TooltipHeader>
             <Section>
-              <InputAndLabel
-                label="Username"
-                id="username"
-                placeholder="Username"
-                value={values.username}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                error={touched.username && errors.username}
-              />
-
-              <InputAndLabel
-                label="Password"
-                id="password"
-                placeholder="Password"
-                value={values.password}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                error={touched.password && errors.password}
-                type="password"
-              />
+              <Cell50>
+                <InputAndLabel
+                  label="Username"
+                  id="username"
+                  placeholder="Username"
+                  value={values.username}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  error={touched.username && errors.username}
+                />
+              </Cell50>
+              <Cell50>
+                <InputAndLabel
+                  label="Password"
+                  id="password"
+                  placeholder="Password"
+                  value={values.password}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  error={touched.password && errors.password}
+                  type="password"
+                />
+              </Cell50>
             </Section>
 
             <Section>
-              <Button
-                buttonStyle="button-grey"
-                type="submit"
-                disabled={isSubmitting || Object.entries(errors).length !== 0}
-              >
-                Login
-              </Button>
+              <Cell50>
+                <Button
+                  buttonStyle="button-grey"
+                  type="submit"
+                  disabled={isSubmitting || Object.entries(errors).length !== 0}
+                >
+                  Login
+                </Button>
+              </Cell50>
+              <Cell50>
+                <Button
+                  buttonStyle="button-grey"
+                  onClick={e => {
+                    e.preventDefault();
+                    e.stopPropagation();
 
-              <Button
-                buttonStyle="button-grey"
-                onClick={e => {
-                  e.preventDefault();
-                  e.stopPropagation();
-
-                  alert("not implemented");
-                }}
-              >
-                Register
-              </Button>
+                    alert("not implemented");
+                  }}
+                >
+                  Register
+                </Button>
+              </Cell50>
             </Section>
           </TooltipContainer>
         );

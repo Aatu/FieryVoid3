@@ -15,10 +15,12 @@ const Row = styled.div`
 `;
 
 const Container = styled.div`
-  margin-bottom: 5px;
+  margin: 0 8px 5px 8px;
 `;
 
-const ShipDetailsTooltipEntry = styled(TooltipEntry)``;
+const ShipDetailsTooltipEntry = styled(TooltipEntry)`
+  margin: 2px 0;
+`;
 
 class ShipTooltipDetails extends React.Component {
   getEntry(header, value) {

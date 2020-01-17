@@ -1,4 +1,10 @@
-import React, { Component, useContext } from "react";
+import React, {
+  Component,
+  useContext,
+  useState,
+  useEffect,
+  useCallback
+} from "react";
 import { Redirect } from "react-router-dom";
 import styled from "styled-components";
 import GameData from "../../../model/game/GameData";
@@ -20,15 +26,12 @@ const Container = styled(PanelContainer)`
   width: 1200px;
 `;
 
-class CreateGame extends Component {
-  constructor(props) {
-    super(props);
+const CreateGame = ({ location }) => {
+  const state = useContext(StateStore);
+  const user = state.currentUser;
+  const [gameData, setGameData] = useState(new GameData());
 
-    const state = useContext(StateStore);
-    const user = state.currentUser;
-
-    const gameData = new GameData();
-
+  useEffect(() => {
     gameData.slots.addSlot(
       new GameSlot({
         name: "Blue",
@@ -54,62 +57,61 @@ class CreateGame extends Component {
     gameData.addPlayer(user);
     gameData.name = "Test game";
 
-    this.state = {
-      gameData: gameData
-    };
-  }
+    setGameData(gameData);
+  }, [setGameData]);
 
-  async createGame() {
-    const { gameData } = this.state;
-    try {
-      const response = await createGame(gameData);
-      gameData.id = response.data.gameId;
-      this.setState({ gameData });
-    } catch (e) {
-      console.error(e);
-    }
-  }
+  const changeGameName = useCallback(
+    e => {
+      console.log(e);
+      gameData.name = "hi";
+      setGameData(gameData);
+    },
+    [gameData, setGameData]
+  );
 
-  handleChange() {}
+  const createGame = useCallback(() => {
+    (async () => {
+      try {
+        const response = await createGame(gameData);
+        gameData.id = response.data.gameId;
+        this.setState({ gameData });
+      } catch (e) {
+        console.error(e);
+      }
+    })();
+  }, [gameData]);
 
-  render() {
-    const { gameData, location } = this.state;
-
-    if (gameData.id) {
-      return (
-        <Redirect
-          to={{ pathname: `/game/${gameData.id}`, state: { from: location } }}
-        />
-      );
-    }
+  if (gameData.id) {
     return (
-      <Container>
-        <Link to="/">
-          <Button type="button" buttonStyle="button-grey">
-            Back
-          </Button>
-        </Link>
-        <Title>Create game</Title>
-        <InputAndLabel
-          label="Game name"
-          id="name"
-          placeholder="name"
-          value={gameData.name}
-          onChange={this.handleChange}
-          error={!gameData.name ? "Name is required" : false}
-        />
-
-        <Slots gameData={gameData} />
-        <Button
-          type="button"
-          buttonStyle="button-grey"
-          onClick={this.createGame.bind(this)}
-        >
-          Create game
-        </Button>
-      </Container>
+      <Redirect
+        to={{ pathname: `/game/${gameData.id}`, state: { from: location } }}
+      />
     );
   }
-}
+
+  return (
+    <Container>
+      <Link to="/">
+        <Button type="button" buttonStyle="button-grey">
+          Back
+        </Button>
+      </Link>
+      <Title>Create game</Title>
+      <InputAndLabel
+        label="Game name"
+        id="name"
+        placeholder="name"
+        value={gameData.name}
+        onChange={changeGameName}
+        error={!gameData.name ? "Name is required" : false}
+      />
+
+      <Slots gameData={gameData} />
+      <Button type="button" buttonStyle="button-grey" onClick={createGame}>
+        Create game
+      </Button>
+    </Container>
+  );
+};
 
 export default CreateGame;

@@ -19,7 +19,7 @@ const InfoHeader = styled(TooltipHeader)`
 `;
 
 const ShipTooltipContainer = styled(Tooltip)`
-  width: 300px;
+  width: 315px;
   text-align: left;
   opacity: 0.95;
   position: absolute;

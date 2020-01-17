@@ -19,7 +19,7 @@ class InputAndLabel extends React.Component {
 
     return (
       <Container>
-        <Section>
+        <SubContainer>
           {label && <Label htmlFor={id}>{label}</Label>}
           <Input
             id={id}
@@ -31,7 +31,7 @@ class InputAndLabel extends React.Component {
             tabIndex="0"
             {...rest}
           />
-        </Section>
+        </SubContainer>
         <Error>{error}</Error>
       </Container>
     );
@@ -40,41 +40,43 @@ class InputAndLabel extends React.Component {
 
 const Container = styled.div`
   display: flex;
+  box-sizing: border-box;
   flex-direction: column;
   flex-grow: 1;
-  flex-basis: 100%;
-  margin: 5px 0 5px 0;
-
-  margin-left: 10px;
-  margin-right: 10px;
-
-  &:last-child {
-    margin-right: 0px;
-  }
-
-  &:first-child {
-    margin-left: 0px;
-  }
+  margin: 5px 0px;
 `;
 
-const Label = styled.span`
+const SubContainer = styled.div`
+  position: relative;
   display: flex;
-  flex-grow: 1;
-  flex-basis: 100%;
+  flex: 1 1 100%;
+  margin: 0;
+  padding: 0;
+  flex-wrap: wrap;
+  align-items: center;
+`;
+
+const Label = styled.div`
+  display: flex;
   max-width: 300px;
   color: #deebff;
   align-items: center;
-  margin-right: 10px;
+  padding: 4px 10px 4px 0;
 `;
 
 const Input = styled.input`
-  flex-grow: 1;
-  flex-basis: 100%;
+  display: flex;
   color: #0a3340;
   background-color: white;
   padding: 3px 6px;
   border: 1px solid #04161c;
   border-radius: 3px;
+  width: calc(70% - 12px);
+  height: 16px;
+
+  min-width: 150px;
+  max-width: 100%;
+  flex-grow: 1;
 `;
 
 export { InputAndLabel };

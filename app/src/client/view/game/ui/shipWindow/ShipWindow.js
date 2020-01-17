@@ -13,17 +13,13 @@ const ShipWindowContainer = styled.div`
   font-size: 10px;
   color: white;
   font-family: arial;
+  max-height: 100vh;
+  overflow-y: scroll;
+  margin: 0 8px;
+  scrollbar-width: 0;
 
-  @media (max-width: 1024px) {
-    ${props => {
-      if (props.team === 1) {
-        return "left: 0; \n top: 0; \n right: unset;";
-      } else {
-        return "right: 0; \n top: 0; \n left: unset;";
-      }
-    }}
-    max-height: 100vh;
-    overflow-y: scroll;
+  &::-webkit-scrollbar {
+    width: 0;
   }
 `;
 

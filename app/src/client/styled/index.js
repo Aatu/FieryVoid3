@@ -3,6 +3,7 @@ import * as icons from "./icon";
 import IconAndLabel from "./IconAndLabel";
 
 export {
+  Cell50,
   Container,
   ContainerRoundedRightBottom,
   Backdrop,

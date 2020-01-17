@@ -5,6 +5,8 @@ import Login from "./Login";
 
 const LoginFloaterContainer = styled(Login)`
   position: absolute;
+  width: 20%;
+  min-width: 200px;
   right: 10px;
   top: 10px;
   z-index: 3;
@@ -13,7 +15,6 @@ const LoginFloaterContainer = styled(Login)`
 const LoginFloater = () => {
   const { currentUser } = useContext(StateStore);
 
-  console.log("Login floater", currentUser);
   if (currentUser) {
     return null;
   }

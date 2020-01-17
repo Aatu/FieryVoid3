@@ -16,8 +16,8 @@ import SystemStrategyUi from "./SystemStrategyUi";
 
 const SystemTooltip = styled(Tooltip)`
   top: 0px;
-  right: 335px;
-  width: 200px;
+  right: 340px;
+  width: 202px;
 `;
 
 const Warning = styled.div`
@@ -44,6 +44,7 @@ const HeaderMenuItem = styled.div`
   font-weight: bolder;
   margin-right: 4px;
 
+  ${props => props.active && `color: white;`}
   &:last-child {
     margin: 0;
   }
@@ -105,7 +106,6 @@ class SystemInfo extends React.Component {
 
   getInfoTab() {
     const { system } = this.props;
-    console.log("DESC", system.getSystemDescription());
     return buildTooltipEntries([
       {
         value: system.getSystemDescription()
@@ -164,40 +164,37 @@ class SystemInfo extends React.Component {
         <TooltipHeader>
           {system.getDisplayName()}
           <HeaderMenu>
-            {tab !== "log" && (
-              <HeaderMenuItem
-                onClick={e => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  this.setState({ tab: "log" });
-                }}
-              >
-                L
-              </HeaderMenuItem>
-            )}
-            {tab !== "info" && (
-              <HeaderMenuItem
-                onClick={e => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  this.setState({ tab: "info" });
-                }}
-              >
-                ?
-              </HeaderMenuItem>
-            )}
+            <HeaderMenuItem
+              active={tab === "log"}
+              onClick={e => {
+                e.preventDefault();
+                e.stopPropagation();
+                this.setState({ tab: "log" });
+              }}
+            >
+              L
+            </HeaderMenuItem>
+            <HeaderMenuItem
+              active={tab === "info"}
+              onClick={e => {
+                e.preventDefault();
+                e.stopPropagation();
+                this.setState({ tab: "info" });
+              }}
+            >
+              ?
+            </HeaderMenuItem>
 
-            {tab && (
-              <HeaderMenuItem
-                onClick={e => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  this.setState({ tab: null });
-                }}
-              >
-                X
-              </HeaderMenuItem>
-            )}
+            <HeaderMenuItem
+              active={!tab}
+              onClick={e => {
+                e.preventDefault();
+                e.stopPropagation();
+                this.setState({ tab: null });
+              }}
+            >
+              D
+            </HeaderMenuItem>
           </HeaderMenu>
         </TooltipHeader>
 

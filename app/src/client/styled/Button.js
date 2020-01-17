@@ -29,17 +29,6 @@ const greyButton = css`
   border: none;
   margin: 0;
 
-  margin-left: 10px;
-  margin-right: 10px;
-
-  &:last-child {
-    margin-right: 0px;
-  }
-
-  &:first-child {
-    margin-left: 0px;
-  }
-
   justify-content: center;
 
   &:hover,
