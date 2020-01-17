@@ -5,11 +5,6 @@ import Engine from "../../model/unit/system/engine/Engine.mjs";
 import Reactor from "../../model/unit/system/reactor/Reactor.mjs";
 import DamageEntry from "../../model/unit/system/DamageEntry.mjs";
 
-import {
-  FirstThrustIgnored,
-  EfficiencyHalved
-} from "../../model/unit/system/criticals";
-
 const constructShip = (id = 123) => {
   let ship = new Ship({
     id,
@@ -31,7 +26,6 @@ const constructShip = (id = 123) => {
 test("Ship systems serializes and deserializes nicely", test => {
   let ship = constructShip(73);
 
-  ship.systems.getSystemById(1).addCritical(new FirstThrustIgnored());
   ship.systems.getSystemById(1).addDamage(new DamageEntry(3));
   ship.systems.getSystemById(3).addDamage(new DamageEntry(10));
   ship.systems.getSystemById(5).power.setOffline();
@@ -39,7 +33,6 @@ test("Ship systems serializes and deserializes nicely", test => {
   const serialized = ship.serialize();
 
   let ship2 = constructShip().deserialize(serialized);
-  test.true(ship2.systems.getSystemById(1).hasCritical(FirstThrustIgnored));
   test.is(ship2.systems.getSystemById(1).getTotalDamage(), 3);
   test.true(ship2.systems.getSystemById(3).isDestroyed());
   test.true(ship2.systems.getSystemById(5) instanceof Engine);

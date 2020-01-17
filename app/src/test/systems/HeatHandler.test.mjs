@@ -32,8 +32,8 @@ test("Heat is generated", test => {
   test.deepEqual(
     heater.log.getOpenLogEntryByClass(ShipSystemLogEntryHeat).getMessage(),
     [
-      "Generated 10 and cooled 0 units of heat.",
-      "Current system heat is 10. Overheating 250%.",
+      "Added 10 and cooled 0 units of heat.",
+      "Current system heat was 10. Overheating 250%.",
       "System forced offline until overheat is less than 50%."
     ]
   );
@@ -62,8 +62,8 @@ test("Heat is generated and stored", test => {
   test.deepEqual(
     heater.log.getOpenLogEntryByClass(ShipSystemLogEntryHeat).getMessage(),
     [
-      "Generated 10 and cooled 4 units of heat.",
-      "Current system heat is 6. Overheating 75%."
+      "Added 10 and cooled 4 units of heat.",
+      "Current system heat was 6. Overheating 75%."
     ]
   );
 
@@ -71,7 +71,7 @@ test("Heat is generated and stored", test => {
     heatSink.log.getOpenLogEntryByClass(ShipSystemLogEntryHeat).getMessage(),
     [
       "Added 4 units of heat. Transfered 0 units of heat to radiators.",
-      "Currently storing 4 units of heat."
+      "Stored 4 units of heat."
     ]
   );
 });
@@ -105,8 +105,8 @@ test("Heat is generated, stored and radiated", test => {
   test.deepEqual(
     heater.log.getOpenLogEntryByClass(ShipSystemLogEntryHeat).getMessage(),
     [
-      "Generated 10 and cooled 4 units of heat.",
-      "Current system heat is 6. Overheating 75%."
+      "Added 10 and cooled 4 units of heat.",
+      "Current system heat was 6. Overheating 75%."
     ]
   );
 
@@ -114,7 +114,7 @@ test("Heat is generated, stored and radiated", test => {
     heatSink.log.getOpenLogEntryByClass(ShipSystemLogEntryHeat).getMessage(),
     [
       "Added 4 units of heat. Transfered 4 units of heat to radiators.",
-      "Currently storing 0 units of heat."
+      "Stored 0 units of heat."
     ]
   );
 

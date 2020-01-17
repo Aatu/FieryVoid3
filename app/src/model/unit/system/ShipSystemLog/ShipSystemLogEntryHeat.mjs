@@ -126,7 +126,7 @@ class ShipSystemLogEntryHeat extends ShipSystemLogEntry {
     }
 
     messages.push(
-      `Currently storing ${this.intialHeatStored +
+      `Stored ${this.intialHeatStored +
         this.newHeatStored -
         this.heatGivenToRadiators} units of heat.`
     );
@@ -139,13 +139,13 @@ class ShipSystemLogEntryHeat extends ShipSystemLogEntry {
 
     if (this.heatGenerated || this.heatCooled) {
       messages.push(
-        `Generated ${Math.round(this.heatGenerated)} and cooled ${Math.round(
+        `Added ${Math.round(this.heatGenerated)} and cooled ${Math.round(
           this.heatCooled
         )} units of heat.`
       );
     }
 
-    let heatMessage = `Current system heat is ${Math.round(this.overheat)}.`;
+    let heatMessage = `Current system heat was ${Math.round(this.overheat)}.`;
 
     messages.push();
 

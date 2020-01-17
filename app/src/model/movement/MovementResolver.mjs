@@ -1,12 +1,7 @@
 import hexagon from "../hexagon/index.mjs";
 import { addToHexFacing } from "../utils/math.mjs";
 
-import {
-  MovementOrder,
-  movementTypes,
-  ThrustBill,
-  OverChannelResolver
-} from "./index.mjs";
+import { MovementOrder, movementTypes, ThrustBill } from "./index.mjs";
 
 class MovementResolver {
   constructor(ship, movementService, turn) {
@@ -19,24 +14,12 @@ class MovementResolver {
     if (bill.pay()) {
       const newMovement = bill.getMoves();
 
-      const initialOverChannel = new OverChannelResolver(
-        this.ship.movement.getThrusters(),
-        this.ship.movement.getMovement()
-      ).getAmountOverChanneled();
-
-      const newOverChannel = new OverChannelResolver(
-        this.ship.movement.getThrusters(),
-        newMovement
-      ).getAmountOverChanneled();
-
       if (commit) {
         this.ship.movement.replaceMovement(newMovement);
         this.movementService.shipStateChanged(this.ship);
       }
-      return {
-        result: true,
-        overChannel: newOverChannel - initialOverChannel > 0
-      };
+
+      return true;
     } else if (commit) {
       throw new Error(
         "Tried to commit move that was not legal. Check legality first!"

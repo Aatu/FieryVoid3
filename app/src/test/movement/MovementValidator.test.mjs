@@ -11,11 +11,7 @@ import Engine from "../../model/unit/system/engine/Engine.mjs";
 import Reactor from "../../model/unit/system/reactor/Reactor.mjs";
 import DamageEntry from "../../model/unit/system/DamageEntry.mjs";
 import ManeuveringThruster from "../../model/unit/system/thruster/ManeuveringThruster.mjs";
-
-import {
-  FirstThrustIgnored,
-  EfficiencyHalved
-} from "../../model/unit/system/criticals";
+import OutputReduced from "../../model/unit/system/criticals/OutputReduced.mjs";
 
 const startMove = new MovementOrder(
   -1,
@@ -56,7 +52,7 @@ const constructShip = (id = 123) => {
     new Thruster({ id: 9, hitpoints: 10, armor: 3 }, 5, [4, 5]),
     new Thruster({ id: 3, hitpoints: 10, armor: 3 }, 5, 3),
     new Thruster({ id: 4, hitpoints: 10, armor: 3 }, 5, 3),
-    new ManeuveringThruster({ id: 10, hitpoints: 10, armor: 3 }, 6, 3),
+    new ManeuveringThruster({ id: 10, hitpoints: 10, armor: 3 }, 9, 3),
     new Engine({ id: 5, hitpoints: 10, armor: 3 }, 12, 6, 2),
     new Engine({ id: 6, hitpoints: 10, armor: 3 }, 12, 6, 2),
     new Reactor({ id: 7, hitpoints: 10, armor: 3 }, 20)
@@ -85,9 +81,7 @@ test("Valid movement", test => {
 
   movementService.roll(ship);
   movementService.evade(ship, 1);
-  movementService.evade(ship, 1);
   movementService.pivot(ship, 1);
-  movementService.thrust(ship, 1);
   movementService.thrust(ship, 1);
   movementService.thrust(ship, 1);
   movementService.thrust(ship, 1);
@@ -103,9 +97,7 @@ test("Ship accelcost has been tampered", test => {
   ship.accelcost = 1;
   movementService.roll(ship);
   movementService.evade(ship, 1);
-  movementService.evade(ship, 1);
   movementService.pivot(ship, 1);
-  movementService.thrust(ship, 1);
   movementService.thrust(ship, 1);
   movementService.thrust(ship, 1);
   movementService.thrust(ship, 1);
@@ -123,9 +115,7 @@ test("Ship pivotcost has been tampered", test => {
   ship.pivotcost = 1;
   movementService.roll(ship);
   movementService.evade(ship, 1);
-  movementService.evade(ship, 1);
   movementService.pivot(ship, 1);
-  movementService.thrust(ship, 1);
   movementService.thrust(ship, 1);
   movementService.thrust(ship, 1);
   movementService.thrust(ship, 1);
@@ -143,9 +133,7 @@ test("Ship rollcost has been tampered", test => {
   ship.rollcost = 0;
   movementService.roll(ship);
   movementService.evade(ship, 1);
-  movementService.evade(ship, 1);
   movementService.pivot(ship, 1);
-  movementService.thrust(ship, 1);
   movementService.thrust(ship, 1);
   movementService.thrust(ship, 1);
   movementService.thrust(ship, 1);
@@ -163,9 +151,7 @@ test("Ship evasioncost has been tampered", test => {
   ship.evasioncost = 0;
   movementService.roll(ship);
   movementService.evade(ship, 1);
-  movementService.evade(ship, 1);
   movementService.pivot(ship, 1);
-  movementService.thrust(ship, 1);
   movementService.thrust(ship, 1);
   movementService.thrust(ship, 1);
   movementService.thrust(ship, 1);
@@ -182,9 +168,7 @@ test("Destroyed thruster has been used", test => {
 
   movementService.roll(ship);
   movementService.evade(ship, 1);
-  movementService.evade(ship, 1);
   movementService.pivot(ship, 1);
-  movementService.thrust(ship, 1);
   movementService.thrust(ship, 1);
   movementService.thrust(ship, 1);
   movementService.thrust(ship, 1);
@@ -203,19 +187,17 @@ test("Thruster critical has been ignored", test => {
 
   movementService.roll(ship);
   movementService.evade(ship, 1);
-  movementService.evade(ship, 1);
   movementService.pivot(ship, 1);
-  movementService.thrust(ship, 1);
   movementService.thrust(ship, 1);
   movementService.thrust(ship, 1);
   movementService.thrust(ship, 1);
 
   const thruster = ship.systems.getSystemById(4);
-  thruster.addCritical(new EfficiencyHalved());
+  thruster.addCritical(new OutputReduced(4));
 
   const validator = new MovementValidator(ship, 999, deployMove);
   const error = test.throws(() => validator.validate());
-  test.is(error.message, "Insufficient engine power: required 29 produced: 24");
+  test.is(error.message, "Thruster 4 can not channel 5");
 });
 
 test("Ship tries to teleport", test => {
@@ -224,9 +206,7 @@ test("Ship tries to teleport", test => {
 
   movementService.roll(ship);
   movementService.evade(ship, 1);
-  movementService.evade(ship, 1);
   movementService.pivot(ship, 1);
-  movementService.thrust(ship, 1);
   movementService.thrust(ship, 1);
   movementService.thrust(ship, 1);
   movementService.thrust(ship, 1);

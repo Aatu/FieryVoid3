@@ -102,7 +102,7 @@ class Fulcrum extends Ship {
         3,
         2
       ),
-      new systems.Thruster({ id: 203, hitpoints: 15, armor: 3 }, 12, 3),
+      new systems.Thruster({ id: 203, hitpoints: 15, armor: 3 }, 21, 3),
 
       new systems.PDC30mm(
         { id: 214, hitpoints: 5, armor: 3 },

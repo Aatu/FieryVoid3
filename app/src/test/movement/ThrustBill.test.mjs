@@ -6,11 +6,8 @@ import hexagon from "../../model/hexagon";
 import Thruster from "../../model/unit/system/thruster/Thruster.mjs";
 import ManeuveringThruster from "../../model/unit/system/thruster/ManeuveringThruster.mjs";
 import Ship from "../../model/unit/Ship.mjs";
-
-import {
-  FirstThrustIgnored,
-  EfficiencyHalved
-} from "../../model/unit/system/criticals";
+import ThrustChannelHeatIncreased from "../../model/unit/system/criticals/ThrustChannelHeatIncreased.mjs";
+import OutputReduced from "../../model/unit/system/criticals/OutputReduced.mjs";
 
 let id = 0;
 
@@ -124,32 +121,58 @@ test("it uses thrusters properly", test => {
   ship = new Ship();
   ship.accelcost = 3;
 
-  ship.systems.addPrimarySystem([
-    getThruster(0, 3),
-    getThruster(0, 3, [FirstThrustIgnored, EfficiencyHalved])
-  ]);
+  ship.systems.addPrimarySystem([getThruster(0, 3), getThruster(0, 3)]);
 
   const bill = new ThrustBill(ship, 10, []);
-  bill.useThrusters(0, 5, bill.thrusters, false);
-  test.deepEqual(bill.thrusters[0].channeled, 3);
-  test.deepEqual(bill.thrusters[1].channeled, 2);
-  test.deepEqual(bill.cost, 8);
+  bill.useThrusters(0, 5, bill.thrusters);
+  test.deepEqual(bill.thrusters[0].channeled, 2);
+  test.deepEqual(bill.thrusters[1].channeled, 3);
+  test.deepEqual(bill.cost, 5);
 });
 
-test("it uses thrusters properly, with overthrust", test => {
+test("it uses thrusters properly, with one thruster already overheating", test => {
   ship = new Ship();
   ship.accelcost = 3;
 
-  ship.systems.addPrimarySystem([
-    getThruster(0, 3),
-    getThruster(0, 3, [FirstThrustIgnored, EfficiencyHalved])
-  ]);
+  const thruster = getThruster(0, 5);
+  thruster.heat.overheat = 2;
+  ship.systems.addPrimarySystem([getThruster(0, 5), thruster]);
 
   const bill = new ThrustBill(ship, 10, []);
   bill.useThrusters(0, 5, bill.thrusters, true);
-  test.deepEqual(bill.thrusters[0].channeled, 5);
-  test.deepEqual(bill.thrusters[1].channeled, 0);
+  test.deepEqual(bill.thrusters[0].channeled, 4);
+  test.deepEqual(bill.thrusters[1].channeled, 1);
   test.deepEqual(bill.cost, 5);
+});
+
+test("it uses thrusters properly, when one thruster heats faster", test => {
+  ship = new Ship();
+  ship.accelcost = 3;
+
+  const thruster = getThruster(0, 5);
+  thruster.addCritical(new ThrustChannelHeatIncreased(1));
+  ship.systems.addPrimarySystem([getThruster(0, 5), thruster]);
+
+  const bill = new ThrustBill(ship, 10, []);
+  bill.useThrusters(0, 6, bill.thrusters, true);
+  test.deepEqual(bill.thrusters[0].channeled, 4);
+  test.deepEqual(bill.thrusters[1].channeled, 2);
+  test.deepEqual(bill.cost, 6);
+});
+
+test("it uses thrusters properly, when one thruster has output reduced", test => {
+  ship = new Ship();
+  ship.accelcost = 3;
+
+  const thruster = getThruster(0, 5);
+  thruster.addCritical(new OutputReduced(4));
+  ship.systems.addPrimarySystem([getThruster(0, 5), thruster]);
+
+  const bill = new ThrustBill(ship, 10, []);
+  bill.useThrusters(0, 6, bill.thrusters, true);
+  test.deepEqual(bill.thrusters[0].channeled, 5);
+  test.deepEqual(bill.thrusters[1].channeled, 1);
+  test.deepEqual(bill.cost, 6);
 });
 
 test("It manages to pay a simple manouver", test => {
@@ -166,152 +189,6 @@ test("It manages to pay a simple manouver", test => {
   const bill = new ThrustBill(ship, 10, moves);
   test.true(bill.pay());
 });
-
-test("It manages to pay a simple manouver with overthrusting", test => {
-  ship = new Ship();
-  ship.accelcost = 3;
-
-  ship.systems.addPrimarySystem([getThruster(0, 3), getThruster(3, 3)]);
-
-  const moves = [
-    getMovementOrder("speed", 0, 0),
-    getMovementOrder("speed", 0, 0),
-    getMovementOrder("speed", 0, 3)
-  ];
-
-  const bill = new ThrustBill(ship, 10, moves);
-  test.true(bill.pay());
-});
-
-test("It will use damaged thrusters", test => {
-  ship = new Ship();
-  ship.accelcost = 3;
-
-  ship.systems.addPrimarySystem([
-    getThruster(0, 3),
-    getThruster(0, 3, [FirstThrustIgnored]),
-    getThruster(3, 3)
-  ]);
-
-  const moves = [
-    getMovementOrder("speed", 0, 0),
-    getMovementOrder("speed", 0, 3),
-    getMovementOrder("speed", 0, 3),
-    getMovementOrder("speed", 0, 3)
-  ];
-
-  const bill = new ThrustBill(ship, 15, moves);
-  const result = bill.pay();
-  test.true(result);
-  test.deepEqual(bill.cost, 13);
-});
-
-test("It gives thrusters in proper order", test => {
-  ship = new Ship();
-  ship.accelcost = 3;
-
-  ship.systems.addPrimarySystem([
-    getThruster(0, 3),
-    getThruster(0, 3, [FirstThrustIgnored]),
-    getThruster(0, 4)
-  ]);
-
-  const moves = [
-    getMovementOrder("speed", 0, 0),
-    getMovementOrder("speed", 0, 0),
-    getMovementOrder("speed", 0, 0)
-  ];
-
-  const bill = new ThrustBill(ship, 10, moves);
-  const sortedThrusters = bill.getAllUsableThrusters(0);
-
-  test.deepEqual(sortedThrusters.length, 3);
-  test.deepEqual(sortedThrusters[0].capacity, 4);
-  test.deepEqual(sortedThrusters[0].getDamageLevel(), 0);
-  test.deepEqual(sortedThrusters[1].capacity, 3);
-  test.deepEqual(sortedThrusters[1].getDamageLevel(), 0);
-  test.deepEqual(sortedThrusters[2].capacity, 3);
-  test.deepEqual(sortedThrusters[2].getDamageLevel(), 1);
-});
-
-test("It will rather use damaged thrusters than overthrust, if possible", test => {
-  ship = new Ship();
-  ship.accelcost = 3;
-
-  ship.systems.addPrimarySystem([
-    getThruster(0, 3),
-    getThruster(0, 3, [FirstThrustIgnored]),
-    getThruster(3, 3)
-  ]);
-
-  const moves = [
-    getMovementOrder("speed", 0, 0),
-    getMovementOrder("speed", 0, 3),
-    getMovementOrder("speed", 0, 3)
-  ];
-
-  const bill = new ThrustBill(ship, 10, moves);
-  test.true(bill.pay());
-  test.deepEqual(bill.cost, 10);
-
-  test.deepEqual(bill.thrusters[1].channeled, 3);
-  test.deepEqual(bill.thrusters[0].channeled, 3);
-  test.true(bill.thrusters[1].damaged);
-});
-
-test("No budget to reallocate all overthrust", test => {
-  ship = new Ship();
-  ship.accelcost = 3;
-
-  ship.systems.addPrimarySystem([
-    getThruster(0, 3),
-    getThruster(0, 3, [EfficiencyHalved]),
-    getThruster(3, 3)
-  ]);
-
-  const moves = [
-    getMovementOrder("speed", 0, 0),
-    getMovementOrder("speed", 0, 3),
-    getMovementOrder("speed", 0, 3)
-  ];
-
-  const bill = new ThrustBill(ship, 10, moves);
-  test.true(bill.pay());
-  test.deepEqual(bill.cost, 10);
-  test.true(bill.isOverChanneled());
-
-  test.deepEqual(bill.thrusters[1].channeled, 1);
-  test.deepEqual(bill.thrusters[0].channeled, 5);
-  test.true(bill.thrusters[1].damaged);
-
-  const newMoves = bill.getMoves();
-
-  expectDirectionsEmptyForRequiredThrust([0, 1, 2, 4, 5], newMoves[0], test);
-  expectDirectionsEqualForRequiredThrust(3, newMoves[0], [3], test);
-
-  expectDirectionsEmptyForRequiredThrust([3, 1, 2, 4, 5], newMoves[1], test);
-  expectDirectionsEqualForRequiredThrust(0, newMoves[1], [3], test);
-
-  expectDirectionsEmptyForRequiredThrust([3, 1, 2, 4, 5], newMoves[2], test);
-  expectDirectionsEqualForRequiredThrust(0, newMoves[2], [2, 1], test);
-});
-
-const expectDirectionsEmptyForRequiredThrust = (directions, move, test) => {
-  directions.forEach(direction => {
-    test.deepEqual(move.requiredThrust.fullfilments[direction], []);
-  });
-};
-
-const expectDirectionsEqualForRequiredThrust = (
-  direction,
-  move,
-  equal,
-  test
-) => {
-  move.requiredThrust.fullfilments[direction].forEach((entry, i) =>
-    test.deepEqual(entry.amount, equal[i])
-  );
-};
 
 test("It uses manouveringThrusters correctly", test => {
   ship = new Ship();

@@ -10,7 +10,8 @@ import {
   RelativeTooltip,
   TooltipValueHeader,
   InlineTooltipEntry,
-  buildTooltipEntries
+  buildTooltipEntries,
+  TooltipSubHeader
 } from "../../../../styled";
 import SystemStrategyUi from "./SystemStrategyUi";
 
@@ -114,7 +115,22 @@ class SystemInfo extends React.Component {
   }
 
   getLogTab() {
-    return null;
+    const { system } = this.props;
+
+    const messages = system.log.getWithTurns();
+
+    console.log(messages);
+
+    return messages.map(({ turn, messages }, index) => (
+      <div key={`systemlog-turn-${turn}-${index}`}>
+        <TooltipSubHeader>{`Log, turn ${turn}`}</TooltipSubHeader>
+        {messages.map((message, messageIndex) => (
+          <TooltipEntry key={`logmessage-${turn}-${index}-${messageIndex}`}>
+            <TooltipValue>{message}</TooltipValue>
+          </TooltipEntry>
+        ))}
+      </div>
+    ));
   }
 
   getDefaultTab() {

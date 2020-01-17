@@ -65,91 +65,37 @@ class ThrustBill {
     return this.getCurrentThrustRequired() === 0;
   }
 
-  getUndamagedThrusters(direction) {
-    return this.thrusters
-      .filter(thruster => {
-        return (
-          thruster.getDamageLevel() === 0 && thruster.isDirection(direction)
-        );
-      })
-      .sort(this.sortThrusters);
-  }
-
   getAllUsableThrusters(direction) {
     return this.thrusters
       .filter(thruster => {
-        const { capacity, overCapacity } = thruster.getThrustCapacity();
+        const capacity = thruster.getThrustCapacity();
 
-        return (
-          thruster.isDirection(direction) && (capacity > 0 || overCapacity > 0)
-        );
+        return thruster.isDirection(direction) && capacity > 0;
       })
       .sort(this.sortThrusters);
   }
 
-  getOverChannelers(direction) {
-    return this.thrusters
-      .filter(thruster => thruster.isDirection(direction))
-      .filter(thruster => thruster.getOverChannel() > 0)
-      .filter(thruster => !thruster.isDamaged())
-      .sort(this.sortThrusters);
-  }
-
-  getNonOverChannelers(direction) {
-    const overChannelers = this.getOverChannelers(direction);
-    return this.getAllUsableThrusters(direction)
-      .filter(thruster => thruster.canChannel())
-      .filter(thruster => !overChannelers.includes(thruster));
-  }
-
   sortThrusters(a, b) {
-    const damageA = a.getDamageLevel();
-    const damageB = b.getDamageLevel();
+    const aHeat = a.getOverheat();
+    const bHeat = b.getOverheat();
 
-    if (damageA !== damageB) {
-      if (damageA > damageB) {
-        return 1;
-      } else {
-        return -1;
-      }
+    if (aHeat > bHeat) {
+      return -1;
     }
 
-    if (a.firstIgnored && !b.firstIgnored) {
-      return -1;
-    } else if (b.firstIgnored && !a.firstIgnored) {
+    if (aHeat > bHeat) {
       return 1;
     }
 
-    const {
-      capacity: capacityA,
-      overCapacity: overCapacityA
-    } = a.getThrustCapacity();
-    const {
-      capacity: capacityB,
-      overCapacity: overCapacityB
-    } = b.getThrustCapacity();
-
-    if (capacityA !== capacityB) {
-      if (capacityA > capacityB) {
-        return -1;
-      } else {
-        return 1;
-      }
+    if (a.channeled > b.channeled) {
+      return -1;
     }
 
-    if (overCapacityA !== overCapacityB) {
-      if (overCapacityA > overCapacityB) {
-        return -1;
-      } else {
-        return 1;
-      }
+    if (a.channeled < b.channeled) {
+      return 1;
     }
 
     return 0;
-  }
-
-  isOverChanneled() {
-    return this.thrusters.some(thruster => thruster.getOverChannel() > 0);
   }
 
   errorIfOverBudget() {
@@ -172,18 +118,7 @@ class ThrustBill {
         throw new Error("over budget");
       }
 
-      if (
-        this.process(direction => this.getUndamagedThrusters(direction), false) //do not overthrust
-      ) {
-        this.paid = true;
-        return true;
-      }
-
-      this.process(direction => this.getUndamagedThrusters(direction), true); //OVERTHRUST
-
-      this.process(direction => this.getAllUsableThrusters(direction), true); //use damaged thrusters too
-
-      this.reallocateOverChannelForAllDirections(); //try to move over channel from good thrusters to already damaged ones
+      this.process();
 
       this.paid = this.isPaid();
       return this.paid;
@@ -197,53 +132,7 @@ class ThrustBill {
     }
   }
 
-  reallocateOverChannelForAllDirections() {
-    Object.keys(this.directionsRequired).forEach(direction => {
-      direction = parseInt(direction, 10);
-
-      this.reallocateOverChannel(direction);
-    });
-  }
-
-  reallocateOverChannel(direction) {
-    const overChannelers = this.getOverChannelers(direction);
-
-    overChannelers.forEach(thruster =>
-      this.reallocateSingleOverChannelThruster(
-        thruster,
-        direction,
-        this.getNonOverChannelers(direction)
-      )
-    );
-  }
-
-  reallocateSingleOverChannelThruster(thruster, direction, otherThrusters) {
-    if (otherThrusters.length === 0) {
-      return;
-    }
-
-    otherThrusters.forEach(otherThruster => {
-      while (thruster.getOverChannel() > 0) {
-        const { capacity } = otherThruster.getThrustCapacity();
-
-        if (capacity === 0) {
-          return;
-        }
-
-        this.undoThrusterUse(thruster, direction, 1);
-
-        this.useThruster(otherThruster, direction, 1);
-
-        if (this.isOverBudget()) {
-          this.undoThrusterUse(otherThruster, direction, 1);
-          this.useThruster(thruster, direction, 1, true);
-          return; //tried to, but best thruster was too expensive
-        }
-      }
-    });
-  }
-
-  process(thrusterProvider, overChannel = false) {
+  process() {
     Object.keys(this.directionsRequired).forEach(direction => {
       const required = this.directionsRequired[direction];
       direction = parseInt(direction, 10);
@@ -252,54 +141,34 @@ class ThrustBill {
         return;
       }
 
-      const thrusters = thrusterProvider(direction);
-      this.useThrusters(direction, required, thrusters, overChannel);
+      this.useThrusters(direction, required);
     });
 
     return this.isPaid();
   }
 
-  useThrusters(direction, required, thrusters, allowOverChannel = false) {
-    thrusters.forEach(thruster => {
-      if (required <= 0) {
+  useThrusters(direction, required) {
+    let assigned = 0;
+
+    while (true) {
+      const thrusters = this.getAllUsableThrusters(direction);
+
+      if (thrusters.length === 0) {
         return;
       }
 
-      if (!thruster.isDirection(direction)) {
-        throw new Error("Trying to use thruster to wrong direction");
+      if (assigned === required) {
+        return;
       }
 
-      required = this.useThruster(
-        thruster,
-        direction,
-        required,
-        allowOverChannel
-      );
+      const thruster = thrusters.pop();
+      thruster.channel(1);
+      this.directionsRequired[direction] -= 1;
+      this.cost += 1;
+      assigned += 1;
 
       this.errorIfOverBudget();
-    });
-  }
-
-  useThruster(thruster, direction, amount, allowOverChannel = false) {
-    const { channeled, overChanneled, cost } = thruster.channel(
-      amount,
-      allowOverChannel
-    );
-
-    this.directionsRequired[direction] -= channeled;
-    this.directionsRequired[direction] -= overChanneled;
-
-    this.cost += cost;
-
-    amount -= channeled;
-    amount -= overChanneled;
-
-    return amount;
-  }
-
-  undoThrusterUse(thruster, direction, amount) {
-    this.cost -= thruster.undoChannel(amount).refund;
-    this.directionsRequired[direction] += amount;
+    }
   }
 
   buildRequiredThrust(movement) {

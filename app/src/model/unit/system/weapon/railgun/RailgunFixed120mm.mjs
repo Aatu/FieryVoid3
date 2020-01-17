@@ -34,7 +34,7 @@ class RailgunFixed120mm extends Weapon {
         speed: 1.3,
         color: [1.0, 0.8, 0.4]
       }),
-      new OutputHeatOnlineStrategy(6, 3)
+      new OutputHeatOnlineStrategy(3, 2)
     ]);
   }
 

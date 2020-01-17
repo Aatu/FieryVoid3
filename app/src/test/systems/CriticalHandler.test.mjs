@@ -4,6 +4,7 @@ import DamageEntry from "../../model/unit/system/DamageEntry.mjs";
 import CriticalHandler from "../../server/handler/CriticalHandler.mjs";
 import OutputReduced from "../../model/unit/system/criticals/OutputReduced.mjs";
 import ForcedOffline from "../../model/unit/system/criticals/ForcedOffline.mjs";
+import ShipSystemLogEntryCriticalHit from "../../model/unit/system/ShipSystemLog/ShipSystemLogEntryCriticalHit.mjs";
 
 test("Critical handler adds a critical", test => {
   const ship = new TestShip({ id: 1 });
@@ -18,7 +19,22 @@ test("Critical handler adds a critical", test => {
 
   criticalHandler.advance({ ships: { getShips: () => [ship] } });
 
-  test.deepEqual(engine.damage.getCriticals(), [new ForcedOffline(4)]);
+  const actual = engine.damage.getCriticals()[0];
+  actual.id = null;
+  const expected = new ForcedOffline(4);
+  expected.id = null;
+  test.deepEqual(actual, expected);
+
+  const logEntry = engine.log.getOpenLogEntryByClass(
+    ShipSystemLogEntryCriticalHit
+  );
+
+  test.deepEqual(logEntry.getMessage(), [
+    "Tested for critical damage:",
+    "Existing damage: 0, new: 38, overheat: 0, random: 50, total: 88",
+    "Resulted in critical:",
+    '"Forced offline for 5 turns"'
+  ]);
 });
 
 test("Critical handler upgrades a critical", test => {
@@ -35,7 +51,11 @@ test("Critical handler upgrades a critical", test => {
 
   criticalHandler.advance({ ships: { getShips: () => [ship] } });
 
-  test.deepEqual(engine.damage.getCriticals(), [new OutputReduced(2, 3)]);
+  const actual = engine.damage.getCriticals()[0];
+  actual.id = null;
+  const expected = new OutputReduced(2, 3);
+  expected.id = null;
+  test.deepEqual(actual, expected);
 });
 
 test("Critical handler chooses best critical if ceiling is too high", test => {
@@ -53,7 +73,11 @@ test("Critical handler chooses best critical if ceiling is too high", test => {
 
   criticalHandler.advance({ ships: { getShips: () => [ship] } });
 
-  test.deepEqual(engine.damage.getCriticals(), [new OutputReduced(6)]);
+  const actual = engine.damage.getCriticals()[0];
+  actual.id = null;
+  const expected = new OutputReduced(6);
+  expected.id = null;
+  test.deepEqual(actual, expected);
 });
 
 test("Critical handler does not add a critical if dice says so", test => {

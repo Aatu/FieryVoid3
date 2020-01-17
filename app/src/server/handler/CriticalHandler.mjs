@@ -1,3 +1,5 @@
+import ShipSystemLogEntryCriticalHit from "../../model/unit/system/ShipSystemLog/ShipSystemLogEntryCriticalHit.mjs";
+
 class CriticalHandler {
   advance(gameData) {
     gameData.ships.getShips().forEach(ship => {
@@ -17,9 +19,13 @@ class CriticalHandler {
       return;
     }
 
+    const logEntry = system.log.getOpenLogEntryByClass(
+      ShipSystemLogEntryCriticalHit
+    );
+
     const damage = system.damage.getTotalDamage() - newDamage;
 
-    const ceil = this.getCeil(damage, newDamage, overheat, hitpoints);
+    const ceil = this.getCeil(damage, newDamage, overheat, hitpoints, logEntry);
     const floor = this.getFloor(ceil);
 
     const possibleCriticals = system
@@ -64,13 +70,27 @@ class CriticalHandler {
 
     system.damage.filterReplaced(newCritical);
     system.addCritical(newCritical);
+    logEntry.setCriticalMessage(newCritical.getMessage());
   }
 
-  getCeil(damage, newDamage, overheat, hitpoints) {
+  getCeil(damage, newDamage, overheat, hitpoints, logEntry) {
+    const oldDamagePercent = Math.round(((damage * 0.5) / hitpoints) * 50);
+    const newDamagePercent = Math.round(((newDamage * 1.5) / hitpoints) * 50);
+    let heatPercent = Math.round((overheat - 1) * 25);
+    const randomPercent = Math.round(this.getRandomBonus());
+
+    if (heatPercent < 0) {
+      heatPercent = 0;
+    }
+
+    logEntry.setOldDamagePoints(oldDamagePercent);
+    logEntry.setNewDamagePoints(newDamagePercent);
+    logEntry.setOverHeatPoints(heatPercent);
+    logEntry.setExtraPoints(randomPercent);
+
     const ceil =
-      Math.round(((damage * 0.5 + newDamage * 1.5) / hitpoints) * 50) +
-      overheat * 5 +
-      this.getRandomBonus();
+      oldDamagePercent + newDamagePercent + heatPercent + randomPercent;
+    this.getRandomBonus();
 
     if (ceil > 100) {
       return 100;

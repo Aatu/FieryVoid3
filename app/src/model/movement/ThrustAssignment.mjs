@@ -1,8 +1,3 @@
-import {
-  FirstThrustIgnored,
-  EfficiencyHalved
-} from "../unit/system/criticals/index.mjs";
-
 class ThrustAssignment {
   constructor(thruster) {
     this.thruster = thruster;
@@ -11,16 +6,17 @@ class ThrustAssignment {
     this.paid = 0;
     this.channeled = 0;
     this.capacity = thruster.callHandler("getThrustChannel");
-
-    this.firstIgnored = thruster.hasCritical(FirstThrustIgnored);
-
-    this.halfEfficiency = thruster.hasCritical(EfficiencyHalved);
-
-    this.damaged = this.firstIgnored || this.halfEfficiency;
   }
 
-  isDamaged() {
-    return this.damaged;
+  getOverheat() {
+    return (
+      this.thruster.heat.getOverheat() +
+      this.thruster.callHandler(
+        "getHeatForThrust",
+        { amount: this.channeled },
+        0
+      )
+    );
   }
 
   isDirection(direction) {
@@ -31,101 +27,18 @@ class ThrustAssignment {
     return this.channeled < this.capacity;
   }
 
-  canOverChannel() {
-    return !this.damaged && this.channeled < this.capacity * 2;
-  }
+  getThrustCapacity() {
+    const capacity = this.capacity - this.channeled;
 
-  getOverChannel() {
-    let overThrust = this.channeled - this.capacity;
-    if (overThrust < 0) {
-      overThrust = 0;
-    }
-
-    return overThrust;
-  }
-
-  getDamageLevel() {
-    if (this.firstIgnored && !this.halfEfficiency && this.channeled === 0) {
-      return 1;
-    } else if (
-      this.halfEfficiency &&
-      (!this.firstIgnored || this.channeled > 0)
-    ) {
-      return 2;
-    } else if (
-      this.halfEfficiency &&
-      this.firstIgnored &&
-      this.channeled === 0
-    ) {
-      return 3;
-    } else {
+    if (capacity < 0) {
       return 0;
     }
+
+    return capacity;
   }
 
-  getThrustCapacity() {
-    const result = {
-      capacity: this.capacity - this.channeled,
-      overCapacity: 0,
-      extraCost: this.firstIgnored && this.channeled === 0 ? 1 : 0,
-      costMultiplier: this.halfEfficiency ? 2 : 1
-    };
-
-    if (!this.damaged) {
-      if (this.channeled <= this.capacity) {
-        result.overCapacity = this.capacity;
-      } else {
-        result.overCapacity = this.capacity - (this.channeled - this.capacity);
-      }
-    }
-
-    if (result.capacity < 0) {
-      result.capacity = 0;
-    }
-
-    return result;
-  }
-
-  overChannel(amount) {
-    return this.channel(amount, true);
-  }
-
-  channel(amount, overthrust = false) {
-    const {
-      capacity,
-      overCapacity,
-      extraCost,
-      costMultiplier
-    } = this.getThrustCapacity();
-
-    const result = {
-      channeled: 0,
-      overChanneled: 0,
-      cost: 0
-    };
-
-    if (capacity >= amount) {
-      result.channeled = amount;
-      amount = 0;
-    } else {
-      result.channeled = capacity;
-      amount -= capacity;
-    }
-
-    if (amount > 0 && overthrust) {
-      if (overCapacity >= amount) {
-        result.overChanneled = amount;
-        amount = 0;
-      } else {
-        result.overChanneled = overCapacity;
-      }
-    }
-
-    result.cost =
-      (result.channeled + result.overChanneled) * costMultiplier + extraCost;
-
-    this.channeled += result.channeled + result.overChanneled;
-    return result;
+  channel(amount) {
+    this.channeled += amount;
   }
 
   undoChannel(amount) {
@@ -134,18 +47,6 @@ class ThrustAssignment {
     }
 
     this.channeled = this.channeled - amount;
-
-    let extraRefund = 0;
-
-    if (this.channeled === 0 && this.firstIgnored) {
-      extraRefund = 1;
-    }
-
-    if (this.halfEfficiency) {
-      return { refund: amount * 2 + extraRefund };
-    } else {
-      return { refund: amount + extraRefund };
-    }
   }
 }
 

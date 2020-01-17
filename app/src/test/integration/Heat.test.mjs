@@ -26,15 +26,15 @@ test.serial("Test weapon heats up", async test => {
   let railgun = achilles.systems.getSystemById(101);
 
   test.deepEqual(railgun.log.getMessagesForTurn(1), [
-    "Generated 5 and cooled 5 units of heat.",
-    "Current system heat is 0."
+    "Added 5 and cooled 5 units of heat.",
+    "Current system heat was 0."
   ]);
 
   test.deepEqual(
     achilles.systems.getSystemById(205).log.getMessagesForTurn(1),
     [
       "Added 10 units of heat. Transfered 5 units of heat to radiators.",
-      "Currently storing 5 units of heat.",
+      "Stored 5 units of heat.",
       "Radiated 5 units of heat."
     ]
   );

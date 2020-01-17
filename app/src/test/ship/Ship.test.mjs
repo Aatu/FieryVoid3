@@ -8,11 +8,6 @@ import { createShipObject } from "../../model/unit/createShipObject";
 import DamageEntry from "../../model/unit/system/DamageEntry.mjs";
 import User from "../../model/User";
 
-import {
-  FirstThrustIgnored,
-  EfficiencyHalved
-} from "../../model/unit/system/criticals";
-
 const startMove = new MovementOrder(
   -1,
   movementTypes.START,
@@ -55,23 +50,3 @@ const compareMovements = (test, moves1, moves2) => {
     moves2.map(move => move.clone().setRequiredThrust(null))
   );
 };
-
-test("Ship serializes and deserializes nicely", test => {
-  const user = new User(345, "Nönmän");
-  const ship = constructDeployedShip(123, user);
-
-  ship.systems.getSystemById(4).addDamage(new DamageEntry(20));
-  ship.systems.getSystemById(1).addCritical(new EfficiencyHalved());
-
-  const ship2 = createShipObject(ship.serialize());
-
-  compareMovements(
-    test,
-    ship.movement.getMovement(),
-    ship2.movement.getMovement()
-  );
-
-  test.true(ship.systems.getSystemById(4).isDisabled());
-  test.true(ship.systems.getSystemById(1).hasCritical(EfficiencyHalved));
-  test.deepEqual(ship.player.user, user);
-});

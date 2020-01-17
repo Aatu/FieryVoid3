@@ -1,5 +1,8 @@
+import uuidv4 from "uuid/v4.js";
+
 class Critical {
   constructor(duration = null) {
+    this.id = uuidv4();
     this.duration = Number.isInteger(duration) ? duration + 1 : null;
     this.turnsRemaining = this.duration;
   }
@@ -11,12 +14,16 @@ class Critical {
   serialize() {
     return {
       className: this.getClassName(),
+      id: this.id,
+      duration: this.duration,
       turnsRemaining: this.turnsRemaining
     };
   }
 
   deserialize(data) {
+    this.id = data.id || null;
     this.turnsRemaining = data.turnsRemaining || null;
+    this.duration = data.duration || null;
     return this;
   }
 

@@ -21,22 +21,4 @@ test("Ship resolves valid power", test => {
   test.false(ship.systems.power.isValidPower());
   ship.systems.power.forceValidPower();
   test.true(ship.systems.power.isValidPower());
-  /*
-  const ship = constructDeployedShip(123, user);
-
-  ship.systems.getSystemById(4).addDamage(new DamageEntry(20));
-  ship.systems.getSystemById(1).addCritical(new EfficiencyHalved());
-
-  const ship2 = createShipObject(ship.serialize());
-
-  compareMovements(
-    test,
-    ship.movement.getMovement(),
-    ship2.movement.getMovement()
-  );
-
-  test.true(ship.systems.getSystemById(4).isDisabled());
-  test.true(ship.systems.getSystemById(1).hasCritical(EfficiencyHalved));
-  test.deepEqual(ship.player.user, user);
-  */
 });

@@ -1,9 +1,4 @@
-import {
-  MovementOrder,
-  movementTypes,
-  MovementResolver,
-  OverChannelResolver
-} from "./index.mjs";
+import { MovementOrder, movementTypes, MovementResolver } from "./index.mjs";
 import hexagon from "../hexagon/index.mjs";
 import { addToHexFacing } from "../utils/math.mjs";
 
@@ -93,13 +88,6 @@ class MovementService {
     deployMove.facing = newfacing;
     ship.movement.replaceDeployMove(deployMove);
     this.shipStateChanged(ship);
-  }
-
-  getOverChannel(ship) {
-    return new OverChannelResolver(
-      ship.movement.getThrusters(),
-      ship.movement.getMovement()
-    ).getAmountOverChanneled();
   }
 
   getPositionAtStartOfTurn(ship, currentTurn) {

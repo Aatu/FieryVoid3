@@ -40,7 +40,7 @@ class RailgunTurreted2x140mm extends Weapon {
   }
 
   getDisplayName() {
-    return "2x140mm railgun turret";
+    return "2x140mm railgun";
   }
 
   getBackgroundImage() {

@@ -4,7 +4,7 @@ import styled, { css } from "styled-components";
 const Container = styled.div`
   position: absolute;
   left: 50%;
-  bottom: 150px;
+  bottom: 125px;
   opacity: 0.85;
   user-select: none;
   z-index: 3;
@@ -74,24 +74,6 @@ class Movement extends React.Component {
           {children}
           {ui && <Power>{ship.movement.getRemainingThrustOutput()}</Power>}
         </Container>
-        {ui && (
-          <TextContainer>
-            <TextRowSmall>
-              <div>{`Acceleration: ${ship.accelcost}`}</div>
-              <div>{`Pivot: ${ship.pivotcost}`}</div>
-              <div>{`Evasion: ${ship.evasioncost}`}</div>
-              <div>{`Roll: ${ship.rollcost}`}</div>
-            </TextRowSmall>
-
-            <TextRow>
-              <div>{`Over: ${movementService.getOverChannel(ship)}`}</div>
-              <div>{`Evasion: ${ship.movement.getEvasion(ship)}`}</div>
-              <div>{`Rolling: ${
-                ship.movement.getRollMove() ? "yes" : "no"
-              }`}</div>
-            </TextRow>
-          </TextContainer>
-        )}
       </>
     );
   }

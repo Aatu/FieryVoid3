@@ -5,7 +5,6 @@ import MovementResolver from "./MovementResolver.mjs";
 import ThrustBill from "./ThrustBill.mjs";
 import RequiredThrust from "./RequiredThrust.mjs";
 import ThrustAssignment from "./ThrustAssignment.mjs";
-import OverChannelResolver from "./OverChannelResolver.mjs";
 
 export {
   MovementService,
@@ -14,6 +13,5 @@ export {
   MovementResolver,
   ThrustBill,
   RequiredThrust,
-  ThrustAssignment,
-  OverChannelResolver
+  ThrustAssignment
 };

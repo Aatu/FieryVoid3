@@ -1,7 +1,7 @@
 import test from "ava";
 import ShipSystem from "../../model/unit/system/ShipSystem.mjs";
 import DamageEntry from "../../model/unit/system/DamageEntry.mjs";
-import FirstThrustIgnored from "../../model/unit/system/criticals/FirstThrustIgnored.mjs";
+import ForcedOffline from "../../model/unit/system/criticals/ForcedOffline.mjs";
 
 test("System takes damage and is destroyed", test => {
   const system = new ShipSystem({ id: 123, hitpoints: 10, armor: 3 });
@@ -14,13 +14,13 @@ test("System takes damage and is destroyed", test => {
 
 test("System takes critical damage", test => {
   const system = new ShipSystem({ id: 123, hitpoints: 10, armor: 3 });
-  system.addCritical(new FirstThrustIgnored());
-  test.true(system.hasCritical(FirstThrustIgnored));
+  system.addCritical(new ForcedOffline(3));
+  test.true(system.hasCritical(ForcedOffline));
 });
 
 test("Stuff serializes and deserializes nicely", test => {
   const system = new ShipSystem({ id: 123, hitpoints: 10, armor: 3 });
-  const testCrit = new FirstThrustIgnored();
+  const testCrit = new ForcedOffline(3);
   system.addCritical(testCrit);
   system.addDamage(new DamageEntry(3));
 

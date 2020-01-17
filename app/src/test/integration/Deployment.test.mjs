@@ -11,11 +11,6 @@ import hexagon from "../../model/hexagon";
 import TestShip from "../../model/unit/ships/test/TestShip";
 import User from "../../model/User";
 
-import {
-  FirstThrustIgnored,
-  EfficiencyHalved
-} from "../../model/unit/system/criticals";
-
 const startMove = new MovementOrder(
   -1,
   movementTypes.START,

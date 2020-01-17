@@ -2,6 +2,7 @@ import SystemDamage from "./SystemDamage.mjs";
 import SystemPower from "./SystemPower.mjs";
 import SystemHeat from "./SystemHeat.mjs";
 import ShipSystemLog from "./ShipSystemLog/ShipSystemLog.mjs";
+import ShipSystemLogEntryDamage from "./ShipSystemLog/ShipSystemLogEntryDamage.mjs";
 
 class ShipSystem {
   constructor(args = {}, strategies = []) {
@@ -120,6 +121,9 @@ class ShipSystem {
     if (!systemWasDestroyed && this.isDestroyed()) {
       damage.setDestroyedSystem();
     }
+
+    const logEntry = this.log.getOpenLogEntryByClass(ShipSystemLogEntryDamage);
+    logEntry.addDamage(damage);
 
     if (
       this.shipSystems &&

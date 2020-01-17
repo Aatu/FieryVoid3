@@ -98,7 +98,7 @@ const TooltipSubHeader = styled.div`
   margin: 5px 8px;
   font-weight: bold;
   font-size: 12px;
-  color: ${colors.lightBlue};
+  color: white;
 `;
 
 const TooltipValueHeader = styled.div`

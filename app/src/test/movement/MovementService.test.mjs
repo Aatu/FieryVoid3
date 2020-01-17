@@ -61,7 +61,7 @@ const constructShip = (id = 123) => {
     new Thruster({ id: 9, hitpoints: 10, armor: 3 }, 5, [4, 5]),
     new Thruster({ id: 3, hitpoints: 10, armor: 3 }, 5, 3),
     new Thruster({ id: 4, hitpoints: 10, armor: 3 }, 5, 3),
-    new ManeuveringThruster({ id: 10, hitpoints: 10, armor: 3 }, 6, 3),
+    new ManeuveringThruster({ id: 10, hitpoints: 10, armor: 3 }, 9, 3),
     new Engine({ id: 5, hitpoints: 10, armor: 3 }, 12, 6, 2),
     new Engine({ id: 6, hitpoints: 10, armor: 3 }, 12, 6, 2),
     new Reactor({ id: 7, hitpoints: 10, armor: 3 }, 20)
@@ -140,12 +140,12 @@ test("Ship can thrust", test => {
   const movementService = getMovementService();
   const ship = constructDeployedShip();
 
-  test.true(movementService.canThrust(ship, 0).result);
-  test.true(movementService.canThrust(ship, 1).result);
-  test.true(movementService.canThrust(ship, 2).result);
-  test.true(movementService.canThrust(ship, 3).result);
-  test.true(movementService.canThrust(ship, 4).result);
-  test.true(movementService.canThrust(ship, 5).result);
+  test.true(movementService.canThrust(ship, 0));
+  test.true(movementService.canThrust(ship, 1));
+  test.true(movementService.canThrust(ship, 2));
+  test.true(movementService.canThrust(ship, 3));
+  test.true(movementService.canThrust(ship, 4));
+  test.true(movementService.canThrust(ship, 5));
 });
 
 test("Ship can not thrust with destroyed thruster", test => {
@@ -157,15 +157,15 @@ test("Ship can not thrust with destroyed thruster", test => {
   test.is(ship.movement.getThrusters().length, 6);
   test.is(ship.movement.getMovement().length, 2);
 
-  test.true(movementService.canThrust(ship, 0).result);
+  test.true(movementService.canThrust(ship, 0));
 
   test.false(movementService.canThrust(ship, 1));
   test.false(movementService.canThrust(ship, 2));
   test.is(ship.movement.getThrusters().length, 6);
   test.is(ship.movement.getMovement().length, 2);
-  test.true(movementService.canThrust(ship, 3).result);
-  test.true(movementService.canThrust(ship, 4).result);
-  test.true(movementService.canThrust(ship, 5).result);
+  test.true(movementService.canThrust(ship, 3));
+  test.true(movementService.canThrust(ship, 4));
+  test.true(movementService.canThrust(ship, 5));
 });
 
 test("Ship will thrust", test => {
@@ -205,8 +205,6 @@ test("Ship can not thrust unlimited amount", test => {
   const ship = constructDeployedShip();
 
   movementService.thrust(ship, 1);
-  movementService.thrust(ship, 1);
-  movementService.thrust(ship, 1);
 
   const error = test.throws(() => movementService.thrust(ship, 1));
   test.is(
@@ -228,8 +226,8 @@ test("Ship can pivot", test => {
   const movementService = getMovementService();
   const ship = constructDeployedShip();
 
-  test.true(movementService.canPivot(ship, -1).result);
-  test.true(movementService.canPivot(ship, 1).result);
+  test.true(movementService.canPivot(ship, -1));
+  test.true(movementService.canPivot(ship, 1));
 });
 
 test("Ship will pivot", test => {
@@ -309,7 +307,7 @@ test("Ship can roll", test => {
   const movementService = getMovementService();
   const ship = constructDeployedShip();
 
-  test.true(movementService.canRoll(ship).result);
+  test.true(movementService.canRoll(ship));
 });
 
 test("Ship will roll", test => {
@@ -346,14 +344,13 @@ test("Ship can evade", test => {
   const movementService = getMovementService();
   const ship = constructDeployedShip();
 
-  test.true(movementService.canEvade(ship, 1).result);
+  test.true(movementService.canEvade(ship, 1));
 });
 
 test("Ship will evade", test => {
   const movementService = getMovementService();
   const ship = constructDeployedShip();
 
-  movementService.evade(ship, 1);
   movementService.evade(ship, 1);
   movementService.evade(ship, 1);
   compareMovements(test, ship.movement.getMovement(), [
@@ -367,7 +364,7 @@ test("Ship will evade", test => {
       deployMove.facing,
       deployMove.rolled,
       999,
-      3
+      2
     )
   ]);
 });
@@ -451,18 +448,19 @@ test("Boosted movements get deleted when engine deboosts", test => {
   engine.addCritical(new OutputReduced6());
 
   movementService.thrust(ship, 2);
-  movementService.thrust(ship, 2);
-  test.falsy(movementService.canThrust(ship, 0).result);
+  movementService.evade(ship, 1);
+  test.falsy(movementService.canThrust(ship, 0));
 
   engine.callHandler("boost");
   engine.callHandler("boost");
   engine.callHandler("boost");
 
-  test.true(movementService.canThrust(ship, 0).result);
+  test.true(movementService.canThrust(ship, 0));
   test.is(ship.movement.getMovement().length, 4);
 
-  movementService.thrust(ship, 1);
+  movementService.thrust(ship, 0);
+
   engine.callHandler("deBoost");
   test.is(ship.movement.getMovement().length, 4);
-  test.falsy(movementService.canThrust(ship, 0).result);
+  test.falsy(movementService.canThrust(ship, 0));
 });

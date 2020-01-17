@@ -1,5 +1,6 @@
 import ShipSystemStrategy from "./ShipSystemStrategy.mjs";
-import { FirstThrustIgnored, EfficiencyHalved } from "../criticals/index.mjs";
+import ThrustChannelHeatIncreased from "../criticals/ThrustChannelHeatIncreased.mjs";
+import { OutputReduced } from "../criticals/index.mjs";
 
 const directionsToString = {
   0: "Thrust forward",
@@ -18,6 +19,7 @@ class ThrustChannelSystemStrategy extends ShipSystemStrategy {
     this.output = output || 0;
     this.direction = direction || 0; // 0, 3, [4,5], [1,2], 6
     this.channeled = 0;
+    this.heatPerThrustChanneled = 0.75;
   }
 
   resetChanneledThrust() {
@@ -85,15 +87,30 @@ class ThrustChannelSystemStrategy extends ShipSystemStrategy {
       return previousResponse;
     }
 
-    return previousResponse + this.output;
+    return previousResponse + this.getChannelOutput();
   }
 
   generatesHeat() {
     return true;
   }
 
+  getHeatPerThrustChanneled() {
+    let heat = this.heatPerThrustChanneled;
+
+    heat += this.system.damage
+      .getCriticals()
+      .filter(critical => critical instanceof ThrustChannelHeatIncreased)
+      .reduce((total, current) => total + current.getHeatIncrease(), 0);
+
+    return heat;
+  }
+
+  getHeatForThrust({ amount }) {
+    return amount * this.getHeatPerThrustChanneled();
+  }
+
   getHeatGenerated(payload, previousResponse = 0) {
-    return previousResponse + this.channeled * 2;
+    return previousResponse + this.channeled * this.getHeatPerThrustChanneled();
   }
 
   getThrustDirection(payload, previousResponse = null) {
@@ -101,18 +118,22 @@ class ThrustChannelSystemStrategy extends ShipSystemStrategy {
   }
 
   getChannelOutput() {
-    return this.output;
+    let output = this.output;
+
+    output -= this.system.damage
+      .getCriticals()
+      .filter(critical => critical instanceof OutputReduced)
+      .reduce((total, current) => total + current.getOutputReduction(), 0);
+
+    if (output < 0) {
+      output = 0;
+    }
+
+    return output;
   }
 
   getMaxChannelAmount() {
-    if (
-      this.system.hasCritical(FirstThrustIgnored) ||
-      this.system.hasCritical(EfficiencyHalved)
-    ) {
-      return this.output;
-    } else {
-      return this.output * 2;
-    }
+    return this.getChannelOutput();
   }
 
   canChannelAmount(amount) {
@@ -120,19 +141,7 @@ class ThrustChannelSystemStrategy extends ShipSystemStrategy {
   }
 
   getChannelCost(amount) {
-    let cost = 0;
-
-    if (this.system.hasCritical(FirstThrustIgnored)) {
-      cost += 1;
-    }
-
-    if (this.system.hasCritical(EfficiencyHalved)) {
-      cost += amount * 2;
-    } else {
-      cost += amount;
-    }
-
-    return cost;
+    return amount;
   }
 
   isThruster(payload, previousResponse = 0) {
@@ -153,16 +162,17 @@ class ThrustChannelSystemStrategy extends ShipSystemStrategy {
   getPossibleCriticals(payload, previousResponse = []) {
     return [
       ...previousResponse,
-      {
-        severity: 20,
-        critical: new FirstThrustIgnored(Math.round(Math.random() * 2))
-      },
+
+      { severity: 20, critical: new ThrustChannelHeatIncreased(0.5, 1) },
       {
         severity: 30,
-        critical: new EfficiencyHalved(Math.round(Math.random() * 2))
+        critical: new OutputReduced(Math.ceil(this.output / 4), 2)
       },
-      { severity: 50, critical: new FirstThrustIgnored() },
-      { severity: 80, critical: new EfficiencyHalved() }
+      { severity: 40, critical: new ThrustChannelHeatIncreased(0.5, 3) },
+      { severity: 60, critical: new ThrustChannelHeatIncreased(0.5) },
+      { severity: 70, critical: new OutputReduced(Math.ceil(this.output / 4)) },
+      { severity: 80, critical: new OutputReduced(Math.ceil(this.output / 3)) },
+      { severity: 90, critical: new OutputReduced(Math.ceil(this.output / 2)) }
     ];
   }
 }

@@ -2,8 +2,9 @@ import * as React from "react";
 import styled from "styled-components";
 import { Clickable } from "../../../../styled";
 import { Roll } from "../../../../styled/icon";
+import Container from "./Container";
 
-const Container = styled.div`
+const RollContainer = styled(Container)`
   position: absolute;
   width: 32px;
   height: 32px;
@@ -24,14 +25,10 @@ class RollButton extends React.Component {
   }
 
   render() {
-    if (!this.canRoll()) {
-      return null;
-    }
-
     return (
-      <Container onClick={this.roll.bind(this)}>
+      <RollContainer onClick={this.roll.bind(this)} can={!!this.canRoll()}>
         <Roll />
-      </Container>
+      </RollContainer>
     );
   }
 }

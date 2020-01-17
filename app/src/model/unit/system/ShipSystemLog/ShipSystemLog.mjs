@@ -32,6 +32,27 @@ class ShipSystemLog {
       .reduce((all, entry) => [...all, ...entry.getMessage()], []);
   }
 
+  getWithTurns() {
+    const turns = [];
+
+    this.log.forEach(entry => {
+      let turnEntry = turns.find(turnEntry => turnEntry.turn === entry.turn);
+
+      if (!turnEntry) {
+        turnEntry = {
+          turn: entry.turn,
+          messages: []
+        };
+
+        turns.push(turnEntry);
+      }
+
+      turnEntry.messages = [...turnEntry.messages, ...entry.getMessage()];
+    });
+
+    return turns;
+  }
+
   deserialize(data = {}) {
     this.log = data.log || [];
     this.log = this.log.map(entry =>

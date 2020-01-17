@@ -8,11 +8,6 @@ import hexagon from "../../model/hexagon";
 import TestShip from "../../model/unit/ships/test/TestShip";
 import User from "../../model/User";
 
-import {
-  FirstThrustIgnored,
-  EfficiencyHalved
-} from "../../model/unit/system/criticals";
-
 const startMove = new MovementOrder(
   -1,
   movementTypes.START,
@@ -87,11 +82,10 @@ test("Submit movement", test => {
   const movementService = getMovementService();
 
   const movingShip = clientGame.ships.getShipById(1);
+
   movementService.roll(movingShip);
   movementService.evade(movingShip, 1);
-  movementService.evade(movingShip, 1);
   movementService.pivot(movingShip, 1);
-  movementService.thrust(movingShip, 1);
   movementService.thrust(movingShip, 1);
   movementService.thrust(movingShip, 1);
   movementService.thrust(movingShip, 1);
