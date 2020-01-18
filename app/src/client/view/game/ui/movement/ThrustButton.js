@@ -44,7 +44,7 @@ class ThrustButton extends React.Component {
     return (
       <ButtonContainer
         overChannel={overChannel}
-        can={!!can}
+        disabled={!can}
         direction={hexFacingToAngle(direction)}
         onClick={this.thrust.bind(this, can)}
         {...this.getPosition(direction)}

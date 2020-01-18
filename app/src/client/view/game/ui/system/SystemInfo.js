@@ -35,6 +35,7 @@ const Warning = styled.div`
 `;
 
 const HeaderMenu = styled.div`
+  line-height: 14px;
   display: flex;
   flex-direction: row;
   color: #5e85bc;
@@ -118,8 +119,6 @@ class SystemInfo extends React.Component {
     const { system } = this.props;
 
     const messages = system.log.getWithTurns();
-
-    console.log(messages);
 
     return messages.map(({ turn, messages }, index) => (
       <div key={`systemlog-turn-${turn}-${index}`}>

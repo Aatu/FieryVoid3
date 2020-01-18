@@ -26,7 +26,7 @@ class RollButton extends React.Component {
 
   render() {
     return (
-      <RollContainer onClick={this.roll.bind(this)} can={!!this.canRoll()}>
+      <RollContainer onClick={this.roll.bind(this)} disabled={!this.canRoll()}>
         <Roll />
       </RollContainer>
     );

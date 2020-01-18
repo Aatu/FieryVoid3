@@ -58,7 +58,7 @@ class EvadeButton extends React.Component {
         <EvadeContainer
           key="evade-more"
           onClick={this.evade.bind(this, 1)}
-          can={!!canMore}
+          disabled={!canMore}
         >
           <Evade />
         </EvadeContainer>
@@ -67,7 +67,7 @@ class EvadeButton extends React.Component {
         <RotatedContainer
           key="evade-less"
           onClick={this.evade.bind(this, -1)}
-          can={!!canLess}
+          disabled={!canLess}
         >
           <Evade />
         </RotatedContainer>

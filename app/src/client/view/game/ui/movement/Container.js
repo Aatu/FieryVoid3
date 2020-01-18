@@ -8,10 +8,12 @@ const Container = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  opacity: 0.5;
+
   svg #svg-path {
     fill: white;
     ${props => props.overChannel && "fill:#4c7ca8;"}
-    ${props => props.can === false && "fill: #8f2626;"}
+    ${props => props.disabled && "fill: #8f2626;"}
   }
   ${Clickable}
 `;

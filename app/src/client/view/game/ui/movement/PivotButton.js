@@ -28,17 +28,12 @@ class PivotButton extends React.Component {
     const { pivotDirection } = this.props;
 
     const can = this.canPivot();
-    const { overChannel } = can;
-
-    if (!can) {
-      return null;
-    }
 
     return (
       <ButtonContainer
-        overChannel={overChannel}
         pivotDirection={pivotDirection}
         onClick={this.pivot.bind(this)}
+        disabled={!can}
       >
         <Pivot />
       </ButtonContainer>
