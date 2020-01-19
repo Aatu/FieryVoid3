@@ -88,11 +88,18 @@ class TorpedoHandler {
           return -1;
         }
 
-        if (a.heat.getOverheatPercentage() < b.heat.getOverheatPercentage()) {
+        const aHeat = a.heat.getOverheatPercentage(
+          a.callHandler("getInterceptHeat", null, 0)
+        );
+        const bHeat = b.heat.getOverheatPercentage(
+          b.callHandler("getInterceptHeat", null, 0)
+        );
+
+        if (aHeat < bHeat) {
           return 1;
         }
 
-        if (a.heat.getOverheatPercentage() > b.heat.getOverheatPercentage()) {
+        if (aHeat > bHeat) {
           return -1;
         }
 
@@ -180,8 +187,21 @@ class TorpedoHandler {
 
           if (roll <= interception.interceptChange.result) {
             interception.torpedoFlight.setIntercepted();
+
+            weapon.log
+              .getGenericLogEntry()
+              .addMessage(
+                `Intercepted ${interception.torpedoFlight.torpedo.getDisplayName()}.`
+              );
+          } else {
+            weapon.log
+              .getGenericLogEntry()
+              .addMessage(
+                `Failed to intercept ${interception.torpedoFlight.torpedo.getDisplayName()}.`
+              );
           }
 
+          weapon.callHandler("addTimesIntercepted", 1);
           weapon.callHandler("onIntercept");
 
           gameData.combatLog.addEntry(logEntry);

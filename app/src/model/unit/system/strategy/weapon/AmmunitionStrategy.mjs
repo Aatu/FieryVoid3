@@ -355,6 +355,10 @@ class AmmunitionStrategy extends ShipSystemStrategy {
 
     entry.amount -= this.ammoPerFireOrder;
 
+    this.system.log
+      .getGenericLogEntry()
+      .addMessage(`Expended ordnance: ${this.selectedAmmo.getDisplayName()}`);
+
     this.loaded = this.loaded.filter(entry => entry.amount > 0);
     this._changeSelectedAmmoIfOutOfAmmo();
   }

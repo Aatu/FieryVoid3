@@ -5,7 +5,7 @@ class Torpedo158MSV extends Torpedo158 {
   constructor() {
     super({ deltaVelocityPerTurn: 48, turnsToLive: 6 });
 
-    this.damageStrategy = new MSVTorpedoDamageStrategy("2d3", "d3", 15, 32);
+    this.damageStrategy = new MSVTorpedoDamageStrategy("d3+3", 0, 15, 32);
 
     this.visuals = {
       engineColor: [255 / 255, 222 / 255, 120 / 255],

@@ -15,7 +15,7 @@ class CriticalHandler {
     const overheat = system.heat.getOverheatPercentage();
     const hitpoints = system.hitpoints;
 
-    if (newDamage === 0 && overheat === 0) {
+    if (newDamage === 0 && overheat <= 1) {
       return;
     }
 

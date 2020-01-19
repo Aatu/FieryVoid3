@@ -29,7 +29,7 @@ class PDC30mm extends Weapon {
       ]),
       new StandardLoadingStrategy(1),
       new BurstDamageStrategy(null, null, 0, 6, 5),
-      new InterceptorStrategy(1, 1.5),
+      new InterceptorStrategy(1, 2),
       new AmmunitionStrategy([Ammo30mm], 6, 24, 12),
       new WeaponAnimationStrategy("UniversalBolt", {
         size: 6,

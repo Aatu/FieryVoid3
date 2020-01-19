@@ -84,7 +84,10 @@ class Fulcrum extends Ship {
         radiator: 5
       }),
 
-      new systems.PDC30mm({ id: 14 }, { start: 0, end: 0 })
+      new systems.PDC30mm(
+        { id: 14, alwaysTargetable: true },
+        { start: 0, end: 0 }
+      )
     ]);
 
     this.systems.addAftSystem([
@@ -105,7 +108,7 @@ class Fulcrum extends Ship {
       new systems.Thruster({ id: 203, hitpoints: 15, armor: 3 }, 21, 3),
 
       new systems.PDC30mm(
-        { id: 214, hitpoints: 5, armor: 3 },
+        { id: 214, alwaysTargetable: true },
         { start: 0, end: 0 }
       ),
 

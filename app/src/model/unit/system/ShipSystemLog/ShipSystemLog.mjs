@@ -1,10 +1,17 @@
 import { systemLogEntryClasses } from "./systemLogEntryClasses.mjs";
+import ShipSystemLogEntry from "./ShipSystemLogEntry.mjs";
 
 class ShipSystemLog {
   constructor(system) {
     this.system = system;
 
     this.log = [];
+  }
+
+  getGenericLogEntry() {
+    const entry = new ShipSystemLogEntry();
+    this.log.push(entry);
+    return entry;
   }
 
   getOpenLogEntryByClass(className) {

@@ -27,7 +27,10 @@ class LargerHitProfileOnlineSystemStrategy extends ShipSystemStrategy {
   }
 
   getHitSystemSizeMultiplier(payload, previousResponse = 1) {
-    if (this.system.isDestroyed() || this.turnsOffline > 1) {
+    if (
+      (this.system.isDestroyed() && this.turnsOffline > 0) ||
+      this.turnsOffline > 1
+    ) {
       return previousResponse;
     }
 

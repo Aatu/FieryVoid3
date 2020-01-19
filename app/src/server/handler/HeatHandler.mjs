@@ -14,15 +14,20 @@ class HeatHandler {
 
   warmSystems(ship) {
     ship.systems.getSystems().forEach(system => {
-      const logEntry = system.log.getOpenLogEntryByClass(
-        ShipSystemLogEntryHeat
-      );
+      const overheat = system.heat.getOverheat();
+      const heatGenerated = system.heat.generateHeat();
 
-      logEntry.setInitialOverheat(
-        system.heat.getOverheat(),
-        system.heat.getOverheatPercentage()
-      );
-      logEntry.setHeatGenerated(system.heat.generateHeat());
+      if (overheat || heatGenerated) {
+        const logEntry = system.log.getOpenLogEntryByClass(
+          ShipSystemLogEntryHeat
+        );
+
+        logEntry.setInitialOverheat(
+          system.heat.getOverheat(),
+          system.heat.getOverheatPercentage()
+        );
+        logEntry.setHeatGenerated(heatGenerated);
+      }
     });
   }
 
@@ -32,11 +37,13 @@ class HeatHandler {
       .filter(system => !system.isDestroyed())
       .filter(system => system.heat.getHeatStoreCapacity() >= 1)
       .forEach(system => {
-        const logEntry = system.log.getOpenLogEntryByClass(
-          ShipSystemLogEntryHeat
-        );
+        if (system.heat.getHeat()) {
+          const logEntry = system.log.getOpenLogEntryByClass(
+            ShipSystemLogEntryHeat
+          );
 
-        logEntry.setIntialHeatStored(system.heat.getHeat());
+          logEntry.setIntialHeatStored(system.heat.getHeat());
+        }
       });
 
     while (true) {
@@ -69,19 +76,19 @@ class HeatHandler {
       hotSystems.forEach(system => {
         let heat = system.heat.getTransferHeat();
         storages.forEach(storage => {
-          if (heat === 0 || storage.heat.getHeatStoreCapacity() < 1) {
+          const step = heat < 1 ? heat : 1;
+
+          if (heat === 0 || storage.heat.getHeatStoreCapacity() < step) {
             return;
           }
 
-          heat--;
-          storage.heat.changeHeat(1);
-          system.heat.changeHeat(-1);
+          heat -= step;
+          storage.heat.changeHeat(step);
+          system.heat.changeHeat(-step);
 
-          const logEntry = storage.log.getOpenLogEntryByClass(
-            ShipSystemLogEntryHeat
-          );
-
-          logEntry.addNewHeatStored(1);
+          storage.log
+            .getOpenLogEntryByClass(ShipSystemLogEntryHeat)
+            .addNewHeatStored(step);
         });
       });
     }
@@ -93,14 +100,17 @@ class HeatHandler {
       .filter(system => !system.isDestroyed())
       .forEach(system => {
         system.heat.markNewOverheat();
-        const logEntry = system.log.getOpenLogEntryByClass(
-          ShipSystemLogEntryHeat
-        );
 
-        logEntry.setNewOverheat(
-          system.heat.getOverheat(),
-          system.heat.getOverheatPercentage()
-        );
+        if (system.heat.getOverheat() || system.heat.heatTransferred) {
+          const logEntry = system.log.getOpenLogEntryByClass(
+            ShipSystemLogEntryHeat
+          );
+
+          logEntry.setNewOverheat(
+            system.heat.getOverheat(),
+            system.heat.getOverheatPercentage()
+          );
+        }
       });
   }
 
@@ -170,13 +180,15 @@ class HeatHandler {
       .getSystems()
       .filter(system => !system.isDestroyed())
       .forEach(system => {
-        const logEntry = system.log.getOpenLogEntryByClass(
-          ShipSystemLogEntryHeat
-        );
+        const heatRadiated = system.callHandler("getRadiatedHeat", null, null);
 
-        logEntry.setHeatRadiated(
-          system.callHandler("getRadiatedHeat", null, null)
-        );
+        if (heatRadiated) {
+          const logEntry = system.log.getOpenLogEntryByClass(
+            ShipSystemLogEntryHeat
+          );
+
+          logEntry.setHeatRadiated(heatRadiated);
+        }
       });
   }
 }

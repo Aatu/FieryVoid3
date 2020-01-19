@@ -5,6 +5,7 @@ import { constructDeployedGame } from "../support/constructGame.mjs";
 import User from "../../model/User";
 import Ammo140mmAP from "../../model/unit/system/weapon/ammunition/conventional/Ammo140mmAP.mjs";
 import Ammo140mmHE from "../../model/unit/system/weapon/ammunition/conventional/Ammo140mmHE.mjs";
+import MovementService from "../../model/movement/MovementService.mjs";
 
 test.serial("Test weapon heats up", async test => {
   const db = new TestDatabaseConnection("heat");
@@ -38,6 +39,45 @@ test.serial("Test weapon heats up", async test => {
       "Radiated 5 units of heat."
     ]
   );
+
+  db.close();
+});
+
+test.serial("Test manouvering thruster heats up", async test => {
+  const db = new TestDatabaseConnection("heat");
+  await db.resetDatabase();
+
+  const controller = new GameController(db);
+  const user = new User(1, "Nönmän");
+  const user2 = new User(2, "Bädmän");
+  let gameData = await constructDeployedGame(user, user2, controller);
+
+  let achilles = gameData.ships
+    .getShips()
+    .find(ship => ship.name === "UCS Achilles");
+
+  const movementService = new MovementService().update(
+    { turn: 1 },
+    { relayEvent: () => null }
+  );
+
+  movementService.pivot(achilles, 1);
+  movementService.pivot(achilles, 1);
+
+  await controller.commitTurn(gameData.id, gameData.serialize(), user);
+  await controller.commitTurn(gameData.id, gameData.serialize(), user2);
+  gameData = await controller.getGameData(gameData.id, user);
+
+  achilles = gameData.ships
+    .getShips()
+    .find(ship => ship.name === "UCS Achilles");
+
+  let manouveringThruster = achilles.systems.getSystemById(10);
+
+  test.deepEqual(manouveringThruster.log.getMessagesForTurn(1), [
+    "Added 4.5 and cooled 4.5 units of heat.",
+    "Current system heat was 0."
+  ]);
 
   db.close();
 });

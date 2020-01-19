@@ -11,6 +11,7 @@ import BoostablePlusOneOutputSystemStrategy from "./BoostablePlusOneOutputSystem
 import ArmorBoostOfflineSystemStrategy from "./ArmorBoostOfflineSystemStrategy.mjs";
 import OutputHeatOnlineStrategy from "./OutputHeatOnlineStrategy.mjs";
 import FireOrderHeatStrategy from "./FireOrderHeatStrategy.mjs";
+import AlwaysTargetableSystemStrategy from "./AlwaysTargetableSystemStrategy.mjs";
 
 import {
   TestDamageStrategy,
@@ -27,6 +28,7 @@ import {
 } from "./weapon/index.mjs";
 
 export {
+  AlwaysTargetableSystemStrategy,
   FireOrderHeatStrategy,
   OutputHeatOnlineStrategy,
   ArmorBoostOfflineSystemStrategy,

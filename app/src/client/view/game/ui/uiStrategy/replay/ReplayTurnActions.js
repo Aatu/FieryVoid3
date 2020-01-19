@@ -101,6 +101,7 @@ class ReplayTurnActions extends AnimationUiStrategy {
       const ship = gameData.ships.getShipById(intercept.shipId);
       const weapon = ship.systems.getSystemById(intercept.weaponId);
 
+      console.log("intercept", intercept);
       if (!intercept.isSucessfull()) {
         return;
       }

@@ -97,10 +97,12 @@ class ThrustChannelSystemStrategy extends ShipSystemStrategy {
   getHeatPerThrustChanneled() {
     let heat = this.heatPerThrustChanneled;
 
-    heat += this.system.damage
-      .getCriticals()
-      .filter(critical => critical instanceof ThrustChannelHeatIncreased)
-      .reduce((total, current) => total + current.getHeatIncrease(), 0);
+    heat *=
+      1 +
+      this.system.damage
+        .getCriticals()
+        .filter(critical => critical instanceof ThrustChannelHeatIncreased)
+        .reduce((total, current) => total + current.getHeatIncrease(), 0);
 
     return heat;
   }

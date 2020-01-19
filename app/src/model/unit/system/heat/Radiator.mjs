@@ -5,6 +5,7 @@ import {
 } from "../strategy/index.mjs";
 import RadiateHeatStrategy from "../strategy/RadiateHeatStrategy.mjs";
 import ArmorBoostOfflineSystemStrategy from "../strategy/ArmorBoostOfflineSystemStrategy.mjs";
+import AlwaysTargetableSystemStrategy from "../strategy/AlwaysTargetableSystemStrategy.mjs";
 
 class Radiator extends ShipSystem {
   constructor(args, radiationCapacity = 40, extraProfile = 20, armorBoost = 5) {
@@ -12,7 +13,8 @@ class Radiator extends ShipSystem {
       new RequiresPowerSystemStrategy(1, false),
       new LargerHitProfileOnlineSystemStrategy(extraProfile, extraProfile, 5),
       new RadiateHeatStrategy(radiationCapacity),
-      new ArmorBoostOfflineSystemStrategy(armorBoost)
+      new ArmorBoostOfflineSystemStrategy(armorBoost),
+      new AlwaysTargetableSystemStrategy(2)
     ]);
   }
 

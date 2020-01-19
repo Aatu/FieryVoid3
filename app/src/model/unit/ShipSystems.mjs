@@ -56,7 +56,7 @@ class ShipSystems {
   }
 
   getSystemsForHit(attackPosition, lastSection) {
-    return this.getSectionsForHit(attackPosition, lastSection).reduce(
+    const systems = this.getSectionsForHit(attackPosition, lastSection).reduce(
       (all, section) => {
         return [
           ...all,
@@ -65,6 +65,13 @@ class ShipSystems {
       },
       []
     );
+
+    return [
+      ...systems,
+      ...this.getSystems().filter(system =>
+        system.callHandler("canBeTargeted", null, false)
+      )
+    ];
   }
 
   addSystem(system, section) {

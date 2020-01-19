@@ -138,12 +138,12 @@ class SystemHeat {
     return this.system.hitpoints * this.overheatLimitPerStructure;
   }
 
-  getOverheatPercentage() {
+  getOverheatPercentage(extra = 0) {
     if (this.isHeatStorage()) {
       return 0;
     }
 
-    return this.overheat / this.getOverheatTreshold();
+    return (this.overheat + extra) / this.getOverheatTreshold();
   }
 
   getRadiateHeatCapacity() {

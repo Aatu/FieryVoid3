@@ -12,8 +12,16 @@ class InterceptorStrategy extends ShipSystemStrategy {
     this.timesIntercepted = 0;
   }
 
+  getInterceptHeat() {
+    return this.timesIntercepted * this.heatPerIntercept;
+  }
+
   getHeatPerIntercept() {
     return this.heatPerIntercept;
+  }
+
+  addTimesIntercepted(amount = 1) {
+    this.timesIntercepted += amount;
   }
 
   getHeatGenerated(payload, previousResponse = 0) {

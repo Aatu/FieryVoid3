@@ -1,4 +1,5 @@
 import ShipSystemLogEntry from "./ShipSystemLogEntry.mjs";
+import { formatNumber } from "../../../utils/format.mjs";
 
 class ShipSystemLogEntryHeat extends ShipSystemLogEntry {
   constructor(system) {
@@ -110,7 +111,7 @@ class ShipSystemLogEntryHeat extends ShipSystemLogEntry {
 
   getRadiatorMessage() {
     if (this.heatRadiated) {
-      return [`Radiated ${Math.round(this.heatRadiated)} units of heat.`];
+      return [`Radiated ${formatNumber(this.heatRadiated)} units of heat.`];
     }
 
     return [];
@@ -121,14 +122,18 @@ class ShipSystemLogEntryHeat extends ShipSystemLogEntry {
 
     if (this.heatGivenToRadiators || this.newHeatStored) {
       messages.push(
-        `Added ${this.newHeatStored} units of heat. Transfered ${this.heatGivenToRadiators} units of heat to radiators.`
+        `Added ${formatNumber(
+          this.newHeatStored
+        )} units of heat. Transfered ${formatNumber(
+          this.heatGivenToRadiators
+        )} units of heat to radiators.`
       );
     }
 
     messages.push(
-      `Stored ${this.intialHeatStored +
-        this.newHeatStored -
-        this.heatGivenToRadiators} units of heat.`
+      `Stored ${formatNumber(
+        this.intialHeatStored + this.newHeatStored - this.heatGivenToRadiators
+      )} units of heat.`
     );
 
     return messages;
@@ -139,13 +144,13 @@ class ShipSystemLogEntryHeat extends ShipSystemLogEntry {
 
     if (this.heatGenerated || this.heatCooled) {
       messages.push(
-        `Added ${Math.round(this.heatGenerated)} and cooled ${Math.round(
+        `Added ${formatNumber(this.heatGenerated)} and cooled ${formatNumber(
           this.heatCooled
         )} units of heat.`
       );
     }
 
-    let heatMessage = `Current system heat was ${Math.round(this.overheat)}.`;
+    let heatMessage = `Current system heat was ${formatNumber(this.overheat)}.`;
 
     messages.push();
 

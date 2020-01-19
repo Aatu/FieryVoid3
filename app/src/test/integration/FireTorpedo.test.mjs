@@ -189,10 +189,16 @@ test.serial("Execute a successful torpedo attack", async test => {
     user
   );
 
-  test.deepEqual(replay[0].combatLog.entries[3].notes, [
-    "Effectiveness 100%",
-    "MSV with 25 projectiles at distance 5 with hit chance of 25% each."
-  ]);
+  test.deepEqual(
+    [
+      replay[0].combatLog.entries[3].notes[0],
+      replay[0].combatLog.entries[3].notes[1]
+    ],
+    [
+      "Effectiveness 100%",
+      "MSV with 25 projectiles at distance 5 with hit chance of 25% each."
+    ]
+  );
 
   test.true(replay[0].combatLog.entries[3] instanceof CombatLogTorpedoAttack);
 
@@ -364,8 +370,6 @@ test.serial("Try to intercept multiple torpedos", async test => {
     4,
     user
   );
-
-  console.log(replay[0].combatLog.entries);
 
   test.true(
     replay[0].combatLog.entries.some(

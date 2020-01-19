@@ -46,18 +46,12 @@ class Torpedo extends CargoEntity {
 
     switch (tries) {
       case 1:
-        return [1, 2];
-      case 2:
         return [1, 2, 3];
-      case 3:
+      case 2:
         return [1, 2, 3, 4];
-      case 4:
-        return [1, 2, 3, 4, 5];
-      case 5:
+      default:
         return [1, 2, 3, 4, 5];
     }
-
-    return tries;
   }
 
   getCargoInfo() {

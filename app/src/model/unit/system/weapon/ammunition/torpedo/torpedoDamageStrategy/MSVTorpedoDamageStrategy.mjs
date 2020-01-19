@@ -7,12 +7,14 @@ class MSVTorpedoDamageStrategy extends StandardDamageStrategy {
     armorPiercingFormula,
     rangePenalty,
     numberOfShots,
-    strikeHitChange = 20
+    strikeHitChange = 20,
+    minStrikeDistance = 3
   ) {
     super(damageFormula, armorPiercingFormula);
     this.rangePenalty = rangePenalty;
     this.numberOfShots = numberOfShots;
     this.strikeHitChange = strikeHitChange;
+    this.minStrikeDistance = minStrikeDistance;
   }
 
   _getDamageForWeaponHit({ torpedoFlight }) {
@@ -50,6 +52,10 @@ class MSVTorpedoDamageStrategy extends StandardDamageStrategy {
     let distance = 11;
 
     while (distance--) {
+      if (distance === this.minStrikeDistance) {
+        return distance;
+      }
+
       if (this.getHitChange({ ...payload, distance }) >= this.strikeHitChange) {
         return distance;
       }
@@ -71,16 +77,21 @@ class MSVTorpedoDamageStrategy extends StandardDamageStrategy {
       `MSV with ${this.numberOfShots} projectiles at distance ${distance} with hit chance of ${hitChance}% each.`
     );
 
+    let hits = 0;
+
     while (shots--) {
       const roll = Math.ceil(Math.random() * 100);
       const hit = roll <= hitChance;
 
       if (hit) {
+        hits++;
         const result = new CombatLogDamageEntry();
         combatLogEvent.addDamage(result);
         this._doDamage({ shooterPosition: attackPosition, ...payload }, result);
       }
     }
+
+    combatLogEvent.addNote(`${hits} MSVs hit target.`);
   }
 }
 

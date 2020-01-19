@@ -5,7 +5,7 @@ class Torpedo72MSV extends Torpedo72 {
   constructor() {
     super({ deltaVelocityPerTurn: 42, turnsToLive: 4 });
 
-    this.damageStrategy = new MSVTorpedoDamageStrategy("2d2", "d3", 15, 25);
+    this.damageStrategy = new MSVTorpedoDamageStrategy("d3+3", 0, 15, 25);
     this.visuals = {
       engineColor: [255 / 255, 222 / 255, 120 / 255],
       explosionType: "MSV"
