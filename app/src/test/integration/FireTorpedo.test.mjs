@@ -83,8 +83,8 @@ test.serial("Submit successfull launch order", async test => {
     202,
     1
   )
-    .setPosition(new Vector(-533.3781277864623, -21.83323162480005))
-    .setVelocity(new Vector(1685.8119694111615, -78.08323162480005))
+    .setPosition(new Vector(-1050.7582835488479, 29.239878414193175))
+    .setVelocity(new Vector(1687.3445744592227, -54.02024317161365))
     .setLaunchPosition(new Vector(-2219.190097197624, 56.25));
 
   expected.id = null;
@@ -105,8 +105,8 @@ test.serial("Submit successfull launch order", async test => {
       new CombatLogTorpedoMove(
         flightId,
         new Vector(-2219.190097197624, 56.25),
-        new Vector(-533.3781277864623, -21.83323162480005),
-        new Vector(1685.8119694111615, -78.08323162480005)
+        new Vector(-1050.7582835488479, 29.239878414193175),
+        new Vector(1687.3445744592227, -54.02024317161365)
       )
     ]
   );
@@ -157,8 +157,23 @@ test.serial("Execute a successful torpedo attack", async test => {
     user,
     test,
     new Offset(-202, 3),
-    new Offset(-130, 1),
-    new Offset(72, -2)
+    new Offset(-151, 3),
+    new Offset(72, -1)
+  );
+
+  await controller.commitTurn(gameData.id, newGameData.serialize(), user);
+  await controller.commitTurn(gameData.id, newGameData.serialize(), user2);
+  newGameData = await controller.getGameData(gameData.id, user);
+
+  await assertTorpedoMove(
+    2,
+    gameData.id,
+    controller,
+    user,
+    test,
+    new Offset(-151, 3),
+    new Offset(-58, 1),
+    new Offset(114, -2)
   );
 
   await controller.commitTurn(gameData.id, newGameData.serialize(), user);
@@ -169,8 +184,8 @@ test.serial("Execute a successful torpedo attack", async test => {
 
   const replay = await controller.replayHandler.requestReplay(
     gameId,
-    2,
     3,
+    4,
     user
   );
 
@@ -233,9 +248,12 @@ test.serial("Try to intercept torpedo attack", async test => {
     user,
     test,
     new Offset(-202, 3),
-    new Offset(-130, 1),
-    new Offset(72, -2)
+    new Offset(-151, 3),
+    new Offset(72, -1)
   );
+
+  await controller.commitTurn(gameData.id, newGameData.serialize(), user);
+  await controller.commitTurn(gameData.id, newGameData.serialize(), user2);
 
   await controller.commitTurn(gameData.id, newGameData.serialize(), user);
   await controller.commitTurn(gameData.id, newGameData.serialize(), user2);
@@ -251,8 +269,8 @@ test.serial("Try to intercept torpedo attack", async test => {
 
   const replay = await controller.replayHandler.requestReplay(
     gameId,
-    2,
     3,
+    4,
     user
   );
 

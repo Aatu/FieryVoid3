@@ -2,6 +2,7 @@ import coordinateConverter from "../utils/CoordinateConverter.mjs";
 import HexagonMath from "../utils/HexagonMath.mjs";
 import Vector from "../utils/Vector.mjs";
 import THREE from "three";
+import { radianToDegree } from "../utils/math.mjs";
 
 class TorpedoMovementService {
   reachesTargetThisTurn(flight, target) {
@@ -17,29 +18,28 @@ class TorpedoMovementService {
   }
 
   moveTorpedo(flight, target) {
-    const { accelerationVector } = this.torpedoMath(
+    const { accelerationVector, ...rest } = this.torpedoMath(
       flight.position,
       flight.velocity,
-      target.getPosition(),
+      target.getPosition().sub(target.getVelocity()),
       target.getVelocity(),
       flight.getTorpedoGameDeltaVelocity()
     );
+
+    flight.position = flight.position
+      .add(flight.velocity)
+      .add(
+        accelerationVector.multiplyScalar(
+          0.5 * flight.getTorpedoGameDeltaVelocity()
+        )
+      );
 
     flight.velocity = flight.velocity.add(
       accelerationVector.multiplyScalar(flight.getTorpedoGameDeltaVelocity())
     );
-    flight.position = flight.position.add(flight.velocity);
   }
 
-  predictTorpedoHitPositionAndTurn(flight, target) {
-    const result = this.torpedoMath(
-      flight.position,
-      flight.velocity,
-      target.getPosition(),
-      target.getVelocity(),
-      flight.getTorpedoGameDeltaVelocity()
-    );
-
+  buildPredictions(flight, result) {
     const maxInterceptVelocity = flight.torpedo.maxInterceptVelocity;
 
     let velocity = result.impactVelocity / HexagonMath.getHexWidth();
@@ -69,12 +69,37 @@ class TorpedoMovementService {
 
     return {
       ...result,
+      accelerationAngle: radianToDegree(result.accelerationAngle),
       notes,
       impactVelocity: Math.round(
         result.impactVelocity / HexagonMath.getHexWidth()
       ),
       effectiveness
     };
+  }
+
+  predictTorpedoHitPositionAndTurnAfterMovement(flight, target) {
+    const result = this.torpedoMath(
+      flight.position,
+      flight.velocity,
+      target.getPosition().sub(target.getVelocity()),
+      target.getVelocity(),
+      flight.getTorpedoGameDeltaVelocity()
+    );
+
+    return this.buildPredictions(flight, result);
+  }
+
+  predictTorpedoHitPositionAndTurn(flight, target) {
+    const result = this.torpedoMath(
+      flight.position,
+      flight.velocity,
+      target.getPosition(),
+      target.getVelocity(),
+      flight.getTorpedoGameDeltaVelocity()
+    );
+
+    return this.buildPredictions(flight, result);
   }
 
   standardize(

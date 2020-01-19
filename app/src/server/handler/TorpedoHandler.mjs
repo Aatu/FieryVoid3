@@ -235,7 +235,7 @@ class TorpedoHandler {
         impactTurn,
         effectiveness,
         ...rest
-      } = this.torpedoMovementService.predictTorpedoHitPositionAndTurn(
+      } = this.torpedoMovementService.predictTorpedoHitPositionAndTurnAfterMovement(
         flight,
         target
       );

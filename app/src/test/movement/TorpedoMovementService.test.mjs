@@ -34,7 +34,7 @@ test("Torpedo moves properly", test => {
 
   test.deepEqual(
     coordinateConverter.fromGameToHex(flight.position),
-    new Offset(10, 0)
+    new Offset(5, 0)
   );
 
   test.deepEqual(
@@ -46,7 +46,7 @@ test("Torpedo moves properly", test => {
 
   test.deepEqual(
     coordinateConverter.fromGameToHex(flight.position),
-    new Offset(30, 0)
+    new Offset(20, 0)
   );
 
   test.deepEqual(
@@ -79,7 +79,7 @@ test("Torpedo moves on both axis properly", test => {
 
   test.deepEqual(
     coordinateConverter.fromGameToHex(flight.position),
-    new Offset(8, 7)
+    new Offset(4, 4)
   );
 
   test.deepEqual(
@@ -91,7 +91,7 @@ test("Torpedo moves on both axis properly", test => {
 
   test.deepEqual(
     coordinateConverter.fromGameToHex(flight.position),
-    new Offset(23, 23)
+    new Offset(16, 15)
   );
 
   test.deepEqual(
