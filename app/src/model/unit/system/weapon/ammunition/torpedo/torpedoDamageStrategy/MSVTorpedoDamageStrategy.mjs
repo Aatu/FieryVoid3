@@ -8,7 +8,7 @@ class MSVTorpedoDamageStrategy extends StandardDamageStrategy {
     rangePenalty,
     numberOfShots,
     strikeHitChange = 20,
-    minStrikeDistance = 3
+    minStrikeDistance = 2
   ) {
     super(damageFormula, armorPiercingFormula);
     this.rangePenalty = rangePenalty;

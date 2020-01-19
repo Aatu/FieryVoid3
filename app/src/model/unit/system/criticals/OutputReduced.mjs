@@ -22,10 +22,10 @@ class OutputReduced extends Critical {
   }
 
   getMessage() {
-    if (this.duration !== 0) {
-      return `Charging time increased by ${this.outputReduction} for ${this.turnsRemaining} turns`;
+    if (this.duration) {
+      return `Output decreased by ${this.outputReduction} for ${this.turnsRemaining} turns`;
     }
-    return `Charging time increased by ${this.outputReduction}`;
+    return `Output decreased by ${this.outputReduction}`;
   }
 
   getOutputReduction() {

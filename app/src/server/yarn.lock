@@ -19,9 +19,9 @@
   version "7946.0.7"
   resolved "https://registry.yarnpkg.com/@types/geojson/-/geojson-7946.0.7.tgz#c8fa532b60a0042219cdf173ca21a975ef0666ad"
 
-"@types/node@^11.13.15":
-  version "11.13.17"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-11.13.17.tgz#2e7efbfe5253561087812571e5e6a1e4b1d6295b"
+"@types/node@^13.1.4":
+  version "13.1.8"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-13.1.8.tgz#1d590429fe8187a02707720ecf38a6fe46ce294b"
 
 abbrev@1:
   version "1.1.1"
@@ -404,7 +404,7 @@ delegates@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/delegates/-/delegates-1.0.0.tgz#84c6e159b81904fdca59a0ef44cd870d31250f9a"
 
-denque@^1.4.0:
+denque@^1.4.1:
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/denque/-/denque-1.4.1.tgz#6744ff7641c148c3f8a69c307e51235c1f4a37cf"
 
@@ -750,9 +750,15 @@ http-errors@~1.7.2:
     statuses ">= 1.5.0 < 2"
     toidentifier "1.0.0"
 
-iconv-lite@0.4.24, iconv-lite@^0.4.24, iconv-lite@^0.4.4:
+iconv-lite@0.4.24, iconv-lite@^0.4.4:
   version "0.4.24"
   resolved "https://registry.yarnpkg.com/iconv-lite/-/iconv-lite-0.4.24.tgz#2022b4b25fbddc21d2f524974a474aafe733908b"
+  dependencies:
+    safer-buffer ">= 2.1.2 < 3"
+
+iconv-lite@^0.5.0:
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/iconv-lite/-/iconv-lite-0.5.1.tgz#b2425d3c7b18f7219f2ca663d103bddb91718d64"
   dependencies:
     safer-buffer ">= 2.1.2 < 3"
 
@@ -1021,16 +1027,16 @@ map-visit@^1.0.0:
   dependencies:
     object-visit "^1.0.0"
 
-mariadb@^2.1.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/mariadb/-/mariadb-2.1.0.tgz#0e087c37b808fabc0f1e3d9640afd46056a3ff27"
+mariadb@^2.1.5:
+  version "2.1.5"
+  resolved "https://registry.yarnpkg.com/mariadb/-/mariadb-2.1.5.tgz#7c172b33e5e37abd6c21ff435ecdf61e4963a85e"
   dependencies:
     "@types/geojson" "^7946.0.7"
-    "@types/node" "^11.13.15"
-    denque "^1.4.0"
-    iconv-lite "^0.4.24"
+    "@types/node" "^13.1.4"
+    denque "^1.4.1"
+    iconv-lite "^0.5.0"
     long "^4.0.0"
-    moment-timezone "^0.5.25"
+    moment-timezone "^0.5.27"
 
 mathjs-expression-parser@^1.0.2:
   version "1.0.2"
@@ -1148,9 +1154,9 @@ mkdirp@^0.5.0, mkdirp@^0.5.1:
   dependencies:
     minimist "0.0.8"
 
-moment-timezone@^0.5.25:
-  version "0.5.26"
-  resolved "https://registry.yarnpkg.com/moment-timezone/-/moment-timezone-0.5.26.tgz#c0267ca09ae84631aa3dc33f65bedbe6e8e0d772"
+moment-timezone@^0.5.27:
+  version "0.5.27"
+  resolved "https://registry.yarnpkg.com/moment-timezone/-/moment-timezone-0.5.27.tgz#73adec8139b6fe30452e78f210f27b1f346b8877"
   dependencies:
     moment ">= 2.9.0"
 

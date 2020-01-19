@@ -22,7 +22,7 @@ class ThrustChannelHeatIncreased extends Critical {
   }
 
   getMessage() {
-    if (this.duration !== 0) {
+    if (this.duration) {
       return `Heat per thrust increased by ${this.heatMultiplier} for ${this.turnsRemaining} turns`;
     }
     return `Heat per thrust increased by ${this.heatMultiplier}`;

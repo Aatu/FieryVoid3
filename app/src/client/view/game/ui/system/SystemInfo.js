@@ -19,6 +19,10 @@ const SystemTooltip = styled(Tooltip)`
   top: 0px;
   right: 340px;
   width: 202px;
+
+  ${props => props.tab && "width: 302px;"}
+  transition: width 0.25s;
+  transition-timing-function: ease-in-out;
 `;
 
 const Warning = styled.div`
@@ -83,10 +87,16 @@ class SystemInfo extends React.Component {
 
   getContainer(children) {
     const { element, scs } = this.props;
+    const { tab } = this.state;
+
     if (scs) {
-      return <SystemTooltip>{children}</SystemTooltip>;
+      return <SystemTooltip tab={tab}>{children}</SystemTooltip>;
     }
-    return <RelativeTooltip element={element}>{children}</RelativeTooltip>;
+    return (
+      <RelativeTooltip tab={tab} element={element}>
+        {children}
+      </RelativeTooltip>
+    );
   }
 
   getWarnings() {

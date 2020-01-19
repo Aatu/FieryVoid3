@@ -22,7 +22,7 @@ class LoadingTimeIncreased extends Critical {
   }
 
   getMessage() {
-    if (this.duration !== 0) {
+    if (this.duration) {
       return `Charging time increased by ${this.loadingTimeIncrease} for ${this.turnsRemaining} turns`;
     }
     return `Charging time increased by ${this.loadingTimeIncrease}`;

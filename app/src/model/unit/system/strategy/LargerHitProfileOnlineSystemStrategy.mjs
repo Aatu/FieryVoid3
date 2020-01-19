@@ -58,12 +58,20 @@ class LargerHitProfileOnlineSystemStrategy extends ShipSystemStrategy {
             this.turnsOffline} turn(s) before profile increase ceases.`
         });
       }
+    } else {
+      previousResponse.push({
+        value: `NOTE: Destroyed system will not increase ship profile.`
+      });
     }
+
     return previousResponse;
   }
 
   getHitProfile({ front = true }, previousResponse = 0) {
-    if (this.system.isDestroyed() || this.turnsOffline > 1) {
+    if (
+      (this.system.isDestroyed() && this.turnsOffline > 0) ||
+      this.turnsOffline > 1
+    ) {
       return previousResponse;
     }
 

@@ -3,6 +3,7 @@ import SystemPower from "./SystemPower.mjs";
 import SystemHeat from "./SystemHeat.mjs";
 import ShipSystemLog from "./ShipSystemLog/ShipSystemLog.mjs";
 import ShipSystemLogEntryDamage from "./ShipSystemLog/ShipSystemLogEntryDamage.mjs";
+import { formatNumber } from "../../utils/format.mjs";
 
 class ShipSystem {
   constructor(args = {}, strategies = []) {
@@ -49,7 +50,9 @@ class ShipSystem {
           value: [
             {
               header: "Overheat",
-              value: `${this.heat.getOverheat()}/${this.heat.getOverheatTreshold()} (${this.heat.getOverheatPercentage()}%)`
+              value: `${formatNumber(this.heat.getOverheat())}/${formatNumber(
+                this.heat.getOverheatTreshold()
+              )} (${Math.round(this.heat.getOverheatPercentage() * 100)}%)`
             },
             {
               header: "Cooling",
