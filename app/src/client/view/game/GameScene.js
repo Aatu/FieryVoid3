@@ -79,16 +79,6 @@ class GameScene {
     directionalLight.position.set(0, 0, 1).normalize();
     this.scene.add(directionalLight);
 
-    this.torpedo = new TorpedoObject(
-      new TorpedoFlight(),
-      this.scene
-    ).setPosition(new Vector(0, 10, 30));
-
-    this.torpedo2 = new TorpedoObject(
-      new TorpedoFlight(),
-      this.scene
-    ).setPosition(new Vector(-5, 0, 30));
-
     /*
     const directionalLight3 = new THREE.DirectionalLight(0xffffff, 0.8);
     directionalLight3.position.set(0, 1, 1).normalize();
@@ -232,9 +222,6 @@ class GameScene {
 
   render() {
     this.phaseDirector.render(this.scene, this.coordinateConverter, this.zoom);
-
-    this.torpedo.render({ zoom: this.zoom });
-    this.torpedo2.render({ zoom: this.zoom });
 
     this.renderer.clear();
     this.renderer.render(this.starFieldScene, this.starFieldCamera);

@@ -9,10 +9,15 @@ class InterceptorStrategy extends ShipSystemStrategy {
 
     this.numberOfIntercepts = numberOfIntercepts;
     this.heatPerIntercept = heatPerIntercept;
+    this.timesIntercepted = 0;
   }
 
   getHeatPerIntercept() {
     return this.heatPerIntercept;
+  }
+
+  getHeatGenerated(payload, previousResponse = 0) {
+    return previousResponse + this.timesIntercepted * this.heatPerIntercept;
   }
 
   canIntercept() {
@@ -75,6 +80,10 @@ class InterceptorStrategy extends ShipSystemStrategy {
       ),
       absoluteResult: torpedoHitSize + rangeModifier + fireControl + ccew * 5
     });
+  }
+
+  advanceTurn() {
+    this.timesIntercepted = 0;
   }
 }
 

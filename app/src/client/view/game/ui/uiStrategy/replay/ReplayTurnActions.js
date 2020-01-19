@@ -23,6 +23,8 @@ import CombatLogTorpedoMove from "../../../../../../model/combatLog/CombatLogTor
 import CombatLogGroupedTorpedoAttack from "../../../../../../model/combatLog/CombatLogGroupedTorpedoAttack.mjs";
 import { TORPEDO_Z } from "../../../../../../model/gameConfig.mjs";
 import ExplosionEffect from "../../../animation/effect/ExplosionEffect";
+import TorpedoExplosionHE from "../../../animation/TorpedoExplosion/TorpedoExplosionHE";
+import TorpedoExplosionMSV from "../../../animation/TorpedoExplosion/TorpedoExplosionMSV";
 
 const getMovesForShip = (gameDatas, ship) =>
   gameDatas.reduce((moves, gameData) => {
@@ -102,6 +104,7 @@ class ReplayTurnActions extends AnimationUiStrategy {
       if (!intercept.isSucessfull()) {
         return;
       }
+
       const animationName = weapon.callHandler("getWeaponFireAnimationName");
 
       if (!animationName) {
@@ -144,13 +147,13 @@ class ReplayTurnActions extends AnimationUiStrategy {
     } = this.services;
     const gameData = gameDatas[0];
 
-    const attackDuration = 6000;
+    const attackDuration = 3000;
 
     const start = this.replayContext.getNextTorpedoAttackStart();
     const cameraDuration = 2000;
     const fireStart = start + cameraDuration;
 
-    let longestDuration = 6000;
+    let longestDuration = attackDuration;
 
     const target = gameData.ships.getShipById(combatLogEntry.targetId);
     const targetIcon = shipIconContainer.getByShip(target);
@@ -178,7 +181,7 @@ class ReplayTurnActions extends AnimationUiStrategy {
       );
 
       const interceptTime = intercepted
-        ? fireStart + 5000 + this.getRandom() * 1000
+        ? fireStart + (attackDuration - 1000) + this.getRandom() * 1000
         : null;
 
       const targetPosition = new Vector(position)
@@ -186,10 +189,20 @@ class ReplayTurnActions extends AnimationUiStrategy {
         .add(
           new Vector(this.getRandom() * 30 - 15, this.getRandom() * 30 - 15, 0)
         );
+
+      const attackDistance = 1000;
+      const launchPosition = flight.launchPosition;
+      const torpedoPosition = launchPosition
+        .sub(targetPosition)
+        .normalize()
+        .multiplyScalar(attackDistance)
+        .add(targetPosition)
+        .setZ(TORPEDO_Z);
+
       const endTime = fireStart + attackDuration + this.getRandom() * 500;
       const animation = new TorpedoMovementAnimation(
         torpedoIconContainer.getIconByTorpedoFlight(flight),
-        flight.position.setZ(TORPEDO_Z),
+        torpedoPosition,
         targetPosition,
         fireStart,
         endTime,
@@ -198,9 +211,22 @@ class ReplayTurnActions extends AnimationUiStrategy {
         true
       );
 
-      const velocity = flight.velocity
-        .multiplyScalar(1 / 6000)
+      const systemsDestroyed = torpedoEntry.getDestroyedSystems(target);
+
+      if (systemsDestroyed.length > 0) {
+        this.systemDestroyedTextAnimation.add(
+          new Vector(targetPosition.x, targetPosition.y, targetPosition.z),
+          systemsDestroyed.map(system => system.getDisplayName()),
+          endTime
+        );
+      }
+
+      const velocity = targetPosition
+        .sub(launchPosition)
+        .normalize()
+        .multiplyScalar(attackDistance / attackDuration)
         .multiplyScalar(0.5);
+
       const interceptPosition = animation.getInterceptPosition();
 
       this.animations.push(animation);
@@ -231,36 +257,40 @@ class ReplayTurnActions extends AnimationUiStrategy {
           )
         );
       } else {
-        this.animations.push(
-          new ExplosionEffect(
-            particleEmitterContainer,
-            this.getRandom,
-            {
-              position: targetPosition,
-              time: endTime,
-              duration: 250 + this.getRandom() * 250,
-              type: "gas",
-              size: this.getRandom() * 8 + 25,
-              color: new THREE.Color(51 / 255, 163 / 255, 255 / 255)
-            },
-            this
-          )
-        );
-
-        this.animations.push(
-          new ExplosionEffect(
-            particleEmitterContainer,
-            this.getRandom,
-            {
-              position: targetPosition,
-              time: endTime,
-              duration: 250 + this.getRandom() * 250,
-              type: "glow",
-              size: this.getRandom() * 2 + 4
-            },
-            this
-          )
-        );
+        switch (flight.torpedo.visuals.explosionType) {
+          case "HE":
+            this.animations.push(
+              new TorpedoExplosionHE(
+                targetPosition,
+                endTime,
+                particleEmitterContainer,
+                this.getRandom,
+                flight.torpedo
+              )
+            );
+            break;
+          case "MSV":
+            this.animations.push(
+              new TorpedoExplosionMSV(
+                targetPosition,
+                endTime,
+                particleEmitterContainer,
+                this.getRandom,
+                flight.torpedo,
+                torpedoEntry.damages.length
+              )
+            );
+            break;
+          default:
+            this.animations.push(
+              new TorpedoExplosionHE(
+                targetPosition,
+                endTime,
+                particleEmitterContainer,
+                this.getRandom
+              )
+            );
+        }
       }
     });
 
@@ -280,12 +310,14 @@ class ReplayTurnActions extends AnimationUiStrategy {
       combatLogEntry.torpedoFlightId
     );
 
+    const startTime = start + this.getRandom() * 2000;
+    const endTime = start + duration + this.getRandom() * 1000;
     const animation = new TorpedoMovementAnimation(
       torpedoIconContainer.getIconByTorpedoFlight(flight),
       combatLogEntry.startPosition.setZ(TORPEDO_Z),
       combatLogEntry.endPosition.setZ(TORPEDO_Z),
-      start,
-      start + duration,
+      startTime,
+      endTime,
       flight.turnsActive === 1
     );
 
@@ -447,6 +479,7 @@ class ReplayTurnActions extends AnimationUiStrategy {
     uiState.hideCombatLog();
 
     particleEmitterContainer.release(this);
+    this.animations.forEach(animation => animation.deactivate());
 
     return super.deactivate();
   }

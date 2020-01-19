@@ -27,11 +27,11 @@ class DamageLine extends React.Component {
           <>
             {" "}
             Systems destroyed:{" "}
-            {systemsDestroyed.map((system, i) => (
-              <DangerHighlight key={`system-destroyed-${i}`}>
-                {system.getDisplayName()}
-              </DangerHighlight>
-            ))}
+            <DangerHighlight>
+              {systemsDestroyed
+                .map(system => system.getDisplayName())
+                .join(", ")}
+            </DangerHighlight>
           </>
         )}
       </DamageContainer>

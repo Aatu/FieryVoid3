@@ -47,7 +47,7 @@ class GameSlot {
   }
 
   isOccupiedBy(user) {
-    return this.userId === user.id;
+    return user && this.userId === user.id;
   }
 
   setBought() {

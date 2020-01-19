@@ -22,6 +22,7 @@ class ExplosionEffect extends Animation {
     this.ring = args.ring || false;
     this.duration = args.duration;
     this.color = args.color;
+    this.opacity = args.opacity || 1;
 
     this.movement = args.velocity || { x: 0, y: 0, z: 0 };
 
@@ -118,7 +119,7 @@ class ExplosionEffect extends Animation {
       .getParticle(this.context)
       .setSize(size / 4)
       //.setSizeChange(128)
-      .setOpacity(opacity)
+      .setOpacity(opacity * this.opacity)
       .setFadeIn(activation, fadeInSpeed)
       .setFadeOut(fadeOutAt, 500)
       .setColor({ r: 1, g: 1, b: 1 })
@@ -229,6 +230,7 @@ class ExplosionEffect extends Animation {
         fadeOutAt,
         (Math.random() * 0.05) / this.speed + 0.025 / this.speed
       )
+      .setOpacity(this.opacity)
       .setColor(getCoreColor())
       .setPosition({
         x: this.position.x, // + Math.floor(Math.random()*radius/10)-radius/5,
@@ -348,6 +350,7 @@ class ExplosionEffect extends Animation {
         .setFadeOut(fadeOutAt, (Math.random() * 200 + 800) / this.speed)
         .setColor(this.getRandomColor())
         .setVelocity(this.movement)
+        .setOpacity(this.opacity)
         .setPosition({
           x: this.position.x,
           y: this.position.y,

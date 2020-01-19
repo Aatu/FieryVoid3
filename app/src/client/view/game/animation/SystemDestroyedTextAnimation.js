@@ -82,7 +82,7 @@ class SystemDestroyedTextAnimation extends Animation {
       destroyedText.sprite.destroy();
     }, this);
 
-    this.destroyedTexts = {};
+    this.destroyedTexts = [];
   }
 
   add(position, names, time) {

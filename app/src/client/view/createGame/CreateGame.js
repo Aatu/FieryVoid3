@@ -57,30 +57,31 @@ const CreateGame = ({ location }) => {
     gameData.addPlayer(user);
     gameData.name = "Test game";
 
-    setGameData(gameData);
+    setGameData(gameData.clone());
   }, [setGameData]);
 
   const changeGameName = useCallback(
     e => {
-      console.log(e);
-      gameData.name = "hi";
-      setGameData(gameData);
+      gameData.name = e.target.value;
+      setGameData(gameData.clone());
     },
     [gameData, setGameData]
   );
 
-  const createGame = useCallback(() => {
+  const createGameCallBack = useCallback(() => {
     (async () => {
       try {
         const response = await createGame(gameData);
+        console.log(response);
         gameData.id = response.data.gameId;
-        this.setState({ gameData });
+        setGameData(gameData.clone());
       } catch (e) {
         console.error(e);
       }
     })();
-  }, [gameData]);
+  }, [gameData, setGameData]);
 
+  console.log("render", gameData);
   if (gameData.id) {
     return (
       <Redirect
@@ -98,8 +99,6 @@ const CreateGame = ({ location }) => {
       </Link>
       <Title>Create game</Title>
       <InputAndLabel
-        label="Game name"
-        id="name"
         placeholder="name"
         value={gameData.name}
         onChange={changeGameName}
@@ -107,7 +106,11 @@ const CreateGame = ({ location }) => {
       />
 
       <Slots gameData={gameData} />
-      <Button type="button" buttonStyle="button-grey" onClick={createGame}>
+      <Button
+        type="button"
+        buttonStyle="button-grey"
+        onClick={createGameCallBack}
+      >
         Create game
       </Button>
     </Container>

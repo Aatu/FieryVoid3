@@ -108,7 +108,7 @@ class TorpedoHandler {
       .getTorpedoFlights()
       .filter(flight => flight.reachedTarget);
 
-    for (let interceptTry = 1; interceptTry <= 5; interceptTry--) {
+    for (let interceptTry = 1; interceptTry <= 5; interceptTry++) {
       const usedWeapons = [];
 
       let interception = null;
@@ -181,10 +181,6 @@ class TorpedoHandler {
           if (roll <= interception.interceptChange.result) {
             interception.torpedoFlight.setIntercepted();
           }
-
-          weapon.heat.changeHeat(
-            weapon.callHandler("getHeatPerIntercept", null, 0)
-          );
 
           weapon.callHandler("onIntercept");
 

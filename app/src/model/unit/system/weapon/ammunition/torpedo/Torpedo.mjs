@@ -18,6 +18,12 @@ class Torpedo extends CargoEntity {
     this.armingTime = armingTime;
 
     this.damageStrategy = null;
+
+    this.visuals = {
+      engineColor: [51 / 255, 163 / 255, 255 / 255],
+      explosionType: "HE",
+      explosionSize: 15
+    };
   }
 
   getStrikeDistance(flight, target) {
@@ -40,13 +46,13 @@ class Torpedo extends CargoEntity {
 
     switch (tries) {
       case 1:
-        return [1];
-      case 2:
         return [1, 2];
-      case 3:
+      case 2:
         return [1, 2, 3];
-      case 4:
+      case 3:
         return [1, 2, 3, 4];
+      case 4:
+        return [1, 2, 3, 4, 5];
       case 5:
         return [1, 2, 3, 4, 5];
     }

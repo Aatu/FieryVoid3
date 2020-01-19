@@ -6,6 +6,10 @@ class Torpedo72MSV extends Torpedo72 {
     super({ deltaVelocityPerTurn: 42, turnsToLive: 4 });
 
     this.damageStrategy = new MSVTorpedoDamageStrategy("2d2", "d3", 15, 25);
+    this.visuals = {
+      engineColor: [255 / 255, 222 / 255, 120 / 255],
+      explosionType: "MSV"
+    };
   }
 
   getInterceptTries(effectiveness, flight, target) {

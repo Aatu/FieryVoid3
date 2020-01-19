@@ -210,16 +210,16 @@ test("Intercept hit change is calculated properly", test => {
   test.deepEqual(
     result2,
     new WeaponHitChange({
-      absoluteResult: 54,
+      absoluteResult: 62,
       baseToHit: 0,
       dew: 0,
-      distance: 2,
+      distance: 1,
       evasion: 30,
       fireControl: 30,
       oew: 8,
       outOfRange: false,
-      rangeModifier: -16,
-      result: 54
+      rangeModifier: -8,
+      result: 62
     })
   );
 });

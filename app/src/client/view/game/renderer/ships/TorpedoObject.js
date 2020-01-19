@@ -85,6 +85,13 @@ class TorpedoObject {
 
     this.torpedo = torpedo;
 
+    const visuals = this.torpedoFlight.torpedo.visuals;
+    const color = new THREE.Color(
+      visuals.engineColor[0],
+      visuals.engineColor[1],
+      visuals.engineColor[2]
+    );
+
     //this.torpedo.position.x = 100;
     //this.torpedo.position.z = 50;
 
@@ -108,7 +115,7 @@ class TorpedoObject {
     );
     const getRandom = getSeededRandomGenerator(this.torpedoFlight.id);
 
-    const size = 20;
+    const size = 10;
     const sineFrequency = getRandom() * 50 + 200;
 
     this.particleEmitter
@@ -117,7 +124,7 @@ class TorpedoObject {
       .setOpacity(0.5)
       .setFadeIn(0, 0)
       .setFadeOut(0, 0)
-      .setColor(new THREE.Color(51 / 255, 163 / 255, 255 / 255))
+      .setColor(color)
       //.setVelocity(this.movement)
       .setPosition({
         x: 0,
@@ -134,7 +141,7 @@ class TorpedoObject {
       .setOpacity(0.1)
       .setFadeIn(0, 0)
       .setFadeOut(0, 0)
-      .setColor(new THREE.Color(51 / 255, 163 / 255, 255 / 255))
+      .setColor(color)
       //.setVelocity(this.movement)
       .setPosition({
         x: 0,
@@ -201,7 +208,7 @@ class TorpedoObject {
           y: 0,
           z: 0
         })
-        .setColor(new THREE.Color(51 / 255, 163 / 255, 255 / 255))
+        .setColor(color)
         //.setSine(getRandom() * 200 + 100, 0.1)
         .setAngle(angle)
         .setAngleChange(angleChange)

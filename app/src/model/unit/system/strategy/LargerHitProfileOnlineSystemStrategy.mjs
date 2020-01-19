@@ -27,7 +27,7 @@ class LargerHitProfileOnlineSystemStrategy extends ShipSystemStrategy {
   }
 
   getHitSystemSizeMultiplier(payload, previousResponse = 1) {
-    if (this.turnsOffline > 1) {
+    if (this.system.isDestroyed() || this.turnsOffline > 1) {
       return previousResponse;
     }
 
@@ -44,21 +44,23 @@ class LargerHitProfileOnlineSystemStrategy extends ShipSystemStrategy {
       value: `x${this.hitSizeMultiplier}`
     });
 
-    if (this.turnsOffline > 1) {
-      previousResponse.push({
-        value: `NOTE: System has been offline long enough for the profile increase to cease.`
-      });
-    } else {
-      previousResponse.push({
-        value: `NOTE: System has to be offline ${2 -
-          this.turnsOffline} turn(s) before profile increase ceases.`
-      });
+    if (!this.system.isDestroyed()) {
+      if (this.turnsOffline > 1) {
+        previousResponse.push({
+          value: `NOTE: System has been offline long enough for the profile increase to cease.`
+        });
+      } else {
+        previousResponse.push({
+          value: `NOTE: System has to be offline ${2 -
+            this.turnsOffline} turn(s) before profile increase ceases.`
+        });
+      }
     }
     return previousResponse;
   }
 
   getHitProfile({ front = true }, previousResponse = 0) {
-    if (this.turnsOffline > 1) {
+    if (this.system.isDestroyed() || this.turnsOffline > 1) {
       return previousResponse;
     }
 

@@ -232,7 +232,7 @@ test.serial("Try to intercept torpedo attack", async test => {
   launchers[0].setLaunchTarget(target.id);
 
   await controller.commitTurn(gameData.id, gameData.serialize(), user);
-  //await evaluateTorpedoTurn(1, gameData.id, controller, user);
+  let newGameData = await controller.getGameData(gameData.id, user);
 
   await assertTorpedoMove(
     1,
@@ -247,8 +247,8 @@ test.serial("Try to intercept torpedo attack", async test => {
 
   await controller.commitTurn(gameData.id, newGameData.serialize(), user);
   await controller.commitTurn(gameData.id, newGameData.serialize(), user2);
+  newGameData = await controller.getGameData(gameData.id, user);
 
-  let newGameData = await controller.getGameData(gameData.id, user);
   target = newGameData.ships
     .getShips()
     .find(ship => ship.name === "GEPS Biliyaz");
@@ -364,6 +364,8 @@ test.serial("Try to intercept multiple torpedos", async test => {
     4,
     user
   );
+
+  console.log(replay[0].combatLog.entries);
 
   test.true(
     replay[0].combatLog.entries.some(

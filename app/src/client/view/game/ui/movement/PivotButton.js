@@ -21,6 +21,10 @@ class PivotButton extends React.Component {
 
   pivot() {
     const { ship, movementService, pivotDirection } = this.props;
+    if (!movementService.canPivot(ship, pivotDirection)) {
+      return;
+    }
+
     return movementService.pivot(ship, pivotDirection);
   }
 
