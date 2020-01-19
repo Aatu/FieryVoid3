@@ -11,6 +11,7 @@ import Ammo85mmAP from "../../system/weapon/ammunition/conventional/Ammo85mmAP.m
 import Ammo85mmHE from "../../system/weapon/ammunition/conventional/Ammo85mmHE.mjs";
 import CargoService from "../../../cargo/CargoService.mjs";
 import Ammo30mm from "../../system/weapon/ammunition/conventional/Ammo30mm.mjs";
+import Torpedo72HE from "../../system/weapon/ammunition/torpedo/Torpedo72HE.mjs";
 
 class Caliope extends Ship {
   setShipProperties() {
@@ -205,7 +206,12 @@ class Caliope extends Ship {
     const cargoService = new CargoService();
     cargoService.divideCargo(this, {
       object: new Torpedo72MSV(),
-      amount: 24
+      amount: 12
+    });
+
+    cargoService.divideCargo(this, {
+      object: new Torpedo72HE(),
+      amount: 12
     });
 
     cargoService.divideCargo(this, {
@@ -257,7 +263,7 @@ class Caliope extends Ship {
       launcherIndex: 1
     });
     this.systems.getSystemById(304).callHandler("loadAmmoInstant", {
-      ammo: new Torpedo72MSV(),
+      ammo: new Torpedo72HE(),
       launcherIndex: 2
     });
 
@@ -266,7 +272,7 @@ class Caliope extends Ship {
       launcherIndex: 1
     });
     this.systems.getSystemById(504).callHandler("loadAmmoInstant", {
-      ammo: new Torpedo72MSV(),
+      ammo: new Torpedo72HE(),
       launcherIndex: 2
     });
   }

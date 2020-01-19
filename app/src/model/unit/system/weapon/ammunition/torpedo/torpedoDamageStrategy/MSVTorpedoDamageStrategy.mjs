@@ -39,7 +39,7 @@ class MSVTorpedoDamageStrategy extends StandardDamageStrategy {
   }
 
   getHitChange({ target, torpedoFlight, distance }) {
-    const hitProfile = target.getHitProfile(torpedoFlight.position);
+    const hitProfile = target.getHitProfile(torpedoFlight.launchPosition);
     const rangeModifier =
       this.rangePenalty * (1 + target.movement.getEvasion() / 10) * distance;
 
@@ -60,7 +60,7 @@ class MSVTorpedoDamageStrategy extends StandardDamageStrategy {
 
   applyDamageFromWeaponFire(payload) {
     const { torpedoFlight, combatLogEvent } = payload;
-    const attackPosition = torpedoFlight.position;
+    const attackPosition = torpedoFlight.launchPosition;
 
     let shots = this.numberOfShots;
 

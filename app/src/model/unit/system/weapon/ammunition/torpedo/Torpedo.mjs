@@ -32,10 +32,23 @@ class Torpedo extends CargoEntity {
     return this.evasion;
   }
 
-  getInterceptTries(effectiveness) {
-    const tries = Math.round(5 * (1 - effectiveness));
+  getInterceptTries(effectiveness, flight, target) {
+    let tries = Math.round(5 * (1 - effectiveness));
     if (tries < 1) {
-      return 1;
+      tries = 1;
+    }
+
+    switch (tries) {
+      case 1:
+        return [1];
+      case 2:
+        return [1, 2];
+      case 3:
+        return [1, 2, 3];
+      case 4:
+        return [1, 2, 3, 4];
+      case 5:
+        return [1, 2, 3, 4, 5];
     }
 
     return tries;

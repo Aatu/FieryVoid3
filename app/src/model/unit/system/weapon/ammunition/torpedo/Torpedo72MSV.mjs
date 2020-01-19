@@ -1,4 +1,4 @@
-import MSVTorpedoDamageStrategy from "./torpedoDamageStrategy.mjs/MSVTorpedoDamageStrategy.mjs";
+import MSVTorpedoDamageStrategy from "./torpedoDamageStrategy/MSVTorpedoDamageStrategy.mjs";
 import Torpedo72 from "./Torpedo72.mjs";
 
 class Torpedo72MSV extends Torpedo72 {
@@ -6,6 +6,15 @@ class Torpedo72MSV extends Torpedo72 {
     super({ deltaVelocityPerTurn: 42, turnsToLive: 4 });
 
     this.damageStrategy = new MSVTorpedoDamageStrategy("2d2", "d3", 15, 25);
+  }
+
+  getInterceptTries(effectiveness, flight, target) {
+    const distance = this.getStrikeDistance(flight, target);
+    if (distance > 5) {
+      return [5];
+    }
+
+    return [distance];
   }
 
   getStrikeDistance(flight, target) {
@@ -24,10 +33,6 @@ class Torpedo72MSV extends Torpedo72 {
       },
       ...previousResponse
     ];
-  }
-
-  getMinRange() {
-    return 3;
   }
 
   getDisplayName() {

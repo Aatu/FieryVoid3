@@ -232,14 +232,7 @@ test.serial("Try to intercept torpedo attack", async test => {
   launchers[0].setLaunchTarget(target.id);
 
   await controller.commitTurn(gameData.id, gameData.serialize(), user);
-  let newGameData = await controller.getGameData(gameData.id, user);
   //await evaluateTorpedoTurn(1, gameData.id, controller, user);
-
-  target = newGameData.ships
-    .getShips()
-    .find(ship => ship.name === "GEPS Biliyaz");
-
-  target.electronicWarfare.assignCcEw(10);
 
   await assertTorpedoMove(
     1,
@@ -254,6 +247,104 @@ test.serial("Try to intercept torpedo attack", async test => {
 
   await controller.commitTurn(gameData.id, newGameData.serialize(), user);
   await controller.commitTurn(gameData.id, newGameData.serialize(), user2);
+
+  let newGameData = await controller.getGameData(gameData.id, user);
+  target = newGameData.ships
+    .getShips()
+    .find(ship => ship.name === "GEPS Biliyaz");
+
+  target.electronicWarfare.assignCcEw(10);
+
+  await controller.commitTurn(gameData.id, newGameData.serialize(), user);
+  await controller.commitTurn(gameData.id, newGameData.serialize(), user2);
+  newGameData = await controller.getGameData(gameData.id, user);
+
+  target = newGameData.ships
+    .getShips()
+    .find(ship => ship.name === "GEPS Biliyaz");
+  //await evaluateTorpedoTurn(2, gameData.id, controller, user);
+
+  test.is(target.electronicWarfare.inEffect.getCcEw(), 10);
+
+  const replay = await controller.replayHandler.requestReplay(
+    gameId,
+    3,
+    4,
+    user
+  );
+
+  test.true(
+    replay[0].combatLog.entries.some(
+      entry => entry instanceof CombatLogTorpedoIntercept && entry.shipId
+    )
+  );
+
+  db.close();
+});
+
+test.serial("Try to intercept multiple torpedos", async test => {
+  const db = new TestDatabaseConnection("torpedo");
+  await db.resetDatabase();
+
+  const controller = new GameController(db);
+  const user = new User(1, "Nönmän");
+  const user2 = new User(2, "Bädmän");
+  let gameData = await constructDeployedGame(
+    user,
+    user2,
+    controller,
+    new Offset(-200, 0)
+  );
+
+  const gameId = gameData.id;
+
+  await controller.commitTurn(gameData.id, gameData.serialize(), user2);
+
+  const shooter = gameData.ships
+    .getShips()
+    .find(ship => ship.name === "UCS Achilles");
+
+  let target = gameData.ships
+    .getShips()
+    .find(ship => ship.name === "GEPS Biliyaz");
+
+  const launchers = shooter.systems
+    .getSystemById(203)
+    .callHandler("getLoadedLaunchers", null, []);
+
+  launchers[0].setLaunchTarget(target.id);
+  launchers[1].setLaunchTarget(target.id);
+
+  const launchers2 = shooter.systems
+    .getSystemById(206)
+    .callHandler("getLoadedLaunchers", null, []);
+
+  launchers2[0].setLaunchTarget(target.id);
+  launchers2[1].setLaunchTarget(target.id);
+
+  await controller.commitTurn(gameData.id, gameData.serialize(), user);
+  let newGameData = await controller.getGameData(gameData.id, user);
+  //await evaluateTorpedoTurn(1, gameData.id, controller, user);
+
+  await assertTorpedoMove(
+    1,
+    gameData.id,
+    controller,
+    user,
+    test,
+    new Offset(-202, 3),
+    new Offset(-151, 3),
+    new Offset(72, -1)
+  );
+
+  await controller.commitTurn(gameData.id, newGameData.serialize(), user);
+  await controller.commitTurn(gameData.id, newGameData.serialize(), user2);
+
+  target = newGameData.ships
+    .getShips()
+    .find(ship => ship.name === "GEPS Biliyaz");
+
+  target.electronicWarfare.assignCcEw(10);
 
   await controller.commitTurn(gameData.id, newGameData.serialize(), user);
   await controller.commitTurn(gameData.id, newGameData.serialize(), user2);

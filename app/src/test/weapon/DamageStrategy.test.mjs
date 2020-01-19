@@ -22,6 +22,10 @@ import DamageEntry from "../../model/unit/system/DamageEntry.mjs";
 import WeaponHitChange from "../../model/weapon/WeaponHitChange.mjs";
 import CombatLogWeaponFire from "../../model/combatLog/CombatLogWeaponFire.mjs";
 import CombatLogWeaponFireHitResult from "../../model/combatLog/CombatLogWeaponFireHitResult.mjs";
+import HETorpedoDamageStrategy from "../../model/unit/system/weapon/ammunition/torpedo/torpedoDamageStrategy/HETorpedoDamageStrategy.mjs";
+import TorpedoFlight from "../../model/unit/TorpedoFlight.mjs";
+import Torpedo72HE from "../../model/unit/system/weapon/ammunition/torpedo/Torpedo72HE.mjs";
+import CombatLogTorpedoAttack from "../../model/combatLog/CombatLogTorpedoAttack.mjs";
 
 const constructShip = (id = 123) => {
   let ship = new Ship({
@@ -419,6 +423,80 @@ test("Explosive damage strategy will... um... explode", test => {
       10
     ),
     combatLogEntry: new CombatLogWeaponFire()
+  });
+
+  const expectedDamage = 20;
+
+  const totalDamage = ship.systems
+    .getSystems()
+    .reduce((total, system) => total + system.getTotalDamage(), 0);
+
+  test.deepEqual(totalDamage, expectedDamage);
+});
+
+test("Torpedo explosive damage strategy will also...  um... explode", test => {
+  const ship = new Ship({
+    id: 999
+  });
+
+  ship.systems.addPrimarySystem([
+    new Engine({ id: 6, hitpoints: 10, armor: 3 }, 12, 6, 2),
+    new Reactor({ id: 7, hitpoints: 10, armor: 3 }, 20),
+    new Structure({ id: 8, hitpoints: 50, armor: 4 })
+  ]);
+
+  ship.systems.addPortAftSystem([
+    new PDC30mm({ id: 501, hitpoints: 5, armor: 3 }),
+    new Structure({ id: 500, hitpoints: 50, armor: 4 })
+  ]);
+
+  ship.systems.addStarboardFrontSystem([
+    new PDC30mm({ id: 201, hitpoints: 5, armor: 3 }),
+    new Structure({ id: 200, hitpoints: 50, armor: 4 })
+  ]);
+
+  ship.systems.addAftSystem([
+    new Structure({ id: 400, hitpoints: 50, armor: 4 })
+  ]);
+
+  ship.movement.addMovement(
+    new MovementOrder(
+      -1,
+      movementTypes.END,
+      new Offset(-3, 3),
+      new Offset(0, 0),
+      1,
+      0,
+      1
+    )
+  );
+
+  const shooter = constructShip();
+  shooter.movement.addMovement(
+    new MovementOrder(
+      -1,
+      movementTypes.END,
+      new Offset(-5, 7),
+      new Offset(0, 0),
+      0,
+      0,
+      1
+    )
+  );
+
+  const damageStrategy = new HETorpedoDamageStrategy(5, 400, 4);
+
+  damageStrategy.hitSystemRandomizer = {
+    randomizeHitSystem: systems => systems[0]
+  };
+
+  const torpedoFlight = new TorpedoFlight(new Torpedo72HE(), 1, 1, 1, 1);
+  torpedoFlight.setLaunchPosition(new Vector(1000, 0));
+
+  damageStrategy.applyDamageFromWeaponFire({
+    target: ship,
+    torpedoFlight,
+    combatLogEvent: new CombatLogTorpedoAttack(1, 1)
   });
 
   const expectedDamage = 20;

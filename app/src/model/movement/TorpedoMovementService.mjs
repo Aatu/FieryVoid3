@@ -69,7 +69,6 @@ class TorpedoMovementService {
 
     return {
       ...result,
-      accelerationAngle: radianToDegree(result.accelerationAngle),
       notes,
       impactVelocity: Math.round(
         result.impactVelocity / HexagonMath.getHexWidth()
