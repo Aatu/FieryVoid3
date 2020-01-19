@@ -115,7 +115,11 @@ class TorpedoHandler {
       do {
         interception = impactingTorpedos
           .filter(flight => !flight.intercepted)
-          .filter(flight => flight.getInterceptTries().includes(interceptTry))
+          .filter(flight =>
+            flight
+              .getInterceptTries(gameData.ships.getShipById(flight.targetId))
+              .includes(interceptTry)
+          )
           .map(flight => {
             const target = gameData.ships.getShipById(flight.targetId);
 

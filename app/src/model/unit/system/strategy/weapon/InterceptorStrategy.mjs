@@ -50,10 +50,6 @@ class InterceptorStrategy extends ShipSystemStrategy {
       }
     }
 
-    if (distance < torpedoFlight.getStrikeDistance(target)) {
-      distance = torpedoFlight.getStrikeDistance(target);
-    }
-
     const rangeModifier =
       this.system.callHandler("getRangeModifier", {
         distance: distance

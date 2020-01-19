@@ -50,8 +50,12 @@ class TorpedoFlight {
     this.strikeEffectiveness = strikeEffectiveness;
   }
 
-  getInterceptTries() {
-    return this.torpedo.getInterceptTries(this.strikeEffectiveness);
+  getInterceptTries(target) {
+    return this.torpedo.getInterceptTries(
+      this.strikeEffectiveness,
+      this,
+      target
+    );
   }
 
   getStrikeDistance(target) {
