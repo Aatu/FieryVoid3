@@ -112,6 +112,6 @@ CREATE TABLE game_ship_data (
   PRIMARY KEY (game_id,turn,ship_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO USER (username, password, access_level) VALUES ('Nönmän', 'lol', 1);
-INSERT INTO USER (username, password, access_level) VALUES ('Bädmän', 'lol', 1);
+INSERT INTO user (username, password, access_level) VALUES ('Nönmän', 'lol', 1);
+INSERT INTO user (username, password, access_level) VALUES ('Bädmän', 'lol', 1);
 `;

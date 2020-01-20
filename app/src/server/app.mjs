@@ -35,7 +35,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 const dbConnection = new DbConnection({
-  host: "localhost",
+  host: "127.0.0.1",
   user: "root",
   password: "root",
   database: `fieryvoid`,

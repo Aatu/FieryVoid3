@@ -114,5 +114,5 @@ CREATE TABLE `game_ship_data` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-INSERT INTO USER (username, password, access_level) VALUES ('player1', '*F6ECD1F80E1654CC7D3491B7C3FCBDE00A9C41DF', 1);
-INSERT INTO USER (username, password, access_level) VALUES ('player2', '*F6ECD1F80E1654CC7D3491B7C3FCBDE00A9C41DF', 1);
+INSERT INTO `user` (username, password, access_level) VALUES ('player1', '*F6ECD1F80E1654CC7D3491B7C3FCBDE00A9C41DF', 1);
+INSERT INTO `user` (username, password, access_level) VALUES ('player2', '*F6ECD1F80E1654CC7D3491B7C3FCBDE00A9C41DF', 1);
