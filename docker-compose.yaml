@@ -4,10 +4,10 @@ services:
   mariadb:
     build:
       context: docker/mariadb
-    volumes:
-      - .:/usr/src/fieryvoid
     ports:
       - '3306:3306'
+    volumes:
+      - .:/usr/src/fieryvoid
     environment: 
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: fieryvoid

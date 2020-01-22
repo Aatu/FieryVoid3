@@ -377,19 +377,21 @@ class ReplayTurnActions extends AnimationUiStrategy {
       const animation = new ShipWeaponAnimations[
         `ShipWeapon${animationName.charAt(0).toUpperCase() +
           animationName.slice(1)}Animation`
-      ](
-        fireStart,
-        fireEntry,
-        fireOrder,
+      ]({
+        getRandom: this.getRandom,
+        particleEmitterContainer: particleEmitterContainer,
         weapon,
-        shipIconContainer.getByShip(shooter),
+        getPosition: this.replayContext.wrapGetShootingPosition(
+          this.animations
+        ),
+        args: weapon.callHandler("getWeaponFireAnimationArguments"),
+        weaponAnimationService,
         targetIcon,
-        this.replayContext.wrapGetShootingPosition(this.animations),
-        this.getRandom,
-        particleEmitterContainer,
-        weapon.callHandler("getWeaponFireAnimationArguments"),
-        weaponAnimationService
-      );
+        shooterIcon: shipIconContainer.getByShip(shooter),
+        animationStartTime: fireStart,
+        totalShots: fireEntry.totalShots,
+        shotsHit: fireEntry.shotsHit
+      });
 
       this.animations.push(animation);
       const duration = animation.getDuration();

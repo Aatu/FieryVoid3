@@ -39,7 +39,6 @@ class ShipWeaponUniversalBoltAnimation extends ShipWeaponAnimation {
       );
 
       if (shot.hit && !omitHitExplosion) {
-        console.log("endPosition", this.endPosition);
         this.animations.push(
           weaponAnimationService.getDamageExplosion(
             props.args.explosionSize,
@@ -57,9 +56,7 @@ class ShipWeaponUniversalBoltAnimation extends ShipWeaponAnimation {
 
     let startExtra = 0;
     this.shots = [];
-    //const hitsStart = Math.floor(this.getRandom() * (totalShots - shotsHit));
-
-    const hitsStart = 2;
+    const hitsStart = Math.floor(this.getRandom() * (totalShots - shotsHit));
 
     const offsetVector = this.getRandomPosition(5);
 
@@ -138,11 +135,13 @@ class ShipWeaponUniversalBoltAnimation extends ShipWeaponAnimation {
       const startExtra = firstHit ? firstHit.startExtra : 0;
 
       const distance = this.startPosition.distanceTo(this.endPosition);
-      const duration = distance / this.speed;
-      this.startTime = impactTime - (startExtra + duration);
+      this.duration = distance / this.speed;
+      this.startTime = impactTime - (startExtra + this.duration);
     } else {
       this.startWait = this.getRandom() * 2000;
-      this.startTime = animationStartTime + this.extraWait;
+      this.startTime = animationStartTime;
+      const distance = this.startPosition.distanceTo(this.endPosition);
+      this.duration = distance / this.speed;
     }
   }
 
@@ -161,7 +160,7 @@ class ShipWeaponUniversalBoltAnimation extends ShipWeaponAnimation {
   }
 
   getDuration() {
-    return this.duration + this.startWait + this.startExtra + 1000;
+    return this.duration + this.startWait + 1000;
   }
 
   deactivate() {

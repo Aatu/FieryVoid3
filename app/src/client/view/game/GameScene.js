@@ -194,16 +194,6 @@ class GameScene {
     }
 
     this.camera.zoomCamera(this.zoom, this.width, this.height);
-
-    /*
-    this.camera.left = (this.zoom * this.width) / -2;
-    this.camera.right = (this.zoom * this.width) / 2;
-    this.camera.top = (this.zoom * this.height) / 2;
-    this.camera.bottom = (this.zoom * this.height) / -2;
-
-    this.camera.updateProjectionMatrix();
-    */
-
     this.coordinateConverter.onZoom(this.zoom);
     this.hexGridRenderer.onZoom(this.zoom);
 
@@ -211,13 +201,6 @@ class GameScene {
       zoom: this.zoom,
       animationReady: Boolean(animationReady)
     });
-
-    var alpha = zoom > 6 ? zoom - 6 : 0;
-    if (alpha > 1) {
-      alpha = 1;
-    }
-
-    //jQuery("#background").css({ opacity: 1 - alpha });
   }
 
   render() {
