@@ -14,6 +14,8 @@ import Reactor from "../../model/unit/system/reactor/Reactor.mjs";
 import DamageEntry from "../../model/unit/system/DamageEntry.mjs";
 import ManeuveringThruster from "../../model/unit/system/thruster/ManeuveringThruster.mjs";
 import { OutputReduced6 } from "../../model/unit/system/criticals/index.mjs";
+import ManeuveringThrusterLeft from "../../model/unit/system/thruster/ManeuveringThrusterLeft.mjs";
+import ManeuveringThrusterRight from "../../model/unit/system/thruster/ManeuveringThrusterRight.mjs";
 
 const startMove = new MovementOrder(
   -1,
@@ -61,7 +63,8 @@ const constructShip = (id = 123) => {
     new Thruster({ id: 9, hitpoints: 10, armor: 3 }, 5, [4, 5]),
     new Thruster({ id: 3, hitpoints: 10, armor: 3 }, 5, 3),
     new Thruster({ id: 4, hitpoints: 10, armor: 3 }, 5, 3),
-    new ManeuveringThruster({ id: 10, hitpoints: 10, armor: 3 }, 9, 3),
+    new ManeuveringThrusterLeft({ id: 10, hitpoints: 10, armor: 3 }, 9, 3),
+    new ManeuveringThrusterRight({ id: 11, hitpoints: 10, armor: 3 }, 9, 3),
     new Engine({ id: 5, hitpoints: 10, armor: 3 }, 12, 6, 2),
     new Engine({ id: 6, hitpoints: 10, armor: 3 }, 12, 6, 2),
     new Reactor({ id: 7, hitpoints: 10, armor: 3 }, 20)
@@ -154,14 +157,14 @@ test("Ship can not thrust with destroyed thruster", test => {
 
   ship.systems.getSystemById(9).addDamage(new DamageEntry(50));
 
-  test.is(ship.movement.getThrusters().length, 6);
+  test.is(ship.movement.getThrusters().length, 7);
   test.is(ship.movement.getMovement().length, 2);
 
   test.true(movementService.canThrust(ship, 0));
 
   test.false(movementService.canThrust(ship, 1));
   test.false(movementService.canThrust(ship, 2));
-  test.is(ship.movement.getThrusters().length, 6);
+  test.is(ship.movement.getThrusters().length, 7);
   test.is(ship.movement.getMovement().length, 2);
   test.true(movementService.canThrust(ship, 3));
   test.true(movementService.canThrust(ship, 4));
@@ -376,6 +379,9 @@ test("Evasion is limited by ship capabilities", test => {
   movementService.evade(ship, 1);
   movementService.evade(ship, 1);
   movementService.evade(ship, 1);
+  movementService.evade(ship, 1);
+  movementService.evade(ship, 1);
+  movementService.evade(ship, 1);
   test.false(movementService.canEvade(ship, 1));
 
   compareMovements(test, ship.movement.getMovement(), [
@@ -389,7 +395,7 @@ test("Evasion is limited by ship capabilities", test => {
       deployMove.facing,
       deployMove.rolled,
       999,
-      3
+      6
     )
   ]);
 });
@@ -463,4 +469,17 @@ test("Boosted movements get deleted when engine deboosts", test => {
   engine.callHandler("deBoost");
   test.is(ship.movement.getMovement().length, 4);
   test.falsy(movementService.canThrust(ship, 0));
+});
+
+test("Ship can not pivot, if relevant thruster is destroyed", test => {
+  const movementService = getMovementService();
+  const ship = constructDeployedShip();
+
+  ship.systems.getSystemById(11).addDamage(new DamageEntry(50));
+
+  test.true(movementService.canPivot(ship, -1));
+  test.false(movementService.canPivot(ship, 1));
+
+  ship.systems.getSystemById(10).addDamage(new DamageEntry(50));
+  test.false(movementService.canPivot(ship, -1));
 });

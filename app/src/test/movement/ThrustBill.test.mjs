@@ -8,6 +8,8 @@ import ManeuveringThruster from "../../model/unit/system/thruster/ManeuveringThr
 import Ship from "../../model/unit/Ship.mjs";
 import ThrustChannelHeatIncreased from "../../model/unit/system/criticals/ThrustChannelHeatIncreased.mjs";
 import OutputReduced from "../../model/unit/system/criticals/OutputReduced.mjs";
+import ManeuveringThrusterLeft from "../../model/unit/system/thruster/ManeuveringThrusterLeft.mjs";
+import ManeuveringThrusterRight from "../../model/unit/system/thruster/ManeuveringThrusterRight.mjs";
 
 let id = 0;
 
@@ -77,7 +79,9 @@ test("simple speed move", test => {
     "2": 0,
     "4": 0,
     "5": 0,
-    "6": 0
+    "6": 0,
+    "7": 0,
+    "8": 0
   });
 });
 
@@ -99,7 +103,9 @@ test("multiple speed moves", test => {
     "2": 3,
     "4": 3,
     "5": 3,
-    "6": 0
+    "6": 0,
+    "7": 0,
+    "8": 0
   });
 });
 
@@ -217,6 +223,57 @@ test("It uses manouveringThrusters correctly", test => {
       new hexagon.Offset(0, 0),
       new hexagon.Offset(0, 0),
       0,
+      true,
+      999,
+      1
+    )
+  ];
+
+  const bill = new ThrustBill(ship, 10, moves);
+  test.true(bill.pay());
+  bill.getMoves();
+});
+
+test("It uses manouveringThrusters correctly when there is only directional thruster", test => {
+  ship = new Ship();
+
+  ship.accelcost = 3;
+  ship.rollcost = 3;
+  ship.pivotcost = 3;
+  ship.evasioncost = 2;
+
+  ship.systems.addPrimarySystem([
+    new ManeuveringThrusterLeft({ id: 101, hitpoints: 10, armor: 3 }, 4, 2),
+    new ManeuveringThrusterRight({ id: 102, hitpoints: 10, armor: 3 }, 4, 2)
+  ]);
+
+  const moves = [
+    new MovementOrder(
+      null,
+      movementTypes.EVADE,
+      new hexagon.Offset(0, 0),
+      new hexagon.Offset(0, 0),
+      0,
+      true,
+      999,
+      1
+    ),
+    new MovementOrder(
+      null,
+      movementTypes.EVADE,
+      new hexagon.Offset(0, 0),
+      new hexagon.Offset(0, 0),
+      0,
+      true,
+      999,
+      1
+    ),
+    new MovementOrder(
+      null,
+      movementTypes.PIVOT,
+      new hexagon.Offset(0, 0),
+      new hexagon.Offset(0, 0),
+      1,
       true,
       999,
       1

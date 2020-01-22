@@ -214,29 +214,6 @@ class GameScene {
     this.animateZoom();
     this.starField.render();
 
-    //this.directionalLight3.position.y += 0.005;
-    //this.directionalLight3.position.y -= 0.05;
-
-    //time++
-
-    //this.setCameraAngleRelative(time * 0.001);
-    /*
-
-        if (this.ship) {
-
-            this.ship.setRotation(time/3,time/3, 0);
-        }
-
-        if (this.testObject2) {
-
-            this.testObject2.rotation.set(mathlib.degreeToRadian(90 + time/3), mathlib.degreeToRadian(90 + time/3), 0);
-        }
-
-        */
-
-    //this.testParticleEmitter.render(time, time, 0, 0, 1);
-    //this.cube.position.set(0, 0, time)
-
     requestAnimationFrame(this.render.bind(this));
   }
 

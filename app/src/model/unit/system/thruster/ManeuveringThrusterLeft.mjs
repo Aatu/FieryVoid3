@@ -4,10 +4,10 @@ import {
   AllowsEvasionSystemStrategy
 } from "../strategy/index.mjs";
 
-class ManeuveringThruster extends ShipSystem {
+class ManeuveringThrusterLeft extends ShipSystem {
   constructor(args, channel, evasion) {
     super(args, [
-      new ThrustChannelSystemStrategy(channel, [6, 7, 8]),
+      new ThrustChannelSystemStrategy(channel, [7, 8]),
       new AllowsEvasionSystemStrategy(evasion)
     ]);
   }
@@ -25,4 +25,4 @@ class ManeuveringThruster extends ShipSystem {
   }
 }
 
-export default ManeuveringThruster;
+export default ManeuveringThrusterLeft;

@@ -11,7 +11,9 @@ class RequiredThrust {
       3: [],
       4: [],
       5: [],
-      6: []
+      6: [],
+      7: [],
+      8: []
     };
 
     if (move) {
@@ -20,7 +22,7 @@ class RequiredThrust {
           this.requireSpeed(ship, move);
           break;
         case movementTypes.PIVOT:
-          this.requirePivot(ship);
+          this.requirePivot(ship, move);
           break;
         case movementTypes.ROLL:
           this.requireRoll(ship);
@@ -49,7 +51,9 @@ class RequiredThrust {
       3: [],
       4: [],
       5: [],
-      6: []
+      6: [],
+      7: [],
+      8: []
     };
     return this;
   }
@@ -96,15 +100,19 @@ class RequiredThrust {
   }
 
   requireRoll(ship) {
-    this.requirements[6] = ship.rollcost;
+    this.requirements[8] = ship.rollcost;
   }
 
   requireEvade(ship, move) {
-    this.requirements[6] = ship.evasioncost * move.value;
+    this.requirements[8] = ship.evasioncost * move.value;
   }
 
-  requirePivot(ship) {
-    this.requirements[6] = ship.pivotcost;
+  requirePivot(ship, move) {
+    if (move.value === 1) {
+      this.requirements[6] = ship.pivotcost;
+    } else {
+      this.requirements[7] = ship.pivotcost;
+    }
   }
 
   requireSpeed(ship, move) {

@@ -32,6 +32,8 @@ class ThrustBill {
     result[4] = result[4] || 0;
     result[5] = result[5] || 0;
     result[6] = result[6] || 0;
+    result[7] = result[7] || 0;
+    result[8] = result[8] || 0;
 
     return result;
   }
@@ -45,7 +47,9 @@ class ThrustBill {
       totalRequired[3] +
       totalRequired[4] +
       totalRequired[5] +
-      totalRequired[6]
+      totalRequired[6] +
+      totalRequired[7] +
+      totalRequired[8]
     );
   }
 
@@ -57,7 +61,9 @@ class ThrustBill {
       this.directionsRequired[3] +
       this.directionsRequired[4] +
       this.directionsRequired[5] +
-      this.directionsRequired[6]
+      this.directionsRequired[6] +
+      this.directionsRequired[7] +
+      this.directionsRequired[8]
     );
   }
 

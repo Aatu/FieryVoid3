@@ -9,7 +9,9 @@ const directionsToString = {
   2: "Thrust starboard",
   4: "Thrust port",
   5: "Thrust port",
-  6: "Pivot, roll and evade"
+  6: "Pivot right",
+  7: "Pivot left",
+  8: "Roll, Evade"
 };
 
 class ThrustChannelSystemStrategy extends ShipSystemStrategy {
