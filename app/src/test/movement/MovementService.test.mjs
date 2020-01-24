@@ -477,9 +477,9 @@ test("Ship can not pivot, if relevant thruster is destroyed", test => {
 
   ship.systems.getSystemById(11).addDamage(new DamageEntry(50));
 
-  test.true(movementService.canPivot(ship, -1));
-  test.false(movementService.canPivot(ship, 1));
+  test.true(movementService.canPivot(ship, 1));
+  test.false(movementService.canPivot(ship, -1));
 
   ship.systems.getSystemById(10).addDamage(new DamageEntry(50));
-  test.false(movementService.canPivot(ship, -1));
+  test.false(movementService.canPivot(ship, 1));
 });

@@ -11,6 +11,30 @@ class ExplosiveDamageStrategy extends StandardDamageStrategy {
     return "Explosive";
   }
 
+  getMessages(payload, previousResponse = []) {
+    previousResponse.push({
+      header: "Damage type",
+      value: this._getDamageTypeMessage()
+    });
+
+    previousResponse.push({
+      header: "Number of hits",
+      value: this.numberOfDamagesFormula
+    });
+
+    previousResponse.push({
+      header: "Damage per hit",
+      value: this._getDamageMessage()
+    });
+
+    previousResponse.push({
+      header: "Armor piercing per hit",
+      value: this._getArmorPiercingMessage()
+    });
+
+    return previousResponse;
+  }
+
   _getNumberOfDamagesForWeaponHit() {
     if (Number.isInteger(this.numberOfDamagesFormula)) {
       return this.numberOfDamagesFormula;

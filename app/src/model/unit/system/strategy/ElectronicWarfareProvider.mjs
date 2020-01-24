@@ -75,7 +75,7 @@ class ElectronicWarfareProvider extends ShipSystemStrategy {
 
     previousResponse.push({
       header: "EW type(s)",
-      value: this.allowedEwTypes.map(typeAsString)
+      value: this.allowedEwTypes.map(typeAsString).join(", ")
     });
 
     return previousResponse;
@@ -137,6 +137,10 @@ class ElectronicWarfareProvider extends ShipSystemStrategy {
 
   getTotalEwUsedByType(type) {
     if (type === ewTypes.EW_DEFENSIVE) {
+      if (!this.canUseEwType(ewTypes.EW_DEFENSIVE)) {
+        return 0;
+      }
+
       return this.getUnusedCapacity();
     }
 
@@ -169,7 +173,9 @@ class ElectronicWarfareProvider extends ShipSystemStrategy {
       .filter(critical => critical instanceof OutputReduced)
       .reduce((total, current) => total + current.getOutputReduction(), 0);
 
-    return previousResponse + this.system.callHandler("getBoost") + output;
+    return (
+      previousResponse + this.system.callHandler("getBoost", null, 0) + output
+    );
   }
 
   isEwArray(payload, previousResponse = 0) {

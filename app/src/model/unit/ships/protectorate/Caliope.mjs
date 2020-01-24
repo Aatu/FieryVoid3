@@ -83,7 +83,7 @@ class Caliope extends Ship {
         id: 111,
         hitpoints: 40,
         armor: 5,
-        heatSink: 20,
+        heatStorage: 20,
         radiator: 3
       }),
 

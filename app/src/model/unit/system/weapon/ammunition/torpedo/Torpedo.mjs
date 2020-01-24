@@ -62,7 +62,8 @@ class Torpedo extends CargoEntity {
       { header: "Velocity per turn", value: this.deltaVelocityPerTurn },
       { header: "Turns active", value: this.turnsToLive },
       { header: "Arming time", value: this.armingTime },
-      { header: "Evasion", value: this.evasion }
+      { header: "Evasion", value: this.evasion },
+      ...this.damageStrategy.getMessages()
     ];
   }
 }

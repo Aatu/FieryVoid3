@@ -7,7 +7,7 @@ import {
 class ManeuveringThrusterRight extends ShipSystem {
   constructor(args, channel, evasion) {
     super(args, [
-      new ThrustChannelSystemStrategy(channel, [6, 8]),
+      new ThrustChannelSystemStrategy(channel, [7, 8]),
       new AllowsEvasionSystemStrategy(evasion)
     ]);
   }
@@ -17,7 +17,7 @@ class ManeuveringThrusterRight extends ShipSystem {
   }
 
   getBackgroundImage() {
-    return "/img/system/maneuveringThruster.png";
+    return "/img/system/maneuveringThrusterRight.png";
   }
 
   getIconText() {

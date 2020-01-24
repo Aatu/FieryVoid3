@@ -5,13 +5,20 @@ import RequiresPowerSystemStrategy from "../strategy/RequiresPowerSystemStrategy
 import OutputHeatOnlineStrategy from "../strategy/OutputHeatOnlineStrategy.mjs";
 
 class EwArray extends ShipSystem {
-  constructor(args, output, power = 5) {
+  constructor(args, output) {
+    const { heat, boostHeat, boostable = true, power = 5 } = args;
     super(args, [
       new ElectronicWarfareProvider(output),
-      new BoostablePlusOneOutputSystemStrategy(),
       new RequiresPowerSystemStrategy(power),
-      new OutputHeatOnlineStrategy(Math.ceil(output / 2), Math.ceil(output / 3))
+      new OutputHeatOnlineStrategy(
+        heat || Math.ceil(output / 2),
+        boostHeat || Math.ceil(output / 3)
+      )
     ]);
+
+    if (boostable) {
+      this.addStrategy(new BoostablePlusOneOutputSystemStrategy());
+    }
   }
 
   getDisplayName() {

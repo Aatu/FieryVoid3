@@ -150,6 +150,14 @@ class MovementResolver {
     if (lastMove.isPivot() && lastMove.value !== pivotDirection) {
       movements.pop();
     } else {
+      if (
+        this.ship.maxPivots !== null &&
+        this.ship.movement.getMovement().filter(move => move.isPivot())
+          .length >= this.ship.maxPivots
+      ) {
+        return false;
+      }
+
       movements.push(pivotMove);
     }
 

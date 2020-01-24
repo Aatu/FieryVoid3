@@ -25,12 +25,20 @@ class MovementValidator {
     const movement = this.ship.movement.getPlayerAddedMovement();
     return (
       this.ensureMovesAreCorrectlyBuilt(this.startMove, movement) &&
-      this.ensureMovesAreFullyPaid(movement)
+      this.ensureMovesAreFullyPaid(movement) &&
+      this.ensurePivotLimit(movement)
     );
   }
 
-  getNewEndMove() {
-    throw new Error("Moved to MovementService");
+  ensurePivotLimit(movement) {
+    if (
+      this.ship.maxPivots !== null &&
+      movement.filter(move => move.isPivot()).length >= this.ship.maxPivots
+    ) {
+      throw new Error("Ship has pivoted more than allowed");
+    }
+
+    return true;
   }
 
   ensureMovesAreFullyPaid(movement) {

@@ -230,13 +230,16 @@ class TorpedoLauncherStrategy extends ShipSystemStrategy {
       possibleAmmo.forEach(cargo => {
         const entry = ammo.find(
           ammoEntry =>
-            ammoEntry.object.constructor.name === cargo.constructor.name
+            ammoEntry.object.constructor.name === cargo.object.constructor.name
         );
 
         if (entry) {
           entry.amount += cargo.amount;
         } else {
-          ammo.push(cargo);
+          ammo.push({
+            object: cargo.object,
+            amount: cargo.amount
+          });
         }
       });
     });

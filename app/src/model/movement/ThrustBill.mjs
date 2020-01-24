@@ -184,14 +184,19 @@ class ThrustBill {
   }
 
   getMoves() {
-    this.thrusters.forEach(thruster => {
-      let channeled = thruster.channeled;
-      this.movement.forEach(move => {
-        thruster.directions.forEach(direction => {
-          if (channeled === 0) {
-            return;
-          }
+    [0, 1, 2, 3, 4, 5, 6, 7, 8].forEach(direction => {
+      this.thrusters.forEach(thruster => {
+        if (!thruster.isDirection(direction)) {
+          return;
+        }
 
+        let channeled = thruster.channeled;
+
+        if (channeled === 0) {
+          return;
+        }
+
+        this.movement.forEach(move => {
           const required = move.requiredThrust.getRequirement(direction);
 
           if (required === 0) {

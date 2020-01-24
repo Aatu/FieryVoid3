@@ -52,7 +52,7 @@ class ShipTooltipDetails extends React.Component {
         <Row>
           {this.getEntry(
             "Movement costs",
-            `Acceleration: ${ship.accelcost}, Pivot: ${ship.pivotcost}, Evasion: ${ship.evasioncost}, Roll: ${ship.rollcost}`
+            `Acc: ${ship.accelcost}, Pivot: ${ship.pivotcost}, Evasion: ${ship.evasioncost}, Roll: ${ship.rollcost}`
           )}
         </Row>
         <Row>

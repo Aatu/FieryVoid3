@@ -1,26 +1,22 @@
 import TestWeapon from "./TestWeapon.mjs";
 
-import CoilgunLightFixed from "./coilgun/CoilgunLightFixed.mjs";
+import * as coilguns from "./coilgun/index.mjs";
 
 import PDC30mm from "./pdc/PDC30mm.mjs";
 
-import RailgunFixed120mm from "./railgun/RailgunFixed120mm.mjs";
-import RailgunTurreted2x140mm from "./railgun/RailgunTurreted2x140mm.mjs";
+import * as railguns from "./railgun/index.mjs";
 
-import TorpedoLauncherDual158 from "./launcher/TorpedoLauncherDual158.mjs";
-import TorpedoLauncher158 from "./launcher/TorpedoLauncher158.mjs";
-import TorpedoLauncherDual72 from "./launcher/TorpedoLauncherDual72.mjs";
+import * as launchers from "./launcher/index.mjs";
 
 import AutoCannon85mm from "./autocannon/AutoCannon85mm.mjs";
 
-export {
+const merged = {
   TestWeapon,
-  CoilgunLightFixed,
   PDC30mm,
-  RailgunFixed120mm,
-  TorpedoLauncherDual158,
-  TorpedoLauncher158,
-  TorpedoLauncherDual72,
-  RailgunTurreted2x140mm,
+  ...coilguns,
+  ...railguns,
+  ...launchers,
   AutoCannon85mm
 };
+
+export default merged;

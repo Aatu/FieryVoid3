@@ -78,6 +78,6 @@ test("Torpedo launcher can change loaded torpedo", test => {
   );
 
   test.true(
-    serverTorpedoLauncher.strategies[1].loadedTorpedo instanceof Torpedo158MSV
+    serverTorpedoLauncher.strategies[0].loadedTorpedo instanceof Torpedo158MSV
   );
 });

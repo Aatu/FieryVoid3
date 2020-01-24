@@ -137,9 +137,8 @@ class StandardLoadingStrategy extends ShipSystemStrategy {
       return 0;
     }
 
-    boost = boost / (this.getLoadingTime() - 1);
-    boost = Math.ceil(boost * 10) / 10;
-    return boost;
+    const targetLoading = this.getLoadingTime() - boost;
+    return this.getLoadingTime() / targetLoading - 1;
   }
 
   getPossibleCriticals(payload, previousResponse = []) {

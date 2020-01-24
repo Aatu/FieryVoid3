@@ -157,9 +157,9 @@ test("Weapon boost affects its loading time", test => {
   test.is(coilgun.callHandler("getLoadingTime", null, 0), 4);
   test.is(coilgun.callHandler("getTurnsLoaded", null, 0), 0);
   systems.advanceTurn();
-  test.is(coilgun.callHandler("getTurnsLoaded", null, 0), 1.4);
+  test.is(coilgun.callHandler("getTurnsLoaded", null, 0), 1.3333333333333333);
   systems.advanceTurn();
-  test.is(coilgun.callHandler("getTurnsLoaded", null, 0), 2.8);
+  test.is(coilgun.callHandler("getTurnsLoaded", null, 0), 2.6666666666666666);
   systems.advanceTurn();
   test.is(coilgun.callHandler("getTurnsLoaded", null, 0), 4);
   test.true(coilgun.callHandler("isLoaded"));

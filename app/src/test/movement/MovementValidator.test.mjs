@@ -217,3 +217,18 @@ test("Ship tries to teleport", test => {
   const error = test.throws(() => validator.validate());
   test.is(error.message, "Evade movement is constructed wrong");
 });
+
+test("Ship pivots more than its limitation", test => {
+  const ship = constructDeployedShip();
+  const movementService = getMovementService();
+
+  movementService.roll(ship);
+  movementService.pivot(ship, 1);
+  movementService.pivot(ship, 1);
+
+  ship.maxPivots = 1;
+
+  const validator = new MovementValidator(ship, 999, deployMove);
+  const error = test.throws(() => validator.validate());
+  test.is(error.message, "Ship has pivoted more than allowed");
+});

@@ -18,6 +18,7 @@ class Ship {
     this.accelcost = 1;
     this.rollcost = 1;
     this.pivotcost = 1;
+    this.maxPivots = null;
     this.evasioncost = 1;
     this.frontHitProfile = 30;
     this.sideHitProfile = 50;

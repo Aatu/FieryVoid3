@@ -54,7 +54,9 @@ class ThrustChannelSystemStrategy extends ShipSystemStrategy {
 
   getDirectionString() {
     if (Array.isArray(this.direction)) {
-      return directionsToString[this.direction[0]];
+      return this.direction
+        .map(direction => directionsToString[direction])
+        .join(", ");
     }
 
     return directionsToString[this.direction];

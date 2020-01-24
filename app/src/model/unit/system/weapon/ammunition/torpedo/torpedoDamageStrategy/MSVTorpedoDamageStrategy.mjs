@@ -17,6 +17,30 @@ class MSVTorpedoDamageStrategy extends StandardDamageStrategy {
     this.minStrikeDistance = minStrikeDistance;
   }
 
+  getMessages(payload, previousResponse = []) {
+    previousResponse.push({
+      header: "Number of SVs",
+      value: this.numberOfShots
+    });
+
+    previousResponse.push({
+      header: "Damage per SV",
+      value: this.damageFormula
+    });
+
+    previousResponse.push({
+      header: "Armor piercing per SV",
+      value: this.armorPiercingFormula
+    });
+
+    previousResponse.push({
+      header: "SV range penalty",
+      value: this.rangePenalty
+    });
+
+    return previousResponse;
+  }
+
   _getDamageForWeaponHit({ torpedoFlight }) {
     if (Number.isInteger(this.damageFormula)) {
       return Math.ceil(this.damageFormula * torpedoFlight.strikeEffectiveness);
