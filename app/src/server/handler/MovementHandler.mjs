@@ -44,7 +44,13 @@ class MovementHandler {
   }
 
   avoidCollisions(gameData) {
-    this.collisionAvoider.avoidCollisions(gameData);
+    //this.collisionAvoider.avoidCollisions(gameData);
+  }
+
+  applyRolls(gameData) {
+    gameData.ships.getShips().forEach(ship => {
+      ship.movement.applyRoll();
+    });
   }
 }
 

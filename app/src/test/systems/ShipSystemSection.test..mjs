@@ -7,11 +7,29 @@ import Thruster from "../../model/unit/system/thruster/Thruster.mjs";
 import Engine from "../../model/unit/system/engine/Engine.mjs";
 import Reactor from "../../model/unit/system/reactor/Reactor.mjs";
 import Structure from "../../model/unit/system/structure/Structure.mjs";
+import MovementOrder from "../../model/movement/MovementOrder.mjs";
+import movementTypes from "../../model/movement/MovementTypes.mjs";
+import Offset from "../../model/hexagon/Offset.mjs";
 
-const getShipWithStructures = () => {
+const getShipWithStructures = (rolled = false) => {
   const ship = new Ship({});
   ship.getPosition = () => new Vector();
   ship.getFacing = () => 0;
+
+  const startMove = new MovementOrder(
+    -1,
+    movementTypes.START,
+    new Offset(0, 0),
+    new Offset(0, 0),
+    0,
+    rolled,
+    999,
+    0,
+    null,
+    1
+  );
+
+  ship.movement.addMovement(startMove);
 
   ship.systems.addPrimarySystem([
     new Engine({ id: 6, hitpoints: 10, armor: 3 }, 12, 6, 2),
@@ -47,7 +65,10 @@ const getShipWithStructures = () => {
 };
 
 test("Gets correct heading", test => {
-  const sections = new ShipSystemSections();
+  const sections = new ShipSystemSections({
+    movement: { isRolled: () => false }
+  });
+
   test.is(
     sections.getHitSectionHeading({ x: 200, y: 0 }, { x: 0, y: 0 }, 0),
     0
@@ -94,6 +115,7 @@ test("Gets correct sections", test => {
 
 test("Gets correct hit candidates", test => {
   const ship = new Ship({});
+  ship.movement.isRolled = () => false;
   ship.getPosition = () => new Vector();
   ship.getFacing = () => 0;
   const primarySystems = [
@@ -118,6 +140,8 @@ test("Gets correct hit candidates", test => {
 
 test("Structure protects section behind", test => {
   const ship = new Ship({});
+  ship.movement.isRolled = () => false;
+
   ship.getPosition = () => new Vector();
   ship.getFacing = () => 0;
   const primarySystems = [
@@ -139,4 +163,37 @@ test("Structure protects section behind", test => {
   test.deepEqual(hitSystems, frontSystems);
 
   return ship;
+});
+
+test("Gets correct hit heading when ship is rolled", test => {
+  const rolledShip = getShipWithStructures(true);
+  const ship = getShipWithStructures(false);
+
+  let rolledFacing = rolledShip.systems.sections.getHitSectionHeading(
+    { x: 200, y: 0 },
+    { x: 0, y: 0 },
+    60
+  );
+
+  let normalFacing = ship.systems.sections.getHitSectionHeading(
+    { x: 200, y: 0 },
+    { x: 0, y: 0 },
+    60
+  );
+
+  test.deepEqual(normalFacing, 300);
+  test.deepEqual(rolledFacing, 60);
+});
+
+test("Gets correct sections when ship is rolled", test => {
+  const ship = getShipWithStructures(true);
+
+  test.deepEqual(
+    ship.systems.sections.getHitSections({ x: 200, y: 0 }, { x: 0, y: 0 }, 300),
+    [
+      ship.systems.sections.getFrontSection(),
+      ship.systems.sections.getPortFrontSection(),
+      ship.systems.sections.getPortAftSection()
+    ]
+  );
 });

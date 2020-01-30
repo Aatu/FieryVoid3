@@ -38,8 +38,6 @@ class MovementService {
     const startMove = ship.movement.getLastEndMoveOrSurrogate();
     const lastMove = ship.movement.getLastMove();
     const vector = lastMove.getVelocity();
-    const rollMove = ship.movement.getRollMove();
-    const rolled = rollMove ? !startMove.rolled : startMove.rolled;
 
     const { position, velocity } = terrain.getGravityVectorForTurn(
       startMove.position,
@@ -52,7 +50,7 @@ class MovementService {
       position,
       velocity,
       lastMove.facing,
-      rolled,
+      lastMove.rolled,
       startMove.turn + 1,
       0
     );

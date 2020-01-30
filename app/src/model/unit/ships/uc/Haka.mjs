@@ -25,7 +25,7 @@ class Haka extends Ship {
       new Offset(-1, 0)
     ];
     this.accelcost = 5;
-    this.rollcost = 10;
+    this.rollcost = 18;
     this.pivotcost = 10;
     this.evasioncost = 10;
     this.maxPivots = 1;

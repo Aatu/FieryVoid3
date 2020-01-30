@@ -21,12 +21,21 @@ class RollButton extends React.Component {
 
   roll() {
     const { movementService, ship } = this.props;
+    if (!movementService.canRoll(ship)) {
+      return;
+    }
+
     return movementService.roll(ship);
   }
 
   render() {
+    const { ship } = this.props;
     return (
-      <RollContainer onClick={this.roll.bind(this)} disabled={!this.canRoll()}>
+      <RollContainer
+        active={ship.movement.isRolling()}
+        onClick={this.roll.bind(this)}
+        disabled={!this.canRoll()}
+      >
         <Roll />
       </RollContainer>
     );

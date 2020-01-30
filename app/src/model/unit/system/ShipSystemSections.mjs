@@ -10,7 +10,9 @@ import {
 import { getCompassHeadingOfPoint, addToDirection } from "../../utils/math.mjs";
 
 class ShipSystemSections {
-  constructor() {
+  constructor(ship) {
+    this.ship = ship;
+
     this.sections = [
       new PrimarySection(),
       new FrontSection(),
@@ -27,6 +29,10 @@ class ShipSystemSections {
       getCompassHeadingOfPoint(shipPosition, shooterPosition),
       -shipFacing
     );
+
+    if (this.ship.movement.isRolled()) {
+      return addToDirection(0, -heading);
+    }
 
     return heading;
   }

@@ -233,7 +233,7 @@ class MovementResolver {
   revert() {
     this.ship.movement
       .getMovement()
-      .filter(move => move.isCancellable() || move.isEvade())
+      .filter(move => move.isCancellable())
       .forEach(move => this.ship.movement.removeMovement(move));
 
     this.movementService.shipStateChanged(this.ship);

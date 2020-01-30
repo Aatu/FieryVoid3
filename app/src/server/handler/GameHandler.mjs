@@ -97,6 +97,7 @@ class GameHandler {
     this.heatHandler.advance(gameData);
     this.criticalHandler.advance(gameData);
     this.powerHandler.advance(gameData);
+    this.movementHandler.applyRolls(gameData);
 
     gameData.ships.getShips().forEach(ship => {
       gameData.combatLog.addEntry(new CombatLogShipVelocity(ship.id));

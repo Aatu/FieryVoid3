@@ -5,6 +5,7 @@ import MovementOrder from "../../model/movement/MovementOrder.mjs";
 import movementTypes from "../../model/movement/MovementTypes.mjs";
 import MovementHandler from "../../server/handler/MovementHandler.mjs";
 
+/*
 const nothingCollides = ships =>
   ships.every(ship => {
     const colliding = ships.every(otherShip => {
@@ -504,3 +505,4 @@ test("Ships avoiding collision scenario 1", test => {
   test.deepEqual(otherShip.getHexPosition(), new Offset(1, 0));
   test.deepEqual(ship.getHexPosition(), new Offset(-1, 0));
 });
+*/

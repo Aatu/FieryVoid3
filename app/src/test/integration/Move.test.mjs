@@ -152,6 +152,7 @@ test.serial("Submit movement for both players, success", async test => {
   movementService.thrust(biliyazInitial, 3);
   movementService.thrust(biliyazInitial, 3);
   movementService.thrust(biliyazInitial, 3);
+  movementService.roll(biliyazInitial);
 
   await controller.commitTurn(gameData.id, gameData.serialize(), user);
   await controller.commitTurn(gameData.id, gameData.serialize(), user2);
@@ -208,7 +209,7 @@ test.serial("Submit movement for both players, success", async test => {
       new hexagon.Offset(1, 0),
       new hexagon.Offset(-33, 0),
       0,
-      false,
+      true,
       2
     )
   ]);

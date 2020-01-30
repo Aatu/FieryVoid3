@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { Clickable } from "../../../../styled";
 
 const Container = styled.div`
@@ -16,6 +16,18 @@ const Container = styled.div`
     ${props => props.disabled && "fill: #8f2626;"}
   }
   ${Clickable}
+
+  ${props =>
+    props.active &&
+    css`
+      animation: blinker 1s linear infinite;
+
+      @keyframes blinker {
+        50% {
+          opacity: 0;
+        }
+      }
+    `}
 `;
 
 export default Container;

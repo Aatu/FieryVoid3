@@ -277,10 +277,20 @@ class ShipMovement {
 
       this.removeMovement(
         this.getMovement()
-          .filter(move => move.isCancellable() || move.isEvade())
+          .filter(move => move.isCancellable())
           .pop()
       );
     }
+  }
+
+  applyRoll() {
+    const endMove = this.getLastEndMove();
+    const rollMove = this.getRollMove();
+    if (rollMove) {
+      endMove.rolled = !endMove.rolled;
+    }
+
+    this.replaceLastMove(endMove);
   }
 
   deserialize(data = []) {

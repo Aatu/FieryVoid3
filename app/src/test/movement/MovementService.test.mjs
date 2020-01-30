@@ -438,7 +438,7 @@ test("Get an end move", test => {
         new hexagon.Offset(4, 1),
         new hexagon.Offset(4, 1),
         1,
-        true,
+        false,
         1000,
         0
       ).round()

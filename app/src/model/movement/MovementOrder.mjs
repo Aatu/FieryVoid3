@@ -166,7 +166,7 @@ class MovementOrder {
   }
 
   isCancellable() {
-    return this.isSpeed() || this.isPivot();
+    return this.isSpeed() || this.isPivot() || this.isEvade() || this.isRoll();
   }
 
   isPlayerAdded() {

@@ -8,7 +8,7 @@ class ShipSystems {
     this.systems = {};
     this.systemsAsArray = [];
 
-    this.sections = new ShipSystemSections();
+    this.sections = new ShipSystemSections(ship);
     this.power = new ShipPower(this);
   }
 
