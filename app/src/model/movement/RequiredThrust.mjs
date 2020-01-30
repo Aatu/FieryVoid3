@@ -108,10 +108,18 @@ class RequiredThrust {
   }
 
   requirePivot(ship, move) {
-    if (move.value === 1) {
-      this.requirements[6] = ship.pivotcost;
+    if (ship.movement.isRolled()) {
+      if (move.value === 1) {
+        this.requirements[7] = ship.pivotcost;
+      } else {
+        this.requirements[6] = ship.pivotcost;
+      }
     } else {
-      this.requirements[7] = ship.pivotcost;
+      if (move.value === 1) {
+        this.requirements[6] = ship.pivotcost;
+      } else {
+        this.requirements[7] = ship.pivotcost;
+      }
     }
   }
 
@@ -123,7 +131,11 @@ class RequiredThrust {
       3
     );
 
-    this.requirements[actualDirection] = ship.accelcost;
+    if (ship.movement.isRolled() && [1, 2, 4, 5].includes(actualDirection)) {
+      this.requirements[addToHexFacing(actualDirection, 3)] = ship.accelcost;
+    } else {
+      this.requirements[actualDirection] = ship.accelcost;
+    }
   }
 
   accumulate(total) {

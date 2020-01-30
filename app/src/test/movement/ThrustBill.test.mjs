@@ -38,6 +38,8 @@ const getThruster = (direction = 0, output = 3, criticals = []) => {
 };
 
 let ship = new Ship();
+ship.movement.isRolled = () => false;
+
 ship.accelcost = 3;
 
 ship.systems.addPrimarySystem([
@@ -125,6 +127,8 @@ test("Returns false if it is clear that there is not enough thrust", test => {
 
 test("it uses thrusters properly", test => {
   ship = new Ship();
+  ship.movement.isRolled = () => false;
+
   ship.accelcost = 3;
 
   ship.systems.addPrimarySystem([getThruster(0, 3), getThruster(0, 3)]);
@@ -138,6 +142,8 @@ test("it uses thrusters properly", test => {
 
 test("it uses thrusters properly, with one thruster already overheating", test => {
   ship = new Ship();
+  ship.movement.isRolled = () => false;
+
   ship.accelcost = 3;
 
   const thruster = getThruster(0, 5);
@@ -153,6 +159,8 @@ test("it uses thrusters properly, with one thruster already overheating", test =
 
 test("it uses thrusters properly, when one thruster heats faster", test => {
   ship = new Ship();
+  ship.movement.isRolled = () => false;
+
   ship.accelcost = 3;
 
   const thruster = getThruster(0, 5);
@@ -168,6 +176,8 @@ test("it uses thrusters properly, when one thruster heats faster", test => {
 
 test("it uses thrusters properly, when one thruster has output reduced", test => {
   ship = new Ship();
+  ship.movement.isRolled = () => false;
+
   ship.accelcost = 3;
 
   const thruster = getThruster(0, 5);
@@ -183,6 +193,8 @@ test("it uses thrusters properly, when one thruster has output reduced", test =>
 
 test("It manages to pay a simple manouver", test => {
   ship = new Ship();
+  ship.movement.isRolled = () => false;
+
   ship.accelcost = 3;
 
   ship.systems.addPrimarySystem([getThruster(0, 3), getThruster(3, 3)]);
@@ -198,6 +210,7 @@ test("It manages to pay a simple manouver", test => {
 
 test("It uses manouveringThrusters correctly", test => {
   ship = new Ship();
+  ship.movement.isRolled = () => false;
 
   ship.accelcost = 3;
   ship.rollcost = 3;
@@ -236,6 +249,7 @@ test("It uses manouveringThrusters correctly", test => {
 
 test("It uses manouveringThrusters correctly when there is only directional thruster", test => {
   ship = new Ship();
+  ship.movement.isRolled = () => false;
 
   ship.accelcost = 3;
   ship.rollcost = 3;
