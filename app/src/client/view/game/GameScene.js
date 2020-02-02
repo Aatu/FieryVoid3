@@ -34,6 +34,8 @@ class GameScene {
     this.zoomTarget = this.zoom;
 
     this.cameraAngle = 0; //-500;
+
+    this.deactivated = false;
   }
 
   init(element, { width, height }, gameId) {
@@ -204,6 +206,10 @@ class GameScene {
   }
 
   render() {
+    if (this.deactivated) {
+      return;
+    }
+
     this.phaseDirector.render(this.scene, this.coordinateConverter, this.zoom);
 
     this.renderer.clear();
@@ -253,6 +259,20 @@ class GameScene {
     if (newzoom > ZOOM_MAX) newzoom = ZOOM_MAX;
 
     this.zoomTarget = newzoom;
+  }
+
+  deactivate() {
+    if (this.deactivated) {
+      return;
+    }
+
+    this.deactivated = true;
+    this.element.removeChild(this.renderer.domElement);
+    this.renderer.clear();
+    this.renderer.forceContextLoss();
+    this.renderer.domElement = null;
+    this.renderer.dispose();
+    this.renderer = null;
   }
 }
 

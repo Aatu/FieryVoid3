@@ -220,6 +220,8 @@ class PhaseDirector {
       gameCamera: this.camera
     };
   }
+
+  deactivate() {}
 }
 
 export default PhaseDirector;

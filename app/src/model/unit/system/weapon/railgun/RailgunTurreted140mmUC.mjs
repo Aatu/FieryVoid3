@@ -12,6 +12,7 @@ import Ammo140mmAP from "../ammunition/conventional/Ammo140mmAP.mjs";
 import Ammo140mmHE from "../ammunition/conventional/Ammo140mmHE.mjs";
 import AmmunitionStrategy from "../../strategy/weapon/AmmunitionStrategy.mjs";
 import OutputHeatOnlineStrategy from "../../strategy/OutputHeatOnlineStrategy.mjs";
+import BurstDamageStrategy from "../../strategy/weapon/BurstDamageStrategy.mjs";
 
 class RailgunTurreted140mmUC extends Weapon {
   constructor({ id }, arcs) {
@@ -27,7 +28,7 @@ class RailgunTurreted140mmUC extends Weapon {
       new StandardLoadingStrategy(3),
       new RequiresPowerSystemStrategy(4),
       new BoostableSystemStrategy(5, 2),
-      new StandardDamageStrategy(),
+      new BurstDamageStrategy(null, null, 0, 3, 15),
       new AmmunitionStrategy([Ammo140mmAP, Ammo140mmHE], 1, 9, 4),
       new WeaponAnimationStrategy("UniversalBolt", {
         size: 6,

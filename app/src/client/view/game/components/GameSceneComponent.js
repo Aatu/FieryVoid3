@@ -64,6 +64,7 @@ class GameSceneComponent extends React.Component {
   }
 
   componentDidMount() {
+    console.log("Game scene component mounted");
     const { game } = this.props;
 
     window.addEventListener("resize", this.onResize);
@@ -179,11 +180,24 @@ class GameSceneComponent extends React.Component {
     game.onKeyUp(event);
   }
 
+  componentDidUpdate() {
+    console.log("updated init");
+    this.props.game.initRender(this.canvasRef.current);
+  }
+
   shouldComponentUpdate(nextProps, nextState) {
+    /*
+    if (this.props.game != nextProps.game) {
+      this.props.game.deactivate();
+      return true;
+    }
+  */
+
     return false;
   }
 
   render() {
+    console.log("rerender game scene component");
     return (
       <>
         <ClickCatcher

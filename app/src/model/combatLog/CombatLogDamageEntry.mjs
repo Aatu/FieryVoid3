@@ -1,17 +1,24 @@
 class CombatLogDamageEntry {
   constructor() {
     this.entries = [];
+    this.notes = [];
+  }
+
+  addNote(note) {
+    this.notes.push(note);
   }
 
   serialize() {
     return {
       logEntryClass: this.constructor.name,
-      entries: this.entries
+      entries: this.entries,
+      notes: this.notes
     };
   }
 
   deserialize(data = {}) {
     this.entries = data.entries || [];
+    this.notes = data.notes || [];
     return this;
   }
 

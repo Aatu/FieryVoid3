@@ -8,7 +8,7 @@ const HitChangeContainer = styled.div`
 
 class HitChange extends React.Component {
   render() {
-    const { resolution } = this.props;
+    const { resolution, totalShots, shotsHit } = this.props;
 
     return (
       <HitChangeContainer>
@@ -16,7 +16,7 @@ class HitChange extends React.Component {
         roll: <Highlight>{resolution.hitRoll}</Highlight>.
         {resolution.result ? (
           <Highlight>
-            <b> Hit!</b>
+            <b>{` ${shotsHit}/${totalShots} Hit!`}</b>
           </Highlight>
         ) : (
           <DangerHighlight>

@@ -94,7 +94,7 @@ class Haka extends Ship {
         hitpoints: 80,
         armor: 4,
         cargoSpace: 400,
-        radiator: 8
+        radiator: 15
       })
     ]);
 
@@ -153,7 +153,7 @@ class Haka extends Ship {
         id: 600,
         hitpoints: 60,
         armor: 7,
-        radiator: 8
+        radiator: 15
       }),
 
       new systems.Thruster({ id: 601, hitpoints: 10, armor: 3 }, 5, [4, 5]),

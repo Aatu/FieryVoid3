@@ -25,7 +25,7 @@ const GameComponent = ({ match }) => {
 
   return (
     <GameStoreProvider uiState={uiState}>
-      <GameSceneComponent game={game} />
+      <GameSceneComponent game={game} currentUser={currentUser} />
       <GameUiComponent game={game} />
       <LoginFloater />
     </GameStoreProvider>

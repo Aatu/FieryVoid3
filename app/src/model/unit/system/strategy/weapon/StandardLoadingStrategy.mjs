@@ -6,6 +6,7 @@ class StandardLoadingStrategy extends ShipSystemStrategy {
     super();
     this.loadingTime = loadingTime;
     this.turnsLoaded = loadingTime;
+    this.firedThisTurn = false;
   }
 
   getMessages(payload, previousResponse = []) {
@@ -22,9 +23,15 @@ class StandardLoadingStrategy extends ShipSystemStrategy {
       turnsLoaded = turnsLoaded.toFixed(1);
     }
 
+    const loadingTime = this.getLoadingTime();
+
+    if (turnsLoaded > loadingTime) {
+      turnsLoaded = loadingTime;
+    }
+
     previousResponse.push({
       header: "Charging",
-      value: `${turnsLoaded} / ${this.loadingTime} +${loading} per turn`
+      value: `${turnsLoaded} / ${loadingTime} +${loading} per turn`
     });
 
     const boostPower = this.system.callHandler(
@@ -44,7 +51,7 @@ class StandardLoadingStrategy extends ShipSystemStrategy {
   }
 
   _getTurnsUntilLoaded() {
-    const left = this.loadingTime - this.turnsLoaded;
+    const left = this.getLoadingTime() - this.turnsLoaded;
     const loadingPerTurn = 1 + this._getBoostLoading();
 
     return Math.ceil(left / loadingPerTurn);
@@ -56,7 +63,7 @@ class StandardLoadingStrategy extends ShipSystemStrategy {
     }
 
     const left = this._getTurnsUntilLoaded();
-    if (left === 0) {
+    if (left <= 0) {
       return previousResponse;
     }
 
@@ -76,11 +83,16 @@ class StandardLoadingStrategy extends ShipSystemStrategy {
   }
 
   onWeaponFired() {
-    this.turnsLoaded = 0;
+    this.firedThisTurn = true;
   }
 
   getLoadingTime() {
-    return this.loadingTime;
+    const extra = this.system.damage
+      .getCriticals()
+      .filter(critical => critical instanceof LoadingTimeIncreased)
+      .reduce((total, current) => total + current.getLoadingTimeIncrease(), 0);
+
+    return this.loadingTime + extra;
   }
 
   getTurnsLoaded() {
@@ -122,12 +134,12 @@ class StandardLoadingStrategy extends ShipSystemStrategy {
       return;
     }
 
+    if (this.firedThisTurn) {
+      this.turnsLoaded = 0;
+    }
+
     const loadingStep = 1 + this._getBoostLoading();
     this.turnsLoaded += loadingStep;
-
-    if (this.turnsLoaded > this.loadingTime) {
-      this.turnsLoaded = this.loadingTime;
-    }
   }
 
   _getBoostLoading() {

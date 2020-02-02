@@ -2,13 +2,14 @@ import CombatLogDamageEntry from "./CombatLogDamageEntry.mjs";
 import CombatLogWeaponFireHitResult from "./CombatLogWeaponFireHitResult.mjs";
 
 class CombatLogWeaponFire {
-  constructor(fireOrderId, targetId, shooterId) {
+  constructor(fireOrderId, targetId, shooterId, ammo) {
     this.fireOrderId = fireOrderId;
     this.targetId = targetId;
     this.shooterId = shooterId;
     this.damages = [];
     this.notes = [];
     this.hitResult = null;
+    this.ammoName = ammo ? ammo.getShortDisplayName() : null;
   }
 
   addNote(note) {
@@ -64,7 +65,8 @@ class CombatLogWeaponFire {
       notes: this.notes,
       hitResult: this.hitResult ? this.hitResult.serialize() : null,
       shotsHit: this.shotsHit,
-      totalShots: this.totalShots
+      totalShots: this.totalShots,
+      ammoName: this.ammoName
     };
   }
 
@@ -84,6 +86,8 @@ class CombatLogWeaponFire {
 
     this.shotsHit = data.shotsHit || 0;
     this.totalShots = data.totalShots || 0;
+
+    this.ammoName = data.ammoName || null;
 
     return this;
   }

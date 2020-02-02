@@ -75,7 +75,9 @@ class ShipTooltipDetails extends React.Component {
         <Row>
           {this.getEntry(
             "Heat stored",
-            `${ship.systems.getTotalHeatStored()}/${ship.systems.getTotalHeatStorage()}`
+            `${Math.round(
+              ship.systems.getTotalHeatStored()
+            )}/${ship.systems.getTotalHeatStorage()}`
           )}
 
           {this.getEntry(

@@ -18,10 +18,10 @@ class TestShip extends Ship {
 
     this.systems.addFrontSystem([
       new systems.TestWeapon({ id: 20, hitpoints: 6, armor: 2 }, [
-        { start: 0, end: 0 }
+        { start: 0, end: 180 }
       ]),
       new systems.RailgunTurreted2x140mm({ id: 101, hitpoints: 6, armor: 2 }, [
-        { start: 0, end: 0 }
+        { start: 0, end: 180 }
       ]),
       new systems.PDC30mm({ id: 102 }, [{ start: 0, end: 0 }]),
       new systems.PDC30mm({ id: 103 }, [{ start: 0, end: 0 }])

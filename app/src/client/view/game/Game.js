@@ -152,6 +152,13 @@ class Game {
       height: this.sceneElement.offsetHeight
     };
   }
+
+  deactivate() {
+    console.log("deactivate game");
+    this.gameConnector.deactivate();
+    this.phaseDirector.deactivate();
+    this.gameScene.deactivate();
+  }
 }
 
 export default Game;

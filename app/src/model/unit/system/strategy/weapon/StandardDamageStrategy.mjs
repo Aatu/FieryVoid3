@@ -114,6 +114,7 @@ class StandardDamageStrategy extends ShipSystemStrategy {
     });
 
     if (!hitSystem) {
+      damageResult.addNote("Unable to find system to hit");
       return;
     }
 
@@ -203,16 +204,13 @@ class StandardDamageStrategy extends ShipSystemStrategy {
       damage = 0;
     }
 
-    if (damage === 0) {
-      return {
-        armorPiercing: armorPiercingLeft,
-        damage
-      };
-    }
-
     let entry = null;
 
     if (damage > hitSystem.getRemainingHitpoints()) {
+      if (hitSystem.getRemainingHitpoints() <= 0) {
+        throw new Error("Trying to damage destroyed system");
+      }
+
       entry = new DamageEntry(hitSystem.getRemainingHitpoints(), finalArmor);
       damage -= hitSystem.getRemainingHitpoints();
     } else {

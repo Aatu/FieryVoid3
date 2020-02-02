@@ -168,6 +168,10 @@ class MovementService {
       throw new Error("While evading step must be 1 or -1");
     }
 
+    if (ship.movement.getEvasion() + step > ship.movement.getMaxEvasion()) {
+      return false;
+    }
+
     return new MovementResolver(ship, this, this.gamedata.turn).canEvade(step);
   }
 

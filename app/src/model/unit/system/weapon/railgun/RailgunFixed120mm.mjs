@@ -11,6 +11,7 @@ import BoostableSystemStrategy from "../../strategy/BoostableSystemStrategy.mjs"
 import { Ammo120mmHE, Ammo120mmAP } from "../ammunition/conventional/index.mjs";
 import AmmunitionStrategy from "../../strategy/weapon/AmmunitionStrategy.mjs";
 import OutputHeatOnlineStrategy from "../../strategy/OutputHeatOnlineStrategy.mjs";
+import BurstDamageStrategy from "../../strategy/weapon/BurstDamageStrategy.mjs";
 
 class RailgunFixed120mm extends Weapon {
   constructor({ id }, arcs) {
@@ -26,7 +27,7 @@ class RailgunFixed120mm extends Weapon {
       new StandardLoadingStrategy(3),
       new RequiresPowerSystemStrategy(4),
       new BoostableSystemStrategy(3, 1),
-      new StandardDamageStrategy(null),
+      new BurstDamageStrategy(null, null, 0, 2, 20),
       new AmmunitionStrategy([Ammo120mmAP, Ammo120mmHE], 1, 12, 4),
       new WeaponAnimationStrategy("UniversalBolt", {
         size: 6,

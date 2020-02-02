@@ -41,7 +41,11 @@ class Routes extends Component {
           component={CreateGame}
         />
         <Route exact path="/logout" component={Logout} />
-        <Route path="/game/:gameid" component={Game} />
+        <PrivateRoute
+          authed={Boolean(user)}
+          path="/game/:gameid"
+          component={Game}
+        />
       </Router>
     );
   }

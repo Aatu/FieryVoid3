@@ -16,6 +16,11 @@ class GameConnector {
     this.phaseDirector = phaseDirector;
   }
 
+  async deactivate() {
+    const connection = await this.connection;
+    connection.close();
+  }
+
   connect(timeout = 0) {
     this.connection = new Promise(resolve => {
       setTimeout(() => {

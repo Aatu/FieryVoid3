@@ -81,10 +81,21 @@ class CombatLogLine extends React.Component {
       <LineContainer>
         <SubLine>
           <DangerHighlight>FIRE:&nbsp;</DangerHighlight>
-          {shooterName} fires <Highlight>&nbsp;{weaponName}&nbsp;</Highlight> at{" "}
-          {targetName}.
-          <HitChange resolution={combatLogEntry.hitResult} />
+          {shooterName} fires{" "}
+          <Highlight>
+            &nbsp;{weaponName}&nbsp;
+            {combatLogEntry.ammoName && `(${combatLogEntry.ammoName})`}&nbsp;
+          </Highlight>{" "}
+          at {targetName}.
+          <HitChange
+            resolution={combatLogEntry.hitResult}
+            totalShots={combatLogEntry.totalShots}
+            shotsHit={combatLogEntry.shotsHit}
+          />
         </SubLine>
+        {combatLogEntry.notes.length > 0 && (
+          <IndentedSubline>{combatLogEntry.notes.join(" ")}</IndentedSubline>
+        )}
         {hit && (
           <IndentedSubline>
             <DamageLine

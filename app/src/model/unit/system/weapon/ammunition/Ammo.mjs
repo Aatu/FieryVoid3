@@ -7,20 +7,20 @@ class Ammo extends CargoEntity {
     this.armorPiercingFormula = armorPiercingFormula;
   }
 
-  getDamage() {
-    if (Number.isInteger(this.armorPiercingFormula)) {
+  getDamage(diceRoller) {
+    if (Number.isInteger(this.damageFormula)) {
       return this.armorPiercingFormula;
     }
 
-    return this.diceRoller.roll(this.armorPiercingFormula).total;
+    return diceRoller.roll(this.damageFormula).total;
   }
 
-  getArmorPiercing() {
+  getArmorPiercing(diceRoller) {
     if (Number.isInteger(this.armorPiercingFormula)) {
       return this.armorPiercingFormula;
     }
 
-    return this.diceRoller.roll(this.armorPiercingFormula).total;
+    return diceRoller.roll(this.armorPiercingFormula).total;
   }
 
   getCargoInfo() {
