@@ -178,6 +178,8 @@ test("Intercept hit change is calculated properly", test => {
   ship.electronicWarfare.assignCcEw(8);
   const pdc = ship.systems.getSystemById(14);
 
+  ship.movement.isRolling = () => true;
+
   const torpedoFlight = gameData.torpedos.getTorpedoFlights()[0];
   const result = pdc.callHandler("getInterceptChance", {
     target: ship,
@@ -188,7 +190,7 @@ test("Intercept hit change is calculated properly", test => {
   test.deepEqual(
     result,
     new WeaponHitChange({
-      absoluteResult: 30,
+      absoluteResult: 10,
       baseToHit: 0,
       dew: 0,
       distance: 5,
@@ -197,7 +199,8 @@ test("Intercept hit change is calculated properly", test => {
       oew: 8,
       outOfRange: false,
       rangeModifier: -40,
-      result: 30
+      rollingPenalty: -20,
+      result: 10
     })
   );
 
@@ -210,7 +213,7 @@ test("Intercept hit change is calculated properly", test => {
   test.deepEqual(
     result2,
     new WeaponHitChange({
-      absoluteResult: 62,
+      absoluteResult: 42,
       baseToHit: 0,
       dew: 0,
       distance: 1,
@@ -219,7 +222,8 @@ test("Intercept hit change is calculated properly", test => {
       oew: 8,
       outOfRange: false,
       rangeModifier: -8,
-      result: 62
+      result: 42,
+      rollingPenalty: -20
     })
   );
 });

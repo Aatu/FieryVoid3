@@ -4,6 +4,81 @@ import OEWButtons from "../electronicWarfare/OEWButtons";
 import { TOOLTIP_TAB_TORPEDO_ATTACK } from "./ShipTooltip";
 import CCEWButtons from "../electronicWarfare/CCEWButtons";
 
+const toggleRadiators = (ship, uiState, on = false) => {
+  ship.systems
+    .getSystems()
+    .filter(system => !system.isDestroyed())
+    .filter(system => system.callHandler("isRadiator", null, false))
+    .filter(system => {
+      if (on) {
+        return system.power.canSetOnline();
+      } else {
+        return system.power.canSetOffline();
+      }
+    })
+    .forEach(system => {
+      if (on) {
+        system.power.setOnline();
+      } else {
+        system.power.setOffline();
+      }
+
+      uiState.shipSystemStateChanged(ship, system);
+    });
+};
+
+const hasRadiators = ship =>
+  ship.systems
+    .getSystems()
+    .filter(system => !system.isDestroyed())
+    .filter(system => system.callHandler("isRadiator", null, false)).length > 0;
+
+const hasOnlineradiators = ship =>
+  ship.systems
+    .getSystems()
+    .filter(system => !system.isDestroyed())
+    .filter(system => system.callHandler("isRadiator", null, false))
+    .filter(system => system.power.canSetOffline())
+    .filter(system => system.power.isOnline()).length > 0;
+
+const toggleInterceptors = (ship, uiState, on = false) => {
+  ship.systems
+    .getSystems()
+    .filter(system => !system.isDestroyed())
+    .filter(system => system.callHandler("canIntercept", null, false))
+    .filter(system => {
+      if (on) {
+        return system.power.canSetOnline();
+      } else {
+        return system.power.canSetOffline();
+      }
+    })
+    .forEach(system => {
+      if (on) {
+        system.power.setOnline();
+      } else {
+        system.power.setOffline();
+      }
+
+      uiState.shipSystemStateChanged(ship, system);
+    });
+};
+
+const hasInterceptors = ship =>
+  ship.systems
+    .getSystems()
+    .filter(system => !system.isDestroyed())
+    .filter(system => system.callHandler("canIntercept", null, false)).length >
+  0;
+
+const hasOnlineInterceptors = ship =>
+  ship.systems
+    .getSystems()
+    .filter(system => !system.isDestroyed())
+    .filter(system => system.callHandler("canIntercept", null, false))
+    .filter(system => system.power.canSetOffline())
+    .filter(system => system.power.isOnline()).length > 0;
+
 class GameShipTooltipMenu extends React.PureComponent {
   render() {
     const { ship, uiState, selectTooltipTab } = this.props;
@@ -34,6 +109,43 @@ class GameShipTooltipMenu extends React.PureComponent {
             target={ship}
             uiState={uiState}
             oew={selectedShip.electronicWarfare.getOffensiveEw(ship)}
+          />
+        )}
+
+        {ship.player.isUsers(currentUser) && hasRadiators(ship) && (
+          <TooltipButton
+            img="/img/system/radiator.png"
+            onClick={e => {
+              e.preventDefault();
+              e.stopPropagation();
+
+              console.log("hasOnlineradiators", hasOnlineradiators(ship));
+              toggleRadiators(
+                ship,
+                uiState,
+                hasOnlineradiators(ship) ? false : true
+              );
+              uiState.shipStateChanged(ship);
+              this.forceUpdate();
+            }}
+          />
+        )}
+
+        {ship.player.isUsers(currentUser) && hasInterceptors(ship) && (
+          <TooltipButton
+            img="/img/system/gatlingPulseCannon.png"
+            onClick={e => {
+              e.preventDefault();
+              e.stopPropagation();
+
+              toggleInterceptors(
+                ship,
+                uiState,
+                hasOnlineInterceptors(ship) ? false : true
+              );
+              uiState.shipStateChanged(ship);
+              this.forceUpdate();
+            }}
           />
         )}
 

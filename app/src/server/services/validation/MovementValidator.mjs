@@ -33,7 +33,7 @@ class MovementValidator {
   ensurePivotLimit(movement) {
     if (
       this.ship.maxPivots !== null &&
-      movement.filter(move => move.isPivot()).length >= this.ship.maxPivots
+      movement.filter(move => move.isPivot()).length > this.ship.maxPivots
     ) {
       throw new Error("Ship has pivoted more than allowed");
     }

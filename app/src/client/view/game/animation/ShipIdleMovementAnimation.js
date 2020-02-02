@@ -38,7 +38,7 @@ class ShipIdleMovementAnimation extends Animation {
     const roll = this.shipIcon.ship.movement.isRolled() ? 180 : 0;
 
     if (this.shipIcon.ship.movement.isRolling()) {
-      return roll + 180;
+      return roll + 90;
     }
 
     return roll;

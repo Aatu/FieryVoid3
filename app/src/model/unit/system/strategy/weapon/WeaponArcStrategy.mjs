@@ -44,10 +44,19 @@ class WeaponArcStrategy extends ShipSystemStrategy {
   }
 
   getArcs({ facing = 0 }) {
-    return this.arcs.map(({ start, end }) => ({
-      start: addToDirection(start, facing),
-      end: addToDirection(end, facing)
-    }));
+    return this.arcs.map(({ start, end }) => {
+      if (this.system.shipSystems.ship.movement.isRolled()) {
+        return {
+          start: addToDirection(addToDirection(0, -end), facing),
+          end: addToDirection(addToDirection(0, -start), facing)
+        };
+      }
+
+      return {
+        start: addToDirection(start, facing),
+        end: addToDirection(end, facing)
+      };
+    });
   }
 }
 

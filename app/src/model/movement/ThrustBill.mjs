@@ -190,9 +190,9 @@ class ThrustBill {
           return;
         }
 
-        let channeled = thruster.channeled;
+        let free = thruster.channeled - thruster.assigned;
 
-        if (channeled === 0) {
+        if (free === 0) {
           return;
         }
 
@@ -203,16 +203,14 @@ class ThrustBill {
             return;
           }
 
-          if (required > channeled) {
-            move.requiredThrust.fulfill(
-              direction,
-              channeled,
-              thruster.thruster
-            );
-            channeled = 0;
+          if (required > free) {
+            move.requiredThrust.fulfill(direction, free, thruster.thruster);
+            thruster.addAssigned(free);
+            free = 0;
           } else {
             move.requiredThrust.fulfill(direction, required, thruster.thruster);
-            channeled -= required;
+            thruster.addAssigned(required);
+            free -= required;
           }
         });
       });

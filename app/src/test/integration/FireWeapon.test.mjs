@@ -131,6 +131,10 @@ test.serial("Submit successfull fire order for both players", async test => {
     [new FireOrder(shooter, target, shooter.systems.getSystemById(20))]
   );
 
+  new MovementService()
+    .update(gameData, { relayEvent: () => null })
+    .roll(shooter);
+
   await controller.commitTurn(gameData.id, gameData.serialize(), user);
 
   const commitTurnResponse = await controller.commitTurn(
@@ -178,8 +182,9 @@ test.serial("Submit successfull fire order for both players", async test => {
       oew: 5,
       distance: 55,
       rangeModifier: -37,
-      result: 10038,
-      absoluteResult: 10038,
+      result: 10018,
+      absoluteResult: 10018,
+      rollingPenalty: -20,
       outOfRange: false
     })
   );

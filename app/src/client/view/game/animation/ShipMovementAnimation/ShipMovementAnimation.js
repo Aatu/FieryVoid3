@@ -3,6 +3,8 @@ import Animation from "../Animation";
 import ShipEvasionMovementPath from "./ShipEvasionMovementPath";
 import PivotSteps from "./PivotSteps";
 import Vector from "../../../../../model/utils/Vector.mjs";
+import { getAngleBetween } from "../../../../../model/utils/math.mjs";
+import { addToDirection } from "../../../../../model/utils/math.mjs";
 
 class ShipMovementAnimation extends Animation {
   constructor(shipIcon, moves, start, end) {
@@ -21,6 +23,19 @@ class ShipMovementAnimation extends Animation {
     this.positionCurves = this.movesToCurves(moves);
     this.pivotSteps = new PivotSteps(moves);
 
+    this.startRoll = moves[0].rolled ? 180 : 0;
+    this.endRoll =
+      moves[0].rolled === moves[moves.length - 1].rolled
+        ? this.startRoll
+        : this.startRoll + 180;
+
+    this.easeInOut = new THREE.CubicBezierCurve(
+      new THREE.Vector2(0, 0),
+      new THREE.Vector2(0.75, 0),
+      new THREE.Vector2(0.25, 1),
+      new THREE.Vector2(1, 1)
+    );
+
     /*
 
     this.positionCurve = this.buildPositionCurve();
@@ -28,13 +43,6 @@ class ShipMovementAnimation extends Animation {
     this.evasionOffset = new ShipEvasionMovementPath(
       this.turn * this.ship.id,
       this.movementService.getEvasion(this.ship)
-    );
-
-    this.easeInOut = new THREE.CubicBezierCurve(
-      new THREE.Vector2(0, 0),
-      new THREE.Vector2(0.75, 0),
-      new THREE.Vector2(0.25, 1),
-      new THREE.Vector2(1, 1)
     );
 
     /*
@@ -88,6 +96,18 @@ class ShipMovementAnimation extends Animation {
     return time / this.duration;
   }
 
+  getCurrentRoll(turnDone) {
+    const between = -getAngleBetween(this.startRoll, this.endRoll);
+    if (between === 0) {
+      return this.endRoll;
+    }
+
+    return addToDirection(
+      this.startRoll,
+      between * this.easeInOut.getPoint(turnDone).y
+    );
+  }
+
   render(payload) {
     const turnDone = this.getMovementTurnDone(payload);
 
@@ -100,8 +120,10 @@ class ShipMovementAnimation extends Animation {
 
     const { position, facing } = this.getPositionAndFacing(turn, percentDone);
 
+    const roll = this.getCurrentRoll(turnDone);
     this.shipIcon.setPosition(position);
     this.shipIcon.setFacing(-facing);
+    this.shipIcon.setRoll(roll);
   }
 
   getPositionAndFacing(turn, percentDone) {

@@ -3,12 +3,13 @@ import styled, { css } from "styled-components";
 import SystemList from "../system/SystemList";
 import EwList from "../electronicWarfare/EwList";
 import CCEWButtons from "../electronicWarfare/CCEWButtons";
+import GameShipTooltipMenu from "../shipTooltip/GameShipTooltipMenu";
 
 const Container = styled.div`
   position: absolute;
   left: 0;
   bottom: 0;
-  width: 33%;
+  width: calc(50% - 100px);
   display: flex;
   flex-direction: column;
   z-index: 3;
@@ -40,6 +41,10 @@ class LeftPanel extends React.PureComponent {
             />
           )}
         </SubContainer>
+        <GameShipTooltipMenu
+          ship={uiState.state.selectedShip}
+          uiState={uiState}
+        />
       </Container>
     );
   }

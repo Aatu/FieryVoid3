@@ -10,7 +10,10 @@ test("Ship is on weapon arc", test => {
   let targetPosition = new Vector(200, 0);
   const shooter = {
     getPosition: () => shooterPosition,
-    getFacing: () => shooterFacing
+    getFacing: () => shooterFacing,
+    movement: {
+      isRolled: () => false
+    }
   };
 
   arcStrategy.system = {
@@ -26,4 +29,31 @@ test("Ship is on weapon arc", test => {
   test.false(arcStrategy.isOnArc({ target }));
   targetPosition = new Vector(200, 200);
   test.true(arcStrategy.isOnArc({ target }));
+});
+
+test("When ship is rolled, weapon arcs are flipped", test => {
+  const arcStrategy = new WeaponArcStrategy([{ start: 180, end: 0 }]);
+
+  let shooterPosition = new Vector(0, 0);
+  let shooterFacing = 0;
+  let targetPosition = new Vector(0, -200);
+  const shooter = {
+    getPosition: () => shooterPosition,
+    getFacing: () => shooterFacing,
+    movement: {
+      isRolled: () => true
+    }
+  };
+
+  arcStrategy.system = {
+    shipSystems: {
+      ship: shooter
+    }
+  };
+
+  const target = { getPosition: () => targetPosition };
+
+  test.true(arcStrategy.isOnArc({ target }));
+  shooter.movement.isRolled = () => false;
+  test.false(arcStrategy.isOnArc({ target }));
 });

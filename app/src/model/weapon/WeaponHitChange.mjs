@@ -14,7 +14,8 @@ class WeaponHitChange {
       rangeModifier: this.rangeModifier,
       result: this.result,
       absoluteResult: this.absoluteResult,
-      outOfRange: this.outOfRange
+      outOfRange: this.outOfRange,
+      rollingPenalty: this.rollingPenalty
     };
   }
 
@@ -29,6 +30,7 @@ class WeaponHitChange {
     this.absoluteResult = data.absoluteResult || 0;
     this.outOfRange = data.outOfRange || false;
     this.evasion = data.evasion || 0;
+    this.rollingPenalty = data.rollingPenalty || 0;
 
     return this;
   }

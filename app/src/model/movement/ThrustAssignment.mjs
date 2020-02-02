@@ -6,6 +6,11 @@ class ThrustAssignment {
     this.paid = 0;
     this.channeled = 0;
     this.capacity = thruster.callHandler("getThrustChannel");
+    this.assigned = 0;
+  }
+
+  addAssigned(amount) {
+    this.assigned += amount;
   }
 
   getOverheat() {

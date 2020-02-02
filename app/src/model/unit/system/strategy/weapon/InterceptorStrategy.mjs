@@ -75,18 +75,22 @@ class InterceptorStrategy extends ShipSystemStrategy {
 
     const torpedoHitSize = torpedoFlight.torpedo.getHitSize();
 
+    const rollingPenalty = ship.movement.isRolling() ? -20 : 0;
+
     return new WeaponHitChange({
       baseToHit: torpedoHitSize,
-      fireControl: fireControl,
+      fireControl,
       dew: 0,
       oew: ccew,
-      distance: distance,
-      rangeModifier: rangeModifier,
+      distance,
+      rangeModifier,
       evasion: torpedoFlight.torpedo.getEvasion(),
+      rollingPenalty,
       result: Math.round(
-        torpedoHitSize + rangeModifier + fireControl + ccew * 5
+        torpedoHitSize + rangeModifier + fireControl + ccew * 5 + rollingPenalty
       ),
-      absoluteResult: torpedoHitSize + rangeModifier + fireControl + ccew * 5
+      absoluteResult:
+        torpedoHitSize + rangeModifier + fireControl + ccew * 5 + rollingPenalty
     });
   }
 
