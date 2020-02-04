@@ -100,7 +100,7 @@ test("Offline state prevents loading", test => {
   const systems = new ShipSystems().addPrimarySystem([reactor1, pdc1]);
 
   systems.advanceTurn(2);
-  test.is(pdc1.callHandler("getTurnsLoaded"), 1);
+  test.is(pdc1.callHandler("getTurnsLoaded"), 2);
   pdc1.power.setOffline();
   test.true(pdc1.isDisabled());
   systems.advanceTurn(3);
@@ -154,9 +154,8 @@ test("Weapon boost affects its loading time", test => {
 
   coilgun.callHandler("boost");
   coilgun.callHandler("onWeaponFired");
-  test.is(coilgun.callHandler("getLoadingTime", null, 0), 4);
-  test.is(coilgun.callHandler("getTurnsLoaded", null, 0), 0);
   systems.advanceTurn();
+  test.is(coilgun.callHandler("getLoadingTime", null, 0), 4);
   test.is(coilgun.callHandler("getTurnsLoaded", null, 0), 1.3333333333333333);
   systems.advanceTurn();
   test.is(coilgun.callHandler("getTurnsLoaded", null, 0), 2.6666666666666666);

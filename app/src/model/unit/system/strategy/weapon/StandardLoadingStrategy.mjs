@@ -136,6 +136,7 @@ class StandardLoadingStrategy extends ShipSystemStrategy {
 
     if (this.firedThisTurn) {
       this.turnsLoaded = 0;
+      this.firedThisTurn = false;
     }
 
     const loadingStep = 1 + this._getBoostLoading();
