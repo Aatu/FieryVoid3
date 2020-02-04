@@ -8,6 +8,10 @@ import BaseParticle, {
 import Animation from "../Animation";
 import { getPointInDirection } from "../../../../../model/utils/math.mjs";
 import * as THREE from "three";
+import BoltEffect from "./BoltEffect";
+import Vector from "../../../../../model/utils/Vector.mjs";
+
+const boltEffect = new BoltEffect();
 
 class ExplosionEffect extends Animation {
   constructor(emitterContainer, getRandom, args = {}, context) {
@@ -70,7 +74,7 @@ class ExplosionEffect extends Animation {
     var shootoffs = Math.ceil(Math.random() * 20 + 10);
 
     this.createShootOffs(shootoffs, this.size);
-    this.createMainGlow(Math.ceil(amount / 2), this.size);
+    this.createMainGlow(1, this.size);
     this.createCore(this.size, TEXTURE_GLOW);
     this.createMain(amount, this.size);
     this.createWhiteCenter(this.size * 2, 0.5);
@@ -143,36 +147,34 @@ class ExplosionEffect extends Animation {
       args = {};
     }
 
-    var size = radius;
+    const angle = args.angle || Math.floor(Math.random() * 360);
+    const speed = (Math.random() * 0.2 + 0.1) * this.speed * this.size * 0.01;
 
-    var particle = this.emitterContainer.getParticle(this.context);
-    var activationTime =
-      this.time + Math.floor((Math.random() * 30) / this.speed);
-    var fadeInSpeed = args.fadeInSpeed || Math.random() * 50 + 25;
-    var fadeOutAt =
-      args.fadeOutAt ||
-      activationTime + Math.floor((Math.random() * 50) / this.speed);
-    var fadeOutSpeed =
-      args.fadeOutSpeed ||
-      (Math.random() * 500) / this.speed + 250 / this.speed;
-    var angle = args.angle || Math.floor(Math.random() * 360);
-    var speed = (Math.random() * 0.2 + 0.1) * this.speed * this.size * 0.01;
+    const startPosition = args.position || this.position;
+    const endPosition =
+      args.target ||
+      new Vector(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5)
+        .normalize()
+        .multiplyScalar((Math.random() * 10 + 3) * this.size)
+        .add(startPosition);
 
-    var target = args.target || getPointInDirection(speed, -angle, 0, 0, true);
-    var position = args.position || this.position; //getPointInDirection(size/2, angle, this.position.x, this.position.y, true);
-    var color = args.color || getYellowColor();
-
-    particle
-      .setSize(Math.floor((Math.random() * size) / 2) + size / 2)
-      .setOpacity(Math.random() * 0.8 + 0.2)
-      .setFadeIn(activationTime, fadeInSpeed)
-      .setFadeOut(fadeOutAt, fadeOutSpeed)
-      .setColor(color)
-      .setPosition({ x: position.x, y: position.y })
-      .setVelocity(target)
-      .setAngle(angle)
-      .setTexture(TEXTURE_BOLT)
-      .setActivationTime(activationTime);
+    const color = this.getRandomColor();
+    boltEffect.create(
+      this.time + Math.floor((Math.random() * 30) / this.speed),
+      new Vector(startPosition),
+      new Vector(endPosition),
+      speed * 0.6,
+      args.fadeOutSpeed || Math.random() * 500 + 250,
+      Math.floor((Math.random() * 30 + 15) * this.size) / this.speed,
+      {
+        size: radius / 3,
+        color: [color.r, color.g, color.b],
+        coreOpacity: 0.1
+      },
+      this.getRandom,
+      this.emitterContainer,
+      this.context
+    );
   }
 
   createPillars(amount, radius) {
@@ -230,7 +232,7 @@ class ExplosionEffect extends Animation {
         fadeOutAt,
         (Math.random() * 0.05) / this.speed + 0.025 / this.speed
       )
-      .setOpacity(this.opacity)
+      .setOpacity(this.opacity * 0.5)
       .setColor(getCoreColor())
       .setPosition({
         x: this.position.x, // + Math.floor(Math.random()*radius/10)-radius/5,
@@ -368,7 +370,7 @@ class ExplosionEffect extends Animation {
 
     return new THREE.Color().setRGB(
       1,
-      (255 - Math.floor(Math.random() * 155)) / 255,
+      (155 - Math.floor(Math.random() * 75)) / 255,
       Math.floor(Math.random() * 155) / 255
     );
   };

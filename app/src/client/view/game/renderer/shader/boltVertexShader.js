@@ -42,8 +42,6 @@ const boltVertexShader = `
 
     // http://www.geeks3d.com/20141201/how-to-rotate-a-vertex-by-a-quaternion-in-glsl/
     vec3 applyQuaternionToVector(vec3 v ){
-
-        //vec4 q = vec4(0.24999999999999997, -0.06698729810778066, -0.24999999999999997, 0.9330127018922194);
         return v + 2.0 * cross( quaternion.xyz, cross( quaternion.xyz, v ) + quaternion.w * v );
     }
 

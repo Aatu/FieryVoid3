@@ -455,6 +455,7 @@ class ReplayTurnActions extends AnimationUiStrategy {
     );
 
     if (animation.doesMove()) {
+      console.log("animation moves");
       this.replayContext.setMovementDuration(duration);
     }
 

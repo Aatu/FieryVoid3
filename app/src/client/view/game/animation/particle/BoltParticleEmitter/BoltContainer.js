@@ -78,6 +78,10 @@ class BoltContainer {
   freeParticles(particleIndices) {
     particleIndices = [].concat(particleIndices);
 
+    particleIndices = particleIndices.filter(
+      index => !this.free.includes(index)
+    );
+
     particleIndices.forEach(function(i) {
       this.opacityAttribute.setX(i, 0);
     }, this);

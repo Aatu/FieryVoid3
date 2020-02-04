@@ -33,7 +33,7 @@ class ShipWeaponAnimationService {
     );
   }
 
-  getDamageExplosion(size, endPosition, startTime, context) {
+  getDamageExplosion(size, type = "glow", endPosition, startTime, context) {
     return new ExplosionEffect(
       this.particleEmitterContainer,
       this.getRandom,
@@ -41,7 +41,7 @@ class ShipWeaponAnimationService {
         position: endPosition.clone(),
         time: startTime,
         duration: 250 + this.getRandom() * 250,
-        type: "glow",
+        type,
         size: size || 10
       },
       context

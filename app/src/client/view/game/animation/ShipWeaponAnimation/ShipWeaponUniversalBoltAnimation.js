@@ -42,6 +42,7 @@ class ShipWeaponUniversalBoltAnimation extends ShipWeaponAnimation {
         this.animations.push(
           weaponAnimationService.getDamageExplosion(
             props.args.explosionSize,
+            props.args.explosionType,
             this.endPosition.add(shot.offset),
             this.startTime + shot.startExtra + duration,
             this
@@ -63,21 +64,6 @@ class ShipWeaponUniversalBoltAnimation extends ShipWeaponAnimation {
     for (let currentShot = 0; currentShot < totalShots; currentShot++) {
       const hit =
         currentShot >= hitsStart && currentShot < hitsStart + shotsHit;
-
-      /*
-        hitsStart: 2
-
-        0: miss,
-        1: miss,
-        2: hit,
-        3: hit,
-        4: hit,
-        5: miss
-
-        hit = currentShot >= hitsStart && currentShot < hitsStart + shotsHit
-
-
-      */
 
       startExtra = (30 / this.speed) * currentShot;
 
@@ -139,7 +125,7 @@ class ShipWeaponUniversalBoltAnimation extends ShipWeaponAnimation {
       this.startTime = impactTime - (startExtra + this.duration);
     } else {
       this.startWait = this.getRandom() * 2000;
-      this.startTime = animationStartTime;
+      this.startTime = animationStartTime + this.startWait;
       const distance = this.startPosition.distanceTo(this.endPosition);
       this.duration = distance / this.speed;
     }

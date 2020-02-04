@@ -59,7 +59,7 @@ class ShipMovementAnimation extends Animation {
   }
 
   doesMove() {
-    return new Vector(this.positionCurves[0].getPoint(0)).equals(
+    return !new Vector(this.positionCurves[0].getPoint(0)).equals(
       new Vector(this.positionCurves[0].getPoint(1))
     );
   }

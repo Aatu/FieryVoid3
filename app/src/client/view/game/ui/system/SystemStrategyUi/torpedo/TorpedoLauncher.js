@@ -76,12 +76,12 @@ class TorpedoLauncher extends React.PureComponent {
         <TooltipHeader>Torpedo tube {launcherIndex}</TooltipHeader>
         <InlineTooltipEntry>
           <TooltipEntry>
-            <TooltipValueHeader>Loading time: </TooltipValueHeader>
+            <TooltipValueHeader>Loading: </TooltipValueHeader>
             <TooltipValue>{`${turnsLoaded}/${loadingTime}`}</TooltipValue>
           </TooltipEntry>
 
           <InlineTooltipEntry>
-            <TooltipValueHeader>Loaded: </TooltipValueHeader>
+            <TooltipValueHeader>Loaded torpedo:</TooltipValueHeader>
             <CargoItem
               cargo={loadedTorpedo ? loadedTorpedo : new NoAmmunitionLoaded()}
               amount={null}

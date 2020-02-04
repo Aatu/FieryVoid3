@@ -27,7 +27,10 @@ class TorpedoLauncherStrategy extends ShipSystemStrategy {
           launcherIndex: this.launcherIndex,
           loadedTorpedo: this.loadedTorpedo,
           loadingTime: this.loadingTime,
-          turnsLoaded: this.turnsLoaded,
+          turnsLoaded:
+            this.turnsLoaded > this.loadingTime
+              ? this.loadingTime
+              : this.turnsLoaded,
           torpedoClass: this.torpedoClass,
           launchTarget: this.launchTarget,
           launcher: this

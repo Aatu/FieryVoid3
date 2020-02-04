@@ -30,7 +30,8 @@ class CoilgunLightFixed extends Weapon {
         length: 2000,
         speed: 5,
         color: [0.8, 0.1, 0.4],
-        explosionSize: 20
+        explosionSize: 20,
+        explosionType: "gas"
       }),
       new OutputHeatOnlineStrategy(4, 2)
     ]);
