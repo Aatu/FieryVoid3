@@ -147,7 +147,7 @@ class ExplosionEffect extends Animation {
       args = {};
     }
 
-    const angle = args.angle || Math.floor(Math.random() * 360);
+    console.log("hi", this.size);
     const speed = (Math.random() * 0.2 + 0.1) * this.speed * this.size * 0.01;
 
     const startPosition = args.position || this.position;
@@ -163,9 +163,9 @@ class ExplosionEffect extends Animation {
       this.time + Math.floor((Math.random() * 30) / this.speed),
       new Vector(startPosition),
       new Vector(endPosition),
-      speed * 0.6,
+      speed * 1.5,
       args.fadeOutSpeed || Math.random() * 500 + 250,
-      Math.floor((Math.random() * 30 + 15) * this.size) / this.speed,
+      Math.floor(Math.random() * 500 + 250) / this.speed,
       {
         size: radius / 3,
         color: [color.r, color.g, color.b],
