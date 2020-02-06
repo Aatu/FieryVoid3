@@ -117,8 +117,25 @@ class TorpedoLauncherStrategy extends ShipSystemStrategy {
       this.launcherIndex
     );
 
+    const possibleNewTorpedos = this.getPossibleTorpedosToLoad();
+    let newAmmo = null;
+
+    if (
+      possibleNewTorpedos.find(
+        torpedo => torpedo.constructor === this.loadedTorpedo.constructor
+      )
+    ) {
+      newAmmo = this.loadedTorpedo;
+    } else if (possibleNewTorpedos.length > 0) {
+      newAmmo = possibleNewTorpedos.pop();
+    }
+
     this.loadedTorpedo = null;
     this.turnsLoaded = 0;
+
+    if (newAmmo) {
+      this.receiveAmmoChange(newAmmo);
+    }
 
     return [...previousResponse, result];
   }
