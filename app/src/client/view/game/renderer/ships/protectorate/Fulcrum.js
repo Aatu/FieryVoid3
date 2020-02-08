@@ -16,10 +16,10 @@ class Fulcrum extends ShipObject {
   async create() {
     super.create();
     const object = await loadObject3d(
-      "/img/3d/ships/protectorate/Fulcrum/scene.gltf"
+      "/img/3d/ships/protectorate/fulcrum/scene.gltf"
     );
     this.bumpMap = await textureLoader.load(
-      "/img/3d/ships/protectorate/Fulcrum/heightMap.png"
+      "/img/3d/ships/protectorate/fulcrum/heightMap.png"
     );
 
     object.object.position.set(0, 0, this.defaultHeight);
