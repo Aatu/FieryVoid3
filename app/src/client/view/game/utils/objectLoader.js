@@ -63,9 +63,13 @@ export const loadObject = async url => {
   const entity = {
     url: url,
     value: new Promise((resolve, reject) => {
-      loader.load(url, object => {
-        resolve(object);
-      });
+      try {
+        loader.load(url, object => {
+          resolve(object);
+        });
+      } catch (e) {
+        throw new Error(`Unable to load asset ${url}`);
+      }
     })
   };
 

@@ -2,12 +2,8 @@ import { loadObject, cloneObject } from "../../utils/objectLoader";
 import * as THREE from "three";
 
 export const loadObject3d = async url => {
-  try {
-    const object = await loadObject(url);
-    return new Object3d(object.scene, object.animations);
-  } catch (e) {
-    throw new Error(`Unable to load asset ${url}`);
-  }
+  const object = await loadObject(url);
+  return new Object3d(object.scene, object.animations);
 };
 
 class Object3d {
