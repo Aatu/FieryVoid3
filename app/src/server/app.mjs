@@ -19,10 +19,7 @@ expressWs(app);
 
 app.use(
   cors({
-    origin: [
-      "http://[2001:14ba:2bef:f100:fc59:d259:16a3:e548]:5000",
-      "http://localhost:3000"
-    ],
+    origin: ["http://localhost:3000", "http://95.217.10.191"],
     methods: ["GET", "POST"],
     credentials: true
   })
