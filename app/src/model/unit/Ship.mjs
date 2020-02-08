@@ -180,6 +180,7 @@ class Ship {
   }
 
   deserialize(data = {}) {
+    console.log("deserializing ship, className", this.constructor.name);
     const shipData = data.shipData || {};
     this.id = data.id || null;
     this.name = data.name || "Unnamed ship ";

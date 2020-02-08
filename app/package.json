@@ -84,8 +84,7 @@
     "not op_mini all"
   ],
   "devDependencies": {
-    "ava": "^2.2.0",
-    "redux-devtools-extension": "^2.13.8"
+    "ava": "^2.2.0"
   },
   "ava": {
     "require": [
