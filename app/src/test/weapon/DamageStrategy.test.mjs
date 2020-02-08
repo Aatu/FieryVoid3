@@ -17,7 +17,7 @@ import Engine from "../../model/unit/system/engine/Engine.mjs";
 import Vector from "../../model/utils/Vector.mjs";
 import Offset from "../../model/hexagon/Offset.mjs";
 import MovementOrder from "../../model/movement/MovementOrder.mjs";
-import movementTypes from "../../model/movement/MovementTypes.mjs";
+import movementTypes from "../../model/movement/movementTypes.mjs";
 import DamageEntry from "../../model/unit/system/DamageEntry.mjs";
 import WeaponHitChange from "../../model/weapon/WeaponHitChange.mjs";
 import CombatLogWeaponFire from "../../model/combatLog/CombatLogWeaponFire.mjs";

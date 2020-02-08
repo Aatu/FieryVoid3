@@ -5,7 +5,7 @@ import Torpedo158 from "../../model/unit/system/weapon/ammunition/torpedo/Torped
 import Ship from "../../model/unit/Ship.mjs";
 import MovementOrder from "../../model/movement/MovementOrder.mjs";
 import Offset from "../../model/hexagon/Offset.mjs";
-import movementTypes from "../../model/movement/MovementTypes.mjs";
+import movementTypes from "../../model/movement/movementTypes.mjs";
 import coordinateConverter from "../../model/utils/CoordinateConverter.mjs";
 import Vector from "../../model/utils/Vector.mjs";
 import Torpedo158MSV from "../../model/unit/system/weapon/ammunition/torpedo/Torpedo158MSV.mjs";

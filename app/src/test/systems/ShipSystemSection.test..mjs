@@ -8,7 +8,7 @@ import Engine from "../../model/unit/system/engine/Engine.mjs";
 import Reactor from "../../model/unit/system/reactor/Reactor.mjs";
 import Structure from "../../model/unit/system/structure/Structure.mjs";
 import MovementOrder from "../../model/movement/MovementOrder.mjs";
-import movementTypes from "../../model/movement/MovementTypes.mjs";
+import movementTypes from "../../model/movement/movementTypes.mjs";
 import Offset from "../../model/hexagon/Offset.mjs";
 
 const getShipWithStructures = (rolled = false) => {

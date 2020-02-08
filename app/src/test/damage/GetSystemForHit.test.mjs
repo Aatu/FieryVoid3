@@ -10,7 +10,7 @@ import Reactor from "../../model/unit/system/reactor/Reactor.mjs";
 import Vector from "../../model/utils/Vector.mjs";
 import Offset from "../../model/hexagon/Offset.mjs";
 import MovementOrder from "../../model/movement/MovementOrder.mjs";
-import movementTypes from "../../model/movement/MovementTypes.mjs";
+import movementTypes from "../../model/movement/movementTypes.mjs";
 import DamageEntry from "../../model/unit/system/DamageEntry.mjs";
 
 const constructShip = (id = 123) => {

@@ -6,7 +6,7 @@ import {
 import * as gameStatuses from "../../model/game/gameStatuses.mjs";
 import * as gamePhases from "../../model/game/gamePhases.mjs";
 import MovementOrder from "../../model/movement/MovementOrder.mjs";
-import MovementTypes from "../../model/movement/MovementTypes.mjs";
+import movementTypes from "../../model/movement/movementTypes.mjs";
 import uuidv4 from "uuid/v4.js";
 
 class BuyShipsHandler {
@@ -82,7 +82,7 @@ class BuyShipsHandler {
   getDeployMove(startMove) {
     return new MovementOrder(
       uuidv4(),
-      MovementTypes.DEPLOY,
+      movementTypes.DEPLOY,
       startMove.position,
       startMove.velocity,
       startMove.facing,
@@ -114,7 +114,7 @@ class BuyShipsHandler {
 
     return new MovementOrder(
       uuidv4(),
-      MovementTypes.START,
+      movementTypes.START,
       position,
       slot.deploymentVector,
       slot.facing,

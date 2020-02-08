@@ -1,9 +1,9 @@
 import MovementOrder from "./MovementOrder.mjs";
-import MovementTypes from "./MovementTypes.mjs";
+import movementTypes from "./movementTypes.mjs";
 
 class TerrainMovementOrder extends MovementOrder {
   constructor(position, target, turn = 1) {
-    super(null, MovementTypes.END, position, target, 1, false, turn);
+    super(null, mvementTypes.END, position, target, 1, false, turn);
   }
 }
 

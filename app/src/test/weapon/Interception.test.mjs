@@ -5,7 +5,7 @@ import Vector from "../../model/utils/Vector.mjs";
 import Ship from "../../model/unit/Ship.mjs";
 import PDC30mm from "../../model/unit/system/weapon/pdc/PDC30mm.mjs";
 import MovementOrder from "../../model/movement/MovementOrder.mjs";
-import movementTypes from "../../model/movement/MovementTypes.mjs";
+import movementTypes from "../../model/movement/movementTypes.mjs";
 import Offset from "../../model/hexagon/Offset.mjs";
 import GameData from "../../model/game/GameData.mjs";
 import Reactor from "../../model/unit/system/reactor/Reactor.mjs";

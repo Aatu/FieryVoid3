@@ -1,6 +1,6 @@
 import MovementService from "./MovementService.mjs";
 import MovementOrder from "./MovementOrder.mjs";
-import movementTypes from "./MovementTypes.mjs";
+import movementTypes from "./movementTypes.mjs";
 import MovementResolver from "./MovementResolver.mjs";
 import ThrustBill from "./ThrustBill.mjs";
 import RequiredThrust from "./RequiredThrust.mjs";

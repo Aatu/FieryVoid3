@@ -2,7 +2,7 @@ import test from "ava";
 import Ship from "../../model/unit/Ship.mjs";
 import Offset from "../../model/hexagon/Offset.mjs";
 import MovementOrder from "../../model/movement/MovementOrder.mjs";
-import movementTypes from "../../model/movement/MovementTypes.mjs";
+import movementTypes from "../../model/movement/movementTypes.mjs";
 import MovementHandler from "../../server/handler/MovementHandler.mjs";
 
 /*
