@@ -61,7 +61,11 @@ class GameShips {
   }
 
   deserialize(ships = []) {
-    this.ships = ships.map(shipData => createShipObject(shipData));
+    console.log("deserialize");
+    this.ships = ships.map(shipData => {
+      console.log(shipData);
+      return createShipObject(shipData);
+    });
 
     return this;
   }

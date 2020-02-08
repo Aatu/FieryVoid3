@@ -19,7 +19,7 @@ expressWs(app);
 
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: "http://[2001:14ba:2bef:f100:fc59:d259:16a3:e548]:5000",
     methods: ["GET", "POST"],
     credentials: true
   })

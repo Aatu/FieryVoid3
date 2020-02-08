@@ -2,6 +2,9 @@ import ships from "./ships/index.mjs";
 
 export const createShipObject = data => {
   const { shipClass } = data;
+
+  console.log("haka is ", new ships["Haka"]());
+  console.log("ship class is ", shipClass);
   if (!shipClass) {
     throw new Error("Ship class missing, can not construct a ship");
   }

@@ -149,6 +149,7 @@ class GameData {
   }
 
   deserialize(data = {}) {
+    console.log("deserialize gamedata", data);
     const gameData = data.data || {};
     this.id = data.id || null;
     this.name = data.name;
