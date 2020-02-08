@@ -147,7 +147,6 @@ class ExplosionEffect extends Animation {
       args = {};
     }
 
-    console.log("hi", this.size);
     const speed = (Math.random() * 0.2 + 0.1) * this.speed * this.size * 0.01;
 
     const startPosition = args.position || this.position;

@@ -117,6 +117,7 @@ class TorpedoLauncherStrategy extends ShipSystemStrategy {
       this.launcherIndex
     );
 
+    /*
     const possibleNewTorpedos = this.getPossibleTorpedosToLoad();
     let newAmmo = null;
 
@@ -137,6 +138,7 @@ class TorpedoLauncherStrategy extends ShipSystemStrategy {
       this.receiveAmmoChange(newAmmo);
     }
 
+    */
     return [...previousResponse, result];
   }
 
