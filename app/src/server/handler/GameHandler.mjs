@@ -24,6 +24,8 @@ class GameHandler {
   }
 
   submit(serverGameData, clientGameData, user) {
+    console.log("submit");
+
     if (!user) {
       throw new UnauthorizedError("Not logged in");
     }
