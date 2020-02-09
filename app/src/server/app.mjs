@@ -50,6 +50,7 @@ const gameController = new GameController(dbConnection);
 //app.use(express.static("public"));
 
 app.post("/login", passportService.authenticate(), (req, res) => {
+  console.log("hello from login");
   res.sendStatus(204);
 });
 
