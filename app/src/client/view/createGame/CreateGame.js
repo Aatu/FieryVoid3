@@ -72,7 +72,6 @@ const CreateGame = ({ location }) => {
     (async () => {
       try {
         const response = await createGame(gameData);
-        console.log(response);
         gameData.id = response.data.gameId;
         setGameData(gameData.clone());
       } catch (e) {
@@ -81,7 +80,6 @@ const CreateGame = ({ location }) => {
     })();
   }, [gameData, setGameData]);
 
-  console.log("render", gameData);
   if (gameData.id) {
     return (
       <Redirect

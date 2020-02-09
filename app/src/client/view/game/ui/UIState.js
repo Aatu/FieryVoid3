@@ -4,7 +4,6 @@ import { angleToHexFacing } from "../../../../model/utils/math.mjs";
 
 class UIState {
   constructor() {
-    console.log("construct new UiState");
     this.phaseDirector = null;
     this.services = null;
 

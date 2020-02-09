@@ -64,7 +64,6 @@ class GameSceneComponent extends React.Component {
   }
 
   componentDidMount() {
-    console.log("Game scene component mounted");
     const { game } = this.props;
 
     window.addEventListener("resize", this.onResize);
@@ -181,7 +180,6 @@ class GameSceneComponent extends React.Component {
   }
 
   componentDidUpdate() {
-    console.log("updated init");
     this.props.game.initRender(this.canvasRef.current);
   }
 
@@ -197,7 +195,6 @@ class GameSceneComponent extends React.Component {
   }
 
   render() {
-    console.log("rerender game scene component");
     return (
       <>
         <ClickCatcher

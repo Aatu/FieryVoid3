@@ -117,18 +117,34 @@ class TorpedoLauncherStrategy extends ShipSystemStrategy {
       this.launcherIndex
     );
 
-    /*
     const possibleNewTorpedos = this.getPossibleTorpedosToLoad();
     let newAmmo = null;
 
-    if (
-      possibleNewTorpedos.find(
-        torpedo => torpedo.constructor === this.loadedTorpedo.constructor
-      )
-    ) {
-      newAmmo = this.loadedTorpedo;
+    const same = possibleNewTorpedos.find(
+      torpedo => torpedo.object.constructor === this.loadedTorpedo.constructor
+    );
+
+    if (same) {
+      const cargoBay = this.system.shipSystems
+        .getSystems()
+        .find(system =>
+          system.callHandler("hasCargo", { object: same.object }, false)
+        );
+      newAmmo = {
+        ammo: same.object.constructor.name,
+        from: cargoBay.id
+      };
     } else if (possibleNewTorpedos.length > 0) {
-      newAmmo = possibleNewTorpedos.pop();
+      const newTorpedo = possibleNewTorpedos.pop().object;
+      const cargoBay = this.system.shipSystems
+        .getSystems()
+        .find(system =>
+          system.callHandler("hasCargo", { object: newTorpedo }, false)
+        );
+      newAmmo = {
+        ammo: newTorpedo.constructor.name,
+        from: cargoBay.id
+      };
     }
 
     this.loadedTorpedo = null;
@@ -138,7 +154,6 @@ class TorpedoLauncherStrategy extends ShipSystemStrategy {
       this.receiveAmmoChange(newAmmo);
     }
 
-    */
     return [...previousResponse, result];
   }
 

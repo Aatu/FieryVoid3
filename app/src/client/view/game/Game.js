@@ -11,8 +11,6 @@ class Game {
     this.gameId = gameId;
     this.currentUser = user;
 
-    console.log("game user", user);
-
     this.uiState = uiState;
     this.coordinateConverter = coordinateConverter;
 
@@ -154,7 +152,6 @@ class Game {
   }
 
   deactivate() {
-    console.log("deactivate game");
     this.gameConnector.deactivate();
     this.phaseDirector.deactivate();
     this.gameScene.deactivate();

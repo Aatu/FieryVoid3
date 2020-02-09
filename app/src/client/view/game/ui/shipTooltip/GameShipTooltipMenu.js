@@ -119,7 +119,6 @@ class GameShipTooltipMenu extends React.PureComponent {
               e.preventDefault();
               e.stopPropagation();
 
-              console.log("hasOnlineradiators", hasOnlineradiators(ship));
               toggleRadiators(
                 ship,
                 uiState,

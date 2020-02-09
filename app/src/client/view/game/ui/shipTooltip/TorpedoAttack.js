@@ -102,40 +102,62 @@ class TorpedoAttack extends React.Component {
                 <Cell>{torpedoShipEntry.deltaDistance}</Cell>
               </TooltipHeader>
               <TorpedoList>
-                {torpedoShipEntry.launchers.map((launcher, i) => {
-                  const strikePrediction = torpedoMovementService.predictTorpedoHitPositionAndTurn(
-                    new TorpedoFlight(launcher.loadedTorpedo)
-                      .setPosition(torpedoShipEntry.ship.getPosition())
-                      .setVelocity(torpedoShipEntry.ship.getVelocity()),
-                    target
-                  );
+                {torpedoShipEntry.launchers
+                  .map((launcher, i) => {
+                    const strikePrediction = torpedoMovementService.predictTorpedoHitPositionAndTurn(
+                      new TorpedoFlight(launcher.loadedTorpedo)
+                        .setPosition(torpedoShipEntry.ship.getPosition())
+                        .setVelocity(torpedoShipEntry.ship.getVelocity()),
+                      target
+                    );
 
-                  if (!strikePrediction) {
-                    return null;
-                  }
+                    if (!strikePrediction) {
+                      return null;
+                    }
 
-                  return (
-                    <TorpedoCargoItem
-                      launcher={launcher}
-                      ship={torpedoShipEntry.ship}
-                      handleOnClick={this.launcherClick(launcher).bind(this)}
-                      key={`torpedo-attack--torpedo-${torpedoShipEntry.ship.id}-${i}`}
-                      cargo={launcher.loadedTorpedo}
-                      amount={null}
-                      text={`${Math.round(
-                        strikePrediction.effectiveness * 100
-                      )}%`}
-                      tooltipAdditionalContent={
-                        <TorpedoAttackTooltip
-                          shooter={torpedoShipEntry.ship}
-                          target={target}
-                          torpedo={launcher.loadedTorpedo}
-                          strikePrediction={strikePrediction}
+                    return {
+                      torpedo: launcher.loadedTorpedo,
+                      component: (
+                        <TorpedoCargoItem
+                          launcher={launcher}
+                          ship={torpedoShipEntry.ship}
+                          handleOnClick={this.launcherClick(launcher).bind(
+                            this
+                          )}
+                          key={`torpedo-attack--torpedo-${torpedoShipEntry.ship.id}-${i}`}
+                          cargo={launcher.loadedTorpedo}
+                          amount={null}
+                          text={`${Math.round(
+                            strikePrediction.effectiveness * 100
+                          )}%`}
+                          tooltipAdditionalContent={
+                            <TorpedoAttackTooltip
+                              shooter={torpedoShipEntry.ship}
+                              target={target}
+                              torpedo={launcher.loadedTorpedo}
+                              strikePrediction={strikePrediction}
+                            />
+                          }
                         />
-                      }
-                    />
-                  );
-                })}
+                      )
+                    };
+                  })
+                  .sort((a, b) => {
+                    if (
+                      a.torpedo.constructor.name > b.torpedo.constructor.name
+                    ) {
+                      return 1;
+                    }
+
+                    if (
+                      a.torpedo.constructor.name < b.torpedo.constructor.name
+                    ) {
+                      return -1;
+                    }
+
+                    return 0;
+                  })
+                  .map(({ component }) => component)}
               </TorpedoList>
             </Container>
           );
