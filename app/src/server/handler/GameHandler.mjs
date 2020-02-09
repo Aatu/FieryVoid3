@@ -34,6 +34,7 @@ class GameHandler {
       throw new InvalidGameDataError("Current user has no active ships");
     }
 
+    console.log("receiving power");
     this.powerHandler.receivePower(
       serverGameData,
       clientGameData,
@@ -41,6 +42,7 @@ class GameHandler {
       user
     );
 
+    console.log("receiving system data");
     this.systemDataHandler.receiveSystemData(
       serverGameData,
       clientGameData,
@@ -48,6 +50,7 @@ class GameHandler {
       user
     );
 
+    console.log("receiving moves");
     this.movementHandler.receiveMoves(
       serverGameData,
       clientGameData,
@@ -55,6 +58,7 @@ class GameHandler {
       user
     );
 
+    console.log("receive ew");
     this.electronicWarfareHandler.receiveElectronicWarfare(
       serverGameData,
       clientGameData,
@@ -62,6 +66,7 @@ class GameHandler {
       user
     );
 
+    console.log("receive fire");
     this.weaponHandler.receiveFireOrders(
       serverGameData,
       clientGameData,
@@ -69,6 +74,7 @@ class GameHandler {
       user
     );
 
+    console.log("inactivating ships");
     this.inactivateUsersShips(serverGameData, user);
   }
 
