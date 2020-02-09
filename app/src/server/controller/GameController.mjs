@@ -46,7 +46,6 @@ class GameController {
   }
 
   async onMessage(message, user, gameId) {
-    console.log("got message");
     try {
       switch (message.type) {
         case gameMessages.MESSAGE_TAKE_SLOT:
@@ -147,33 +146,38 @@ class GameController {
       gameData: serverGameData
     } = await this.gameDataService.reserveGame(gameId);
 
-    const toSave = [];
-    const toSend = [];
+    try {
+      const toSave = [];
+      const toSend = [];
 
-    this.gameHandler.submit(serverGameData, clientGameData, user);
-    toSave.push(serverGameData.clone());
+      this.gameHandler.submit(serverGameData, clientGameData, user);
+      toSave.push(serverGameData.clone());
 
-    if (this.gameHandler.isReady(serverGameData)) {
-      toSave.push(this.gameHandler.advance(serverGameData));
-      toSave.push(serverGameData);
+      if (this.gameHandler.isReady(serverGameData)) {
+        toSave.push(this.gameHandler.advance(serverGameData));
+        toSave.push(serverGameData);
 
-      await this.gameDataService.saveGame(key, toSave);
+        await this.gameDataService.saveGame(key, toSave);
 
-      const turn = serverGameData.turn;
-      const replays = await this.replayHandler.requestReplay(
-        gameId,
-        turn - 1,
-        turn
-      );
+        const turn = serverGameData.turn;
+        const replays = await this.replayHandler.requestReplay(
+          gameId,
+          turn - 1,
+          turn
+        );
 
-      this.gameClients.sendTurnChange(replays);
-    } else {
-      toSend.push(serverGameData.clone());
-      //TODO: toSend is not actually sent anywhere here
-      await this.gameDataService.saveGame(key, toSave);
+        this.gameClients.sendTurnChange(replays);
+      } else {
+        toSend.push(serverGameData.clone());
+        //TODO: toSend is not actually sent anywhere here
+        await this.gameDataService.saveGame(key, toSave);
+      }
+
+      return toSend;
+    } catch (e) {
+      this.gameDataService.releaseGame(key, gameId);
+      throw e;
     }
-
-    return toSend;
   }
 }
 

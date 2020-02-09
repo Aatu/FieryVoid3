@@ -56,6 +56,15 @@ class CachedGameData {
     this.processReservations();
   }
 
+  async cancel(key, gameDatas) {
+    if (key !== this.key) {
+      throw new Error("Wrong key for gamedata update");
+    }
+
+    this.key = null;
+    this.processReservations();
+  }
+
   get() {
     this.lastRequested = Date.now();
     const promise = new Promise((resolve, reject) => {

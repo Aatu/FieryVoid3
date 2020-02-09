@@ -3,8 +3,13 @@ class PowerHandler {
     activeShips.forEach(serverShip => {
       const clientShip = clientGameData.ships.getShipById(serverShip.id);
       serverShip.systems.power.copyPower(clientShip);
+    });
+  }
 
+  forceValidPower(activeShips) {
+    activeShips.forEach(serverShip => {
       if (!serverShip.systems.power.isValidPower()) {
+        console.log("forcing valid power for " + serverShip.id);
         serverShip.systems.power.forceValidPower();
       }
     });

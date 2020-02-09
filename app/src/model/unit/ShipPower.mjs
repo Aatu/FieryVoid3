@@ -42,16 +42,12 @@ class ShipPower {
     this.shipSystems.getSystems().forEach(system => {
       const otherSystem = ship.systems.getSystemById(system.id);
 
-      if (otherSystem.power.isGoingOffline()) {
-        if (this.canSetOffline(system)) {
-          system.power.setOffline();
-        }
+      if (otherSystem.power.isGoingOffline() && system.power.isOnline()) {
+        system.power.setOffline();
       }
 
-      if (otherSystem.power.isGoingOnline()) {
-        if (this.canSetOnline(system)) {
-          system.power.setOnline();
-        }
+      if (otherSystem.power.isGoingOnline() && system.power.isOffline()) {
+        system.power.setOnline();
       }
     });
   }

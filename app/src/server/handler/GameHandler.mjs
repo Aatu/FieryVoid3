@@ -9,6 +9,7 @@ import LaunchHandler from "./LaunchHandler.mjs";
 import CombatLogShipVelocity from "../../model/combatLog/CombatLogShipVelocity.mjs";
 import CriticalHandler from "./CriticalHandler.mjs";
 import HeatHandler from "./HeatHandler.mjs";
+import Haka from "../../model/unit/ships/uc/Haka.mjs";
 
 class GameHandler {
   constructor() {
@@ -24,8 +25,6 @@ class GameHandler {
   }
 
   submit(serverGameData, clientGameData, user) {
-    console.log("submit");
-
     if (!user) {
       throw new UnauthorizedError("Not logged in");
     }
@@ -36,7 +35,6 @@ class GameHandler {
       throw new InvalidGameDataError("Current user has no active ships");
     }
 
-    console.log("receiving power");
     this.powerHandler.receivePower(
       serverGameData,
       clientGameData,
@@ -44,7 +42,6 @@ class GameHandler {
       user
     );
 
-    console.log("receiving system data");
     this.systemDataHandler.receiveSystemData(
       serverGameData,
       clientGameData,
@@ -52,7 +49,8 @@ class GameHandler {
       user
     );
 
-    console.log("receiving moves");
+    this.powerHandler.forceValidPower(activeShips);
+
     this.movementHandler.receiveMoves(
       serverGameData,
       clientGameData,
@@ -60,7 +58,6 @@ class GameHandler {
       user
     );
 
-    console.log("receive ew");
     this.electronicWarfareHandler.receiveElectronicWarfare(
       serverGameData,
       clientGameData,
@@ -68,7 +65,6 @@ class GameHandler {
       user
     );
 
-    console.log("receive fire");
     this.weaponHandler.receiveFireOrders(
       serverGameData,
       clientGameData,
@@ -76,7 +72,6 @@ class GameHandler {
       user
     );
 
-    console.log("inactivating ships");
     this.inactivateUsersShips(serverGameData, user);
   }
 

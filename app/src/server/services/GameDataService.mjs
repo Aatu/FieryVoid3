@@ -56,6 +56,15 @@ class GameDataService {
     }
   }
 
+  async releaseGame(key, gameId) {
+    try {
+      await this.getCached(gameId).cancel(key);
+    } catch (e) {
+      this.clearCache(id);
+      throw e;
+    }
+  }
+
   loadReplay(id, turn) {
     return this.gameDataRepository.loadGame(id, turn);
   }

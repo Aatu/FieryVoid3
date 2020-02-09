@@ -50,7 +50,6 @@ const gameController = new GameController(dbConnection);
 //app.use(express.static("public"));
 
 app.post("/login", passportService.authenticate(), (req, res) => {
-  console.log("hello from login");
   res.sendStatus(204);
 });
 
@@ -103,13 +102,12 @@ app.ws("/game/:gameId", (ws, req) => {
 });
 
 app.use((error, req, res, next) => {
-  console.log(error);
+  console.error(error);
   if (error instanceof errors.InvalidRequestError) {
     res.sendStatus(400);
   } else if (error instanceof errors.UnauthorizedError) {
     res.sendStatus(401);
   } else {
-    console.log("returning 500");
     res.sendStatus(500);
   }
 
