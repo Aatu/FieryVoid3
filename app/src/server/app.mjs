@@ -102,12 +102,13 @@ app.ws("/game/:gameId", (ws, req) => {
 });
 
 app.use((error, req, res, next) => {
-  console.error(error);
+  console.log(error);
   if (error instanceof errors.InvalidRequestError) {
     res.sendStatus(400);
   } else if (error instanceof errors.UnauthorizedError) {
     res.sendStatus(401);
   } else {
+    console.log("returning 500");
     res.sendStatus(500);
   }
 
