@@ -69,6 +69,8 @@ class GameController {
           throw new Error(`Unrecognized message type ${message.type}`);
       }
     } catch (error) {
+      console.log("onMessage error:");
+      console.log(error);
       throw error;
     }
   }
