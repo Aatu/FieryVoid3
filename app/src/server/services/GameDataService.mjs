@@ -60,7 +60,7 @@ class GameDataService {
     try {
       await this.getCached(gameId).cancel(key);
     } catch (e) {
-      this.clearCache(id);
+      this.clearCache(gameId);
       throw e;
     }
   }
