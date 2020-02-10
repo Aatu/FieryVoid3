@@ -196,6 +196,16 @@ class ShipMovement {
     return move.value;
   }
 
+  getActiveEvasion() {
+    const move = this.getLastEndMoveOrSurrogate();
+
+    if (!move) {
+      return 0;
+    }
+
+    return move.evasion;
+  }
+
   getThrustOutput() {
     return this.ship.systems
       .getSystems()

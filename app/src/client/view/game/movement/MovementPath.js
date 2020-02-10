@@ -39,12 +39,17 @@ class MovementPath {
   }
 
   create() {
+    /*
     const startMove = this.movementService.getNewEndMove(
       this.ship,
       this.terrain
     );
+    */
+
+    const startMove = this.ship.movement.getLastEndMoveOrSurrogate();
     const start = startMove.position;
-    const end = startMove.position.add(startMove.velocity);
+    const endMove = this.movementService.getNewEndMove(this.ship, this.terrain);
+    const end = endMove.position;
 
     const line = createMovementLine(
       this.scene,

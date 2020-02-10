@@ -83,9 +83,9 @@ test.serial("Submit successfull launch order", async test => {
     202,
     1
   )
-    .setPosition(new Vector(-1050.7582835488479, 29.239878414193175))
-    .setVelocity(new Vector(1687.3445744592227, -54.02024317161365))
-    .setLaunchPosition(new Vector(-2219.190097197624, 56.25));
+    .setPosition(new Vector(-1699.9703737990008, 35.97985363009482))
+    .setVelocity(new Vector(1687.9584996355752, -40.54029273981036))
+    .setLaunchPosition(new Vector(-2868.709150035953, 56.25));
 
   expected.id = null;
   expected.turnsActive = 1;
@@ -99,14 +99,14 @@ test.serial("Submit successfull launch order", async test => {
   );
 
   test.deepEqual(
-    [replay[0].combatLog.entries[3], replay[0].combatLog.entries[4]],
+    [replay[0].combatLog.entries[0], replay[0].combatLog.entries[4]],
     [
       new CombatLogTorpedoLaunch(flightId),
       new CombatLogTorpedoMove(
         flightId,
-        new Vector(-2219.190097197624, 56.25),
-        new Vector(-1050.7582835488479, 29.239878414193175),
-        new Vector(1687.3445744592227, -54.02024317161365)
+        new Vector(-2868.709150035953, 56.25),
+        new Vector(-1699.9703737990008, 35.97985363009482),
+        new Vector(1687.9584996355752, -40.54029273981036)
       )
     ]
   );
@@ -156,8 +156,8 @@ test.serial("Execute a successful torpedo attack", async test => {
     controller,
     user,
     test,
-    new Offset(-202, 3),
-    new Offset(-151, 3),
+    new Offset(-232, 3),
+    new Offset(-181, 3),
     new Offset(72, -1)
   );
 
@@ -171,8 +171,8 @@ test.serial("Execute a successful torpedo attack", async test => {
     controller,
     user,
     test,
-    new Offset(-151, 3),
-    new Offset(-58, 1),
+    new Offset(-181, 3),
+    new Offset(-88, 1),
     new Offset(114, -2)
   );
 
@@ -246,8 +246,8 @@ test.serial("Try to intercept torpedo attack", async test => {
     controller,
     user,
     test,
-    new Offset(-202, 3),
-    new Offset(-151, 3),
+    new Offset(-232, 3),
+    new Offset(-181, 3),
     new Offset(72, -1)
   );
 
@@ -338,8 +338,8 @@ test.serial("Try to intercept multiple torpedos", async test => {
     controller,
     user,
     test,
-    new Offset(-202, 3),
-    new Offset(-151, 3),
+    new Offset(-232, 3),
+    new Offset(-181, 3),
     new Offset(72, -1)
   );
 

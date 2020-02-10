@@ -72,6 +72,11 @@ class WeaponFireService {
       return false;
     }
 
+    if (!weapon.callHandler("isOnArc", { target }, true)) {
+      console.log("not on arc");
+      return false;
+    }
+
     if (!weapon.callHandler("canFire", null, true)) {
       return false;
     }

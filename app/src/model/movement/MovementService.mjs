@@ -53,7 +53,7 @@ class MovementService {
       lastMove.rolled,
       startMove.turn + 1,
       0
-    );
+    ).setEvasion(ship.movement.getEvasion());
   }
 
   deploy(ship, pos) {

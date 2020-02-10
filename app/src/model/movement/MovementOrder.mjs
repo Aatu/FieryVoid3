@@ -16,7 +16,8 @@ class MovementOrder {
     turn,
     value = 0,
     requiredThrust = undefined,
-    index = 0
+    index = 0,
+    evasion = 0
   ) {
     this.id = id;
     this.type = type;
@@ -28,6 +29,7 @@ class MovementOrder {
     this.index = index;
     this.setPosition(position);
     this.setVelocity(velocity);
+    this.evasion = evasion;
   }
 
   round() {
@@ -54,6 +56,11 @@ class MovementOrder {
     }
 
     this.velocity = velocity;
+  }
+
+  setEvasion(evasion) {
+    this.evasion = evasion;
+    return this;
   }
 
   getFacing() {
@@ -102,7 +109,8 @@ class MovementOrder {
       turn: this.turn,
       value: this.value,
       requiredThrust: this.requiredThrust.serialize(),
-      index: this.index
+      index: this.index,
+      evasion: this.evasion
     };
   }
 
@@ -116,6 +124,7 @@ class MovementOrder {
     this.turn = data.turn;
     this.value = data.value;
     this.index = data.index;
+    this.evasion = data.evasion || 0;
     this.requiredThrust = new RequiredThrust().deserialize(data.requiredThrust);
 
     return this;

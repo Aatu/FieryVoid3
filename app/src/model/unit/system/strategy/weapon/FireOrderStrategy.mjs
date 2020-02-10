@@ -20,10 +20,12 @@ class FireOrderStrategy extends ShipSystemStrategy {
       const target = gameData.ships.getShipById(fireOrder.targetId);
       const weaponSettings = fireOrder.weaponSettings;
 
+      /*
       if (!this.system.callHandler("isOnArc", { shooter, target })) {
         gameData.combatLog.addEntry(new CombatLogWeaponOutOfArc(fireOrder.id));
         return false;
       }
+      */
 
       if (!this.system.callHandler("canFire", { shooter, target }, true)) {
         return false;

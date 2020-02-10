@@ -45,7 +45,7 @@ class ShipIdleMovementAnimation extends Animation {
   }
 
   getPosition() {
-    const end = this.movementService.getNewEndMove(this.ship, this.gameTerrain);
+    const end = this.ship.movement.getLastEndMoveOrSurrogate();
     return end.position;
   }
 

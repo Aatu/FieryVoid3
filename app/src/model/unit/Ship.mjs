@@ -68,7 +68,7 @@ class Ship {
   }
 
   getFacing() {
-    const lastMove = this.movement.getLastMove();
+    const lastMove = this.movement.getLastEndMoveOrSurrogate();
     if (!lastMove) {
       return null;
     }
@@ -76,21 +76,8 @@ class Ship {
     return lastMove.getFacing();
   }
 
-  getFinalPosition() {
-    const lastMove = this.movement.getLastMove();
-    if (!lastMove) {
-      return null;
-    }
-
-    return lastMove.getPosition().add(lastMove.velocity);
-  }
-
-  getFinalHexPosition() {
-    return coordinateConverter.fromGameToHex(this.getFinalPosition());
-  }
-
   getPosition() {
-    const lastMove = this.movement.getLastMove();
+    const lastMove = this.movement.getLastEndMoveOrSurrogate();
     if (!lastMove) {
       return null;
     }
@@ -103,71 +90,15 @@ class Ship {
   }
 
   distanceTo(target) {
-    return HexagonMath.getHexWidth() * this.hexDistanceTo(target);
-  }
-
-  _calculateHexDistanceTo(
-    shipPosition,
-    shipFacing,
-    otherShipPosition,
-    otherShipFacing,
-    target
-  ) {
-    let closest = null;
-
-    const hexSizes =
-      this.hexSizes.length > 0 ? this.hexSizes : [new Offset(0, 0)];
-
-    hexSizes.forEach(hex => {
-      const otherHexSizes =
-        target.hexSizes.length > 0 ? target.hexSizes : [new Offset(0, 0)];
-
-      otherHexSizes.forEach(otherHex => {
-        const distance = shipPosition
-          .add(hex.rotate(shipFacing))
-          .distanceTo(otherShipPosition.add(otherHex.rotate(otherShipFacing)));
-
-        if (closest === null || distance < closest) {
-          closest = distance;
-        }
-      });
-    });
-
-    return closest;
-  }
-
-  finalHexDistanceTo(target) {
-    const shipPosition = this.getFinalHexPosition();
-    const shipFacing = this.getFacing();
-    const otherShipPosition = target.getFinalHexPosition();
-    const otherShipFacing = target.getFacing();
-
-    return this._calculateHexDistanceTo(
-      shipPosition,
-      shipFacing,
-      otherShipPosition,
-      otherShipFacing,
-      target
-    );
+    return this.getPosition().distanceTo(target.getPosition());
   }
 
   hexDistanceTo(target) {
-    const shipPosition = this.getHexPosition();
-    const shipFacing = this.getFacing();
-    const otherShipPosition = target.getHexPosition();
-    const otherShipFacing = target.getFacing();
-
-    return this._calculateHexDistanceTo(
-      shipPosition,
-      shipFacing,
-      otherShipPosition,
-      otherShipFacing,
-      target
-    );
+    return this.getHexPosition().distanceTo(target.getHexPosition());
   }
 
   getVelocity() {
-    const lastMove = this.movement.getLastMove();
+    const lastMove = this.movement.getLastEndMoveOrSurrogate();
     if (!lastMove) {
       return null;
     }

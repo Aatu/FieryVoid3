@@ -92,9 +92,9 @@ class GameHandler {
       return;
     }
 
-    this.movementHandler.advance(gameData);
     this.launchHandler.advance(gameData);
     this.weaponHandler.advance(gameData);
+    this.movementHandler.advance(gameData);
     this.torpedoHandler.advance(gameData);
     this.electronicWarfareHandler.advance(gameData);
     this.heatHandler.advance(gameData);

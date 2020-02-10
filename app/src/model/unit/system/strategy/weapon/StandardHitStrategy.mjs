@@ -29,7 +29,7 @@ class StandardHitStrategy extends ShipSystemStrategy {
     return this.fireControl;
   }
 
-  getHitChange({ shooter, target, prediction = false, weaponSettings = {} }) {
+  getHitChange({ shooter, target, weaponSettings = {} }) {
     const baseToHit = this.system.callHandler("getBaseHitChange", {
       shooter,
       target,
@@ -39,9 +39,7 @@ class StandardHitStrategy extends ShipSystemStrategy {
     const dew = target.electronicWarfare.inEffect.getDefensiveEw();
     const oew = shooter.electronicWarfare.inEffect.getOffensiveEw(target);
 
-    let distance = prediction
-      ? shooter.finalHexDistanceTo(target)
-      : shooter.hexDistanceTo(target);
+    let distance = shooter.hexDistanceTo(target);
 
     const rangeDistance = oew === 0 ? distance * 2 : distance;
 
@@ -50,7 +48,7 @@ class StandardHitStrategy extends ShipSystemStrategy {
         distance: rangeDistance,
         weaponSettings
       }) *
-      (1 + target.movement.getEvasion() / 10);
+      (1 + target.movement.getActiveEvasion() / 10);
 
     const rollingPenalty = shooter.movement.isRolling() ? -20 : 0;
 
@@ -81,7 +79,7 @@ class StandardHitStrategy extends ShipSystemStrategy {
       oew: oew,
       distance,
       rangeModifier,
-      evasion: target.movement.getEvasion(),
+      evasion: target.movement.getActiveEvasion(),
       result: onRange ? result : 0,
       absoluteResult,
       outOfRange: !onRange,

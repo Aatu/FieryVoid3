@@ -173,23 +173,23 @@ test.serial("Submit successfull fire order for both players", async test => {
     .callHandler("getFireOrders");
 
   test.deepEqual(
-    replay[0].combatLog.entries[3].hitResult.hitChange,
+    replay[0].combatLog.entries[0].hitResult.hitChange,
 
     new WeaponHitChange({
       baseToHit: 100,
       fireControl: 10000,
       dew: 10,
       oew: 5,
-      distance: 55,
-      rangeModifier: -37,
-      result: 10018,
-      absoluteResult: 10018,
+      distance: 8,
+      rangeModifier: -5,
+      result: 10050,
+      absoluteResult: 10050,
       rollingPenalty: -20,
       outOfRange: false
     })
   );
 
-  test.is(replay[0].combatLog.entries[3].damages[0].entries[0].systemId, 7);
+  test.is(replay[0].combatLog.entries[0].damages[0].entries[0].systemId, 7);
 
   db.close();
 });
@@ -232,6 +232,9 @@ test.serial("Submit successfull fire order with roll and pivot", async test => {
   test.is(gameData.turn, 2);
 
   const fireService = new WeaponFireService().update(gameData);
+  test.true(
+    fireService.canFire(shooter, target, shooter.systems.getSystemById(20))
+  );
   fireService.addFireOrder(shooter, target, shooter.systems.getSystemById(20));
   test.deepEqual(
     shooter.systems.getSystemById(20).callHandler("getFireOrders"),
@@ -280,23 +283,23 @@ test.serial("Submit successfull fire order with roll and pivot", async test => {
     .callHandler("getFireOrders");
 
   test.deepEqual(
-    replay[0].combatLog.entries[3].hitResult.hitChange,
+    replay[0].combatLog.entries[0].hitResult.hitChange,
 
     new WeaponHitChange({
       baseToHit: 100,
       fireControl: 10000,
       dew: 10,
       oew: 5,
-      distance: 55,
-      rangeModifier: -37,
-      result: 10018,
-      absoluteResult: 10018,
+      distance: 8,
+      rangeModifier: -5,
+      result: 10050,
+      absoluteResult: 10050,
       rollingPenalty: -20,
       outOfRange: false
     })
   );
 
-  test.is(replay[0].combatLog.entries[3].damages[0].entries[0].systemId, 7);
+  test.is(replay[0].combatLog.entries[0].damages[0].entries[0].systemId, 7);
 
   db.close();
 });
