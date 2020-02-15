@@ -73,7 +73,6 @@ class WeaponFireService {
     }
 
     if (!weapon.callHandler("isOnArc", { target }, true)) {
-      console.log("not on arc");
       return false;
     }
 

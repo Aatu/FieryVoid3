@@ -23,8 +23,9 @@ const ShipTooltipContainer = styled(Tooltip)`
   text-align: left;
   opacity: 0.95;
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 50px;
+  ${props => (props.right ? "right: 10px;" : "left: 10px;")}
+
   ${props => (props.interactable ? "z-index: 4;" : "z-index: 1;")}
 `;
 
@@ -116,7 +117,11 @@ class ShipTooltip extends React.Component {
       */
 
     return (
-      <ShipTooltipContainer className={className} interactable={interactable}>
+      <ShipTooltipContainer
+        right={rest.right}
+        className={className}
+        interactable={interactable}
+      >
         <InfoHeader>
           <div>{ship.name}</div> <div>{this.getTabHeader()}</div>
         </InfoHeader>

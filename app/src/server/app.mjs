@@ -114,4 +114,4 @@ app.use((error, req, res, next) => {
   res.end();
 });
 
-app.listen(port, () => console.log(`Server listening on port ${port} PUPPA!`));
+app.listen(port, () => console.log(`Server listening on port ${port}!`));

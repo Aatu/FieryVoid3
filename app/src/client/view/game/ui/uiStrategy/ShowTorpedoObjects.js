@@ -53,10 +53,7 @@ class ShowTorpedoObjects extends AnimationUiStrategy {
     const variance = new Vector(getRandom() * 100 - 50, getRandom() * 100 - 50);
 
     const launchPosition = flight.launchPosition;
-    const targetPosition = this.movementService.getNewEndMove(
-      target,
-      this.gameData.terrain
-    ).position;
+    const targetPosition = target.movement.getLastEndMoveOrSurrogate().position;
 
     const torpedoPosition = launchPosition
       .sub(targetPosition)

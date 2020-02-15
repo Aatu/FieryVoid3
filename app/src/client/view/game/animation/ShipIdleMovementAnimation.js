@@ -50,7 +50,9 @@ class ShipIdleMovementAnimation extends Animation {
   }
 
   getFacing() {
-    return hexFacingToAngle(this.ship.movement.getLastMove().facing);
+    return hexFacingToAngle(
+      this.ship.movement.getLastEndMoveOrSurrogate().facing
+    );
   }
 }
 

@@ -373,7 +373,7 @@ class UIState {
     this.systemChangeListeners.forEach(callBack => callBack(ship, system));
   }
 
-  showShipTooltip(icon, ui = false) {
+  showShipTooltip(icon, ui = false, right = false) {
     const { coordinateConverter } = this.services;
     const ship = icon.ship;
 
@@ -382,7 +382,8 @@ class UIState {
       ship,
       getPosition: () =>
         coordinateConverter.fromGameToViewPort(icon.getPosition()),
-      ui
+      ui,
+      right: !right
     });
     this.updateState();
   }

@@ -17,7 +17,9 @@ import SystemStrategyUi from "./SystemStrategyUi";
 
 const SystemTooltip = styled(Tooltip)`
   top: 0px;
-  right: 340px;
+
+  ${props => (props.right ? "right: 340px;" : "left: 340px;")}
+
   width: 202px;
 
   ${props => props.tab && "width: 302px;"}
@@ -86,11 +88,15 @@ class SystemInfo extends React.Component {
   }
 
   getContainer(children) {
-    const { element, scs } = this.props;
+    const { element, scs, right } = this.props;
     const { tab } = this.state;
 
     if (scs) {
-      return <SystemTooltip tab={tab}>{children}</SystemTooltip>;
+      return (
+        <SystemTooltip tab={tab} right={right}>
+          {children}
+        </SystemTooltip>
+      );
     }
     return (
       <RelativeTooltip tab={tab} element={element}>

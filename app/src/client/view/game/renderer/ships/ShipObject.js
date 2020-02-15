@@ -120,15 +120,13 @@ class ShipObject {
       opacity
     );
 
-    this.ship.hexSizes.forEach(position => {
-      const sprite = new HexagonSprite(
-        coordinateConverter.fromHexToGame(position)
-      )
-        .setOpacity(0.5)
-        .setOverlayColorAlpha(1);
-      this.hexSprites.push(sprite);
-      this.hexSpriteContainer.add(sprite.mesh);
-    });
+    //this.ship.hexSizes.forEach(position => {
+    const sprite = new HexagonSprite(new Vector(0, 0))
+      .setOpacity(0.5)
+      .setOverlayColorAlpha(1);
+    this.hexSprites.push(sprite);
+    this.hexSpriteContainer.add(sprite.mesh);
+    //});
 
     this.hexSpriteContainer.visible = false;
 

@@ -5,12 +5,16 @@ class MouseOverShowsShipTooltip extends UiStrategy {
     super();
 
     this.clickedShip = null;
+    this.clickedEnemy = null;
     this.mouseOveredShip = null;
   }
 
   shipStateChanged(ship) {
     const { uiState, shipIconContainer } = this.services;
     if (this.clickedShip === ship) {
+      uiState.showShipTooltip(shipIconContainer.getByShip(ship), true);
+    }
+    if (this.clickedEnemy === ship) {
       uiState.showShipTooltip(shipIconContainer.getByShip(ship), true);
     }
   }
@@ -20,57 +24,100 @@ class MouseOverShowsShipTooltip extends UiStrategy {
     if (this.clickedShip) {
       uiState.hideShipTooltip(this.clickedShip);
     }
+
+    if (this.clickedEnemy) {
+      uiState.hideShipTooltip(this.clickedEnemy);
+    }
   }
 
   shipClicked(payload) {
-    const { uiState } = this.services;
+    const { uiState, currentUser } = this.services;
 
-    if (this.clickedShip) {
+    const ship = payload.entity.ship;
+    const isMine = ship.player.is(currentUser);
+
+    if (isMine && this.clickedShip) {
       uiState.hideShipTooltip(this.clickedShip);
     }
 
-    uiState.showShipTooltip(payload.entity, true);
-    this.clickedShip = payload.entity.ship;
+    if (!isMine && this.clickedEnemy) {
+      uiState.hideShipTooltip(this.clickedEnemy);
+    }
+
+    uiState.showShipTooltip(payload.entity, true, isMine);
+    if (isMine) {
+      this.clickedShip = ship;
+    } else {
+      this.clickedEnemy = ship;
+    }
+
+    if (
+      this.mouseOveredShip === this.clickedShip ||
+      this.mouseOveredShip === this.clickedEnemy
+    ) {
+      this.mouseOveredShip = null;
+    }
   }
 
   hexClicked() {
-    if (!this.clickedShip) {
-      return;
-    }
-
     const { uiState } = this.services;
 
     if (uiState.state.systemMenu.activeSystem) {
       return;
     }
 
-    uiState.hideShipTooltip(this.clickedShip);
-    this.clickedShip = null;
+    if (this.clickedShip) {
+      uiState.hideShipTooltip(this.clickedShip);
+      this.clickedShip = null;
+    }
+
+    if (this.clickedEnemy) {
+      uiState.hideShipTooltip(this.clickedEnemy);
+      this.clickedEnemy = null;
+    }
   }
 
   mouseOverShip(payload) {
-    if (this.clickedShip === payload.entity.ship) {
+    const { uiState, currentUser } = this.services;
+
+    const ship = payload.entity.ship;
+    const isMine = ship.player.is(currentUser);
+
+    if (isMine && this.clickedShip === ship) {
       return;
     }
 
-    const { uiState } = this.services;
+    if (!isMine && this.clickedEnemy === ship) {
+      return;
+    }
 
     if (this.mouseOveredShip) {
       uiState.hideShipTooltip(this.mouseOveredShip);
     }
 
-    if (this.clickedShip) {
+    if (isMine && this.clickedShip) {
       uiState.hideShipTooltip(this.clickedShip);
     }
 
-    uiState.showShipTooltip(payload.entity);
+    if (!isMine && this.clickedEnemy) {
+      uiState.hideShipTooltip(this.clickedEnemy);
+    }
+
+    uiState.showShipTooltip(payload.entity, false, isMine);
     this.mouseOveredShip = payload.entity.ship;
   }
 
   mouseOutShip(payload) {
-    const { shipIconContainer } = this.services;
+    const { shipIconContainer, currentUser } = this.services;
 
-    if (this.clickedShip === payload.entity.ship) {
+    const ship = payload.entity.ship;
+    const isMine = ship.player.is(currentUser);
+
+    if (isMine && this.clickedShip === payload.entity.ship) {
+      return;
+    }
+
+    if (!isMine && this.clickedEnemy === payload.entity.ship) {
       return;
     }
 
@@ -78,24 +125,22 @@ class MouseOverShowsShipTooltip extends UiStrategy {
     uiState.hideShipTooltip(payload.entity.ship);
     this.mouseOveredShip = null;
 
-    if (this.clickedShip) {
+    if (isMine && this.clickedShip) {
       uiState.showShipTooltip(
         shipIconContainer.getByShip(this.clickedShip),
-        true
+        true,
+        isMine
+      );
+    }
+
+    if (!isMine && this.clickedEnemy) {
+      uiState.showShipTooltip(
+        shipIconContainer.getByShip(this.clickedEnemy),
+        true,
+        isMine
       );
     }
   }
-
-  /*
-  mouseOut() {
-    const { uiState } = this.services;
-    if (this.mouseOveredShip && this.mouseOveredShip !== this.clickedShip) {
-      uiState.hideShipTooltip(this.mouseOveredShip.ship);
-    }
-
-    this.mouseOveredShip = null;
-  }
-  */
 }
 
 export default MouseOverShowsShipTooltip;
