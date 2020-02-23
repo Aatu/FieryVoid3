@@ -193,7 +193,8 @@ class MovementOrder {
       this.turn,
       this.value,
       this.requiredThrust,
-      this.index
+      this.index,
+      this.evasion
     );
   }
 

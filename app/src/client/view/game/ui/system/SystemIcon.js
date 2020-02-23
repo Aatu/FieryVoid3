@@ -98,7 +98,8 @@ const System = styled.div`
 const Container = styled.div`
   cursor: pointer;
   position: relative;
-  margin: 3px 1px;
+  margin: 3px 0px;
+  padding: 0 1px;
 `;
 
 class SystemIcon extends React.Component {
@@ -130,12 +131,23 @@ class SystemIcon extends React.Component {
     event.stopPropagation();
     event.preventDefault();
 
-    let { uiState, system, ship } = this.props;
+    let { uiState, system, ship, target } = this.props;
+
+    const { weaponFireService } = uiState.services;
+    const { gameData } = uiState;
+
+    if (!target) {
+      const targetId = weaponFireService.getSystemFireOrderTargetId(system);
+      if (targetId) {
+        target = gameData.ships.getShipById(targetId);
+      }
+    }
 
     uiState.customEvent("systemMouseOver", {
       ship,
       system,
-      element: this.element
+      element: this.element,
+      target
     });
 
     this.setState({ mouseOveredSystem: this.element });

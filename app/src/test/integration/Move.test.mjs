@@ -148,6 +148,7 @@ test.serial("Submit movement for both players, success", async test => {
   movementService.thrust(achillesInitial, 0);
   movementService.thrust(achillesInitial, 0);
   movementService.thrust(achillesInitial, 0);
+  movementService.evade(achillesInitial, 1);
 
   movementService.thrust(biliyazInitial, 3);
   movementService.thrust(biliyazInitial, 3);
@@ -178,6 +179,8 @@ test.serial("Submit movement for both players, success", async test => {
   test.true(newGameData.isPlayerActive(user));
   test.true(newGameData.isPlayerActive(user2));
 
+  test.is(achilles.movement.getActiveEvasion(), 1);
+
   compareMovements(test, eclipse.movement.getMovement(), [
     new MovementOrder(
       null,
@@ -198,7 +201,11 @@ test.serial("Submit movement for both players, success", async test => {
       new hexagon.Offset(33, 0),
       0,
       false,
-      2
+      2,
+      0,
+      undefined,
+      0,
+      1
     )
   ]);
 

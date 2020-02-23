@@ -25,6 +25,59 @@ class WeaponArcsOnSystemMouseOver extends UiStrategy {
     this.show(ship, system);
   }
 
+  torpedoMouseOver({ ship, torpedo }) {
+    const { coordinateConverter, shipIconContainer } = this.services;
+    const icon = shipIconContainer.getByShip(ship);
+
+    const maxRange = torpedo.maxRange;
+    const distance = maxRange * coordinateConverter.getHexDistance();
+
+    const canvas = abstractCanvas.create(maxRange + 1, 1);
+    const context = canvas.getContext("2d");
+
+    for (let range = 0; range <= maxRange; range++) {
+      const opacity = range < torpedo.minRange ? 0 : 0.5;
+
+      context.fillStyle =
+        "rgba(" + 2 + "," + 80 + "," + 128 + "," + opacity + ")";
+      context.fillRect(range, 0, 1, 1);
+    }
+
+    const texture = new THREE.CanvasTexture(canvas);
+
+    const material = new THREE.MeshBasicMaterial({
+      color: new THREE.Color("rgb(20,80,128)"),
+      opacity: 1,
+      transparent: true,
+      map: texture
+    });
+
+    const geometry = new THREE.CircleGeometry(
+      distance,
+      32,
+      degreeToRadian(0),
+      degreeToRadian(360)
+    );
+
+    geometry.faceVertexUvs = [
+      geometry.faceVertexUvs[0].map(_ => [
+        new THREE.Vector2(1, 0),
+        new THREE.Vector2(1, 0),
+        new THREE.Vector2(0, 0)
+      ])
+    ];
+
+    geometry.uvsNeedUpdate = true;
+    const circle = new THREE.Mesh(geometry, material);
+    circle.position.z = -1;
+    icon.mesh.add(circle);
+    this.weaponArcs.push({ mesh: icon.mesh, circle });
+  }
+
+  torpedoMouseOut() {
+    this.hide();
+  }
+
   systemMouseOut() {
     this.hide();
   }

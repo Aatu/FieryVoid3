@@ -5,8 +5,12 @@ import {
   Tooltip,
   TooltipHeader,
   TooltipEntry,
-  colors
+  colors,
+  TooltipValue
 } from "../../../../styled";
+import TorpedoLauncherStrategy from "../../../../../model/unit/system/strategy/weapon/TorpedoLauncherStrategy.mjs";
+import TorpedoAttackService from "../../../../../model/weapon/TorpedoAttackService.mjs";
+import TorpedoAttackEntry from "./TorpedoAttackEntry";
 
 const InfoHeader = styled(TooltipHeader)`
   border: none;
@@ -21,29 +25,41 @@ const Container = styled.div`
 `;
 
 class WeaponTargetingList extends React.Component {
-  getSystemIcons(
-    systems,
-    weaponFireService,
-    uiState,
-    selectedShip,
-    ship,
-    rest
-  ) {
-    return systems.map(system => (
-      <WeaponTargeting
-        key={`weaponTargeting-${system.id}`}
-        uiState={uiState}
-        system={system}
-        target={ship}
-        ship={selectedShip}
-        onSystemClicked={
-          !weaponFireService.systemHasFireOrderAgainstShip(system, ship)
-            ? this.targetShip(system, selectedShip, ship, uiState)
-            : this.unTargetShip(system, selectedShip, ship, uiState)
-        }
-        {...rest}
-      />
-    ));
+  constructor(props) {
+    super(props);
+
+    this.torpedoAttackService = new TorpedoAttackService();
+  }
+
+  getSystemIcons(systems, weaponFireService, uiState, shooter, ship, rest) {
+    return systems.map((system, i) => {
+      if (system instanceof TorpedoLauncherStrategy) {
+        return (
+          <TorpedoAttackEntry
+            key={`weaponTargeting-torpedo-${i}`}
+            target={ship}
+            launcher={system}
+            uiState={uiState}
+            absoluteTooltip="right"
+          />
+        );
+      }
+      return (
+        <WeaponTargeting
+          key={`weaponTargeting-${system.id}`}
+          uiState={uiState}
+          system={system}
+          target={ship}
+          ship={shooter}
+          onSystemClicked={
+            !weaponFireService.systemHasFireOrderAgainstShip(system, ship)
+              ? this.targetShip(system, shooter, ship, uiState)
+              : this.unTargetShip(system, shooter, ship, uiState)
+          }
+          {...rest}
+        />
+      );
+    });
   }
 
   targetShip(system, ship, target, uiState) {
@@ -70,32 +86,47 @@ class WeaponTargetingList extends React.Component {
 
   render() {
     const { ship, uiState, ...rest } = this.props;
+    let { shooter } = this.props;
     const { weaponFireService } = uiState.services;
 
-    const selectedShip = uiState.getSelectedShip();
+    if (!shooter) {
+      shooter = uiState.getSelectedShip();
+    }
 
-    if (
-      !selectedShip ||
-      uiState.gameData.ships.isSameTeam(ship, selectedShip)
-    ) {
+    if (!shooter || uiState.gameData.ships.isSameTeam(ship, shooter)) {
       return null;
     }
 
-    const systems = selectedShip.systems
-      .getSystems()
-      .filter(system => weaponFireService.canFire(selectedShip, ship, system));
+    const systems = [
+      ...shooter.systems.getSystems().filter(
+        system =>
+          weaponFireService.canFire(shooter, ship, system) &&
+          system.callHandler("getHitChange", {
+            shooter,
+            target: ship
+          }).result > 0
+      ),
+      ...this.torpedoAttackService.getPossibleTorpedosFrom(shooter, ship)
+    ];
+
+    if (systems.length === 0) {
+      return null;
+    }
 
     const icons = this.getSystemIcons(
       systems,
       weaponFireService,
       uiState,
-      selectedShip,
+      shooter,
       ship,
       rest
     );
 
     return (
       <>
+        <TooltipHeader>
+          {ship.name} <TooltipValue>available weapons</TooltipValue>
+        </TooltipHeader>
         <Container>{icons}</Container>
       </>
     );

@@ -13,6 +13,7 @@ import CargoItem from "../system/SystemStrategyUi/cargo/CargoItem";
 import TorpedoAttackTooltip from "./TorpedoAttackTooltip";
 import TorpedoMovementService from "../../../../../model/movement/TorpedoMovementService.mjs";
 import TorpedoFlight from "../../../../../model/unit/TorpedoFlight.mjs";
+import WeaponTargetingList from "./WeaponTargetingList";
 
 const Container = styled.div`
   z-index: 3;
@@ -39,130 +40,37 @@ const TorpedoList = styled.div`
   flex-wrap: wrap;
 `;
 
-const TorpedoCargoItem = styled(CargoItem)`
-  ${IconAndLabel} {
-    ${props => {
-      const { launcher, ship } = props;
-
-      if (launcher.launchTarget === ship.id) {
-        return "filter: hue-rotate(0deg) brightness(4) grayscale(0);";
-      } else if (
-        launcher.launchTarget !== null &&
-        launcher.launchTarget !== ship.id
-      ) {
-        return "filter: hue-rotate(0deg) brightness(1) grayscale(0.7);";
-      }
-    }}
-  }
-`;
-
 class TorpedoAttack extends React.Component {
-  launcherClick(launcher) {
-    return () => {
-      const { ship } = this.props;
-      if (launcher.launchTarget === null || launcher.launchTarget !== ship.id) {
-        launcher.setLaunchTarget(ship.id);
-      } else if (launcher.launchTarget && launcher.launchTarget === ship.id) {
-        launcher.setLaunchTarget(null);
-      }
-
-      this.forceUpdate();
-    };
-  }
-
   render() {
     const { uiState, ship: target } = this.props;
 
-    const torpedoAttackService = new TorpedoAttackService(
-      uiState.services,
-      uiState.gameData,
-      target
-    );
+    const gameData = uiState.gameData;
 
-    const launchers = torpedoAttackService.getPossibleTorpedos(
-      uiState.services.currentUser,
-      target
-    );
+    const ships = gameData.ships
+      .getShips()
+      .filter(otherShip => !gameData.ships.isSameTeam(target, otherShip))
+      .sort((a, b) => {
+        if (a.distanceTo(target) < b.distanceTo(target)) {
+          return 1;
+        }
 
-    const torpedoMovementService = new TorpedoMovementService();
+        if (a.distanceTo(target) > b.distanceTo(target)) {
+          return -1;
+        }
+
+        return 0;
+      });
 
     return (
-      <>
-        <TooltipSubHeader>
-          <Cell>Name</Cell>
-          <Cell>Distance</Cell>
-          <Cell>Δ Distance</Cell>
-        </TooltipSubHeader>
-        {launchers.map((torpedoShipEntry, i) => {
-          return (
-            <Container key={`torpedo-launching-ship-${i}`}>
-              <TooltipHeader>
-                <Cell>{torpedoShipEntry.ship.name}</Cell>
-                <Cell>{torpedoShipEntry.distance}</Cell>
-                <Cell>{torpedoShipEntry.deltaDistance}</Cell>
-              </TooltipHeader>
-              <TorpedoList>
-                {torpedoShipEntry.launchers
-                  .map((launcher, i) => {
-                    const strikePrediction = torpedoMovementService.predictTorpedoHitPositionAndTurn(
-                      new TorpedoFlight(launcher.loadedTorpedo)
-                        .setPosition(torpedoShipEntry.ship.getPosition())
-                        .setVelocity(torpedoShipEntry.ship.getVelocity()),
-                      target
-                    );
-
-                    if (!strikePrediction) {
-                      return null;
-                    }
-
-                    return {
-                      torpedo: launcher.loadedTorpedo,
-                      component: (
-                        <TorpedoCargoItem
-                          launcher={launcher}
-                          ship={torpedoShipEntry.ship}
-                          handleOnClick={this.launcherClick(launcher).bind(
-                            this
-                          )}
-                          key={`torpedo-attack--torpedo-${torpedoShipEntry.ship.id}-${i}`}
-                          cargo={launcher.loadedTorpedo}
-                          amount={null}
-                          text={`${Math.round(
-                            strikePrediction.effectiveness * 100
-                          )}%`}
-                          tooltipAdditionalContent={
-                            <TorpedoAttackTooltip
-                              shooter={torpedoShipEntry.ship}
-                              target={target}
-                              torpedo={launcher.loadedTorpedo}
-                              strikePrediction={strikePrediction}
-                            />
-                          }
-                        />
-                      )
-                    };
-                  })
-                  .sort((a, b) => {
-                    if (
-                      a.torpedo.constructor.name > b.torpedo.constructor.name
-                    ) {
-                      return 1;
-                    }
-
-                    if (
-                      a.torpedo.constructor.name < b.torpedo.constructor.name
-                    ) {
-                      return -1;
-                    }
-
-                    return 0;
-                  })
-                  .map(({ component }) => component)}
-              </TorpedoList>
-            </Container>
-          );
-        })}
-      </>
+      <Container>
+        {ships.map(shooter => (
+          <WeaponTargetingList
+            uiState={uiState}
+            ship={target}
+            key={`weaponTargetingList-${shooter.id}`}
+          />
+        ))}
+      </Container>
     );
   }
 }

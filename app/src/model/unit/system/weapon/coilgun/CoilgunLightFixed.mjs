@@ -18,8 +18,9 @@ class CoilgunLightFixed extends Weapon {
       new StandardHitStrategy(20),
       new StandardRangeStrategy([
         { range: 0, modifier: -100 },
-        { range: 200, modifier: -40 },
-        { range: 400, modifier: -200 }
+        { range: 120, modifier: -20 },
+        { range: 170, modifier: -40 },
+        { range: 250, modifier: -200 }
       ]),
       new StandardLoadingStrategy(4),
       new RequiresPowerSystemStrategy(6),

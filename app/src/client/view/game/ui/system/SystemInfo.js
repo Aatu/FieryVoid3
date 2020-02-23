@@ -2,30 +2,15 @@ import * as React from "react";
 import styled from "styled-components";
 import SystemInfoWeaponTargeting from "./SystemInfoWeaponTargeting";
 import {
-  Tooltip,
   TooltipHeader,
   TooltipEntry,
   colors,
   TooltipValue,
-  RelativeTooltip,
-  TooltipValueHeader,
-  InlineTooltipEntry,
   buildTooltipEntries,
-  TooltipSubHeader
+  TooltipSubHeader,
+  RelativeOrStaticTooltip
 } from "../../../../styled";
 import SystemStrategyUi from "./SystemStrategyUi";
-
-const SystemTooltip = styled(Tooltip)`
-  top: 0px;
-
-  ${props => (props.right ? "right: 340px;" : "left: 340px;")}
-
-  width: 202px;
-
-  ${props => props.tab && "width: 302px;"}
-  transition: width 0.25s;
-  transition-timing-function: ease-in-out;
-`;
 
 const Warning = styled.div`
   color: ${colors.textDanger};
@@ -85,24 +70,6 @@ class SystemInfo extends React.Component {
   componentWillUnmount() {
     const { uiState } = this.props;
     uiState.unsubscribeFromSystemChange(this.systemChangedCallbackInstance);
-  }
-
-  getContainer(children) {
-    const { element, scs, right } = this.props;
-    const { tab } = this.state;
-
-    if (scs) {
-      return (
-        <SystemTooltip tab={tab} right={right}>
-          {children}
-        </SystemTooltip>
-      );
-    }
-    return (
-      <RelativeTooltip tab={tab} element={element}>
-        {children}
-      </RelativeTooltip>
-    );
   }
 
   getWarnings() {
@@ -186,12 +153,12 @@ class SystemInfo extends React.Component {
     );
   }
   render() {
-    const { system } = this.props;
+    const { system, element, scs, right } = this.props;
 
     const { tab } = this.state;
 
-    return this.getContainer(
-      <>
+    return (
+      <RelativeOrStaticTooltip relative={!scs} element={element} right={right}>
         <TooltipHeader>
           {system.getDisplayName()}
           <HeaderMenu>
@@ -232,7 +199,7 @@ class SystemInfo extends React.Component {
         {!tab && this.getDefaultTab()}
         {tab === "log" && this.getLogTab()}
         {tab === "info" && this.getInfoTab()}
-      </>
+      </RelativeOrStaticTooltip>
     );
   }
 }

@@ -245,6 +245,26 @@ const buildTooltipEntries = (entries, subKey = "") => {
     });
 };
 
+const SystemTooltip = styled(Tooltip)`
+  top: 0px;
+
+  ${props => (props.right ? "right: 340px;" : "left: 340px;")}
+
+  width: 202px;
+
+  ${props => props.tab && "width: 302px;"}
+  transition: width 0.25s;
+  transition-timing-function: ease-in-out;
+`;
+
+const RelativeOrStaticTooltip = ({ relative, children, ...rest }) => {
+  if (relative) {
+    return <RelativeTooltip {...rest}>{children}</RelativeTooltip>;
+  }
+
+  return <SystemTooltip {...rest}>{children}</SystemTooltip>;
+};
+
 export {
   TooltipContainer,
   buildTooltipEntries,
@@ -257,5 +277,6 @@ export {
   TooltipValue,
   TooltipValueHeader,
   InlineTooltipEntry,
-  CenteredTooltipEntry
+  CenteredTooltipEntry,
+  RelativeOrStaticTooltip
 };

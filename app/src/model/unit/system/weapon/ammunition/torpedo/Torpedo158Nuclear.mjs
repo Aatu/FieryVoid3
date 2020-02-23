@@ -3,12 +3,7 @@ import HETorpedoDamageStrategy from "./torpedoDamageStrategy/HETorpedoDamageStra
 
 class Torpedo158Nuclear extends Torpedo158 {
   constructor(args) {
-    super({
-      deltaVelocityPerTurn: 40,
-      turnsToLive: 6,
-      maxInterceptVelocity: 200,
-      evasion: 25
-    });
+    super({});
 
     this.damageStrategy = new HETorpedoDamageStrategy("d10+4", 0, "d20+60");
   }

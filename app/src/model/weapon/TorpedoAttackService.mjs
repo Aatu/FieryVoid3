@@ -5,6 +5,24 @@ class TorpedoAttackService {
     this.gameData = gameData;
   }
 
+  getPossibleTorpedosFrom(ship, target) {
+    let allLaunchers = [];
+
+    ship.systems.getSystems().forEach(system => {
+      const launchers = system
+        .callHandler("getLoadedLaunchers", null, [])
+        .filter(launcher => launcher.canLaunchAgainst({ target }));
+
+      if (launchers.length === 0) {
+        return;
+      }
+
+      allLaunchers = [...allLaunchers, ...launchers];
+    });
+
+    return allLaunchers;
+  }
+
   getPossibleTorpedos(currentUser, target) {
     const torpedoAttackShips = [];
 

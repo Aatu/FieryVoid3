@@ -3,7 +3,7 @@ import Torpedo72 from "./Torpedo72.mjs";
 
 class Torpedo72MSV extends Torpedo72 {
   constructor() {
-    super({ deltaVelocityPerTurn: 42, turnsToLive: 4 });
+    super({});
 
     this.damageStrategy = new MSVTorpedoDamageStrategy("d3+3", 0, 15, 25);
     this.visuals = {
@@ -12,7 +12,7 @@ class Torpedo72MSV extends Torpedo72 {
     };
   }
 
-  getInterceptTries(effectiveness, flight, target) {
+  getInterceptTries(flight, target) {
     const distance = this.getStrikeDistance(flight, target);
     if (distance > 5) {
       return [5];

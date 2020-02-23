@@ -1,21 +1,12 @@
 import CargoEntity from "../../../cargo/CargoEntity.mjs";
 
 class Torpedo extends CargoEntity {
-  constructor({
-    deltaVelocityPerTurn,
-    turnsToLive,
-    maxInterceptVelocity = 140,
-    hitSize = 0,
-    evasion = 30,
-    armingTime = 1
-  }) {
+  constructor({ minRange = 100, maxRange = 300, hitSize = 0, evasion = 30 }) {
     super();
-    this.deltaVelocityPerTurn = deltaVelocityPerTurn;
-    this.turnsToLive = turnsToLive;
-    this.maxInterceptVelocity = maxInterceptVelocity;
+    this.minRange = minRange;
+    this.maxRange = maxRange;
     this.hitSize = hitSize;
     this.evasion = evasion;
-    this.armingTime = armingTime;
 
     this.damageStrategy = null;
 
@@ -38,20 +29,8 @@ class Torpedo extends CargoEntity {
     return this.evasion;
   }
 
-  getInterceptTries(effectiveness, flight, target) {
-    let tries = Math.round(5 * (1 - effectiveness));
-    if (tries < 1) {
-      tries = 1;
-    }
-
-    switch (tries) {
-      case 1:
-        return [1, 2, 3];
-      case 2:
-        return [1, 2, 3, 4];
-      default:
-        return [1, 2, 3, 4, 5];
-    }
+  getInterceptTries(target) {
+    return [1, 2, 3];
   }
 
   getCargoInfo() {
@@ -59,10 +38,8 @@ class Torpedo extends CargoEntity {
 
     return [
       ...previousResponse,
-      { header: "Velocity per turn", value: this.deltaVelocityPerTurn },
-      { header: "Turns active", value: this.turnsToLive },
-      { header: "Arming time", value: this.armingTime },
-      { header: "Evasion", value: this.evasion },
+      { header: "Range", value: `${this.minRange} – ${this.maxRange} hexes` },
+      { header: "Evasion", value: `+${this.evasion * 10}% range penalty` },
       ...this.damageStrategy.getMessages()
     ];
   }

@@ -1,20 +1,12 @@
 import Torpedo from "./Torpedo.mjs";
 
 class Torpedo158 extends Torpedo {
-  constructor({
-    deltaVelocityPerTurn,
-    turnsToLive,
-    maxInterceptVelocity = 140,
-    hitSize = 0,
-    evasion = 30
-  }) {
+  constructor({ minRange = 220, maxRange = 400, hitSize = 0, evasion = 30 }) {
     super({
-      deltaVelocityPerTurn,
-      turnsToLive,
-      maxInterceptVelocity,
+      minRange,
+      maxRange,
       hitSize,
-      evasion,
-      armingTime: 2
+      evasion
     });
   }
 }

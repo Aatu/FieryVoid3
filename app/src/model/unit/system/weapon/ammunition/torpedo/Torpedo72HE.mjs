@@ -3,16 +3,9 @@ import HETorpedoDamageStrategy from "./torpedoDamageStrategy/HETorpedoDamageStra
 
 class Torpedo72HE extends Torpedo72 {
   constructor() {
-    super({ deltaVelocityPerTurn: 42, turnsToLive: 4 });
+    super({});
 
     this.damageStrategy = new HETorpedoDamageStrategy("d8+4", 0, "d3+3");
-  }
-
-  getStrikeDistance(flight, target) {
-    return this.damageStrategy.getStrikeDistance({
-      target,
-      torpedoFlight: flight
-    });
   }
 
   getCargoInfo() {

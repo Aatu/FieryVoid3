@@ -32,7 +32,8 @@ export {
   TooltipValue,
   TooltipValueHeader,
   InlineTooltipEntry,
-  CenteredTooltipEntry
+  CenteredTooltipEntry,
+  RelativeOrStaticTooltip
 } from "./Tooltip";
 export { Button } from "./Button";
 export { Link } from "./Link";

@@ -35,8 +35,10 @@ import UnderHexForShips from "./UnderHexForShips";
 import ShowMapIcons from "./ShowMapIcons";
 import ShowShipBadges from "./ShowShipBadges";
 import ShowTorpedoObjects from "./ShowTorpedoObjects";
+import WeaponTargetingMouseoverShowsLine from "./weapon/WeaponTargetingMouseoverShowsLine";
 
 export {
+  WeaponTargetingMouseoverShowsLine,
   ShowTorpedoObjects,
   ShowShipBadges,
   SelectedShipEwList,

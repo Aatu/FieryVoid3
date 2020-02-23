@@ -4,20 +4,25 @@ import {
   TooltipHeader,
   TooltipEntry,
   TooltipValueHeader,
-  TooltipValue
+  TooltipValue,
+  RelativeOrStaticTooltip
 } from "../../../../../../styled";
 import styled from "styled-components";
 
-const CargoTooltipContainer = styled(RelativeTooltip)`
+const CargoTooltipContainer = styled(RelativeOrStaticTooltip)`
   width: 200px;
 `;
 
 class CargoTooltip extends React.Component {
   render() {
-    const { element, cargo, additionalContent } = this.props;
+    const { element, cargo, additionalContent, absoluteTooltip } = this.props;
 
     return (
-      <CargoTooltipContainer element={element}>
+      <CargoTooltipContainer
+        relative={!absoluteTooltip}
+        right={absoluteTooltip === "right"}
+        element={element}
+      >
         <TooltipHeader>{cargo.getDisplayName()}</TooltipHeader>
         {cargo.getCargoInfo().map(getEntry)}
         {additionalContent}

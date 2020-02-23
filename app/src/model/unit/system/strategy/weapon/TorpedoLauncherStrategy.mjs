@@ -92,6 +92,23 @@ class TorpedoLauncherStrategy extends ShipSystemStrategy {
     //TODO: unload ammo
   }
 
+  canLaunchAgainst({ target }) {
+    if (this.turnsLoaded < this.loadingTime || !this.loadedTorpedo) {
+      return false;
+    }
+
+    const distance = this.system.shipSystems.ship.hexDistanceTo(target);
+
+    if (
+      this.loadedTorpedo.minRange > distance ||
+      this.loadedTorpedo.maxRange < distance
+    ) {
+      return false;
+    }
+
+    return true;
+  }
+
   setLaunchTarget(shipId) {
     if (this.turnsLoaded < this.loadingTime || !this.loadedTorpedo) {
       return;

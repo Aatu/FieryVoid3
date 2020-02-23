@@ -41,6 +41,11 @@ class WeaponFireService {
     return fireOrders && fireOrders.length > 0;
   }
 
+  getSystemFireOrderTargetId(system) {
+    const fireOrders = system.callHandler("getFireOrders");
+    return fireOrders && fireOrders.length > 0 ? fireOrders[0].targetId : null;
+  }
+
   systemHasFireOrderAgainstShip(system, target) {
     const fireOrders = system.callHandler("getFireOrders", null, []);
 

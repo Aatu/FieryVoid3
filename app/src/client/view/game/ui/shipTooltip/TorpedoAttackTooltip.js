@@ -51,14 +51,12 @@ const getTorpedoTooltip = (shooter, target, torpedo, strikePrediction) => {
 
 class TorpedoAttackTooltip extends React.Component {
   render() {
-    const { shooter, target, torpedo, strikePrediction } = this.props;
+    const { shooter, target, torpedo } = this.props;
 
     return (
       <>
-        <TooltipHeader>Torpedo attack</TooltipHeader>
-        {getTorpedoTooltip(shooter, target, torpedo, strikePrediction).map(
-          getEntry
-        )}
+        <TooltipHeader>TARGET: {target.name}</TooltipHeader>
+        {getTorpedoTooltip(shooter, target, torpedo).map(getEntry)}
       </>
     );
   }

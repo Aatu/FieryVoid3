@@ -17,8 +17,7 @@ class WeaponTargeting extends React.Component {
 
     const hitChange = system.callHandler("getHitChange", {
       shooter: ship,
-      target,
-      prediction: true
+      target
     });
 
     return (

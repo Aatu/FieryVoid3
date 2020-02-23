@@ -22,7 +22,8 @@ import {
   UnderHexForShips,
   ShowMapIcons,
   ShowShipBadges,
-  ShowTorpedoObjects
+  ShowTorpedoObjects,
+  WeaponTargetingMouseoverShowsLine
 } from "../../ui/uiStrategy";
 
 class GamePhaseStrategy extends PhaseStrategy {
@@ -30,6 +31,7 @@ class GamePhaseStrategy extends PhaseStrategy {
     super(services);
 
     this.strategies = [
+      new WeaponTargetingMouseoverShowsLine(),
       new ShipClickSelectsShip(),
       new MouseOverHighlightsShip(),
       new ShowShipObjects(),

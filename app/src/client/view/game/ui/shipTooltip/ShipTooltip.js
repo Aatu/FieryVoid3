@@ -8,10 +8,12 @@ import {
   TooltipHeader,
   TooltipEntry,
   TooltipValue,
-  TooltipValueHeader
+  TooltipValueHeader,
+  TooltipButton
 } from "../../../../styled";
 import TorpedoAttack from "./TorpedoAttack";
 import ShipTooltipDetails from "./ShipTooltipDetails";
+import { X } from "../../../../styled/icon";
 
 const InfoHeader = styled(TooltipHeader)`
   display: flex;
@@ -38,6 +40,18 @@ export const Entry = styled(TooltipEntry)`
 
 export const Header = styled.span`
   color: white;
+`;
+
+const CloseButton = styled(TooltipButton)`
+  height: 10px;
+  width: 10px;
+  padding: 0;
+  margin-left: 5px;
+
+  & svg {
+    width: 100%;
+    height: 100%;
+  }
 `;
 
 export const TOOLTIP_TAB_TORPEDO_ATTACK = "toolti_tab_torpedo_attack";
@@ -71,7 +85,7 @@ class ShipTooltip extends React.Component {
 
     switch (tooltipTab) {
       case TOOLTIP_TAB_TORPEDO_ATTACK:
-        return "Torpedo attack";
+        return "Weapon assignment";
       default:
         return "Ship details";
     }
@@ -107,15 +121,6 @@ class ShipTooltip extends React.Component {
     const Menu = this.getMenu();
     const interactable = Boolean(Menu) || tooltipTab;
 
-    /*
-    <GamePositionComponent
-        getPosition={getPosition}
-        uiState={uiState}
-        marginTop={20}
-        marginLeft={-150}
-      >
-      */
-
     return (
       <ShipTooltipContainer
         right={rest.right}
@@ -123,7 +128,13 @@ class ShipTooltip extends React.Component {
         interactable={interactable}
       >
         <InfoHeader>
-          <div>{ship.name}</div> <div>{this.getTabHeader()}</div>
+          <div>{ship.name}</div>{" "}
+          <div>
+            {this.getTabHeader()}{" "}
+            <CloseButton onClick={() => uiState.hideShipTooltip(ship)}>
+              <X />
+            </CloseButton>
+          </div>
         </InfoHeader>
         {Menu && (
           <Menu

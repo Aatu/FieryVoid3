@@ -56,11 +56,15 @@ class SystemInfoWeaponTargeting extends React.Component {
         <Entry>
           <Header>Distance: </Header>
           <InfoValue>
-            {hitChange.distance} hexas,{" "}
+            {hitChange.distance} hexes,{" "}
             {hitChange.outOfRange
               ? `out of range`
               : `${hitChange.rangeModifier} to hit`}
           </InfoValue>
+        </Entry>
+        <Entry>
+          <Header>Evasion: </Header>
+          <InfoValue>{`+${hitChange.evasion * 10}% range penalty`}</InfoValue>
         </Entry>
         <Entry>
           <Header>OEW: </Header>
@@ -70,6 +74,17 @@ class SystemInfoWeaponTargeting extends React.Component {
           <Header>DEW: </Header>
           <InfoValue>-{hitChange.dew * 5} to hit</InfoValue>
         </Entry>
+        <Entry>
+          <Header>Your evasion: </Header>
+          <InfoValue>{`${hitChange.ownEvasionPenalty} to hit`}</InfoValue>
+        </Entry>
+        {hitChange.noLockPenalty !== 0 && (
+          <Entry>
+            <Header>No lock on target: </Header>
+            <InfoValue>{`${hitChange.noLockPenalty} to hit`}</InfoValue>
+          </Entry>
+        )}
+
         <Entry>
           <Header>FINAL HIT CHANGE: </Header>
           <InfoValue>{hitChange.result}%</InfoValue>

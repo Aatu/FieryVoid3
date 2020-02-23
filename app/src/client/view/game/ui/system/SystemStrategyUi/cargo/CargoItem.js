@@ -21,15 +21,19 @@ class CargoItem extends React.Component {
   }
 
   onCargoMouseOver(event) {
+    const { handleMouseOver = () => {} } = this.props;
     event.stopPropagation();
     event.preventDefault();
     this.setState({ mouseOveredCargo: this.element });
+    handleMouseOver();
   }
 
   onCargoMouseOut(event) {
+    const { handleMouseOut = () => {} } = this.props;
     event.stopPropagation();
     event.preventDefault();
     this.setState({ mouseOveredCargo: null });
+    handleMouseOut();
   }
 
   render() {
@@ -39,31 +43,43 @@ class CargoItem extends React.Component {
       handleOnClick = () => {},
       tooltipAdditionalContent,
       text,
+      absoluteTooltip,
       ...rest
     } = this.props;
     const { mouseOveredCargo } = this.state;
 
     return (
-      <Container
-        onClick={handleOnClick}
-        onMouseOver={this.onCargoMouseOver.bind(this)}
-        onMouseOut={this.onCargoMouseOut.bind(this)}
-        {...rest}
-      >
-        {mouseOveredCargo && (
+      <>
+        {absoluteTooltip && mouseOveredCargo && (
           <CargoTooltip
+            absoluteTooltip={absoluteTooltip}
             element={mouseOveredCargo}
             cargo={cargo}
             additionalContent={tooltipAdditionalContent}
           />
         )}
-        <IconAndLabel
-          ref={c => (this.element = c)}
-          background={cargo.getBackgroundImage()}
+        <Container
+          onClick={handleOnClick}
+          onMouseOver={this.onCargoMouseOver.bind(this)}
+          onMouseOut={this.onCargoMouseOut.bind(this)}
+          {...rest}
         >
-          {text ? text : amount}
-        </IconAndLabel>
-      </Container>
+          {!absoluteTooltip && mouseOveredCargo && (
+            <CargoTooltip
+              absoluteTooltip={absoluteTooltip}
+              element={mouseOveredCargo}
+              cargo={cargo}
+              additionalContent={tooltipAdditionalContent}
+            />
+          )}
+          <IconAndLabel
+            ref={c => (this.element = c)}
+            background={cargo.getBackgroundImage()}
+          >
+            {text ? text : amount}
+          </IconAndLabel>
+        </Container>
+      </>
     );
   }
 }

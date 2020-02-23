@@ -18,6 +18,18 @@ const TorpedoList = styled.div`
   flex-wrap: wrap;
 `;
 
+const TorpedoCargoItem = styled(CargoItem)`
+  ${IconAndLabel} {
+    ${props => {
+      const { target } = props;
+
+      if (target) {
+        return "filter: hue-rotate(0deg) brightness(4) grayscale(0);";
+      }
+    }}
+  }
+`;
+
 class TorpedoLauncher extends React.PureComponent {
   systemChangedCallback(ship, system) {
     if (
@@ -61,13 +73,53 @@ class TorpedoLauncher extends React.PureComponent {
     };
   }
 
+  torpedoMouseOut(ship, torpedo) {
+    return () => {
+      const { uiState } = this.props;
+
+      uiState.customEvent("torpedoMouseOut", {
+        ship,
+        torpedo
+      });
+    };
+  }
+
+  torpedoMouseOver(ship, torpedo) {
+    return () => {
+      const { uiState } = this.props;
+
+      uiState.customEvent("torpedoMouseOver", {
+        ship,
+        torpedo,
+        target: this.getLoadedTorpedoTarget()
+      });
+    };
+  }
+
+  getLoadedTorpedoTarget() {
+    const { loadedTorpedo, launcher, uiState } = this.props;
+
+    if (!loadedTorpedo) {
+      return null;
+    }
+
+    const targetId = launcher.launchTarget;
+
+    if (!targetId) {
+      return null;
+    }
+
+    const { gameData } = uiState;
+
+    return gameData.ships.getShipById(targetId);
+  }
+
   render() {
     const {
       launcherIndex,
       loadedTorpedo,
       loadingTime,
       turnsLoaded,
-      torpedoClass,
       launcher
     } = this.props;
 
@@ -82,9 +134,18 @@ class TorpedoLauncher extends React.PureComponent {
 
           <InlineTooltipEntry>
             <TooltipValueHeader>Loaded torpedo:</TooltipValueHeader>
-            <CargoItem
+            <TorpedoCargoItem
               cargo={loadedTorpedo ? loadedTorpedo : new NoAmmunitionLoaded()}
               amount={null}
+              target={this.getLoadedTorpedoTarget()}
+              handleMouseOver={this.torpedoMouseOver(
+                launcher.system.shipSystems.ship,
+                loadedTorpedo
+              ).bind(this)}
+              handleMouseOut={this.torpedoMouseOut(
+                launcher.system.shipSystems.ship,
+                loadedTorpedo
+              ).bind(this)}
             />
           </InlineTooltipEntry>
         </InlineTooltipEntry>
@@ -100,6 +161,14 @@ class TorpedoLauncher extends React.PureComponent {
               key={`torpedo-launcer-${i}-possible-torpedo-${object.constructor.name}`}
               cargo={object}
               amount={amount}
+              handleMouseOver={this.torpedoMouseOver(
+                launcher.system.shipSystems.ship,
+                object
+              ).bind(this)}
+              handleMouseOut={this.torpedoMouseOut(
+                launcher.system.shipSystems.ship,
+                object
+              ).bind(this)}
             />
           ))}
           {loadedTorpedo && (
