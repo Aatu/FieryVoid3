@@ -8,11 +8,20 @@ import {
 } from "../../../../../model/gameConfig.mjs";
 
 class OEWIndicator {
-  constructor(shipIcon, targetIcon, targetGhost, amount, mine, scene) {
+  constructor(
+    shipIcon,
+    targetIcon,
+    targetGhost,
+    shipGhost,
+    amount,
+    mine,
+    scene
+  ) {
     this.scene = scene;
     this.shipIcon = shipIcon;
     this.targetIcon = targetIcon;
     this.targetGhost = targetGhost;
+    this.shipGhost = shipGhost;
     this.amount = amount;
     this.mine = mine;
 
@@ -22,7 +31,9 @@ class OEWIndicator {
       ? targetIcon.getPosition()
       : targetGhost.getPosition();
 
-    this.shipPosition = this.shipIcon.getPosition();
+    this.shipPosition = this.shipGhost.hidden
+      ? this.shipIcon.getPosition()
+      : this.shipGhost.getPosition();
 
     this.line = this.createLine();
   }
@@ -65,7 +76,11 @@ class OEWIndicator {
     const newTargetPosition = this.targetGhost.hidden
       ? this.targetIcon.getPosition()
       : this.targetGhost.getPosition();
-    const newShipPosition = this.shipIcon.getPosition();
+
+    const newShipPosition = this.shipGhost.hidden
+      ? this.shipIcon.getPosition()
+      : this.shipGhost.getPosition();
+
     if (
       !this.shipPosition.equals(newShipPosition) ||
       !this.targetPosition.equals(newTargetPosition)

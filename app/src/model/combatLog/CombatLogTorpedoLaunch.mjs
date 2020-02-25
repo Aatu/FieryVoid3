@@ -1,6 +1,7 @@
 class CombatLogTorpedoLaunch {
   constructor(torpedoFlightId) {
     this.torpedoFlightId = torpedoFlightId;
+    this.replayOrder = 15;
   }
 
   serialize() {

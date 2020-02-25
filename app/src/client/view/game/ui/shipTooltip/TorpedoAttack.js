@@ -65,6 +65,7 @@ class TorpedoAttack extends React.Component {
       <Container>
         {ships.map(shooter => (
           <WeaponTargetingList
+            shooter={shooter}
             uiState={uiState}
             ship={target}
             key={`weaponTargetingList-${shooter.id}`}

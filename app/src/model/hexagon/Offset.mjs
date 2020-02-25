@@ -1,4 +1,5 @@
 import Cube from "./Cube.mjs";
+import coordinateConverter from "../utils/CoordinateConverter.mjs";
 
 const NEIGHBOURS = [
   [
@@ -136,6 +137,10 @@ class Offset {
         */
 
     return new Cube(x, y, z).round();
+  }
+
+  toVector() {
+    return coordinateConverter.fromHexToGame(this);
   }
 
   drawLine(target, distance) {

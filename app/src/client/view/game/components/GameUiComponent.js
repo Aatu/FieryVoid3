@@ -12,6 +12,7 @@ import CombatLog from "../ui/combatLog/CombatLog";
 import ShipBadge from "../ui/shipBadge/ShipBadge";
 import { StateStore } from "../../../state/StoreProvider";
 import { GameStateStore } from "../GameStoreProvider";
+import { MOVEMENT } from "../ui/gameUiModes";
 
 const GameUiComponent = ({ game }) => {
   const { currentUser } = useContext(StateStore);
@@ -53,9 +54,11 @@ const GameUiComponent = ({ game }) => {
         <DeploymentMovement {...state.shipMovement} uiState={uiState} />
       )}
 
-      {state.shipMovement && state.shipMovement.type === "game" && (
-        <GameMovement {...state.shipMovement} uiState={uiState} />
-      )}
+      {state.shipMovement &&
+        state.shipMovement.type === "game" &&
+        uiState.hasGameUiMode(MOVEMENT) && (
+          <GameMovement {...state.shipMovement} uiState={uiState} />
+        )}
 
       {state.gameUiModeButtons && (
         <GameUiModeButtons uiState={uiState} {...state.gameUiMode} />

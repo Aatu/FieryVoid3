@@ -44,6 +44,7 @@ class CombatLogData {
     const entries = [...this.entries];
     const groupedFires = [];
 
+    console.log(this.entries);
     entries
       .filter(entry => entry instanceof CombatLogWeaponFire)
       .forEach(fire => {

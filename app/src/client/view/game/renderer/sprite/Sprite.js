@@ -66,6 +66,18 @@ class Sprite {
     return this;
   }
 
+  getPosition() {
+    return this.mesh.position;
+  }
+
+  isPosition(position) {
+    return (
+      this.mesh.position.x === position.x &&
+      this.mesh.position.y === position.y &&
+      this.mesh.position.z === position.z
+    );
+  }
+
   setOpacity(opacity) {
     this.opacity = opacity;
     this.uniforms.opacity.value = opacity;
@@ -86,6 +98,14 @@ class Sprite {
     this.color = color;
     this.uniforms.overlayColor.value = color;
     return this;
+  }
+
+  isOverlayColor(color) {
+    return (
+      this.color.r === color.r &&
+      this.color.g === color.g &&
+      this.color.b === color.b
+    );
   }
 
   setScale(width, height) {

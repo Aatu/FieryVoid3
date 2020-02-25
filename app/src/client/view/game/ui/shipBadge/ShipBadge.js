@@ -95,15 +95,11 @@ const WarningBadge = styled(BadgeIcon)`
 `;
 
 const getNumberOfMissilesImpacting = (ship, gameData) => {
-  const torpedoMovementService = new TorpedoMovementService();
   const gameDataObject = new GameData(gameData);
 
   return gameDataObject.torpedos
     .getTorpedoFlights()
-    .filter(flight => flight.targetId === ship.id)
-    .filter(flight =>
-      torpedoMovementService.reachesTargetThisTurn(flight, ship)
-    ).length;
+    .filter(flight => flight.targetId === ship.id).length;
 };
 
 class ShipBadge extends React.PureComponent {

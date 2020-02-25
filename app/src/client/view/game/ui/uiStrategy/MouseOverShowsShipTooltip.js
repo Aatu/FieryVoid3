@@ -9,7 +9,7 @@ class MouseOverShowsShipTooltip extends UiStrategy {
     this.mouseOveredShip = null;
   }
 
-  shipTooltipHidden(ship) {
+  shipTooltipClosed(ship) {
     if (this.clickedShip === ship) {
       this.clickedShip = null;
     }

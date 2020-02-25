@@ -6,40 +6,28 @@ class ReplayContext {
     this.firingDuration = 0;
     this.movementDuration = 0;
     this.torpedoMovementDuration = 0;
-    this.velocityDuration = 0;
     this.torpedoAttackDuration = 0;
     this.phaseStrategy = phaseStrategy;
   }
 
   getTorpedoMovementStart() {
-    return this.movementDuration;
+    return this.movementDuration + this.firingDuration;
   }
 
   setTorpedoMovementDuration(duration) {
     this.torpedoMovementDuration = duration;
   }
 
+  getMovementStart() {
+    return this.firingDuration;
+  }
+
   setMovementDuration(duration) {
     this.movementDuration = duration;
   }
 
-  setVelocityDuration(duration) {
-    this.velocityDuration = duration;
-  }
-
-  getVelocityStart() {
-    return (
-      this.movementDuration +
-      this.torpedoMovementDuration +
-      this.firingDuration +
-      this.torpedoAttackDuration
-    );
-  }
-
   getNextFireStart() {
-    return (
-      this.movementDuration + this.torpedoMovementDuration + this.firingDuration
-    );
+    return this.firingDuration;
   }
 
   addFireAnimationDuration(duration) {
@@ -83,7 +71,7 @@ class ReplayContext {
     return (
       this.firingDuration +
       this.movementDuration +
-      this.velocityDuration +
+      this.torpedoMovementDuration +
       this.torpedoAttackDuration
     );
   }

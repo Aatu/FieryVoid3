@@ -440,7 +440,10 @@ test("Get an end move", test => {
         1,
         false,
         1000,
-        0
+        0,
+        undefined,
+        0,
+        1
       ).round()
     ]
   );

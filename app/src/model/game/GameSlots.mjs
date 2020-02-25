@@ -32,6 +32,26 @@ class GameSlots {
     return teams;
   }
 
+  isShipInUsersTeam(user, ship) {
+    const userSlot = this.slots.find(s => s.userId === user.id);
+
+    if (!userSlot) {
+      return false;
+    }
+
+    return this.getSlotByShip(ship).team === userSlot.team;
+  }
+
+  isUsersTeam(user, team) {
+    const userSlot = this.slots.find(s => s.userId === user.id);
+
+    if (!userSlot) {
+      return false;
+    }
+
+    return team === userSlot.team;
+  }
+
   isUsersTeamSlot(slot, user) {
     const userSlot = this.slots.find(s => s.userId === user);
 

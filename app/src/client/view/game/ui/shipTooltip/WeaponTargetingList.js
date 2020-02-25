@@ -106,7 +106,45 @@ class WeaponTargetingList extends React.Component {
             target: ship
           }).result > 0
       ),
-      ...this.torpedoAttackService.getPossibleTorpedosFrom(shooter, ship)
+      ...this.torpedoAttackService
+        .getPossibleTorpedosFrom(shooter, ship)
+        .sort((a, b) => {
+          if (a.loadedTorpedo.maxRange < b.loadedTorpedo.maxRange) {
+            return 1;
+          }
+
+          if (a.loadedTorpedo.maxRange > b.loadedTorpedo.maxRange) {
+            return -1;
+          }
+
+          if (
+            a.loadedTorpedo.damageStrategy.constructor.name <
+            b.loadedTorpedo.damageStrategy.constructor.name
+          ) {
+            return 1;
+          }
+
+          if (
+            a.loadedTorpedo.damageStrategy.constructor.name >
+            b.loadedTorpedo.damageStrategy.constructor.name
+          ) {
+            return -1;
+          }
+
+          if (
+            a.loadedTorpedo.getDisplayName() < b.loadedTorpedo.getDisplayName()
+          ) {
+            return 1;
+          }
+
+          if (
+            a.loadedTorpedo.getDisplayName() > b.loadedTorpedo.getDisplayName()
+          ) {
+            return -1;
+          }
+
+          return 0;
+        })
     ];
 
     if (systems.length === 0) {

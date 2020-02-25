@@ -92,19 +92,15 @@ class GameHandler {
       return;
     }
 
-    this.launchHandler.advance(gameData);
     this.weaponHandler.advance(gameData);
-    this.movementHandler.advance(gameData);
     this.torpedoHandler.advance(gameData);
+    this.movementHandler.advance(gameData);
+    this.launchHandler.advance(gameData);
     this.electronicWarfareHandler.advance(gameData);
     this.heatHandler.advance(gameData);
     this.criticalHandler.advance(gameData);
     this.powerHandler.advance(gameData);
     this.movementHandler.applyRolls(gameData);
-
-    gameData.ships.getShips().forEach(ship => {
-      gameData.combatLog.addEntry(new CombatLogShipVelocity(ship.id));
-    });
 
     gameData.endTurn();
 

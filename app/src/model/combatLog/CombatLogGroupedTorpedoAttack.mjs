@@ -4,7 +4,7 @@ class CombatLogGroupedTorpedoAttack {
   constructor(targetId) {
     this.targetId = targetId;
     this.entries = [];
-    this.replayOrder = 6;
+    this.replayOrder = 20;
   }
 
   addEntry(attack) {

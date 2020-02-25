@@ -13,7 +13,6 @@ class TorpedoHandler {
   }
 
   advance(gameData) {
-    this.moveTorpedos(gameData);
     this.interceptTorpedos(gameData);
     this.impactTorpedos(gameData);
   }
@@ -39,10 +38,9 @@ class TorpedoHandler {
       }, [])
       .filter(weapon => {
         // only weapons that have arcs facing to the correct direction
-        const torpedoPosition = flight.position;
         return weapon.callHandler(
           "isPositionOnArc",
-          { targetPosition: torpedoPosition },
+          { targetPosition: flight.strikePosition },
           true
         );
       })
@@ -111,9 +109,7 @@ class TorpedoHandler {
   }
 
   interceptTorpedos(gameData) {
-    const impactingTorpedos = gameData.torpedos
-      .getTorpedoFlights()
-      .filter(flight => flight.reachedTarget);
+    const impactingTorpedos = gameData.torpedos.getTorpedoFlights();
 
     for (let interceptTry = 1; interceptTry <= 5; interceptTry++) {
       const usedWeapons = [];
@@ -211,83 +207,28 @@ class TorpedoHandler {
   }
 
   impactTorpedos(gameData) {
-    gameData.torpedos
-      .getTorpedoFlights()
-      .filter(flight => flight.reachedTarget)
-      .forEach(flight => {
-        const target = gameData.ships.getShipById(flight.targetId);
-        const shooter = gameData.ships.getShipById(flight.shooterId);
-
-        const torpedoAttack = new CombatLogTorpedoAttack(flight.id, target.id);
-        gameData.combatLog.addEntry(torpedoAttack);
-
-        if (flight.intercepted) {
-          torpedoAttack.addNote(`Torpedo intercepted`);
-          return;
-        }
-
-        torpedoAttack.addNote(
-          `Effectiveness ${Math.round(flight.strikeEffectiveness * 100)}%`
-        );
-
-        flight.torpedo.damageStrategy.applyDamageFromWeaponFire({
-          target,
-          shooter,
-          torpedoFlight: flight,
-          gameData,
-          combatLogEvent: torpedoAttack
-        });
-      });
-  }
-
-  moveTorpedos(gameData) {
     gameData.torpedos.getTorpedoFlights().forEach(flight => {
       const target = gameData.ships.getShipById(flight.targetId);
+      const shooter = gameData.ships.getShipById(flight.shooterId);
 
-      flight.turnsActive++;
+      const torpedoAttack = new CombatLogTorpedoAttack(flight.id, target.id);
+      gameData.combatLog.addEntry(torpedoAttack);
 
-      if (flight.noLongerActive()) {
-        gameData.combatLog.addEntry(new CombatLogTorpedoOutOfTime(flight.id));
+      if (flight.intercepted) {
+        torpedoAttack.addNote(`Torpedo intercepted`);
         return;
       }
 
-      const {
-        impactTurn,
-        effectiveness,
-        ...rest
-      } = this.torpedoMovementService.predictTorpedoHitPositionAndTurnAfterMovement(
-        flight,
-        target
-      );
-
-      if (impactTurn < 1) {
-        if (!flight.hasArmed()) {
-          gameData.combatLog.addEntry(
-            new CombatLogTorpedoNotArmed(
-              flight.id,
-              flight.turnsActive,
-              flight.torpedo.armingTime
-            )
-          );
-          return;
-        } else {
-          flight.setReachedTarget(effectiveness);
-          return;
-        }
-      }
-
-      const startPosition = flight.position.clone();
-      this.torpedoMovementService.moveTorpedo(flight, target);
-
-      gameData.combatLog.addEntry(
-        new CombatLogTorpedoMove(
-          flight.id,
-          startPosition,
-          flight.position.clone(),
-          flight.velocity.clone()
-        )
-      );
+      flight.torpedo.damageStrategy.applyDamageFromWeaponFire({
+        target,
+        shooter,
+        torpedoFlight: flight,
+        gameData,
+        combatLogEvent: torpedoAttack
+      });
     });
+
+    gameData.torpedos.removeTorpedos();
   }
 }
 

@@ -179,8 +179,8 @@ class Ship {
     return this;
   }
 
-  receivePlayerData(clientShip) {
-    this.systems.receivePlayerData(clientShip);
+  receivePlayerData(clientShip, gameData) {
+    this.systems.receivePlayerData(clientShip, gameData);
   }
 
   setShipLoadout() {

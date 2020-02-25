@@ -36,7 +36,7 @@ test.serial("Submit successfull launch order", async test => {
     user,
     user2,
     controller,
-    new Offset(-100, 0)
+    new Offset(-200, 0)
   );
 
   const gameId = gameData.id;
@@ -73,7 +73,6 @@ test.serial("Submit successfull launch order", async test => {
   test.true(torpedos.length === 1);
 
   const actual = torpedos[0];
-  const flightId = actual.id;
   actual.id = null;
 
   const expected = new TorpedoFlight(
@@ -83,34 +82,11 @@ test.serial("Submit successfull launch order", async test => {
     202,
     1
   )
-    .setPosition(new Vector(-1699.9703737990008, 35.97985363009482))
-    .setVelocity(new Vector(1687.9584996355752, -40.54029273981036))
-    .setLaunchPosition(new Vector(-2868.709150035953, 56.25));
+    .setStrikePosition(new Vector(-411.36206679760835, 0))
+    .setLaunchPosition(new Vector(86.60254037844379, 0));
 
   expected.id = null;
-  expected.turnsActive = 1;
   test.deepEqual(actual, expected);
-
-  const replay = await controller.replayHandler.requestReplay(
-    gameId,
-    1,
-    2,
-    user
-  );
-
-  test.deepEqual(
-    [replay[0].combatLog.entries[0], replay[0].combatLog.entries[4]],
-    [
-      new CombatLogTorpedoLaunch(flightId),
-      new CombatLogTorpedoMove(
-        flightId,
-        new Vector(-2868.709150035953, 56.25),
-        new Vector(-1699.9703737990008, 35.97985363009482),
-        new Vector(1687.9584996355752, -40.54029273981036)
-      )
-    ]
-  );
-
   db.close();
 });
 
@@ -130,8 +106,6 @@ test.serial("Execute a successful torpedo attack", async test => {
 
   const gameId = gameData.id;
 
-  await controller.commitTurn(gameData.id, gameData.serialize(), user2);
-
   const shooter = gameData.ships
     .getShips()
     .find(ship => ship.name === "UCS Achilles");
@@ -146,61 +120,25 @@ test.serial("Execute a successful torpedo attack", async test => {
 
   launchers[0].setLaunchTarget(target.id);
 
-  await controller.commitTurn(gameData.id, gameData.serialize(), user);
   await controller.commitTurn(gameData.id, gameData.serialize(), user2);
+  await controller.commitTurn(gameData.id, gameData.serialize(), user);
   let newGameData = await controller.getGameData(gameData.id, user);
-  //await evaluateTorpedoTurn(1, gameData.id, controller, user);
-  await assertTorpedoMove(
-    1,
-    gameData.id,
-    controller,
-    user,
-    test,
-    new Offset(-232, 3),
-    new Offset(-181, 3),
-    new Offset(72, -1)
-  );
-
-  await controller.commitTurn(gameData.id, newGameData.serialize(), user);
   await controller.commitTurn(gameData.id, newGameData.serialize(), user2);
-  newGameData = await controller.getGameData(gameData.id, user);
-
-  await assertTorpedoMove(
-    2,
-    gameData.id,
-    controller,
-    user,
-    test,
-    new Offset(-181, 3),
-    new Offset(-88, 1),
-    new Offset(114, -2)
-  );
-
   await controller.commitTurn(gameData.id, newGameData.serialize(), user);
-  await controller.commitTurn(gameData.id, newGameData.serialize(), user2);
-  newGameData = await controller.getGameData(gameData.id, user);
-
-  //await evaluateTorpedoTurn(2, gameData.id, controller, user);
 
   const replay = await controller.replayHandler.requestReplay(
     gameId,
+    2,
     3,
-    4,
     user
   );
 
   test.deepEqual(
-    [
-      replay[0].combatLog.entries[3].notes[0],
-      replay[0].combatLog.entries[3].notes[1]
-    ],
-    [
-      "Effectiveness 100%",
-      "MSV with 25 projectiles at distance 5 with hit chance of 25% each."
-    ]
+    [replay[0].combatLog.entries[0].notes[0]],
+    ["MSV with 25 projectiles at distance 5 with hit chance of 25% each."]
   );
 
-  test.true(replay[0].combatLog.entries[3] instanceof CombatLogTorpedoAttack);
+  test.true(replay[0].combatLog.entries[0] instanceof CombatLogTorpedoAttack);
 
   db.close();
 });

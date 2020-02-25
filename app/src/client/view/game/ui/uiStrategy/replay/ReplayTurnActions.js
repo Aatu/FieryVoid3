@@ -25,6 +25,7 @@ import { TORPEDO_Z } from "../../../../../../model/gameConfig.mjs";
 import ExplosionEffect from "../../../animation/effect/ExplosionEffect";
 import TorpedoExplosionHE from "../../../animation/TorpedoExplosion/TorpedoExplosionHE";
 import TorpedoExplosionMSV from "../../../animation/TorpedoExplosion/TorpedoExplosionMSV";
+import CombatLogTorpedoLaunch from "../../../../../../model/combatLog/CombatLogTorpedoLaunch.mjs";
 
 const getMovesForShip = (gameDatas, ship) =>
   gameDatas.reduce((moves, gameData) => {
@@ -71,11 +72,9 @@ class ReplayTurnActions extends AnimationUiStrategy {
     gameData.combatLog.getForReplay().forEach(combatLogEntry => {
       if (combatLogEntry instanceof CombatLogShipMovement) {
         this.buildMovementAnimation(combatLogEntry, gameDatas);
-      } else if (combatLogEntry instanceof CombatLogShipVelocity) {
-        this.buildVelocityAnimation(combatLogEntry, gameDatas);
       } else if (combatLogEntry instanceof CombatLogGroupedWeaponFire) {
         this.buildWeaponFireAnimation(combatLogEntry, gameDatas);
-      } else if (combatLogEntry instanceof CombatLogTorpedoMove) {
+      } else if (combatLogEntry instanceof CombatLogTorpedoLaunch) {
         this.buildTorpedoMoveAnimation(combatLogEntry, gameDatas);
       } else if (combatLogEntry instanceof CombatLogGroupedTorpedoAttack) {
         this.buildTorpedoAttackAnimation(combatLogEntry, gameDatas);
@@ -314,11 +313,11 @@ class ReplayTurnActions extends AnimationUiStrategy {
     const endTime = start + duration + this.getRandom() * 1000;
     const animation = new TorpedoMovementAnimation(
       torpedoIconContainer.getIconByTorpedoFlight(flight),
-      combatLogEntry.startPosition.setZ(TORPEDO_Z),
-      combatLogEntry.endPosition.setZ(TORPEDO_Z),
+      flight.launchPosition.setZ(TORPEDO_Z),
+      flight.strikePosition.setZ(TORPEDO_Z),
       startTime,
       endTime,
-      flight.turnsActive === 1
+      true
     );
 
     this.animations.push(animation);
@@ -440,7 +439,7 @@ class ReplayTurnActions extends AnimationUiStrategy {
     const { shipIconContainer } = this.services;
 
     const duration = 5000;
-    const start = 0;
+    const start = this.replayContext.getMovementStart();
 
     const icon = shipIconContainer.getById(combatLogEntry.shipId);
     const ship = icon.ship;
@@ -455,7 +454,6 @@ class ReplayTurnActions extends AnimationUiStrategy {
     );
 
     if (animation.doesMove()) {
-      console.log("animation moves");
       this.replayContext.setMovementDuration(duration);
     }
 

@@ -9,7 +9,7 @@ import movementTypes from "../../model/movement/movementTypes.mjs";
 import coordinateConverter from "../../model/utils/CoordinateConverter.mjs";
 import Vector from "../../model/utils/Vector.mjs";
 import Torpedo158MSV from "../../model/unit/system/weapon/ammunition/torpedo/Torpedo158MSV.mjs";
-
+/*
 test("Torpedo moves properly", test => {
   const torpedoMovementService = new TorpedoMovementService();
   const torpedo = new Torpedo158({ deltaVelocityPerTurn: 10, turnsToLive: 5 });
@@ -248,6 +248,7 @@ test("Torpedo impact is predicted properly", test => {
     }
   );
 });
+*/
 
 test("Test torpedo movement standardize function", test => {
   const torpedoMovementService = new TorpedoMovementService();

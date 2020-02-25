@@ -44,6 +44,10 @@ class ShipEWIndicators {
       const targetGhost = this.shipIconContainer.getGhostShipIconByShip(
         targetIcon.ship
       );
+      const shipGhost = this.shipIconContainer.getGhostShipIconByShip(
+        this.icon.ship
+      );
+
       let indicator = this.oew.find(oew => oew.targetIcon === targetIcon);
 
       if (!indicator) {
@@ -51,6 +55,7 @@ class ShipEWIndicators {
           this.icon,
           targetIcon,
           targetGhost,
+          shipGhost,
           ewEntry.amount,
           this.ship.player.is(this.currentUser),
           this.scene

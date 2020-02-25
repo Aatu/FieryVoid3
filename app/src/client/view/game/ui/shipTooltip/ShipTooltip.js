@@ -131,7 +131,12 @@ class ShipTooltip extends React.Component {
           <div>{ship.name}</div>{" "}
           <div>
             {this.getTabHeader()}{" "}
-            <CloseButton onClick={() => uiState.hideShipTooltip(ship)}>
+            <CloseButton
+              onClick={() => {
+                uiState.hideShipTooltip(ship);
+                uiState.customEvent("shipTooltipClosed", ship);
+              }}
+            >
               <X />
             </CloseButton>
           </div>

@@ -135,6 +135,10 @@ class Vector {
     );
   }
 
+  toOffset() {
+    return coordinateConverter.fromGameToHex(this);
+  }
+
   toString() {
     return `(x:${this.x}, y:${this.y}, z:${this.z})`;
   }

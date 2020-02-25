@@ -245,7 +245,7 @@ class TorpedoLauncherStrategy extends ShipSystemStrategy {
     this.turnsLoaded = 0;
   }
 
-  receivePlayerData({ clientShip, clientSystem }) {
+  receivePlayerData({ clientSystem, gameData }) {
     if (!clientSystem) {
       return;
     }
@@ -262,10 +262,16 @@ class TorpedoLauncherStrategy extends ShipSystemStrategy {
     }
 
     if (clientStrategy.launchTarget) {
-      if (this.turnsLoaded < this.loadingTime || !this.loadedTorpedo) {
+      const target = gameData.ships.getShipById(clientStrategy.launchTarget);
+
+      if (!target) {
         throw new Error(
-          `Trying to set launch target, but weapon is not loaded`
+          `Did not find launch target ship id '${clientStrategy.launchTarget}'`
         );
+      }
+
+      if (!this.canLaunchAgainst({ target })) {
+        throw new Error(`Can not launch torpedo`);
       }
 
       this.launchTarget = clientStrategy.launchTarget;

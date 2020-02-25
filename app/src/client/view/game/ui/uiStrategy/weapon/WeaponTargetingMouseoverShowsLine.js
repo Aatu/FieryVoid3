@@ -43,7 +43,7 @@ class WeaponTargetingMouseoverShowsLine extends UiStrategy {
     const line = new Line(scene, {
       start: { ...shooterIcon.getPosition(), z: shooterIcon.shipZ },
       end: { ...targetIcon.getPosition(), z: targetIcon.shipZ },
-      width: 10,
+      width: 20,
       color: new THREE.Color(196 / 255, 196 / 255, 39 / 255),
       opacity: 0.1,
       pulseAmount: 1,

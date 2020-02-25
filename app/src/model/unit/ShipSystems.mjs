@@ -195,11 +195,12 @@ class ShipSystems {
     return this;
   }
 
-  receivePlayerData(clientShip) {
+  receivePlayerData(clientShip, gameData) {
     this.getSystems().forEach(system =>
       system.callHandler("receivePlayerData", {
         clientShip,
-        clientSystem: clientShip.systems.getSystemById(system.id)
+        clientSystem: clientShip.systems.getSystemById(system.id),
+        gameData
       })
     );
   }
