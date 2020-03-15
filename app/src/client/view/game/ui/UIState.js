@@ -373,15 +373,10 @@ class UIState {
     this.systemChangeListeners.forEach(callBack => callBack(ship, system));
   }
 
-  showShipTooltip(icon, ui = false, right = false) {
-    const { coordinateConverter } = this.services;
-    const ship = icon.ship;
-
+  showShipTooltip(ship, ui = false, right = false) {
     this.hideShipTooltip(ship);
     this.state.shipTooltip.push({
       ship,
-      getPosition: () =>
-        coordinateConverter.fromGameToViewPort(icon.getPosition()),
       ui,
       right: !right
     });

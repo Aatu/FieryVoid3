@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import styled from "styled-components";
 
 import {
   SubTitle,
@@ -8,16 +9,26 @@ import {
   Button,
   Value
 } from "../../../../styled";
+import { PurchasedShip } from "./PurchasedShip";
+
+const FleetContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  width: 440px;
+  justify-content: space-around;
+  margin-top: 16px;
+`;
+
 class FleetList extends Component {
   openShipWindow(ship) {
     return () => {
       const { uiState } = this.props;
-      uiState.openShipWindow(ship);
+      uiState.showShipTooltip(ship, true, true);
     };
   }
 
   render() {
-    const { ships, onReady, bought } = this.props;
+    const { ships, onReady, bought, uiState } = this.props;
 
     return (
       <DarkContainer>
@@ -31,15 +42,15 @@ class FleetList extends Component {
             )}
           </SectionRight>
         </Section>
-        {ships.map((ship, i) => (
-          <Button
-            key={`fleetlist-ship-${i}`}
-            buttonStyle="text"
-            onClick={this.openShipWindow(ship)}
-          >
-            {ship.shipTypeName} <Value>{ship.pointCost}</Value> points
-          </Button>
-        ))}
+        <FleetContainer>
+          {ships.map((ship, i) => (
+            <PurchasedShip
+              key={`fleetlist-ship-${i}`}
+              ship={ship}
+              uiState={uiState}
+            />
+          ))}
+        </FleetContainer>
       </DarkContainer>
     );
   }

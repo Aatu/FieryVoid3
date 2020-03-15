@@ -33,11 +33,9 @@ class GameTorpedos {
     return this;
   }
 
-  removeTorpedos() {
-    this.flights = [];
+  advanceTurn() {
+    this.flights = this.flights.filter(flight => !flight.isDone());
   }
-
-  advanceTurn() {}
 }
 
 export default GameTorpedos;

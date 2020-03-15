@@ -7,8 +7,6 @@ import {
   addToDirection,
   hexFacingToAngle
 } from "../utils/math.mjs";
-import HexagonMath from "../utils/HexagonMath.mjs";
-import Offset from "../hexagon/Offset.mjs";
 import coordinateConverter from "../utils/CoordinateConverter.mjs";
 
 class Ship {

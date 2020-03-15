@@ -200,9 +200,9 @@ class TorpedoHandler {
         gameData,
         combatLogEvent: torpedoAttack
       });
-    });
 
-    gameData.torpedos.removeTorpedos();
+      flight.setDone();
+    });
   }
 }
 

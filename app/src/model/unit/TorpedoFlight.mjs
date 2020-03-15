@@ -14,6 +14,15 @@ class TorpedoFlight {
     this.launchPosition = new Vector();
     this.strikePosition = new Vector();
     this.intercepted = false;
+    this.done = false;
+  }
+
+  setDone() {
+    this.done = true;
+  }
+
+  isDone() {
+    return this.done;
   }
 
   setIntercepted() {

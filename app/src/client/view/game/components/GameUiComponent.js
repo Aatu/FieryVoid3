@@ -13,6 +13,7 @@ import ShipBadge from "../ui/shipBadge/ShipBadge";
 import { StateStore } from "../../../state/StoreProvider";
 import { GameStateStore } from "../GameStoreProvider";
 import { MOVEMENT } from "../ui/gameUiModes";
+import ShipList from "../ui/shipList/ShipList";
 
 const GameUiComponent = ({ game }) => {
   const { currentUser } = useContext(StateStore);
@@ -89,6 +90,8 @@ const GameUiComponent = ({ game }) => {
           showName={showName}
         />
       ))}
+
+      <ShipList gameData={uiState.state.gameData} />
     </>
   );
 };

@@ -25,10 +25,10 @@ class MouseOverShowsShipTooltip extends UiStrategy {
     const isMine = ship.player.is(currentUser);
 
     if (this.clickedShip === ship) {
-      uiState.showShipTooltip(shipIconContainer.getByShip(ship), true, isMine);
+      uiState.showShipTooltip(ship, true, isMine);
     }
     if (this.clickedEnemy === ship) {
-      uiState.showShipTooltip(shipIconContainer.getByShip(ship), true, isMine);
+      uiState.showShipTooltip(ship, true, isMine);
     }
   }
 
@@ -57,7 +57,7 @@ class MouseOverShowsShipTooltip extends UiStrategy {
       uiState.hideShipTooltip(this.clickedEnemy);
     }
 
-    uiState.showShipTooltip(payload.entity, true, isMine);
+    uiState.showShipTooltip(payload.entity.ship, true, isMine);
     if (isMine) {
       this.clickedShip = ship;
     } else {
@@ -117,7 +117,7 @@ class MouseOverShowsShipTooltip extends UiStrategy {
       uiState.hideShipTooltip(this.clickedEnemy);
     }
 
-    uiState.showShipTooltip(payload.entity, false, isMine);
+    uiState.showShipTooltip(payload.entity.ship, false, isMine);
     this.mouseOveredShip = payload.entity.ship;
   }
 
@@ -140,19 +140,11 @@ class MouseOverShowsShipTooltip extends UiStrategy {
     this.mouseOveredShip = null;
 
     if (isMine && this.clickedShip) {
-      uiState.showShipTooltip(
-        shipIconContainer.getByShip(this.clickedShip),
-        true,
-        isMine
-      );
+      uiState.showShipTooltip(this.clickedShip, true, isMine);
     }
 
     if (!isMine && this.clickedEnemy) {
-      uiState.showShipTooltip(
-        shipIconContainer.getByShip(this.clickedEnemy),
-        true,
-        isMine
-      );
+      uiState.showShipTooltip(this.clickedEnemy, true, isMine);
     }
   }
 }

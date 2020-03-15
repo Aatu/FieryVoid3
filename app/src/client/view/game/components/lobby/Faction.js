@@ -20,7 +20,7 @@ class Faction extends Component {
   openShipWindow(ship) {
     return () => {
       const { uiState } = this.props;
-      uiState.openShipWindow(ship);
+      uiState.showShipTooltip(ship, true, true);
     };
   }
 

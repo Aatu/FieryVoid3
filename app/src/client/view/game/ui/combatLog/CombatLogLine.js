@@ -35,6 +35,8 @@ class CombatLogLine extends React.Component {
       combatLogEntry.torpedoFlightId
     );
 
+    console.log(gameData.torpedos);
+
     const targetName = target.name.trim();
 
     return (

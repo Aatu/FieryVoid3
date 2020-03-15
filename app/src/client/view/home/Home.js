@@ -1,13 +1,6 @@
 import React, { Component } from "react";
 import styled from "styled-components";
-import {
-  Title,
-  PanelContainer,
-  Button,
-  Link,
-  TooltipContainer,
-  TooltipHeader
-} from "../../styled";
+import { Button, Link, TooltipContainer, TooltipHeader } from "../../styled";
 import HomeSceneComponent from "./HomeSceneComponent";
 import Login from "../login/Login";
 import LoginFloater from "../login/LoginFloater";

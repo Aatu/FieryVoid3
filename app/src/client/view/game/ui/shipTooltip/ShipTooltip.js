@@ -16,6 +16,7 @@ import ShipTooltipDetails from "./ShipTooltipDetails";
 import { X } from "../../../../styled/icon";
 import GameShipTooltipMenuBack from "./GameShipTooltipMenuBack";
 import TorpedoDefense from "./TorpedoDefense";
+import ShipName from "../ShipName";
 
 const InfoHeader = styled(TooltipHeader)`
   display: flex;
@@ -28,9 +29,9 @@ const ShipTooltipContainer = styled(Tooltip)`
   opacity: 0.95;
   position: absolute;
   top: 50px;
-  ${props => (props.right ? "right: 10px;" : "left: 10px;")}
+  ${props => (props.right ? "right: 220px;" : "left: 220px;")}
 
-  ${props => (props.interactable ? "z-index: 4;" : "z-index: 1;")}
+  ${props => (props.interactable ? "z-index: 4;" : "z-index: 4;")}
 `;
 
 export const Entry = styled(TooltipEntry)`
@@ -137,7 +138,9 @@ class ShipTooltip extends React.Component {
         interactable={interactable}
       >
         <InfoHeader>
-          <div>{ship.name}</div>{" "}
+          <div>
+            <ShipName ship={ship} />
+          </div>{" "}
           <div>
             {this.getTabHeader()}{" "}
             <CloseButton
