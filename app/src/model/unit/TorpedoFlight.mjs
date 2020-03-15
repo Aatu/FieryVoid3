@@ -20,10 +20,6 @@ class TorpedoFlight {
     this.intercepted = true;
   }
 
-  getInterceptTries(target) {
-    return this.torpedo.getInterceptTries(this, target);
-  }
-
   getStrikeDistance(target) {
     return this.torpedo.getStrikeDistance(this, target);
   }

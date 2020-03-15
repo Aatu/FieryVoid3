@@ -36,31 +36,18 @@ class InterceptorStrategy extends ShipSystemStrategy {
     return this.numberOfIntercepts;
   }
 
-  getInterceptChance({ target, torpedoFlight, interceptTry = 1 }) {
-    let distance = interceptTry;
+  getInterceptChance({ target, torpedoFlight }) {
     const ship = this.system.shipSystems.ship;
 
+    let distance = torpedoFlight.torpedo.damageStrategy.getStrikeDistance({
+      target,
+      torpedoFlight
+    });
+
     if (target !== ship) {
-      const torpedoDistanceToTarget = torpedoFlight.position.distanceTo(
-        target.getPosition()
-      );
-
-      const interceptorDistanceToTorpedo = ship
-        .getPosition()
-        .distanceTo(torpedoFlight.position);
-
-      const interceptorDistanceToTarget = ship
-        .getPosition()
-        .distanceTo(target.getPosition());
-
-      if (
-        torpedoDistanceToTarget > interceptorDistanceToTorpedo &&
-        interceptorDistanceToTarget < torpedoDistanceToTarget
-      ) {
-        distance += ship.hexDistanceTo(target);
-      } else {
-        distance += ship.hexDistanceTo(target) * 2;
-      }
+      distance = ship
+        .getHexPosition()
+        .distanceTo(torpedoFlight.strikePosition.toOffset());
     }
 
     const rangeModifier =

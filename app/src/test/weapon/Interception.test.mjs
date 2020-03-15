@@ -16,6 +16,7 @@ import User from "../../model/User.mjs";
 import StandardHitStrategy from "../../model/unit/system/strategy/weapon/StandardHitStrategy.mjs";
 import EwArray from "../../model/unit/system/electronicWarfare/EwArray.mjs";
 import WeaponHitChance from "../../model/weapon/WeaponHitChance.mjs";
+import TorpedoAttackService from "../../model/weapon/TorpedoAttackService.mjs";
 
 const createShipAndTorpedo = () => {
   const ship = new Ship({ id: 1 });
@@ -53,8 +54,8 @@ const createShipAndTorpedo = () => {
   ]);
 
   const torpedo = new TorpedoFlight(new Torpedo158MSV(), 1, 2, 3, 1);
-  torpedo.setPosition(new Vector(1000, 0));
-  torpedo.setVelocity(new Vector(0, 0));
+  torpedo.setLaunchPosition(new Vector(1000, 0));
+  torpedo.setStrikePosition(new Vector(500, 0));
 
   const gameData = new GameData();
 
@@ -92,7 +93,13 @@ test("Torpedo can be intercepted", test => {
   const handler = new TorpedoHandler();
   const torpedoFlight = gameData.torpedos.getTorpedoFlights()[0];
 
-  const interceptor = handler.chooseInterceptor(gameData, torpedoFlight, [], 1);
+  const interceptor = handler.chooseInterceptor(
+    new TorpedoAttackService().update(gameData),
+    gameData,
+    torpedoFlight,
+    [],
+    1
+  );
 
   test.is(interceptor.id, 14);
 });
@@ -106,7 +113,13 @@ test("Torpedo can not be intercepted, if weapon is offline", test => {
   const handler = new TorpedoHandler();
   const torpedoFlight = gameData.torpedos.getTorpedoFlights()[0];
 
-  const interceptor = handler.chooseInterceptor(gameData, torpedoFlight, [], 1);
+  const interceptor = handler.chooseInterceptor(
+    new TorpedoAttackService().update(gameData),
+    gameData,
+    torpedoFlight,
+    [],
+    1
+  );
 
   test.is(interceptor, undefined);
 });
@@ -125,7 +138,13 @@ test("Torpedo can not be intercepted, if weapon is not on arc", test => {
   const handler = new TorpedoHandler();
   const torpedoFlight = gameData.torpedos.getTorpedoFlights()[0];
 
-  const interceptor = handler.chooseInterceptor(gameData, torpedoFlight, [], 1);
+  const interceptor = handler.chooseInterceptor(
+    new TorpedoAttackService().update(gameData),
+    gameData,
+    torpedoFlight,
+    [],
+    1
+  );
 
   test.is(interceptor, undefined);
 });
@@ -140,6 +159,7 @@ test("Torpedo can not be intercepted, if weapon is already used", test => {
   const torpedoFlight = gameData.torpedos.getTorpedoFlights()[0];
 
   const interceptor = handler.chooseInterceptor(
+    new TorpedoAttackService().update(gameData),
     gameData,
     torpedoFlight,
     [pdc],
@@ -167,7 +187,13 @@ test("Better interceptor is used first", test => {
   const handler = new TorpedoHandler();
   const torpedoFlight = gameData.torpedos.getTorpedoFlights()[0];
 
-  const interceptor = handler.chooseInterceptor(gameData, torpedoFlight, [], 1);
+  const interceptor = handler.chooseInterceptor(
+    new TorpedoAttackService().update(gameData),
+    gameData,
+    torpedoFlight,
+    [],
+    1
+  );
 
   test.is(interceptor.id, 15);
 });
@@ -183,47 +209,23 @@ test("Intercept hit change is calculated properly", test => {
   const torpedoFlight = gameData.torpedos.getTorpedoFlights()[0];
   const result = pdc.callHandler("getInterceptChance", {
     target: ship,
-    torpedoFlight,
-    interceptTry: 5
+    torpedoFlight
   });
 
   test.deepEqual(
     result,
     new WeaponHitChance({
-      absoluteResult: 10,
+      absoluteResult: 34,
       baseToHit: 0,
       dew: 0,
-      distance: 5,
+      distance: 2,
       evasion: 30,
       fireControl: 30,
       oew: 8,
       outOfRange: false,
-      rangeModifier: -40,
+      rangeModifier: -16,
       rollingPenalty: -20,
-      result: 10
-    })
-  );
-
-  const result2 = pdc.callHandler("getInterceptChance", {
-    target: ship,
-    torpedoFlight,
-    interceptTry: 1
-  });
-
-  test.deepEqual(
-    result2,
-    new WeaponHitChance({
-      absoluteResult: 42,
-      baseToHit: 0,
-      dew: 0,
-      distance: 1,
-      evasion: 30,
-      fireControl: 30,
-      oew: 8,
-      outOfRange: false,
-      rangeModifier: -8,
-      result: 42,
-      rollingPenalty: -20
+      result: 34
     })
   );
 });

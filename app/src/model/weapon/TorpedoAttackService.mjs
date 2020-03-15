@@ -1,8 +1,27 @@
 class TorpedoAttackService {
-  constructor(services, gameData, target) {
-    this.services = services;
-    this.target = target;
+  update(gameData) {
     this.gameData = gameData;
+    return this;
+  }
+
+  getPossibleInterceptors(ship, torpedoFlight) {
+    return ship.systems
+      .getSystems()
+      .filter(system => !system.isDisabled())
+      .filter(system => system.callHandler("canIntercept"))
+      .filter(weapon => {
+        // only weapons that have arcs facing to the correct direction
+        return weapon.callHandler(
+          "isPositionOnArc",
+          { targetPosition: torpedoFlight.strikePosition },
+          true
+        );
+      })
+      .filter(weapon => {
+        const fireOrders = weapon.callHandler("getFireOrders", null, []);
+
+        return fireOrders.length === 0;
+      });
   }
 
   getPossibleTorpedosFrom(ship, target) {

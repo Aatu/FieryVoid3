@@ -13,7 +13,7 @@ class Torpedo158Nuclear extends Torpedo158 {
 
     return [
       {
-        value: "A long range torpedo with 8 megaton nuclear payload."
+        value: "A long range torpedo with a nuclear payload."
       },
       ...previousResponse
     ];

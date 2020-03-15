@@ -8,28 +8,7 @@ import {
   colors,
   IconAndLabel
 } from "../../../../../styled";
-import TorpedoFlight from "../../../../../../model/unit/TorpedoFlight.mjs";
-import IncomingTorpedo from "../IncomingTorpedo";
-
-const Container = styled.div`
-  z-index: 3;
-`;
-
-const Cell = styled.div`
-  width: 25%;
-  display: flex;
-
-  justify-content: center;
-
-  :first-child {
-    width: 50%;
-    justify-content: flex-start;
-  }
-
-  :last-child {
-    justify-content: flex-end;
-  }
-`;
+import IncomingTorpedo from "./IncomingTorpedo";
 
 const TorpedoList = styled.div`
   display: flex;
@@ -79,8 +58,6 @@ class TorpedoDefense extends React.Component {
         return 0;
       });
 
-    console.log(torpedos);
-
     return (
       <>
         {torpedos.map(flight => (
@@ -88,7 +65,8 @@ class TorpedoDefense extends React.Component {
             key={`incoming-torpedo-${flight.id}`}
             ship={ship}
             torpedoFlight={flight}
-            shooter={gameData.ships.getShipById(flight.shooterId)}
+            shooter={ship}
+            uiState={uiState}
           />
         ))}
       </>

@@ -6,10 +6,14 @@ class HETorpedoDamageStrategy extends ExplosiveDamageStrategy {
     super(damageFormula, armorPiercingFormula, numberOfHitsFormula);
   }
 
-  getAttackRunMessages({ shooter, target, flight }, previousResponse = []) {
-    return [];
+  getAttackRunMessages(payload, previousResponse = []) {
+    return [
+      {
+        header: "Strike distance",
+        value: this.getStrikeDistance(payload)
+      }
+    ];
   }
-
   _getDamageMessage() {
     return this.damageFormula;
   }

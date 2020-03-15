@@ -19,7 +19,7 @@ import Offset from "../../model/hexagon/Offset.mjs";
 import MovementOrder from "../../model/movement/MovementOrder.mjs";
 import movementTypes from "../../model/movement/movementTypes.mjs";
 import DamageEntry from "../../model/unit/system/DamageEntry.mjs";
-import WeaponHitChance from "../../model/weapon/WeaponHitChancge.mjs";
+import WeaponHitChance from "../../model/weapon/WeaponHitChance.mjs";
 import CombatLogWeaponFire from "../../model/combatLog/CombatLogWeaponFire.mjs";
 import CombatLogWeaponFireHitResult from "../../model/combatLog/CombatLogWeaponFireHitResult.mjs";
 import HETorpedoDamageStrategy from "../../model/unit/system/weapon/ammunition/torpedo/torpedoDamageStrategy/HETorpedoDamageStrategy.mjs";

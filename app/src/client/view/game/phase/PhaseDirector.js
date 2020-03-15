@@ -22,6 +22,7 @@ import {
 } from "../animation/particle";
 import GameData from "../../../../model/game/GameData.mjs";
 import TorpedoIconContainer from "../renderer/icon/TorpedoIconContainer";
+import TorpedoAttackService from "../../../../model/weapon/TorpedoAttackService.mjs";
 
 class PhaseDirector {
   constructor(uiState, currentUser, coordinateConverter, gameConnector) {
@@ -37,6 +38,7 @@ class PhaseDirector {
     this.shipWindowManager = null;
     this.movementService = new MovementService();
     this.weaponFireService = new WeaponFireService();
+    this.torpedoAttackService = new TorpedoAttackService();
     this.movementPathService = null;
     this.terrainRenderer = null;
     this.phaseState = new PhaseState();
@@ -187,6 +189,7 @@ class PhaseDirector {
     this.movementPathService.update(gameData);
     this.terrainRenderer.update(gameData.terrain);
     this.weaponFireService.update(gameData);
+    this.torpedoAttackService.update(gameData);
 
     if (this.phaseStrategy && this.phaseStrategy instanceof phaseStrategy) {
       this.phaseStrategy.update(gameData);
@@ -217,7 +220,8 @@ class PhaseDirector {
       movementPathService: this.movementPathService,
       weaponFireService: this.weaponFireService,
       particleEmitterContainer: this.emitterContainer,
-      gameCamera: this.camera
+      gameCamera: this.camera,
+      torpedoAttackService: this.torpedoAttackService
     };
   }
 

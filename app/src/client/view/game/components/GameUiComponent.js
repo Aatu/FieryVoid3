@@ -30,9 +30,9 @@ const GameUiComponent = ({ game }) => {
         />
       )}
 
-      {state.shipTooltip.map((tooltip, index) => (
+      {state.shipTooltip.map(tooltip => (
         <ShipTooltip
-          key={`tooltip-ship-${index}`}
+          key={`tooltip-ship-${tooltip.ship.id}`}
           uiState={uiState}
           {...state}
           {...tooltip}

@@ -83,7 +83,7 @@ test.serial("Submit successfull launch order", async test => {
     1
   )
     .setStrikePosition(new Vector(-411.36206679760835, 0))
-    .setLaunchPosition(new Vector(86.60254037844379, 0));
+    .setLaunchPosition(new Vector(-4384.25360665872, 56.25));
 
   expected.id = null;
   test.deepEqual(actual, expected);
@@ -159,8 +159,6 @@ test.serial("Try to intercept torpedo attack", async test => {
 
   const gameId = gameData.id;
 
-  await controller.commitTurn(gameData.id, gameData.serialize(), user2);
-
   const shooter = gameData.ships
     .getShips()
     .find(ship => ship.name === "UCS Achilles");
@@ -175,32 +173,17 @@ test.serial("Try to intercept torpedo attack", async test => {
 
   launchers[0].setLaunchTarget(target.id);
 
+  await controller.commitTurn(gameData.id, gameData.serialize(), user2);
   await controller.commitTurn(gameData.id, gameData.serialize(), user);
   let newGameData = await controller.getGameData(gameData.id, user);
-
-  await assertTorpedoMove(
-    1,
-    gameData.id,
-    controller,
-    user,
-    test,
-    new Offset(-232, 3),
-    new Offset(-181, 3),
-    new Offset(72, -1)
-  );
-
-  await controller.commitTurn(gameData.id, newGameData.serialize(), user);
-  await controller.commitTurn(gameData.id, newGameData.serialize(), user2);
-  newGameData = await controller.getGameData(gameData.id, user);
-
   target = newGameData.ships
     .getShips()
     .find(ship => ship.name === "GEPS Biliyaz");
 
   target.electronicWarfare.assignCcEw(10);
 
-  await controller.commitTurn(gameData.id, newGameData.serialize(), user);
   await controller.commitTurn(gameData.id, newGameData.serialize(), user2);
+  await controller.commitTurn(gameData.id, newGameData.serialize(), user);
   newGameData = await controller.getGameData(gameData.id, user);
 
   target = newGameData.ships
@@ -212,8 +195,8 @@ test.serial("Try to intercept torpedo attack", async test => {
 
   const replay = await controller.replayHandler.requestReplay(
     gameId,
+    2,
     3,
-    4,
     user
   );
 
@@ -242,8 +225,6 @@ test.serial("Try to intercept multiple torpedos", async test => {
 
   const gameId = gameData.id;
 
-  await controller.commitTurn(gameData.id, gameData.serialize(), user2);
-
   const shooter = gameData.ships
     .getShips()
     .find(ship => ship.name === "UCS Achilles");
@@ -266,23 +247,9 @@ test.serial("Try to intercept multiple torpedos", async test => {
   launchers2[0].setLaunchTarget(target.id);
   launchers2[1].setLaunchTarget(target.id);
 
+  await controller.commitTurn(gameData.id, gameData.serialize(), user2);
   await controller.commitTurn(gameData.id, gameData.serialize(), user);
   let newGameData = await controller.getGameData(gameData.id, user);
-  //await evaluateTorpedoTurn(1, gameData.id, controller, user);
-
-  await assertTorpedoMove(
-    1,
-    gameData.id,
-    controller,
-    user,
-    test,
-    new Offset(-232, 3),
-    new Offset(-181, 3),
-    new Offset(72, -1)
-  );
-
-  await controller.commitTurn(gameData.id, newGameData.serialize(), user);
-  await controller.commitTurn(gameData.id, newGameData.serialize(), user2);
 
   target = newGameData.ships
     .getShips()
@@ -304,8 +271,8 @@ test.serial("Try to intercept multiple torpedos", async test => {
 
   const replay = await controller.replayHandler.requestReplay(
     gameId,
+    2,
     3,
-    4,
     user
   );
 
@@ -317,53 +284,3 @@ test.serial("Try to intercept multiple torpedos", async test => {
 
   db.close();
 });
-
-const assertTorpedoMove = async (
-  turn,
-  gameId,
-  controller,
-  user,
-  test,
-  position1,
-  position2,
-  velocity
-) => {
-  const replay = await controller.replayHandler.requestReplay(
-    gameId,
-    turn,
-    turn + 1,
-    user
-  );
-
-  const entries = replay[0].combatLog.entries.filter(
-    entry => entry instanceof CombatLogTorpedoMove
-  );
-
-  if (entries.length === 0) {
-    throw new Error("Torpedo move not found");
-  }
-
-  entries.forEach(entry => {
-    test.deepEqual(
-      coordinateConverter.fromGameToHex(entry.startPosition),
-      position1
-    );
-    test.deepEqual(
-      coordinateConverter.fromGameToHex(entry.endPosition),
-      position2
-    );
-
-    test.deepEqual(coordinateConverter.fromGameToHex(entry.velocity), velocity);
-  });
-};
-
-const evaluateTorpedoTurn = async (turn, gameId, controller, user) => {
-  const replay = await controller.replayHandler.requestReplay(
-    gameId,
-    turn,
-    turn + 1,
-    user
-  );
-
-  console.log(replay[0].combatLog.entries);
-};

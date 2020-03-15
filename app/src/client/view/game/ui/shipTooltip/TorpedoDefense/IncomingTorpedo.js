@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import CargoItem from "../system/SystemStrategyUi/cargo/CargoItem";
-import TorpedoDefenseTooltip from "./TorpedoDefense/TorpedoDefenseTooltip";
+import CargoItem from "../../system/SystemStrategyUi/cargo/CargoItem";
+import TorpedoDefenseTooltip from "./TorpedoDefenseTooltip";
 
 const TorpedoCargoItem = styled(CargoItem)`
   display: inline-flex;
@@ -48,6 +48,7 @@ export default function IncomingTorpedo({
           shooter={shooter}
           target={ship}
           torpedoFlight={torpedoFlight}
+          uiState={uiState}
         />
       }
     />

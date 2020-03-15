@@ -222,6 +222,7 @@ const buildTooltipEntries = (entries, subKey = "") => {
       return 0;
     })
     .map(({ value, header }, index) => {
+      const isValue = value => value !== undefined && value !== null;
       if (value && value.replace) {
         value = value.replace(/<br>/gm, "\n");
       }
@@ -232,12 +233,12 @@ const buildTooltipEntries = (entries, subKey = "") => {
           key={`shiptoolitip-${index}-${subKey}`}
         >
           {header && <TooltipValueHeader>{header}: </TooltipValueHeader>}
-          {value && Array.isArray(value) && (
+          {isValue(value) && Array.isArray(value) && (
             <InlineTooltipEntry>
               {buildTooltipEntries(value, subKey + "-" + index)}
             </InlineTooltipEntry>
           )}
-          {value && !Array.isArray(value) && (
+          {isValue(value) && !Array.isArray(value) && (
             <TooltipValue>{value}</TooltipValue>
           )}
         </TooltipEntry>

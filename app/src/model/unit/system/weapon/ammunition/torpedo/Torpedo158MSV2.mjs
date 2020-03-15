@@ -13,15 +13,6 @@ class Torpedo158MSV2 extends Torpedo158 {
     };
   }
 
-  getInterceptTries(flight, target) {
-    const distance = this.getStrikeDistance(flight, target);
-    if (distance > 5) {
-      return [5];
-    }
-
-    return [distance];
-  }
-
   getStrikeDistance(flight, target) {
     return this.damageStrategy.getStrikeDistance({
       target,

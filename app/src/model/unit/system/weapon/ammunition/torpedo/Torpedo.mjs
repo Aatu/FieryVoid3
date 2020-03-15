@@ -29,10 +29,6 @@ class Torpedo extends CargoEntity {
     return this.evasion;
   }
 
-  getInterceptTries(target) {
-    return [1, 2, 3];
-  }
-
   getCargoInfo() {
     const previousResponse = super.getCargoInfo();
 

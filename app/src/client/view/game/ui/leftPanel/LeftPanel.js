@@ -44,6 +44,7 @@ class LeftPanel extends React.PureComponent {
         <GameShipTooltipMenu
           ship={uiState.state.selectedShip}
           uiState={uiState}
+          {...rest}
         />
       </Container>
     );
