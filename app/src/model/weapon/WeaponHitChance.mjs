@@ -1,4 +1,4 @@
-class WeaponHitChange {
+class WeaponHitChance {
   constructor(data) {
     this.deserialize(data);
   }
@@ -40,4 +40,4 @@ class WeaponHitChange {
   }
 }
 
-export default WeaponHitChange;
+export default WeaponHitChance;

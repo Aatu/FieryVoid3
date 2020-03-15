@@ -1,7 +1,7 @@
 import ShipSystemStrategy from "../ShipSystemStrategy.mjs";
 import { getCompassHeadingOfPoint } from "../../../../utils/math.mjs";
 import { getDistanceBetweenDirections } from "../../../../utils/math.mjs";
-import WeaponHitChange from "../../../../weapon/WeaponHitChange.mjs";
+import WeaponHitChance from "../../../../weapon/WeaponHitChance.mjs";
 
 class InterceptorStrategy extends ShipSystemStrategy {
   constructor(numberOfIntercepts = 1, heatPerIntercept = 0) {
@@ -77,7 +77,7 @@ class InterceptorStrategy extends ShipSystemStrategy {
 
     const rollingPenalty = ship.movement.isRolling() ? -20 : 0;
 
-    return new WeaponHitChange({
+    return new WeaponHitChance({
       baseToHit: torpedoHitSize,
       fireControl,
       dew: 0,

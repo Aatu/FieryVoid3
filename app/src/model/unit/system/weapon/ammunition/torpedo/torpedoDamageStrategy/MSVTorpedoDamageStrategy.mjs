@@ -7,14 +7,23 @@ class MSVTorpedoDamageStrategy extends StandardDamageStrategy {
     armorPiercingFormula,
     rangePenalty,
     numberOfShots,
-    strikeHitChange = 20,
+    strikeHitChance = 20,
     minStrikeDistance = 1
   ) {
     super(damageFormula, armorPiercingFormula);
     this.rangePenalty = rangePenalty;
     this.numberOfShots = numberOfShots;
-    this.strikeHitChange = strikeHitChange;
+    this.strikeHitChance = strikeHitChance;
     this.minStrikeDistance = minStrikeDistance;
+  }
+
+  getAttackRunMessages(payload, previousResponse = []) {
+    return [
+      {
+        header: "Strike distance",
+        value: this.getStrikeDistance(payload)
+      }
+    ];
   }
 
   getMessages(payload, previousResponse = []) {
@@ -36,6 +45,11 @@ class MSVTorpedoDamageStrategy extends StandardDamageStrategy {
     previousResponse.push({
       header: "SV range penalty",
       value: this.rangePenalty
+    });
+
+    previousResponse.push({
+      header: "Target hit chance",
+      value: `${this.strikeHitChance}%`
     });
 
     return previousResponse;
@@ -64,8 +78,8 @@ class MSVTorpedoDamageStrategy extends StandardDamageStrategy {
     );
   }
 
-  getHitChange({ target, torpedoFlight, distance }) {
-    const hitProfile = target.getHitProfile(torpedoFlight.launchPosition);
+  getHitChance({ target, torpedoFlight, distance }) {
+    const hitProfile = target.getHitProfile(torpedoFlight.strikePosition);
     const rangeModifier =
       this.rangePenalty * (1 + target.movement.getEvasion() / 10) * distance;
 
@@ -80,7 +94,7 @@ class MSVTorpedoDamageStrategy extends StandardDamageStrategy {
         return distance;
       }
 
-      if (this.getHitChange({ ...payload, distance }) >= this.strikeHitChange) {
+      if (this.getHitChance({ ...payload, distance }) >= this.strikeHitChance) {
         return distance;
       }
     }
@@ -90,12 +104,12 @@ class MSVTorpedoDamageStrategy extends StandardDamageStrategy {
 
   applyDamageFromWeaponFire(payload) {
     const { torpedoFlight, combatLogEvent } = payload;
-    const attackPosition = torpedoFlight.launchPosition;
+    const attackPosition = torpedoFlight.strikePosition;
 
     let shots = this.numberOfShots;
 
     const distance = this.getStrikeDistance(payload);
-    const hitChance = this.getHitChange({ ...payload, distance });
+    const hitChance = this.getHitChance({ ...payload, distance });
 
     combatLogEvent.addNote(
       `MSV with ${this.numberOfShots} projectiles at distance ${distance} with hit chance of ${hitChance}% each.`

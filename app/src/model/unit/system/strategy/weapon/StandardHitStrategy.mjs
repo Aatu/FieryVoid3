@@ -1,5 +1,5 @@
 import ShipSystemStrategy from "../ShipSystemStrategy.mjs";
-import WeaponHitChange from "../../../../weapon/WeaponHitChange.mjs";
+import WeaponHitChance from "../../../../weapon/WeaponHitChance.mjs";
 import CombatLogWeaponFireHitResult from "../../../../combatLog/CombatLogWeaponFireHitResult.mjs";
 
 class StandardHitStrategy extends ShipSystemStrategy {
@@ -9,12 +9,12 @@ class StandardHitStrategy extends ShipSystemStrategy {
     this.numberOfShots = numberOfShots;
   }
 
-  getBaseHitChange({ shooter, target }) {
+  getBaseHitChance({ shooter, target }) {
     return target.getHitProfile(shooter.getPosition());
   }
 
   checkFireOrderHits({ shooter, target, weaponSettings, combatLogEntry }) {
-    const toHit = this.getHitChange({ shooter, target, weaponSettings });
+    const toHit = this.getHitChance({ shooter, target, weaponSettings });
     const roll = Math.ceil(Math.random() * 100);
 
     const hit = roll <= toHit.result;
@@ -29,8 +29,8 @@ class StandardHitStrategy extends ShipSystemStrategy {
     return this.fireControl;
   }
 
-  getHitChange({ shooter, target, weaponSettings = {} }) {
-    const baseToHit = this.system.callHandler("getBaseHitChange", {
+  getHitChance({ shooter, target, weaponSettings = {} }) {
+    const baseToHit = this.system.callHandler("getBaseHitChance", {
       shooter,
       target,
       weaponSettings
@@ -75,7 +75,7 @@ class StandardHitStrategy extends ShipSystemStrategy {
       result = 0;
     }
 
-    return new WeaponHitChange({
+    return new WeaponHitChance({
       baseToHit,
       fireControl: this.fireControl,
       dew: dew,

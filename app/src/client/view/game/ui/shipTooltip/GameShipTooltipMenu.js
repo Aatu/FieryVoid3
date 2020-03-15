@@ -1,7 +1,10 @@
 import * as React from "react";
 import { TooltipMenu, TooltipButton } from "../../../../styled";
 import OEWButtons from "../electronicWarfare/OEWButtons";
-import { TOOLTIP_TAB_TORPEDO_ATTACK } from "./ShipTooltip";
+import {
+  TOOLTIP_TAB_TORPEDO_ATTACK,
+  TOOLTIP_TAB_TORPEDO_DEFENSE
+} from "./ShipTooltip";
 import CCEWButtons from "../electronicWarfare/CCEWButtons";
 
 const toggleRadiators = (ship, uiState, on = false) => {
@@ -152,6 +155,13 @@ class GameShipTooltipMenu extends React.PureComponent {
           <TooltipButton
             img="/img/system/missile1.png"
             onClick={() => selectTooltipTab(TOOLTIP_TAB_TORPEDO_ATTACK)}
+          />
+        )}
+
+        {ship.player.isUsers(currentUser) && (
+          <TooltipButton
+            img="/img/torpedoDefense.png"
+            onClick={() => selectTooltipTab(TOOLTIP_TAB_TORPEDO_DEFENSE)}
           />
         )}
       </TooltipMenu>

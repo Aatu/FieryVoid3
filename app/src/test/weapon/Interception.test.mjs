@@ -15,7 +15,7 @@ import GameSlot from "../../model/game/GameSlot.mjs";
 import User from "../../model/User.mjs";
 import StandardHitStrategy from "../../model/unit/system/strategy/weapon/StandardHitStrategy.mjs";
 import EwArray from "../../model/unit/system/electronicWarfare/EwArray.mjs";
-import WeaponHitChange from "../../model/weapon/WeaponHitChange.mjs";
+import WeaponHitChance from "../../model/weapon/WeaponHitChance.mjs";
 
 const createShipAndTorpedo = () => {
   const ship = new Ship({ id: 1 });
@@ -189,7 +189,7 @@ test("Intercept hit change is calculated properly", test => {
 
   test.deepEqual(
     result,
-    new WeaponHitChange({
+    new WeaponHitChance({
       absoluteResult: 10,
       baseToHit: 0,
       dew: 0,
@@ -212,7 +212,7 @@ test("Intercept hit change is calculated properly", test => {
 
   test.deepEqual(
     result2,
-    new WeaponHitChange({
+    new WeaponHitChance({
       absoluteResult: 42,
       baseToHit: 0,
       dew: 0,

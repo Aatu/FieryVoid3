@@ -40,54 +40,54 @@ const InfoValue = styled.span`
 
 class SystemInfoWeaponTargeting extends React.Component {
   render() {
-    const { ship, system, uiState, target, hitChange } = this.props;
+    const { ship, system, uiState, target, hitChance } = this.props;
 
     return (
       <>
         <InfoHeader>TARGET: {target.name}</InfoHeader>
         <Entry>
           <Header>Base hit change: </Header>
-          <InfoValue>{hitChange.baseToHit}%</InfoValue>
+          <InfoValue>{hitChance.baseToHit}%</InfoValue>
         </Entry>
         <Entry>
           <Header>Fire control: </Header>
-          <InfoValue>+{hitChange.fireControl} to hit</InfoValue>
+          <InfoValue>+{hitChance.fireControl} to hit</InfoValue>
         </Entry>
         <Entry>
           <Header>Distance: </Header>
           <InfoValue>
-            {hitChange.distance} hexes,{" "}
-            {hitChange.outOfRange
+            {hitChance.distance} hexes,{" "}
+            {hitChance.outOfRange
               ? `out of range`
-              : `${hitChange.rangeModifier} to hit`}
+              : `${hitChance.rangeModifier} to hit`}
           </InfoValue>
         </Entry>
         <Entry>
           <Header>Evasion: </Header>
-          <InfoValue>{`+${hitChange.evasion * 10}% range penalty`}</InfoValue>
+          <InfoValue>{`+${hitChance.evasion * 10}% range penalty`}</InfoValue>
         </Entry>
         <Entry>
           <Header>OEW: </Header>
-          <InfoValue>+{hitChange.oew * 5} to hit</InfoValue>
+          <InfoValue>+{hitChance.oew * 5} to hit</InfoValue>
         </Entry>
         <Entry>
           <Header>DEW: </Header>
-          <InfoValue>-{hitChange.dew * 5} to hit</InfoValue>
+          <InfoValue>-{hitChance.dew * 5} to hit</InfoValue>
         </Entry>
         <Entry>
           <Header>Your evasion: </Header>
-          <InfoValue>{`${hitChange.ownEvasionPenalty} to hit`}</InfoValue>
+          <InfoValue>{`${hitChance.ownEvasionPenalty} to hit`}</InfoValue>
         </Entry>
-        {hitChange.noLockPenalty !== 0 && (
+        {hitChance.noLockPenalty !== 0 && (
           <Entry>
             <Header>No lock on target: </Header>
-            <InfoValue>{`${hitChange.noLockPenalty} to hit`}</InfoValue>
+            <InfoValue>{`${hitChance.noLockPenalty} to hit`}</InfoValue>
           </Entry>
         )}
 
         <Entry>
           <Header>FINAL HIT CHANGE: </Header>
-          <InfoValue>{hitChange.result}%</InfoValue>
+          <InfoValue>{hitChance.result}%</InfoValue>
         </Entry>
       </>
     );

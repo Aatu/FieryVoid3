@@ -2,17 +2,17 @@ import React from "react";
 import styled from "styled-components";
 import { Highlight, DangerHighlight } from "./styled";
 
-const HitChangeContainer = styled.div`
+const HitChanceContainer = styled.div`
   margin-left: 5px;
 `;
 
-class HitChange extends React.Component {
+class HitChance extends React.Component {
   render() {
     const { resolution, totalShots, shotsHit } = this.props;
 
     return (
-      <HitChangeContainer>
-        Change to hit: <Highlight>{resolution.hitChange.result}</Highlight>. Hit
+      <HitChanceContainer>
+        Change to hit: <Highlight>{resolution.hitChance.result}</Highlight>. Hit
         roll: <Highlight>{resolution.hitRoll}</Highlight>.
         {resolution.result ? (
           <Highlight>
@@ -23,9 +23,9 @@ class HitChange extends React.Component {
             <b> Miss!</b>
           </DangerHighlight>
         )}
-      </HitChangeContainer>
+      </HitChanceContainer>
     );
   }
 }
 
-export default HitChange;
+export default HitChance;

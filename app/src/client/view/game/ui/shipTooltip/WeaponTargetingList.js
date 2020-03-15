@@ -101,7 +101,7 @@ class WeaponTargetingList extends React.Component {
       ...shooter.systems.getSystems().filter(
         system =>
           weaponFireService.canFire(shooter, ship, system) &&
-          system.callHandler("getHitChange", {
+          system.callHandler("getHitChance", {
             shooter,
             target: ship
           }).result > 0

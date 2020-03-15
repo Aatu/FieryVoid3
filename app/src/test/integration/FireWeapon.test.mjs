@@ -12,7 +12,7 @@ import hexagon from "../../model/hexagon";
 import TestShip from "../../model/unit/ships/test/TestShip";
 import User from "../../model/User";
 import FireOrder from "../../model/weapon/FireOrder.mjs";
-import WeaponHitChange from "../../model/weapon/WeaponHitChange.mjs";
+import WeaponHitChance from "../../model/weapon/WeaponHitChance.mjs";
 import TorpedoFlight from "../../model/unit/TorpedoFlight.mjs";
 import Torpedo158MSV from "../../model/unit/system/weapon/ammunition/torpedo/Torpedo158MSV.mjs";
 import Vector from "../../model/utils/Vector.mjs";
@@ -173,9 +173,9 @@ test.serial("Submit successfull fire order for both players", async test => {
     .callHandler("getFireOrders");
 
   test.deepEqual(
-    replay[0].combatLog.entries[0].hitResult.hitChange,
+    replay[0].combatLog.entries[0].hitResult.hitChance,
 
-    new WeaponHitChange({
+    new WeaponHitChance({
       baseToHit: 100,
       fireControl: 10000,
       dew: 10,
@@ -283,9 +283,9 @@ test.serial("Submit successfull fire order with roll and pivot", async test => {
     .callHandler("getFireOrders");
 
   test.deepEqual(
-    replay[0].combatLog.entries[0].hitResult.hitChange,
+    replay[0].combatLog.entries[0].hitResult.hitChance,
 
-    new WeaponHitChange({
+    new WeaponHitChance({
       baseToHit: 100,
       fireControl: 10000,
       dew: 10,

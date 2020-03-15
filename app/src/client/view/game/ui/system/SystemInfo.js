@@ -146,7 +146,7 @@ class SystemInfo extends React.Component {
             ship={ship}
             system={system}
             target={weaponTargeting.target}
-            hitChange={weaponTargeting.hitChange}
+            hitChance={weaponTargeting.hitChance}
           />
         )}
       </>

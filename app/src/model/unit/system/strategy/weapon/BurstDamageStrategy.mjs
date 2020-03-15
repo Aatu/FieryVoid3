@@ -71,7 +71,7 @@ class BurstDamageStrategy extends StandardDamageStrategy {
   }
 
   _getNumberOfShots({ hitResolution }) {
-    const requiredToHit = hitResolution.hitChange.result;
+    const requiredToHit = hitResolution.hitChance.result;
     const rolledToHit = hitResolution.hitRoll;
 
     if (rolledToHit > requiredToHit) {

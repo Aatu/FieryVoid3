@@ -19,7 +19,7 @@ import Offset from "../../model/hexagon/Offset.mjs";
 import MovementOrder from "../../model/movement/MovementOrder.mjs";
 import movementTypes from "../../model/movement/movementTypes.mjs";
 import DamageEntry from "../../model/unit/system/DamageEntry.mjs";
-import WeaponHitChange from "../../model/weapon/WeaponHitChange.mjs";
+import WeaponHitChance from "../../model/weapon/WeaponHitChancge.mjs";
 import CombatLogWeaponFire from "../../model/combatLog/CombatLogWeaponFire.mjs";
 import CombatLogWeaponFireHitResult from "../../model/combatLog/CombatLogWeaponFireHitResult.mjs";
 import HETorpedoDamageStrategy from "../../model/unit/system/weapon/ammunition/torpedo/torpedoDamageStrategy/HETorpedoDamageStrategy.mjs";
@@ -100,7 +100,7 @@ test("Standard damage strategy overkills all the way trough", test => {
     fireOrder: new FireOrder(),
     hitResolution: new CombatLogWeaponFireHitResult(
       true,
-      new WeaponHitChange({ result: 10 }),
+      new WeaponHitChance({ result: 10 }),
       10
     ),
     combatLogEntry: new CombatLogWeaponFire()
@@ -185,7 +185,7 @@ test("Piercing damage strategy will damage multiple systems", test => {
     shooter,
     hitResolution: new CombatLogWeaponFireHitResult(
       true,
-      new WeaponHitChange({ result: 10 }),
+      new WeaponHitChance({ result: 10 }),
       10
     ),
     combatLogEntry: new CombatLogWeaponFire(),
@@ -271,7 +271,7 @@ test("Piercing damage strategy will stop when armor piercing runs out", test => 
     shooter,
     hitResolution: new CombatLogWeaponFireHitResult(
       true,
-      new WeaponHitChange({ result: 10 }),
+      new WeaponHitChance({ result: 10 }),
       10
     ),
     combatLogEntry: new CombatLogWeaponFire(),
@@ -304,7 +304,7 @@ test("Burst damage strategy amount of shots works", test => {
     new BurstDamageStrategy(10, 0, 1, 6, 10)._getNumberOfShots({
       hitResolution: new CombatLogWeaponFireHitResult(
         true,
-        new WeaponHitChange({ result: 80 }),
+        new WeaponHitChance({ result: 80 }),
         55
       )
     }),
@@ -315,7 +315,7 @@ test("Burst damage strategy amount of shots works", test => {
     new BurstDamageStrategy(10, 0, 1, 6, 10)._getNumberOfShots({
       hitResolution: new CombatLogWeaponFireHitResult(
         true,
-        new WeaponHitChange({ result: 80 }),
+        new WeaponHitChance({ result: 80 }),
         5
       )
     }),
@@ -326,7 +326,7 @@ test("Burst damage strategy amount of shots works", test => {
     new BurstDamageStrategy("d2", "d3+2", "d6", 6, 5)._getNumberOfShots({
       hitResolution: new CombatLogWeaponFireHitResult(
         true,
-        new WeaponHitChange({ result: 130 }),
+        new WeaponHitChance({ result: 130 }),
         100
       )
     }),
@@ -348,7 +348,7 @@ test("Burst damage strategy applies damage properly", test => {
     fireOrder,
     hitResolution: new CombatLogWeaponFireHitResult(
       true,
-      new WeaponHitChange({ result: 80 }),
+      new WeaponHitChance({ result: 80 }),
       55
     ),
     combatLogEntry
@@ -419,7 +419,7 @@ test("Explosive damage strategy will... um... explode", test => {
     fireOrder: new FireOrder(),
     hitResolution: new CombatLogWeaponFireHitResult(
       true,
-      new WeaponHitChange({ result: 10 }),
+      new WeaponHitChance({ result: 10 }),
       10
     ),
     combatLogEntry: new CombatLogWeaponFire()

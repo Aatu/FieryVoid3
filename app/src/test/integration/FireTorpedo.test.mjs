@@ -12,7 +12,7 @@ import hexagon from "../../model/hexagon";
 import TestShip from "../../model/unit/ships/test/TestShip";
 import User from "../../model/User";
 import FireOrder from "../../model/weapon/FireOrder.mjs";
-import WeaponHitChange from "../../model/weapon/WeaponHitChange.mjs";
+import WeaponHitChance from "../../model/weapon/WeaponHitChance.mjs";
 import TorpedoFlight from "../../model/unit/TorpedoFlight.mjs";
 import Torpedo158MSV from "../../model/unit/system/weapon/ammunition/torpedo/Torpedo158MSV.mjs";
 import Vector from "../../model/utils/Vector.mjs";

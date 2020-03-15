@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import HitChange from "./HitChange";
+import HitChance from "./HitChance";
 import { Highlight, DangerHighlight } from "./styled";
 import DamageLine from "./DamageLine";
 import CombatLogWeaponFire from "../../../../../model/combatLog/CombatLogWeaponFire.mjs";
@@ -87,7 +87,7 @@ class CombatLogLine extends React.Component {
             {combatLogEntry.ammoName && `(${combatLogEntry.ammoName})`}&nbsp;
           </Highlight>{" "}
           at {targetName}.
-          <HitChange
+          <HitChance
             resolution={combatLogEntry.hitResult}
             totalShots={combatLogEntry.totalShots}
             shotsHit={combatLogEntry.shotsHit}

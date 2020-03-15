@@ -14,6 +14,8 @@ import {
 import TorpedoAttack from "./TorpedoAttack";
 import ShipTooltipDetails from "./ShipTooltipDetails";
 import { X } from "../../../../styled/icon";
+import GameShipTooltipMenuBack from "./GameShipTooltipMenuBack";
+import TorpedoDefense from "./TorpedoDefense";
 
 const InfoHeader = styled(TooltipHeader)`
   display: flex;
@@ -54,7 +56,8 @@ const CloseButton = styled(TooltipButton)`
   }
 `;
 
-export const TOOLTIP_TAB_TORPEDO_ATTACK = "toolti_tab_torpedo_attack";
+export const TOOLTIP_TAB_TORPEDO_ATTACK = "tooltip_tab_torpedo_attack";
+export const TOOLTIP_TAB_TORPEDO_DEFENSE = "tooltip_tab_torpedo_defense";
 
 class ShipTooltip extends React.Component {
   constructor(props) {
@@ -77,6 +80,10 @@ class ShipTooltip extends React.Component {
       return Menu;
     }
 
+    if (tooltipTab && ui) {
+      return GameShipTooltipMenuBack;
+    }
+
     return null;
   }
 
@@ -86,6 +93,8 @@ class ShipTooltip extends React.Component {
     switch (tooltipTab) {
       case TOOLTIP_TAB_TORPEDO_ATTACK:
         return "Weapon assignment";
+      case TOOLTIP_TAB_TORPEDO_DEFENSE:
+        return "Torpedo defense";
       default:
         return "Ship details";
     }
@@ -161,6 +170,10 @@ class ShipTooltip extends React.Component {
 
         {tooltipTab === TOOLTIP_TAB_TORPEDO_ATTACK && (
           <TorpedoAttack ship={ship} uiState={uiState} {...rest} />
+        )}
+
+        {tooltipTab === TOOLTIP_TAB_TORPEDO_DEFENSE && (
+          <TorpedoDefense ship={ship} uiState={uiState} {...rest} />
         )}
       </ShipTooltipContainer>
     );

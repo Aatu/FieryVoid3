@@ -1,23 +1,23 @@
-import WeaponHitChange from "../weapon/WeaponHitChange.mjs";
+import WeaponHitChance from "../weapon/WeaponHitChance.mjs";
 
 class CombatLogWeaponFireHitResult {
-  constructor(result, hitChange, hitRoll) {
+  constructor(result, hitChance, hitRoll) {
     this.result = result;
-    this.hitChange = hitChange;
+    this.hitChance = hitChance;
     this.hitRoll = hitRoll;
   }
 
   serialize() {
     return {
       result: this.result,
-      hitChange: this.hitChange.serialize(),
+      hitChance: this.hitChance.serialize(),
       hitRoll: this.hitRoll
     };
   }
 
   deserialize(data = {}) {
     this.result = data.result || false;
-    this.hitChange = new WeaponHitChange().deserialize(data.hitChange);
+    this.hitChance = new WeaponHitChance().deserialize(data.hitChance);
     this.hitRoll = data.hitRoll || 1;
 
     return this;

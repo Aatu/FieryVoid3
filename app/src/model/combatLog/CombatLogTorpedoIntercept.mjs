@@ -1,4 +1,4 @@
-import WeaponHitChange from "../weapon/WeaponHitChange.mjs";
+import WeaponHitChance from "../weapon/WeaponHitChance.mjs";
 
 class CombatLogTorpedoIntercept {
   constructor(torpedoFlightId, shipId, weaponId, interceptChange, roll) {
@@ -29,7 +29,7 @@ class CombatLogTorpedoIntercept {
     this.weaponId = data.weaponId;
     this.roll = data.roll;
     this.shipId = data.shipId;
-    this.interceptChange = new WeaponHitChange().deserialize(
+    this.interceptChange = new WeaponHitChance().deserialize(
       data.interceptChange
     );
     return this;
