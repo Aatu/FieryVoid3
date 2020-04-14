@@ -9,7 +9,7 @@ import {
   CircleSprite,
   ShipEWSprite,
   DottedCircleSprite,
-  HexagonSprite
+  HexagonSprite,
 } from "../sprite";
 
 import Line from "../Line";
@@ -47,7 +47,7 @@ class ShipObject {
     this.hexSpriteContainer = new THREE.Object3D();
     this.ghostShipObject = null;
     this.shipSideSprite = null;
-    //this.shipEWSprite = null;
+    this.shipEWSprite = null;
     this.shipSelectedSprite = null;
     this.line = null;
 
@@ -66,6 +66,8 @@ class ShipObject {
 
     this.rotation = 0;
     this.roll = 0;
+    this.dimensions = { x: 100, y: 100 };
+    this.center = { x: 0, y: 0 };
 
     this.consumeShipdata(this.ship);
   }
@@ -74,7 +76,7 @@ class ShipObject {
     this.shipObject = object;
 
     if (this.bumpMap) {
-      object.scene.children.forEach(mesh => {
+      object.scene.children.forEach((mesh) => {
         mesh.material.bumpMap = this.bumpMap;
         mesh.material.bumpScale = 0.5;
         mesh.material.bumpMap.flipY = false;
@@ -82,7 +84,7 @@ class ShipObject {
       });
     }
 
-    this.shipObject.traverse(child => {
+    this.shipObject.traverse((child) => {
       child.userData = { icon: this };
     });
 
@@ -110,7 +112,7 @@ class ShipObject {
       end: { x: 0, y: 0, z: this.defaultHeight },
       width: 5,
       color: new THREE.Color(1, 1, 1),
-      opacity: 0.1
+      opacity: 0.1,
     });
     this.line.hide();
 
@@ -150,19 +152,38 @@ class ShipObject {
     this.mesh.add(this.shipSideSprite.mesh);
     */
 
-    /*
-    this.shipEWSprite = new ShipEWSprite(
-      { width: this.sideSpriteSize * 1.5, height: this.sideSpriteSize },
-      this.defaultHeight
-    );
-    this.mesh.add(this.shipEWSprite.mesh);
-    this.shipEWSprite.hide();
-    */
-
     //this.mesh.name = "ship";
     //this.mesh.userData = { icon: this };
     this.scene.add(this.mesh);
     this.hide();
+  }
+
+  async showEwSprite(dew, ccew) {
+    await this.isShipObjectLoaded;
+
+    if (!this.shipEWSprite) {
+      const max =
+        this.dimensions.x > this.dimensions.y
+          ? this.dimensions.x
+          : this.dimensions.y;
+
+      this.shipEWSprite = new ShipEWSprite(
+        { width: max * 1.5, height: max * 1.5 },
+        this.defaultHeight,
+        this.dimensions
+      );
+      this.shipEWSprite.setPosition(this.center);
+      this.hexSpriteContainer.add(this.shipEWSprite.mesh);
+      this.shipEWSprite.hide();
+    }
+
+    this.shipEWSprite.update(dew, ccew);
+    this.shipEWSprite.show();
+  }
+
+  async hideEwSprite() {
+    await this.isShipObjectLoaded;
+    this.shipEWSprite.hide();
   }
 
   create() {
@@ -339,7 +360,7 @@ class ShipObject {
     await this.isShipObjectLoaded;
 
     names.forEach(({ name, id }) => {
-      const slot = this.shipObject.scene.children.find(child => {
+      const slot = this.shipObject.scene.children.find((child) => {
         if (!child.name) {
           return false;
         }
@@ -373,7 +394,7 @@ class ShipObject {
   async replaceOpacity(opacity) {
     await this.isShipObjectLoaded;
 
-    this.shipObject.traverse(child => {
+    this.shipObject.traverse((child) => {
       child.material.transparent = true;
       child.material.opacity = opacity;
       child.material.needsUpdate = true;
@@ -383,7 +404,7 @@ class ShipObject {
   async revertOpacity() {
     await this.isShipObjectLoaded;
 
-    this.shipObject.traverse(child => {
+    this.shipObject.traverse((child) => {
       child.material.opacity = this.opacity;
       child.material.needsUpdate = true;
     });
@@ -398,16 +419,16 @@ class ShipObject {
   async replaceEmissive(color) {
     await this.isShipObjectLoaded;
 
-    this.shipObject.traverse(child => {
+    this.shipObject.traverse((child) => {
       const replacement = this.emissiveReplaced.find(
-        replacement => replacement.object === child
+        (replacement) => replacement.object === child
       );
 
       if (!replacement) {
         this.emissiveReplaced.push({
           object: child,
           color: child.material.emissive,
-          map: child.material.emissiveMap
+          map: child.material.emissiveMap,
         });
       }
 
@@ -419,9 +440,9 @@ class ShipObject {
 
   async revertEmissive() {
     await this.isShipObjectLoaded;
-    this.shipObject.traverse(child => {
+    this.shipObject.traverse((child) => {
       const replacement = this.emissiveReplaced.find(
-        replacement => replacement.object === child
+        (replacement) => replacement.object === child
       );
 
       if (this.forcedEmissiveColor) {
@@ -446,16 +467,13 @@ class ShipObject {
     await this.isShipObjectLoaded;
 
     this.forceEmissive(color);
-    this.hexSprites.forEach(hexSprite =>
+    this.hexSprites.forEach((hexSprite) =>
       hexSprite.setOverlayColor(new THREE.Color(color))
     );
   }
 
   showMapIcon(color) {
-    this.mapIcon
-      .setOverlayColor(color)
-      .setOverlayColorAlpha(1)
-      .show();
+    this.mapIcon.setOverlayColor(color).setOverlayColorAlpha(1).show();
     this.hideShip();
   }
 
@@ -469,11 +487,11 @@ class ShipObject {
   }
 
   render(renderPayload) {
-    this.systemObjects.forEach(object => object.render(renderPayload));
+    this.systemObjects.forEach((object) => object.render(renderPayload));
   }
 
   playSystemAnimation(system, name) {
-    const object = this.systemObjects.find(object => object.id === system.id);
+    const object = this.systemObjects.find((object) => object.id === system.id);
 
     if (!object) {
       return;
@@ -484,7 +502,7 @@ class ShipObject {
   }
 
   setSystemAnimation(system, name, time) {
-    const object = this.systemObjects.find(object => object.id === system.id);
+    const object = this.systemObjects.find((object) => object.id === system.id);
 
     if (!object) {
       return;
@@ -495,7 +513,7 @@ class ShipObject {
   }
 
   disableSystemAnimation(system, name) {
-    const object = this.systemObjects.find(object => object.id === system.id);
+    const object = this.systemObjects.find((object) => object.id === system.id);
 
     if (!object) {
       return;
@@ -512,7 +530,7 @@ class ShipObject {
 
     return this.ship
       .getIconHexas(hexFacing)
-      .map(hex => coordinateConverter.fromHexToGame(hex).add(iconPosition));
+      .map((hex) => coordinateConverter.fromHexToGame(hex).add(iconPosition));
   }
 
   getCenter() {
@@ -521,7 +539,7 @@ class ShipObject {
     const lowest = new Vector();
     const highest = new Vector();
 
-    hexas.forEach(position => {
+    hexas.forEach((position) => {
       if (position.x < lowest.x) {
         lowest.x = position.x;
       }

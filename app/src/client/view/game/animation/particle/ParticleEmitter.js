@@ -37,112 +37,112 @@ class ParticleEmitter extends Animation {
 
     this.particleGeometry = new THREE.BufferGeometry();
 
-    this.particleGeometry.addAttribute(
+    this.particleGeometry.setAttribute(
       "position",
       new THREE.Float32BufferAttribute(
         new Float32Array(particleCount * 3),
         3
       ).setDynamic(true)
     );
-    this.particleGeometry.addAttribute(
+    this.particleGeometry.setAttribute(
       "size",
       new THREE.Float32BufferAttribute(
         new Float32Array(particleCount),
         1
       ).setDynamic(true)
     );
-    this.particleGeometry.addAttribute(
+    this.particleGeometry.setAttribute(
       "sizeChange",
       new THREE.Float32BufferAttribute(
         new Float32Array(particleCount),
         1
       ).setDynamic(true)
     );
-    this.particleGeometry.addAttribute(
+    this.particleGeometry.setAttribute(
       "color",
       new THREE.Float32BufferAttribute(
         new Float32Array(particleCount * 3),
         3
       ).setDynamic(true)
     );
-    this.particleGeometry.addAttribute(
+    this.particleGeometry.setAttribute(
       "opacity",
       new THREE.Float32BufferAttribute(
         new Float32Array(particleCount),
         1
       ).setDynamic(true)
     );
-    this.particleGeometry.addAttribute(
+    this.particleGeometry.setAttribute(
       "fadeInTime",
       new THREE.Float32BufferAttribute(
         new Float32Array(particleCount),
         1
       ).setDynamic(true)
     );
-    this.particleGeometry.addAttribute(
+    this.particleGeometry.setAttribute(
       "fadeInSpeed",
       new THREE.Float32BufferAttribute(
         new Float32Array(particleCount),
         1
       ).setDynamic(true)
     );
-    this.particleGeometry.addAttribute(
+    this.particleGeometry.setAttribute(
       "fadeOutTime",
       new THREE.Float32BufferAttribute(
         new Float32Array(particleCount),
         1
       ).setDynamic(true)
     );
-    this.particleGeometry.addAttribute(
+    this.particleGeometry.setAttribute(
       "fadeOutSpeed",
       new THREE.Float32BufferAttribute(
         new Float32Array(particleCount),
         1
       ).setDynamic(true)
     );
-    this.particleGeometry.addAttribute(
+    this.particleGeometry.setAttribute(
       "activationGameTime",
       new THREE.Float32BufferAttribute(
         new Float32Array(particleCount),
         1
       ).setDynamic(true)
     );
-    this.particleGeometry.addAttribute(
+    this.particleGeometry.setAttribute(
       "velocity",
       new THREE.Float32BufferAttribute(
         new Float32Array(particleCount * 3),
         3
       ).setDynamic(true)
     );
-    this.particleGeometry.addAttribute(
+    this.particleGeometry.setAttribute(
       "acceleration",
       new THREE.Float32BufferAttribute(
         new Float32Array(particleCount * 3),
         3
       ).setDynamic(true)
     );
-    this.particleGeometry.addAttribute(
+    this.particleGeometry.setAttribute(
       "textureNumber",
       new THREE.Float32BufferAttribute(
         new Float32Array(particleCount),
         1
       ).setDynamic(true)
     );
-    this.particleGeometry.addAttribute(
+    this.particleGeometry.setAttribute(
       "angle",
       new THREE.Float32BufferAttribute(
         new Float32Array(particleCount),
         1
       ).setDynamic(true)
     );
-    this.particleGeometry.addAttribute(
+    this.particleGeometry.setAttribute(
       "angleChange",
       new THREE.Float32BufferAttribute(
         new Float32Array(particleCount),
         1
       ).setDynamic(true)
     );
-    this.particleGeometry.addAttribute(
+    this.particleGeometry.setAttribute(
       "sine",
       new THREE.Float32BufferAttribute(
         new Float32Array(particleCount),

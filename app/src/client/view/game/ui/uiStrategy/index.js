@@ -36,8 +36,10 @@ import ShowMapIcons from "./ShowMapIcons";
 import ShowShipBadges from "./ShowShipBadges";
 import ShowTorpedoObjects from "./ShowTorpedoObjects";
 import WeaponTargetingMouseoverShowsLine from "./weapon/WeaponTargetingMouseoverShowsLine";
+import ShowShipDEWandCCEW from "./ShowShipDEWandCCEW";
 
 export {
+  ShowShipDEWandCCEW,
   WeaponTargetingMouseoverShowsLine,
   ShowTorpedoObjects,
   ShowShipBadges,

@@ -170,19 +170,19 @@ THREE.LinearMipMapLinearFilter
       1
     ).setDynamic(true);
 
-    geometry.addAttribute("offset", offsetAttribute);
-    geometry.addAttribute("opacity", opacityAttribute);
-    geometry.addAttribute("textureNumber", textureNumberAttribute);
-    geometry.addAttribute("scale", scaleAttribute);
-    geometry.addAttribute("quaternion", quaternionAttribute);
-    geometry.addAttribute("color", colorAttribute);
-    geometry.addAttribute("velocity", velocityAttribute);
-    geometry.addAttribute("activationGameTime", activationGameTimeAttribute);
-    geometry.addAttribute(
+    geometry.setAttribute("offset", offsetAttribute);
+    geometry.setAttribute("opacity", opacityAttribute);
+    geometry.setAttribute("textureNumber", textureNumberAttribute);
+    geometry.setAttribute("scale", scaleAttribute);
+    geometry.setAttribute("quaternion", quaternionAttribute);
+    geometry.setAttribute("color", colorAttribute);
+    geometry.setAttribute("velocity", velocityAttribute);
+    geometry.setAttribute("activationGameTime", activationGameTimeAttribute);
+    geometry.setAttribute(
       "deactivationGameTime",
       deactivationGameTimeAttribute
     );
-    geometry.addAttribute("deactivationFade", deactivationFadeAttribute);
+    geometry.setAttribute("deactivationFade", deactivationFadeAttribute);
 
     const mesh = new THREE.Mesh(geometry, this.material);
     mesh.frustumCulled = false;

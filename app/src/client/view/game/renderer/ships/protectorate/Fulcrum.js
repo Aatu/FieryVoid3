@@ -10,6 +10,8 @@ class Fulcrum extends ShipObject {
     this.defaultHeight = 100;
     this.sideSpriteSize = 30;
     this.overlaySpriteSize = 80;
+    this.dimensions = { x: 75, y: 25 };
+    this.center = { x: 0, y: 0 };
     this.create();
   }
 
@@ -28,7 +30,7 @@ class Fulcrum extends ShipObject {
       [
         { name: "rear_hull_radiator_left", id: 416 },
         { name: "rear_hull_radiator_right", id: 216 },
-        { name: "rear_hull_radiator_bottom", id: 316 }
+        { name: "rear_hull_radiator_bottom", id: 316 },
       ],
       await loadObject3d("/img/3d/systems/radiators/5x40mSail/scene.gltf")
     );
@@ -47,7 +49,7 @@ class Fulcrum extends ShipObject {
         { name: "front_hull_pdc_right", id: 15 },
         { name: "rear_hull_pdc_top", id: 214 },
         { name: "rear_hull_pdc_right", id: 215 },
-        { name: "rear_hull_pdc_left", id: 213 }
+        { name: "rear_hull_pdc_left", id: 213 },
       ],
       await loadObject3d(
         "/img/3d/systems/weapons/conventional/30mmPDC/scene.gltf"

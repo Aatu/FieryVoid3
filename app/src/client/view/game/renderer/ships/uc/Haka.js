@@ -10,12 +10,15 @@ class Haka extends ShipObject {
     this.defaultHeight = 80;
     this.sideSpriteSize = 30;
     this.overlaySpriteSize = 80;
+    this.dimensions = { x: 180, y: 80 };
+    this.center = { x: -5, y: 0 };
     this.create();
   }
 
   async create() {
     super.create();
     const object = await loadObject3d("/img/3d/ships/uc/haka/scene.gltf");
+
     this.bumpMap = await textureLoader.load(
       "/img/3d/ships/uc/haka/heightMap.png"
     );
@@ -23,7 +26,7 @@ class Haka extends ShipObject {
     super.replaceSocketByName(
       [
         { name: "socket_middle_pylon_top", id: 602 },
-        { name: "socket_front_top_1", id: 606 }
+        { name: "socket_front_top_1", id: 606 },
       ],
       await loadObject3d(
         "/img/3d/systems/weapons/coilgun/turreted32GwRailgun/scene.gltf"
@@ -42,7 +45,7 @@ class Haka extends ShipObject {
         { name: "socket_main_pylon_left", id: 118 },
         { name: "socket_main_pylon_right", id: 119 },
         { name: "socket_front_top_2", id: 603 },
-        { name: "socket_front_top_3", id: 604 }
+        { name: "socket_front_top_3", id: 604 },
       ],
       await loadObject3d(
         "/img/3d/systems/weapons/railgun/140mmRailgunTurret/scene.gltf"
@@ -54,7 +57,7 @@ class Haka extends ShipObject {
         { name: "socket_engine_1", id: 123 },
         { name: "socket_engine_2", id: 123 },
         { name: "socket_engine_3", id: 123 },
-        { name: "socket_engine_4", id: 123 }
+        { name: "socket_engine_4", id: 123 },
       ],
       await loadObject3d("/img/3d/systems/thrusters/10mThruster/scene.gltf")
     );
@@ -80,7 +83,7 @@ class Haka extends ShipObject {
         { name: "socket_main_right_1", id: 114 },
         { name: "socket_main_right_2", id: 115 },
         { name: "socket_main_left_1", id: 116 },
-        { name: "socket_main_left_2", id: 117 }
+        { name: "socket_main_left_2", id: 117 },
       ],
       await loadObject3d(
         "/img/3d/systems/weapons/conventional/30mmPDC/scene.gltf"
@@ -92,7 +95,7 @@ class Haka extends ShipObject {
         { name: "socket_radiator_5", id: 301 },
         { name: "socket_radiator_6", id: 302 },
         { name: "socket_radiator_7", id: 502 },
-        { name: "socket_radiator_8", id: 503 }
+        { name: "socket_radiator_8", id: 503 },
       ],
       await loadObject3d("/img/3d/systems/radiators/10x40/scene.gltf")
     );
@@ -102,7 +105,7 @@ class Haka extends ShipObject {
         { name: "socket_radiator_1", id: 416 },
         { name: "socket_radiator_2", id: 216 },
         { name: "socket_radiator_3", id: 416 },
-        { name: "socket_radiator_4", id: 216 }
+        { name: "socket_radiator_4", id: 216 },
       ],
       null
     );

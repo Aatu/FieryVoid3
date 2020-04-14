@@ -11,7 +11,6 @@ const ShipSectionContainer = styled.div`
   width: calc(100% - 2px);
   align-items: end;
   justify-content: space-around;
-  align-content: center;
   box-sizing: border-box;
   margin: 1px;
   flex-grow: 1;

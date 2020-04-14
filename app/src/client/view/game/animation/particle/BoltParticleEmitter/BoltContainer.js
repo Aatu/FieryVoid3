@@ -40,10 +40,6 @@ class BoltContainer {
     this.flyBolt = new BoltInstance(this);
   }
 
-  setPosition(position) {
-    this.mesh.position.set(position.x, position.y, 0);
-  }
-
   setRenderOrder(order) {
     //console.log(this.mesh.renderOrder);
     //console.log("setting renderOrder ", order);

@@ -75,6 +75,15 @@ const drawHollowCircleAndFill = (canvas, x, y, r, r2, w) => {
   canvas.fill();
 };
 
+const drawEllipseSegment = (canvas, x, y, rx, ry, s, e) => {
+  canvas.beginPath();
+  //.ellipse(x, y, radiusX, radiusY, rotation, startAngle, endAngle [, anticlockwise]);
+  canvas.ellipse(x, y, rx, ry, 0, s, e, false);
+
+  canvas.closePath();
+  canvas.stroke();
+};
+
 const drawCircleSegment = (canvas, x, y, r, r2, s, e) => {
   canvas.beginPath();
   canvas.arc(x, y, r2, s, e, false); // outer (filled)
@@ -109,6 +118,18 @@ const drawDottedCircle = (canvas, x, y, r, r2, segments, gapratio) => {
 
 const drawFilledCircle = (canvas, x, y, r1, r2) => {
   drawCircleSegment(
+    canvas,
+    x,
+    y,
+    r1,
+    r2,
+    mathlib.degreeToRadian(0),
+    mathlib.degreeToRadian(360)
+  );
+};
+
+const drawFilledEllipse = (canvas, x, y, r1, r2) => {
+  drawEllipseSegment(
     canvas,
     x,
     y,
@@ -307,5 +328,6 @@ export {
   drawX,
   drawCenteredHexagon,
   drawHexagon,
-  drawAndRotate
+  drawAndRotate,
+  drawFilledEllipse
 };

@@ -91,7 +91,7 @@ const GameUiComponent = ({ game }) => {
         />
       ))}
 
-      <ShipList gameData={uiState.state.gameData} />
+      <ShipList uiState={uiState} gameData={uiState.state.gameData} />
     </>
   );
 };

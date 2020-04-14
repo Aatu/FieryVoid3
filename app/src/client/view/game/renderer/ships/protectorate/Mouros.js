@@ -27,7 +27,7 @@ class Mouros extends ShipObject {
       [
         { name: "Middle_hull_depress_top", id: 123 },
         { name: "Middle_hull_depress_left", id: 123 },
-        { name: "Middle_hull_depress_right", id: 123 }
+        { name: "Middle_hull_depress_right", id: 123 },
       ],
       await loadObject3d(
         "/img/3d/systems/weapons/conventional/85mmAutoCannon/scene.gltf"
@@ -39,7 +39,7 @@ class Mouros extends ShipObject {
       [
         { name: "Middle_hull_frame_top", id: 123 },
         { name: "Middle_hull_frame_left", id: 123 },
-        { name: "Middle_hull_frame_right", id: 123 }
+        { name: "Middle_hull_frame_right", id: 123 },
       ],
       await loadObject3d(
         "/img/3d/systems/weapons/conventional/140mmCannonTurret/scene.gltf"
@@ -50,7 +50,7 @@ class Mouros extends ShipObject {
       [
         { name: "railgun_turret_mount_right", id: 123 },
         ,
-        { name: "railgun_turret_mount_left", id: 123 }
+        { name: "railgun_turret_mount_left", id: 123 },
       ],
       await loadObject3d(
         "/img/3d/systems/weapons/coilgun/turreted32GwRailgun/scene.gltf"
@@ -64,7 +64,7 @@ class Mouros extends ShipObject {
         { name: "thruster_2", id: 123 },
         { name: "thruster_4", id: 123 },
         { name: "thruster_3", id: 123 },
-        { name: "thruster_5", id: 123 }
+        { name: "thruster_5", id: 123 },
       ],
       await loadObject3d("/img/3d/systems/thrusters/8mThruster/scene.gltf")
     );

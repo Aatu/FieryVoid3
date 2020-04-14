@@ -3,14 +3,7 @@ import styled, { css } from "styled-components";
 import { colors } from "./index";
 import { tooltipButtonColor } from "./Colors";
 
-class Component extends React.Component {
-  render() {
-    const { children, className } = this.props;
-    return <div className={className}>{children}</div>;
-  }
-}
-
-const TooltipContainer = styled(Component)`
+const TooltipContainer = styled.div`
   opacity: 0.95;
   text-align: center;
   font-family: arial;
@@ -18,8 +11,6 @@ const TooltipContainer = styled(Component)`
   color: white;
   background-color: black;
   border-radius: 7px;
-  -moz-border-radius: 7px;
-  -webkit-border-radius: 7px;
   padding: 3px 8px 8px 8px;
   border: 1px solid #121212;
   filter: brightness(1);

@@ -12,17 +12,26 @@ const Container = styled.div`
   z-index: 3;
 `;
 
-function ShipListActual({ primary = [], secondary = [], right = false }) {
+function ShipListActual({
+  uiState,
+  primary = [],
+  secondary = [],
+  right = false
+}) {
   return (
     <Container right={right}>
       {primary.map(ship => (
-        <ShipFleetBadge key={`ship-fleet-list-${ship.id}`} ship={ship} />
+        <ShipFleetBadge
+          key={`ship-fleet-list-${ship.id}`}
+          ship={ship}
+          uiState={uiState}
+        />
       ))}
     </Container>
   );
 }
 
-export default function ShipList({ gameData }) {
+export default function ShipList({ gameData, uiState }) {
   const { currentUser } = useContext(StateStore);
 
   if (!gameData) {
@@ -30,7 +39,6 @@ export default function ShipList({ gameData }) {
   }
 
   gameData = new GameData(gameData);
-  console.log(gameData);
 
   const myShips = gameData.ships.getUsersShips(currentUser);
 
@@ -43,9 +51,15 @@ export default function ShipList({ gameData }) {
   return (
     <>
       {myShips.length > 0 && (
-        <ShipListActual primary={[...myShips]} secondary={alliedShips} />
+        <ShipListActual
+          uiState={uiState}
+          primary={[...myShips]}
+          secondary={alliedShips}
+        />
       )}
-      {myShips.length > 0 && <ShipListActual primary={[...enemyShips]} right />}
+      {myShips.length > 0 && (
+        <ShipListActual uiState={uiState} primary={[...enemyShips]} right />
+      )}
     </>
   );
 }

@@ -114,7 +114,7 @@ class Line {
         new Float32Array(pulses),
         2
       ).setDynamic(true);
-      this.mesh.geometry.addAttribute("pulse", this.pulseAttribute);
+      this.mesh.geometry.setAttribute("pulse", this.pulseAttribute);
     } else {
       for (let i = 0; i < this.getVertexAmount(); i++) {
         this.pulseAttribute.setXY(i, this.pulseAmount, this.pulseSpeed);
@@ -136,7 +136,7 @@ class Line {
         new Float32Array(dashes),
         1
       ).setDynamic(true);
-      this.mesh.geometry.addAttribute("dashRatio", this.dashAttribute);
+      this.mesh.geometry.setAttribute("dashRatio", this.dashAttribute);
     } else {
       for (let i = 0; i < this.getVertexAmount(); i++) {
         this.dashAttribute.setX(i, this.dashAttribute);
@@ -155,7 +155,7 @@ class Line {
       new Float32Array(colors),
       3
     ).setDynamic(true);
-    this.mesh.geometry.addAttribute("color", this.colorAttribute);
+    this.mesh.geometry.setAttribute("color", this.colorAttribute);
 
     this.colorAttribute.needsUpdate = true;
   }
@@ -181,7 +181,7 @@ class Line {
         new Float32Array(opacitys),
         1
       ).setDynamic(true);
-      this.mesh.geometry.addAttribute("opacity", this.opacityAttribute);
+      this.mesh.geometry.setAttribute("opacity", this.opacityAttribute);
     } else {
       for (let i = 0; i < this.getVertexAmount(); i++) {
         this.opacityAttribute.setX(i, this.opacity);

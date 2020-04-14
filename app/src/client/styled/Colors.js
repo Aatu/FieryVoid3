@@ -9,6 +9,7 @@ const systemWindowBorder = "#6e6c6c";
 const systemWindowPrimaryBorder = "#aaaaaa";
 const systemBorder = "#bebebe";
 const tooltipButtonColor = "#3b3b60";
+const mediumBlue = "#142b4b";
 
 export {
   blue,
@@ -21,5 +22,6 @@ export {
   systemWindowBorder,
   systemBorder,
   systemWindowPrimaryBorder,
-  tooltipButtonColor
+  tooltipButtonColor,
+  mediumBlue
 };

@@ -1,8 +1,13 @@
 import UiStrategy from "./UiStrategy";
 
 class SelectFirstActiveShip extends UiStrategy {
-  update(gameData) {
-    const { uiState, currentUser } = this.services;
+  async update(gameData) {
+    const {
+      uiState,
+      currentUser,
+      gameCamera,
+      shipIconContainer
+    } = this.services;
 
     if (
       uiState.getSelectedShip() &&
@@ -20,6 +25,9 @@ class SelectFirstActiveShip extends UiStrategy {
 
     if (ship) {
       uiState.selectShip(ship);
+      await shipIconContainer.shipsLoaded();
+      const icon = shipIconContainer.getByShip(ship);
+      gameCamera.setByLookAtPosition(icon.getPosition());
     }
   }
 }

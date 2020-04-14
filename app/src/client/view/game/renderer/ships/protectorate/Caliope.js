@@ -10,6 +10,8 @@ class Caliope extends ShipObject {
     this.defaultHeight = 80;
     this.sideSpriteSize = 30;
     this.overlaySpriteSize = 80;
+    this.dimensions = { x: 95, y: 35 };
+    this.center = { x: 8, y: 0 };
     this.create();
   }
 
@@ -29,7 +31,7 @@ class Caliope extends ShipObject {
       [
         { name: "engine_pylon_top_front", id: 412 },
         { name: "engine_pylon_left_front", id: 501 },
-        { name: "engine_pylon_right_front", id: 301 }
+        { name: "engine_pylon_right_front", id: 301 },
       ],
       radiator
     );
@@ -38,7 +40,7 @@ class Caliope extends ShipObject {
       [
         { name: "engine_pylon_top", id: 421 },
         { name: "engine_pylon_left", id: 521 },
-        { name: "engine_pylon_right", id: 321 }
+        { name: "engine_pylon_right", id: 321 },
       ],
       autoCannon
     );
@@ -48,7 +50,7 @@ class Caliope extends ShipObject {
         { name: "main_hull_front_left_bottom", id: 603 },
         { name: "main_hull_front_left_top", id: 604 },
         { name: "main_hull_front_right_bottom", id: 203 },
-        { name: "main_hull_front_right_top", id: 204 }
+        { name: "main_hull_front_right_top", id: 204 },
       ],
       autoCannon
     );
@@ -56,7 +58,7 @@ class Caliope extends ShipObject {
     super.replaceSocketByName(
       [
         { name: "front_hull_right_side", id: 213 },
-        { name: "front_hull_left_side", id: 612 }
+        { name: "front_hull_left_side", id: 612 },
       ],
       await loadObject3d(
         "/img/3d/systems/weapons/railgun/2x140mmRailgunTurret/scene.gltf"
@@ -68,7 +70,7 @@ class Caliope extends ShipObject {
         { name: "font_hull_bottom", id: 115 },
         { name: "font_hull_top", id: 114 },
         { name: "main_hull_front_left_side", id: 602 },
-        { name: "main_hull_front_right_side", id: 202 }
+        { name: "main_hull_front_right_side", id: 202 },
       ],
       await loadObject3d(
         "/img/3d/systems/weapons/conventional/30mmPDC/scene.gltf"
@@ -79,7 +81,7 @@ class Caliope extends ShipObject {
       [
         { name: "thruster_top", id: 123 },
         { name: "thruster_right", id: 123 },
-        { name: "thruster_left", id: 123 }
+        { name: "thruster_left", id: 123 },
       ],
       await loadObject3d("/img/3d/systems/thrusters/5mThruster/scene.gltf")
     );
