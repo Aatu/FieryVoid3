@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useCallback, useMemo } from "react";
 import styled from "styled-components";
 
 import ShipSection from "./ShipSection";
@@ -35,79 +35,72 @@ const ColumnMiddle = styled(Column)`
   width: 50%;
 `;
 
-class ShipWindow extends React.Component {
-  close() {
-    let { uiState } = this.props;
-    uiState.closeShipWindow(this.props.ship);
-  }
+const ShipWindow = ({ ship, uiState, ...rest }) => {
+  const shipWindowClicked = useCallback(() => {
+    uiState.customEvent("closeSystemInfo");
+  }, []);
 
-  render() {
-    const { ship, uiState, ...rest } = this.props;
+  return (
+    <ShipWindowContainer
+      onClick={shipWindowClicked}
+      onContextMenu={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+      }}
+      team={ship.team}
+    >
+      <Column>
+        <ShipSection
+          uiState={uiState}
+          ship={ship}
+          section={ship.systems.sections.getPortFrontSection()}
+          {...rest}
+        />
+        <ShipSection
+          uiState={uiState}
+          ship={ship}
+          section={ship.systems.sections.getPortAftSection()}
+          {...rest}
+        />
+      </Column>
 
-    return (
-      <ShipWindowContainer
-        onClick={shipWindowClicked.bind(this, uiState)}
-        onContextMenu={e => {
-          e.preventDefault();
-          e.stopPropagation();
-        }}
-        team={ship.team}
-      >
-        <Column>
-          <ShipSection
-            uiState={uiState}
-            ship={ship}
-            section={ship.systems.sections.getPortFrontSection()}
-            {...rest}
-          />
-          <ShipSection
-            uiState={uiState}
-            ship={ship}
-            section={ship.systems.sections.getPortAftSection()}
-            {...rest}
-          />
-        </Column>
+      <ColumnMiddle>
+        <ShipSection
+          uiState={uiState}
+          section={ship.systems.sections.getFrontSection()}
+          ship={ship}
+          {...rest}
+        />
+        <ShipSection
+          uiState={uiState}
+          ship={ship}
+          section={ship.systems.sections.getPrimarySection()}
+          {...rest}
+        />
+        <ShipSection
+          uiState={uiState}
+          ship={ship}
+          section={ship.systems.sections.getAftSection()}
+          {...rest}
+        />
+      </ColumnMiddle>
 
-        <ColumnMiddle>
-          <ShipSection
-            uiState={uiState}
-            section={ship.systems.sections.getFrontSection()}
-            ship={ship}
-            {...rest}
-          />
-          <ShipSection
-            uiState={uiState}
-            ship={ship}
-            section={ship.systems.sections.getPrimarySection()}
-            {...rest}
-          />
-          <ShipSection
-            uiState={uiState}
-            ship={ship}
-            section={ship.systems.sections.getAftSection()}
-            {...rest}
-          />
-        </ColumnMiddle>
-
-        <Column>
-          <ShipSection
-            uiState={uiState}
-            ship={ship}
-            section={ship.systems.sections.getStarboardFrontSection()}
-            {...rest}
-          />
-          <ShipSection
-            uiState={uiState}
-            ship={ship}
-            section={ship.systems.sections.getStarboardAftSection()}
-            {...rest}
-          />
-        </Column>
-      </ShipWindowContainer>
-    );
-  }
-}
-
-const shipWindowClicked = uiState => uiState.customEvent("closeSystemInfo");
+      <Column>
+        <ShipSection
+          uiState={uiState}
+          ship={ship}
+          section={ship.systems.sections.getStarboardFrontSection()}
+          {...rest}
+        />
+        <ShipSection
+          uiState={uiState}
+          ship={ship}
+          section={ship.systems.sections.getStarboardAftSection()}
+          {...rest}
+        />
+      </Column>
+    </ShipWindowContainer>
+  );
+};
 
 export default ShipWindow;

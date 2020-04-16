@@ -23,7 +23,7 @@ class RailgunTurreted2x140mm extends Weapon {
       new StandardRangeStrategy([
         { range: 0, modifier: -50 },
         { range: 10, modifier: 0 },
-        { range: 200, modifier: -200 }
+        { range: 200, modifier: -200 },
       ]),
       new StandardLoadingStrategy(3),
       new RequiresPowerSystemStrategy(6),
@@ -31,13 +31,13 @@ class RailgunTurreted2x140mm extends Weapon {
       new BurstDamageStrategy(null, null, 0, 3, 20),
       new AmmunitionStrategy([Ammo140mmAP, Ammo140mmHE], 1, 9, 4),
       new WeaponAnimationStrategy("UniversalBolt", {
-        size: 6,
-        length: 100,
-        speed: 1.3,
+        size: 13,
+        length: 30,
+        speed: 0.5,
         color: [1.0, 0.8, 0.4],
-        explosionType: "gas"
+        explosionType: "gas",
       }),
-      new OutputHeatOnlineStrategy(5, 3)
+      new OutputHeatOnlineStrategy(5, 3),
     ]);
   }
 

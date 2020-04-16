@@ -11,6 +11,10 @@ class BoostablePlusOneOutputSystemStrategy extends BoostableSystemStrategy {
   }
 
   getPowerRequirement(payload, previousResponse = 0) {
+    if (this.system.isDisabled()) {
+      return previousResponse;
+    }
+
     const output = this.system.callHandler("getOutputForBoost", null, 0);
     const power = this.boostLevel * output + this.boostLevel;
     return power + previousResponse;

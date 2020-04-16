@@ -19,7 +19,7 @@ class ReplayContext {
   }
 
   getMovementStart() {
-    return this.firingDuration;
+    return this.firingDuration + this.torpedoAttackDuration;
   }
 
   setMovementDuration(duration) {
@@ -70,30 +70,10 @@ class ReplayContext {
   getTurnLength() {
     return (
       this.firingDuration +
+      this.torpedoAttackDuration +
       this.movementDuration +
-      this.torpedoMovementDuration +
-      this.torpedoAttackDuration
+      this.torpedoMovementDuration
     );
-  }
-
-  wrapGetShootingPosition(animations) {
-    return icon => {
-      return this.getShootingPosition(icon, animations);
-    };
-  }
-
-  getShootingPosition(icon, animations) {
-    let animation = animations.find(
-      animation =>
-        animation instanceof ShipMovementAnimation &&
-        animation.shipIcon === icon
-    );
-
-    if (!animation) {
-      throw new Error("Animation not found");
-    }
-
-    return animation.getEndPosition();
   }
 }
 

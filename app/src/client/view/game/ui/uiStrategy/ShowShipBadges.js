@@ -5,7 +5,7 @@ import {
   ZOOM_FOR_MAPICONS,
   ZOOM_FOR_SHIPBADGE,
   ZOOM_FOR_SHIPBADGE_NAME,
-  ZOOM_MAX
+  ZOOM_MAX,
 } from "../../../../../model/gameConfig.mjs";
 
 class ShowShipBadges extends AnimationUiStrategy {
@@ -42,7 +42,7 @@ class ShowShipBadges extends AnimationUiStrategy {
   show(showName) {
     const { shipIconContainer, uiState } = this.services;
 
-    shipIconContainer.getArray().forEach(icon => {
+    shipIconContainer.getArray().forEach((icon) => {
       uiState.showShipBadge(icon, showName);
     });
     this.showing = true;
@@ -51,7 +51,7 @@ class ShowShipBadges extends AnimationUiStrategy {
 
   hide() {
     const { shipIconContainer, uiState } = this.services;
-    shipIconContainer.getArray().forEach(icon => {
+    shipIconContainer.getArray().forEach((icon) => {
       uiState.hideShipBadge(icon);
     });
     this.showing = false;
@@ -82,7 +82,10 @@ class ShowShipBadges extends AnimationUiStrategy {
   }
 
   deactivate() {
-    this.hide();
+    const { shipIconContainer, uiState } = this.services;
+    shipIconContainer.getArray().forEach((icon) => {
+      uiState.removeShipBadge(icon);
+    });
   }
 }
 

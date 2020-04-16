@@ -1,13 +1,13 @@
 class CombatLogShipMovement {
   constructor(shipId) {
     this.shipId = shipId;
-    this.replayOrder = 10;
+    this.replayOrder = 20;
   }
 
   serialize() {
     return {
       logEntryClass: this.constructor.name,
-      shipId: this.shipId
+      shipId: this.shipId,
     };
   }
 

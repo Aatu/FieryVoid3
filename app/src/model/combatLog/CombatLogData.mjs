@@ -16,13 +16,13 @@ class CombatLogData {
 
   serialize() {
     return {
-      entries: this.entries.map(entry => entry.serialize())
+      entries: this.entries.map((entry) => entry.serialize()),
     };
   }
 
   deserialize(data = {}) {
     this.entries = data.entries
-      ? data.entries.map(entry =>
+      ? data.entries.map((entry) =>
           new combatLogClasses[entry.logEntryClass]().deserialize(entry)
         )
       : [];
@@ -36,20 +36,21 @@ class CombatLogData {
 
   getInterceptsFor(torpedoAttack) {
     return this.entries
-      .filter(entry => entry instanceof CombatLogTorpedoIntercept)
-      .filter(entry => entry.torpedoFlightId === torpedoAttack.torpedoFlightId);
+      .filter((entry) => entry instanceof CombatLogTorpedoIntercept)
+      .filter(
+        (entry) => entry.torpedoFlightId === torpedoAttack.torpedoFlightId
+      );
   }
 
   getForReplay() {
     const entries = [...this.entries];
     const groupedFires = [];
 
-    console.log(this.entries);
     entries
-      .filter(entry => entry instanceof CombatLogWeaponFire)
-      .forEach(fire => {
+      .filter((entry) => entry instanceof CombatLogWeaponFire)
+      .forEach((fire) => {
         let entry = groupedFires.find(
-          grouped => grouped.targetId === fire.targetId
+          (grouped) => grouped.targetId === fire.targetId
         );
 
         if (!entry) {
@@ -63,10 +64,10 @@ class CombatLogData {
     const groupedTorpedos = [];
 
     entries
-      .filter(entry => entry instanceof CombatLogTorpedoAttack)
-      .forEach(torpedo => {
+      .filter((entry) => entry instanceof CombatLogTorpedoAttack)
+      .forEach((torpedo) => {
         let entry = groupedTorpedos.find(
-          grouped => grouped.targetId === torpedo.targetId
+          (grouped) => grouped.targetId === torpedo.targetId
         );
 
         if (!entry) {
@@ -78,11 +79,13 @@ class CombatLogData {
       });
 
     return [
-      ...this.entries.filter(entry => !(entry instanceof CombatLogWeaponFire)),
+      ...this.entries.filter(
+        (entry) => !(entry instanceof CombatLogWeaponFire)
+      ),
       ...groupedFires,
-      ...groupedTorpedos
+      ...groupedTorpedos,
     ]
-      .filter(entry => entry.replayOrder)
+      .filter((entry) => entry.replayOrder)
       .sort((a, b) => {
         if (a.replayOrder > b.replayOrder) {
           return 1;

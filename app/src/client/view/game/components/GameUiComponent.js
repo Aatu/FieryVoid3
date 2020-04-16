@@ -31,7 +31,7 @@ const GameUiComponent = ({ game }) => {
         />
       )}
 
-      {state.shipTooltip.map(tooltip => (
+      {state.shipTooltip.map((tooltip) => (
         <ShipTooltip
           key={`tooltip-ship-${tooltip.ship.id}`}
           uiState={uiState}
@@ -80,12 +80,12 @@ const GameUiComponent = ({ game }) => {
         />
       )}
 
-      {state.shipBadges.map(({ version, icon, getPosition, showName }) => (
+      {state.shipBadges.map(({ version, icon, visible, showName }) => (
         <ShipBadge
           key={`ship-badge-${icon.ship.id}`}
           icon={icon}
-          getPosition={getPosition}
           version={version}
+          visible={visible}
           uiState={uiState}
           showName={showName}
         />

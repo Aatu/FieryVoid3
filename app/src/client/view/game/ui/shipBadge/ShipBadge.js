@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useMemo, useCallback } from "react";
 import styled from "styled-components";
 import GamePositionComponent from "../GamePositionComponent";
 import { Tooltip, IconAndLabel } from "../../../../styled";
 import TorpedoMovementService from "../../../../../model/movement/TorpedoMovementService.mjs";
 import GameData from "../../../../../model/game/GameData.mjs";
+import coordinateConverter from "../../../../../model/utils/CoordinateConverter.mjs";
 
 const ShipBadgeContainer = styled.div`
   text-align: left;
@@ -15,17 +16,6 @@ const ShipBadgeContainer = styled.div`
   font-family: arial;
   margin-left: -50%;
   font-size: 12px;
-
-  animation: fadein 2s;
-
-  @keyframes fadein {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
 `;
 
 const DewBadge = styled(IconAndLabel)`
@@ -55,7 +45,7 @@ const Icon = styled.div`
   height: 15px;
   background-size: cover;
   background-color: transparent;
-  background-image: ${props => `url(${props.background})`};
+  background-image: ${(props) => `url(${props.background})`};
   margin: 0 3px 0 0;
 `;
 
@@ -99,27 +89,30 @@ const getNumberOfMissilesImpacting = (ship, gameData) => {
 
   return gameDataObject.torpedos
     .getTorpedoFlights()
-    .filter(flight => flight.targetId === ship.id).length;
+    .filter((flight) => flight.targetId === ship.id).length;
 };
 
-class ShipBadge extends React.PureComponent {
-  render() {
-    const { icon, version, getPosition, uiState, showName } = this.props;
-    const { currentUser } = uiState.services;
-    const isMine = icon.ship.player.is(currentUser);
+const ShipBadge = ({ icon, uiState, showName, visible }) => {
+  const { currentUser } = uiState.services;
+  const isMine = icon.ship.player.is(currentUser);
 
-    const missiles = getNumberOfMissilesImpacting(
-      icon.ship,
-      uiState.state.gameData
-    );
+  const getPosition = () =>
+    coordinateConverter.fromGameToViewPort(icon.getPosition());
 
-    return (
-      <GamePositionComponent
-        getPosition={getPosition}
-        uiState={uiState}
-        marginTop={0}
-        marginLeft={0}
-      >
+  const missiles = getNumberOfMissilesImpacting(
+    icon.ship,
+    uiState.state.gameData
+  );
+
+  const validPower = icon.ship.systems.power.isValidPower();
+
+  if (!isMine || (missiles === 0 && validPower)) {
+    visible = false;
+  }
+
+  const memoizedComponent = useMemo(
+    () =>
+      visible && (
         <ShipBadgeContainer>
           <BackgroundContainer>
             {false && showName && <ShipName>{icon.ship.name}</ShipName>}
@@ -137,34 +130,23 @@ class ShipBadge extends React.PureComponent {
                   <Icon background="/img/offline.png" />
                 </WarningBadge>
               )}
-
-              {isMine && (
-                <BadgeIconAndLabel>
-                  <Icon background="/img/dewBadge2.png" />
-                  {icon.ship.electronicWarfare.getDefensiveEw()}
-                </BadgeIconAndLabel>
-              )}
-              <BadgeIconAndLabel>
-                <Icon background="/img/dewBadge.png" />
-                {icon.ship.electronicWarfare.inEffect.getDefensiveEw()}
-              </BadgeIconAndLabel>
-
-              {isMine && (
-                <BadgeIconAndLabel>
-                  <Icon background="/img/ccewBadge2.png" />
-                  {icon.ship.electronicWarfare.getCcEw()}
-                </BadgeIconAndLabel>
-              )}
-              <BadgeIconAndLabel>
-                <Icon background="/img/ccewBadge.png" />
-                {icon.ship.electronicWarfare.inEffect.getCcEw()}
-              </BadgeIconAndLabel>
             </Badges>
           </BackgroundContainer>
         </ShipBadgeContainer>
-      </GamePositionComponent>
-    );
-  }
-}
+      ),
+    [visible, isMine, missiles, validPower]
+  );
+
+  return (
+    <GamePositionComponent
+      getPosition={getPosition}
+      uiState={uiState}
+      marginTop={0}
+      marginLeft={0}
+    >
+      {memoizedComponent}
+    </GamePositionComponent>
+  );
+};
 
 export default ShipBadge;

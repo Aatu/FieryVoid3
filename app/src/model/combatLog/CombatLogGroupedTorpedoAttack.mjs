@@ -4,7 +4,7 @@ class CombatLogGroupedTorpedoAttack {
   constructor(targetId) {
     this.targetId = targetId;
     this.entries = [];
-    this.replayOrder = 20;
+    this.replayOrder = 10;
   }
 
   addEntry(attack) {
@@ -14,14 +14,14 @@ class CombatLogGroupedTorpedoAttack {
   serialize() {
     return {
       logEntryClass: this.constructor.name,
-      entries: this.entries.map(entry => entry.serialize())
+      entries: this.entries.map((entry) => entry.serialize()),
     };
   }
 
   deserialize(data = {}) {
     this.targetId = data.targetId;
     this.entries = data.entries
-      ? data.entries.map(entry =>
+      ? data.entries.map((entry) =>
           new CombatLogTorpedoAttack().deserialize(entry)
         )
       : [];

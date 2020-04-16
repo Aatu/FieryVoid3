@@ -14,18 +14,18 @@ class ShipEWIndicators {
 
   update(ship, useGhost) {
     this.ship = ship;
-    this.oew = this.createOEW(useGhost);
+    this.createOEW(useGhost);
 
     return this;
   }
 
   show() {
-    this.oew.forEach(oew => oew.show());
+    this.oew.forEach((oew) => oew.show());
     return this;
   }
 
   hide() {
-    this.oew.forEach(oew => oew.hide());
+    this.oew.forEach((oew) => oew.hide());
     return this;
   }
 
@@ -34,12 +34,13 @@ class ShipEWIndicators {
   }
 
   render(zoom) {
-    this.oew.forEach(oew => oew.render(zoom));
+    this.oew.forEach((oew) => oew.render(zoom));
   }
 
-  createOEW() {
+  async createOEW() {
+    await this.shipIconContainer.shipsLoaded();
     const old = this.oew;
-    const newOew = this.ship.electronicWarfare.getAllOew().map(ewEntry => {
+    const newOew = this.ship.electronicWarfare.getAllOew().map((ewEntry) => {
       const targetIcon = this.shipIconContainer.getById(ewEntry.targetShipId);
       const targetGhost = this.shipIconContainer.getGhostShipIconByShip(
         targetIcon.ship
@@ -48,7 +49,7 @@ class ShipEWIndicators {
         this.icon.ship
       );
 
-      let indicator = this.oew.find(oew => oew.targetIcon === targetIcon);
+      let indicator = this.oew.find((oew) => oew.targetIcon === targetIcon);
 
       if (!indicator) {
         indicator = new OEWIndicator(
@@ -66,12 +67,12 @@ class ShipEWIndicators {
     });
 
     old
-      .filter(indicator =>
-        newOew.every(indicatorNew => indicatorNew !== indicator)
+      .filter((indicator) =>
+        newOew.every((indicatorNew) => indicatorNew !== indicator)
       )
-      .forEach(indicator => indicator.remove());
+      .forEach((indicator) => indicator.remove());
 
-    return newOew;
+    this.oew = newOew;
   }
 }
 

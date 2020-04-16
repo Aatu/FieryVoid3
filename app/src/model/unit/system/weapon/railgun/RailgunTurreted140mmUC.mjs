@@ -23,7 +23,7 @@ class RailgunTurreted140mmUC extends Weapon {
       new StandardRangeStrategy([
         { range: 0, modifier: -50 },
         { range: 10, modifier: 0 },
-        { range: 250, modifier: -200 }
+        { range: 250, modifier: -200 },
       ]),
       new StandardLoadingStrategy(3),
       new RequiresPowerSystemStrategy(4),
@@ -31,13 +31,13 @@ class RailgunTurreted140mmUC extends Weapon {
       new BurstDamageStrategy(null, null, 0, 3, 15),
       new AmmunitionStrategy([Ammo140mmAP, Ammo140mmHE], 1, 9, 4),
       new WeaponAnimationStrategy("UniversalBolt", {
-        size: 6,
-        length: 100,
-        speed: 1.3,
+        size: 15,
+        length: 30,
+        speed: 0.6,
         color: [1.0, 0.8, 0.4],
-        explosionType: "gas"
+        explosionType: "gas",
       }),
-      new OutputHeatOnlineStrategy(3, 2)
+      new OutputHeatOnlineStrategy(3, 2),
     ]);
   }
 

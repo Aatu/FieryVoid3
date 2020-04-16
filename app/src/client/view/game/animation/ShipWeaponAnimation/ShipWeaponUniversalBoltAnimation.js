@@ -20,7 +20,9 @@ class ShipWeaponUniversalBoltAnimation extends ShipWeaponAnimation {
     const missExtra = this.getRandom() * 300 + 300;
     const missFade = missExtra * 0.8;
 
-    this.shots.forEach(shot => {
+    console.log(args);
+    console.log(this.shots);
+    this.shots.forEach((shot) => {
       const duration =
         this.startPosition.distanceTo(this.endPosition.add(shot.offset)) /
         this.speed;
@@ -53,19 +55,21 @@ class ShipWeaponUniversalBoltAnimation extends ShipWeaponAnimation {
   }
 
   setShots() {
-    const { totalShots, shotsHit } = this.props;
+    const { totalShots, shotsHit, args } = this.props;
 
     let startExtra = 0;
     this.shots = [];
     const hitsStart = Math.floor(this.getRandom() * (totalShots - shotsHit));
 
-    const offsetVector = this.getRandomPosition(5);
+    const offsetVector = this.getRandomPosition(args.size);
+
+    const length = args.length || 10;
 
     for (let currentShot = 0; currentShot < totalShots; currentShot++) {
       const hit =
         currentShot >= hitsStart && currentShot < hitsStart + shotsHit;
 
-      startExtra = (30 / this.speed) * currentShot;
+      startExtra = ((5 * length) / this.speed) * currentShot;
 
       const n = currentShot - hitsStart;
 
@@ -79,23 +83,17 @@ class ShipWeaponUniversalBoltAnimation extends ShipWeaponAnimation {
       this.shots.push({
         startExtra: startExtra,
         hit,
-        offset
+        offset,
       });
     }
   }
 
   getFirstHit() {
-    return this.shots.find(shot => shot.hit);
+    return this.shots.find((shot) => shot.hit);
   }
 
   setEndPosition() {
-    const {
-      targetIcon,
-      animationStartTime,
-      impactPosition,
-      getPosition,
-      shotsHit
-    } = this.props;
+    const { targetIcon, impactPosition, getPosition, shotsHit } = this.props;
 
     if (impactPosition) {
       if (shotsHit === 0) {
@@ -104,10 +102,9 @@ class ShipWeaponUniversalBoltAnimation extends ShipWeaponAnimation {
         this.endPosition = impactPosition;
       }
     } else {
-      this.endPosition = getPosition(
-        targetIcon,
-        animationStartTime
-      ).position.add(this.getRandomPosition(20));
+      this.endPosition = getPosition(targetIcon.ship).position.add(
+        this.getRandomPosition(20)
+      );
       this.endPosition.z += targetIcon.shipZ;
     }
   }
@@ -132,15 +129,13 @@ class ShipWeaponUniversalBoltAnimation extends ShipWeaponAnimation {
   }
 
   setStartPosition() {
-    const { shooterIcon, weapon, animationStartTime, getPosition } = this.props;
-    this.startPosition = getPosition(
-      shooterIcon,
-      animationStartTime
-    ).position.add(
+    const { shooterIcon, weapon, getPosition } = this.props;
+
+    this.startPosition = getPosition(shooterIcon.ship).position.add(
       this.getLocationForSystem(
         weapon,
         shooterIcon,
-        getPosition(shooterIcon, animationStartTime).facing
+        getPosition(shooterIcon.ship).facing
       )
     );
   }

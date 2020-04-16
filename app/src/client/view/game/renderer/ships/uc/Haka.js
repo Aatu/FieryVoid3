@@ -1,6 +1,7 @@
 import ShipObject from "../ShipObject";
 import { loadObject3d } from "../../object3d/Object3d";
 import * as THREE from "three";
+import Vector from "../../../../../../model/utils/Vector.mjs";
 
 const textureLoader = new THREE.TextureLoader();
 
@@ -10,8 +11,10 @@ class Haka extends ShipObject {
     this.defaultHeight = 80;
     this.sideSpriteSize = 30;
     this.overlaySpriteSize = 80;
-    this.dimensions = { x: 180, y: 80 };
-    this.center = { x: -5, y: 0 };
+    this.dimensions = new Vector(180, 40, 40);
+    this.center = new Vector(-5, 0, 0);
+    this.ewSpriteDimensions = new Vector(180, 80);
+
     this.create();
   }
 

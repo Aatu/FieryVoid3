@@ -1,7 +1,7 @@
 import PowerEntry, {
   POWER_TYPE_OFFLINE,
   POWER_TYPE_GO_OFFLINE,
-  POWER_TYPE_GO_ONLINE
+  POWER_TYPE_GO_ONLINE,
   //POWER_TYPE_BOOST
 } from "./PowerEntry.mjs";
 
@@ -13,13 +13,13 @@ class SystemPower {
 
   serialize() {
     return {
-      entries: this.entries.map(entry => entry.serialize())
+      entries: this.entries.map((entry) => entry.serialize()),
     };
   }
 
   deserialize(data = {}) {
     this.entries = data.entries
-      ? data.entries.map(entry => new PowerEntry().deserialize(entry))
+      ? data.entries.map((entry) => new PowerEntry().deserialize(entry))
       : [];
 
     return this;
@@ -31,7 +31,7 @@ class SystemPower {
     }
 
     return (
-      (this.entries.some(entry => entry.isOffline()) ||
+      (this.entries.some((entry) => entry.isOffline()) ||
         this.isGoingOffline()) &&
       !this.isGoingOnline()
     );
@@ -42,11 +42,11 @@ class SystemPower {
   }
 
   isGoingOnline() {
-    return this.entries.some(entry => entry.isGoingOnline());
+    return this.entries.some((entry) => entry.isGoingOnline());
   }
 
   isGoingOffline() {
-    return this.entries.some(entry => entry.isGoingOffline());
+    return this.entries.some((entry) => entry.isGoingOffline());
   }
 
   forceOffline() {
@@ -55,7 +55,7 @@ class SystemPower {
     }
 
     this.entries = this.entries.filter(
-      entry => entry.type !== POWER_TYPE_GO_ONLINE
+      (entry) => entry.type !== POWER_TYPE_GO_ONLINE
     );
 
     this.entries.push(new PowerEntry(POWER_TYPE_GO_OFFLINE));
@@ -88,10 +88,11 @@ class SystemPower {
     }
 
     this.entries = this.entries.filter(
-      entry => entry.type !== POWER_TYPE_GO_OFFLINE
+      (entry) => entry.type !== POWER_TYPE_GO_OFFLINE
     );
 
     this.entries.push(new PowerEntry(POWER_TYPE_GO_ONLINE));
+    this.system.callHandler("onSystemOnline");
   }
 
   getPowerOutput() {

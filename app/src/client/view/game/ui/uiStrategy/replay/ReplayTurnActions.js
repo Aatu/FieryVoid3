@@ -1,7 +1,7 @@
 import {
   ShipWeaponAnimations,
   ShipMovementAnimation,
-  ShipSystemAnimation
+  ShipSystemAnimation,
 } from "../../../animation";
 
 import * as THREE from "three";
@@ -31,12 +31,24 @@ const getMovesForShip = (gameDatas, ship) =>
   gameDatas.reduce((moves, gameData) => {
     return [
       ...moves,
-      ...gameData.ships.getShipById(ship.id).movement.getMovement()
+      ...gameData.ships.getShipById(ship.id).movement.getMovement(),
     ];
   }, []);
 
 const getEndMoveForShip = (gameDatas, ship) =>
   getMovesForShip(gameDatas, ship).pop();
+
+const getStartMoveForShip = (gameDatas, ship) =>
+  getMovesForShip(gameDatas, ship).shift();
+
+const getShipStartPositionAndFacingForShip = (gameDatas, ship) => {
+  const move = getStartMoveForShip(gameDatas, ship);
+
+  return {
+    position: move.position,
+    facing: move.facing,
+  };
+};
 
 class ReplayTurnActions extends AnimationUiStrategy {
   constructor(replayContext) {
@@ -52,7 +64,7 @@ class ReplayTurnActions extends AnimationUiStrategy {
       shipIconContainer,
       particleEmitterContainer,
       uiState,
-      scene
+      scene,
     } = this.services;
 
     await shipIconContainer.shipsLoaded();
@@ -69,7 +81,8 @@ class ReplayTurnActions extends AnimationUiStrategy {
     this.systemDestroyedTextAnimation = new SystemDestroyedTextAnimation(scene);
     this.animations.push(this.systemDestroyedTextAnimation);
 
-    gameData.combatLog.getForReplay().forEach(combatLogEntry => {
+    console.log(gameData.combatLog.getForReplay());
+    gameData.combatLog.getForReplay().forEach((combatLogEntry) => {
       if (combatLogEntry instanceof CombatLogShipMovement) {
         this.buildMovementAnimation(combatLogEntry, gameDatas);
       } else if (combatLogEntry instanceof CombatLogGroupedWeaponFire) {
@@ -87,7 +100,8 @@ class ReplayTurnActions extends AnimationUiStrategy {
     targetIcon,
     intercepts,
     interceptTime,
-    interceptPosition
+    interceptPosition,
+    gameDatas
   ) {
     const { particleEmitterContainer, shipIconContainer } = this.services;
 
@@ -96,7 +110,7 @@ class ReplayTurnActions extends AnimationUiStrategy {
       particleEmitterContainer
     );
 
-    intercepts.forEach(intercept => {
+    intercepts.forEach((intercept) => {
       const ship = gameData.ships.getShipById(intercept.shipId);
       const weapon = ship.systems.getSystemById(intercept.weaponId);
 
@@ -111,25 +125,25 @@ class ReplayTurnActions extends AnimationUiStrategy {
       }
 
       const animation = new ShipWeaponAnimations[
-        `ShipWeapon${animationName.charAt(0).toUpperCase() +
-          animationName.slice(1)}Animation`
+        `ShipWeapon${
+          animationName.charAt(0).toUpperCase() + animationName.slice(1)
+        }Animation`
       ]({
         getRandom: this.getRandom,
         particleEmitterContainer: particleEmitterContainer,
         weapon,
-        getPosition: this.replayContext.wrapGetShootingPosition(
-          this.animations
-        ),
+        getPosition: (ship) =>
+          getShipStartPositionAndFacingForShip(gameDatas, ship),
         args: weapon.callHandler("getWeaponFireAnimationArguments"),
         weaponAnimationService,
         targetIcon,
         shooterIcon: shipIconContainer.getByShip(ship),
-        animationStartTime: this.replayContext.getVelocityStart(),
+        animationStartTime: 0,
         impactPosition: interceptPosition,
         impactTime: interceptTime,
         totalShots: weapon.callHandler("getTotalBurstSize", null, 1),
         shotsHit: intercept.isSucessfull() ? 1 : 0,
-        omitHitExplosion: true
+        omitHitExplosion: true,
       });
 
       this.animations.push(animation);
@@ -142,7 +156,7 @@ class ReplayTurnActions extends AnimationUiStrategy {
       gameCamera,
       particleEmitterContainer,
       torpedoIconContainer,
-      uiState
+      uiState,
     } = this.services;
     const gameData = gameDatas[0];
 
@@ -157,16 +171,16 @@ class ReplayTurnActions extends AnimationUiStrategy {
     const target = gameData.ships.getShipById(combatLogEntry.targetId);
     const targetIcon = shipIconContainer.getByShip(target);
 
-    const { position } = this.replayContext.getShootingPosition(
-      targetIcon,
-      this.animations
-    );
+    const position = getStartMoveForShip(
+      gameDatas,
+      targetIcon.ship
+    ).getPosition();
 
     this.animations.push(
       new CameraPositionAnimation(position, start, fireStart, gameCamera)
     );
 
-    combatLogEntry.entries.forEach(torpedoEntry => {
+    combatLogEntry.entries.forEach((torpedoEntry) => {
       const flight = gameData.torpedos.getTorpedoFlightById(
         torpedoEntry.torpedoFlightId
       );
@@ -175,7 +189,7 @@ class ReplayTurnActions extends AnimationUiStrategy {
 
       const intercepts = gameData.combatLog.getInterceptsFor(torpedoEntry);
 
-      const intercepted = intercepts.some(intercept =>
+      const intercepted = intercepts.some((intercept) =>
         intercept.isSucessfull()
       );
 
@@ -215,7 +229,7 @@ class ReplayTurnActions extends AnimationUiStrategy {
       if (systemsDestroyed.length > 0) {
         this.systemDestroyedTextAnimation.add(
           new Vector(targetPosition.x, targetPosition.y, targetPosition.z),
-          systemsDestroyed.map(system => system.getDisplayName()),
+          systemsDestroyed.map((system) => system.getDisplayName()),
           endTime
         );
       }
@@ -235,7 +249,8 @@ class ReplayTurnActions extends AnimationUiStrategy {
         targetIcon,
         intercepts,
         interceptTime,
-        interceptPosition
+        interceptPosition,
+        gameDatas
       );
 
       if (intercepted) {
@@ -250,7 +265,7 @@ class ReplayTurnActions extends AnimationUiStrategy {
               type: "glow",
               size: this.getRandom() * 5 + 5,
               color: new THREE.Color(1.0, 0.9, 0.8),
-              velocity
+              velocity,
             },
             this
           )
@@ -328,7 +343,7 @@ class ReplayTurnActions extends AnimationUiStrategy {
       shipIconContainer,
       gameCamera,
       particleEmitterContainer,
-      uiState
+      uiState,
     } = this.services;
     const gameData = gameDatas[0];
 
@@ -347,16 +362,16 @@ class ReplayTurnActions extends AnimationUiStrategy {
     const target = gameData.ships.getShipById(combatLogEntry.targetId);
     const targetIcon = shipIconContainer.getByShip(target);
 
-    const { facing, position } = this.replayContext.getShootingPosition(
-      targetIcon,
-      this.animations
-    );
+    const position = getStartMoveForShip(
+      gameDatas,
+      targetIcon.ship
+    ).getPosition();
 
     this.animations.push(
       new CameraPositionAnimation(position, start, fireStart, gameCamera)
     );
 
-    combatLogEntry.entries.forEach(fireEntry => {
+    combatLogEntry.entries.forEach((fireEntry) => {
       const fireOrder = weaponFireService.getFireOrderById(
         fireEntry.fireOrderId
       );
@@ -373,22 +388,22 @@ class ReplayTurnActions extends AnimationUiStrategy {
       }
 
       const animation = new ShipWeaponAnimations[
-        `ShipWeapon${animationName.charAt(0).toUpperCase() +
-          animationName.slice(1)}Animation`
+        `ShipWeapon${
+          animationName.charAt(0).toUpperCase() + animationName.slice(1)
+        }Animation`
       ]({
         getRandom: this.getRandom,
         particleEmitterContainer: particleEmitterContainer,
         weapon,
-        getPosition: this.replayContext.wrapGetShootingPosition(
-          this.animations
-        ),
+        getPosition: (ship) =>
+          getShipStartPositionAndFacingForShip(gameDatas, ship),
         args: weapon.callHandler("getWeaponFireAnimationArguments"),
         weaponAnimationService,
         targetIcon,
         shooterIcon: shipIconContainer.getByShip(shooter),
         animationStartTime: fireStart,
         totalShots: fireEntry.totalShots,
-        shotsHit: fireEntry.shotsHit
+        shotsHit: fireEntry.shotsHit,
       });
 
       this.animations.push(animation);
@@ -403,7 +418,7 @@ class ReplayTurnActions extends AnimationUiStrategy {
       if (systemsDestroyed.length > 0) {
         this.systemDestroyedTextAnimation.add(
           new Vector(position.x, position.y, position.z + targetIcon.shipZ),
-          systemsDestroyed.map(system => system.getDisplayName()),
+          systemsDestroyed.map((system) => system.getDisplayName()),
           fireStart + duration - 1000
         );
       }
@@ -414,6 +429,7 @@ class ReplayTurnActions extends AnimationUiStrategy {
     );
   }
 
+  /*
   buildVelocityAnimation(combatLogEntry, gameDatas) {
     const { shipIconContainer } = this.services;
 
@@ -434,6 +450,7 @@ class ReplayTurnActions extends AnimationUiStrategy {
       )
     );
   }
+  */
 
   buildMovementAnimation(combatLogEntry, gameDatas) {
     const { shipIconContainer } = this.services;
@@ -450,7 +467,7 @@ class ReplayTurnActions extends AnimationUiStrategy {
       icon,
       getMovesForShip(gameDatas, ship),
       start,
-      duration
+      start + duration
     );
 
     if (animation.doesMove()) {
@@ -471,16 +488,16 @@ class ReplayTurnActions extends AnimationUiStrategy {
     const {
       shipIconContainer,
       uiState,
-      particleEmitterContainer
+      particleEmitterContainer,
     } = this.services;
-    shipIconContainer.getArray().forEach(function(icon) {
+    shipIconContainer.getArray().forEach(function (icon) {
       icon.hide();
     }, this);
 
     uiState.hideCombatLog();
 
     particleEmitterContainer.release(this);
-    this.animations.forEach(animation => animation.deactivate());
+    this.animations.forEach((animation) => animation.deactivate());
 
     return super.deactivate();
   }

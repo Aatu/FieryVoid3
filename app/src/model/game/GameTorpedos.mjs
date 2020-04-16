@@ -6,7 +6,7 @@ class GameTorpedos {
   }
 
   getTorpedoFlightById(id) {
-    return this.flights.find(flight => flight.id === id);
+    return this.flights.find((flight) => flight.id === id);
   }
 
   addTorpedoFlights(flights) {
@@ -21,12 +21,12 @@ class GameTorpedos {
 
   serialize() {
     return {
-      flights: this.flights.map(flight => flight.serialize())
+      flights: this.flights.map((flight) => flight.serialize()),
     };
   }
 
   deserialize(data = { flights: [] }) {
-    this.flights = data.flights.map(flight =>
+    this.flights = data.flights.map((flight) =>
       new TorpedoFlight().deserialize(flight)
     );
 
@@ -34,7 +34,7 @@ class GameTorpedos {
   }
 
   advanceTurn() {
-    this.flights = this.flights.filter(flight => !flight.isDone());
+    this.flights = this.flights.filter((flight) => !flight.isDone());
   }
 }
 

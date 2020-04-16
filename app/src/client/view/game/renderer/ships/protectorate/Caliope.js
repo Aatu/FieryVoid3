@@ -1,6 +1,7 @@
 import ShipObject from "../ShipObject";
 import { loadObject3d } from "../../object3d/Object3d";
 import * as THREE from "three";
+import Vector from "../../../../../../model/utils/Vector.mjs";
 
 const textureLoader = new THREE.TextureLoader();
 
@@ -10,8 +11,9 @@ class Caliope extends ShipObject {
     this.defaultHeight = 80;
     this.sideSpriteSize = 30;
     this.overlaySpriteSize = 80;
-    this.dimensions = { x: 95, y: 35 };
-    this.center = { x: 8, y: 0 };
+    this.dimensions = new Vector(95, 22, 8);
+    this.center = new Vector(8, 0, 0);
+    this.ewSpriteDimensions = new Vector(95, 40);
     this.create();
   }
 

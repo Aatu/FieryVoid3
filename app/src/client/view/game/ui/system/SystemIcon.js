@@ -13,17 +13,17 @@ const HealthBar = styled.div`
   border: 2px solid black;
   box-sizing: border-box;
 
-  ${props => props.destroyed && "display: none;"}
+  ${(props) => props.destroyed && "display: none;"}
   background-color: #7a2020;
 
   :before {
     content: "";
     position: absolute;
-    width: ${props => `${props.health}%`};
+    width: ${(props) => `${props.health}%`};
     height: 100%;
     left: 0;
     bottom: 0;
-    background-color: ${props => (props.criticals ? "#ed6738" : "#427231")};
+    background-color: ${(props) => (props.criticals ? "#ed6738" : "#427231")};
   }
 `;
 
@@ -36,7 +36,7 @@ const SystemText = styled.div`
   font-size: 10px;
   color: white;
   display: flex;
-  ${props => props.destroyed && "display: none;"}
+  ${(props) => props.destroyed && "display: none;"}
   align-items: flex-end;
   justify-content: center;
   text-shadow: black 0 0 6px, black 0 0 6px, black 0 0 6px, black 0 0 6px;
@@ -49,9 +49,9 @@ const System = styled.div`
   height: 30px;
 
   background-color: "transparent";
-  background-image: ${props => `url(${props.background})`};
+  background-image: ${(props) => `url(${props.background})`};
   background-size: cover;
-  filter: ${props => {
+  filter: ${(props) => {
     if (props.targeting) {
       return "hue-rotate(0deg) brightness(4) grayscale(0)";
     } else if (props.reserved) {
@@ -67,15 +67,27 @@ const System = styled.div`
   cursor: pointer;
 
   ${SystemText} {
-    display: ${props => (props.offline ? "none" : "flex")};
+    display: ${(props) => (props.offline ? "none" : "flex")};
   }
+
+  ${({ boosted }) =>
+    boosted &&
+    `
+    :before {
+      content: "";
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      opacity: 0.95;
+      background-image: url(/img/boosted.png);
+    `}
 
   :before {
     content: "";
     position: absolute;
     width: 100%;
     height: 100%;
-    opacity: ${props => {
+    opacity: ${(props) => {
       if (props.destroyed || props.offline || props.loading) {
         return "0.8";
       }
@@ -85,7 +97,7 @@ const System = styled.div`
 
     background-color: transparent;
 
-    background-image: ${props => {
+    background-image: ${(props) => {
       if (props.offline) {
         return "url(/img/offline.png)";
       }
@@ -109,7 +121,7 @@ class SystemIcon extends React.Component {
     this.element = React.createRef();
     this.state = {
       mouseOveredSystem: null,
-      clickedSystem: null
+      clickedSystem: null,
     };
   }
 
@@ -123,7 +135,7 @@ class SystemIcon extends React.Component {
       ship,
       system,
       element: this.element,
-      scs
+      scs,
     });
   }
 
@@ -147,7 +159,7 @@ class SystemIcon extends React.Component {
       ship,
       system,
       element: this.element,
-      target
+      target,
     });
 
     this.setState({ mouseOveredSystem: this.element });
@@ -183,11 +195,11 @@ class SystemIcon extends React.Component {
       systemMenu: {
         systemInfoMenuProvider,
         activeSystem,
-        activeSystemElement
+        activeSystemElement,
       } = {
         systemInfoMenuProvider: null,
         activeSystem: null,
-        activeSystemElement: null
+        activeSystemElement: null,
       },
       onSystemClicked = this.clickSystem,
       selected = false,
@@ -253,7 +265,7 @@ class SystemIcon extends React.Component {
             />
           )}
           <System
-            ref={c => (this.element = c)}
+            ref={(c) => (this.element = c)}
             scs={scs}
             background={system.getBackgroundImage()}
             offline={isOffline(ship, system)}
@@ -263,6 +275,7 @@ class SystemIcon extends React.Component {
             targeting={targeting}
             reserved={reserved}
             destroyed={system.isDestroyed()}
+            boosted={system.callHandler("getBoost", 0, false)}
           />
 
           <SystemText destroyed={system.isDestroyed()} selected={selected}>
@@ -279,11 +292,11 @@ class SystemIcon extends React.Component {
   }
 }
 
-const isLoading = system => undefined; //ASK FROM SYSTEM system.weapon && !weaponManager.isLoaded(system);
+const isLoading = (system) => undefined; //ASK FROM SYSTEM system.weapon && !weaponManager.isLoaded(system);
 
 const isOffline = (ship, system) => system.power.isOffline();
 
-const getStructureLeft = system =>
+const getStructureLeft = (system) =>
   ((system.hitpoints - system.getTotalDamage()) / system.hitpoints) * 100;
 
 export default SystemIcon;

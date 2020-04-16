@@ -21,7 +21,7 @@ class TorpedoHandler {
     const interceptor = gameData.ships
       .getShips()
       .filter(
-        ship =>
+        (ship) =>
           gameData.slots.getTeamForShip(ship) ===
           gameData.slots.getTeamForShip(target)
       )
@@ -29,10 +29,10 @@ class TorpedoHandler {
         //get weapons capable of intercepting
         return [
           ...all,
-          ...torpedoAttackService.getPossibleInterceptors(ship, flight)
+          ...torpedoAttackService.getPossibleInterceptors(ship, flight),
         ];
       }, [])
-      .filter(weapon => {
+      .filter((weapon) => {
         //get weapons that still have uses
         const numberOfIntercepts = weapon.callHandler(
           "getNumberOfIntercepts",
@@ -47,7 +47,7 @@ class TorpedoHandler {
 
         return numberOfIntercepts > used;
       })
-      .filter(weapon => weapon.heat.getOverheatPercentage() < 1)
+      .filter((weapon) => weapon.heat.getOverheatPercentage() < 1)
       .sort((a, b) => {
         const changeA = a.callHandler(
           "getInterceptChance",
@@ -99,8 +99,8 @@ class TorpedoHandler {
     let interception = null;
     do {
       interception = impactingTorpedos
-        .filter(flight => !flight.intercepted)
-        .map(flight => {
+        .filter((flight) => !flight.intercepted)
+        .map((flight) => {
           const target = gameData.ships.getShipById(flight.targetId);
 
           const weapon = this.chooseInterceptor(
@@ -121,11 +121,13 @@ class TorpedoHandler {
               "getInterceptChance",
               { target, torpedoFlight: flight },
               0
-            )
+            ),
           };
         })
         .filter(Boolean)
-        .filter(interceptDetails => interceptDetails.interceptChange.result > 0)
+        .filter(
+          (interceptDetails) => interceptDetails.interceptChange.result > 0
+        )
         .sort((a, b) => {
           const changeA = a.interceptChange.result;
           const changeB = b.interceptChange.result;
@@ -181,7 +183,7 @@ class TorpedoHandler {
   }
 
   impactTorpedos(gameData) {
-    gameData.torpedos.getTorpedoFlights().forEach(flight => {
+    gameData.torpedos.getTorpedoFlights().forEach((flight) => {
       const target = gameData.ships.getShipById(flight.targetId);
       const shooter = gameData.ships.getShipById(flight.shooterId);
 
@@ -190,6 +192,7 @@ class TorpedoHandler {
 
       if (flight.intercepted) {
         torpedoAttack.addNote(`Torpedo intercepted`);
+        flight.setDone();
         return;
       }
 
@@ -198,7 +201,7 @@ class TorpedoHandler {
         shooter,
         torpedoFlight: flight,
         gameData,
-        combatLogEvent: torpedoAttack
+        combatLogEvent: torpedoAttack,
       });
 
       flight.setDone();

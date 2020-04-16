@@ -140,7 +140,7 @@ class ShipMovementAnimation extends Animation {
     const startsAndEnds = [];
     let start = null;
 
-    moves.forEach(move => {
+    moves.forEach((move) => {
       if (move.isDeploy()) {
         start = move;
       } else if (move.isEnd() && !start) {
@@ -148,7 +148,7 @@ class ShipMovementAnimation extends Animation {
       } else if (move.isEnd()) {
         startsAndEnds.push({
           start: start,
-          end: move
+          end: move,
         });
 
         start = move;
@@ -163,7 +163,7 @@ class ShipMovementAnimation extends Animation {
   }
 
   buildPositionCurve(start, end) {
-    const startPosition = start.position.add(start.velocity);
+    const startPosition = start.position;
 
     const point1 = startPosition.roundToHexCenter();
     const control1 = startPosition.roundToHexCenter();

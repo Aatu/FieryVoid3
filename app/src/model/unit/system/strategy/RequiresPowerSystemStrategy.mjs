@@ -16,7 +16,7 @@ class RequiresPowerSystemStrategy extends ShipSystemStrategy {
     previousResponse.push({
       sort: "AAAA",
       header: "Power requirement",
-      value: this.power
+      value: this.power,
     });
 
     return previousResponse;
@@ -51,20 +51,20 @@ class RequiresPowerSystemStrategy extends ShipSystemStrategy {
       ...previousResponse,
       {
         severity: 20,
-        critical: new ForcedOffline(1)
+        critical: new ForcedOffline(1),
       },
       {
         severity: 40,
-        critical: new ForcedOffline(2)
+        critical: new ForcedOffline(2),
       },
       {
         severity: 60,
-        critical: new ForcedOffline(3)
+        critical: new ForcedOffline(3),
       },
       {
         severity: 80,
-        critical: new ForcedOffline(4)
-      }
+        critical: new ForcedOffline(4),
+      },
     ];
   }
 }

@@ -68,6 +68,7 @@ class ShipObject {
     this.roll = 0;
     this.dimensions = { x: 100, y: 100 };
     this.center = { x: 0, y: 0 };
+    this.ewSpriteDimensions = null;
 
     this.consumeShipdata(this.ship);
   }
@@ -154,6 +155,26 @@ class ShipObject {
 
     //this.mesh.name = "ship";
     //this.mesh.userData = { icon: this };
+
+    const dimensionDebugCube = () => {
+      const cube = new THREE.Mesh(
+        new THREE.BoxGeometry(1, 1, 1),
+        new THREE.MeshBasicMaterial({
+          color: 0x00ff00,
+          wireframe: true,
+        })
+      );
+
+      cube.scale.set(this.dimensions.x, this.dimensions.y, this.dimensions.z);
+      cube.position.set(
+        this.center.x,
+        this.center.y,
+        this.center.z + this.shipZ
+      );
+      this.hexSpriteContainer.add(cube);
+    };
+
+    //dimensionDebugCube();
     this.scene.add(this.mesh);
     this.hide();
   }
@@ -162,15 +183,13 @@ class ShipObject {
     await this.isShipObjectLoaded;
 
     if (!this.shipEWSprite) {
-      const max =
-        this.dimensions.x > this.dimensions.y
-          ? this.dimensions.x
-          : this.dimensions.y;
+      const dimensions = this.ewSpriteDimensions || this.dimensions;
+      const max = dimensions.x > dimensions.y ? dimensions.x : dimensions.y;
 
       this.shipEWSprite = new ShipEWSprite(
         { width: max * 1.5, height: max * 1.5 },
         this.defaultHeight,
-        this.dimensions
+        dimensions
       );
       this.shipEWSprite.setPosition(this.center);
       this.hexSpriteContainer.add(this.shipEWSprite.mesh);

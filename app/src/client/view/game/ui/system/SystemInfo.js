@@ -8,9 +8,19 @@ import {
   TooltipValue,
   buildTooltipEntries,
   TooltipSubHeader,
-  RelativeOrStaticTooltip
+  RelativeOrStaticTooltip,
 } from "../../../../styled";
 import SystemStrategyUi from "./SystemStrategyUi";
+
+const TooltipContainer = styled(RelativeOrStaticTooltip)`
+  max-height: 85vh;
+  overflow-y: scroll;
+  scrollbar-width: 0;
+
+  &::-webkit-scrollbar {
+    width: 0;
+  }
+`;
 
 const Warning = styled.div`
   color: ${colors.textDanger};
@@ -37,7 +47,7 @@ const HeaderMenuItem = styled.div`
   font-weight: bolder;
   margin-right: 4px;
 
-  ${props => props.active && `color: white;`}
+  ${(props) => props.active && `color: white;`}
   &:last-child {
     margin: 0;
   }
@@ -51,7 +61,7 @@ class SystemInfo extends React.Component {
     super(props);
 
     this.state = {
-      tab: null
+      tab: null,
     };
   }
 
@@ -84,7 +94,7 @@ class SystemInfo extends React.Component {
 
     const criticals = system.damage
       .getCriticals()
-      .map(critical => critical.getMessage());
+      .map((critical) => critical.getMessage());
 
     return [...warnings, ...criticals].join(", ");
   }
@@ -93,8 +103,8 @@ class SystemInfo extends React.Component {
     const { system } = this.props;
     return buildTooltipEntries([
       {
-        value: system.getSystemDescription()
-      }
+        value: system.getSystemDescription(),
+      },
     ]);
   }
 
@@ -121,7 +131,7 @@ class SystemInfo extends React.Component {
       system,
       systemInfoMenuProvider,
       uiState,
-      weaponTargeting
+      weaponTargeting,
     } = this.props;
 
     const Menu = systemInfoMenuProvider ? systemInfoMenuProvider() : null;
@@ -158,13 +168,13 @@ class SystemInfo extends React.Component {
     const { tab } = this.state;
 
     return (
-      <RelativeOrStaticTooltip relative={!scs} element={element} right={right}>
+      <TooltipContainer relative={!scs} element={element} right={right}>
         <TooltipHeader>
           {system.getDisplayName()}
           <HeaderMenu>
             <HeaderMenuItem
               active={tab === "log"}
-              onClick={e => {
+              onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
                 this.setState({ tab: "log" });
@@ -174,7 +184,7 @@ class SystemInfo extends React.Component {
             </HeaderMenuItem>
             <HeaderMenuItem
               active={tab === "info"}
-              onClick={e => {
+              onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
                 this.setState({ tab: "info" });
@@ -185,7 +195,7 @@ class SystemInfo extends React.Component {
 
             <HeaderMenuItem
               active={!tab}
-              onClick={e => {
+              onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
                 this.setState({ tab: null });
@@ -199,7 +209,7 @@ class SystemInfo extends React.Component {
         {!tab && this.getDefaultTab()}
         {tab === "log" && this.getLogTab()}
         {tab === "info" && this.getInfoTab()}
-      </RelativeOrStaticTooltip>
+      </TooltipContainer>
     );
   }
 }

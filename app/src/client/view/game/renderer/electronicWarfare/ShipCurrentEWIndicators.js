@@ -20,12 +20,12 @@ class ShipCurrentEWIndicators {
   }
 
   show() {
-    this.oew.forEach(oew => oew.show());
+    this.oew.forEach((oew) => oew.show());
     return this;
   }
 
   hide() {
-    this.oew.forEach(oew => oew.hide());
+    this.oew.forEach((oew) => oew.hide());
     return this;
   }
 
@@ -34,25 +34,30 @@ class ShipCurrentEWIndicators {
   }
 
   render(zoom) {
-    this.oew.forEach(oew => oew.render(zoom));
+    this.oew.forEach((oew) => oew.render(zoom));
   }
 
   createOEW() {
     const old = this.oew;
     const newOew = this.ship.electronicWarfare.inEffect
       .getAllOew()
-      .map(ewEntry => {
+      .map((ewEntry) => {
         const targetIcon = this.shipIconContainer.getById(ewEntry.targetShipId);
         const targetGhost = this.shipIconContainer.getGhostShipIconByShip(
           targetIcon.ship
         );
-        let indicator = this.oew.find(oew => oew.targetIcon === targetIcon);
+        let indicator = this.oew.find((oew) => oew.targetIcon === targetIcon);
+
+        const shipGhost = this.shipIconContainer.getGhostShipIconByShip(
+          this.icon.ship
+        );
 
         if (!indicator) {
           indicator = new CurrentOEWIndicator(
             this.icon,
             targetIcon,
             targetGhost,
+            shipGhost,
             ewEntry.amount,
             this.ship.player.is(this.currentUser),
             this.scene
@@ -63,10 +68,10 @@ class ShipCurrentEWIndicators {
       });
 
     old
-      .filter(indicator =>
-        newOew.every(indicatorNew => indicatorNew !== indicator)
+      .filter((indicator) =>
+        newOew.every((indicatorNew) => indicatorNew !== indicator)
       )
-      .forEach(indicator => indicator.remove());
+      .forEach((indicator) => indicator.remove());
 
     return newOew;
   }

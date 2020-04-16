@@ -1,6 +1,7 @@
 const getInterestingStuffInPosition = (payload, shipIconContainer) => {
   const mouseovered = payload.entities.filter(
-    entity => entity instanceof window.ShipObject && !entity.ship.isDestroyed()
+    (entity) =>
+      entity instanceof window.ShipObject && !entity.ship.isDestroyed()
   );
 
   if (mouseovered.length > 0) {
@@ -9,7 +10,7 @@ const getInterestingStuffInPosition = (payload, shipIconContainer) => {
 
   return shipIconContainer
     .getIconsInProximity(payload)
-    .filter(icon => !icon.ship.isDestroyed());
+    .filter((icon) => !icon.ship.isDestroyed());
 };
 
 class PhaseStrategy {
@@ -35,15 +36,15 @@ class PhaseStrategy {
   }
 
   updateStrategies(gamedata) {
-    this.strategies.forEach(strategy => strategy.update(gamedata));
+    this.strategies.forEach((strategy) => strategy.update(gamedata));
   }
 
   activateStrategies() {
-    this.strategies.forEach(strategy => strategy.activate(this.services));
+    this.strategies.forEach((strategy) => strategy.activate(this.services));
   }
 
   callStrategies(functionName, payload) {
-    this.strategies.forEach(strategy => {
+    this.strategies.forEach((strategy) => {
       if (strategy[functionName] && (!payload || !payload.stopped)) {
         strategy[functionName](payload);
       }
@@ -60,7 +61,7 @@ class PhaseStrategy {
       delta: this.currentDeltaTime,
       total: this.totalAnimationTime,
       last: this.lastAnimationTime,
-      zoom
+      zoom,
     };
     this.callStrategies("render", renderPayload);
     shipIconContainer && shipIconContainer.render(renderPayload);

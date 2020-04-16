@@ -131,8 +131,8 @@ class BoostableSystemStrategy extends ShipSystemStrategy {
     return {
       ...previousResponse,
       boostableSystemStrategy: {
-        boostLevel: this.boostLevel
-      }
+        boostLevel: this.boostLevel,
+      },
     };
   }
 

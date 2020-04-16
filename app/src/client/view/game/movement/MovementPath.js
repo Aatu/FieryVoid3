@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import {
   getPointBetweenInDistance,
-  hexFacingToAngle
+  hexFacingToAngle,
 } from "../../../../model/utils/math";
 import coordinateConverter from "../../../../model/utils/CoordinateConverter";
 
@@ -31,7 +31,7 @@ class MovementPath {
   }
 
   remove() {
-    this.objects.forEach(object3d => {
+    this.objects.forEach((object3d) => {
       this.scene.remove(object3d.mesh);
       object3d.destroy();
     });
@@ -66,15 +66,6 @@ class MovementPath {
   }
 }
 
-const createMovementMiddleStep = (position, color) => {
-  const size = coordinateConverter.getHexDistance() * 0.5;
-  const circle = new CircleSprite({ width: size, height: size }, 0.01, 1.6);
-  circle.setPosition(position);
-  circle.setOverlayColor(color);
-  circle.setOverlayColorAlpha(1);
-  return circle;
-};
-
 const createMovementLine = (
   scene,
   position,
@@ -93,7 +84,7 @@ const createMovementLine = (
       type: "dashed-arrow",
       textureSize: 30,
       pulseAmount: 1,
-      roundTestureRepeate: true
+      roundTestureRepeate: true,
     }
   );
 

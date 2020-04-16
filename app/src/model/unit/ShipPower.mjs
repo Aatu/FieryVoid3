@@ -14,7 +14,7 @@ class ShipPower {
   getPowerRequired() {
     return this.shipSystems
       .getSystems()
-      .filter(system => !system.power.isOffline())
+      .filter((system) => !system.power.isOffline())
       .reduce((acc, system) => acc + system.power.getPowerRequirement(), 0);
   }
 
@@ -35,11 +35,17 @@ class ShipPower {
       return false;
     }
 
+    console.log(
+      "enough power",
+      this.getRemainingPowerOutput(),
+      system.power.getPowerRequirement(),
+      this.getRemainingPowerOutput() >= system.power.getPowerRequirement()
+    );
     return this.getRemainingPowerOutput() >= system.power.getPowerRequirement();
   }
 
   copyPower(ship) {
-    this.shipSystems.getSystems().forEach(system => {
+    this.shipSystems.getSystems().forEach((system) => {
       const otherSystem = ship.systems.getSystemById(system.id);
 
       if (otherSystem.power.isGoingOffline() && system.power.isOnline()) {
@@ -55,7 +61,7 @@ class ShipPower {
   forceValidPower() {
     const systems = shuffleArray(this.shipSystems.getSystems());
 
-    systems.forEach(system => {
+    systems.forEach((system) => {
       if (this.canSetOffline(system) && !this.isValidPower()) {
         system.power.setOffline();
       }

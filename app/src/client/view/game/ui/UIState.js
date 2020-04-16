@@ -25,7 +25,7 @@ class UIState {
       systemMenu: {
         systemInfoMenuProvider: null,
         activeSystem: null,
-        activeSystemElement: null
+        activeSystemElement: null,
       },
       shipBadges: [],
       gameUiMode: {},
@@ -34,7 +34,7 @@ class UIState {
       combatLog: false,
       systemList: [],
       ewList: [],
-      stateVersion: 0
+      stateVersion: 0,
     };
 
     this.state.gameUiMode[gameUiModes.EW] = false;
@@ -58,65 +58,28 @@ class UIState {
   reducer(state, action) {
     this.state = {
       ...state,
-      ...action
+      ...action,
     };
 
     return this.state;
   }
 
   showShipBadge(icon, showName) {
-    const { coordinateConverter } = this.services;
     const entry = this.state.shipBadges.find(
-      badge => badge.icon.ship.id === icon.ship.id
+      (badge) => badge.icon.ship.id === icon.ship.id
     );
-
-    const getPosition = () => {
-      const iconPosition = icon.getPosition();
-      const iconFacing = icon.getFacing();
-      const hexFacing = angleToHexFacing(iconFacing);
-      const offset = HEX_SIZE - 15;
-
-      const hexas = icon.getShipHexas().map(gamePos => {
-        gamePos.y -= offset;
-
-        return coordinateConverter.fromGameToViewPort(gamePos);
-      });
-
-      let lowestY = null;
-      let lowestHexas = [];
-
-      hexas.forEach(hex => {
-        if (lowestY === null || hex.y > lowestY) {
-          lowestHexas = [hex];
-          lowestY = hex.y;
-        } else if (hex.y === lowestY) {
-          lowestHexas.push(hex);
-        }
-      });
-
-      const averageX =
-        lowestHexas.reduce((total, hex) => total + hex.x, 0) /
-        lowestHexas.length;
-
-      const position = {
-        x: averageX,
-        y: lowestY
-      };
-
-      return position;
-    };
 
     if (entry) {
       entry.icon = icon;
       entry.version++;
-      entry.getPosition = getPosition;
       entry.showName = showName;
+      entry.visible = true;
     } else {
       this.state.shipBadges.push({
         icon,
         version: 0,
-        getPosition,
-        showName
+        showName,
+        visible: true,
       });
     }
 
@@ -124,8 +87,20 @@ class UIState {
   }
 
   hideShipBadge(icon) {
+    const entry = this.state.shipBadges.find(
+      (badge) => badge.icon.ship.id === icon.ship.id
+    );
+
+    if (entry) {
+      entry.visible = false;
+      entry.version++;
+      this.updateState();
+    }
+  }
+
+  removeShipBadge(icon) {
     this.state.shipBadges = this.state.shipBadges.filter(
-      entry => entry.icon.ship.id !== icon.ship.id
+      (entry) => entry.icon.ship.id !== icon.ship.id
     );
 
     this.updateState();
@@ -151,8 +126,8 @@ class UIState {
 
     systems = []
       .concat(systems)
-      .filter(system => !this.isSelectedSystem(system))
-      .forEach(system => this.state.selectedSystems.push(system));
+      .filter((system) => !this.isSelectedSystem(system))
+      .forEach((system) => this.state.selectedSystems.push(system));
 
     this.updateState();
     this.customEvent("systemSelected", { systems });
@@ -161,8 +136,8 @@ class UIState {
   deselectSystem(systems) {
     systems = [].concat(systems);
 
-    this.state.selectedSystems = this.state.selectedSystems.filter(selected =>
-      systems.every(system => system.id !== selected.id)
+    this.state.selectedSystems = this.state.selectedSystems.filter((selected) =>
+      systems.every((system) => system.id !== selected.id)
     );
 
     this.updateState();
@@ -182,7 +157,7 @@ class UIState {
 
   hasGameUiMode(values) {
     values = [].concat(values);
-    return values.some(value => this.state.gameUiMode[value]);
+    return values.some((value) => this.state.gameUiMode[value]);
   }
 
   toggleGameUiMode(value) {
@@ -204,7 +179,7 @@ class UIState {
     this.state.combatLog = {
       gameData,
       replayContext,
-      log: []
+      log: [],
     };
   }
 
@@ -245,7 +220,7 @@ class UIState {
 
       this.selectSystem(
         this.getSelectedShip(),
-        this.state.selectedSystems.map(system =>
+        this.state.selectedSystems.map((system) =>
           this.getSelectedShip().systems.getSystemById(system.id)
         )
       );
@@ -370,7 +345,7 @@ class UIState {
 
   shipSystemStateChanged(ship, system) {
     this.customEvent("shipSystemStateChanged", { ship, system });
-    this.systemChangeListeners.forEach(callBack => callBack(ship, system));
+    this.systemChangeListeners.forEach((callBack) => callBack(ship, system));
   }
 
   showShipTooltip(ship, ui = false, right = false) {
@@ -378,14 +353,14 @@ class UIState {
     this.state.shipTooltip.push({
       ship,
       ui,
-      right: !right
+      right: !right,
     });
     this.updateState();
   }
 
   hideShipTooltip(ship) {
     this.state.shipTooltip = this.state.shipTooltip.filter(
-      tooltip => tooltip.ship.id !== ship.id
+      (tooltip) => tooltip.ship.id !== ship.id
     );
 
     this.customEvent("shipTooltipHidden", ship);
@@ -396,7 +371,7 @@ class UIState {
     const {
       shipIconContainer,
       coordinateConverter,
-      movementService
+      movementService,
     } = this.services;
 
     this.state.shipMovement = {
@@ -406,7 +381,7 @@ class UIState {
       getPosition: () =>
         coordinateConverter.fromGameToViewPort(
           shipIconContainer.getByShip(ship).getPosition()
-        )
+        ),
     };
     this.updateState();
   }
@@ -415,7 +390,7 @@ class UIState {
     const {
       shipIconContainer,
       coordinateConverter,
-      movementService
+      movementService,
     } = this.services;
 
     this.state.shipMovement = {
@@ -425,7 +400,7 @@ class UIState {
       getPosition: () =>
         coordinateConverter.fromGameToViewPort(
           shipIconContainer.getByShip(ship).getPosition()
-        )
+        ),
     };
     this.updateState();
   }
@@ -436,7 +411,7 @@ class UIState {
   }
 
   render() {
-    this.renderListeners.forEach(listener => listener());
+    this.renderListeners.forEach((listener) => listener());
   }
 
   subscribeToRender(callBack) {
@@ -445,7 +420,7 @@ class UIState {
 
   unsubscribeFromRender(callBack) {
     this.renderListeners = this.renderListeners.filter(
-      listener => listener !== callBack
+      (listener) => listener !== callBack
     );
   }
 
@@ -455,7 +430,7 @@ class UIState {
 
   unsubscribeFromSystemChange(callBack) {
     this.systemChangeListeners = this.systemChangeListeners.filter(
-      listener => listener !== callBack
+      (listener) => listener !== callBack
     );
   }
 }

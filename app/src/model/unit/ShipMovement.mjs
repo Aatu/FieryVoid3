@@ -14,8 +14,8 @@ class ShipMovement {
   }
 
   removeMovement(move) {
-    const toDelete = this.moves.find(other => other.equals(move));
-    this.moves = this.moves.filter(other => other !== toDelete);
+    const toDelete = this.moves.find((other) => other.equals(move));
+    this.moves = this.moves.filter((other) => other !== toDelete);
     this.buildIndex();
   }
 
@@ -26,30 +26,32 @@ class ShipMovement {
 
   removeMovementExceptEnd(turn) {
     this.moves = this.moves.filter(
-      move =>
+      (move) =>
         move.turn < turn || move.isEnd() || move.isDeploy() || move.isStart()
     );
     this.buildIndex();
   }
 
   removeMovementForTurn(turn) {
-    this.moves = this.moves.filter(move => move.turn < turn || move.isStart());
+    this.moves = this.moves.filter(
+      (move) => move.turn < turn || move.isStart()
+    );
     this.buildIndex();
   }
 
   removeMovementForOtherTurns(turn) {
-    this.moves = this.moves.filter(move => move.turn === turn);
+    this.moves = this.moves.filter((move) => move.turn === turn);
     this.buildIndex();
   }
 
   getMovement() {
-    return this.moves.map(move => move.clone());
+    return this.moves.map((move) => move.clone());
   }
 
   getPlayerAddedMovement() {
     return this.moves
-      .filter(move => move.isPlayerAdded())
-      .map(move => move.clone());
+      .filter((move) => move.isPlayerAdded())
+      .map((move) => move.clone());
   }
 
   getLastMove() {
@@ -61,7 +63,7 @@ class ShipMovement {
   }
 
   getStartMove() {
-    const start = this.moves.find(move => move.isStart());
+    const start = this.moves.find((move) => move.isStart());
     if (!start) {
       return null;
     }
@@ -70,7 +72,7 @@ class ShipMovement {
   }
 
   getDeployMove() {
-    const deploy = this.moves.find(move => move.isDeploy());
+    const deploy = this.moves.find((move) => move.isDeploy());
     if (!deploy) {
       return null;
     }
@@ -79,7 +81,7 @@ class ShipMovement {
   }
 
   replaceDeployMove(newMove) {
-    this.moves = this.moves.map(move => {
+    this.moves = this.moves.map((move) => {
       if (move.isDeploy()) {
         return newMove;
       } else {
@@ -90,18 +92,18 @@ class ShipMovement {
 
   replaceMovement(newMovement) {
     this.moves = [
-      ...this.moves.filter(move => !move.isPlayerAdded()),
-      ...newMovement.filter(move => move.isPlayerAdded())
+      ...this.moves.filter((move) => !move.isPlayerAdded()),
+      ...newMovement.filter((move) => move.isPlayerAdded()),
     ];
 
-    this.moves = this.moves.map(move => move.clone());
+    this.moves = this.moves.map((move) => move.clone());
     this.buildIndex();
   }
 
   buildIndex() {
     let lastIndex = null;
 
-    this.moves.forEach(move => {
+    this.moves.forEach((move) => {
       if (
         lastIndex === null &&
         (move.isEnd() || move.isStart() || move.isDeploy()) &&
@@ -116,9 +118,9 @@ class ShipMovement {
 
     this.ship.systems.callAllSystemHandlers("resetChanneledThrust");
 
-    this.moves.forEach(move => {
+    this.moves.forEach((move) => {
       const fulfilments = move.requiredThrust.getFulfilments();
-      fulfilments.forEach(fulfilment => {
+      fulfilments.forEach((fulfilment) => {
         fulfilment.forEach(({ amount, thrusterId }) => {
           this.ship.systems
             .getSystemById(thrusterId)
@@ -132,7 +134,7 @@ class ShipMovement {
     const end = this.moves
       .slice()
       .reverse()
-      .find(move => move.isEnd());
+      .find((move) => move.isEnd());
 
     if (!end) {
       return null;
@@ -157,8 +159,12 @@ class ShipMovement {
     return end;
   }
 
+  getTurnStartMove() {
+    console.log(this.moves);
+  }
+
   getEvadeMove() {
-    const move = this.moves.find(move => move.isEvade());
+    const move = this.moves.find((move) => move.isEvade());
 
     if (!move) {
       return null;
@@ -177,7 +183,7 @@ class ShipMovement {
   }
 
   getRollMove() {
-    const move = this.moves.find(move => move.isRoll());
+    const move = this.moves.find((move) => move.isRoll());
 
     if (!move) {
       return null;
@@ -217,7 +223,7 @@ class ShipMovement {
 
   getThrustRequired() {
     return this.moves
-      .filter(move => move.requiredThrust)
+      .filter((move) => move.requiredThrust)
       .reduce(
         (total, move) => total + move.requiredThrust.getTotalAmountRequired(),
         0
@@ -231,8 +237,8 @@ class ShipMovement {
   getThrusters() {
     return this.ship.systems
       .getSystems()
-      .filter(system => system.callHandler("isThruster"))
-      .filter(system => !system.isDisabled());
+      .filter((system) => system.callHandler("isThruster"))
+      .filter((system) => !system.isDisabled());
   }
 
   getMaxEvasion() {
@@ -250,8 +256,8 @@ class ShipMovement {
     const otherShipPosition = otherShip.getHexPosition();
     const otherShipFacing = otherShip.getFacing();
 
-    return this.ship.hexSizes.some(hex => {
-      return otherShip.hexSizes.some(otherHex =>
+    return this.ship.hexSizes.some((hex) => {
+      return otherShip.hexSizes.some((otherHex) =>
         shipPosition
           .add(hex.rotate(shipFacing))
           .equals(otherShipPosition.add(otherHex.rotate(otherShipFacing)))
@@ -272,7 +278,7 @@ class ShipMovement {
 
   revertMovementsUntilValidMovement() {
     const canRevert = () =>
-      this.getMovement().some(move => move.isPlayerAdded());
+      this.getMovement().some((move) => move.isPlayerAdded());
 
     while (true) {
       if (this.hasValidMovement()) {
@@ -287,7 +293,7 @@ class ShipMovement {
 
       this.removeMovement(
         this.getMovement()
-          .filter(move => move.isCancellable())
+          .filter((move) => move.isCancellable())
           .pop()
       );
     }
@@ -304,7 +310,7 @@ class ShipMovement {
   }
 
   deserialize(data = []) {
-    this.moves = data.map(moveData =>
+    this.moves = data.map((moveData) =>
       new MovementOrder().deserialize(moveData)
     );
 
@@ -312,7 +318,7 @@ class ShipMovement {
   }
 
   serialize() {
-    return this.moves.map(move => move.serialize());
+    return this.moves.map((move) => move.serialize());
   }
 }
 

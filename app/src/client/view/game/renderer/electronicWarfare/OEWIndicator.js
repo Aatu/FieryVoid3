@@ -4,7 +4,7 @@ import LineSprite from "../sprite/LineSprite";
 import {
   COLOR_OEW_FRIENDLY,
   COLOR_OEW_ENEMY,
-  COLOR_FRIENDLY_HIGHLIGHT
+  COLOR_FRIENDLY_HIGHLIGHT,
 } from "../../../../../model/gameConfig.mjs";
 
 class OEWIndicator {
@@ -31,6 +31,7 @@ class OEWIndicator {
       ? targetIcon.getPosition()
       : targetGhost.getPosition();
 
+    console.log("ghost", this.shipGhost);
     this.shipPosition = this.shipGhost.hidden
       ? this.shipIcon.getPosition()
       : this.shipGhost.getPosition();
@@ -49,7 +50,7 @@ class OEWIndicator {
         type: "dashed-circle",
         textureSize: this.amount * 1 + 5,
         //minFilter: THREE.NearestFilter,
-        pulseAmount: 1
+        pulseAmount: 1,
       }
     );
 
