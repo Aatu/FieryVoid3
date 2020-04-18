@@ -10,7 +10,7 @@ let numberCreated = 0;
 class BoltInstanceFactory {
   constructor(scene) {
     this.scene = scene;
-    this.ready = new Promise(async resolve => {
+    this.ready = new Promise(async (resolve) => {
       if (!loadedCube) {
         loadedCube = await this.loadCube();
       }
@@ -38,7 +38,7 @@ THREE.LinearMipMapLinearFilter
       uniforms: {
         map: { value: texture },
         gameTime: { type: "f", value: 0.0 },
-        zoomLevel: { type: "f", value: 0.0 }
+        zoomLevel: { type: "f", value: 0.0 },
       },
       transparent: true,
       depthWrite: false,
@@ -46,7 +46,7 @@ THREE.LinearMipMapLinearFilter
       side: THREE.DoubleSide,
       blending: THREE.AdditiveBlending,
       vertexShader: boltVertexShader,
-      fragmentShader: boltFragmentShader
+      fragmentShader: boltFragmentShader,
       //wireframe: true
     });
 
@@ -89,7 +89,8 @@ THREE.LinearMipMapLinearFilter
       velocityAttribute,
       activationGameTimeAttribute,
       deactivationGameTimeAttribute,
-      deactivationFadeAttribute;
+      deactivationFadeAttribute,
+      repeatAttribute;
 
     const geometry = new THREE.InstancedBufferGeometry();
     geometry.index = original.index;
@@ -106,6 +107,7 @@ THREE.LinearMipMapLinearFilter
     const activations = [];
     const deactivations = [];
     const fades = [];
+    const repeats = [];
 
     for (let i = 0; i < amount; i++) {
       offsets.push(0, 0, 0.5);
@@ -118,6 +120,7 @@ THREE.LinearMipMapLinearFilter
       activations.push(0);
       deactivations.push(0);
       fades.push(0);
+      repeats.push(0);
     }
 
     offsetAttribute = new THREE.InstancedBufferAttribute(
@@ -170,6 +173,11 @@ THREE.LinearMipMapLinearFilter
       1
     ).setDynamic(true);
 
+    repeatAttribute = new THREE.InstancedBufferAttribute(
+      new Float32Array(repeats),
+      1
+    ).setDynamic(true);
+
     geometry.setAttribute("offset", offsetAttribute);
     geometry.setAttribute("opacity", opacityAttribute);
     geometry.setAttribute("textureNumber", textureNumberAttribute);
@@ -183,6 +191,7 @@ THREE.LinearMipMapLinearFilter
       deactivationGameTimeAttribute
     );
     geometry.setAttribute("deactivationFade", deactivationFadeAttribute);
+    geometry.setAttribute("repeat", repeatAttribute);
 
     const mesh = new THREE.Mesh(geometry, this.material);
     mesh.frustumCulled = false;
@@ -202,6 +211,7 @@ THREE.LinearMipMapLinearFilter
       activationGameTimeAttribute,
       deactivationGameTimeAttribute,
       deactivationFadeAttribute,
+      repeatAttribute,
       amount,
       mesh,
       this.scene,

@@ -5,7 +5,7 @@ import {
   PortFrontSection,
   PortAftSection,
   StarboardFrontSection,
-  StarboardAftSection
+  StarboardAftSection,
 } from "./systemSection/index.mjs";
 import { getCompassHeadingOfPoint, addToDirection } from "../../utils/math.mjs";
 
@@ -20,7 +20,7 @@ class ShipSystemSections {
       new PortFrontSection(),
       new PortAftSection(),
       new StarboardFrontSection(),
-      new StarboardAftSection()
+      new StarboardAftSection(),
     ];
   }
 
@@ -38,7 +38,7 @@ class ShipSystemSections {
   }
 
   getNextSectionForHit(heading, lastSection) {
-    return this.sections.find(section => {
+    return this.sections.find((section) => {
       const location = section.getOffsetHex();
       const intervening = location.getNeighbourAtHeading(heading);
 
@@ -47,11 +47,11 @@ class ShipSystemSections {
   }
 
   getSectionsThatCanBeHit(heading) {
-    return this.sections.filter(section => {
+    return this.sections.filter((section) => {
       const location = section.getOffsetHex();
       const intervening = location.getNeighbourAtHeading(heading);
 
-      return this.sections.every(blockingSection => {
+      return this.sections.every((blockingSection) => {
         if (!blockingSection.getOffsetHex().equals(intervening)) {
           return true;
         } else if (!blockingSection.hasUndestroyedStructure()) {
@@ -95,6 +95,34 @@ class ShipSystemSections {
     }
   }
 
+  hasSectionWithStructure(type) {
+    return this.getSection(type).getStructure();
+  }
+
+  hasFrontSectionWithStructure() {
+    return this.hasSectionWithStructure(FrontSection);
+  }
+
+  hasStarboardFrontSectionWithStructure() {
+    return this.hasSectionWithStructure(StarboardFrontSection);
+  }
+
+  hasStarboardAftSectionWithStructure() {
+    return this.hasSectionWithStructure(StarboardAftSection);
+  }
+
+  hasPortFrontSectionWithStructure() {
+    return this.hasSectionWithStructure(PortFrontSection);
+  }
+
+  hasPortAftSectionWithStructure() {
+    return this.hasSectionWithStructure(PortAftSection);
+  }
+
+  hasAftSectionWithStructure() {
+    return this.hasSectionWithStructure(AftSection);
+  }
+
   getPrimarySection() {
     return this.getSection(PrimarySection);
   }
@@ -124,13 +152,17 @@ class ShipSystemSections {
   }
 
   getSection(location) {
-    return this.sections.find(section => section instanceof location);
+    return this.sections.find((section) => section instanceof location);
   }
 
   getSectionBySystem(system) {
-    return this.sections.find(section =>
-      section.systems.find(otherSystem => system.id === otherSystem.id)
+    return this.sections.find((section) =>
+      section.systems.find((otherSystem) => system.id === otherSystem.id)
     );
+  }
+
+  getSectionsWithStructure() {
+    return this.sections.filter((section) => section.getStructure());
   }
 }
 

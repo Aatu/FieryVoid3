@@ -1,9 +1,10 @@
 import {
   ShipIdleMovementAnimation,
-  ShipSystemAnimation
+  ShipSystemAnimation,
 } from "../../animation";
 
 import AnimationUiStrategy from "./AnimationUiStrategy";
+import ShipDamageAnimation from "../../animation/ShipDamageAnimation";
 
 class ShowShipObjects extends AnimationUiStrategy {
   constructor() {
@@ -14,7 +15,7 @@ class ShowShipObjects extends AnimationUiStrategy {
     super.update(gamedata);
     const { shipIconContainer } = this.services;
 
-    shipIconContainer.getArray().forEach(icon => {
+    shipIconContainer.getArray().forEach((icon) => {
       const ship = icon.ship;
 
       if (ship.isDestroyed()) {
@@ -25,6 +26,7 @@ class ShowShipObjects extends AnimationUiStrategy {
           new ShipIdleMovementAnimation(icon, gamedata.terrain)
         );
         this.animations.push(new ShipSystemAnimation(icon));
+        this.animations.push(new ShipDamageAnimation(icon));
       }
       return this;
     });
@@ -32,16 +34,16 @@ class ShowShipObjects extends AnimationUiStrategy {
 
   shipStateChanged(ship) {
     this.animations
-      .filter(animation => animation.ship === ship)
-      .forEach(animation => {
+      .filter((animation) => animation.ship === ship)
+      .forEach((animation) => {
         animation.update();
       });
   }
 
   shipSystemStateChanged({ ship, system }) {
     this.animations
-      .filter(animation => animation.ship === ship)
-      .forEach(animation => {
+      .filter((animation) => animation.ship === ship)
+      .forEach((animation) => {
         if (animation.updateSystem) {
           animation.updateSystem(system);
         }
@@ -50,7 +52,7 @@ class ShowShipObjects extends AnimationUiStrategy {
 
   deactivate() {
     const { shipIconContainer } = this.services;
-    shipIconContainer.getArray().forEach(icon => {
+    shipIconContainer.getArray().forEach((icon) => {
       icon.hide();
     }, this);
 

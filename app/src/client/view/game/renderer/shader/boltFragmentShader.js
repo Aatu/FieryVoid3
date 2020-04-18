@@ -7,17 +7,30 @@ const boltFragmentShader = `
     varying vec3 vColor;
     varying float vActivationGameTime;
     varying float vDeactivationGameTime;
+    varying float vRepeat;
+
+    float getGameTime() {
+        float modGameTime = gameTime;
+        if (vRepeat > 0.0) {
+            modGameTime = gameTime - (vRepeat * floor(gameTime/vRepeat));
+        }
+
+        return modGameTime;
+    }
 
     void main() {
+
+        float modGameTime = getGameTime();
+
         if (vOpacity == 0.0) {
             discard;
         }
 
-        if (vActivationGameTime > gameTime) {
+        if (vActivationGameTime > modGameTime) {
             discard;
         }
 
-        if (vDeactivationGameTime < gameTime) {
+        if (vDeactivationGameTime < modGameTime) {
             discard;
         }
 

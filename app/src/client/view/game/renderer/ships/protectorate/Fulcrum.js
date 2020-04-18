@@ -11,7 +11,7 @@ class Fulcrum extends ShipObject {
     this.defaultHeight = 100;
     this.sideSpriteSize = 30;
     this.overlaySpriteSize = 80;
-    this.dimensions = new Vector(65, 12, 12);
+    this.dimensions = new Vector(55, 12, 12);
     this.center = new Vector(0, 0, 0);
     this.ewSpriteDimensions = new Vector(65, 30);
     this.create();

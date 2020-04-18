@@ -34,7 +34,7 @@ class Vector {
     return {
       x: this.x,
       y: this.y,
-      z: this.z
+      z: this.z,
     };
   }
 
@@ -145,6 +145,14 @@ class Vector {
 
   toThree() {
     return new THREE.Vector3(this.x, this.y, this.z);
+  }
+
+  toObject() {
+    return {
+      x: this.x,
+      y: this.y,
+      z: this.z,
+    };
   }
 }
 

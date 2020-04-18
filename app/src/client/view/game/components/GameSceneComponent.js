@@ -7,9 +7,10 @@ const WebglCanvas = styled.div`
   width: 100%;
   height: 100%;
   background-size: cover;
-  background-color: #0b121a;
+  background-color: #030910;
   box-shadow: inset 0px 0px 200px rgba(0, 0, 0, 1);
 `;
+//background-color: #0b121a;
 
 const ClickCatcher = styled.div`
   position: fixed;
@@ -40,7 +41,7 @@ const getMousePositionInObservedElement = (event, element) => {
           window.innerHeight
         ) *
           2 +
-        1
+        1,
     };
   }
 
@@ -48,7 +49,7 @@ const getMousePositionInObservedElement = (event, element) => {
     x: event.clientX,
     y: event.clientY,
     xR: (event.clientX / element.offsetWidth) * 2 - 1,
-    yR: -(event.clientY / element.offsetHeight) * 2 + 1
+    yR: -(event.clientY / element.offsetHeight) * 2 + 1,
   };
 };
 
@@ -83,12 +84,12 @@ class GameSceneComponent extends React.Component {
     window.removeEventListener("touchstart", this.onTouchStart);
   }
 
-  onTouchStart = event => {
+  onTouchStart = (event) => {
     event.stopPropagation();
     event.preventDefault();
   };
 
-  onWheel = event => {
+  onWheel = (event) => {
     event.stopImmediatePropagation();
     event.preventDefault();
     const { game } = this.props;
@@ -154,7 +155,7 @@ class GameSceneComponent extends React.Component {
     if (this.lastDraggingPosition) {
       const delta = {
         x: position.x - this.lastDraggingPosition.x,
-        y: position.y - this.lastDraggingPosition.y
+        y: position.y - this.lastDraggingPosition.y,
       };
 
       this.lastDraggingPosition = position;
@@ -204,7 +205,7 @@ class GameSceneComponent extends React.Component {
           onMouseUp={this.onMouseUp.bind(this)}
           onMouseMove={this.onMouseMove.bind(this)}
           onKeyUp={this.onKeyUp.bind(this)}
-          onContextMenu={e => {
+          onContextMenu={(e) => {
             e.preventDefault();
             e.stopPropagation();
           }}

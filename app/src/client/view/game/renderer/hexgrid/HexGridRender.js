@@ -8,7 +8,7 @@ const HEX_LINE_COLOR = "rgba(255,255,255,255)";
 const HEX_FILL_COLOR = "rgba(0,0,0,0)";
 const HEX_LINE_WIDTH = 20;
 const HEX_CANVAS_SIZE = 1024;
-const HEX_OPACITY = 0.1;
+const HEX_OPACITY = 0.05;
 //const HEX_MAX_OPACITY = 0.3;
 
 const getGeometryWidth = () => HexagonMath.getGridWidth(HEX_COUNT_WIDTH);
@@ -45,7 +45,7 @@ class HexGridRenderer {
       map: texture,
       transparent: true,
       opacity: HEX_OPACITY,
-      depthWrite: false
+      depthWrite: false,
     });
     this.mesh = new THREE.Mesh(geometry, this.material);
     this.mesh.position.x += HexagonMath.getHexB() / 2;
@@ -54,7 +54,7 @@ class HexGridRenderer {
     scene.add(this.mesh);
   }
 
-  onZoom = function(zoom) {
+  onZoom = function (zoom) {
     if (zoom > 1) {
       //this.material.opacity = (HEX_MAX_OPACITY - HEX_OPACITY) * ((zoom - 1) / (this.maxZoom - 1)) + HEX_OPACITY;
     } else {

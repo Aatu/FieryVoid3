@@ -16,10 +16,6 @@ import WaitingPhaseStrategy from "./phaseStrategy/WaitingPhaseStrategy";
 import GamePhaseStrategy from "./phaseStrategy/GamePhaseStrategy";
 import AutomaticReplayPhaseStrategy from "./phaseStrategy/AutomaticReplayPhaseStrategy/index.js";
 import GameDataCache from "./GameDataCache";
-import {
-  ParticleEmitterContainer,
-  ParticleEmitter
-} from "../animation/particle";
 import GameData from "../../../../model/game/GameData.mjs";
 import TorpedoIconContainer from "../renderer/icon/TorpedoIconContainer";
 import TorpedoAttackService from "../../../../model/weapon/TorpedoAttackService.mjs";
@@ -221,7 +217,7 @@ class PhaseDirector {
       weaponFireService: this.weaponFireService,
       particleEmitterContainer: this.emitterContainer,
       gameCamera: this.camera,
-      torpedoAttackService: this.torpedoAttackService
+      torpedoAttackService: this.torpedoAttackService,
     };
   }
 

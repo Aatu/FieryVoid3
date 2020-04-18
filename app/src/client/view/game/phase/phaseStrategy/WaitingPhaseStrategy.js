@@ -1,20 +1,15 @@
 import PhaseStrategy from "./PhaseStrategy";
 
 import {
-  ShowDeploymentAreas,
   ShowShipObjects,
   RightClickShowsShipWindow,
   MouseOverHighlightsShip,
   MouseOverShowsMovementPath,
   MouseOverShowsShipTooltip,
-  SelectUndeployedShip,
-  HighlightSelectedShip,
-  DeployShipOnHexClick,
-  AllowSubmittingWhenDeploymentDone,
-  DebugDrawLineFromSelectedShip,
-  SelectedShipNavigationPath,
-  SelectedShipDeploymentMovementUi,
-  ShowWaitingStatus
+  ShowWaitingStatus,
+  SystemClickShowsSystemMenu,
+  WeaponArcsOnSystemMouseOver,
+  UnderHexForShips,
 } from "../../ui/uiStrategy";
 
 class WaitingPhaseStrategy extends PhaseStrategy {
@@ -27,7 +22,10 @@ class WaitingPhaseStrategy extends PhaseStrategy {
       new MouseOverHighlightsShip(),
       new MouseOverShowsMovementPath(),
       new ShowShipObjects(),
-      new MouseOverShowsShipTooltip()
+      new MouseOverShowsShipTooltip(),
+      new SystemClickShowsSystemMenu(),
+      new WeaponArcsOnSystemMouseOver(),
+      new UnderHexForShips(),
     ];
   }
 }

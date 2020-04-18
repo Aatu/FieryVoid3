@@ -1,12 +1,13 @@
 import * as THREE from "three";
 import { degreeToRadian } from "../../../../../model/utils/math";
+import { radianToDegree } from "../../../../../model/utils/math.mjs";
 
 const changeAttribute = (geometry, index, key, values) => {
   values = [].concat(values);
 
   var target = geometry.attributes[key].array;
 
-  values.forEach(function(value, i) {
+  values.forEach(function (value, i) {
     target[index * values.length + i] = value;
   });
 
@@ -24,18 +25,27 @@ class BaseParticle {
     this.material = material;
     this.geometry = geometry;
     this.index = 0;
+    this.emitter = null;
 
     this.texture = {
       gas: TEXTURE_GAS,
       bolt: TEXTURE_BOLT,
       glow: TEXTURE_GLOW,
       ring: TEXTURE_RING,
-      starLine: TEXTURE_STARLINE
+      starLine: TEXTURE_STARLINE,
     };
   }
 
-  create(index) {
+  create(index, emitter) {
     this.index = index;
+    this.emitter = emitter;
+    this.setInitialValues();
+    return this;
+  }
+
+  aquire(index, emitter) {
+    this.index = index;
+    this.emitter = emitter;
     return this;
   }
 
@@ -47,13 +57,30 @@ class BaseParticle {
     this.setFadeOut(0.0, 0.0);
     this.setSize(0.0);
     this.setSizeChange(0.0);
-    this.setAngle(0.0);
-    this.setAngleChange(0.0);
+    this.setAngle(0.0, 0.0);
     this.setActivationTime(0.0);
     this.setVelocity(new THREE.Vector3(0, 0, 0));
     this.setAcceleration(new THREE.Vector3(0, 0, 0));
     this.setTexture(this.texture.glow);
+    this.setRepeat(0);
 
+    return this;
+  }
+
+  serialize() {
+    return {
+      index: this.index,
+      emitter: this.emitter,
+      opacity: this.geometry.attributes["opacity"].array[this.index],
+    };
+  }
+
+  getIndex() {
+    return this.index;
+  }
+
+  setRepeat(repeat) {
+    changeAttribute(this.geometry, this.index, "repeat", repeat);
     return this;
   }
 
@@ -83,7 +110,7 @@ class BaseParticle {
     changeAttribute(this.geometry, this.index, "color", [
       color.r,
       color.g,
-      color.b
+      color.b,
     ]);
     return this;
   }
@@ -116,18 +143,27 @@ class BaseParticle {
     return this;
   }
 
-  setAngle(angle) {
-    changeAttribute(this.geometry, this.index, "angle", degreeToRadian(angle));
-    return this;
-  }
+  setAngle(angle, change = 0) {
+    const value =
+      Math.floor(degreeToRadian(angle) * 1000) +
+      Math.floor(degreeToRadian(change) * 1000) * 10000;
 
-  setAngleChange(angle) {
-    changeAttribute(
-      this.geometry,
-      this.index,
-      "angleChange",
-      degreeToRadian(angle)
-    );
+    const finalChange = Math.floor(value / 10000) / 1000;
+    const finalAngle = (value - Math.floor(value / 10000.0) * 10000.0) / 1000.0;
+
+    if (angle === 144) {
+      console.log(
+        "angle:",
+        `radians(${degreeToRadian(angle)})`,
+        "change:",
+        `radians(${degreeToRadian(change)})`,
+        "baked into",
+        value
+      );
+      console.log("reverse angle", finalAngle, "change", finalChange);
+    }
+
+    changeAttribute(this.geometry, this.index, "angle", value);
     return this;
   }
 
@@ -135,7 +171,7 @@ class BaseParticle {
     changeAttribute(this.geometry, this.index, "velocity", [
       velocity.x,
       velocity.y,
-      velocity.z
+      velocity.z,
     ]);
     return this;
   }
@@ -144,7 +180,7 @@ class BaseParticle {
     changeAttribute(this.geometry, this.index, "acceleration", [
       acceleration.x,
       acceleration.y,
-      acceleration.z
+      acceleration.z,
     ]);
     return this;
   }

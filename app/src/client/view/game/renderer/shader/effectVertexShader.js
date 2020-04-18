@@ -8,22 +8,37 @@ const effectVertexShader = `
     attribute float size;
     attribute float sizeChange;
     attribute float angle;
-    attribute float angleChange;
     attribute vec3 velocity;
     attribute vec3 acceleration;
     attribute float activationGameTime;
     attribute float textureNumber;
     attribute float sine;
+    attribute float repeat;
     uniform float zoomLevel;
     uniform float gameTime;
     varying vec4  vColor;
     varying float vAngle;
     varying float textureN;
+
+
+    //500432
+    vec2 getAngleAndChange() {
+        float finalChange = floor(angle / 10000.0) / 1000.0;
+        float finalAngle = (angle - floor(angle / 10000.0) * 10000.0) / 1000.0;
+
+        return vec2(finalAngle, finalChange);
+    }
+
     void main()
     {
-        float elapsedTime = gameTime - activationGameTime;
+        float modGameTime = gameTime;
+        if (repeat > 0.0) {
+            modGameTime = gameTime - (repeat * floor(gameTime/repeat));
+        }
 
-        if (elapsedTime < 0.0 || (fadeOutTime > 0.0 && gameTime - (fadeOutTime + fadeOutSpeed) > 0.0)) {
+        float elapsedTime = modGameTime - activationGameTime;
+
+        if (elapsedTime < 0.0 || (fadeOutTime > 0.0 && modGameTime - (fadeOutTime + fadeOutSpeed) > 0.0)) {
             gl_PointSize = 0.0;
             gl_Position = vec4( 0.0, 0.0, 0.0, 1.0 );
             vColor = vec4(0.0, 0.0, 0.0, 0.0);
@@ -37,16 +52,16 @@ const effectVertexShader = `
         }
 
 
-        if (fadeInSpeed > 0.0 && gameTime > fadeInTime)
+        if (fadeInSpeed > 0.0 && modGameTime > fadeInTime)
         {
-            float fadeIn = (gameTime - fadeInTime) / fadeInSpeed;
+            float fadeIn = (modGameTime - fadeInTime) / fadeInSpeed;
         if (fadeIn > 1.0) fadeIn = 1.0;
             currentOpacity =  opacity * fadeIn;
         }
 
-        if (fadeOutSpeed > 0.0 && gameTime > fadeOutTime)
+        if (fadeOutSpeed > 0.0 && modGameTime > fadeOutTime)
         {
-            float fadeOut = (gameTime - fadeOutTime) / fadeOutSpeed;
+            float fadeOut = (modGameTime - fadeOutTime) / fadeOutSpeed;
         if (fadeOut > 1.0) fadeOut = 1.0;
             currentOpacity =  currentOpacity * (1.0 - fadeOut);
         }
@@ -59,19 +74,14 @@ const effectVertexShader = `
             if (sineFrequency > 0.0) {
                 currentOpacity *= (sineAmplitude * 0.5 * sin(elapsedTime/sineFrequency) + sineAmplitude);
             }
-
-            
-            if (zoomLevel < 1.0) {
-                currentOpacity += (1.0 - zoomLevel) * 0.5;
-            }
             
             vColor = vec4( color, currentOpacity );
         } else {
             vColor = vec4(0.0, 0.0, 0.0, 0.0);
         }
 
-        
-        vAngle = angle + angleChange * elapsedTime;
+        vec2 angleData = getAngleAndChange();
+        vAngle = angleData.x + angleData.y * elapsedTime;
         textureN = textureNumber;
 
         vec3 displacement = velocity * elapsedTime;

@@ -32,7 +32,7 @@ class StarParticleEmitter extends Animation {
 
     var uniforms = {
       gameTime: { type: "f", value: 0.0 },
-      texture: { type: "t", value: texture }
+      texture: { type: "t", value: texture },
     };
 
     this.particleGeometry = new THREE.BufferGeometry();
@@ -132,7 +132,7 @@ class StarParticleEmitter extends Animation {
       fragmentShader: starFragmentShader,
       transparent: true,
       blending: blending,
-      depthWrite: false //Try removing this if problems with transparency
+      depthWrite: false, //Try removing this if problems with transparency
     });
 
     /*
@@ -162,6 +162,11 @@ class StarParticleEmitter extends Animation {
     this.scene.add(this.mesh);
   }
 
+  setPosition({ x, y, z }) {
+    this.mesh.position.set(x, y, z);
+    this.needsUpdate = true;
+  }
+
   cleanUp() {
     this.mesh.material.dispose();
     this.scene.remove(this.mesh);
@@ -189,7 +194,7 @@ class StarParticleEmitter extends Animation {
   freeParticles(particleIndices) {
     particleIndices = [].concat(particleIndices);
 
-    particleIndices.forEach(function(i) {
+    particleIndices.forEach(function (i) {
       this.flyParticle.create(i).setInitialValues();
     }, this);
     this.free = this.free.concat(particleIndices);

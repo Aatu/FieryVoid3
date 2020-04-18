@@ -18,11 +18,22 @@ const boltVertexShader = `
     attribute float activationGameTime;
     attribute float deactivationGameTime;
     attribute float deactivationFade;
+    attribute float repeat;
     varying float vActivationGameTime;
     varying float vDeactivationGameTime;
     varying vec3 vColor;
     varying vec2 vUv;
     varying float vOpacity;
+    varying float vRepeat;
+
+    float getGameTime() {
+        float modGameTime = gameTime;
+        if (repeat > 0.0) {
+            modGameTime = gameTime - (repeat * floor(gameTime/repeat));
+        }
+
+        return modGameTime;
+    }
 
     float getScale() {
         return 1.0;
@@ -59,15 +70,17 @@ const boltVertexShader = `
 
     float getFadeOpacity() {
 
+        float modGameTime = getGameTime();
+
         if (deactivationFade == 0.0) {
             return 1.0;
         }
 
-        if (gameTime < (deactivationGameTime - deactivationFade)) {
+        if (modGameTime < (deactivationGameTime - deactivationFade)) {
             return 1.0;
         }
 
-        float fade = gameTime - (deactivationGameTime - deactivationFade);
+        float fade = modGameTime - (deactivationGameTime - deactivationFade);
 
         if (fade > deactivationFade) {
             fade = deactivationFade;
@@ -80,15 +93,18 @@ const boltVertexShader = `
     }
 
     int active(float vertexDeltaTime) {
+        
+        float modGameTime = getGameTime();
+
         if (opacity == 0.0) {
             return 0;
         }
 
-        if (activationGameTime > gameTime) {
+        if (activationGameTime > modGameTime) {
             return 0;
         }
 
-        if (deactivationGameTime + vertexDeltaTime < gameTime) {
+        if (deactivationGameTime + vertexDeltaTime < modGameTime) {
             return 0;
         }
         
@@ -111,7 +127,9 @@ const boltVertexShader = `
             currentOpacity += (1.0 - zoomLevel) * 0.5;
         }
 
-        float elapsedTime = gameTime - activationGameTime;
+        float modGameTime = getGameTime();
+
+        float elapsedTime = modGameTime - activationGameTime;
 
         vOpacity = currentOpacity * getFadeOpacity();
         vUv = resolveUv();
@@ -120,6 +138,7 @@ const boltVertexShader = `
         vDeactivationGameTime = deactivationGameTime + timeToEnd * uv.y;
         
 
+        vRepeat = repeat;
         
         gl_Position = projectionMatrix * modelViewMatrix * vec4((offset + velocity * elapsedTime) + applyQuaternionToVector(position * scale), 1.0 );      
      

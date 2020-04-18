@@ -11,8 +11,8 @@ class Haka extends ShipObject {
     this.defaultHeight = 80;
     this.sideSpriteSize = 30;
     this.overlaySpriteSize = 80;
-    this.dimensions = new Vector(180, 40, 40);
-    this.center = new Vector(-5, 0, 0);
+    this.dimensions = new Vector(150, 40, 40);
+    this.center = new Vector(0, 0, 0);
     this.ewSpriteDimensions = new Vector(180, 80);
 
     this.create();

@@ -22,7 +22,7 @@ class Haka extends Ship {
       new Offset(2, 0),
       new Offset(1, 0),
       new Offset(0, 0),
-      new Offset(-1, 0)
+      new Offset(-1, 0),
     ];
     this.accelcost = 5;
     this.rollcost = 18;
@@ -31,7 +31,7 @@ class Haka extends Ship {
     this.maxPivots = 1;
 
     this.frontHitProfile = 70;
-    this.sideHitProfile = 160;
+    this.sideHitProfile = 100;
 
     this.description = ``;
 
@@ -72,7 +72,7 @@ class Haka extends Ship {
           armor: 5,
           boostable: false,
           heat: 7,
-          power: 13
+          power: 13,
         },
         5
       ),
@@ -84,7 +84,7 @@ class Haka extends Ship {
           armor: 5,
           boostable: false,
           heat: 6,
-          power: 8
+          power: 8,
         },
         5
       ),
@@ -94,8 +94,8 @@ class Haka extends Ship {
         hitpoints: 80,
         armor: 4,
         cargoSpace: 400,
-        radiator: 15
-      })
+        radiator: 15,
+      }),
     ]);
 
     this.systems.addPrimarySystem([
@@ -108,11 +108,11 @@ class Haka extends Ship {
         hitpoints: 80,
         armor: 6,
         cargoSpace: 300,
-        heatStorage: 50
+        heatStorage: 50,
       }),
       new systems.EwArray({ id: 12, hitpoints: 25, armor: 6, heat: 10 }, 10),
       new systems.HeatSink({ id: 13, hitpoints: 10, armor: 3 }, 100),
-      new systems.HeatSink({ id: 14, hitpoints: 10, armor: 3 }, 100)
+      new systems.HeatSink({ id: 14, hitpoints: 10, armor: 3 }, 100),
     ]);
 
     this.systems.addStarboardFrontSystem([
@@ -129,23 +129,23 @@ class Haka extends Ship {
       new systems.TorpedoLauncherQuadruple158({
         id: 210,
         hitpoints: 15,
-        armor: 3
+        armor: 3,
       }),
       new systems.TorpedoLauncherQuadruple158({
         id: 211,
         hitpoints: 15,
-        armor: 3
+        armor: 3,
       }),
       new systems.TorpedoLauncherQuadruple158({
         id: 212,
         hitpoints: 15,
-        armor: 3
+        armor: 3,
       }),
       new systems.TorpedoLauncherQuadruple158({
         id: 213,
         hitpoints: 15,
-        armor: 3
-      })
+        armor: 3,
+      }),
     ]);
 
     this.systems.addPortFrontSystem([
@@ -153,7 +153,7 @@ class Haka extends Ship {
         id: 600,
         hitpoints: 60,
         armor: 7,
-        radiator: 15
+        radiator: 15,
       }),
 
       new systems.Thruster({ id: 601, hitpoints: 10, armor: 3 }, 5, [4, 5]),
@@ -175,7 +175,7 @@ class Haka extends Ship {
         0
       ),
 
-      new systems.MediumCoilcunTurretedUC({ id: 606 }, { start: 210, end: 15 })
+      new systems.MediumCoilcunTurretedUC({ id: 606 }, { start: 210, end: 15 }),
     ]);
 
     this.systems.addAftSystem([
@@ -184,7 +184,7 @@ class Haka extends Ship {
         hitpoints: 80,
         armor: 5,
         heatStorage: 100,
-        radiator: 5
+        radiator: 5,
       }),
 
       new systems.PDC30mm({ id: 450 }, { start: 160, end: 340 }),
@@ -201,7 +201,7 @@ class Haka extends Ship {
       new systems.PDC30mm({ id: 457 }, { start: 40, end: 200 }),
 
       new systems.PDC30mm({ id: 454 }, { start: 160, end: 340 }),
-      new systems.PDC30mm({ id: 455 }, { start: 40, end: 200 })
+      new systems.PDC30mm({ id: 455 }, { start: 40, end: 200 }),
     ]);
 
     this.systems.addPortAftSystem([
@@ -217,7 +217,7 @@ class Haka extends Ship {
       new systems.PDC30mm({ id: 551 }, { start: 160, end: 340 }),
 
       new systems.PDC30mm({ id: 554 }, { start: 160, end: 340 }),
-      new systems.PDC30mm({ id: 555 }, { start: 160, end: 340 })
+      new systems.PDC30mm({ id: 555 }, { start: 160, end: 340 }),
     ]);
 
     this.systems.addStarboardAftSystem([
@@ -233,7 +233,7 @@ class Haka extends Ship {
       new systems.PDC30mm({ id: 353 }, { start: 40, end: 200 }),
       new systems.PDC30mm({ id: 356 }, { start: 40, end: 200 }),
 
-      new systems.PDC30mm({ id: 357 }, { start: 40, end: 200 })
+      new systems.PDC30mm({ id: 357 }, { start: 40, end: 200 }),
     ]);
   }
 
@@ -244,63 +244,63 @@ class Haka extends Ship {
 
     cargoService.divideCargo(this, {
       object: new Torpedo158MSV(),
-      amount: 24
+      amount: 24,
     });
 
     cargoService.divideCargo(this, {
       object: new Torpedo158MSV2(),
-      amount: 20
+      amount: 20,
     });
 
     cargoService.divideCargo(this, {
       object: new Torpedo158HE(),
-      amount: 36
+      amount: 36,
     });
 
     cargoService.divideCargo(this, {
       object: new Torpedo158Nuclear(),
-      amount: 6
+      amount: 6,
     });
 
     cargoService.divideCargo(this, {
       object: new Ammo30mm(),
-      amount: 1700
+      amount: 1700,
     });
 
     cargoService.divideCargo(this, {
       object: new Ammo140mmAP(),
-      amount: 220
+      amount: 220,
     });
 
     cargoService.divideCargo(this, {
       object: new Ammo140mmHE(),
-      amount: 550
+      amount: 550,
     });
 
     const launchers = [
       this.systems.getSystemById(210),
       this.systems.getSystemById(211),
       this.systems.getSystemById(212),
-      this.systems.getSystemById(213)
+      this.systems.getSystemById(213),
     ];
 
-    launchers.forEach(system => {
+    launchers.forEach((system) => {
       system.callHandler("loadAmmoInstant", {
         ammo: new Torpedo158MSV(),
-        launcherIndex: 1
+        launcherIndex: 1,
       });
       system.callHandler("loadAmmoInstant", {
         ammo: new Torpedo158MSV(),
-        launcherIndex: 2
+        launcherIndex: 2,
       });
       system.callHandler("loadAmmoInstant", {
         ammo: new Torpedo158MSV2(),
-        launcherIndex: 3
+        launcherIndex: 3,
       });
 
       system.callHandler("loadAmmoInstant", {
         ammo: new Torpedo158HE(),
-        launcherIndex: 4
+        launcherIndex: 4,
       });
     });
   }

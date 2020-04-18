@@ -20,8 +20,6 @@ class ShipWeaponUniversalBoltAnimation extends ShipWeaponAnimation {
     const missExtra = this.getRandom() * 300 + 300;
     const missFade = missExtra * 0.8;
 
-    console.log(args);
-    console.log(this.shots);
     this.shots.forEach((shot) => {
       const duration =
         this.startPosition.distanceTo(this.endPosition.add(shot.offset)) /

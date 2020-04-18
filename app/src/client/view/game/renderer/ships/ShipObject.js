@@ -4,23 +4,15 @@ import Vector from "../../../../../model/utils/Vector.mjs";
 
 import { degreeToRadian } from "../../../../../model/utils/math";
 
-import {
-  LineSprite,
-  CircleSprite,
-  ShipEWSprite,
-  DottedCircleSprite,
-  HexagonSprite,
-} from "../sprite";
+import { ShipEWSprite, DottedCircleSprite, HexagonSprite } from "../sprite";
 
 import Line from "../Line";
-import Object3d from "../object3d/Object3d";
 import coordinateConverter from "../../../../../model/utils/CoordinateConverter.mjs";
 import ShipMapIcon from "./ShipMapIcon";
 import { angleToHexFacing } from "../../../../../model/utils/math.mjs";
-import { radianToDegree } from "../../../../../model/utils/math.mjs";
-
-const COLOR_MINE = new THREE.Color(39 / 255, 196 / 255, 39 / 255);
-const COLOR_ENEMY = new THREE.Color(255 / 255, 40 / 255, 40 / 255);
+import { ParticleEmitterContainer } from "../../animation/particle";
+import ShipObjectBoundingBox from "./ShipObjectBoundingBox";
+import ShipObjectSectionDamageEffect from "./ShipObjectSectionDamageEffect";
 
 class ShipObject {
   constructor(ship, scene) {
@@ -69,6 +61,11 @@ class ShipObject {
     this.dimensions = { x: 100, y: 100 };
     this.center = { x: 0, y: 0 };
     this.ewSpriteDimensions = null;
+
+    this.shipObjectBoundingBox = new ShipObjectBoundingBox(ship);
+    this.shipObjectSectionDamageEffect = new ShipObjectSectionDamageEffect(
+      ship
+    );
 
     this.consumeShipdata(this.ship);
   }
@@ -160,7 +157,7 @@ class ShipObject {
       const cube = new THREE.Mesh(
         new THREE.BoxGeometry(1, 1, 1),
         new THREE.MeshBasicMaterial({
-          color: 0x00ff00,
+          color: 0xffffff,
           wireframe: true,
         })
       );
@@ -175,6 +172,20 @@ class ShipObject {
     };
 
     //dimensionDebugCube();
+
+    const particleContainer = new ParticleEmitterContainer(
+      this.hexSpriteContainer,
+      1000
+    );
+
+    this.shipObjectBoundingBox.init(this.dimensions);
+    this.shipObjectSectionDamageEffect.init(
+      this.shipObjectBoundingBox,
+      particleContainer,
+      this.shipZ,
+      this.center,
+      this.hexSpriteContainer
+    );
     this.scene.add(this.mesh);
     this.hide();
   }
@@ -188,7 +199,7 @@ class ShipObject {
 
       this.shipEWSprite = new ShipEWSprite(
         { width: max * 1.5, height: max * 1.5 },
-        this.defaultHeight,
+        this.shipZ,
         dimensions
       );
       this.shipEWSprite.setPosition(this.center);
@@ -228,6 +239,7 @@ class ShipObject {
   setShipZ(z) {
     this.shipZ = z;
     this.setPosition(this.position);
+    this.shipObjectSectionDamageEffect.setShipZ(z);
   }
 
   getPosition() {
@@ -507,6 +519,7 @@ class ShipObject {
 
   render(renderPayload) {
     this.systemObjects.forEach((object) => object.render(renderPayload));
+    this.shipObjectSectionDamageEffect.render(renderPayload);
   }
 
   playSystemAnimation(system, name) {

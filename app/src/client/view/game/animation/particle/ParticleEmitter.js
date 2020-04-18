@@ -3,7 +3,7 @@ import Animation from "../Animation";
 import BaseParticle from "./BaseParticle";
 import {
   effectVertexShader,
-  effectFragmentShader
+  effectFragmentShader,
 } from "../../renderer/shader";
 
 const texture = new THREE.TextureLoader().load(
@@ -32,7 +32,7 @@ class ParticleEmitter extends Animation {
     var uniforms = {
       gameTime: { type: "f", value: 0.0 },
       zoomLevel: { type: "f", value: 1.0 },
-      texture: { type: "t", value: texture }
+      texture: { type: "t", value: texture },
     };
 
     this.particleGeometry = new THREE.BufferGeometry();
@@ -136,14 +136,15 @@ class ParticleEmitter extends Animation {
       ).setDynamic(true)
     );
     this.particleGeometry.setAttribute(
-      "angleChange",
+      "sine",
       new THREE.Float32BufferAttribute(
         new Float32Array(particleCount),
         1
       ).setDynamic(true)
     );
+
     this.particleGeometry.setAttribute(
-      "sine",
+      "repeat",
       new THREE.Float32BufferAttribute(
         new Float32Array(particleCount),
         1
@@ -161,7 +162,7 @@ class ParticleEmitter extends Animation {
       transparent: true,
       blending: blending,
       depthWrite: false,
-      depthTest: false
+      depthTest: false,
     });
 
     /*
@@ -189,6 +190,11 @@ class ParticleEmitter extends Animation {
     this.scene.add(this.mesh);
   }
 
+  setPosition({ x, y, z }) {
+    this.mesh.position.set(x, y, z);
+    this.needsUpdate = true;
+  }
+
   cleanUp() {
     this.mesh.material.dispose();
     this.scene.remove(this.mesh);
@@ -211,13 +217,17 @@ class ParticleEmitter extends Animation {
 
     var i = this.free.pop();
 
-    return this.flyParticle.create(i);
+    return this.flyParticle.create(i, this);
+  }
+
+  getByIndex(index) {
+    return this.flyParticle.aquire(index, this);
   }
 
   freeParticles(particleIndices) {
     particleIndices = [].concat(particleIndices);
 
-    particleIndices.forEach(function(i) {
+    particleIndices.forEach(function (i) {
       this.flyParticle.create(i).setInitialValues();
     }, this);
     this.free = this.free.concat(particleIndices);

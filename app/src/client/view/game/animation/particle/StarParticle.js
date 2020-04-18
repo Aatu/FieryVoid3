@@ -6,7 +6,7 @@ const changeAttribute = (geometry, index, key, values) => {
 
   var target = geometry.attributes[key].array;
 
-  values.forEach(function(value, i) {
+  values.forEach(function (value, i) {
     target[index * values.length + i] = value;
   });
 
@@ -18,18 +18,20 @@ class StarParticle {
     this.material = material;
     this.geometry = geometry;
     this.index = 0;
+    this.emitter = null;
 
     this.texture = {
       gas: 0,
       bolt: 1,
       glow: 2,
       ring: 3,
-      starLine: 4
+      starLine: 4,
     };
   }
 
-  create(index) {
+  create(index, emitter) {
     this.index = index;
+    this.emitter = emitter;
     return this;
   }
 
@@ -48,6 +50,13 @@ class StarParticle {
     this.setSineAmplitude(1);
 
     return this;
+  }
+
+  serialize() {
+    return {
+      index: this.index,
+      emitter: this.emitter,
+    };
   }
 
   setTexture(tex) {
@@ -90,7 +99,7 @@ class StarParticle {
     changeAttribute(this.geometry, this.index, "color", [
       color.r,
       color.g,
-      color.b
+      color.b,
     ]);
     return this;
   }

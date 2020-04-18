@@ -1,7 +1,8 @@
-import Animation from "../Animation";
 import ParticleEmitter from "./ParticleEmitter";
 import { StarParticleEmitter } from ".";
 import BoltInstanceFactory from "./BoltParticleEmitter/BoltInstanceFactory";
+import Vector from "../../../../../model/utils/Vector.mjs";
+import * as THREE from "three";
 
 class ParticleEmitterContainer {
   constructor(scene, defaultParticleAmount) {
@@ -15,15 +16,18 @@ class ParticleEmitterContainer {
     this.emitters = {
       star: [],
       bolt: [],
-      effect: []
+      effect: [],
+      normal: [],
     };
 
     this._isReady = false;
-    this.readyPromise = new Promise(async resolve => {
+    this.readyPromise = new Promise(async (resolve) => {
       await this.boltInstanceFactory.ready;
       this._isReady = true;
       resolve(true);
     });
+
+    this.position = new Vector();
   }
 
   ready() {
@@ -40,6 +44,8 @@ class ParticleEmitterContainer {
         return this.createStarParticleEmitter();
       case "bolt":
         return this.createBoltParticleEmitter();
+      case "normal":
+        return this.createNormalParticleEmitter();
       case "effect":
       default:
         return this.createEffectParticleEmitter();
@@ -47,19 +53,38 @@ class ParticleEmitterContainer {
   }
 
   createStarParticleEmitter() {
-    return new StarParticleEmitter(this.scene, this.defaultParticleAmount);
+    const emitter = new StarParticleEmitter(
+      this.scene,
+      this.defaultParticleAmount
+    );
+    emitter.setPosition(this.position);
+    return emitter;
   }
 
   createEffectParticleEmitter() {
-    return new ParticleEmitter(this.scene, this.defaultParticleAmount);
+    const emitter = new ParticleEmitter(this.scene, this.defaultParticleAmount);
+    emitter.setPosition(this.position);
+    return emitter;
+  }
+
+  createNormalParticleEmitter() {
+    const emitter = new ParticleEmitter(
+      this.scene,
+      this.defaultParticleAmount,
+      { blending: THREE.NormalBlending }
+    );
+    emitter.setPosition(this.position);
+    return emitter;
   }
 
   createBoltParticleEmitter() {
-    return this.boltInstanceFactory.create(this.defaultParticleAmount);
+    const emitter = this.boltInstanceFactory.create(this.defaultParticleAmount);
+    emitter.setParentPosition(this.position);
+    return emitter;
   }
 
   getParticle(reserver, type = "effect") {
-    let emitter = this.emitters[type].find(emitter => emitter.hasFree());
+    let emitter = this.emitters[type].find((emitter) => emitter.hasFree());
 
     if (!emitter) {
       emitter = this.createParticleEmitter(type);
@@ -85,28 +110,47 @@ class ParticleEmitterContainer {
     return this.getParticle(reserver, "effect");
   }
 
+  getNormalParticle(reserver) {
+    return this.getParticle(reserver, "normal");
+  }
+
+  setPosition(position) {
+    this.position = position;
+    this.emitters.bolt.forEach((emitter) =>
+      emitter.setParentPosition(position)
+    );
+    this.emitters.star.forEach((emitter) => emitter.setPosition(position));
+    this.emitters.effect.forEach((emitter) => emitter.setPosition(position));
+    this.emitters.normal.forEach((emitter) => emitter.setPosition(position));
+  }
+
   cleanUp() {
-    this.emitters.star.forEach(emitter => {
+    this.emitters.star.forEach((emitter) => {
       emitter.cleanUp();
     });
 
-    this.emitters.bolt.forEach(emitter => {
+    this.emitters.bolt.forEach((emitter) => {
       emitter.cleanUp();
     });
 
-    this.emitters.effect.forEach(emitter => {
+    this.emitters.effect.forEach((emitter) => {
+      emitter.cleanUp();
+    });
+
+    this.emitters.normal.forEach((emitter) => {
       emitter.cleanUp();
     });
 
     this.emitters = {
       star: [],
       bolt: [],
-      effect: []
+      effect: [],
+      normal: [],
     };
   }
 
   release(reserver) {
-    this.reservations.forEach(reservation => {
+    this.reservations.forEach((reservation) => {
       if (reservation.reserver === reserver) {
         reservation.emitter.freeParticles(reservation.index);
       }
@@ -114,11 +158,15 @@ class ParticleEmitterContainer {
   }
 
   render(payload) {
-    this.emitters.star.forEach(emitter => {
+    this.emitters.star.forEach((emitter) => {
       emitter.render(payload);
     });
 
-    this.emitters.effect.forEach(emitter => {
+    this.emitters.effect.forEach((emitter) => {
+      emitter.render(payload);
+    });
+
+    this.emitters.normal.forEach((emitter) => {
       emitter.render(payload);
     });
 

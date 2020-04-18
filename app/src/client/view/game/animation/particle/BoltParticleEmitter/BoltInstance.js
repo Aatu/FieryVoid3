@@ -6,10 +6,23 @@ class BoltInstance {
   constructor(boltContainer) {
     this.boltContainer = boltContainer;
     this.index = null;
+    this.emitter = null;
+  }
+
+  serialize() {
+    return {
+      index: this.index,
+      emitter: this.emitter,
+    };
   }
 
   setIndex(index) {
     this.index = index;
+    return this;
+  }
+
+  setEmitter(emitter) {
+    this.emitter = emitter;
     return this;
   }
 
@@ -81,6 +94,11 @@ class BoltInstance {
 
   setDeactivationTime(time, fade) {
     this.boltContainer.setDeactivationTime(this.index, time, fade);
+    return this;
+  }
+
+  setRepeat(repeat) {
+    this.boltContainer.setRepeat(this.index, repeat);
     return this;
   }
 }

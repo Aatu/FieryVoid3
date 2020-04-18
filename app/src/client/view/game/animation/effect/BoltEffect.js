@@ -56,6 +56,8 @@ class BoltEffect {
 
     const tailLength = args.length ? args.length : args.size * 2;
 
+    const repeat = args.repeat || 0;
+
     particleEmitterContainer
       .getBoltParticle(context)
       .setScale(tailLength, args.size)
@@ -66,7 +68,8 @@ class BoltEffect {
       .setColor(color)
       .setVelocity(velocity)
       .setActivationTime(startTime)
-      .setDeactivationTime(startTime + duration, fade);
+      .setDeactivationTime(startTime + duration, fade)
+      .setRepeat(repeat);
 
     const coreLength = (args.length ? args.length : args.size * 2) * 0.5;
 
@@ -87,7 +90,8 @@ class BoltEffect {
       .setColor(new THREE.Color(1, 1, 1))
       .setVelocity(velocity)
       .setActivationTime(startTime + coreTime)
-      .setDeactivationTime(startTime + duration + coreTime, fade);
+      .setDeactivationTime(startTime + duration + coreTime, fade)
+      .setRepeat(repeat);
 
     return duration + coreTime;
   }

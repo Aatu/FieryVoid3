@@ -1,5 +1,6 @@
 import { ShipMovementAnimation } from "../../../animation";
 import ShipVelocityAnimation from "../../../animation/ShipVelocityAnimation";
+import Structure from "../../../../../../model/unit/system/structure/Structure.mjs";
 
 class ReplayContext {
   constructor(phaseStrategy) {
@@ -8,6 +9,7 @@ class ReplayContext {
     this.torpedoMovementDuration = 0;
     this.torpedoAttackDuration = 0;
     this.phaseStrategy = phaseStrategy;
+    this.systemsDestroyed = [];
   }
 
   getTorpedoMovementStart() {
@@ -74,6 +76,18 @@ class ReplayContext {
       this.movementDuration +
       this.torpedoMovementDuration
     );
+  }
+
+  noteDestroyedSystem(ship, time, systems) {
+    this.systemsDestroyed.push({ ship, time, systems });
+  }
+
+  getDestroyedStructuresByShip(ship) {
+    return this.systemsDestroyed
+      .filter(({ ship: systemShip }) => ship === systemShip)
+      .filter(({ systems }) =>
+        systems.some((system) => system instanceof Structure)
+      );
   }
 }
 

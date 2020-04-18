@@ -150,7 +150,7 @@ class GameScene {
   scroll(delta) {
     this.moveCamera({
       x: delta.x * (1 / this.zoom),
-      y: delta.y * (1 / this.zoom)
+      y: delta.y * (1 / this.zoom),
     });
   }
 
@@ -161,7 +161,7 @@ class GameScene {
 
     this.camera.addPosition({
       x: position.x * this.zoom * this.zoom * -1,
-      y: position.y * this.zoom * this.zoom
+      y: position.y * this.zoom * this.zoom,
     });
     //this.camera.position.x -= position.x * this.zoom * this.zoom;
     //this.camera.position.y += position.y * this.zoom * this.zoom;
@@ -201,7 +201,7 @@ class GameScene {
 
     this.phaseDirector.relayEvent("ZoomEvent", {
       zoom: this.zoom,
-      animationReady: Boolean(animationReady)
+      animationReady: Boolean(animationReady),
     });
   }
 

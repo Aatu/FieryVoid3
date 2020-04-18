@@ -3,7 +3,7 @@ import BaseParticle, {
   TEXTURE_BOLT,
   TEXTURE_GLOW,
   TEXTURE_RING,
-  TEXTURE_STARLINE
+  TEXTURE_STARLINE,
 } from "../particle/BaseParticle";
 import Animation from "../Animation";
 import { getPointInDirection } from "../../../../../model/utils/math.mjs";
@@ -18,7 +18,7 @@ class ExplosionEffect extends Animation {
     super(getRandom);
 
     this.emitterContainer = emitterContainer;
-    this.position = args.position || { x: 0, y: 0 };
+    this.position = args.position || new Vector();
     this.time = args.time || 0;
     this.type = args.type || "gas";
     this.size = args.size || 16;
@@ -27,8 +27,9 @@ class ExplosionEffect extends Animation {
     this.duration = args.duration;
     this.color = args.color;
     this.opacity = args.opacity || 1;
+    this.repeat = args.repeat || 0;
 
-    this.movement = args.velocity || { x: 0, y: 0, z: 0 };
+    this.movement = args.velocity || new Vector();
 
     this.context = context;
     this.create();
@@ -130,10 +131,12 @@ class ExplosionEffect extends Animation {
       .setPosition({
         x: this.position.x,
         y: this.position.y,
-        z: this.position.z
+        z: this.position.z,
       })
       .setTexture(TEXTURE_GLOW)
-      .setActivationTime(activation);
+      .setActivationTime(activation)
+      .setRepeat(this.repeat)
+      .setVelocity(this.speed);
   }
 
   createShootOffs(amount, radius, args) {
@@ -168,7 +171,8 @@ class ExplosionEffect extends Animation {
       {
         size: radius / 3,
         color: [color.r, color.g, color.b],
-        coreOpacity: 0.1
+        coreOpacity: 0.1,
+        repeat: this.repeat,
       },
       this.getRandom,
       this.emitterContainer,
@@ -201,16 +205,17 @@ class ExplosionEffect extends Animation {
         .setPosition({
           x: this.position.x,
           y: this.position.y,
-          z: this.position.z
+          z: this.position.z,
         })
         .setVelocity(target)
         .setAngle(angle)
         .setTexture(TEXTURE_BOLT)
-        .setActivationTime(activationTime);
+        .setActivationTime(activationTime)
+        .setRepeat(this.repeat);
 
       this.createShootOff(radius, {
         angle: angle,
-        activationTime: activationTime
+        activationTime: activationTime,
       });
     }
   }
@@ -236,16 +241,18 @@ class ExplosionEffect extends Animation {
       .setPosition({
         x: this.position.x, // + Math.floor(Math.random()*radius/10)-radius/5,
         y: this.position.y, // + Math.floor(Math.random()*radius/10)-radius/5,
-        z: this.position.z
+        z: this.position.z,
       })
       .setAngle(45)
       .setTexture(texture)
       .setVelocity(this.movement)
-      .setAngle(Math.floor(Math.random() * 360))
-      .setAngleChange(
+      .setAngle(
+        Math.floor(Math.random() * 360),
         Math.floor(Math.random() * 20 * this.speed) - 10 * this.speed
       )
-      .setActivationTime(activationTime);
+
+      .setActivationTime(activationTime)
+      .setRepeat(this.repeat);
   }
 
   createEmpGlow(amount, radius) {
@@ -266,10 +273,11 @@ class ExplosionEffect extends Animation {
         .setPosition({
           x: this.position.x,
           y: this.position.y,
-          z: this.position.z
+          z: this.position.z,
         })
         .setTexture(TEXTURE_GLOW)
-        .setActivationTime(activationTime);
+        .setActivationTime(activationTime)
+        .setRepeat(this.repeat);
     }
   }
 
@@ -290,14 +298,14 @@ class ExplosionEffect extends Animation {
       .setPosition({
         x: this.position.x, // + Math.floor(Math.random()*radius/10)-radius/5,
         y: this.position.y, // + Math.floor(Math.random()*radius/10)-radius/5,
-        z: this.position.z
+        z: this.position.z,
       })
       .setAngle(45)
       .setTexture(texture)
       .setVelocity(this.movement)
-      .setAngle(Math.floor(Math.random() * 360))
-      .setAngleChange(5 * this.speed)
-      .setActivationTime(activationTime);
+      .setAngle(Math.floor(Math.random() * 360), 5 * this.speed)
+      .setActivationTime(activationTime)
+      .setRepeat(this.repeat);
   }
 
   createMain(amount, radius) {
@@ -324,13 +332,14 @@ class ExplosionEffect extends Animation {
             this.position.x + (Math.floor(Math.random() * radius) - radius) / 8,
           y:
             this.position.y + (Math.floor(Math.random() * radius) - radius) / 8,
-          z: this.position.z + (Math.floor(Math.random() * radius) - radius) / 8
+          z:
+            this.position.z + (Math.floor(Math.random() * radius) - radius) / 8,
         })
         .setVelocity(this.movement)
         .setAngle(Math.floor(Math.random() * 360))
-        //.setAngleChange(Math.floor(Math.random()*2*this.speed)-1*this.speed)
         .setActivationTime(activationTime)
-        .setTexture(TEXTURE_GAS);
+        .setTexture(TEXTURE_GAS)
+        .setRepeat(this.repeat);
     }
   }
 
@@ -355,14 +364,16 @@ class ExplosionEffect extends Animation {
         .setPosition({
           x: this.position.x,
           y: this.position.y,
-          z: this.position.z
+          z: this.position.z,
         })
         .setTexture(TEXTURE_GLOW)
-        .setActivationTime(activationTime);
+        .setActivationTime(activationTime)
+        .setRepeat(this.repeat)
+        .setAngle(144, 2);
     }
   }
 
-  getRandomColor = function() {
+  getRandomColor = function () {
     if (this.color) {
       return this.color;
     }
@@ -374,7 +385,7 @@ class ExplosionEffect extends Animation {
     );
   };
 
-  getSmokeColor = function() {
+  getSmokeColor = function () {
     var c = (Math.random() * 50 + 20) / 255;
     return new THREE.Color().setRGB(c, c, c + 0.05);
   };

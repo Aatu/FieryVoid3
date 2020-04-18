@@ -11,8 +11,8 @@ class Caliope extends ShipObject {
     this.defaultHeight = 80;
     this.sideSpriteSize = 30;
     this.overlaySpriteSize = 80;
-    this.dimensions = new Vector(95, 22, 8);
-    this.center = new Vector(8, 0, 0);
+    this.dimensions = new Vector(80, 22, 8);
+    this.center = new Vector(0, 0, 0);
     this.ewSpriteDimensions = new Vector(95, 40);
     this.create();
   }

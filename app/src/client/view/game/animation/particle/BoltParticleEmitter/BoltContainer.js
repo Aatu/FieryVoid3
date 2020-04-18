@@ -12,6 +12,7 @@ class BoltContainer {
     activationGameTimeAttribute,
     deactivationGameTimeAttribute,
     deactivationFadeAttribute,
+    repeatAttribute,
     amount,
     mesh,
     scene,
@@ -28,6 +29,7 @@ class BoltContainer {
     this.activationGameTimeAttribute = activationGameTimeAttribute;
     this.deactivationGameTimeAttribute = deactivationGameTimeAttribute;
     this.deactivationFadeAttribute = deactivationFadeAttribute;
+    this.repeatAttribute = repeatAttribute;
     this.mesh = mesh;
     this.scene = scene;
     this.numberCreated = numberCreated;
@@ -75,10 +77,10 @@ class BoltContainer {
     particleIndices = [].concat(particleIndices);
 
     particleIndices = particleIndices.filter(
-      index => !this.free.includes(index)
+      (index) => !this.free.includes(index)
     );
 
-    particleIndices.forEach(function(i) {
+    particleIndices.forEach(function (i) {
       this.opacityAttribute.setX(i, 0);
     }, this);
 
@@ -92,7 +94,7 @@ class BoltContainer {
       throw new Error("Container is full");
     }
 
-    return this.flyBolt.setIndex(this.free.pop());
+    return this.flyBolt.setIndex(this.free.pop()).setEmitter(this);
   }
 
   setOpacity(index, opacity) {
@@ -103,6 +105,10 @@ class BoltContainer {
   setPosition(index, position) {
     this.offsetAttribute.setXYZ(index, position.x, position.y, position.z);
     this.offsetAttribute.needsUpdate = true;
+  }
+
+  setParentPosition({ x, y, z }) {
+    this.mesh.position.set(x, y, z);
   }
 
   setScale(index, scale) {
@@ -147,6 +153,11 @@ class BoltContainer {
     this.deactivationFadeAttribute.setX(index, fade);
     this.deactivationGameTimeAttribute.needsUpdate = true;
     this.deactivationFadeAttribute.needsUpdate = true;
+  }
+
+  setRepeat(index, repeat) {
+    this.repeatAttribute.setX(index, repeat);
+    this.repeatAttribute.needsUpdate = true;
   }
 }
 
