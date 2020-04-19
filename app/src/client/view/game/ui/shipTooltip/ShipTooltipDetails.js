@@ -5,8 +5,9 @@ import {
   TooltipHeader,
   TooltipEntry,
   TooltipValue,
-  TooltipValueHeader
+  TooltipValueHeader,
 } from "../../../../styled";
+import HeatBar from "../HeatBar/HeatBar";
 
 const Row = styled.div`
   display: flex;
@@ -35,6 +36,9 @@ class ShipTooltipDetails extends React.Component {
     const { ship, uiState } = this.props;
 
     const { currentUser } = uiState.services;
+
+    const heatPercent =
+      ship.systems.getTotalHeatStored() / ship.systems.getTotalHeatStorage();
 
     return (
       <Container>
@@ -84,6 +88,9 @@ class ShipTooltipDetails extends React.Component {
             "Passive heat change",
             ship.systems.getPassiveHeatChange()
           )}
+        </Row>
+        <Row>
+          <HeatBar percent={heatPercent} />
         </Row>
       </Container>
     );

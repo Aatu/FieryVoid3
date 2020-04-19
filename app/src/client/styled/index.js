@@ -13,12 +13,13 @@ export {
   PanelContainer,
   DarkContainer,
   Section,
-  SectionRight
+  SectionRight,
 } from "./Container";
 export { Paragraph, Label, Value } from "./Text";
 export { Title, SubTitle } from "./Title";
 export { Clickable } from "./Clickable";
 export { InputAndLabel } from "./InputAndLabel";
+
 export {
   TooltipContainer,
   buildTooltipEntries,
@@ -33,7 +34,7 @@ export {
   TooltipValueHeader,
   InlineTooltipEntry,
   CenteredTooltipEntry,
-  RelativeOrStaticTooltip
+  RelativeOrStaticTooltip,
 } from "./Tooltip";
 export { Button } from "./Button";
 export { Link } from "./Link";

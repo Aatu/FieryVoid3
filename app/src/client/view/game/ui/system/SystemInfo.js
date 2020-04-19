@@ -11,6 +11,7 @@ import {
   RelativeOrStaticTooltip,
 } from "../../../../styled";
 import SystemStrategyUi from "./SystemStrategyUi";
+import SystemStrategyUiComponent from "./SystemStrategyUi/SystemStrategyUiComponent";
 
 const TooltipContainer = styled(RelativeOrStaticTooltip)`
   max-height: 85vh;
@@ -42,10 +43,11 @@ const HeaderMenu = styled.div`
   color: #5e85bc;
 `;
 
-const HeaderMenuItem = styled.div`
+export const HeaderMenuItem = styled.div`
   cursor: pointer;
   font-weight: bolder;
   margin-right: 4px;
+  font-size: 12px;
 
   ${(props) => props.active && `color: white;`}
   &:last-child {
@@ -54,6 +56,11 @@ const HeaderMenuItem = styled.div`
   :hover {
     color: white;
   }
+`;
+
+const SystemStrategyUiComponentContainer = styled.div`
+  margin: 0 8px;
+  position: relative;
 `;
 
 class SystemInfo extends React.Component {
@@ -99,8 +106,25 @@ class SystemInfo extends React.Component {
     return [...warnings, ...criticals].join(", ");
   }
 
+  getComponentHandler() {
+    const { system, uiState, ship } = this.props;
+
+    return (component, props, key) => (
+      <SystemStrategyUiComponentContainer key={key}>
+        <SystemStrategyUiComponent
+          name={component}
+          system={system}
+          uiState={uiState}
+          ship={ship}
+          {...props}
+        />
+      </SystemStrategyUiComponentContainer>
+    );
+  }
+
   getInfoTab() {
     const { system } = this.props;
+
     return buildTooltipEntries([
       {
         value: system.getSystemDescription(),
@@ -113,7 +137,7 @@ class SystemInfo extends React.Component {
 
     const messages = system.log.getWithTurns();
 
-    return messages.map(({ turn, messages }, index) => (
+    return messages.reverse().map(({ turn, messages }, index) => (
       <div key={`systemlog-turn-${turn}-${index}`}>
         <TooltipSubHeader>{`Log, turn ${turn}`}</TooltipSubHeader>
         {messages.map((message, messageIndex) => (
@@ -148,7 +172,10 @@ class SystemInfo extends React.Component {
           </TooltipEntry>
         )}
 
-        {buildTooltipEntries(system.getSystemInfo(ship))}
+        {buildTooltipEntries(
+          system.getSystemInfo(ship),
+          this.getComponentHandler()
+        )}
         <SystemStrategyUi ship={ship} system={system} uiState={uiState} />
         {weaponTargeting && (
           <SystemInfoWeaponTargeting
@@ -168,7 +195,15 @@ class SystemInfo extends React.Component {
     const { tab } = this.state;
 
     return (
-      <TooltipContainer relative={!scs} element={element} right={right}>
+      <TooltipContainer
+        relative={!scs}
+        element={element}
+        right={right}
+        onClick={(e) => {
+          e.stopPropagation();
+          e.preventDefault();
+        }}
+      >
         <TooltipHeader>
           {system.getDisplayName()}
           <HeaderMenu>

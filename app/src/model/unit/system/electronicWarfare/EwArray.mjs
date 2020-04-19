@@ -6,14 +6,21 @@ import OutputHeatOnlineStrategy from "../strategy/OutputHeatOnlineStrategy.mjs";
 
 class EwArray extends ShipSystem {
   constructor(args, output) {
-    const { heat, boostHeat, boostable = true, power = 5 } = args;
+    const {
+      heat,
+      boostHeat,
+      boostable = true,
+      power = 5,
+      overheatTransferRatio = 0.5,
+    } = args;
     super(args, [
       new ElectronicWarfareProvider(output),
       new RequiresPowerSystemStrategy(power),
       new OutputHeatOnlineStrategy(
         heat || Math.ceil(output / 2),
-        boostHeat || Math.ceil(output / 3)
-      )
+        boostHeat || Math.ceil(output / 3),
+        overheatTransferRatio
+      ),
     ]);
 
     if (boostable) {

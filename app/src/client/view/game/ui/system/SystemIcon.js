@@ -23,7 +23,8 @@ const HealthBar = styled.div`
     height: 100%;
     left: 0;
     bottom: 0;
-    background-color: ${(props) => (props.criticals ? "#ed6738" : "#427231")};
+    background-color: ${(props) =>
+      props.criticals ? colors.hitpointsCritical : colors.hitpoints};
   }
 `;
 
@@ -105,6 +106,26 @@ const System = styled.div`
       return "none";
     }};
   }
+`;
+
+const Overheat = styled.div`
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  opacity: 0.95;
+  background-image: url(/img/overheat.png);
+
+  ${({ overheat }) =>
+    overheat >= 1 &&
+    `
+    animation: blinker 1s linear infinite;
+
+    @keyframes blinker {
+      50% {
+        opacity: 0.3;
+      }
+    }
+  `}
 `;
 
 const Container = styled.div`
@@ -231,6 +252,9 @@ class SystemIcon extends React.Component {
     const targeting =
       target && weaponFireService.systemHasFireOrderAgainstShip(system, target);
 
+    const disabled = system.isDisabled();
+    const overheat = system.heat.getOverheatPercentage();
+
     return (
       <>
         {displayMenu && scs && (
@@ -276,7 +300,11 @@ class SystemIcon extends React.Component {
             reserved={reserved}
             destroyed={system.isDestroyed()}
             boosted={system.callHandler("getBoost", 0, false)}
-          />
+          >
+            {overheat > 0.25 && Boolean(!disabled) && (
+              <Overheat overheat={overheat} />
+            )}
+          </System>
 
           <SystemText destroyed={system.isDestroyed()} selected={selected}>
             {text}

@@ -1,19 +1,26 @@
 import ShipSystemStrategy from "./ShipSystemStrategy.mjs";
 
 class OutputHeatOnlineStrategy extends ShipSystemStrategy {
-  constructor(heatOutput, heatOutputPerBoostLevel = 1) {
+  constructor(
+    heatOutput,
+    heatOutputPerBoostLevel = 1,
+    overheatTransferRatio = 0.5
+  ) {
     super();
     this.heatOutput = heatOutput;
     this.heatOutputPerBoostLevel = heatOutputPerBoostLevel;
+    this.overheatTransferRatio = overheatTransferRatio;
+  }
+
+  getOverheatTransferRatio(payload, previousResponse = 0) {
+    if (previousResponse && previousResponse < this.overheatTransferRatio) {
+      return previousResponse;
+    }
+
+    return this.overheatTransferRatio;
   }
 
   getMessages(payload, previousResponse = []) {
-    previousResponse.push({
-      sort: "heat",
-      header: "Generates heat when online",
-      value: `${this.getHeatGenerated()}`
-    });
-
     return previousResponse;
   }
 

@@ -73,6 +73,7 @@ class Haka extends Ship {
           boostable: false,
           heat: 7,
           power: 13,
+          overheatTransferRatio: 0.2,
         },
         5
       ),
@@ -85,6 +86,7 @@ class Haka extends Ship {
           boostable: false,
           heat: 6,
           power: 8,
+          overheatTransferRatio: 0.2,
         },
         5
       ),

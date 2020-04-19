@@ -25,7 +25,7 @@ const Tooltip = styled(TooltipContainer)`
 const RelativeTooltipContainer = styled(Tooltip)`
   position: absolute;
   z-index: 20000;
-  ${props =>
+  ${(props) =>
     Object.keys(props.position).reduce((style, key) => {
       return style + "\n" + key + ":" + props.position[key] + "px;";
     }, "")}
@@ -41,7 +41,7 @@ export class RelativeTooltip extends React.Component {
   render() {
     const { element, children, ...rest } = this.props;
 
-    const getPosition = element => {
+    const getPosition = (element) => {
       const boundingBox = element.getBoundingClientRect
         ? element.getBoundingClientRect()
         : element.get(0).getBoundingClientRect();
@@ -102,15 +102,15 @@ const TooltipEntry = styled.div`
   box-sizing: border-box;
   margin: 2px 8px;
 
-  ${props => props.noMargin && "margin: 0;"}
-  font-weight: ${props => (props.important ? "bold" : "inherit")};
-  font-size: ${props => (props.important ? "14px" : "11px")};
-  ${props => props.space && "margin-top: 14px"};
+  ${(props) => props.noMargin && "margin: 0;"}
+  font-weight: ${(props) => (props.important ? "bold" : "inherit")};
+  font-size: ${(props) => (props.important ? "14px" : "11px")};
+  ${(props) => props.space && "margin-top: 14px"};
   text-align: left;
   color: #5e85bc;
   font-family: arial;
   
-  ${props =>
+  ${(props) =>
     props.clickable &&
     css`
       cursor: pointer;
@@ -120,7 +120,7 @@ const TooltipEntry = styled.div`
     `}
 
   &:hover {
-    ${props =>
+    ${(props) =>
       props.clickable &&
       css`
         border: 1px solid white;
@@ -168,17 +168,17 @@ const TooltipButton = styled.button`
   background-color: transparent;
   margin: 0;
   cursor: pointer;
-  background-image: ${props => props.img && `url(${props.img})`};
+  background-image: ${(props) => props.img && `url(${props.img})`};
   background-size: cover;
   opacity: 0.5;
   filter: brightness(3) grayscale(100%);
 
-  ${props => props.selected && !props.disabled && selectedTooltipButton}
+  ${(props) => props.selected && !props.disabled && selectedTooltipButton}
 
-  ${props => props.disabled && disabledTooltipButton}
+  ${(props) => props.disabled && disabledTooltipButton}
 
   &:hover {
-    ${props => !props.disabled && hoverTooltipButton}
+    ${(props) => !props.disabled && hoverTooltipButton}
   }
 
   &:focus {
@@ -187,11 +187,16 @@ const TooltipButton = styled.button`
 
   svg #svg-path {
     fill: white;
-    ${props => props.disabled && "fill:#ff0000;"}
+    ${(props) => props.disabled && "fill:#ff0000;"}
   }
 `;
 
-const buildTooltipEntries = (entries, subKey = "") => {
+const buildTooltipEntries = (
+  entries,
+  componentHandler = null,
+  subKey = "",
+  noMargin = false
+) => {
   return entries
     .sort((a, b) => {
       if (!a.sort && b.sort) {
@@ -212,21 +217,33 @@ const buildTooltipEntries = (entries, subKey = "") => {
 
       return 0;
     })
-    .map(({ value, header }, index) => {
-      const isValue = value => value !== undefined && value !== null;
+    .map(({ value, header, component, props }, index) => {
+      const isValue = (value) => value !== undefined && value !== null;
       if (value && value.replace) {
         value = value.replace(/<br>/gm, "\n");
       }
 
+      if (component && componentHandler) {
+        return componentHandler(
+          component,
+          props,
+          `shiptoolitip-${index}-${subKey}`
+        );
+      }
+
       return (
         <TooltipEntry
-          noMargin={subKey !== ""}
+          noMargin={subKey !== "" || noMargin}
           key={`shiptoolitip-${index}-${subKey}`}
         >
           {header && <TooltipValueHeader>{header}: </TooltipValueHeader>}
           {isValue(value) && Array.isArray(value) && (
             <InlineTooltipEntry>
-              {buildTooltipEntries(value, subKey + "-" + index)}
+              {buildTooltipEntries(
+                value,
+                componentHandler,
+                subKey + "-" + index
+              )}
             </InlineTooltipEntry>
           )}
           {isValue(value) && !Array.isArray(value) && (
@@ -240,11 +257,11 @@ const buildTooltipEntries = (entries, subKey = "") => {
 const SystemTooltip = styled(Tooltip)`
   top: 0px;
 
-  ${props => (props.right ? "right: 340px;" : "left: 340px;")}
+  ${(props) => (props.right ? "right: 340px;" : "left: 340px;")}
 
   width: 202px;
 
-  ${props => props.tab && "width: 302px;"}
+  ${(props) => props.tab && "width: 302px;"}
   transition: width 0.25s;
   transition-timing-function: ease-in-out;
 `;
@@ -270,5 +287,5 @@ export {
   TooltipValueHeader,
   InlineTooltipEntry,
   CenteredTooltipEntry,
-  RelativeOrStaticTooltip
+  RelativeOrStaticTooltip,
 };

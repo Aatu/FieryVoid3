@@ -15,7 +15,7 @@ class SystemHeat {
   serialize() {
     return {
       heat: this.heat,
-      overheat: this.overheat
+      overheat: this.overheat,
     };
   }
 
@@ -38,8 +38,24 @@ class SystemHeat {
     return this.system.hitpoints * this.heatTransferPerStructure;
   }
 
+  getOverheatTransferRatio() {
+    return (
+      this.system.callHandler("getOverheatTransferRatio", null, 0) ||
+      this.overheatTransferRatio
+    );
+  }
+
   getTransferOverHeat() {
-    return this.overheat * this.overheatTransferRatio;
+    const ratio = this.getOverheatTransferRatio();
+    const withRatio = this.overheat * ratio;
+    if (withRatio < ratio) {
+      if (ratio > this.overheat) {
+        return this.overheat;
+      }
+      return ratio;
+    }
+
+    return withRatio;
   }
 
   getTransferHeat() {
@@ -75,6 +91,52 @@ class SystemHeat {
       this.system.callHandler("generatesHeat", null, false) ||
       this.isHeatStorage()
     );
+  }
+
+  predictHeatChange() {
+    const newHeat = this.getHeatGenerated();
+    const heat = this.heat + newHeat;
+    const cooling = this.getMaxTransferHeat();
+    const finalHeat = heat >= cooling ? heat - cooling : 0;
+
+    const heatCooling = cooling > heat ? heat : cooling;
+
+    const maxOverheatCooling =
+      heatCooling < cooling ? cooling - heatCooling : 0;
+
+    const overheatCooling =
+      maxOverheatCooling > this.overheat * this.getOverheatTransferRatio()
+        ? this.overheat * this.getOverheatTransferRatio()
+        : maxOverheatCooling;
+
+    console.log(
+      "heatCooling:",
+      heatCooling,
+      "cooling:",
+      cooling,
+      "overheatCooling:",
+      overheatCooling
+    );
+
+    const cumulatedOverheat = this.overheat + finalHeat;
+
+    const actualOverheatCooling =
+      overheatCooling <= cumulatedOverheat
+        ? overheatCooling
+        : cumulatedOverheat;
+
+    const overheat = cumulatedOverheat - actualOverheatCooling;
+
+    const maximumPossibleOverheatReduction = this.getOverheatTransferRatio();
+
+    return {
+      overheat: Math.round(overheat * 100) / 100,
+      newHeat,
+      overheatPercentage: overheat / this.getOverheatTreshold(),
+      cooling: Math.round((heatCooling + actualOverheatCooling) * 100) / 100,
+      overHeatThreshold: this.getOverheatTreshold(),
+      maximumPossibleOverheatReduction,
+    };
   }
 
   generateHeat() {

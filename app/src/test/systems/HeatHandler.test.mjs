@@ -13,10 +13,10 @@ import HeatHandler from "../../server/handler/HeatHandler.mjs";
 import ForcedOfflineOverheat from "../../model/unit/system/criticals/ForcedOfflineOverheat.mjs";
 import ShipSystemLogEntryHeat from "../../model/unit/system/ShipSystemLog/ShipSystemLogEntryHeat.mjs";
 
-test("Heat is generated", test => {
+test("Heat is generated", (test) => {
   const ship = new Ship({ id: 1 });
   const heater = new ShipSystem({ id: 4, hitpoints: 4, armor: 2 }, [
-    new OutputHeatOnlineStrategy(10)
+    new OutputHeatOnlineStrategy(10),
   ]);
 
   ship.systems.addPrimarySystem([heater]);
@@ -25,8 +25,8 @@ test("Heat is generated", test => {
 
   heatHandler.advance({
     ships: {
-      getShips: () => [ship]
-    }
+      getShips: () => [ship],
+    },
   });
 
   test.deepEqual(
@@ -34,16 +34,16 @@ test("Heat is generated", test => {
     [
       "Added 10 and cooled 0 units of heat.",
       "Current system heat was 10. Overheating 250%.",
-      "System forced offline until overheat is less than 50%."
+      "System forced offline until overheat is less than 50%.",
     ]
   );
   test.is(heater.heat.getOverheat(), 10);
 });
 
-test("Heat is generated and stored", test => {
+test("Heat is generated and stored", (test) => {
   const ship = new Ship({ id: 1 });
   const heater = new ShipSystem({ id: 4, hitpoints: 8, armor: 2 }, [
-    new OutputHeatOnlineStrategy(10)
+    new OutputHeatOnlineStrategy(10),
   ]);
   const heatSink = new HeatSink({ id: 2, hitpoints: 10, armor: 2 }, 20);
 
@@ -52,8 +52,8 @@ test("Heat is generated and stored", test => {
 
   heatHandler.advance({
     ships: {
-      getShips: () => [ship]
-    }
+      getShips: () => [ship],
+    },
   });
 
   test.is(heater.heat.getOverheat(), 6);
@@ -63,7 +63,7 @@ test("Heat is generated and stored", test => {
     heater.log.getOpenLogEntryByClass(ShipSystemLogEntryHeat).getMessage(),
     [
       "Added 10 and cooled 4 units of heat.",
-      "Current system heat was 6. Overheating 75%."
+      "Current system heat was 6. Overheating 75%.",
     ]
   );
 
@@ -71,17 +71,17 @@ test("Heat is generated and stored", test => {
     heatSink.log.getOpenLogEntryByClass(ShipSystemLogEntryHeat).getMessage(),
     [
       "Added 4 units of heat. Transfered 0 units of heat to radiators.",
-      "Stored 4 units of heat."
+      "Stored 4 units of heat.",
     ]
   );
 });
 
-test("Heat is generated, stored and radiated", test => {
+test("Heat is generated, stored and radiated", (test) => {
   const ship = new Ship({ id: 1 });
   const heatSink = new HeatSink({ id: 2, hitpoints: 10, armor: 2 }, 20);
   const radiator = new Radiator({ id: 3, hitpoints: 10, armor: 2 }, 5);
   const heater = new ShipSystem({ id: 4, hitpoints: 8, armor: 2 }, [
-    new OutputHeatOnlineStrategy(10)
+    new OutputHeatOnlineStrategy(10),
   ]);
 
   ship.systems.addPrimarySystem([heatSink, radiator, heater]);
@@ -90,8 +90,8 @@ test("Heat is generated, stored and radiated", test => {
 
   heatHandler.advance({
     ships: {
-      getShips: () => [ship]
-    }
+      getShips: () => [ship],
+    },
   });
 
   heater.deserialize(heater.serialize());
@@ -106,7 +106,7 @@ test("Heat is generated, stored and radiated", test => {
     heater.log.getOpenLogEntryByClass(ShipSystemLogEntryHeat).getMessage(),
     [
       "Added 10 and cooled 4 units of heat.",
-      "Current system heat was 6. Overheating 75%."
+      "Current system heat was 6. Overheating 75%.",
     ]
   );
 
@@ -114,7 +114,7 @@ test("Heat is generated, stored and radiated", test => {
     heatSink.log.getOpenLogEntryByClass(ShipSystemLogEntryHeat).getMessage(),
     [
       "Added 4 units of heat. Transfered 4 units of heat to radiators.",
-      "Stored 0 units of heat."
+      "Stored 0 units of heat.",
     ]
   );
 
@@ -124,16 +124,16 @@ test("Heat is generated, stored and radiated", test => {
   );
 });
 
-test("Heat is generated, stored and radiated, complicately", test => {
+test("Heat is generated, stored and radiated, complicately", (test) => {
   const ship = new Ship({ id: 1 });
   const heatSink = new HeatSink({ id: 2, hitpoints: 10, armor: 2 }, 20);
   const radiator = new Radiator({ id: 3, hitpoints: 10, armor: 2 }, 5);
   const heater = new ShipSystem({ id: 4, hitpoints: 8, armor: 2 }, [
-    new OutputHeatOnlineStrategy(10)
+    new OutputHeatOnlineStrategy(10),
   ]);
   const heatSink2 = new HeatSink({ id: 5, hitpoints: 10, armor: 2 }, 20);
   const heater2 = new ShipSystem({ id: 7, hitpoints: 8, armor: 2 }, [
-    new OutputHeatOnlineStrategy(20)
+    new OutputHeatOnlineStrategy(20),
   ]);
 
   ship.systems.addPrimarySystem([
@@ -141,15 +141,15 @@ test("Heat is generated, stored and radiated, complicately", test => {
     radiator,
     heater,
     heatSink2,
-    heater2
+    heater2,
   ]);
 
   const heatHandler = new HeatHandler();
 
   heatHandler.advance({
     ships: {
-      getShips: () => [ship]
-    }
+      getShips: () => [ship],
+    },
   });
 
   test.is(heater.heat.getOverheat(), 6);
@@ -159,18 +159,18 @@ test("Heat is generated, stored and radiated, complicately", test => {
   test.is(radiator.callHandler("getRadiatedHeat"), 5);
 });
 
-test("System overheats", test => {
+test("System overheats", (test) => {
   const ship = new Ship({ id: 1 });
   const heater1 = new ShipSystem({ id: 4, hitpoints: 4, armor: 2 }, [
-    new OutputHeatOnlineStrategy(10)
+    new OutputHeatOnlineStrategy(10),
   ]);
 
   const heater2 = new ShipSystem({ id: 5, hitpoints: 4, armor: 2 }, [
-    new OutputHeatOnlineStrategy(4)
+    new OutputHeatOnlineStrategy(4),
   ]);
 
   const heater3 = new ShipSystem({ id: 6, hitpoints: 4, armor: 2 }, [
-    new OutputHeatOnlineStrategy(2)
+    new OutputHeatOnlineStrategy(2),
   ]);
 
   ship.systems.addPrimarySystem([heater1, heater2, heater3]);
@@ -179,8 +179,8 @@ test("System overheats", test => {
 
   heatHandler.advance({
     ships: {
-      getShips: () => [ship]
-    }
+      getShips: () => [ship],
+    },
   });
 
   test.is(heater1.heat.getOverheatPercentage(), 2.5);
@@ -189,10 +189,10 @@ test("System overheats", test => {
   test.is(heater3.heat.getOverheatPercentage(), 0.5);
 });
 
-test("System overheat is reduced at reduced rate", test => {
+test("System overheat is reduced at reduced rate", (test) => {
   const ship = new Ship({ id: 1 });
   const heater1 = new ShipSystem({ id: 4, hitpoints: 4, armor: 2 }, [
-    new OutputHeatOnlineStrategy(1)
+    new OutputHeatOnlineStrategy(1, 1, 0.25),
   ]);
 
   const heatSink = new HeatSink({ id: 2, hitpoints: 10, armor: 2 }, 20);
@@ -203,8 +203,8 @@ test("System overheat is reduced at reduced rate", test => {
 
   heatHandler.advance({
     ships: {
-      getShips: () => [ship]
-    }
+      getShips: () => [ship],
+    },
   });
 
   test.is(heater1.heat.getOverheatPercentage(), 0);
@@ -217,8 +217,8 @@ test("System overheat is reduced at reduced rate", test => {
 
   heatHandler.advance({
     ships: {
-      getShips: () => [ship]
-    }
+      getShips: () => [ship],
+    },
   });
 
   test.is(heater1.heat.getHeat(), 0);
@@ -230,21 +230,21 @@ test("System overheat is reduced at reduced rate", test => {
 
   heatHandler.advance({
     ships: {
-      getShips: () => [ship]
-    }
+      getShips: () => [ship],
+    },
   });
 
   test.is(heater1.heat.getHeat(), 0);
-  test.is(heater1.heat.getOverheat(), 1);
-  test.is(heater1.heat.getOverheatPercentage(), 0.25);
+  test.is(heater1.heat.getOverheat(), 1.5);
+  test.is(heater1.heat.getOverheatPercentage(), 0.375);
 });
 
-test("Damaged radiator radiates less heat", test => {
+test("Damaged radiator radiates less heat", (test) => {
   const ship = new Ship({ id: 1 });
   const heatSink = new HeatSink({ id: 2, hitpoints: 10, armor: 2 }, 20);
   const radiator = new Radiator({ id: 3, hitpoints: 10, armor: 2 }, 5);
   const heater = new ShipSystem({ id: 4, hitpoints: 8, armor: 2 }, [
-    new OutputHeatOnlineStrategy(10)
+    new OutputHeatOnlineStrategy(10),
   ]);
 
   ship.systems.addPrimarySystem([heatSink, radiator, heater]);
@@ -255,8 +255,8 @@ test("Damaged radiator radiates less heat", test => {
 
   heatHandler.advance({
     ships: {
-      getShips: () => [ship]
-    }
+      getShips: () => [ship],
+    },
   });
 
   test.is(heater.heat.getOverheat(), 6);

@@ -5,8 +5,8 @@ import {
   TooltipEntry,
   TooltipValueHeader,
   TooltipValue,
-  RelativeOrStaticTooltip
-} from "../../../../../../styled";
+  RelativeOrStaticTooltip,
+} from "../../../../../../styled/index.js";
 import styled from "styled-components";
 
 const CargoTooltipContainer = styled(RelativeOrStaticTooltip)`

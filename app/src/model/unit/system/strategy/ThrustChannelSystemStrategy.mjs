@@ -11,7 +11,7 @@ const directionsToString = {
   5: "Thrust port",
   6: "Pivot right",
   7: "Pivot left",
-  8: "Roll, Evade"
+  8: "Roll, Evade",
 };
 
 class ThrustChannelSystemStrategy extends ShipSystemStrategy {
@@ -36,8 +36,8 @@ class ThrustChannelSystemStrategy extends ShipSystemStrategy {
     return {
       ...previousResponse,
       thrustChannelSystemStrategy: {
-        channeled: this.channeled
-      }
+        channeled: this.channeled,
+      },
     };
   }
 
@@ -55,7 +55,7 @@ class ThrustChannelSystemStrategy extends ShipSystemStrategy {
   getDirectionString() {
     if (Array.isArray(this.direction)) {
       return this.direction
-        .map(direction => directionsToString[direction])
+        .map((direction) => directionsToString[direction])
         .join(", ");
     }
 
@@ -65,22 +65,17 @@ class ThrustChannelSystemStrategy extends ShipSystemStrategy {
   getMessages(payload, previousResponse = []) {
     previousResponse.push({
       header: "Output",
-      value: this.output
+      value: this.output,
     });
 
     previousResponse.push({
       header: "Manouver(s)",
-      value: this.getDirectionString()
+      value: this.getDirectionString(),
     });
 
     previousResponse.push({
       header: "Channeled",
-      value: this.channeled
-    });
-
-    previousResponse.push({
-      header: "Heat generated",
-      value: this.getHeatGenerated()
+      value: this.channeled,
     });
 
     return previousResponse;
@@ -105,7 +100,7 @@ class ThrustChannelSystemStrategy extends ShipSystemStrategy {
       1 +
       this.system.damage
         .getCriticals()
-        .filter(critical => critical instanceof ThrustChannelHeatIncreased)
+        .filter((critical) => critical instanceof ThrustChannelHeatIncreased)
         .reduce((total, current) => total + current.getHeatIncrease(), 0);
 
     return heat;
@@ -128,7 +123,7 @@ class ThrustChannelSystemStrategy extends ShipSystemStrategy {
 
     output -= this.system.damage
       .getCriticals()
-      .filter(critical => critical instanceof OutputReduced)
+      .filter((critical) => critical instanceof OutputReduced)
       .reduce((total, current) => total + current.getOutputReduction(), 0);
 
     if (output < 0) {
@@ -172,13 +167,13 @@ class ThrustChannelSystemStrategy extends ShipSystemStrategy {
       { severity: 20, critical: new ThrustChannelHeatIncreased(0.5, 1) },
       {
         severity: 30,
-        critical: new OutputReduced(Math.ceil(this.output / 4), 2)
+        critical: new OutputReduced(Math.ceil(this.output / 4), 2),
       },
       { severity: 40, critical: new ThrustChannelHeatIncreased(0.5, 3) },
       { severity: 60, critical: new ThrustChannelHeatIncreased(0.5) },
       { severity: 70, critical: new OutputReduced(Math.ceil(this.output / 4)) },
       { severity: 80, critical: new OutputReduced(Math.ceil(this.output / 3)) },
-      { severity: 90, critical: new OutputReduced(Math.ceil(this.output / 2)) }
+      { severity: 90, critical: new OutputReduced(Math.ceil(this.output / 2)) },
     ];
   }
 }

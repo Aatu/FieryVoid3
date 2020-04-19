@@ -2,11 +2,11 @@ import ShipSystemLogEntryCriticalHit from "../../model/unit/system/ShipSystemLog
 
 class CriticalHandler {
   advance(gameData) {
-    gameData.ships.getShips().forEach(ship => {
+    gameData.ships.getShips().forEach((ship) => {
       ship.systems
         .getSystems()
-        .filter(system => !system.isDestroyed())
-        .forEach(system => this.checkCriticalForSystem(system));
+        .filter((system) => !system.isDestroyed())
+        .forEach((system) => this.checkCriticalForSystem(system));
     });
   }
 
@@ -33,7 +33,7 @@ class CriticalHandler {
       .filter(({ critical }) =>
         system.damage
           .getCriticals()
-          .every(otherCritical => !otherCritical.excludes(critical))
+          .every((otherCritical) => !otherCritical.excludes(critical))
       )
       .sort((a, b) => {
         if (a.severity > b.severity) {
@@ -76,7 +76,7 @@ class CriticalHandler {
   getCeil(damage, newDamage, overheat, hitpoints, logEntry) {
     const oldDamagePercent = Math.round(((damage * 0.5) / hitpoints) * 50);
     const newDamagePercent = Math.round(((newDamage * 1.5) / hitpoints) * 50);
-    let heatPercent = Math.round((overheat - 1) * 25);
+    let heatPercent = Math.round((overheat - 1) * 50);
     const randomPercent = Math.round(this.getRandomBonus());
 
     if (heatPercent < 0) {

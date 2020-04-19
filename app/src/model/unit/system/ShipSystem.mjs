@@ -16,7 +16,7 @@ class ShipSystem {
       throw new Error("System must have hitpoints");
     }
 
-    this.strategies.forEach(strategy => strategy.init(this));
+    this.strategies.forEach((strategy) => strategy.init(this));
 
     this.damage = new SystemDamage(this);
     this.power = new SystemPower(this);
@@ -47,18 +47,11 @@ class ShipSystem {
       if (!this.heat.isHeatStorage()) {
         heatMessages.push({
           sort: "heat",
-          value: [
-            {
-              header: "Overheat",
-              value: `${formatNumber(this.heat.getOverheat())}/${formatNumber(
-                this.heat.getOverheatTreshold()
-              )} (${Math.round(this.heat.getOverheatPercentage() * 100)}%)`
-            },
-            {
-              header: "Cooling",
-              value: this.heat.getMaxTransferHeat()
-            }
-          ]
+          component: "SystemHeatBar",
+          props: {
+            currentOverheat: this.heat.getOverheatPercentage(),
+            prediction: this.heat.predictHeatChange(),
+          },
         });
       }
     }
@@ -69,13 +62,13 @@ class ShipSystem {
         value: [
           {
             header: "Hitpoints",
-            value: `${this.getRemainingHitpoints()}/${this.hitpoints}`
+            value: `${this.getRemainingHitpoints()}/${this.hitpoints}`,
           },
-          { header: "Armor", value: `${this.getArmor()}` }
-        ]
+          { header: "Armor", value: `${this.getArmor()}` },
+        ],
       },
       ...heatMessages,
-      ...this.callHandler("getMessages", null, [])
+      ...this.callHandler("getMessages", null, []),
     ];
   }
 
@@ -150,7 +143,7 @@ class ShipSystem {
   }
 
   callHandler(name, payload = {}, response = undefined) {
-    this.strategies.forEach(strategy => {
+    this.strategies.forEach((strategy) => {
       response = strategy.callHandler(name, payload, response);
     });
 
@@ -158,7 +151,7 @@ class ShipSystem {
   }
 
   getStrategiesByInstance(instance) {
-    return this.strategies.filter(strategy => strategy instanceof instance);
+    return this.strategies.filter((strategy) => strategy instanceof instance);
   }
 
   deserialize(data = {}) {
@@ -177,7 +170,7 @@ class ShipSystem {
       power: this.power.serialize(),
       heat: this.heat.serialize(),
       log: this.log.serialize(),
-      ...this.callHandler("serialize")
+      ...this.callHandler("serialize"),
     };
   }
 

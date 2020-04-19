@@ -35,12 +35,6 @@ class ShipPower {
       return false;
     }
 
-    console.log(
-      "enough power",
-      this.getRemainingPowerOutput(),
-      system.power.getPowerRequirement(),
-      this.getRemainingPowerOutput() >= system.power.getPowerRequirement()
-    );
     return this.getRemainingPowerOutput() >= system.power.getPowerRequirement();
   }
 
