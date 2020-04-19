@@ -47,10 +47,11 @@ class SystemHeat {
 
   getTransferOverHeat() {
     const ratio = this.getOverheatTransferRatio();
-    const withRatio = this.overheat * ratio;
+    const overheat = this.overheat > 0 ? this.overheat : 0;
+    const withRatio = overheat * ratio;
     if (withRatio < ratio) {
-      if (ratio > this.overheat) {
-        return this.overheat;
+      if (ratio > overheat) {
+        return overheat;
       }
       return ratio;
     }

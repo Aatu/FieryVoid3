@@ -7,12 +7,19 @@ class StoreHeatStrategy extends ShipSystemStrategy {
   }
 
   getMessages(payload, previousResponse = []) {
-    previousResponse.push({
-      header: "Stores heat without overheating",
-      value: `${this.heatCapacity}`
-    });
-
-    return previousResponse;
+    return [
+      ...previousResponse,
+      ...[
+        {
+          header: "Stores heat without overheating",
+          value: `${this.heatCapacity}`,
+        },
+        {
+          header: "Heat stored",
+          value: Math.round(this.system.heat.getHeat()),
+        },
+      ],
+    ];
   }
 
   canStoreHeat() {

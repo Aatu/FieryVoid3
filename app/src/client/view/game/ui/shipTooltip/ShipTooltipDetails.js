@@ -85,7 +85,7 @@ class ShipTooltipDetails extends React.Component {
           )}
 
           {this.getEntry(
-            "Passive heat change",
+            "Predicted heat change",
             ship.systems.getPassiveHeatChange()
           )}
         </Row>
