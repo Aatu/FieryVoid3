@@ -25,10 +25,9 @@ class Haka extends Ship {
       new Offset(-1, 0),
     ];
     this.accelcost = 5;
-    this.rollcost = 18;
+    this.rollcost = 12;
     this.pivotcost = 10;
     this.evasioncost = 10;
-    this.maxPivots = 1;
 
     this.frontHitProfile = 70;
     this.sideHitProfile = 100;
@@ -39,11 +38,11 @@ class Haka extends Ship {
     this.pointCost = 500;
 
     this.systems.addFrontSystem([
-      new systems.Thruster({ id: 103, hitpoints: 10, armor: 3 }, 5, 0),
+      new systems.ChemicalThruster({ id: 103, hitpoints: 10, armor: 3 }, 15, 0),
 
       new systems.RailgunTurreted140mmUC({ id: 118 }, { start: 210, end: 150 }),
       new systems.RailgunTurreted140mmUC({ id: 119 }, { start: 210, end: 150 }),
-      new systems.Thruster({ id: 104, hitpoints: 10, armor: 3 }, 5, 0),
+      new systems.ChemicalThruster({ id: 104, hitpoints: 10, armor: 3 }, 15, 0),
 
       new systems.PDC30mm(
         { id: 114, hitpoints: 5, armor: 3 },
@@ -101,10 +100,8 @@ class Haka extends Ship {
     ]);
 
     this.systems.addPrimarySystem([
-      new systems.Engine({ id: 6, hitpoints: 20, armor: 5 }, 24, 6, 2),
-      new systems.Reactor({ id: 7, hitpoints: 10, armor: 8 }, 40),
-      new systems.Engine({ id: 4, hitpoints: 20, armor: 5 }, 24, 6, 2),
-      new systems.Reactor({ id: 5, hitpoints: 10, armor: 8 }, 40),
+      new systems.Reactor({ id: 7, hitpoints: 10, armor: 8 }, 43),
+      new systems.Reactor({ id: 5, hitpoints: 10, armor: 8 }, 43),
       new systems.Structure({
         id: 11,
         hitpoints: 80,
@@ -118,11 +115,14 @@ class Haka extends Ship {
     ]);
 
     this.systems.addStarboardFrontSystem([
-      new systems.Thruster({ id: 201, hitpoints: 10, armor: 3 }, 5, [1, 2]),
+      new systems.ChemicalThruster({ id: 201, hitpoints: 10, armor: 3 }, 5, [
+        1,
+        2,
+      ]),
 
       new systems.ManeuveringThrusterRight(
         { id: 205, hitpoints: 10, armor: 3 },
-        10,
+        20,
         0
       ),
 
@@ -158,7 +158,10 @@ class Haka extends Ship {
         radiator: 15,
       }),
 
-      new systems.Thruster({ id: 601, hitpoints: 10, armor: 3 }, 5, [4, 5]),
+      new systems.ChemicalThruster({ id: 601, hitpoints: 10, armor: 3 }, 5, [
+        4,
+        5,
+      ]),
 
       new systems.MediumCoilcunTurretedUC({ id: 602 }, { start: 165, end: 0 }),
 
@@ -173,7 +176,7 @@ class Haka extends Ship {
 
       new systems.ManeuveringThrusterLeft(
         { id: 605, hitpoints: 10, armor: 3 },
-        10,
+        20,
         0
       ),
 
@@ -191,8 +194,16 @@ class Haka extends Ship {
 
       new systems.PDC30mm({ id: 450 }, { start: 160, end: 340 }),
 
-      new systems.Thruster({ id: 432, hitpoints: 15, armor: 3 }, 8, 3),
-      new systems.Thruster({ id: 433, hitpoints: 15, armor: 3 }, 8, 3),
+      new systems.Thruster({ id: 432, hitpoints: 15, armor: 3 }, 8, 3, {
+        power: 2,
+        boostPower: 1,
+        maxBoost: 8,
+      }),
+      new systems.Thruster({ id: 433, hitpoints: 15, armor: 3 }, 8, 3, {
+        power: 2,
+        boostPower: 1,
+        maxBoost: 8,
+      }),
 
       new systems.PDC30mm({ id: 451 }, { start: 40, end: 200 }),
 
@@ -207,10 +218,14 @@ class Haka extends Ship {
     ]);
 
     this.systems.addPortAftSystem([
-      new systems.Thruster({ id: 533, hitpoints: 15, armor: 3 }, 8, 3),
+      new systems.Thruster({ id: 533, hitpoints: 15, armor: 3 }, 8, 3, {
+        power: 2,
+        boostPower: 1,
+        maxBoost: 8,
+      }),
       new systems.ManeuveringThrusterRight(
         { id: 501, hitpoints: 10, armor: 3 },
-        10,
+        20,
         0
       ),
       new systems.Radiator10x50({ id: 502 }),
@@ -225,10 +240,14 @@ class Haka extends Ship {
     this.systems.addStarboardAftSystem([
       new systems.ManeuveringThrusterLeft(
         { id: 305, hitpoints: 10, armor: 3 },
-        10,
+        20,
         0
       ),
-      new systems.Thruster({ id: 333, hitpoints: 15, armor: 3 }, 8, 3),
+      new systems.Thruster({ id: 333, hitpoints: 15, armor: 3 }, 8, 3, {
+        power: 2,
+        boostPower: 1,
+        maxBoost: 8,
+      }),
       new systems.Radiator10x50({ id: 301 }),
       new systems.Radiator10x50({ id: 302 }),
       new systems.PDC30mm({ id: 352 }, { start: 40, end: 200 }),

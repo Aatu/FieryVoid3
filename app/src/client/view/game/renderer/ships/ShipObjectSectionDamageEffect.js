@@ -70,8 +70,6 @@ class ShipObjectSectionDamageEffect {
       return false;
     }
 
-    console.log("cache hit!");
-
     cached.particles.forEach(({ index, emitter, opacity }) =>
       emitter.getByIndex(index).setOpacity(opacity)
     );

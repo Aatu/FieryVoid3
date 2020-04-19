@@ -71,7 +71,7 @@ class ShipElectronicWarfare {
     }
 
     const result = this.getAllEntries()
-      .filter(entry => entry.type === type && entry.targetShipId === target)
+      .filter((entry) => entry.type === type && entry.targetShipId === target)
       .reduce((total, entry) => total + entry.getAmount(), 0);
 
     return result;
@@ -112,10 +112,10 @@ class ShipElectronicWarfare {
         (all, system) => [...all, ...system.callHandler("getEwEntries")],
         []
       )
-      .filter(entry => entry.getType() === ewTypes.EW_OFFENSIVE)
-      .forEach(entry => {
+      .filter((entry) => entry.getType() === ewTypes.EW_OFFENSIVE)
+      .forEach((entry) => {
         const existing = combined.find(
-          combinedEntry => combinedEntry.targetShipId === entry.targetShipId
+          (combinedEntry) => combinedEntry.targetShipId === entry.targetShipId
         );
 
         if (existing) {
@@ -138,7 +138,7 @@ class ShipElectronicWarfare {
   getEwArrays() {
     return this.ship.systems
       .getSystems()
-      .filter(system => system.callHandler("isEwArray"));
+      .filter((system) => system.callHandler("isEwArray"));
   }
 
   repeatElectonicWarfare() {
@@ -146,15 +146,15 @@ class ShipElectronicWarfare {
   }
 
   removeAll() {
-    this.getEwArrays().forEach(system => system.callHandler("resetEw"));
+    this.getEwArrays().forEach((system) => system.callHandler("resetEw"));
   }
 
   assignEntries(entries, allowIncomplete = false) {
     this.removeAll();
-    const negativeEntries = entries.filter(entry => entry.getAmount() < 0);
+    const negativeEntries = entries.filter((entry) => entry.getAmount() < 0);
 
     entries
-      .filter(entry => entry.getAmount() > 0)
+      .filter((entry) => entry.getAmount() > 0)
       .sort((a, b) => {
         if (
           a.type === ewTypes.EW_OFFENSIVE &&
@@ -172,14 +172,14 @@ class ShipElectronicWarfare {
 
         return 0;
       })
-      .map(entry => {
+      .map((entry) => {
         negativeEntries
           .filter(
-            negativeEntry =>
+            (negativeEntry) =>
               negativeEntry.type === entry.type &&
               negativeEntry.targetShipId === entry.targetShipId
           )
-          .forEach(negativeEntry => {
+          .forEach((negativeEntry) => {
             if (entry.getAmount() >= Math.abs(negativeEntry.getAmount())) {
               entry.amount += negativeEntry.getAmount();
               negativeEntry.amount = 0;
@@ -193,10 +193,10 @@ class ShipElectronicWarfare {
 
         return entry;
       })
-      .filter(entry => entry.getAmount() !== 0)
-      .forEach(entry => this.assignPositiveEW(entry, allowIncomplete));
+      .filter((entry) => entry.getAmount() !== 0)
+      .forEach((entry) => this.assignPositiveEW(entry, allowIncomplete));
 
-    if (negativeEntries.some(entry => entry.getAmount() !== 0)) {
+    if (negativeEntries.some((entry) => entry.getAmount() !== 0)) {
       throw new UnableToAssignEw("Invalid EW, negative entries left");
     }
   }
@@ -205,6 +205,7 @@ class ShipElectronicWarfare {
     let amount = entry.getAmount();
     while (amount > 0) {
       const availableSystems = this.getAvailableSystemsForEntry(entry);
+
       if (availableSystems.length === 0) {
         if (allowIncomplete) {
           return;
@@ -216,7 +217,7 @@ class ShipElectronicWarfare {
       availableSystems.shift().callHandler("assignEw", {
         type: entry.type,
         target: entry.targetShipId,
-        amount: 1
+        amount: 1,
       });
       amount--;
     }
@@ -224,10 +225,10 @@ class ShipElectronicWarfare {
 
   getAvailableSystemsForEntry(entry) {
     return this.getEwArrays()
-      .filter(system =>
+      .filter((system) =>
         system.callHandler("canUseEw", {
           type: entry.type,
-          amount: 1
+          amount: 1,
         })
       )
       .sort((a, b) => {

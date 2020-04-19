@@ -58,8 +58,11 @@ class CriticalHandler {
     let newCritical = null;
 
     if (attainableCriticals.length === 0) {
-      const possible = possibleCriticals.pop();
-      if (possible.severity <= floor) {
+      const possible = possibleCriticals
+        .reverse()
+        .find((critical) => critical.severity <= floor);
+
+      if (possible) {
         newCritical = possible.critical;
       } else {
         return;

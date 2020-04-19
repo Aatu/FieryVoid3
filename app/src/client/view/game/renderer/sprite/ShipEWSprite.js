@@ -13,6 +13,14 @@ const getDEWWidth = (DEW) => {
   return DEW * 3 + 5;
 };
 
+const getEvasionWidth = (evasion) => {
+  if (evasion === 0) {
+    return 0;
+  }
+
+  return evasion * 3 + 5;
+};
+
 const getCCEWWidth = (CCEW) => {
   if (CCEW === 0) {
     return 0;
@@ -46,16 +54,58 @@ const getDEWRadiuses = (DEW, ratios) => {
   };
 };
 
-const getCCEWRadiuses = (DEW, CCEW, ratios) => {
+const getCCEWRadiuses = (DEW, evasion, CCEW, ratios) => {
   const { r1, r2 } = getDEWRadiuses(DEW, ratios);
 
   return {
-    r1: r1 + getDEWWidth(DEW) / 2 + 15 + getCCEWWidth(CCEW) / 2,
-    r2: r2 + getDEWWidth(DEW) / 2 + 15 + getCCEWWidth(CCEW) / 2,
+    r1:
+      r1 +
+      getDEWWidth(DEW) / 2 +
+      15 +
+      getEvasionWidth(evasion) / 2 +
+      15 +
+      getCCEWWidth(CCEW) / 2,
+    r2:
+      r2 +
+      getDEWWidth(DEW) / 2 +
+      15 +
+      getEvasionWidth(evasion) / 2 +
+      15 +
+      getCCEWWidth(CCEW) / 2,
   };
 };
 
-const drawCCEW = (context, DEW, CCEW, ratios) => {
+const getEvasionRadiuses = (DEW, evasion, ratios) => {
+  const { r1, r2 } = getDEWRadiuses(DEW, ratios);
+
+  return {
+    r1: r1 + getDEWWidth(DEW) / 2 + 15 + getEvasionWidth(evasion) / 2,
+    r2: r2 + getDEWWidth(DEW) / 2 + 15 + getEvasionWidth(evasion) / 2,
+  };
+};
+
+const drawEvasion = (context, DEW, evasion, ratios) => {
+  if (!evasion) {
+    return;
+  }
+
+  var a = 0.7;
+
+  if (evasion < 3) {
+    a = 0.9;
+  }
+
+  context.strokeStyle = "rgba(20,140,128, 0.9)";
+  context.lineWidth = getEvasionWidth(evasion);
+  context.setLineDash([15, 5]);
+
+  const { r1, r2 } = getEvasionRadiuses(DEW, evasion, ratios);
+  drawFilledEllipse(context, TEXTURE_SIZE / 2, TEXTURE_SIZE / 2, r1, r2);
+
+  context.setLineDash([]);
+};
+
+const drawCCEW = (context, DEW, evasion, CCEW, ratios) => {
   if (!CCEW) {
     return;
   }
@@ -70,7 +120,7 @@ const drawCCEW = (context, DEW, CCEW, ratios) => {
   context.lineWidth = getCCEWWidth(CCEW);
   context.setLineDash([15, 5]);
 
-  const { r1, r2 } = getCCEWRadiuses(DEW, CCEW, ratios);
+  const { r1, r2 } = getCCEWRadiuses(DEW, evasion, CCEW, ratios);
   drawFilledEllipse(context, TEXTURE_SIZE / 2, TEXTURE_SIZE / 2, r1, r2);
 
   context.setLineDash([]);
@@ -98,18 +148,20 @@ class ShipEWSprite extends Sprite {
     return ratios;
   }
 
-  update(DEW, CCEW) {
-    if (this.DEW === DEW && this.CCEW === CCEW) {
+  update(DEW, CCEW, evasion) {
+    if (this.DEW === DEW && this.CCEW === CCEW && this.evasion === evasion) {
       return;
     }
 
     this.DEW = DEW;
     this.CCEW = CCEW;
+    this.evasion = evasion;
 
     const canvas = abstractCanvas.create(TEXTURE_SIZE, TEXTURE_SIZE);
     const context = canvas.getContext("2d");
     drawDEW(context, DEW, this.calculateRadiusRatios());
-    drawCCEW(context, DEW, CCEW, this.calculateRadiusRatios());
+    drawEvasion(context, DEW, evasion, this.calculateRadiusRatios());
+    drawCCEW(context, DEW, evasion, CCEW, this.calculateRadiusRatios());
 
     const texture = new THREE.Texture(canvas);
     texture.needsUpdate = true;

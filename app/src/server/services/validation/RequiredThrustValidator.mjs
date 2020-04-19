@@ -32,7 +32,7 @@ class RequiredThrustValidator {
   }
 
   ensureThrustersAreValid(requiredThrust) {
-    return Object.keys(requiredThrust.fullfilments).every(direction => {
+    return Object.keys(requiredThrust.fullfilments).every((direction) => {
       return requiredThrust.fullfilments[direction].every(({ thrusterId }) => {
         const thruster = this.ship.systems.getSystemById(thrusterId);
 
@@ -62,7 +62,7 @@ class RequiredThrustValidator {
   }
 
   isPaid(requiredThrust) {
-    return Object.keys(this.requirement.requirements).every(direction => {
+    return Object.keys(this.requirement.requirements).every((direction) => {
       let required = this.requirement.requirements[direction];
 
       requiredThrust.fullfilments[direction].forEach(({ amount }) => {

@@ -368,8 +368,7 @@ class ExplosionEffect extends Animation {
         })
         .setTexture(TEXTURE_GLOW)
         .setActivationTime(activationTime)
-        .setRepeat(this.repeat)
-        .setAngle(144, 2);
+        .setRepeat(this.repeat);
     }
   }
 

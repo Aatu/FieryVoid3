@@ -7,7 +7,7 @@ import Ammo140mmAP from "../../model/unit/system/weapon/ammunition/conventional/
 import Ammo140mmHE from "../../model/unit/system/weapon/ammunition/conventional/Ammo140mmHE.mjs";
 import MovementService from "../../model/movement/MovementService.mjs";
 
-test.serial("Test weapon heats up", async test => {
+test.serial("Test weapon heats up", async (test) => {
   const db = new TestDatabaseConnection("heat");
   await db.resetDatabase();
 
@@ -22,13 +22,13 @@ test.serial("Test weapon heats up", async test => {
 
   let achilles = gameData.ships
     .getShips()
-    .find(ship => ship.name === "UCS Achilles");
+    .find((ship) => ship.name === "UCS Achilles");
 
   let railgun = achilles.systems.getSystemById(101);
 
   test.deepEqual(railgun.log.getMessagesForTurn(1), [
     "Added 5 and cooled 5 units of heat.",
-    "Current system heat was 0."
+    "Current system heat was 0.",
   ]);
 
   test.deepEqual(
@@ -36,14 +36,14 @@ test.serial("Test weapon heats up", async test => {
     [
       "Added 10 units of heat. Transfered 5 units of heat to radiators.",
       "Stored 5 units of heat.",
-      "Radiated 5 units of heat."
+      "Radiated 5 units of heat.",
     ]
   );
 
   db.close();
 });
 
-test.serial("Test manouvering thruster heats up", async test => {
+test.serial("Test manouvering thruster heats up", async (test) => {
   const db = new TestDatabaseConnection("heat");
   await db.resetDatabase();
 
@@ -54,7 +54,7 @@ test.serial("Test manouvering thruster heats up", async test => {
 
   let achilles = gameData.ships
     .getShips()
-    .find(ship => ship.name === "UCS Achilles");
+    .find((ship) => ship.name === "UCS Achilles");
 
   const movementService = new MovementService().update(
     { turn: 1 },
@@ -70,13 +70,13 @@ test.serial("Test manouvering thruster heats up", async test => {
 
   achilles = gameData.ships
     .getShips()
-    .find(ship => ship.name === "UCS Achilles");
+    .find((ship) => ship.name === "UCS Achilles");
 
   let manouveringThruster = achilles.systems.getSystemById(10);
 
   test.deepEqual(manouveringThruster.log.getMessagesForTurn(1), [
-    "Added 4.5 and cooled 4.5 units of heat.",
-    "Current system heat was 0."
+    "Added 7.88 and cooled 5 units of heat.",
+    "Current system heat was 2.88. Overheating 29%.",
   ]);
 
   db.close();

@@ -76,7 +76,7 @@ class GameHandler {
   }
 
   inactivateUsersShips(serverGameData, user) {
-    serverGameData.getActiveShipsForUser(user).forEach(ship => {
+    serverGameData.getActiveShipsForUser(user).forEach((ship) => {
       serverGameData.setInactiveShip(ship);
     });
 

@@ -66,14 +66,11 @@ const TextRowSmall = styled(TextRow)`
 
 class Movement extends React.Component {
   render() {
-    const { ship, movementService, children, ui = true } = this.props;
+    const { ship, children, ui = true } = this.props;
 
     return (
       <>
-        <Container id="shipMovementActual">
-          {children}
-          {ui && <Power>{ship.movement.getRemainingThrustOutput()}</Power>}
-        </Container>
+        <Container id="shipMovementActual">{children}</Container>
       </>
     );
   }

@@ -84,10 +84,10 @@ class ShipTooltipDetails extends React.Component {
             )}/${ship.systems.getTotalHeatStorage()}`
           )}
 
-          {this.getEntry(
+          {/* this.getEntry(
             "Predicted heat change",
-            ship.systems.getPassiveHeatChange()
-          )}
+            Math.round(ship.systems.getPassiveHeatChange())
+          ) */}
         </Row>
         <Row>
           <HeatBar percent={heatPercent} />

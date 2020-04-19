@@ -22,7 +22,7 @@ class GameConnector {
   }
 
   connect(timeout = 0) {
-    this.connection = new Promise(resolve => {
+    this.connection = new Promise((resolve) => {
       setTimeout(() => {
         this.webSocket = new WebSocket(SERVER_WEBSOCKET_URL + this.gameId);
         this.connectionResolve = resolve;
@@ -39,7 +39,7 @@ class GameConnector {
     connection.send(
       JSON.stringify({
         type: gameMessages.MESSAGE_COMMIT_TURN,
-        payload: gameData.serialize()
+        payload: gameData.serialize(),
       })
     );
   }
@@ -49,7 +49,7 @@ class GameConnector {
     connection.send(
       JSON.stringify({
         type: gameMessages.MESSAGE_COMMIT_DEPLOYMENT,
-        payload: gameData.serialize()
+        payload: gameData.serialize(),
       })
     );
   }
@@ -59,7 +59,7 @@ class GameConnector {
     connection.send(
       JSON.stringify({
         type: gameMessages.MESSAGE_TAKE_SLOT,
-        payload: slotId
+        payload: slotId,
       })
     );
   }
@@ -69,7 +69,7 @@ class GameConnector {
     connection.send(
       JSON.stringify({
         type: gameMessages.MESSAGE_LEAVE_SLOT,
-        payload: slotId
+        payload: slotId,
       })
     );
   }
@@ -81,8 +81,8 @@ class GameConnector {
         type: gameMessages.MESSAGE_BUY_SHIPS,
         payload: {
           slotId,
-          ships: ships.map(ship => ship.serialize())
-        }
+          ships: ships.map((ship) => ship.serialize()),
+        },
       })
     );
   }
@@ -99,7 +99,6 @@ class GameConnector {
 
   onError() {
     console.log("error");
-    console.log(arguments);
   }
 
   onClose() {
@@ -119,13 +118,13 @@ class GameConnector {
 
       case gameMessages.MESSAGE_TURN_CHANGED:
         this.phaseDirector.receiveTurnChange(
-          payload.map(entry => new GameData(entry))
+          payload.map((entry) => new GameData(entry))
         );
         break;
 
       case gameMessages.MESSAGE_REPLAY:
         this.phaseDirector.receiveReplay(
-          payload.map(entry => new GameData(entry))
+          payload.map((entry) => new GameData(entry))
         );
         break;
       default:

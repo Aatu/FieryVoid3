@@ -41,7 +41,7 @@ class MovementResolver {
     let movements = this.ship.movement.getMovement();
 
     if (rollMove) {
-      movements = movements.filter(move => !move.isRoll());
+      movements = movements.filter((move) => !move.isRoll());
     } else {
       rollMove = new MovementOrder(
         null,
@@ -54,17 +54,13 @@ class MovementResolver {
         endMove.rolled ? false : true
       );
 
-      const playerAdded = movements.filter(move => move.isPlayerAdded());
-      const nonPlayerAdded = movements.filter(move => !move.isPlayerAdded());
+      const playerAdded = movements.filter((move) => move.isPlayerAdded());
+      const nonPlayerAdded = movements.filter((move) => !move.isPlayerAdded());
 
       movements = [...nonPlayerAdded, rollMove, ...playerAdded];
     }
 
-    const bill = new ThrustBill(
-      this.ship,
-      this.ship.movement.getThrustOutput(),
-      movements
-    );
+    const bill = new ThrustBill(this.ship, movements);
 
     return this.billAndPay(bill, commit);
   }
@@ -107,22 +103,18 @@ class MovementResolver {
     const playerAdded = this.ship.movement
       .getMovement()
       .filter(
-        move => move.isPlayerAdded() && !move.isRoll() && !move.isEvade()
+        (move) => move.isPlayerAdded() && !move.isRoll() && !move.isEvade()
       );
     const nonPlayerAdded = this.ship.movement
       .getMovement()
-      .filter(move => !move.isPlayerAdded() || move.isRoll());
+      .filter((move) => !move.isPlayerAdded() || move.isRoll());
 
     const movements =
       evadeMove.value === 0
         ? [...nonPlayerAdded, ...playerAdded]
         : [...nonPlayerAdded, evadeMove, ...playerAdded];
 
-    const bill = new ThrustBill(
-      this.ship,
-      this.ship.movement.getThrustOutput(),
-      movements
-    );
+    const bill = new ThrustBill(this.ship, movements);
 
     return this.billAndPay(bill, commit);
   }
@@ -152,7 +144,7 @@ class MovementResolver {
     } else {
       if (
         this.ship.maxPivots !== null &&
-        this.ship.movement.getMovement().filter(move => move.isPivot())
+        this.ship.movement.getMovement().filter((move) => move.isPivot())
           .length >= this.ship.maxPivots
       ) {
         return false;
@@ -161,11 +153,7 @@ class MovementResolver {
       movements.push(pivotMove);
     }
 
-    const bill = new ThrustBill(
-      this.ship,
-      this.ship.movement.getThrustOutput(),
-      movements
-    );
+    const bill = new ThrustBill(this.ship, movements);
 
     return this.billAndPay(bill, commit);
   }
@@ -195,17 +183,15 @@ class MovementResolver {
       movements.push(thrustMove);
     }
 
-    const bill = new ThrustBill(
-      this.ship,
-      this.ship.movement.getThrustOutput(),
-      movements
-    );
+    const bill = new ThrustBill(this.ship, movements);
 
     return this.billAndPay(bill, commit);
   }
 
   canCancel() {
-    return this.ship.movement.getMovement().some(move => move.isCancellable());
+    return this.ship.movement
+      .getMovement()
+      .some((move) => move.isCancellable());
   }
 
   cancel() {
@@ -217,24 +203,22 @@ class MovementResolver {
 
     this.ship.movement.removeMovement(toCancel);
 
-    const bill = new ThrustBill(
-      this.ship,
-      this.ship.movement.getThrustOutput(),
-      this.ship.movement.getMovement()
-    );
+    const bill = new ThrustBill(this.ship, this.ship.movement.getMovement());
 
     return this.billAndPay(bill, true);
   }
 
   canRevert() {
-    return this.ship.movement.getMovement().some(move => move.isPlayerAdded());
+    return this.ship.movement
+      .getMovement()
+      .some((move) => move.isPlayerAdded());
   }
 
   revert() {
     this.ship.movement
       .getMovement()
-      .filter(move => move.isCancellable())
-      .forEach(move => this.ship.movement.removeMovement(move));
+      .filter((move) => move.isCancellable())
+      .forEach((move) => this.ship.movement.removeMovement(move));
 
     this.movementService.shipStateChanged(this.ship);
   }

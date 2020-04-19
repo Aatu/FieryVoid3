@@ -10,24 +10,8 @@ class BoostableSystemStrategy extends ShipSystemStrategy {
   }
 
   isBoostable() {
-    return true;
+    return this.maxLevel !== 0;
   }
-
-  /*
-  getMessages(payload, previousResponse = []) {
-    previousResponse.push({
-      header: "Boostable",
-      value: "Boost with additional power"
-    });
-
-    previousResponse.push({
-      header: "Current boost level",
-      value: this.boostLevel
-    });
-
-    return previousResponse;
-  }
-  */
 
   canBoost(payload, previousResponse) {
     const remainginPower = this.system.shipSystems.power.getRemainingPowerOutput();
@@ -85,7 +69,11 @@ class BoostableSystemStrategy extends ShipSystemStrategy {
     this.system.callHandler("onSystemPowerLevelDecrease");
   }
 
-  receivePlayerData({ clientShip, clientSystem }) {
+  getRequiredPhasesForReceivingPlayerData() {
+    return 2;
+  }
+
+  receivePlayerData({ clientSystem, phase }) {
     if (!clientSystem) {
       return;
     }
@@ -100,7 +88,7 @@ class BoostableSystemStrategy extends ShipSystemStrategy {
 
     const targetBoostlevel = clientStrategy.boostLevel;
 
-    if (this.boostLevel > targetBoostlevel) {
+    if (this.boostLevel > targetBoostlevel && phase === 1) {
       while (true) {
         if (this.boostLevel === targetBoostlevel) {
           return;
@@ -112,7 +100,7 @@ class BoostableSystemStrategy extends ShipSystemStrategy {
 
         this.deBoost();
       }
-    } else if (this.boostLevel < targetBoostlevel) {
+    } else if (this.boostLevel < targetBoostlevel && phase === 2) {
       while (true) {
         if (this.boostLevel === targetBoostlevel) {
           return;

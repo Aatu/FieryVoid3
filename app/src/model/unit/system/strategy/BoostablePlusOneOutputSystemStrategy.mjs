@@ -1,12 +1,16 @@
 import BoostableSystemStrategy from "./BoostableSystemStrategy.mjs";
 
 class BoostablePlusOneOutputSystemStrategy extends BoostableSystemStrategy {
-  constructor(maxLevel) {
+  constructor(maxLevel = null, basePowerRequirement = null) {
     super(0, maxLevel);
+    this.basePowerRequirement = basePowerRequirement;
   }
 
   getPowerRequiredForBoost(payload, previousResponse = 0) {
-    const output = this.system.callHandler("getOutputForBoost", null, 0);
+    const output =
+      this.basePowerRequirement !== null
+        ? this.basePowerRequirement
+        : this.system.callHandler("getOutputForBoost", null, 0);
     return output + this.boostLevel + previousResponse + 1;
   }
 
@@ -15,7 +19,10 @@ class BoostablePlusOneOutputSystemStrategy extends BoostableSystemStrategy {
       return previousResponse;
     }
 
-    const output = this.system.callHandler("getOutputForBoost", null, 0);
+    const output =
+      this.basePowerRequirement !== null
+        ? this.basePowerRequirement
+        : this.system.callHandler("getOutputForBoost", null, 0);
     const power = this.boostLevel * output + this.boostLevel;
     return power + previousResponse;
   }

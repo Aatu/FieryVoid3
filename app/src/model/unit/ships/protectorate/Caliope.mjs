@@ -20,7 +20,7 @@ class Caliope extends Ship {
       new Offset(2, 0),
       new Offset(1, 0),
       new Offset(0, 0),
-      new Offset(-1, 0)
+      new Offset(-1, 0),
     ];
     this.accelcost = 3;
     this.rollcost = 3;
@@ -68,7 +68,7 @@ class Caliope extends Ship {
     this.pointCost = 500;
 
     this.systems.addFrontSystem([
-      new systems.Thruster({ id: 103, hitpoints: 10, armor: 3 }, 5, 0),
+      new systems.ChemicalThruster({ id: 103, hitpoints: 10, armor: 3 }, 5, 0),
       new systems.PDC30mm(
         { id: 114, hitpoints: 5, armor: 3 },
         { start: 200, end: 160 }
@@ -78,24 +78,23 @@ class Caliope extends Ship {
         { id: 115, hitpoints: 5, armor: 3 },
         { start: 200, end: 160 }
       ),
-      new systems.Thruster({ id: 104, hitpoints: 10, armor: 3 }, 5, 0),
+      new systems.ChemicalThruster({ id: 104, hitpoints: 10, armor: 3 }, 5, 0),
       new systems.Structure({
         id: 111,
         hitpoints: 40,
         armor: 5,
         heatStorage: 20,
-        radiator: 3
+        radiator: 3,
       }),
 
       new systems.ManeuveringThruster(
         { id: 101, hitpoints: 10, armor: 3 },
         3,
         2
-      )
+      ),
     ]);
 
     this.systems.addPrimarySystem([
-      new systems.Engine({ id: 6, hitpoints: 20, armor: 5 }, 24, 6, 2),
       new systems.Reactor({ id: 7, hitpoints: 10, armor: 8 }, 20),
       new systems.Structure({
         id: 11,
@@ -103,14 +102,17 @@ class Caliope extends Ship {
         armor: 4,
         cargoSpace: 300,
         heatStorage: 80,
-        radiator: 15
+        radiator: 15,
       }),
       new systems.EwArray({ id: 12, hitpoints: 15, armor: 6 }, 8),
-      new systems.HeatSink({ id: 13, hitpoints: 10, armor: 3 }, 100)
+      new systems.HeatSink({ id: 13, hitpoints: 10, armor: 3 }, 100),
     ]);
 
     this.systems.addStarboardFrontSystem([
-      new systems.Thruster({ id: 201, hitpoints: 10, armor: 3 }, 5, [1, 2]),
+      new systems.ChemicalThruster({ id: 201, hitpoints: 10, armor: 3 }, 5, [
+        1,
+        2,
+      ]),
 
       new systems.RailgunTurreted2x140mm(
         { id: 213, hitpoints: 8, armor: 4 },
@@ -127,7 +129,7 @@ class Caliope extends Ship {
       new systems.AutoCannon85mm(
         { id: 204, hitpoints: 6, armor: 3 },
         { start: 330, end: 160 }
-      )
+      ),
     ]);
 
     this.systems.addPortFrontSystem([
@@ -135,7 +137,10 @@ class Caliope extends Ship {
         { id: 612, hitpoints: 8, armor: 4 },
         { start: 270, end: 30 }
       ),
-      new systems.Thruster({ id: 601, hitpoints: 10, armor: 3 }, 5, [4, 5]),
+      new systems.ChemicalThruster({ id: 601, hitpoints: 10, armor: 3 }, 5, [
+        4,
+        5,
+      ]),
 
       new systems.AutoCannon85mm(
         { id: 603, hitpoints: 6, armor: 3 },
@@ -148,7 +153,7 @@ class Caliope extends Ship {
       new systems.AutoCannon85mm(
         { id: 604, hitpoints: 6, armor: 3 },
         { start: 200, end: 30 }
-      )
+      ),
     ]);
 
     this.systems.addAftSystem([
@@ -167,14 +172,14 @@ class Caliope extends Ship {
         hitpoints: 80,
         armor: 4,
         heatStorage: 100,
-        radiator: 5
+        radiator: 5,
       }),
       new systems.Radiator10x40({ id: 412, hitpoints: 10, armor: 3 }),
       new systems.Reactor({ id: 407, hitpoints: 10, armor: 3 }, 30),
       new systems.AutoCannon85mm(
         { id: 421, hitpoints: 6, armor: 3 },
         { start: 0, end: 0 }
-      )
+      ),
     ]);
 
     this.systems.addPortAftSystem([
@@ -185,7 +190,7 @@ class Caliope extends Ship {
       new systems.AutoCannon85mm(
         { id: 521, hitpoints: 6, armor: 3 },
         { start: 160, end: 30 }
-      )
+      ),
     ]);
 
     this.systems.addStarboardAftSystem([
@@ -196,7 +201,7 @@ class Caliope extends Ship {
       new systems.AutoCannon85mm(
         { id: 321, hitpoints: 6, armor: 3 },
         { start: 330, end: 200 }
-      )
+      ),
     ]);
   }
 
@@ -206,74 +211,74 @@ class Caliope extends Ship {
     const cargoService = new CargoService();
     cargoService.divideCargo(this, {
       object: new Torpedo72MSV(),
-      amount: 12
+      amount: 12,
     });
 
     cargoService.divideCargo(this, {
       object: new Torpedo72HE(),
-      amount: 12
+      amount: 12,
     });
 
     cargoService.divideCargo(this, {
       object: new Torpedo158MSV(),
-      amount: 12
+      amount: 12,
     });
 
     cargoService.divideCargo(this, {
       object: new Torpedo158Nuclear(),
-      amount: 2
+      amount: 2,
     });
 
     cargoService.divideCargo(this, {
       object: new Ammo30mm(),
-      amount: 800
+      amount: 800,
     });
 
     cargoService.divideCargo(this, {
       object: new Ammo140mmAP(),
-      amount: 40
+      amount: 40,
     });
 
     cargoService.divideCargo(this, {
       object: new Ammo140mmHE(),
-      amount: 80
+      amount: 80,
     });
 
     cargoService.divideCargo(this, {
       object: new Ammo85mmAP(),
-      amount: 200
+      amount: 200,
     });
 
     cargoService.divideCargo(this, {
       object: new Ammo85mmHE(),
-      amount: 400
+      amount: 400,
     });
 
     this.systems.getSystemById(303).callHandler("loadAmmoInstant", {
       ammo: new Torpedo158MSV(),
-      launcherIndex: 1
+      launcherIndex: 1,
     });
     this.systems.getSystemById(503).callHandler("loadAmmoInstant", {
       ammo: new Torpedo158MSV(),
-      launcherIndex: 1
+      launcherIndex: 1,
     });
 
     this.systems.getSystemById(304).callHandler("loadAmmoInstant", {
       ammo: new Torpedo72MSV(),
-      launcherIndex: 1
+      launcherIndex: 1,
     });
     this.systems.getSystemById(304).callHandler("loadAmmoInstant", {
       ammo: new Torpedo72HE(),
-      launcherIndex: 2
+      launcherIndex: 2,
     });
 
     this.systems.getSystemById(504).callHandler("loadAmmoInstant", {
       ammo: new Torpedo72MSV(),
-      launcherIndex: 1
+      launcherIndex: 1,
     });
     this.systems.getSystemById(504).callHandler("loadAmmoInstant", {
       ammo: new Torpedo72HE(),
-      launcherIndex: 2
+      launcherIndex: 2,
     });
   }
 }

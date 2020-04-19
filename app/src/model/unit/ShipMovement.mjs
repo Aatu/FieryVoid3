@@ -159,10 +159,6 @@ class ShipMovement {
     return end;
   }
 
-  getTurnStartMove() {
-    console.log(this.moves);
-  }
-
   getEvadeMove() {
     const move = this.moves.find((move) => move.isEvade());
 
@@ -266,11 +262,7 @@ class ShipMovement {
   }
 
   hasValidMovement() {
-    const bill = new ThrustBill(
-      this.ship,
-      this.getThrustOutput(),
-      this.getMovement()
-    );
+    const bill = new ThrustBill(this.ship, this.getMovement());
 
     const result = bill.pay();
     return result;
@@ -282,6 +274,12 @@ class ShipMovement {
 
     while (true) {
       if (this.hasValidMovement()) {
+        //TODO: Call movement resolver to bill and pay
+
+        const bill = new ThrustBill(this.ship, this.getMovement());
+        bill.pay();
+        const newMovement = bill.getMoves();
+        this.ship.movement.replaceMovement(newMovement);
         return;
       }
 
@@ -296,6 +294,8 @@ class ShipMovement {
           .filter((move) => move.isCancellable())
           .pop()
       );
+
+      //TODO: Might have to use other thrusters, so need to reassign those
     }
   }
 

@@ -41,7 +41,7 @@ const SystemHeatBar = ({ className, system, currentOverheat, prediction }) => {
             },
             {
               header: "Predicted heat generation",
-              value: newHeat,
+              value: formatNumber(newHeat),
             },
             {
               header: "Predicted overheat",

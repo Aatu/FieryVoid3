@@ -18,13 +18,13 @@ class TestShip extends Ship {
 
     this.systems.addFrontSystem([
       new systems.TestWeapon({ id: 20, hitpoints: 6, armor: 2 }, [
-        { start: 0, end: 180 }
+        { start: 0, end: 180 },
       ]),
       new systems.RailgunTurreted2x140mm({ id: 101, hitpoints: 6, armor: 2 }, [
-        { start: 0, end: 180 }
+        { start: 0, end: 180 },
       ]),
       new systems.PDC30mm({ id: 102 }, [{ start: 0, end: 0 }]),
-      new systems.PDC30mm({ id: 103 }, [{ start: 0, end: 0 }])
+      new systems.PDC30mm({ id: 103 }, [{ start: 0, end: 0 }]),
     ]);
 
     this.systems.addPrimarySystem([
@@ -41,7 +41,7 @@ class TestShip extends Ship {
       ),
       new systems.Engine({ id: 5, hitpoints: 10, armor: 3 }, 12, 6, 2),
       new systems.Engine({ id: 6, hitpoints: 10, armor: 3 }, 12, 6, 2),
-      new systems.Reactor({ id: 7, hitpoints: 20, armor: 3 }, 28),
+      new systems.Reactor({ id: 7, hitpoints: 20, armor: 3 }, 34),
       new systems.EwArray({ id: 11, hitpoints: 10, armor: 3 }, 10),
       new systems.TorpedoLauncherDual158({ id: 202, hitpoints: 20, armor: 6 }),
       new systems.TorpedoLauncherDual72({ id: 203, hitpoints: 20, armor: 6 }),
@@ -52,8 +52,8 @@ class TestShip extends Ship {
         hitpoints: 40,
         armor: 5,
         heatStorage: 200,
-        radiator: 5
-      })
+        radiator: 5,
+      }),
     ]);
   }
 
@@ -64,39 +64,39 @@ class TestShip extends Ship {
 
     cargoBay.callHandler("addCargo", {
       object: new Torpedo158MSV(),
-      amount: 14
+      amount: 14,
     });
 
     cargoBay.callHandler("addCargo", {
       object: new Torpedo72MSV(),
-      amount: 14
+      amount: 14,
     });
 
     this.systems.getSystemById(202).callHandler("loadAmmoInstant", {
       ammo: new Torpedo158MSV(),
-      launcherIndex: 1
+      launcherIndex: 1,
     });
     this.systems.getSystemById(202).callHandler("loadAmmoInstant", {
       ammo: new Torpedo158MSV(),
-      launcherIndex: 2
+      launcherIndex: 2,
     });
 
     this.systems.getSystemById(203).callHandler("loadAmmoInstant", {
       ammo: new Torpedo72MSV(),
-      launcherIndex: 1
+      launcherIndex: 1,
     });
     this.systems.getSystemById(203).callHandler("loadAmmoInstant", {
       ammo: new Torpedo72MSV(),
-      launcherIndex: 2
+      launcherIndex: 2,
     });
 
     this.systems.getSystemById(206).callHandler("loadAmmoInstant", {
       ammo: new Torpedo72HE(),
-      launcherIndex: 1
+      launcherIndex: 1,
     });
     this.systems.getSystemById(206).callHandler("loadAmmoInstant", {
       ammo: new Torpedo72HE(),
-      launcherIndex: 2
+      launcherIndex: 2,
     });
   }
 }

@@ -32,7 +32,7 @@ class Rhino extends ShipObject {
       [
         "engine_pylon_top_front",
         "engine_pylon_left_front",
-        "engine_pylon_right_front"
+        "engine_pylon_right_front",
       ],
       radiator
     );
@@ -45,7 +45,7 @@ class Rhino extends ShipObject {
         "main_hull_front_left_bottom",
         "main_hull_front_left_top",
         "main_hull_front_right_bottom",
-        "main_hull_front_right_top"
+        "main_hull_front_right_top",
       ],
       autoCannon
     );
@@ -55,7 +55,7 @@ class Rhino extends ShipObject {
         "font_hull_bottom",
         "font_hull_top",
         "main_hull_front_left_side",
-        "main_hull_front_right_side"
+        "main_hull_front_right_side",
       ],
       await loadObject(
         "/img/3d/systems/weapons/conventional/30mmPDC/scene.gltf"
@@ -89,7 +89,6 @@ class Rhino extends ShipObject {
     });
 
     */
-    console.log(object);
   }
 
   render() {

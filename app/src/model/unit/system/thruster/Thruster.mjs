@@ -1,13 +1,24 @@
 import ShipSystem from "../ShipSystem.mjs";
 import { ThrustChannelSystemStrategy } from "../strategy/index.mjs";
+import RequiresPowerSystemStrategy from "../strategy/RequiresPowerSystemStrategy.mjs";
+import BoostableSystemStrategy from "../strategy/BoostableSystemStrategy.mjs";
 
 class Thruster extends ShipSystem {
-  constructor(args, channel, direction) {
-    super(args, [new ThrustChannelSystemStrategy(channel, direction)]);
+  constructor(
+    args,
+    output,
+    direction,
+    { power = 1, boostPower = 1, maxBoost = 0, thrustExtra } = {}
+  ) {
+    super(args, [
+      new ThrustChannelSystemStrategy(output, direction, { thrustExtra }),
+      new RequiresPowerSystemStrategy(power),
+      new BoostableSystemStrategy(boostPower, maxBoost),
+    ]);
   }
 
   getDisplayName() {
-    return "Thruster";
+    return "C/Fusion Thruster";
   }
 
   getBackgroundImage() {

@@ -12,8 +12,8 @@ class Fulcrum extends Ship {
     this.shipTypeName = "Arakaki Systems Fulcrum IV fleet destroyer";
     this.accelcost = 2;
     this.rollcost = 4;
-    this.pivotcost = 1;
-    this.evasioncost = 3;
+    this.pivotcost = 2;
+    this.evasioncost = 2;
     this.hexSizes = [new Offset(1, 0), new Offset(0, 0), new Offset(-1, 0)];
 
     this.description = `
@@ -53,7 +53,7 @@ class Fulcrum extends Ship {
         id: 100,
         hitpoints: 30,
         armor: 5,
-        heatStorage: 30
+        heatStorage: 30,
       }),
 
       new systems.CoilgunLightFixed({ id: 102 }, { start: 330, end: 30 }),
@@ -61,18 +61,21 @@ class Fulcrum extends Ship {
       new systems.RailgunFixed120mm({ id: 104 }, { start: 330, end: 30 }),
       new systems.RailgunFixed120mm({ id: 105 }, { start: 330, end: 30 }),
 
-      new systems.Thruster({ id: 106, hitpoints: 10, armor: 3 }, 3, 0),
-      new systems.Thruster({ id: 107, hitpoints: 10, armor: 3 }, 3, 0),
+      new systems.ChemicalThruster({ id: 106, hitpoints: 10, armor: 3 }, 3, 0),
+      new systems.ChemicalThruster({ id: 107, hitpoints: 10, armor: 3 }, 3, 0),
       new systems.ManeuveringThruster(
         { id: 101, hitpoints: 10, armor: 3 },
-        3,
+        10,
         2
       ),
-      new systems.TorpedoLauncherDual72({ id: 108, hitpoints: 10, armor: 4 })
+      new systems.TorpedoLauncherDual72({ id: 108, hitpoints: 10, armor: 4 }),
     ]);
 
     this.systems.addPrimarySystem([
-      new systems.EwArray({ id: 12, hitpoints: 12, armor: 6 }, 7, 5),
+      new systems.EwArray(
+        { id: 12, hitpoints: 12, armor: 6, boostPower: 5 },
+        7
+      ),
 
       new systems.Reactor({ id: 7, hitpoints: 15, armor: 7 }, 35),
       new systems.Structure({
@@ -81,13 +84,13 @@ class Fulcrum extends Ship {
         armor: 6,
         cargoSpace: 100,
         heatStorage: 70,
-        radiator: 5
+        radiator: 5,
       }),
 
       new systems.PDC30mm(
         { id: 14, alwaysTargetable: true },
         { start: 0, end: 0 }
-      )
+      ),
     ]);
 
     this.systems.addAftSystem([
@@ -96,16 +99,20 @@ class Fulcrum extends Ship {
         hitpoints: 40,
         armor: 6,
         heatStorage: 20,
-        radiator: 10
+        radiator: 10,
       }),
 
-      new systems.Engine({ id: 202, hitpoints: 20, armor: 3 }, 14, 6, 2),
       new systems.ManeuveringThruster(
         { id: 201, hitpoints: 10, armor: 3 },
-        3,
+        10,
         2
       ),
-      new systems.Thruster({ id: 203, hitpoints: 15, armor: 3 }, 21, 3),
+      new systems.Thruster({ id: 203, hitpoints: 20, armor: 3 }, 10, 3, {
+        power: 2,
+        boostPower: 1,
+        maxBoost: 10,
+        thrustExtra: 0.2,
+      }),
 
       new systems.PDC30mm(
         { id: 214, alwaysTargetable: true },
@@ -113,14 +120,14 @@ class Fulcrum extends Ship {
       ),
 
       new systems.Radiator5x40({ id: 316 }),
-      new systems.CargoBay({ id: 317, hitpoints: 10, armor: 4 }, 100)
+      new systems.CargoBay({ id: 317, hitpoints: 10, armor: 4 }, 100),
     ]);
 
     this.systems.addStarboardFrontSystem([
       new systems.PDC30mm(
         { id: 15, hitpoints: 5, armor: 3 },
         { start: 0, end: 180 }
-      )
+      ),
     ]);
 
     this.systems.addStarboardAftSystem([
@@ -129,14 +136,14 @@ class Fulcrum extends Ship {
         { start: 0, end: 180 }
       ),
 
-      new systems.Radiator5x40({ id: 216 })
+      new systems.Radiator5x40({ id: 216 }),
     ]);
 
     this.systems.addPortFrontSystem([
       new systems.PDC30mm(
         { id: 13, hitpoints: 5, armor: 3 },
         { start: 180, end: 0 }
-      )
+      ),
     ]);
 
     this.systems.addPortAftSystem([
@@ -145,7 +152,7 @@ class Fulcrum extends Ship {
         { start: 180, end: 0 }
       ),
 
-      new systems.Radiator5x40({ id: 416 })
+      new systems.Radiator5x40({ id: 416 }),
     ]);
   }
 
@@ -155,31 +162,31 @@ class Fulcrum extends Ship {
     const cargoService = new CargoService();
     cargoService.divideCargo(this, {
       object: new Torpedo72MSV(),
-      amount: 12
+      amount: 12,
     });
 
     cargoService.divideCargo(this, {
       object: new Ammo30mm(),
-      amount: 120
+      amount: 120,
     });
 
     cargoService.divideCargo(this, {
       object: new Ammo120mmAP(),
-      amount: 20
+      amount: 20,
     });
 
     cargoService.divideCargo(this, {
       object: new Ammo120mmHE(),
-      amount: 20
+      amount: 20,
     });
 
     this.systems.getSystemById(108).callHandler("loadAmmoInstant", {
       ammo: new Torpedo72MSV(),
-      launcherIndex: 1
+      launcherIndex: 1,
     });
     this.systems.getSystemById(108).callHandler("loadAmmoInstant", {
       ammo: new Torpedo72MSV(),
-      launcherIndex: 2
+      launcherIndex: 2,
     });
   }
 }

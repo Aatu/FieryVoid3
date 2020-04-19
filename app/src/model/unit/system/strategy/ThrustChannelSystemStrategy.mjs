@@ -15,12 +15,13 @@ const directionsToString = {
 };
 
 class ThrustChannelSystemStrategy extends ShipSystemStrategy {
-  constructor(output, direction) {
+  constructor(output, direction, { thrustExtra = 0.3 } = {}) {
     super();
 
     this.output = output || 0;
     this.direction = direction || 0; // 0, 3, [4,5], [1,2], 6
     this.channeled = 0;
+    this.thrustExtra = thrustExtra;
     this.heatPerThrustChanneled = 0.75;
   }
 
@@ -42,7 +43,7 @@ class ThrustChannelSystemStrategy extends ShipSystemStrategy {
   }
 
   getIconText() {
-    return this.channeled + "/" + this.output;
+    return this.channeled + "/" + this.getThrustOutput();
   }
 
   deserialize(data = {}) {
@@ -81,14 +82,6 @@ class ThrustChannelSystemStrategy extends ShipSystemStrategy {
     return previousResponse;
   }
 
-  getThrustChannel(payload, previousResponse = 0) {
-    if (this.system.isDisabled()) {
-      return previousResponse;
-    }
-
-    return previousResponse + this.getChannelOutput();
-  }
-
   generatesHeat() {
     return true;
   }
@@ -111,14 +104,27 @@ class ThrustChannelSystemStrategy extends ShipSystemStrategy {
   }
 
   getHeatGenerated(payload, previousResponse = 0) {
-    return previousResponse + this.channeled * this.getHeatPerThrustChanneled();
+    let count = this.channeled;
+    let extra = 1;
+    let heat = 0;
+
+    while (count--) {
+      heat += this.getHeatPerThrustChanneled() * extra;
+      extra += this.thrustExtra;
+    }
+
+    return previousResponse + heat;
   }
 
   getThrustDirection(payload, previousResponse = null) {
     return this.direction;
   }
 
-  getChannelOutput() {
+  getThrustOutput(payload, previousResponse = 0) {
+    if (this.system.isDisabled()) {
+      return previousResponse;
+    }
+
     let output = this.output;
 
     output -= this.system.damage
@@ -126,15 +132,17 @@ class ThrustChannelSystemStrategy extends ShipSystemStrategy {
       .filter((critical) => critical instanceof OutputReduced)
       .reduce((total, current) => total + current.getOutputReduction(), 0);
 
+    output += this.system.callHandler("getBoost", null, 0);
+
     if (output < 0) {
       output = 0;
     }
 
-    return output;
+    return previousResponse + output;
   }
 
   getMaxChannelAmount() {
-    return this.getChannelOutput();
+    return this.getThrustOutput();
   }
 
   canChannelAmount(amount) {
@@ -175,6 +183,22 @@ class ThrustChannelSystemStrategy extends ShipSystemStrategy {
       { severity: 80, critical: new OutputReduced(Math.ceil(this.output / 3)) },
       { severity: 90, critical: new OutputReduced(Math.ceil(this.output / 2)) },
     ];
+  }
+
+  onSystemOffline() {
+    this.onSystemPowerLevelDecrease();
+  }
+
+  onSystemPowerLevelDecrease() {
+    if (
+      !this.system ||
+      !this.system.shipSystems ||
+      !this.system.shipSystems.ship
+    ) {
+      return;
+    }
+
+    this.system.shipSystems.ship.movement.revertMovementsUntilValidMovement();
   }
 }
 

@@ -27,47 +27,47 @@ class GameShips {
   }
 
   getAliveShips() {
-    return this.ships.filter(ship => !ship.isDestroyed());
+    return this.ships.filter((ship) => !ship.isDestroyed());
   }
 
   getShipById(id) {
-    return this.ships.find(ship => ship.id === id);
+    return this.ships.find((ship) => ship.id === id);
   }
 
   getUsersShips(user) {
-    return this.ships.filter(ship => ship.player.isUsers(user));
+    return this.ships.filter((ship) => ship.player.isUsers(user));
   }
 
   getShipsInSameTeam(user) {
     const slot = this.gameData.slots.getUsersSlots(user);
-    if (!slot) {
+    if (!slot || slot.length === 0) {
       return [];
     }
     const team = slot.pop().team;
 
     return this.ships.filter(
-      ship => this.gameData.slots.getSlotByShip(ship).team === team
+      (ship) => this.gameData.slots.getSlotByShip(ship).team === team
     );
   }
 
   getShipsEnemyTeams(user) {
     const teamShips = this.getShipsInSameTeam(user);
 
-    return this.ships.filter(ship => !teamShips.includes(ship));
+    return this.ships.filter((ship) => !teamShips.includes(ship));
   }
 
   serialize() {
-    return this.ships.map(ship => ship.serialize());
+    return this.ships.map((ship) => ship.serialize());
   }
 
   deserialize(ships = []) {
-    this.ships = ships.map(shipData => createShipObject(shipData));
+    this.ships = ships.map((shipData) => createShipObject(shipData));
 
     return this;
   }
 
   setShipLoadouts() {
-    this.getShips().forEach(ship => ship.setShipLoadout());
+    this.getShips().forEach((ship) => ship.setShipLoadout());
   }
 }
 

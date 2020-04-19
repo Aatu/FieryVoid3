@@ -3,7 +3,7 @@ import { UnableToAssignEw } from "../../model/unit/ShipElectronicWarfare.mjs";
 
 class ElectronicWarfareHandler {
   receiveElectronicWarfare(serverGameData, clientGameData, activeShips, user) {
-    activeShips.forEach(serverShip => {
+    activeShips.forEach((serverShip) => {
       const clientShip = clientGameData.ships.getShipById(serverShip.id);
       const entries = clientShip.electronicWarfare.getAllEntries();
       try {

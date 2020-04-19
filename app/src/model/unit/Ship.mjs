@@ -5,7 +5,7 @@ import ShipMovement from "./ShipMovement.mjs";
 import {
   getCompassHeadingOfPoint,
   addToDirection,
-  hexFacingToAngle
+  hexFacingToAngle,
 } from "../utils/math.mjs";
 import coordinateConverter from "../utils/CoordinateConverter.mjs";
 
@@ -105,7 +105,7 @@ class Ship {
   }
 
   getIconHexas(hexFacing = 0) {
-    return this.hexSizes.map(hex => hex.rotate(hexFacing));
+    return this.hexSizes.map((hex) => hex.rotate(hexFacing));
   }
 
   deserialize(data = {}) {
@@ -137,9 +137,9 @@ class Ship {
       shipData: {
         systems: this.systems.serialize(),
         player: this.player.serialize(),
-        electronicWarfare: this.electronicWarfare.serialize()
+        electronicWarfare: this.electronicWarfare.serialize(),
       },
-      destroyedThisTurn: this.destroyedThisTurn
+      destroyedThisTurn: this.destroyedThisTurn,
     };
   }
 
@@ -177,8 +177,12 @@ class Ship {
     return this;
   }
 
-  receivePlayerData(clientShip, gameData) {
-    this.systems.receivePlayerData(clientShip, gameData);
+  getRequiredPhasesForReceivingPlayerData() {
+    return this.systems.getRequiredPhasesForReceivingPlayerData();
+  }
+
+  receivePlayerData(clientShip, gameData, phase) {
+    this.systems.receivePlayerData(clientShip, gameData, phase);
   }
 
   setShipLoadout() {

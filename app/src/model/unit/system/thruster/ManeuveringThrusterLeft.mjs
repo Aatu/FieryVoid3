@@ -1,14 +1,16 @@
 import ShipSystem from "../ShipSystem.mjs";
 import {
   ThrustChannelSystemStrategy,
-  AllowsEvasionSystemStrategy
+  AllowsEvasionSystemStrategy,
+  RequiresPowerSystemStrategy,
+  BoostableSystemStrategy,
 } from "../strategy/index.mjs";
 
 class ManeuveringThrusterLeft extends ShipSystem {
   constructor(args, channel, evasion) {
     super(args, [
       new ThrustChannelSystemStrategy(channel, [6, 8]),
-      new AllowsEvasionSystemStrategy(evasion)
+      new AllowsEvasionSystemStrategy(evasion),
     ]);
   }
 
@@ -18,10 +20,6 @@ class ManeuveringThrusterLeft extends ShipSystem {
 
   getBackgroundImage() {
     return "/img/system/maneuveringThrusterLeft.png";
-  }
-
-  getIconText() {
-    return this.callHandler("getThrustChannel");
   }
 }
 

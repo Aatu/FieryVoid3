@@ -190,7 +190,7 @@ class ShipObject {
     this.hide();
   }
 
-  async showEwSprite(dew, ccew) {
+  async showEwSprite(dew, ccew, evasion) {
     await this.isShipObjectLoaded;
 
     if (!this.shipEWSprite) {
@@ -207,7 +207,7 @@ class ShipObject {
       this.shipEWSprite.hide();
     }
 
-    this.shipEWSprite.update(dew, ccew);
+    this.shipEWSprite.update(dew, ccew, evasion);
     this.shipEWSprite.show();
   }
 

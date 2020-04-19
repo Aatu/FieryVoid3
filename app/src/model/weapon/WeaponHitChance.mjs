@@ -17,7 +17,8 @@ class WeaponHitChance {
       outOfRange: this.outOfRange,
       rollingPenalty: this.rollingPenalty,
       noLockPenalty: this.noLockPenalty,
-      ownEvasionPenalty: this.ownEvasionPenalty
+      ownEvasionPenalty: this.ownEvasionPenalty,
+      evasionPenalty: this.evasionPenalty,
     };
   }
 
@@ -35,6 +36,7 @@ class WeaponHitChance {
     this.rollingPenalty = data.rollingPenalty || 0;
     this.noLockPenalty = data.noLockPenalty || 0;
     this.ownEvasionPenalty = data.ownEvasionPenalty || 0;
+    this.evasionPenalty = data.evasionPenalty || 0;
 
     return this;
   }

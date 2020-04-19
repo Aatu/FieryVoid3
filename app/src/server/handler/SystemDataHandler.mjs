@@ -1,8 +1,12 @@
 class SystemDataHandler {
   receiveSystemData(serverGameData, clientGameData, activeShips, user) {
-    activeShips.forEach(serverShip => {
+    activeShips.forEach((serverShip) => {
       const clientShip = clientGameData.ships.getShipById(serverShip.id);
-      serverShip.receivePlayerData(clientShip, serverGameData);
+      let count = serverShip.getRequiredPhasesForReceivingPlayerData();
+
+      for (let phase = 1; phase <= count; phase++) {
+        serverShip.receivePlayerData(clientShip, serverGameData, phase);
+      }
     });
   }
 

@@ -33,7 +33,7 @@ class MovementValidator {
   ensurePivotLimit(movement) {
     if (
       this.ship.maxPivots !== null &&
-      movement.filter(move => move.isPivot()).length > this.ship.maxPivots
+      movement.filter((move) => move.isPivot()).length > this.ship.maxPivots
     ) {
       throw new Error("Ship has pivoted more than allowed");
     }
@@ -43,10 +43,8 @@ class MovementValidator {
 
   ensureMovesAreFullyPaid(movement) {
     const thrusters = this.ship.movement.getThrusters();
-    let totalChanneled = 0;
-    let cost = 0;
 
-    movement.forEach(move => {
+    movement.forEach((move) => {
       const currentRequiredThrust = move.requiredThrust;
       const validator = new RequiredThrustValidator(this.ship, move);
 
@@ -54,7 +52,7 @@ class MovementValidator {
       validator.validateRequirementsAreCorrect(currentRequiredThrust);
       validator.isPaid(currentRequiredThrust);
 
-      thrusters.forEach(thruster => {
+      thrusters.forEach((thruster) => {
         const used = validator.getThrustChanneledBy(
           thruster,
           currentRequiredThrust
@@ -68,12 +66,10 @@ class MovementValidator {
         } else {
           this.thrusterUse[thruster.id].amount += used;
         }
-
-        totalChanneled += used;
       });
     });
 
-    Object.keys(this.thrusterUse).forEach(key => {
+    Object.keys(this.thrusterUse).forEach((key) => {
       const { thruster, amount } = this.thrusterUse[key];
 
       if (!thruster.callHandler("canChannelAmount", amount)) {
@@ -81,17 +77,7 @@ class MovementValidator {
           `Thruster ${thruster.id} can not channel ${amount}`
         );
       }
-
-      cost += thruster.callHandler("getChannelCost", amount);
     });
-
-    const enginePower = this.ship.movement.getThrustOutput();
-
-    if (cost > enginePower) {
-      throw new InvalidGameDataError(
-        `Insufficient engine power: required ${cost} produced: ${enginePower}`
-      );
-    }
 
     return true;
   }

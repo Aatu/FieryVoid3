@@ -148,21 +148,6 @@ class BaseParticle {
       Math.floor(degreeToRadian(angle) * 1000) +
       Math.floor(degreeToRadian(change) * 1000) * 10000;
 
-    const finalChange = Math.floor(value / 10000) / 1000;
-    const finalAngle = (value - Math.floor(value / 10000.0) * 10000.0) / 1000.0;
-
-    if (angle === 144) {
-      console.log(
-        "angle:",
-        `radians(${degreeToRadian(angle)})`,
-        "change:",
-        `radians(${degreeToRadian(change)})`,
-        "baked into",
-        value
-      );
-      console.log("reverse angle", finalAngle, "change", finalChange);
-    }
-
     changeAttribute(this.geometry, this.index, "angle", value);
     return this;
   }

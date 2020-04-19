@@ -23,13 +23,22 @@ class ShowShipDEWandCCEW extends UiStrategy {
   //shipSystemStateChanged({ ship, system }) {}
 
   show(ship) {
-    const { shipIconContainer } = this.services;
+    const { shipIconContainer, currentUser } = this.services;
     const icon = shipIconContainer.getByShip(ship);
 
-    const dew = ship.electronicWarfare.getDefensiveEw();
-    const ccew = ship.electronicWarfare.getCcEw();
+    let dew, ccew, evasion;
 
-    icon.showEwSprite(dew, ccew);
+    if (ship.player.isUsers(currentUser)) {
+      dew = ship.electronicWarfare.getDefensiveEw();
+      ccew = ship.electronicWarfare.getCcEw();
+      evasion = ship.movement.getEvasion();
+    } else {
+      dew = ship.electronicWarfare.inEffect.getDefensiveEw();
+      ccew = ship.electronicWarfare.inEffect.getCcEw();
+      evasion = ship.movement.getActiveEvasion();
+    }
+
+    icon.showEwSprite(dew, ccew, evasion);
   }
 
   deactivate() {

@@ -253,7 +253,10 @@ class SystemIcon extends React.Component {
       target && weaponFireService.systemHasFireOrderAgainstShip(system, target);
 
     const disabled = system.isDisabled();
-    const overheat = system.heat.getOverheatPercentage();
+    const oldOverheat = system.heat.getOverheatPercentage();
+    const { overheatPercentage: newOverheat } = system.heat.predictHeatChange();
+
+    const overheat = newOverheat > oldOverheat ? newOverheat : oldOverheat;
 
     return (
       <>

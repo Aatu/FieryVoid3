@@ -7,7 +7,7 @@ import ShipSystems from "../../model/unit/ShipSystems.mjs";
 import CoilgunLightFixed from "../../model/unit/system/weapon/coilgun/CoilgunLightFixed.mjs";
 import { OutputReduced8 } from "../../model/unit/system/criticals/index.mjs";
 
-test("System can change its power states", test => {
+test("System can change its power states", (test) => {
   const engine = new Engine({ id: 123, hitpoints: 10, armor: 3 }, 12, 6, 2);
   test.true(engine.power.canSetOffline());
   engine.power.setOffline();
@@ -15,7 +15,7 @@ test("System can change its power states", test => {
   test.true(engine.isDisabled());
 });
 
-test("Bunch of systems generate power", test => {
+test("Bunch of systems generate power", (test) => {
   const reactor1 = new Reactor({ id: 1, hitpoints: 10, armor: 3 }, 10);
   const reactor2 = new Reactor({ id: 2, hitpoints: 10, armor: 3 }, 10);
   const engine1 = new Engine({ id: 3, hitpoints: 10, armor: 3 }, 12, 6, 2);
@@ -25,7 +25,7 @@ test("Bunch of systems generate power", test => {
     reactor1,
     reactor2,
     engine1,
-    engine2
+    engine2,
   ]);
 
   test.deepEqual(systems.getSystems().length, 4);
@@ -46,7 +46,7 @@ test("Bunch of systems generate power", test => {
   test.true(systems.power.isValidPower());
 });
 
-test("System can be turned offline", test => {
+test("System can be turned offline", (test) => {
   const reactor1 = new Reactor({ id: 1, hitpoints: 10, armor: 3 }, 10);
   const reactor2 = new Reactor({ id: 2, hitpoints: 10, armor: 3 }, 10);
   const engine1 = new Engine({ id: 3, hitpoints: 10, armor: 3 }, 12, 6, 2);
@@ -56,7 +56,7 @@ test("System can be turned offline", test => {
     reactor1,
     reactor2,
     engine1,
-    engine2
+    engine2,
   ]);
 
   test.deepEqual(systems.getSystems().length, 4);
@@ -78,7 +78,7 @@ test("System can be turned offline", test => {
   test.true(engine1.power.isGoingOnline());
 });
 
-test("Invalid power test", test => {
+test("Invalid power test", (test) => {
   const engine1 = new Engine({ id: 3, hitpoints: 10, armor: 3 }, 12, 6, 2);
   const engine2 = new Engine({ id: 4, hitpoints: 10, armor: 3 }, 12, 6, 2);
 
@@ -90,7 +90,7 @@ test("Invalid power test", test => {
   test.true(systems.power.isValidPower());
 });
 
-test("Offline state prevents loading", test => {
+test("Offline state prevents loading", (test) => {
   const reactor1 = new Reactor({ id: 1, hitpoints: 10, armor: 3 }, 10);
   const pdc1 = new PDC30mm(
     { id: 213, hitpoints: 5, armor: 3 },
@@ -108,7 +108,7 @@ test("Offline state prevents loading", test => {
   test.is(pdc1.callHandler("getTurnsLoaded"), 0);
 });
 
-test("Weapon can be boosted", test => {
+test("Weapon can be boosted", (test) => {
   const reactor1 = new Reactor({ id: 1, hitpoints: 10, armor: 3 }, 16);
   const coilgun = new CoilgunLightFixed(
     { id: 213, hitpoints: 5, armor: 3 },
@@ -143,7 +143,7 @@ test("Weapon can be boosted", test => {
   */
 });
 
-test("Weapon boost affects its loading time", test => {
+test("Weapon boost affects its loading time", (test) => {
   const reactor1 = new Reactor({ id: 1, hitpoints: 10, armor: 3 }, 20);
   const coilgun = new CoilgunLightFixed(
     { id: 213, hitpoints: 5, armor: 3 },
@@ -164,15 +164,15 @@ test("Weapon boost affects its loading time", test => {
   test.true(coilgun.callHandler("isLoaded"));
 });
 
-test("Engine boost affects thrust output", test => {
+test("Engine boost affects thrust output", (test) => {
   const reactor1 = new Reactor({ id: 1, hitpoints: 10, armor: 3 }, 20);
   const engine = new Engine({ id: 2, hitpoints: 10, armor: 3 }, 10, 5, 3);
 
   const systems = new ShipSystems().addPrimarySystem([reactor1, engine]);
   systems.ship = {
     movement: {
-      revertMovementsUntilValidMovement: () => {}
-    }
+      revertMovementsUntilValidMovement: () => {},
+    },
   };
 
   engine.callHandler("boost");
@@ -184,7 +184,7 @@ test("Engine boost affects thrust output", test => {
   test.is(engine.callHandler("getThrustOutput"), 12);
 });
 
-test("Boosted system passes its state to server", test => {
+test("Boosted system passes its state to server", (test) => {
   const reactor1 = new Reactor({ id: 1, hitpoints: 10, armor: 3 }, 30);
   const coilgun = new CoilgunLightFixed(
     { id: 213, hitpoints: 5, armor: 3 },
@@ -198,14 +198,14 @@ test("Boosted system passes its state to server", test => {
     new CoilgunLightFixed(
       { id: 213, hitpoints: 5, armor: 3 },
       { start: 180, end: 0 }
-    )
+    ),
   ]);
 
   coilgun.callHandler("boost");
   coilgun.callHandler("boost");
-  serverSystems.receivePlayerData({ systems });
+  serverSystems.receivePlayerData({ systems }, null, 2);
   test.is(serverSystems.getSystemById(213).callHandler("getBoost"), 2);
   coilgun.callHandler("deBoost");
-  serverSystems.receivePlayerData({ systems });
+  serverSystems.receivePlayerData({ systems }, null, 1);
   test.is(serverSystems.getSystemById(213).callHandler("getBoost"), 1);
 });

@@ -8,7 +8,7 @@ import { ParticleEmitter } from "../../animation/particle";
 import {
   TEXTURE_GLOW,
   TEXTURE_STARLINE,
-  TEXTURE_GAS
+  TEXTURE_GAS,
 } from "../../animation/particle/BaseParticle";
 import { getSeededRandomGenerator } from "../../../../../model/utils/math.mjs";
 import { degreeToRadian } from "../../../../../model/utils/math.mjs";
@@ -61,7 +61,7 @@ class TorpedoObject {
   }
 
   getEnginePosition() {
-    const slot = this.torpedo.children.find(child => {
+    const slot = this.torpedo.children.find((child) => {
       if (!child.name) {
         return false;
       }
@@ -129,7 +129,7 @@ class TorpedoObject {
       .setPosition({
         x: 0,
         y: 0,
-        z: 0
+        z: 0,
       })
       .setTexture(TEXTURE_GLOW)
       .setActivationTime(0);
@@ -146,7 +146,7 @@ class TorpedoObject {
       .setPosition({
         x: 0,
         y: 0,
-        z: 0
+        z: 0,
       })
       .setTexture(TEXTURE_GLOW)
       .setActivationTime(0)
@@ -163,7 +163,7 @@ class TorpedoObject {
       .setPosition({
         x: 0,
         y: 0,
-        z: 0
+        z: 0,
       })
       .setTexture(TEXTURE_GLOW)
       .setActivationTime(0);
@@ -190,8 +190,7 @@ class TorpedoObject {
         })
         .setColor(new THREE.Color(51 / 255, 163 / 255, 255 / 255))
         //.setSine(getRandom() * 200 + 100, 0.1)
-        .setAngle(angle)
-        .setAngleChange(angleChange)
+        .setAngle(angle, angleChange)
         .setTexture(TEXTURE_STARLINE);
       //.setSine(100, 0.5);
       */
@@ -206,12 +205,11 @@ class TorpedoObject {
         .setPosition({
           x: 0,
           y: 0,
-          z: 0
+          z: 0,
         })
         .setColor(color)
         //.setSine(getRandom() * 200 + 100, 0.1)
-        .setAngle(angle)
-        .setAngleChange(angleChange)
+        .setAngle(angle, angleChange)
         .setTexture(TEXTURE_STARLINE)
         .setSine(sineFrequency, 0.99);
     }
@@ -232,7 +230,7 @@ class TorpedoObject {
       delta: 0,
       total: this.totalAnimationTime,
       last: 0,
-      zoom: zoom
+      zoom: zoom,
     });
 
     this.lastAnimationTime = Date.now();

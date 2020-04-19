@@ -60,7 +60,7 @@ class ShipSystems {
       (all, section) => {
         return [
           ...all,
-          ...section.getSystems().filter(system => !system.isDestroyed())
+          ...section.getSystems().filter((system) => !system.isDestroyed()),
         ];
       },
       []
@@ -68,9 +68,9 @@ class ShipSystems {
 
     return [
       ...systems,
-      ...this.getSystems().filter(system =>
+      ...this.getSystems().filter((system) =>
         system.callHandler("canBeTargeted", null, false)
-      )
+      ),
     ];
   }
 
@@ -93,7 +93,7 @@ class ShipSystems {
 
   addPrimarySystem(systems) {
     systems = [].concat(systems);
-    systems.forEach(system =>
+    systems.forEach((system) =>
       this.addSystem(system, this.sections.getPrimarySection())
     );
 
@@ -102,7 +102,7 @@ class ShipSystems {
 
   addFrontSystem(systems) {
     systems = [].concat(systems);
-    systems.forEach(system =>
+    systems.forEach((system) =>
       this.addSystem(system, this.sections.getFrontSection())
     );
 
@@ -111,7 +111,7 @@ class ShipSystems {
 
   addAftSystem(systems) {
     systems = [].concat(systems);
-    systems.forEach(system =>
+    systems.forEach((system) =>
       this.addSystem(system, this.sections.getAftSection())
     );
 
@@ -120,7 +120,7 @@ class ShipSystems {
 
   addStarboardFrontSystem(systems) {
     systems = [].concat(systems);
-    systems.forEach(system =>
+    systems.forEach((system) =>
       this.addSystem(system, this.sections.getStarboardFrontSection())
     );
 
@@ -129,7 +129,7 @@ class ShipSystems {
 
   addStarboardAftSystem(systems) {
     systems = [].concat(systems);
-    systems.forEach(system =>
+    systems.forEach((system) =>
       this.addSystem(system, this.sections.getStarboardAftSection())
     );
 
@@ -138,7 +138,7 @@ class ShipSystems {
 
   addPortFrontSystem(systems) {
     systems = [].concat(systems);
-    systems.forEach(system =>
+    systems.forEach((system) =>
       this.addSystem(system, this.sections.getPortFrontSection())
     );
 
@@ -147,7 +147,7 @@ class ShipSystems {
 
   addPortAftSystem(systems) {
     systems = [].concat(systems);
-    systems.forEach(system =>
+    systems.forEach((system) =>
       this.addSystem(system, this.sections.getPortAftSection())
     );
 
@@ -163,7 +163,7 @@ class ShipSystems {
   }
 
   deserialize(data = []) {
-    data.forEach(systemData => {
+    data.forEach((systemData) => {
       const system = this.getSystemById(systemData.systemId);
       if (system) {
         system.deserialize(systemData.data);
@@ -174,20 +174,20 @@ class ShipSystems {
   }
 
   serialize() {
-    return this.systemsAsArray.map(system => ({
+    return this.systemsAsArray.map((system) => ({
       systemId: system.id,
-      data: system.serialize()
+      data: system.serialize(),
     }));
   }
 
   endTurn(turn) {
-    this.getSystems().forEach(system => {
+    this.getSystems().forEach((system) => {
       system.endTurn(turn);
     });
   }
 
   advanceTurn(turn) {
-    this.getSystems().forEach(system => {
+    this.getSystems().forEach((system) => {
       system.advanceTurn(turn);
     });
 
@@ -195,18 +195,44 @@ class ShipSystems {
     return this;
   }
 
-  receivePlayerData(clientShip, gameData) {
-    this.getSystems().forEach(system =>
+  getRequiredPhasesForReceivingPlayerData() {
+    return this.getSystems()
+      .map((system) =>
+        system.callHandler("getRequiredPhasesForReceivingPlayerData", null, 0)
+      )
+      .sort((a, b) => {
+        if (a > b) {
+          return -1;
+        }
+
+        if (a < b) {
+          return 1;
+        }
+
+        return 0;
+      })[0];
+  }
+
+  receivePlayerData(clientShip, gameData, phase) {
+    this.getSystems().forEach((system) => {
+      if (
+        phase >
+        system.callHandler("getRequiredPhasesForReceivingPlayerData", null, 1)
+      ) {
+        return;
+      }
+
       system.callHandler("receivePlayerData", {
         clientShip,
         clientSystem: clientShip.systems.getSystemById(system.id),
-        gameData
-      })
-    );
+        gameData,
+        phase,
+      });
+    });
   }
 
   censorForUser(user, mine) {
-    this.getSystems().forEach(system => {
+    this.getSystems().forEach((system) => {
       system.callHandler("censorForUser", { user, mine });
     });
   }
@@ -216,7 +242,7 @@ class ShipSystems {
       .reduce(
         (total, system) => [
           ...total,
-          ...[].concat(system.callHandler(name, payload))
+          ...[].concat(system.callHandler(name, payload)),
         ],
         []
       )
@@ -239,7 +265,7 @@ class ShipSystems {
 
   getTotalHeatStored() {
     return this.getSystems()
-      .filter(system => system.heat.isHeatStorage())
+      .filter((system) => system.heat.isHeatStorage())
       .reduce((total, system) => total + system.heat.getHeat(), 0);
   }
 

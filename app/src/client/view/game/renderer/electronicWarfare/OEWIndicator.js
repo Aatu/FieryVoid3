@@ -31,7 +31,6 @@ class OEWIndicator {
       ? targetIcon.getPosition()
       : targetGhost.getPosition();
 
-    console.log("ghost", this.shipGhost);
     this.shipPosition = this.shipGhost.hidden
       ? this.shipIcon.getPosition()
       : this.shipGhost.getPosition();

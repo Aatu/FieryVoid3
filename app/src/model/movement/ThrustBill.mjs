@@ -1,21 +1,19 @@
 import { RequiredThrust, ThrustAssignment } from "./index.mjs";
 
 class ThrustBill {
-  constructor(ship, thrustAvailable, movement) {
+  constructor(ship, movement) {
     this.ship = ship;
-    this.movement = movement.map(move => move.clone());
+    this.movement = movement.map((move) => move.clone());
     this.thrusters = ship.systems
       .getSystems()
-      .filter(system => system.callHandler("isThruster", null, false))
-      .filter(system => !system.isDisabled())
-      .map(thruster => new ThrustAssignment(thruster));
+      .filter((system) => system.callHandler("isThruster", null, false))
+      .filter((system) => !system.isDisabled())
+      .map((thruster) => new ThrustAssignment(thruster));
 
     this.buildRequiredThrust(this.movement);
 
     this.paid = null;
 
-    this.cost = 0;
-    this.thrustAvailable = thrustAvailable;
     this.directionsRequired = this.getRequiredThrustDirections();
   }
 
@@ -73,7 +71,7 @@ class ThrustBill {
 
   getAllUsableThrusters(direction) {
     return this.thrusters
-      .filter(thruster => {
+      .filter((thruster) => {
         const capacity = thruster.getThrustCapacity();
 
         return thruster.isDirection(direction) && capacity > 0;
@@ -93,6 +91,14 @@ class ThrustBill {
       return 1;
     }
 
+    if (a.getEfficiency() > b.getEfficiency()) {
+      return -1;
+    }
+
+    if (a.getEfficiency() < b.getEfficiency()) {
+      return 1;
+    }
+
     if (a.channeled > b.channeled) {
       return -1;
     }
@@ -104,26 +110,12 @@ class ThrustBill {
     return 0;
   }
 
-  errorIfOverBudget() {
-    if (this.isOverBudget()) {
-      throw new Error("over budget");
-    }
-  }
-
-  isOverBudget() {
-    return this.cost > this.thrustAvailable;
-  }
-
   pay() {
     if (this.paid !== null) {
       throw new Error("Thrust bill is already paid!");
     }
 
     try {
-      if (this.getTotalThrustRequired() > this.thrustAvailable) {
-        throw new Error("over budget");
-      }
-
       this.process();
 
       this.paid = this.isPaid();
@@ -139,7 +131,7 @@ class ThrustBill {
   }
 
   process() {
-    Object.keys(this.directionsRequired).forEach(direction => {
+    Object.keys(this.directionsRequired).forEach((direction) => {
       const required = this.directionsRequired[direction];
       direction = parseInt(direction, 10);
 
@@ -170,22 +162,19 @@ class ThrustBill {
       const thruster = thrusters.pop();
       thruster.channel(1);
       this.directionsRequired[direction] -= 1;
-      this.cost += 1;
       assigned += 1;
-
-      this.errorIfOverBudget();
     }
   }
 
   buildRequiredThrust(movement) {
-    movement.forEach(move =>
+    movement.forEach((move) =>
       move.setRequiredThrust(new RequiredThrust(this.ship, move))
     );
   }
 
   getMoves() {
-    [0, 1, 2, 3, 4, 5, 6, 7, 8].forEach(direction => {
-      this.thrusters.forEach(thruster => {
+    [0, 1, 2, 3, 4, 5, 6, 7, 8].forEach((direction) => {
+      this.thrusters.forEach((thruster) => {
         if (!thruster.isDirection(direction)) {
           return;
         }
@@ -196,7 +185,7 @@ class ThrustBill {
           return;
         }
 
-        this.movement.forEach(move => {
+        this.movement.forEach((move) => {
           const required = move.requiredThrust.getRequirement(direction);
 
           if (required === 0) {
@@ -216,7 +205,7 @@ class ThrustBill {
       });
     });
 
-    if (!this.movement.every(move => move.requiredThrust.isFulfilled())) {
+    if (!this.movement.every((move) => move.requiredThrust.isFulfilled())) {
       throw new Error("Not all moves are fulfilled");
     }
 

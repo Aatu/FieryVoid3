@@ -10,6 +10,7 @@ import {
   SystemClickShowsSystemMenu,
   WeaponArcsOnSystemMouseOver,
   UnderHexForShips,
+  ShowMapIcons,
 } from "../../ui/uiStrategy";
 
 class WaitingPhaseStrategy extends PhaseStrategy {
@@ -26,6 +27,7 @@ class WaitingPhaseStrategy extends PhaseStrategy {
       new SystemClickShowsSystemMenu(),
       new WeaponArcsOnSystemMouseOver(),
       new UnderHexForShips(),
+      new ShowMapIcons(),
     ];
   }
 }

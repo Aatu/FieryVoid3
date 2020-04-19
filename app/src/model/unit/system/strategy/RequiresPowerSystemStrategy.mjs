@@ -16,7 +16,7 @@ class RequiresPowerSystemStrategy extends ShipSystemStrategy {
     previousResponse.push({
       sort: "AAAA",
       header: "Power requirement",
-      value: this.power,
+      value: this.system.callHandler("getPowerRequirement", null, 0),
     });
 
     return previousResponse;

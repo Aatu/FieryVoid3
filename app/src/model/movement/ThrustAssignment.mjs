@@ -5,7 +5,7 @@ class ThrustAssignment {
     this.directions = [].concat(thruster.callHandler("getThrustDirection"));
     this.paid = 0;
     this.channeled = 0;
-    this.capacity = thruster.callHandler("getThrustChannel");
+    this.capacity = thruster.callHandler("getThrustOutput");
     this.assigned = 0;
   }
 
@@ -14,14 +14,17 @@ class ThrustAssignment {
   }
 
   getOverheat() {
-    return (
-      this.thruster.heat.getOverheat() +
+    return this.thruster.heat.getOverheatPercentage(
       this.thruster.callHandler(
         "getHeatForThrust",
         { amount: this.channeled },
         0
       )
     );
+  }
+
+  getEfficiency() {
+    return 1;
   }
 
   isDirection(direction) {

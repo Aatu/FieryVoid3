@@ -4,7 +4,7 @@ import {
   Tooltip,
   TooltipHeader,
   TooltipEntry,
-  colors
+  colors,
 } from "../../../../styled";
 
 const InfoHeader = styled(TooltipHeader)`
@@ -14,11 +14,11 @@ const InfoHeader = styled(TooltipHeader)`
 const SystemInfoTooltip = styled(Tooltip)`
   position: absolute;
   z-index: 20000;
-  ${props =>
+  ${(props) =>
     Object.keys(props.position).reduce((style, key) => {
       return style + "\n" + key + ":" + props.position[key] + "px;";
     }, "")}
-  width: ${props => (props.ship ? "300px" : "200px")};
+  width: ${(props) => (props.ship ? "300px" : "200px")};
   text-align: left;
   filter: brightness(1);
 `;
@@ -59,12 +59,14 @@ class SystemInfoWeaponTargeting extends React.Component {
             {hitChance.distance} hexes,{" "}
             {hitChance.outOfRange
               ? `out of range`
-              : `${hitChance.rangeModifier} to hit`}
+              : `${Math.round(hitChance.rangeModifier)} to hit`}
           </InfoValue>
         </Entry>
         <Entry>
           <Header>Evasion: </Header>
-          <InfoValue>{`+${hitChance.evasion * 10}% range penalty`}</InfoValue>
+          <InfoValue>{`+${hitChance.evasion * 10}% range penalty (${Math.round(
+            hitChance.evasionPenalty
+          )})`}</InfoValue>
         </Entry>
         <Entry>
           <Header>OEW: </Header>
@@ -86,7 +88,7 @@ class SystemInfoWeaponTargeting extends React.Component {
         )}
 
         <Entry>
-          <Header>FINAL HIT CHANGE: </Header>
+          <Header>FINAL HIT CHANCE: </Header>
           <InfoValue>{hitChance.result}%</InfoValue>
         </Entry>
       </>

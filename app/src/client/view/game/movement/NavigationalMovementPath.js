@@ -16,7 +16,7 @@ class NavigationalMovementPath {
   }
 
   remove() {
-    this.objects.forEach(object3d => {
+    this.objects.forEach((object3d) => {
       this.scene.remove(object3d.mesh);
       object3d.destroy();
     });
@@ -33,21 +33,9 @@ class NavigationalMovementPath {
         position: newPosition,
         velocity: newVelocity,
         positions,
-        collision
+        collision,
       } = this.terrain.getGravityVectorForTurn(position, velocity, 1);
 
-      /*
-      console.log(
-        "position",
-        position,
-        "velocity",
-        velocity,
-        "newPosition",
-        newPosition,
-        "newVelocity",
-        newVelocity
-      );
-      */
       velocity = newVelocity;
       position = newPosition;
       //this.createLine(positions);
@@ -65,7 +53,7 @@ class NavigationalMovementPath {
 
     let start = positions.shift();
 
-    positions.forEach(end => {
+    positions.forEach((end) => {
       const line = new LineSprite(
         start,
         end,

@@ -4,21 +4,20 @@ import {
   TooltipEntry,
   TooltipValueHeader,
   TooltipValue,
-  buildTooltipEntries
+  buildTooltipEntries,
 } from "../../../../../styled";
 
 const getAttackRunMessages = (shooter, target, torpedoFlight) => {
-  console.log("ccew", shooter.electronicWarfare.getCcEw());
   return [
     ...torpedoFlight.torpedo.damageStrategy.getAttackRunMessages({
       shooter,
       target,
-      torpedoFlight
+      torpedoFlight,
     }),
     {
       header: "CCEW",
-      value: shooter.electronicWarfare.getCcEw()
-    }
+      value: shooter.electronicWarfare.getCcEw(),
+    },
   ];
 };
 
@@ -29,12 +28,12 @@ const getInterceptors = (shooter, target, torpedoFlight, uiState) => {
   );
 
   const interceptChance = interceptors
-    .map(interceptor => ({
+    .map((interceptor) => ({
       interceptor: interceptor,
       interceptChance: interceptor.callHandler("getInterceptChance", {
         target,
-        torpedoFlight
-      })
+        torpedoFlight,
+      }),
     }))
     .sort((a, b) => {
       if (a.interceptChance.result > b.interceptChance.result) {
@@ -50,9 +49,9 @@ const getInterceptors = (shooter, target, torpedoFlight, uiState) => {
 
   const interceptorGroups = [];
 
-  interceptChance.forEach(intercept => {
+  interceptChance.forEach((intercept) => {
     let entry = interceptorGroups.find(
-      group => group.name === intercept.interceptor.getDisplayName()
+      (group) => group.name === intercept.interceptor.getDisplayName()
     );
 
     if (!entry) {
@@ -60,7 +59,7 @@ const getInterceptors = (shooter, target, torpedoFlight, uiState) => {
         name: intercept.interceptor.getDisplayName(),
         min: null,
         max: null,
-        amount: 0
+        amount: 0,
       };
 
       interceptorGroups.push(entry);
@@ -93,10 +92,10 @@ const getInterceptors = (shooter, target, torpedoFlight, uiState) => {
     return `${min}% - ${max}%`;
   };
 
-  return interceptorGroups.map(group => {
+  return interceptorGroups.map((group) => {
     return {
       header: `${group.amount}x ${group.name}`,
-      value: getInterceptValue(group.min, group.max)
+      value: getInterceptValue(group.min, group.max),
     };
   });
 };

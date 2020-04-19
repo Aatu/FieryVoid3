@@ -3,23 +3,23 @@ import { TooltipMenu, TooltipButton } from "../../../../styled";
 import OEWButtons from "../electronicWarfare/OEWButtons";
 import {
   TOOLTIP_TAB_TORPEDO_ATTACK,
-  TOOLTIP_TAB_TORPEDO_DEFENSE
+  TOOLTIP_TAB_TORPEDO_DEFENSE,
 } from "./ShipTooltip";
 import CCEWButtons from "../electronicWarfare/CCEWButtons";
 
 const toggleRadiators = (ship, uiState, on = false) => {
   ship.systems
     .getSystems()
-    .filter(system => !system.isDestroyed())
-    .filter(system => system.callHandler("isRadiator", null, false))
-    .filter(system => {
+    .filter((system) => !system.isDestroyed())
+    .filter((system) => system.callHandler("isRadiator", null, false))
+    .filter((system) => {
       if (on) {
         return system.power.canSetOnline();
       } else {
         return system.power.canSetOffline();
       }
     })
-    .forEach(system => {
+    .forEach((system) => {
       if (on) {
         system.power.setOnline();
       } else {
@@ -30,33 +30,34 @@ const toggleRadiators = (ship, uiState, on = false) => {
     });
 };
 
-const hasRadiators = ship =>
+const hasRadiators = (ship) =>
   ship.systems
     .getSystems()
-    .filter(system => !system.isDestroyed())
-    .filter(system => system.callHandler("isRadiator", null, false)).length > 0;
+    .filter((system) => !system.isDestroyed())
+    .filter((system) => system.callHandler("isRadiator", null, false)).length >
+  0;
 
-const hasOnlineradiators = ship =>
+const hasOnlineradiators = (ship) =>
   ship.systems
     .getSystems()
-    .filter(system => !system.isDestroyed())
-    .filter(system => system.callHandler("isRadiator", null, false))
-    .filter(system => system.power.canSetOffline())
-    .filter(system => system.power.isOnline()).length > 0;
+    .filter((system) => !system.isDestroyed())
+    .filter((system) => system.callHandler("isRadiator", null, false))
+    .filter((system) => system.power.canSetOffline())
+    .filter((system) => system.power.isOnline()).length > 0;
 
 const toggleInterceptors = (ship, uiState, on = false) => {
   ship.systems
     .getSystems()
-    .filter(system => !system.isDestroyed())
-    .filter(system => system.callHandler("canIntercept", null, false))
-    .filter(system => {
+    .filter((system) => !system.isDestroyed())
+    .filter((system) => system.callHandler("canIntercept", null, false))
+    .filter((system) => {
       if (on) {
         return system.power.canSetOnline();
       } else {
         return system.power.canSetOffline();
       }
     })
-    .forEach(system => {
+    .forEach((system) => {
       if (on) {
         system.power.setOnline();
       } else {
@@ -67,20 +68,20 @@ const toggleInterceptors = (ship, uiState, on = false) => {
     });
 };
 
-const hasInterceptors = ship =>
+const hasInterceptors = (ship) =>
   ship.systems
     .getSystems()
-    .filter(system => !system.isDestroyed())
-    .filter(system => system.callHandler("canIntercept", null, false)).length >
-  0;
+    .filter((system) => !system.isDestroyed())
+    .filter((system) => system.callHandler("canIntercept", null, false))
+    .length > 0;
 
-const hasOnlineInterceptors = ship =>
+const hasOnlineInterceptors = (ship) =>
   ship.systems
     .getSystems()
-    .filter(system => !system.isDestroyed())
-    .filter(system => system.callHandler("canIntercept", null, false))
-    .filter(system => system.power.canSetOffline())
-    .filter(system => system.power.isOnline()).length > 0;
+    .filter((system) => !system.isDestroyed())
+    .filter((system) => system.callHandler("canIntercept", null, false))
+    .filter((system) => system.power.canSetOffline())
+    .filter((system) => system.power.isOnline()).length > 0;
 
 class GameShipTooltipMenu extends React.PureComponent {
   render() {
@@ -98,7 +99,7 @@ class GameShipTooltipMenu extends React.PureComponent {
           />
         )}
 
-        {ship.player.isUsers(currentUser) && (
+        {ship.player.isUsers(currentUser) && selectedShip && (
           <CCEWButtons
             ship={ship}
             uiState={uiState}
@@ -118,7 +119,7 @@ class GameShipTooltipMenu extends React.PureComponent {
         {ship.player.isUsers(currentUser) && hasRadiators(ship) && (
           <TooltipButton
             img="/img/system/radiator.png"
-            onClick={e => {
+            onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
 
@@ -136,7 +137,7 @@ class GameShipTooltipMenu extends React.PureComponent {
         {ship.player.isUsers(currentUser) && hasInterceptors(ship) && (
           <TooltipButton
             img="/img/system/gatlingPulseCannon.png"
-            onClick={e => {
+            onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
 

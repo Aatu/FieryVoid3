@@ -12,6 +12,7 @@ class EwArray extends ShipSystem {
       boostable = true,
       power = 5,
       overheatTransferRatio = 0.5,
+      boostPower = null,
     } = args;
     super(args, [
       new ElectronicWarfareProvider(output),
@@ -24,7 +25,9 @@ class EwArray extends ShipSystem {
     ]);
 
     if (boostable) {
-      this.addStrategy(new BoostablePlusOneOutputSystemStrategy());
+      this.addStrategy(
+        new BoostablePlusOneOutputSystemStrategy(null, boostPower)
+      );
     }
   }
 

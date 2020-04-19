@@ -95,6 +95,17 @@ class SystemHeat {
   }
 
   predictHeatChange() {
+    if (this.isHeatStorage()) {
+      return {
+        overheat: 0,
+        newHeat: 0,
+        overheatPercentage: 0,
+        cooling: 0,
+        overHeatThreshold: 0,
+        maximumPossibleOverheatReduction: 0,
+      };
+    }
+
     const newHeat = this.getHeatGenerated();
     const heat = this.heat + newHeat;
     const cooling = this.getMaxTransferHeat();
@@ -109,15 +120,6 @@ class SystemHeat {
       maxOverheatCooling > this.overheat * this.getOverheatTransferRatio()
         ? this.overheat * this.getOverheatTransferRatio()
         : maxOverheatCooling;
-
-    console.log(
-      "heatCooling:",
-      heatCooling,
-      "cooling:",
-      cooling,
-      "overheatCooling:",
-      overheatCooling
-    );
 
     const cumulatedOverheat = this.overheat + finalHeat;
 
