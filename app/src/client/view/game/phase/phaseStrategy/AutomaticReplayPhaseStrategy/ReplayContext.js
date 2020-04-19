@@ -13,7 +13,9 @@ class ReplayContext {
   }
 
   getTorpedoMovementStart() {
-    return this.movementDuration + this.firingDuration;
+    return (
+      this.movementDuration + this.firingDuration + this.torpedoAttackDuration
+    );
   }
 
   setTorpedoMovementDuration(duration) {
@@ -38,10 +40,7 @@ class ReplayContext {
 
   getNextTorpedoAttackStart() {
     return (
-      this.movementDuration +
-      this.torpedoMovementDuration +
-      this.firingDuration +
-      this.torpedoAttackDuration
+      this.movementDuration + this.firingDuration + this.torpedoAttackDuration
     );
   }
 

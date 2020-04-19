@@ -7,7 +7,7 @@ class CombatLogTorpedoMove {
     this.endPosition = endPosition;
     this.velocity = velocity;
 
-    this.replayOrder = 4;
+    this.replayOrder = 30;
   }
 
   serialize() {
@@ -16,7 +16,7 @@ class CombatLogTorpedoMove {
       torpedoFlightId: this.torpedoFlightId,
       startPosition: this.startPosition,
       endPosition: this.endPosition,
-      velocity: this.velocity
+      velocity: this.velocity,
     };
   }
 
