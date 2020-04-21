@@ -43,6 +43,7 @@ class MovementValidator {
 
   ensureMovesAreFullyPaid(movement) {
     const thrusters = this.ship.movement.getThrusters();
+    let fuelCost = 0;
 
     movement.forEach((move) => {
       const currentRequiredThrust = move.requiredThrust;
@@ -77,7 +78,16 @@ class MovementValidator {
           `Thruster ${thruster.id} can not channel ${amount}`
         );
       }
+
+      fuelCost += thruster.callHandler("getFuelRequirement", amount, 0);
     });
+
+    const shipFuel = this.ship.movement.getFuel();
+    if (shipFuel < fuelCost) {
+      throw new InvalidGameDataError(
+        `Unable to pay fuel ${fuelCost}. Ship has fuel ${shipFuel}.`
+      );
+    }
 
     return true;
   }

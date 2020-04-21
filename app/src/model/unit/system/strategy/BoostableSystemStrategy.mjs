@@ -9,11 +9,19 @@ class BoostableSystemStrategy extends ShipSystemStrategy {
     this.boostLevel = 0;
   }
 
-  isBoostable() {
+  isBoostable(payload, previousResponse = true) {
+    if (previousResponse === false) {
+      return false;
+    }
+
     return this.maxLevel !== 0;
   }
 
-  canBoost(payload, previousResponse) {
+  canBoost(payload, previousResponse = true) {
+    if (previousResponse === false) {
+      return false;
+    }
+
     const remainginPower = this.system.shipSystems.power.getRemainingPowerOutput();
 
     if (this.system.isDisabled()) {
@@ -58,6 +66,7 @@ class BoostableSystemStrategy extends ShipSystemStrategy {
     }
 
     this.boostLevel++;
+    this.system.callHandler("onSystemPowerLevelIncrease");
   }
 
   deBoost(payload, previousResponse) {
@@ -66,6 +75,11 @@ class BoostableSystemStrategy extends ShipSystemStrategy {
     }
 
     this.boostLevel--;
+    this.system.callHandler("onSystemPowerLevelDecrease");
+  }
+
+  resetBoost() {
+    this.boostLevel = 0;
     this.system.callHandler("onSystemPowerLevelDecrease");
   }
 
@@ -88,7 +102,7 @@ class BoostableSystemStrategy extends ShipSystemStrategy {
 
     const targetBoostlevel = clientStrategy.boostLevel;
 
-    if (this.boostLevel > targetBoostlevel && phase === 1) {
+    if (this.boostLevel > targetBoostlevel && phase === 2) {
       while (true) {
         if (this.boostLevel === targetBoostlevel) {
           return;
@@ -100,7 +114,7 @@ class BoostableSystemStrategy extends ShipSystemStrategy {
 
         this.deBoost();
       }
-    } else if (this.boostLevel < targetBoostlevel && phase === 2) {
+    } else if (this.boostLevel < targetBoostlevel && phase === 1) {
       while (true) {
         if (this.boostLevel === targetBoostlevel) {
           return;
@@ -113,6 +127,33 @@ class BoostableSystemStrategy extends ShipSystemStrategy {
         this.boost();
       }
     }
+  }
+
+  getTooltipMenuButton({ myShip }, previousResponse = []) {
+    if (!myShip) {
+      return previousResponse;
+    }
+
+    if (this.system.isDisabled() || !this.system.callHandler("isBoostable")) {
+      return previousResponse;
+    }
+
+    return [
+      ...previousResponse,
+      {
+        sort: 100,
+        img: "/img/plus.png",
+        onClickHandler: () => this.system.callHandler("boost"),
+        disabledHandler: () => !this.system.callHandler("canBoost", null, null),
+      },
+      {
+        sort: 100,
+        img: "/img/minus.png",
+        onClickHandler: () => this.system.callHandler("deBoost"),
+        disabledHandler: () =>
+          !this.system.callHandler("canDeBoost", null, null),
+      },
+    ];
   }
 
   serialize(payload, previousResponse = []) {

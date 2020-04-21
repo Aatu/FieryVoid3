@@ -1,4 +1,4 @@
-export const formatNumber = number => {
+export const formatNumber = (number) => {
   if ((number * 10) % 1 > 0) {
     return number.toFixed(2);
   }
@@ -6,6 +6,5 @@ export const formatNumber = number => {
   if (number % 1 > 0) {
     return number.toFixed(1);
   }
-
   return number;
 };

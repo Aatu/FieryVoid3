@@ -27,13 +27,15 @@ class OEWIndicator {
 
     this.visible = false;
 
-    this.targetPosition = this.targetGhost.hidden
-      ? targetIcon.getPosition()
-      : targetGhost.getPosition();
+    this.targetPosition =
+      !this.targetGhost || this.targetGhost.hidden
+        ? targetIcon.getPosition()
+        : targetGhost.getPosition();
 
-    this.shipPosition = this.shipGhost.hidden
-      ? this.shipIcon.getPosition()
-      : this.shipGhost.getPosition();
+    this.shipPosition =
+      !this.shipGhost || this.shipGhost.hidden
+        ? this.shipIcon.getPosition()
+        : this.shipGhost.getPosition();
 
     this.line = this.createLine();
   }
@@ -73,13 +75,15 @@ class OEWIndicator {
 
     //this.line.render(zoom);
 
-    const newTargetPosition = this.targetGhost.hidden
-      ? this.targetIcon.getPosition()
-      : this.targetGhost.getPosition();
+    const newTargetPosition =
+      !this.targetGhost || this.targetGhost.hidden
+        ? this.targetIcon.getPosition()
+        : this.targetGhost.getPosition();
 
-    const newShipPosition = this.shipGhost.hidden
-      ? this.shipIcon.getPosition()
-      : this.shipGhost.getPosition();
+    const newShipPosition =
+      !this.shipGhost || this.shipGhost.hidden
+        ? this.shipIcon.getPosition()
+        : this.shipGhost.getPosition();
 
     if (
       !this.shipPosition.equals(newShipPosition) ||

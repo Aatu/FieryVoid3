@@ -84,9 +84,16 @@ test.serial("Submit gamedata with boosted ew array", async (test) => {
     .find((ship) => ship.name === "GEPS Biliyaz");
 
   achillesInitial.systems.getSystemById(101).callHandler("deBoost");
+  test.true(achillesInitial.systems.getSystemById(11).callHandler("canBoost"));
   achillesInitial.systems.getSystemById(11).callHandler("boost");
 
   test.is(achillesInitial.systems.getSystemById(11).callHandler("getBoost"), 1);
+
+  test.true(achillesInitial.systems.power.getRemainingPowerOutput() > 0);
+
+  test.true(
+    achillesInitial.electronicWarfare.canAssignOffensiveEw(biliyazInitial, 11)
+  );
 
   achillesInitial.electronicWarfare.assignOffensiveEw(biliyazInitial, 11);
 

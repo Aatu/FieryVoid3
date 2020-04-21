@@ -74,6 +74,7 @@ const getMovementOrder = (type = "speed", facing = 0, value = 0) =>
 test("simple speed move", (test) => {
   const moves = [getMovementOrder("speed", 0, 0)];
   const bill = new ThrustBill(ship, moves);
+  bill.fuel = 999;
   test.deepEqual(bill.directionsRequired, {
     "0": 0,
     "3": 3,
@@ -120,7 +121,8 @@ test("it uses thrusters properly", (test) => {
   ship.systems.addPrimarySystem([getThruster(0, 3), getThruster(0, 3)]);
 
   const bill = new ThrustBill(ship, []);
-  bill.useThrusters(0, 5, bill.thrusters);
+  bill.fuel = 999;
+  bill.useThrusters(0, 5);
   test.deepEqual(bill.thrusters[0].channeled, 2);
   test.deepEqual(bill.thrusters[1].channeled, 3);
 });
@@ -136,8 +138,9 @@ test("it uses thrusters properly, with one thruster already overheating", (test)
   ship.systems.addPrimarySystem([getThruster(0, 5), thruster]);
 
   const bill = new ThrustBill(ship, []);
-  bill.useThrusters(0, 5, bill.thrusters, true);
-  test.deepEqual(bill.thrusters[0].channeled, 4);
+  bill.fuel = 999;
+  bill.useThrusters(0, 6);
+  test.deepEqual(bill.thrusters[0].channeled, 5);
   test.deepEqual(bill.thrusters[1].channeled, 1);
 });
 
@@ -152,7 +155,8 @@ test("it uses thrusters properly, when one thruster heats faster", (test) => {
   ship.systems.addPrimarySystem([getThruster(0, 5), thruster]);
 
   const bill = new ThrustBill(ship, []);
-  bill.useThrusters(0, 6, bill.thrusters, true);
+  bill.fuel = 999;
+  bill.useThrusters(0, 6);
   test.deepEqual(bill.thrusters[0].channeled, 4);
   test.deepEqual(bill.thrusters[1].channeled, 2);
 });
@@ -168,7 +172,8 @@ test("it uses thrusters properly, when one thruster has output reduced", (test) 
   ship.systems.addPrimarySystem([getThruster(0, 5), thruster]);
 
   const bill = new ThrustBill(ship, []);
-  bill.useThrusters(0, 6, bill.thrusters, true);
+  bill.fuel = 999;
+  bill.useThrusters(0, 6);
   test.deepEqual(bill.thrusters[0].channeled, 5);
   test.deepEqual(bill.thrusters[1].channeled, 1);
 });
@@ -187,6 +192,7 @@ test("It manages to pay a simple manouver", (test) => {
   ];
 
   const bill = new ThrustBill(ship, moves);
+  bill.fuel = 999;
   test.true(bill.pay());
 });
 
@@ -225,6 +231,7 @@ test("It uses manouveringThrusters correctly", (test) => {
   ];
 
   const bill = new ThrustBill(ship, moves);
+  bill.fuel = 999;
   test.true(bill.pay());
   bill.getMoves();
 });
@@ -277,6 +284,7 @@ test("It uses manouveringThrusters correctly when there is only directional thru
   ];
 
   const bill = new ThrustBill(ship, moves);
+  bill.fuel = 999;
   test.true(bill.pay());
   bill.getMoves();
 });

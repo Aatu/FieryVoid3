@@ -274,8 +274,6 @@ class ShipMovement {
 
     while (true) {
       if (this.hasValidMovement()) {
-        //TODO: Call movement resolver to bill and pay
-
         const bill = new ThrustBill(this.ship, this.getMovement());
         bill.pay();
         const newMovement = bill.getMoves();
@@ -294,8 +292,6 @@ class ShipMovement {
           .filter((move) => move.isCancellable())
           .pop()
       );
-
-      //TODO: Might have to use other thrusters, so need to reassign those
     }
   }
 
@@ -307,6 +303,78 @@ class ShipMovement {
     }
 
     this.replaceLastMove(endMove);
+  }
+
+  getFuel() {
+    return this.ship.systems
+      .getSystems()
+      .reduce((all, system) => all + system.callHandler("getFuel", null, 0), 0);
+  }
+
+  getFuelSpace() {
+    return this.ship.systems
+      .getSystems()
+      .reduce(
+        (all, system) => all + system.callHandler("getFuelSpace", null, 0),
+        0
+      );
+  }
+
+  getFuelCost() {
+    return this.ship.systems
+      .getSystems()
+      .reduce(
+        (all, system) =>
+          all + system.callHandler("getFuelRequirement", null, 0),
+        0
+      );
+  }
+
+  payFuelCost() {
+    const shipFuel = this.getFuel();
+    const fuelCost = this.getFuelCost();
+
+    let paid = 0;
+
+    if (fuelCost > shipFuel) {
+      throw new Error(
+        "Unable to pay fuel cost. This should not happen since moves should be validated!:E"
+      );
+    }
+
+    const payFuel = () => {
+      const tank = this.ship.systems
+        .getSystems()
+        .filter((system) => system.callHandler("getFuel", null, 0) > 0)
+        .sort((a, b) => {
+          const aFuel = a.callHandler("getFuel", null, 0);
+          const bFuel = b.callHandler("getFuel", null, 0);
+
+          if (aFuel > bFuel) {
+            return 1;
+          }
+
+          if (aFuel < bFuel) {
+            return -1;
+          }
+
+          return 0;
+        })
+        .pop();
+
+      if (!tank) {
+        throw new Error(
+          "Unable to pay fuel cost. This should not happen since moves should be validated!:E"
+        );
+      }
+
+      tank.callHandler("takeFuel", 1);
+    };
+
+    while (paid < fuelCost) {
+      payFuel();
+      paid++;
+    }
   }
 
   deserialize(data = []) {

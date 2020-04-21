@@ -4,7 +4,7 @@ class SystemDataHandler {
       const clientShip = clientGameData.ships.getShipById(serverShip.id);
       let count = serverShip.getRequiredPhasesForReceivingPlayerData();
 
-      for (let phase = 1; phase <= count; phase++) {
+      for (let phase = count; phase > 0; phase--) {
         serverShip.receivePlayerData(clientShip, serverGameData, phase);
       }
     });

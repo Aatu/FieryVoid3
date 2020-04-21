@@ -54,6 +54,7 @@ class Fulcrum extends Ship {
         hitpoints: 30,
         armor: 5,
         heatStorage: 30,
+        radiator: 5,
       }),
 
       new systems.CoilgunLightFixed({ id: 102 }, { start: 330, end: 30 }),
@@ -61,8 +62,8 @@ class Fulcrum extends Ship {
       new systems.RailgunFixed120mm({ id: 104 }, { start: 330, end: 30 }),
       new systems.RailgunFixed120mm({ id: 105 }, { start: 330, end: 30 }),
 
-      new systems.ChemicalThruster({ id: 106, hitpoints: 10, armor: 3 }, 3, 0),
-      new systems.ChemicalThruster({ id: 107, hitpoints: 10, armor: 3 }, 3, 0),
+      new systems.ChemicalThruster({ id: 106, hitpoints: 10, armor: 3 }, 10, 0),
+      new systems.ChemicalThruster({ id: 107, hitpoints: 10, armor: 3 }, 10, 0),
       new systems.ManeuveringThruster(
         { id: 101, hitpoints: 10, armor: 3 },
         10,
@@ -100,6 +101,7 @@ class Fulcrum extends Ship {
         armor: 6,
         heatStorage: 20,
         radiator: 10,
+        fuel: 2000,
       }),
 
       new systems.ManeuveringThruster(
@@ -107,11 +109,10 @@ class Fulcrum extends Ship {
         10,
         2
       ),
-      new systems.Thruster({ id: 203, hitpoints: 20, armor: 3 }, 10, 3, {
+      new systems.Thruster({ id: 203, hitpoints: 20, armor: 3 }, 15, 3, {
         power: 2,
         boostPower: 1,
         maxBoost: 10,
-        thrustExtra: 0.2,
       }),
 
       new systems.PDC30mm(

@@ -12,6 +12,7 @@ import ArmorBoostOfflineSystemStrategy from "./ArmorBoostOfflineSystemStrategy.m
 import OutputHeatOnlineStrategy from "./OutputHeatOnlineStrategy.mjs";
 import FireOrderHeatStrategy from "./FireOrderHeatStrategy.mjs";
 import AlwaysTargetableSystemStrategy from "./AlwaysTargetableSystemStrategy.mjs";
+import FuelTankSystemStrategy from "./FuelTankSystemStrategy.mjs";
 
 import {
   TestDamageStrategy,
@@ -24,10 +25,11 @@ import {
   BurstDamageStrategy,
   PiercingDamageStrategy,
   ExplosiveDamageStrategy,
-  InterceptorStrategy
+  InterceptorStrategy,
 } from "./weapon/index.mjs";
 
 export {
+  FuelTankSystemStrategy,
   AlwaysTargetableSystemStrategy,
   FireOrderHeatStrategy,
   OutputHeatOnlineStrategy,
@@ -52,5 +54,5 @@ export {
   ThrustChannelSystemStrategy,
   AllowsEvasionSystemStrategy,
   ElectronicWarfareProvider,
-  BurstDamageStrategy
+  BurstDamageStrategy,
 };

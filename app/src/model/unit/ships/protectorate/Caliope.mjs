@@ -68,7 +68,7 @@ class Caliope extends Ship {
     this.pointCost = 500;
 
     this.systems.addFrontSystem([
-      new systems.ChemicalThruster({ id: 103, hitpoints: 10, armor: 3 }, 5, 0),
+      new systems.ChemicalThruster({ id: 103, hitpoints: 10, armor: 3 }, 15, 0),
       new systems.PDC30mm(
         { id: 114, hitpoints: 5, armor: 3 },
         { start: 200, end: 160 }
@@ -78,7 +78,7 @@ class Caliope extends Ship {
         { id: 115, hitpoints: 5, armor: 3 },
         { start: 200, end: 160 }
       ),
-      new systems.ChemicalThruster({ id: 104, hitpoints: 10, armor: 3 }, 5, 0),
+      new systems.ChemicalThruster({ id: 104, hitpoints: 10, armor: 3 }, 15, 0),
       new systems.Structure({
         id: 111,
         hitpoints: 40,
@@ -89,8 +89,8 @@ class Caliope extends Ship {
 
       new systems.ManeuveringThruster(
         { id: 101, hitpoints: 10, armor: 3 },
-        3,
-        2
+        10,
+        3
       ),
     ]);
 
@@ -103,13 +103,14 @@ class Caliope extends Ship {
         cargoSpace: 300,
         heatStorage: 80,
         radiator: 15,
+        fuel: 2000,
       }),
       new systems.EwArray({ id: 12, hitpoints: 15, armor: 6 }, 8),
       new systems.HeatSink({ id: 13, hitpoints: 10, armor: 3 }, 100),
     ]);
 
     this.systems.addStarboardFrontSystem([
-      new systems.ChemicalThruster({ id: 201, hitpoints: 10, armor: 3 }, 5, [
+      new systems.ChemicalThruster({ id: 201, hitpoints: 10, armor: 3 }, 15, [
         1,
         2,
       ]),
@@ -137,7 +138,7 @@ class Caliope extends Ship {
         { id: 612, hitpoints: 8, armor: 4 },
         { start: 270, end: 30 }
       ),
-      new systems.ChemicalThruster({ id: 601, hitpoints: 10, armor: 3 }, 5, [
+      new systems.ChemicalThruster({ id: 601, hitpoints: 10, armor: 3 }, 15, [
         4,
         5,
       ]),
@@ -159,13 +160,13 @@ class Caliope extends Ship {
     this.systems.addAftSystem([
       new systems.ManeuveringThruster(
         { id: 401, hitpoints: 10, armor: 3 },
-        3,
-        2
+        10,
+        3
       ),
 
-      new systems.Thruster({ id: 431, hitpoints: 15, armor: 3 }, 8, 3),
-      new systems.Thruster({ id: 432, hitpoints: 15, armor: 3 }, 8, 3),
-      new systems.Thruster({ id: 433, hitpoints: 15, armor: 3 }, 8, 3),
+      new systems.Thruster({ id: 431, hitpoints: 15, armor: 3 }, 15, 3),
+      new systems.Thruster({ id: 432, hitpoints: 15, armor: 3 }, 15, 3),
+      new systems.Thruster({ id: 433, hitpoints: 15, armor: 3 }, 15, 3),
 
       new systems.Structure({
         id: 411,
@@ -173,6 +174,7 @@ class Caliope extends Ship {
         armor: 4,
         heatStorage: 100,
         radiator: 5,
+        fuel: 4000,
       }),
       new systems.Radiator10x40({ id: 412, hitpoints: 10, armor: 3 }),
       new systems.Reactor({ id: 407, hitpoints: 10, armor: 3 }, 30),

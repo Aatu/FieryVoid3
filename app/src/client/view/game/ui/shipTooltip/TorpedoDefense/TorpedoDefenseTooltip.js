@@ -104,6 +104,10 @@ class TorpedoDefenseTooltip extends React.Component {
   render() {
     const { shooter, target, torpedoFlight, uiState } = this.props;
 
+    const interceptorEntries = buildTooltipEntries(
+      getInterceptors(shooter, target, torpedoFlight, uiState)
+    );
+
     return (
       <>
         <TooltipHeader>TORPEDO DEFENSE</TooltipHeader>
@@ -112,9 +116,9 @@ class TorpedoDefenseTooltip extends React.Component {
         )}
 
         <TooltipHeader>INTERCEPTORS</TooltipHeader>
-        {buildTooltipEntries(
-          getInterceptors(shooter, target, torpedoFlight, uiState)
-        )}
+        {interceptorEntries.length > 0
+          ? interceptorEntries
+          : "No available interceptors"}
       </>
     );
   }

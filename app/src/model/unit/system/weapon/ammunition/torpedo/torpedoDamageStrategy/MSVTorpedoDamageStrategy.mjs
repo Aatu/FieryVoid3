@@ -15,41 +15,42 @@ class MSVTorpedoDamageStrategy extends StandardDamageStrategy {
     this.numberOfShots = numberOfShots;
     this.strikeHitChance = strikeHitChance;
     this.minStrikeDistance = minStrikeDistance;
+    this.msv = true;
   }
 
   getAttackRunMessages(payload, previousResponse = []) {
     return [
       {
         header: "Strike distance",
-        value: this.getStrikeDistance(payload)
-      }
+        value: this.getStrikeDistance(payload),
+      },
     ];
   }
 
   getMessages(payload, previousResponse = []) {
     previousResponse.push({
       header: "Number of SVs",
-      value: this.numberOfShots
+      value: this.numberOfShots,
     });
 
     previousResponse.push({
       header: "Damage per SV",
-      value: this.damageFormula
+      value: this.damageFormula,
     });
 
     previousResponse.push({
       header: "Armor piercing per SV",
-      value: this.armorPiercingFormula
+      value: this.armorPiercingFormula,
     });
 
     previousResponse.push({
       header: "SV range penalty",
-      value: this.rangePenalty
+      value: this.rangePenalty,
     });
 
     previousResponse.push({
       header: "Target hit chance",
-      value: `${this.strikeHitChance}%`
+      value: `${this.strikeHitChance}%`,
     });
 
     return previousResponse;
@@ -57,25 +58,17 @@ class MSVTorpedoDamageStrategy extends StandardDamageStrategy {
 
   _getDamageForWeaponHit({ torpedoFlight }) {
     if (Number.isInteger(this.damageFormula)) {
-      return Math.ceil(this.damageFormula * torpedoFlight.strikeEffectiveness);
+      return Math.ceil(this.damageFormula);
     }
-    return Math.ceil(
-      this.diceRoller.roll(this.damageFormula).total *
-        torpedoFlight.strikeEffectiveness
-    );
+    return Math.ceil(this.diceRoller.roll(this.damageFormula).total);
   }
 
   _getArmorPiercing({ torpedoFlight }) {
     if (Number.isInteger(this.armorPiercingFormula)) {
-      return Math.round(
-        this.armorPiercingFormula * torpedoFlight.strikeEffectiveness
-      );
+      return Math.round(this.armorPiercingFormula);
     }
 
-    return Math.round(
-      this.diceRoller.roll(this.armorPiercingFormula).total *
-        torpedoFlight.strikeEffectiveness
-    );
+    return Math.round(this.diceRoller.roll(this.armorPiercingFormula).total);
   }
 
   getHitChance({ target, torpedoFlight, distance }) {

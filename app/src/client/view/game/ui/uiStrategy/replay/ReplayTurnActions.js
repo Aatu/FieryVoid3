@@ -151,7 +151,6 @@ class ReplayTurnActions extends AnimationUiStrategy {
       });
 
       destroyedAnimations.forEach(({ sections, start, end }) => {
-        console.log(icon.ship.name, sections, start, end);
         this.animations.push(
           new ShipDamageAnimation(icon, sections, start, end)
         );
@@ -297,13 +296,33 @@ class ReplayTurnActions extends AnimationUiStrategy {
         .add(targetPosition)
         .setZ(TORPEDO_Z);
 
-      const endTime = fireStart + attackDuration + this.getRandom() * 500;
+      const msvDistance = this.getRandom() * 200 + 300;
+      const msvPosition =
+        flight.torpedo.damageStrategy.msv && !intercepted
+          ? launchPosition
+              .sub(targetPosition)
+              .normalize()
+              .multiplyScalar(msvDistance)
+              .add(targetPosition)
+              .setZ(TORPEDO_Z)
+          : null;
+
+      const flightDuration = msvPosition
+        ? attackDuration * ((attackDistance - msvDistance) / attackDistance)
+        : attackDuration;
+
+      const randomFlightDuration = this.getRandom() * 500;
+      const endTime = fireStart + attackDuration + randomFlightDuration;
+      const flightEndTime = fireStart + flightDuration + randomFlightDuration;
+
+      const speed = attackDistance / attackDuration;
+
       const animation = new TorpedoMovementAnimation(
         torpedoIconContainer.getIconByTorpedoFlight(flight),
         torpedoPosition,
-        targetPosition,
+        msvPosition ? msvPosition : targetPosition,
         fireStart,
-        endTime,
+        flightEndTime,
         flight.turnsActive === 1,
         interceptTime,
         true
@@ -357,38 +376,36 @@ class ReplayTurnActions extends AnimationUiStrategy {
         );
       } else {
         switch (flight.torpedo.visuals.explosionType) {
-          case "HE":
-            this.animations.push(
-              new TorpedoExplosionHE(
-                targetPosition,
-                endTime,
-                particleEmitterContainer,
-                this.getRandom,
-                flight.torpedo
-              )
-            );
-            break;
           case "MSV":
             this.animations.push(
               new TorpedoExplosionMSV(
                 targetPosition,
+                flightEndTime,
                 endTime,
                 particleEmitterContainer,
                 this.getRandom,
                 flight.torpedo,
-                torpedoEntry.damages.length
+                torpedoEntry.damages,
+                targetIcon,
+                (ship) => getShipStartPositionAndFacingForShip(gameDatas, ship),
+                msvPosition,
+                speed
               )
             );
             break;
+          case "HE":
           default:
             this.animations.push(
               new TorpedoExplosionHE(
-                targetPosition,
+                (ship) => getShipStartPositionAndFacingForShip(gameDatas, ship),
                 endTime,
                 particleEmitterContainer,
-                this.getRandom
+                this.getRandom,
+                flight.torpedo,
+                targetIcon
               )
             );
+            break;
         }
       }
     });

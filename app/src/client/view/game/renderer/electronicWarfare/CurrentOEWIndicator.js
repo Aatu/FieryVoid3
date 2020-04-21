@@ -6,6 +6,10 @@ const COLOR_OEW_FRIENDLY = new THREE.Color(100 / 255, 90 / 255, 250 / 255);
 const COLOR_OEW_ENEMY = new THREE.Color(255 / 255, 40 / 255, 40 / 255);
 
 class CurrentOEWIndicator extends OEWIndicator {
+  constructor(shipIcon, targetIcon, amount, mine, scene) {
+    super(shipIcon, targetIcon, null, null, amount, mine, scene);
+  }
+
   createLine() {
     return new Line(this.scene, {
       start: { ...this.shipIcon.getPosition(), z: this.getZ() },
@@ -14,7 +18,7 @@ class CurrentOEWIndicator extends OEWIndicator {
       color: this.mine ? COLOR_OEW_FRIENDLY : COLOR_OEW_ENEMY,
       opacity: 0.1,
       pulseAmount: 1,
-      dashSize: 0
+      dashSize: 0,
     });
   }
 

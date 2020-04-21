@@ -3,7 +3,7 @@ import ShipSystem from "../../model/unit/system/ShipSystem.mjs";
 import DamageEntry from "../../model/unit/system/DamageEntry.mjs";
 import ForcedOffline from "../../model/unit/system/criticals/ForcedOffline.mjs";
 
-test("System takes damage and is destroyed", test => {
+test("System takes damage and is destroyed", (test) => {
   const system = new ShipSystem({ id: 123, hitpoints: 10, armor: 3 });
   system.addDamage(new DamageEntry(3));
   test.false(system.isDestroyed());
@@ -12,13 +12,13 @@ test("System takes damage and is destroyed", test => {
   test.true(system.isDestroyed());
 });
 
-test("System takes critical damage", test => {
+test("System takes critical damage", (test) => {
   const system = new ShipSystem({ id: 123, hitpoints: 10, armor: 3 });
   system.addCritical(new ForcedOffline(3));
   test.true(system.hasCritical(ForcedOffline));
 });
 
-test("Stuff serializes and deserializes nicely", test => {
+test("Stuff serializes and deserializes nicely", (test) => {
   const system = new ShipSystem({ id: 123, hitpoints: 10, armor: 3 });
   const testCrit = new ForcedOffline(3);
   system.addCritical(testCrit);
@@ -26,17 +26,17 @@ test("Stuff serializes and deserializes nicely", test => {
 
   const serialized = system.serialize();
 
-  system.damage.entries.forEach(entry => (entry.new = false));
+  system.damage.entries.forEach((entry) => (entry.new = false));
 
   const system2 = new ShipSystem({
     id: 123,
     hitpoints: 10,
-    armor: 3
+    armor: 3,
   }).deserialize(serialized);
   test.deepEqual(system, system2);
 });
 
-test("Ship system gets destroyed", test => {
+test("Ship system gets destroyed", (test) => {
   const system = new ShipSystem({ id: 123, hitpoints: 10, armor: 3 });
 
   const damage = new DamageEntry(10, 3);
@@ -47,7 +47,7 @@ test("Ship system gets destroyed", test => {
   const newSystem = new ShipSystem({
     id: 123,
     hitpoints: 10,
-    armor: 3
+    armor: 3,
   }).deserialize(system.serialize());
 
   test.true(newSystem.damage.entries[0].destroyedSystem);

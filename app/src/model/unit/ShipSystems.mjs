@@ -271,14 +271,9 @@ class ShipSystems {
 
   getPassiveHeatChange() {
     const producedAndTransferred = this.getSystems().reduce((total, system) => {
-      const heatGenerated = system.heat.getHeatGenerated();
-      const heatTransfer = system.heat.getMaxTransferHeat();
+      const { cooling } = system.heat.predictHeatChange();
 
-      if (heatGenerated > heatTransfer) {
-        return total + heatTransfer;
-      }
-
-      return total + heatGenerated;
+      return total + cooling;
     }, 0);
 
     const heatRadiated = this.getSystems().reduce(

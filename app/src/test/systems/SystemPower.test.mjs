@@ -203,9 +203,9 @@ test("Boosted system passes its state to server", (test) => {
 
   coilgun.callHandler("boost");
   coilgun.callHandler("boost");
-  serverSystems.receivePlayerData({ systems }, null, 2);
+  serverSystems.receivePlayerData({ systems }, null, 1);
   test.is(serverSystems.getSystemById(213).callHandler("getBoost"), 2);
   coilgun.callHandler("deBoost");
-  serverSystems.receivePlayerData({ systems }, null, 1);
+  serverSystems.receivePlayerData({ systems }, null, 2);
   test.is(serverSystems.getSystemById(213).callHandler("getBoost"), 1);
 });

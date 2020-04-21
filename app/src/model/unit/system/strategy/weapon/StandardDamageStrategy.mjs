@@ -55,17 +55,17 @@ class StandardDamageStrategy extends ShipSystemStrategy {
   getMessages(payload, previousResponse = []) {
     previousResponse.push({
       header: "Damage type",
-      value: this._getDamageTypeMessage()
+      value: this._getDamageTypeMessage(),
     });
 
     previousResponse.push({
       header: "Damage",
-      value: this._getDamageMessage()
+      value: this._getDamageMessage(),
     });
 
     previousResponse.push({
       header: "Armor piercing",
-      value: this._getArmorPiercingMessage()
+      value: this._getArmorPiercingMessage(),
     });
 
     return previousResponse;
@@ -110,7 +110,7 @@ class StandardDamageStrategy extends ShipSystemStrategy {
     const hitSystem = this._chooseHitSystem({
       target,
       shooterPosition,
-      lastSection
+      lastSection,
     });
 
     if (!hitSystem) {
@@ -180,13 +180,7 @@ class StandardDamageStrategy extends ShipSystemStrategy {
     return structure;
   }
 
-  _doDamageToSystem(
-    { fireOrder },
-    damageResult,
-    hitSystem,
-    armorPiercing,
-    damage
-  ) {
+  _doDamageToSystem({}, damageResult, hitSystem, armorPiercing, damage) {
     let armor = hitSystem.getArmor();
     let finalArmor = armor - armorPiercing;
     if (finalArmor < 0) {
@@ -224,7 +218,7 @@ class StandardDamageStrategy extends ShipSystemStrategy {
 
     return {
       armorPiercing: armorPiercingLeft,
-      damage
+      damage,
     };
   }
 

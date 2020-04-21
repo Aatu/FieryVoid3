@@ -100,6 +100,15 @@ class ShipObjectBoundingBox {
     }
   }
 
+  getBoundsForSectionDisregardStructure(section) {
+    const { start: startX, end: endX } = this.getX(section, true);
+    const { start: startY, end: endY } = this.getY(section, true);
+    return {
+      start: new Vector(startX, startY, -this.dimensions.z / 2),
+      end: new Vector(endX, endY, this.dimensions.z / 2),
+    };
+  }
+
   getBoundsForSection(section) {
     const { start: startX, end: endX } = this.getX(section);
     const { start: startY, end: endY } = this.getY(section);
@@ -109,8 +118,10 @@ class ShipObjectBoundingBox {
     };
   }
 
-  getY(section) {
-    const horizontal = this.getAmountOfHorizontalSections(section);
+  getY(section, disregardStructure = false) {
+    const horizontal = disregardStructure
+      ? 3
+      : this.getAmountOfHorizontalSections(section);
     if (section instanceof FrontSection || section instanceof AftSection) {
       return {
         start: -this.dimensions.y / horizontal / 2,
@@ -140,8 +151,10 @@ class ShipObjectBoundingBox {
     }
   }
 
-  getX(section) {
-    const vertical = this.getAmountOfVerticalSections();
+  getX(section, disregardStructure = false) {
+    const vertical = disregardStructure
+      ? 3
+      : this.getAmountOfVerticalSections();
     if (
       section instanceof FrontSection ||
       section instanceof StarboardFrontSection ||
@@ -156,12 +169,41 @@ class ShipObjectBoundingBox {
         start: -this.dimensions.x / vertical / 2,
         end: this.dimensions.x / vertical / 2,
       };
-    } else if (section instanceof AftSection) {
+    } else if (
+      section instanceof AftSection ||
+      section instanceof StarboardAftSection ||
+      section instanceof PortAftSection
+    ) {
       return {
         start: -this.dimensions.x / 2, // -50
         end: -this.dimensions.x / 2 + this.dimensions.x / vertical, // -50 + (100, 50, 33) = 50, 0, -33
       };
     }
+  }
+
+  getRandomPositionForSystem(system, getRandom = Math.random) {
+    const section = this.ship.systems.sections.getSectionBySystem(system);
+    const bounds = this.getBoundsForSectionDisregardStructure(section);
+    const boundSize = new Vector(
+      Math.abs(bounds.end.x - bounds.start.x),
+      Math.abs(bounds.end.y - bounds.start.y),
+      Math.abs(bounds.end.z - bounds.start.z)
+    );
+
+    const offset = new Vector(
+      boundSize.x * getRandom(),
+      boundSize.y * getRandom(),
+      boundSize.z * getRandom()
+    );
+
+    return bounds.start.add(offset).setZ(0);
+  }
+
+  getRandomPositionOnShip(getRandom = Math.random) {
+    return new Vector(
+      getRandom() * this.dimensions.x - this.dimensions.x / 2,
+      getRandom() * this.dimensions.y - this.dimensions.y / 2
+    );
   }
 }
 

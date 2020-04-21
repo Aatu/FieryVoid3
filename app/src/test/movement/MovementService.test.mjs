@@ -16,6 +16,7 @@ import ManeuveringThruster from "../../model/unit/system/thruster/ManeuveringThr
 import { OutputReduced6 } from "../../model/unit/system/criticals/index.mjs";
 import ManeuveringThrusterLeft from "../../model/unit/system/thruster/ManeuveringThrusterLeft.mjs";
 import ManeuveringThrusterRight from "../../model/unit/system/thruster/ManeuveringThrusterRight.mjs";
+import FuelTank from "../../model/unit/system/cargo/FuelTank.mjs";
 
 const startMove = new MovementOrder(
   -1,
@@ -71,8 +72,10 @@ const constructShip = (id = 123) => {
     new Engine({ id: 5, hitpoints: 10, armor: 3 }, 12, 6, 2),
     new Engine({ id: 6, hitpoints: 10, armor: 3 }, 12, 6, 2),
     new Reactor({ id: 7, hitpoints: 10, armor: 3 }, 20),
+    new FuelTank({ id: 12, hitpoints: 10, armor: 3 }, 400),
   ]);
 
+  ship.systems.getSystemById(12).callHandler("setMaxFuel");
   ship.movement.addMovement(startMove);
   return ship;
 };

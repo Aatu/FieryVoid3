@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from "react";
 import styled from "styled-components";
-import HeatBar from "./HeatBar";
+
+import { HeatBar } from "./Bar";
 import {
   buildTooltipEntries,
   TooltipEntry,
@@ -29,6 +30,7 @@ const SystemHeatBar = ({ className, system, currentOverheat, prediction }) => {
     overHeatThreshold,
     newHeat,
     maximumPossibleOverheatReduction,
+    maxCooling,
   } = prediction;
 
   const messages = useMemo(
@@ -37,15 +39,17 @@ const SystemHeatBar = ({ className, system, currentOverheat, prediction }) => {
         ? [
             {
               header: "Predicted cooling",
-              value: cooling,
+              value: `${Math.round(cooling)}/${Math.round(maxCooling)}`,
             },
             {
               header: "Predicted heat generation",
-              value: formatNumber(newHeat),
+              value: Math.round(newHeat),
             },
             {
               header: "Predicted overheat",
-              value: `${overheat} (${Math.round(overheatPercentage * 100)}%)`,
+              value: `${Math.round(overheat)} (${Math.round(
+                overheatPercentage * 100
+              )}%)`,
             },
             {
               header: "Maximum overheat cooling",

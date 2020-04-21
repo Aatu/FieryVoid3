@@ -15,7 +15,7 @@ class RadiateHeatStrategy extends ShipSystemStrategy {
   getMessages(payload, previousResponse = []) {
     previousResponse.push({
       header: "Radiates heat",
-      value: `${this.radiationCapacity}`
+      value: `${this.getHeatRadiationCapacity()}`,
     });
 
     return previousResponse;

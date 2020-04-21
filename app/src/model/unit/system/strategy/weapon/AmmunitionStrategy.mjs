@@ -53,7 +53,7 @@ class AmmunitionStrategy extends ShipSystemStrategy {
 
       return {
         object: new className(),
-        amount
+        amount,
       };
     });
   }
@@ -84,9 +84,9 @@ class AmmunitionStrategy extends ShipSystemStrategy {
       {
         name: "Ammo",
         props: {
-          ammoStrategy: this
-        }
-      }
+          ammoStrategy: this,
+        },
+      },
     ];
   }
 
@@ -106,8 +106,8 @@ class AmmunitionStrategy extends ShipSystemStrategy {
         onClickHandler: () => {
           this.toggleSelectedAmmo();
         },
-        onDisabledHandler: () => false
-      }
+        onDisabledHandler: () => false,
+      },
     ];
   }
 
@@ -115,49 +115,49 @@ class AmmunitionStrategy extends ShipSystemStrategy {
     return {
       ...previousResponse,
       ammunitionStrategy: {
-        targetLoad: this.targetLoad.map(entry => ({
+        targetLoad: this.targetLoad.map((entry) => ({
           className: entry.object.constructor.name,
-          amount: entry.amount
+          amount: entry.amount,
         })),
-        loaded: this.loaded.map(entry => ({
+        loaded: this.loaded.map((entry) => ({
           className: entry.object.constructor.name,
-          amount: entry.amount
+          amount: entry.amount,
         })),
         changeTargetLoad: this.changeTargetLoad
-          ? this.changeTargetLoad.map(entry => ({
+          ? this.changeTargetLoad.map((entry) => ({
               className: entry.object.constructor.name,
-              amount: entry.amount
+              amount: entry.amount,
             }))
           : null,
         turnsOffline: this.turnsOffline,
         selectedAmmo: this.selectedAmmo.constructor.name,
         changeSelectedAmmo: this.changeSelectedAmmo
           ? this.changeSelectedAmmo.constructor.name
-          : null
-      }
+          : null,
+      },
     };
   }
 
   deserialize(data = {}) {
     const ammoData = data.ammunitionStrategy || {};
     this.targetLoad = ammoData.targetLoad
-      ? ammoData.targetLoad.map(entry => ({
+      ? ammoData.targetLoad.map((entry) => ({
           object: new cargoClasses[entry.className](),
-          amount: entry.amount
+          amount: entry.amount,
         }))
       : [];
 
     this.loaded = ammoData.loaded
-      ? ammoData.loaded.map(entry => ({
+      ? ammoData.loaded.map((entry) => ({
           object: new cargoClasses[entry.className](),
-          amount: entry.amount
+          amount: entry.amount,
         }))
       : [];
 
     this.changeTargetLoad = ammoData.changeTargetLoad
-      ? ammoData.changeTargetLoad.map(entry => ({
+      ? ammoData.changeTargetLoad.map((entry) => ({
           object: new cargoClasses[entry.className](),
-          amount: entry.amount
+          amount: entry.amount,
         }))
       : null;
 
@@ -214,19 +214,19 @@ class AmmunitionStrategy extends ShipSystemStrategy {
 
   addToLoading({ object, amount }) {
     if (!this.changeTargetLoad) {
-      this.changeTargetLoad = this.targetLoad.map(entry => ({
-        ...entry
+      this.changeTargetLoad = this.targetLoad.map((entry) => ({
+        ...entry,
       }));
     }
 
     let entry = this.changeTargetLoad.find(
-      entry => entry.object.constructor === object.constructor
+      (entry) => entry.object.constructor === object.constructor
     );
 
     if (!entry && amount > 0) {
       entry = {
         object,
-        amount: 0
+        amount: 0,
       };
 
       this.changeTargetLoad.push(entry);
@@ -271,10 +271,10 @@ class AmmunitionStrategy extends ShipSystemStrategy {
     const changeSelectedAmmo = clientStrategy.changeSelectedAmmo;
 
     if (changeTargetLoad) {
-      changeTargetLoad.forEach(entry => {
+      changeTargetLoad.forEach((entry) => {
         if (
           !this.ammunitionClasses.some(
-            className => entry.object instanceof className
+            (className) => entry.object instanceof className
           )
         ) {
           throw new Error(
@@ -302,7 +302,7 @@ class AmmunitionStrategy extends ShipSystemStrategy {
     if (changeSelectedAmmo) {
       if (
         !this.ammunitionClasses.some(
-          ammoClass => changeSelectedAmmo instanceof ammoClass
+          (ammoClass) => changeSelectedAmmo instanceof ammoClass
         )
       ) {
         throw new Error(
@@ -324,7 +324,7 @@ class AmmunitionStrategy extends ShipSystemStrategy {
 
   canFire(payload, previousResponse = true) {
     const entry = this.loaded.find(
-      load => load.object.constructor === this.selectedAmmo.constructor
+      (load) => load.object.constructor === this.selectedAmmo.constructor
     );
 
     if (!entry) {
@@ -344,7 +344,7 @@ class AmmunitionStrategy extends ShipSystemStrategy {
 
   onWeaponFired() {
     const entry = this.loaded.find(
-      load => load.object.constructor === this.selectedAmmo.constructor
+      (load) => load.object.constructor === this.selectedAmmo.constructor
     );
 
     if (!entry) {
@@ -363,7 +363,7 @@ class AmmunitionStrategy extends ShipSystemStrategy {
         } x ${this.selectedAmmo.getDisplayName()}`
       );
 
-    this.loaded = this.loaded.filter(entry => entry.amount > 0);
+    this.loaded = this.loaded.filter((entry) => entry.amount > 0);
     this._changeSelectedAmmoIfOutOfAmmo();
   }
 
@@ -388,11 +388,11 @@ class AmmunitionStrategy extends ShipSystemStrategy {
 
     if (
       !this.loaded.find(
-        load => load.object.constructor === this.selectedAmmo.constructor
+        (load) => load.object.constructor === this.selectedAmmo.constructor
       )
     ) {
       const newAmmo = this.loaded.find(
-        entry => entry.amount > this.ammoPerFireOrder
+        (entry) => entry.amount > this.ammoPerFireOrder
       );
 
       if (newAmmo) {
@@ -414,9 +414,9 @@ class AmmunitionStrategy extends ShipSystemStrategy {
       }
 
       if (
-        this.loaded.every(loaded => {
+        this.loaded.every((loaded) => {
           const target = this.targetLoad.find(
-            target => target.object.constructor === loaded.object.constructor
+            (target) => target.object.constructor === loaded.object.constructor
           );
 
           if (target && target.amount >= loaded.amount) {
@@ -434,7 +434,7 @@ class AmmunitionStrategy extends ShipSystemStrategy {
 
           const spaceAvailable = cargoService.hasSpaceForHowMany(ship, {
             object: loaded.object,
-            amount: extra
+            amount: extra,
           });
 
           if (spaceAvailable === 0) {
@@ -445,7 +445,7 @@ class AmmunitionStrategy extends ShipSystemStrategy {
 
           cargoService.divideCargo(ship, {
             object: loaded.object,
-            amount: extra
+            amount: extra,
           });
 
           ammoTransferredOut += extra;
@@ -458,7 +458,7 @@ class AmmunitionStrategy extends ShipSystemStrategy {
       }
     }
 
-    this.loaded = this.loaded.filter(entry => entry.amount > 0);
+    this.loaded = this.loaded.filter((entry) => entry.amount > 0);
 
     while (true) {
       if (ammoTransferredIn === this.intakeInTurn) {
@@ -466,15 +466,15 @@ class AmmunitionStrategy extends ShipSystemStrategy {
       }
 
       if (
-        this.targetLoad.every(target => {
+        this.targetLoad.every((target) => {
           let loaded = this.loaded.find(
-            loaded => target.object.constructor === loaded.object.constructor
+            (loaded) => target.object.constructor === loaded.object.constructor
           );
 
           if (!loaded && target.amount > 0) {
             loaded = {
               object: target.object,
-              amount: 0
+              amount: 0,
             };
 
             this.loaded.push(loaded);
@@ -488,7 +488,7 @@ class AmmunitionStrategy extends ShipSystemStrategy {
 
           const cargoSystem = this.system.shipSystems
             .getSystems()
-            .find(system =>
+            .find((system) =>
               system.callHandler("getCargoEntry", target.object, null)
             );
 
@@ -512,14 +512,14 @@ class AmmunitionStrategy extends ShipSystemStrategy {
             loaded.amount += missing;
             cargoSystem.callHandler("removeCargo", {
               object: cargo.object,
-              amount: missing
+              amount: missing,
             });
             ammoTransferredIn += missing;
           } else if (cargo.amount < missing) {
             loaded.amount += cargo.amount;
             cargoSystem.callHandler("removeCargo", {
               object: cargo.object,
-              amount: cargo.amount
+              amount: cargo.amount,
             });
             ammoTransferredIn += cargo.amount;
           }

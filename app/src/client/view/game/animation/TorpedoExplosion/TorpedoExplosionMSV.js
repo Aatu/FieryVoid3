@@ -1,23 +1,28 @@
 import * as THREE from "three";
 import ExplosionEffect from "../effect/ExplosionEffect";
-import Animation from "../Animation";
-import Vector from "../../../../../model/utils/Vector.mjs";
+import BoltEffect from "../effect/BoltEffect";
+import ShipWeaponAnimation from "../ShipWeaponAnimation/ShipWeaponAnimation";
+import { TEXTURE_GLOW } from "../particle/BaseParticle";
 
-class TorpedoExplosionMSV extends Animation {
+class TorpedoExplosionMSV extends ShipWeaponAnimation {
   constructor(
     position,
+    startTime,
     time,
     particleEmitterContainer,
     getRandom,
     torpedo,
-    amount
+    damages,
+    targetIcon,
+    getPosition,
+    msvPosition,
+    speed = 0.2
   ) {
-    super();
+    super({ getRandom, particleEmitterContainer });
     this.particleEmitterContainer = particleEmitterContainer;
     this.animations = [];
 
-    //const amount = torpedo.damageStrategy.numberOfShots;
-    //console.log(amount);
+    const amount = damages.length;
 
     const color = new THREE.Color(
       torpedo.visuals.engineColor[0] * 1.5,
@@ -25,12 +30,41 @@ class TorpedoExplosionMSV extends Animation {
       torpedo.visuals.engineColor[2] * 1.5
     );
 
-    for (let i = 0; i < amount; i++) {
-      const angle = getRandom() * 360;
-      const explosionPosition = new Vector()
-        .setFromAngle(angle)
-        .multiplyScalar(getRandom() * 10)
-        .add(position);
+    const boltArgs = {
+      color: [color.r, color.g, color.b],
+      size: 3,
+      length: 4,
+      coreOpacity: 0.01,
+    };
+
+    const boltEffect = new BoltEffect();
+
+    const { position: targetPosition, facing } = getPosition(targetIcon.ship);
+    damages.forEach((damage) => {
+      const system = targetIcon.ship.systems.getSystemById(
+        damage.entries[0].systemId
+      );
+
+      const explosionPosition = this.getLocationForSystemOrRandomLocationOnSection(
+        system,
+        targetIcon,
+        facing
+      ).add(targetPosition);
+
+      const duration = msvPosition.distanceTo(explosionPosition) / speed;
+
+      boltEffect.create(
+        startTime,
+        msvPosition,
+        explosionPosition.clone(),
+        speed,
+        200,
+        duration,
+        boltArgs,
+        getRandom,
+        particleEmitterContainer,
+        this
+      );
 
       this.animations.push(
         new ExplosionEffect(
@@ -38,15 +72,39 @@ class TorpedoExplosionMSV extends Animation {
           getRandom,
           {
             position: explosionPosition,
-            time: time + getRandom() * 500,
+            time: startTime + duration,
             duration: 100 + getRandom() * 250,
-            type: "glow",
-            size: 2,
-            color: color,
-            opacity: 0.25
+            type: "gas",
+            size: 8,
+            opacity: 0.25,
           },
           this
         )
+      );
+    });
+
+    let missAmount = torpedo.damageStrategy.numberOfShots - amount;
+    if (amount < 0) {
+      amount = 0;
+    }
+
+    for (let i = 0; i < missAmount; i++) {
+      const explosionPosition = this.getRandomLocationOnShip(
+        targetIcon,
+        facing
+      ).add(targetPosition);
+
+      boltEffect.create(
+        startTime,
+        msvPosition,
+        explosionPosition,
+        speed,
+        1000,
+        time - startTime + getRandom() * 1000 + 500,
+        boltArgs,
+        getRandom,
+        particleEmitterContainer,
+        this
       );
     }
   }

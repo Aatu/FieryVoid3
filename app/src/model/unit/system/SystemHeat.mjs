@@ -26,6 +26,13 @@ class SystemHeat {
     return this;
   }
 
+  getHeatTransferPerStructure() {
+    return (
+      this.system.callHandler("getHeatTransferPerStructure", null, 0) +
+      this.heatTransferPerStructure
+    );
+  }
+
   getHeat() {
     return this.heat;
   }
@@ -35,7 +42,7 @@ class SystemHeat {
       return 0;
     }
 
-    return this.system.hitpoints * this.heatTransferPerStructure;
+    return this.system.hitpoints * this.getHeatTransferPerStructure();
   }
 
   getOverheatTransferRatio() {
@@ -95,7 +102,7 @@ class SystemHeat {
   }
 
   predictHeatChange() {
-    if (this.isHeatStorage()) {
+    if (this.isHeatStorage() || this.system.isDestroyed()) {
       return {
         overheat: 0,
         newHeat: 0,
@@ -133,10 +140,12 @@ class SystemHeat {
     const maximumPossibleOverheatReduction = this.getOverheatTransferRatio();
 
     return {
-      overheat: Math.round(overheat * 100) / 100,
+      overheat,
       newHeat,
       overheatPercentage: overheat / this.getOverheatTreshold(),
-      cooling: Math.round((heatCooling + actualOverheatCooling) * 100) / 100,
+      cooling: heatCooling + actualOverheatCooling,
+      maxCooling: this.getMaxTransferHeat(),
+      coolingPercent: (heatCooling + actualOverheatCooling) / cooling,
       overHeatThreshold: this.getOverheatTreshold(),
       maximumPossibleOverheatReduction,
     };

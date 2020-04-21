@@ -12,6 +12,8 @@ class ThrustBill {
 
     this.buildRequiredThrust(this.movement);
 
+    this.fuel = this.ship.movement.getFuel();
+
     this.paid = null;
 
     this.directionsRequired = this.getRequiredThrustDirections();
@@ -66,7 +68,27 @@ class ThrustBill {
   }
 
   isPaid() {
-    return this.getCurrentThrustRequired() === 0;
+    /*
+    console.log(
+      "isPaid, required",
+      this.getCurrentThrustRequired(),
+      "this.fuel",
+      this.fuel,
+      "fuel required",
+      this.totalFuelRequirement()
+    );
+    */
+    return (
+      this.getCurrentThrustRequired() === 0 &&
+      this.fuel >= this.totalFuelRequirement()
+    );
+  }
+
+  totalFuelRequirement() {
+    return this.thrusters.reduce(
+      (all, thruster) => all + thruster.getFuelRequirement(),
+      0
+    );
   }
 
   getAllUsableThrusters(direction) {
@@ -74,28 +96,46 @@ class ThrustBill {
       .filter((thruster) => {
         const capacity = thruster.getThrustCapacity();
 
-        return thruster.isDirection(direction) && capacity > 0;
+        return (
+          thruster.isDirection(direction) &&
+          capacity > 0 &&
+          this.fuel >= thruster.getNextThrustFuelCost()
+        );
       })
       .sort(this.sortThrusters);
   }
 
   sortThrusters(a, b) {
-    const aHeat = a.getOverheat();
-    const bHeat = b.getOverheat();
+    const {
+      overheatPercentage: aHeat,
+      coolingPercent: aCooling,
+    } = a.getOverheat();
+    const {
+      overheatPercentage: bHeat,
+      coolingPercent: bCooling,
+    } = b.getOverheat();
 
     if (aHeat > bHeat) {
       return -1;
     }
 
-    if (aHeat > bHeat) {
+    if (aHeat < bHeat) {
       return 1;
     }
 
-    if (a.getEfficiency() > b.getEfficiency()) {
+    if (aCooling > bCooling) {
       return -1;
     }
 
-    if (a.getEfficiency() < b.getEfficiency()) {
+    if (aCooling < bCooling) {
+      return 1;
+    }
+
+    if (a.getNextThrustFuelCost() > b.getNextThrustFuelCost()) {
+      return -1;
+    }
+
+    if (a.getNextThrustFuelCost() < b.getNextThrustFuelCost()) {
       return 1;
     }
 
@@ -151,11 +191,11 @@ class ThrustBill {
     while (true) {
       const thrusters = this.getAllUsableThrusters(direction);
 
-      if (thrusters.length === 0) {
+      if (assigned === required) {
         return;
       }
 
-      if (assigned === required) {
+      if (thrusters.length === 0) {
         return;
       }
 

@@ -14,15 +14,120 @@ const directionsToString = {
   8: "Roll, Evade",
 };
 
+export const THRUSTER_MODE_FUSION = "fusion";
+export const THRUSTER_MODE_MANEUVER = "maneuver";
+export const THRUSTER_MODE_CHEMICAL = "chemical";
+
 class ThrustChannelSystemStrategy extends ShipSystemStrategy {
-  constructor(output, direction, { thrustExtra = 0.3 } = {}) {
+  constructor(
+    output,
+    direction,
+    { thrustHeatExtra = 0.3, fuelExtra = 0.1 } = {},
+    mode = THRUSTER_MODE_FUSION,
+    alternateModes = []
+  ) {
     super();
 
     this.output = output || 0;
     this.direction = direction || 0; // 0, 3, [4,5], [1,2], 6
     this.channeled = 0;
-    this.thrustExtra = thrustExtra;
-    this.heatPerThrustChanneled = 0.75;
+    this.thrustHeatExtra = thrustHeatExtra;
+    this.fuelExtra = fuelExtra;
+
+    this.mode = mode;
+    this.newMode = null;
+    this.alternateModes = alternateModes;
+
+    if (alternateModes.length > 0 && !alternateModes.includes(mode)) {
+      alternateModes.push(mode);
+    }
+  }
+
+  getBaseHeatPerThrustChanneled() {
+    switch (this.mode) {
+      case THRUSTER_MODE_FUSION:
+        return 0.5;
+      case THRUSTER_MODE_MANEUVER:
+        return 0.75;
+      case THRUSTER_MODE_CHEMICAL:
+        return 0.1;
+    }
+  }
+
+  getFuelPerThrustChanneled() {
+    switch (this.mode) {
+      case THRUSTER_MODE_FUSION:
+        return 1;
+      case THRUSTER_MODE_MANEUVER:
+        return 10;
+      case THRUSTER_MODE_CHEMICAL:
+        return 15;
+    }
+  }
+
+  isBoostable(payload, previousResponse = true) {
+    if (previousResponse === false) {
+      return false;
+    }
+
+    return this.mode === THRUSTER_MODE_FUSION;
+  }
+
+  canBoost(payload, previousResponse = true) {
+    if (previousResponse === false) {
+      return false;
+    }
+
+    return this.mode === THRUSTER_MODE_FUSION;
+  }
+
+  canChangeMode() {
+    return this.alternateModes.length > 1;
+  }
+
+  changeMode() {
+    if (!this.canChangeMode()) {
+      throw new Error("Check validity first");
+    }
+
+    let index = this.alternateModes.indexOf(this.mode);
+
+    if (index === this.alternateModes.length - 1) {
+      index = 0;
+    } else {
+      index++;
+    }
+
+    this.mode = this.alternateModes[index];
+    this.newMode = this.mode;
+    this.system.callHandler("resetBoost");
+  }
+
+  getHeatTransferPerStructure(payload, previousResponse = 0) {
+    if (this.mode === THRUSTER_MODE_FUSION) {
+      const boost = this.system.callHandler("getBoost", null, 0);
+
+      return previousResponse + boost * 0.12;
+    }
+
+    return previousResponse;
+  }
+
+  getFuelRequirement(amount = null) {
+    let fuel = 0;
+    let extra = 1;
+
+    if (amount === null) {
+      amount = this.channeled;
+    }
+
+    while (amount--) {
+      const increase = this.getFuelPerThrustChanneled() * extra;
+      fuel += increase;
+      extra += this.fuelExtra;
+    }
+
+    return Math.round(fuel);
   }
 
   resetChanneledThrust() {
@@ -33,22 +138,32 @@ class ThrustChannelSystemStrategy extends ShipSystemStrategy {
     this.channeled += channel;
   }
 
-  serialize(payload, previousResponse = []) {
-    return {
-      ...previousResponse,
-      thrustChannelSystemStrategy: {
-        channeled: this.channeled,
-      },
-    };
+  setChanneledThrust(channel) {
+    this.channeled = channel;
+  }
+
+  getChanneledThrust() {
+    return this.channeled;
   }
 
   getIconText() {
     return this.channeled + "/" + this.getThrustOutput();
   }
 
+  serialize(payload, previousResponse = []) {
+    return {
+      ...previousResponse,
+      thrustChannelSystemStrategy: {
+        channeled: this.channeled,
+        newMode: this.newMode,
+      },
+    };
+  }
+
   deserialize(data = {}) {
     const thisData = data.thrustChannelSystemStrategy || {};
     this.channeled = thisData.channeled || 0;
+    this.newMode = thisData.newMode || null;
 
     return this;
   }
@@ -65,8 +180,13 @@ class ThrustChannelSystemStrategy extends ShipSystemStrategy {
 
   getMessages(payload, previousResponse = []) {
     previousResponse.push({
+      header: "Mode",
+      value: this.mode.charAt(0).toUpperCase() + this.mode.substring(1),
+    });
+
+    previousResponse.push({
       header: "Output",
-      value: this.output,
+      value: this.getThrustOutput(),
     });
 
     previousResponse.push({
@@ -79,7 +199,61 @@ class ThrustChannelSystemStrategy extends ShipSystemStrategy {
       value: this.channeled,
     });
 
+    previousResponse.push({
+      header: "Fuel expended",
+      value: this.getFuelRequirement(),
+    });
+
     return previousResponse;
+  }
+
+  getBackgroundImage() {
+    if (this.mode === THRUSTER_MODE_FUSION) {
+      if (this.callHandler("isDirection", 3, false)) {
+        return "/img/system/thruster2.png";
+      } else if (this.callHandler("isDirection", 2, false)) {
+        return "/img/system/thruster4.png";
+      } else if (this.callHandler("isDirection", 5, false)) {
+        return "/img/system/thruster3.png";
+      }
+      return "/img/system/thruster1.png";
+    } else {
+      if (this.callHandler("isDirection", 3, false)) {
+        return "/img/system/thrusterC2.png";
+      } else if (this.callHandler("isDirection", 2, false)) {
+        return "/img/system/thrusterC4.png";
+      } else if (this.callHandler("isDirection", 5, false)) {
+        return "/img/system/thrusterC3.png";
+      }
+      return "/img/system/thrusterC1.png";
+    }
+  }
+
+  getTooltipMenuButton({ myShip }, previousResponse = []) {
+    if (!myShip) {
+      return previousResponse;
+    }
+
+    if (this.system.isDisabled()) {
+      return previousResponse;
+    }
+
+    if (!this.canChangeMode()) {
+      return previousResponse;
+    }
+
+    return [
+      ...previousResponse,
+      {
+        sort: 50,
+        img:
+          this.mode === THRUSTER_MODE_FUSION
+            ? "/img/system/thrusterC1.png"
+            : "/img/system/thruster1.png",
+        onClickHandler: this.changeMode.bind(this),
+        onDisabledHandler: () => false,
+      },
+    ];
   }
 
   generatesHeat() {
@@ -87,7 +261,7 @@ class ThrustChannelSystemStrategy extends ShipSystemStrategy {
   }
 
   getHeatPerThrustChanneled() {
-    let heat = this.heatPerThrustChanneled;
+    let heat = this.getBaseHeatPerThrustChanneled();
 
     heat *=
       1 +
@@ -99,18 +273,22 @@ class ThrustChannelSystemStrategy extends ShipSystemStrategy {
     return heat;
   }
 
-  getHeatForThrust({ amount }) {
-    return amount * this.getHeatPerThrustChanneled();
-  }
-
   getHeatGenerated(payload, previousResponse = 0) {
     let count = this.channeled;
     let extra = 1;
     let heat = 0;
 
+    const boost = this.system.callHandler("getBoost", null, 0) * 0.05;
+    let extraIncrement = this.thrustHeatExtra - boost * 0.01;
+
+    if (extraIncrement < 0.01) {
+      extraIncrement = 0.01;
+    }
+
     while (count--) {
-      heat += this.getHeatPerThrustChanneled() * extra;
-      extra += this.thrustExtra;
+      const increase = this.getHeatPerThrustChanneled() * extra;
+      heat += increase;
+      extra += extraIncrement;
     }
 
     return previousResponse + heat;
@@ -164,8 +342,45 @@ class ThrustChannelSystemStrategy extends ShipSystemStrategy {
     );
   }
 
+  getRequiredPhasesForReceivingPlayerData() {
+    return 3;
+  }
+
+  receivePlayerData({ clientSystem, phase }) {
+    if (phase !== 3) {
+      return;
+    }
+
+    if (!clientSystem) {
+      return;
+    }
+
+    if (this.system.isDisabled()) {
+      return;
+    }
+
+    const clientStrategy = clientSystem.getStrategiesByInstance(
+      ThrustChannelSystemStrategy
+    )[0];
+
+    const targetMode = clientStrategy.newMode;
+
+    if (targetMode === null) {
+      return;
+    }
+
+    if (!this.canChangeMode() || !this.alternateModes.includes(targetMode)) {
+      throw new Error(`This system can not change mode to ${targetMode}`);
+    }
+
+    this.mode = targetMode;
+    this.targetMode = null;
+    this.system.callHandler("resetBoost");
+  }
+
   advanceTurn() {
     this.channeled = 0;
+    this.targetMode = null;
   }
 
   getPossibleCriticals(payload, previousResponse = []) {
@@ -186,6 +401,10 @@ class ThrustChannelSystemStrategy extends ShipSystemStrategy {
   }
 
   onSystemOffline() {
+    this.onSystemPowerLevelDecrease();
+  }
+
+  onSystemPowerLevelIncrease() {
     this.onSystemPowerLevelDecrease();
   }
 

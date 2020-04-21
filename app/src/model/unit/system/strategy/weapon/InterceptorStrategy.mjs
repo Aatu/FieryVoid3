@@ -41,7 +41,7 @@ class InterceptorStrategy extends ShipSystemStrategy {
 
     let distance = torpedoFlight.torpedo.damageStrategy.getStrikeDistance({
       target,
-      torpedoFlight
+      torpedoFlight,
     });
 
     if (target !== ship) {
@@ -52,7 +52,7 @@ class InterceptorStrategy extends ShipSystemStrategy {
 
     const rangeModifier =
       this.system.callHandler("getRangeModifier", {
-        distance: distance
+        distance: distance,
       }) *
       (1 + torpedoFlight.torpedo.getEvasion() / 10);
 
@@ -77,7 +77,11 @@ class InterceptorStrategy extends ShipSystemStrategy {
         torpedoHitSize + rangeModifier + fireControl + ccew * 5 + rollingPenalty
       ),
       absoluteResult:
-        torpedoHitSize + rangeModifier + fireControl + ccew * 5 + rollingPenalty
+        torpedoHitSize +
+        rangeModifier +
+        fireControl +
+        ccew * 5 +
+        rollingPenalty,
     });
   }
 

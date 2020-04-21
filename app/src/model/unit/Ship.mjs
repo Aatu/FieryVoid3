@@ -187,6 +187,7 @@ class Ship {
 
   setShipLoadout() {
     this.systems.callAllSystemHandlers("loadTargetInstant");
+    this.systems.callAllSystemHandlers("setMaxFuel");
   }
 }
 

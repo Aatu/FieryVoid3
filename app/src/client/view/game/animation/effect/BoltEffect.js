@@ -49,18 +49,19 @@ class BoltEffect {
     getRandom,
     context
   ) {
+    const size = args.size || 10;
     const directionNormal = endPosition.sub(startPosition).normalize();
     const color = args.color
       ? new THREE.Color(args.color[0], args.color[1], args.color[2])
       : new THREE.Color(1, 0, 0);
 
-    const tailLength = args.length ? args.length : args.size * 2;
+    const tailLength = args.length ? args.length : size * 2;
 
     const repeat = args.repeat || 0;
 
     particleEmitterContainer
       .getBoltParticle(context)
-      .setScale(tailLength, args.size)
+      .setScale(tailLength, size)
       .setOpacity(0.5)
       .setPosition(startPosition)
       .setBoltTexture()
@@ -71,7 +72,7 @@ class BoltEffect {
       .setDeactivationTime(startTime + duration, fade)
       .setRepeat(repeat);
 
-    const coreLength = (args.length ? args.length : args.size * 2) * 0.5;
+    const coreLength = (args.length ? args.length : size * 2) * 0.5;
 
     const corePosition = coreLength * 0.2;
     const coreTime = corePosition / speed;
@@ -81,7 +82,7 @@ class BoltEffect {
     particleEmitterContainer
       .getBoltParticle(context)
       //.setActivationTime(0)
-      .setScale(coreLength, args.size * 0.5)
+      .setScale(coreLength, size * 0.5)
       .setOpacity(coreOpacity)
       .setPosition(startPosition)
       .setBoltTexture()

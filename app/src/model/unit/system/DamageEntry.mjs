@@ -1,7 +1,17 @@
 import uuidv4 from "uuid/v4.js";
 
 class DamageEntry {
-  constructor(amount, armor = 0) {
+  constructor(amount = 0, armor = 0) {
+    if (
+      !Number.isInteger(amount) ||
+      Number.isNaN(amount) ||
+      !Number.isInteger(armor) ||
+      Number.isNaN(armor)
+    ) {
+      throw new Error(
+        `Trying to construct damageEntry with invalid damage or armor ${amount}, ${armor}`
+      );
+    }
     this.amount = amount;
     if (this.amount < 0) {
       this.amount = 0;
@@ -31,7 +41,7 @@ class DamageEntry {
       amount: this.amount,
       armor: this.armor,
       id: this.id,
-      destroyedSystem: this.destroyedSystem
+      destroyedSystem: this.destroyedSystem,
     };
   }
 
@@ -41,6 +51,17 @@ class DamageEntry {
     this.armor = data.armor || 0;
     this.destroyedSystem = data.destroyedSystem || false;
     this.new = false;
+
+    if (
+      !Number.isInteger(this.amount) ||
+      Number.isNaN(this.amount) ||
+      !Number.isInteger(this.armor) ||
+      Number.isNaN(this.armor)
+    ) {
+      throw new Error(
+        `Trying to deserialize damageEntry with invalid damage or armor ${this.amount}, ${this.armor}`
+      );
+    }
 
     return this;
   }

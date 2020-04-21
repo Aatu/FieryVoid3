@@ -13,6 +13,7 @@ const tooltipButtonColor = "#3b3b60";
 const mediumBlue = "#142b4b";
 const hitpoints = "#427231";
 const hitpointsCritical = "#ed6738";
+const fuel = "#295591";
 
 export {
   blue,
@@ -30,4 +31,5 @@ export {
   hitpoints,
   hitpointsCritical,
   red,
+  fuel,
 };

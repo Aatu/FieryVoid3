@@ -1,13 +1,12 @@
 import * as React from "react";
 import styled from "styled-components";
 import {
-  Tooltip,
-  TooltipHeader,
   TooltipEntry,
   TooltipValue,
   TooltipValueHeader,
 } from "../../../../styled";
-import HeatBar from "../HeatBar/HeatBar";
+import ShipHeatBar from "../HeatBar/ShipHeatBar";
+import ShipFuelBar from "../HeatBar/ShipFuelBar";
 
 const Row = styled.div`
   display: flex;
@@ -39,6 +38,16 @@ class ShipTooltipDetails extends React.Component {
 
     const heatPercent =
       ship.systems.getTotalHeatStored() / ship.systems.getTotalHeatStorage();
+
+    const heatChange = ship.systems.getPassiveHeatChange();
+
+    const newHeatPercent =
+      (ship.systems.getTotalHeatStored() + heatChange) /
+      ship.systems.getTotalHeatStorage();
+
+    const shipFuel = ship.movement.getFuel();
+    const shipFuelSpace = ship.movement.getFuelSpace();
+    const shipNewFuel = shipFuel - ship.movement.getFuelCost();
 
     return (
       <Container>
@@ -77,20 +86,14 @@ class ShipTooltipDetails extends React.Component {
         </Row>
 
         <Row>
-          {this.getEntry(
-            "Heat stored",
-            `${Math.round(
-              ship.systems.getTotalHeatStored()
-            )}/${ship.systems.getTotalHeatStorage()}`
-          )}
-
-          {/* this.getEntry(
-            "Predicted heat change",
-            Math.round(ship.systems.getPassiveHeatChange())
-          ) */}
+          <ShipHeatBar percent={heatPercent} newPercent={newHeatPercent} />
         </Row>
         <Row>
-          <HeatBar percent={heatPercent} />
+          <ShipFuelBar
+            fuel={shipFuel}
+            space={shipFuelSpace}
+            newFuel={shipNewFuel}
+          />
         </Row>
       </Container>
     );

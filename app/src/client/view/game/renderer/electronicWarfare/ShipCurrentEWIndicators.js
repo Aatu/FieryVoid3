@@ -12,9 +12,9 @@ class ShipCurrentEWIndicators {
     this.update(this.ship);
   }
 
-  update(ship, useGhost) {
+  update(ship) {
     this.ship = ship;
-    this.oew = this.createOEW(useGhost);
+    this.oew = this.createOEW();
 
     return this;
   }
@@ -43,21 +43,13 @@ class ShipCurrentEWIndicators {
       .getAllOew()
       .map((ewEntry) => {
         const targetIcon = this.shipIconContainer.getById(ewEntry.targetShipId);
-        const targetGhost = this.shipIconContainer.getGhostShipIconByShip(
-          targetIcon.ship
-        );
-        let indicator = this.oew.find((oew) => oew.targetIcon === targetIcon);
 
-        const shipGhost = this.shipIconContainer.getGhostShipIconByShip(
-          this.icon.ship
-        );
+        let indicator = this.oew.find((oew) => oew.targetIcon === targetIcon);
 
         if (!indicator) {
           indicator = new CurrentOEWIndicator(
             this.icon,
             targetIcon,
-            targetGhost,
-            shipGhost,
             ewEntry.amount,
             this.ship.player.is(this.currentUser),
             this.scene

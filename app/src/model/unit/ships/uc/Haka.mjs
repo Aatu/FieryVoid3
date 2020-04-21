@@ -122,7 +122,7 @@ class Haka extends Ship {
 
       new systems.ManeuveringThrusterRight(
         { id: 205, hitpoints: 10, armor: 3 },
-        20,
+        10,
         0
       ),
 
@@ -176,7 +176,7 @@ class Haka extends Ship {
 
       new systems.ManeuveringThrusterLeft(
         { id: 605, hitpoints: 10, armor: 3 },
-        20,
+        10,
         0
       ),
 
@@ -190,19 +190,18 @@ class Haka extends Ship {
         armor: 5,
         heatStorage: 100,
         radiator: 5,
+        fuel: 12000,
       }),
 
       new systems.PDC30mm({ id: 450 }, { start: 160, end: 340 }),
 
-      new systems.Thruster({ id: 432, hitpoints: 15, armor: 3 }, 8, 3, {
-        power: 2,
-        boostPower: 1,
-        maxBoost: 8,
+      new systems.Thruster({ id: 432, hitpoints: 15, armor: 3 }, 15, 3, {
+        power: 3,
+        boostPower: 2,
       }),
-      new systems.Thruster({ id: 433, hitpoints: 15, armor: 3 }, 8, 3, {
-        power: 2,
-        boostPower: 1,
-        maxBoost: 8,
+      new systems.Thruster({ id: 433, hitpoints: 15, armor: 3 }, 15, 3, {
+        power: 3,
+        boostPower: 2,
       }),
 
       new systems.PDC30mm({ id: 451 }, { start: 40, end: 200 }),
@@ -218,14 +217,13 @@ class Haka extends Ship {
     ]);
 
     this.systems.addPortAftSystem([
-      new systems.Thruster({ id: 533, hitpoints: 15, armor: 3 }, 8, 3, {
-        power: 2,
-        boostPower: 1,
-        maxBoost: 8,
+      new systems.Thruster({ id: 533, hitpoints: 15, armor: 3 }, 15, 3, {
+        power: 3,
+        boostPower: 2,
       }),
       new systems.ManeuveringThrusterRight(
         { id: 501, hitpoints: 10, armor: 3 },
-        20,
+        10,
         0
       ),
       new systems.Radiator10x50({ id: 502 }),
@@ -240,13 +238,12 @@ class Haka extends Ship {
     this.systems.addStarboardAftSystem([
       new systems.ManeuveringThrusterLeft(
         { id: 305, hitpoints: 10, armor: 3 },
-        20,
+        10,
         0
       ),
-      new systems.Thruster({ id: 333, hitpoints: 15, armor: 3 }, 8, 3, {
-        power: 2,
-        boostPower: 1,
-        maxBoost: 8,
+      new systems.Thruster({ id: 333, hitpoints: 15, armor: 3 }, 15, 3, {
+        power: 3,
+        boostPower: 2,
       }),
       new systems.Radiator10x50({ id: 301 }),
       new systems.Radiator10x50({ id: 302 }),

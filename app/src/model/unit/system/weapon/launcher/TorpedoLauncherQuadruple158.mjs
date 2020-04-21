@@ -6,10 +6,10 @@ import TorpedoLauncherStrategy from "../../strategy/weapon/TorpedoLauncherStrate
 class TorpedoLauncherQuadruple158 extends Weapon {
   constructor(args) {
     super(args, [
-      new TorpedoLauncherStrategy(1, null, Torpedo158, 3),
-      new TorpedoLauncherStrategy(2, null, Torpedo158, 3),
-      new TorpedoLauncherStrategy(3, null, Torpedo158, 3),
-      new TorpedoLauncherStrategy(4, null, Torpedo158, 3)
+      new TorpedoLauncherStrategy(1, null, Torpedo158, 6),
+      new TorpedoLauncherStrategy(2, null, Torpedo158, 6),
+      new TorpedoLauncherStrategy(3, null, Torpedo158, 6),
+      new TorpedoLauncherStrategy(4, null, Torpedo158, 6),
     ]);
   }
 

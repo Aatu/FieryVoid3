@@ -42,6 +42,34 @@ class RequiresPowerSystemStrategy extends ShipSystemStrategy {
     return this.system.hasCritical(ForcedOffline);
   }
 
+  getTooltipMenuButton({ myShip }, previousResponse = []) {
+    if (!myShip) {
+      return previousResponse;
+    }
+
+    if (this.system.shipSystems.power.canSetOnline(this.system)) {
+      return [
+        ...previousResponse,
+        {
+          sort: 0,
+          img: "/img/goOnline.png",
+          onClickHandler: () => this.system.power.setOnline(),
+        },
+      ];
+    } else if (this.system.shipSystems.power.canSetOffline(this.system)) {
+      return [
+        ...previousResponse,
+        {
+          sort: 0,
+          img: "/img/goOffline.png",
+          onClickHandler: () => this.system.power.setOffline(),
+        },
+      ];
+    }
+
+    return previousResponse;
+  }
+
   getPossibleCriticals(payload, previousResponse = []) {
     if (!this.getsCriticals) {
       return previousResponse;

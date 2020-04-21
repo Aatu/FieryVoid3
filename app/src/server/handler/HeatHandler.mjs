@@ -3,7 +3,7 @@ import ShipSystemLogEntryHeat from "../../model/unit/system/ShipSystemLog/ShipSy
 
 class HeatHandler {
   advance(gameData) {
-    gameData.ships.getShips().forEach(ship => {
+    gameData.ships.getShips().forEach((ship) => {
       this.warmSystems(ship);
       this.collectHeat(ship);
       this.markNewOverheat(ship);
@@ -13,30 +13,33 @@ class HeatHandler {
   }
 
   warmSystems(ship) {
-    ship.systems.getSystems().forEach(system => {
-      const overheat = system.heat.getOverheat();
-      const heatGenerated = system.heat.generateHeat();
+    ship.systems
+      .getSystems()
+      .filter((system) => !system.isDestroyed())
+      .forEach((system) => {
+        const overheat = system.heat.getOverheat();
+        const heatGenerated = system.heat.generateHeat();
 
-      if (overheat || heatGenerated) {
-        const logEntry = system.log.getOpenLogEntryByClass(
-          ShipSystemLogEntryHeat
-        );
+        if (overheat || heatGenerated) {
+          const logEntry = system.log.getOpenLogEntryByClass(
+            ShipSystemLogEntryHeat
+          );
 
-        logEntry.setInitialOverheat(
-          system.heat.getOverheat(),
-          system.heat.getOverheatPercentage()
-        );
-        logEntry.setHeatGenerated(heatGenerated);
-      }
-    });
+          logEntry.setInitialOverheat(
+            system.heat.getOverheat(),
+            system.heat.getOverheatPercentage()
+          );
+          logEntry.setHeatGenerated(heatGenerated);
+        }
+      });
   }
 
   collectHeat(ship) {
     ship.systems
       .getSystems()
-      .filter(system => !system.isDestroyed())
-      .filter(system => system.heat.getHeatStoreCapacity() >= 1)
-      .forEach(system => {
+      .filter((system) => !system.isDestroyed())
+      .filter((system) => system.heat.getHeatStoreCapacity() >= 1)
+      .forEach((system) => {
         if (system.heat.getHeat()) {
           const logEntry = system.log.getOpenLogEntryByClass(
             ShipSystemLogEntryHeat
@@ -49,14 +52,14 @@ class HeatHandler {
     while (true) {
       const storages = ship.systems
         .getSystems()
-        .filter(system => !system.isDestroyed())
-        .filter(system => system.heat.getHeatStoreCapacity() >= 1);
+        .filter((system) => !system.isDestroyed())
+        .filter((system) => system.heat.getHeatStoreCapacity() >= 1);
 
       const hotSystems = ship.systems
         .getSystems()
-        .filter(system => !system.isDestroyed())
-        .filter(system => system.heat.isHeatStorage() === false)
-        .filter(system => system.heat.getTransferHeat())
+        .filter((system) => !system.isDestroyed())
+        .filter((system) => system.heat.isHeatStorage() === false)
+        .filter((system) => system.heat.getTransferHeat())
         .sort((a, b) => {
           if (a.heat.getHeatPerStructure() > b.heat.getHeatPerStructure()) {
             return 1;
@@ -73,9 +76,9 @@ class HeatHandler {
         break;
       }
 
-      hotSystems.forEach(system => {
+      hotSystems.forEach((system) => {
         let heat = system.heat.getTransferHeat();
-        storages.forEach(storage => {
+        storages.forEach((storage) => {
           const step = heat < 1 ? heat : 1;
 
           if (heat === 0 || storage.heat.getHeatStoreCapacity() < step) {
@@ -97,8 +100,8 @@ class HeatHandler {
   markNewOverheat(ship) {
     ship.systems
       .getSystems()
-      .filter(system => !system.isDestroyed())
-      .forEach(system => {
+      .filter((system) => !system.isDestroyed())
+      .forEach((system) => {
         system.heat.markNewOverheat();
 
         if (system.heat.getOverheat() || system.heat.heatTransferred) {
@@ -121,8 +124,8 @@ class HeatHandler {
   overHeatSystems(ship) {
     ship.systems
       .getSystems()
-      .filter(system => !system.isDestroyed())
-      .forEach(system => {
+      .filter((system) => !system.isDestroyed())
+      .forEach((system) => {
         let overHeat = system.heat.getOverheatPercentage();
 
         if (overHeat === 0) {
@@ -144,21 +147,23 @@ class HeatHandler {
     while (true) {
       const storages = ship.systems
         .getSystems()
-        .filter(system => !system.isDestroyed())
-        .filter(system => system.heat.isHeatStorage() && system.heat.getHeat());
+        .filter((system) => !system.isDestroyed())
+        .filter(
+          (system) => system.heat.isHeatStorage() && system.heat.getHeat()
+        );
 
       const radiators = ship.systems
         .getSystems()
-        .filter(system => !system.isDestroyed())
-        .filter(system => system.heat.getRadiateHeatCapacity() >= 1);
+        .filter((system) => !system.isDestroyed())
+        .filter((system) => system.heat.getRadiateHeatCapacity() >= 1);
 
       if (storages.length === 0 || radiators.length === 0) {
         break;
       }
 
-      storages.forEach(storage => {
+      storages.forEach((storage) => {
         let heat = storage.heat.getHeat();
-        radiators.forEach(radiator => {
+        radiators.forEach((radiator) => {
           if (heat === 0 || radiator.heat.getRadiateHeatCapacity() < 1) {
             return;
           }
@@ -178,8 +183,8 @@ class HeatHandler {
 
     ship.systems
       .getSystems()
-      .filter(system => !system.isDestroyed())
-      .forEach(system => {
+      .filter((system) => !system.isDestroyed())
+      .forEach((system) => {
         const heatRadiated = system.callHandler("getRadiatedHeat", null, null);
 
         if (heatRadiated) {

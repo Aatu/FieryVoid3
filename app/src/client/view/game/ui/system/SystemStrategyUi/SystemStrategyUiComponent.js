@@ -4,6 +4,7 @@ import TorpedoLauncher from "./torpedo/TorpedoLauncher";
 import Ammo from "./ammo/Ammo";
 import RangePenalty from "./range/RangePenalty";
 import SystemHeatBar from "../../HeatBar/SystemHeatBar";
+import SystemFuelBar from "../../HeatBar/SystemFuelBar";
 
 const SystemStrategyUiComponent = ({ name, ...props }) => {
   switch (name) {
@@ -17,6 +18,10 @@ const SystemStrategyUiComponent = ({ name, ...props }) => {
       return <TorpedoLauncher {...props} />;
     case "SystemHeatBar":
       return <SystemHeatBar {...props} />;
+    case "SystemFuelBar":
+      return <SystemFuelBar {...props} />;
+    default:
+      throw Error(`SystemUiComponent "${name}" not found`);
   }
 };
 

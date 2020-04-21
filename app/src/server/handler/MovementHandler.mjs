@@ -12,7 +12,7 @@ class MovementHandler {
   }
 
   receiveMoves(serverGameData, clientGameData, activeShips, user) {
-    activeShips.forEach(serverShip => {
+    activeShips.forEach((serverShip) => {
       const clientShip = clientGameData.ships.getShipById(serverShip.id);
       const startMove = serverShip.movement.getLastEndMoveOrSurrogate();
       const validator = new MovementValidator(
@@ -24,13 +24,15 @@ class MovementHandler {
       validator.validate();
 
       serverShip.movement.replaceMovement(
-        clientShip.movement.getMovement().map(move => move.setId(uuidv4()))
+        clientShip.movement.getMovement().map((move) => move.setId(uuidv4()))
       );
+
+      serverShip.movement.payFuelCost();
     });
   }
 
   advance(gameData) {
-    gameData.ships.getShips().forEach(ship => {
+    gameData.ships.getShips().forEach((ship) => {
       ship.movement.addMovement(
         this.movementService
           .getNewEndMove(ship, gameData.terrain)
@@ -48,7 +50,7 @@ class MovementHandler {
   }
 
   applyRolls(gameData) {
-    gameData.ships.getShips().forEach(ship => {
+    gameData.ships.getShips().forEach((ship) => {
       ship.movement.applyRoll();
     });
   }

@@ -11,18 +11,18 @@ class SystemDamage {
 
   serialize() {
     return {
-      entries: this.entries.map(entry => entry.serialize()),
-      criticals: this.criticals.map(entry => entry.serialize())
+      entries: this.entries.map((entry) => entry.serialize()),
+      criticals: this.criticals.map((entry) => entry.serialize()),
     };
   }
 
   deserialize(data = {}) {
     this.entries = data.entries
-      ? data.entries.map(entry => new DamageEntry().deserialize(entry))
+      ? data.entries.map((entry) => new DamageEntry().deserialize(entry))
       : [];
 
     this.criticals = data.criticals
-      ? data.criticals.map(entry =>
+      ? data.criticals.map((entry) =>
           new criticals[entry.className]().deserialize(entry)
         )
       : [];
@@ -35,7 +35,7 @@ class SystemDamage {
   }
 
   getDamageById(id) {
-    const entry = this.entries.find(damage => damage.id === id);
+    const entry = this.entries.find((damage) => damage.id === id);
 
     if (entry) {
       entry.setSystem(this.system);
@@ -49,20 +49,22 @@ class SystemDamage {
   }
 
   filterReplaced(critical) {
-    this.criticals = this.criticals.filter(old => !old.isReplacedBy(critical));
+    this.criticals = this.criticals.filter(
+      (old) => !old.isReplacedBy(critical)
+    );
   }
 
   hasCritical(object) {
     switch (typeof object) {
       case "object":
         return this.criticals.some(
-          crit => crit.constructor === object.constructor
+          (crit) => crit.constructor === object.constructor
         );
       case "function":
-        return this.criticals.some(crit => crit instanceof object);
+        return this.criticals.some((crit) => crit instanceof object);
 
       case "string":
-        return this.criticals.some(crit => crit.constructor.name === object);
+        return this.criticals.some((crit) => crit.constructor.name === object);
     }
   }
 
@@ -93,7 +95,7 @@ class SystemDamage {
 
   getNewDamage() {
     return this.entries
-      .filter(entry => entry.new)
+      .filter((entry) => entry.new)
       .reduce((acc, entry) => acc + entry.getDamage(), 0);
   }
 
@@ -103,11 +105,11 @@ class SystemDamage {
 
   advanceTurn() {
     this.entries = this.entries
-      .map(entry => entry.advanceTurn())
+      .map((entry) => entry.advanceTurn())
       .filter(Boolean);
-    this.criticals.forEach(critical => critical.advanceTurn());
+    this.criticals.forEach((critical) => critical.advanceTurn());
     this.criticals = this.criticals.filter(
-      critical => !critical.isFixed(this.system)
+      (critical) => !critical.isFixed(this.system)
     );
   }
 }

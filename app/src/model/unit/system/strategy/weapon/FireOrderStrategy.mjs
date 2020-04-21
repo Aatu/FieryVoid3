@@ -14,7 +14,7 @@ class FireOrderStrategy extends ShipSystemStrategy {
   }
 
   executeFireOrders({ gameData }) {
-    this.fireOrders.forEach(fireOrder => {
+    this.fireOrders.forEach((fireOrder) => {
       const weapon = this.system;
       const shooter = gameData.ships.getShipById(fireOrder.shooterId);
       const target = gameData.ships.getShipById(fireOrder.targetId);
@@ -44,7 +44,7 @@ class FireOrderStrategy extends ShipSystemStrategy {
         weaponSettings,
         gameData,
         fireOrder,
-        combatLogEntry
+        combatLogEntry,
       });
 
       weapon.callHandler("applyDamageFromWeaponFire", {
@@ -54,7 +54,7 @@ class FireOrderStrategy extends ShipSystemStrategy {
         gameData,
         fireOrder,
         combatLogEntry,
-        hitResolution
+        hitResolution,
       });
 
       weapon.callHandler("onWeaponFired");
@@ -102,13 +102,15 @@ class FireOrderStrategy extends ShipSystemStrategy {
   serialize(payload, previousResponse = []) {
     return {
       ...previousResponse,
-      fireOrderStrategy: this.fireOrders.map(fire => fire.serialize())
+      fireOrderStrategy: this.fireOrders.map((fire) => fire.serialize()),
     };
   }
 
   deserialize(data = {}) {
     this.fireOrders = data.fireOrderStrategy
-      ? data.fireOrderStrategy.map(entry => new FireOrder().deserialize(entry))
+      ? data.fireOrderStrategy.map((entry) =>
+          new FireOrder().deserialize(entry)
+        )
       : [];
 
     return this;

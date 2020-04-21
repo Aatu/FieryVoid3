@@ -1,8 +1,7 @@
 import * as React from "react";
-import { TooltipMenu, TooltipButton, TooltipValue } from "../../../../styled";
-import OEWButtons from "../electronicWarfare/OEWButtons";
+import { TooltipMenu, TooltipButton } from "../../../../styled";
 
-class GameSystemTooltipMenu extends React.PureComponent {
+class GameSystemTooltipMenu extends React.Component {
   render() {
     const { ship, system, uiState } = this.props;
     const { currentUser } = uiState.services;
@@ -16,82 +15,28 @@ class GameSystemTooltipMenu extends React.PureComponent {
 
     return (
       <TooltipMenu>
-        {myShip && ship.systems.power.canSetOnline(system) && (
-          <TooltipButton
-            img="/img/goOnline.png"
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              system.power.setOnline();
-              uiState.shipSystemStateChanged(ship, system);
-              uiState.shipStateChanged(ship);
-              this.forceUpdate();
-            }}
-          />
-        )}
-
-        {myShip && ship.systems.power.canSetOffline(system) && (
-          <TooltipButton
-            img="/img/goOffline.png"
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              system.power.setOffline();
-              uiState.shipSystemStateChanged(ship, system);
-              uiState.shipStateChanged(ship);
-              this.forceUpdate();
-            }}
-          />
-        )}
-
-        {myShip &&
-          !system.isDisabled() &&
-          system.callHandler("isBoostable", null, false) && (
-            <TooltipButton
-              img="/img/plus.png"
-              disabled={!system.callHandler("canBoost", null, false)}
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                if ((!system.callHandler("canBoost"), null, false)) {
-                  return;
-                }
-
-                system.callHandler("boost");
-                uiState.shipSystemStateChanged(ship, system);
-                uiState.shipStateChanged(ship);
-                this.forceUpdate();
-              }}
-            />
-          )}
-
-        {myShip &&
-          !system.isDisabled() &&
-          system.callHandler("isBoostable", null, false) && (
-            <TooltipButton
-              img="/img/minus.png"
-              disabled={!system.callHandler("canDeBoost", null, false)}
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                if (!system.callHandler("canDeBoost", null, false)) {
-                  return;
-                }
-                system.callHandler("deBoost");
-                uiState.shipSystemStateChanged(ship, system);
-                uiState.shipStateChanged(ship);
-                this.forceUpdate();
-              }}
-            />
-          )}
-
         {system
-          .callHandler("getTooltipMenuButton", { uiState, myShip }, [])
+          .callHandler(
+            "getTooltipMenuButton",
+            { uiState, myShip, selectedShip },
+            []
+          )
+          .sort((a, b) => {
+            if (a.sort > b.sort) {
+              return 1;
+            }
+
+            if (a.sort < b.sort) {
+              return -1;
+            }
+
+            return 0;
+          })
           .map(({ img, disabledHandler, onClickHandler }, i) => (
             <TooltipButton
               key={`custom-system-tooltip-button-${i}`}
               img={img}
-              disabled={disabledHandler}
+              disabled={disabledHandler ? disabledHandler() : false}
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();

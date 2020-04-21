@@ -53,12 +53,15 @@ class TestShip extends Ship {
         armor: 5,
         heatStorage: 200,
         radiator: 5,
+        fuel: 4000,
       }),
     ]);
   }
 
   setShipLoadout() {
     super.setShipLoadout();
+
+    this.systems.getSystemById(205).callHandler("setMaxFuel");
 
     const cargoBay = this.systems.getSystemById(204);
 
@@ -98,6 +101,8 @@ class TestShip extends Ship {
       ammo: new Torpedo72HE(),
       launcherIndex: 2,
     });
+
+    return this;
   }
 }
 

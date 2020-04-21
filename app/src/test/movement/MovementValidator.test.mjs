@@ -12,6 +12,7 @@ import Reactor from "../../model/unit/system/reactor/Reactor.mjs";
 import DamageEntry from "../../model/unit/system/DamageEntry.mjs";
 import ManeuveringThruster from "../../model/unit/system/thruster/ManeuveringThruster.mjs";
 import OutputReduced from "../../model/unit/system/criticals/OutputReduced.mjs";
+import FuelTank from "../../model/unit/system/cargo/FuelTank.mjs";
 
 const startMove = new MovementOrder(
   -1,
@@ -38,7 +39,7 @@ const getMovementService = () =>
 
 const constructShip = (id = 123) => {
   let ship = new Ship({
-    id
+    id,
   });
 
   ship.accelcost = 3;
@@ -55,14 +56,17 @@ const constructShip = (id = 123) => {
     new ManeuveringThruster({ id: 10, hitpoints: 10, armor: 3 }, 9, 3),
     new Engine({ id: 5, hitpoints: 10, armor: 3 }, 12, 6, 2),
     new Engine({ id: 6, hitpoints: 10, armor: 3 }, 12, 6, 2),
-    new Reactor({ id: 7, hitpoints: 10, armor: 3 }, 20)
+    new Reactor({ id: 7, hitpoints: 10, armor: 3 }, 20),
+    new FuelTank({ id: 12, hitpoints: 10, armor: 3 }, 400),
   ]);
+
+  ship.systems.getSystemById(12).callHandler("setMaxFuel");
 
   ship.movement.addMovement(startMove);
   return ship;
 };
 
-const constructDeployedShip = id => {
+const constructDeployedShip = (id) => {
   const ship = constructShip(id);
   ship.movement.addMovement(deployMove);
   return ship;
@@ -70,12 +74,12 @@ const constructDeployedShip = id => {
 
 const compareMovements = (test, moves1, moves2) => {
   test.deepEqual(
-    moves1.map(move => move.clone().setRequiredThrust(null)),
-    moves2.map(move => move.clone().setRequiredThrust(null))
+    moves1.map((move) => move.clone().setRequiredThrust(null)),
+    moves2.map((move) => move.clone().setRequiredThrust(null))
   );
 };
 
-test("Valid movement", test => {
+test("Valid movement", (test) => {
   const ship = constructDeployedShip();
   const movementService = getMovementService();
 
@@ -90,7 +94,7 @@ test("Valid movement", test => {
   test.true(validator.validate());
 });
 
-test("Ship accelcost has been tampered", test => {
+test("Ship accelcost has been tampered", (test) => {
   const ship = constructDeployedShip();
   const movementService = getMovementService();
 
@@ -108,7 +112,20 @@ test("Ship accelcost has been tampered", test => {
   test.is(error.message, "Requirements are not correct.");
 });
 
-test("Ship pivotcost has been tampered", test => {
+test("Ship tries to move without fuel", (test) => {
+  const ship = constructDeployedShip();
+  const movementService = getMovementService();
+
+  ship.accelcost = 1;
+  movementService.thrust(ship, 1);
+  ship.systems.getSystemById(12).callHandler("setFuel", 0);
+
+  const validator = new MovementValidator(ship, 999, deployMove);
+  const error = test.throws(() => validator.validate());
+  test.is(error.message, "Unable to pay fuel 1. Ship has fuel 0.");
+});
+
+test("Ship pivotcost has been tampered", (test) => {
   const ship = constructDeployedShip();
   const movementService = getMovementService();
 
@@ -126,7 +143,7 @@ test("Ship pivotcost has been tampered", test => {
   test.is(error.message, "Requirements are not correct.");
 });
 
-test("Ship rollcost has been tampered", test => {
+test("Ship rollcost has been tampered", (test) => {
   const ship = constructDeployedShip();
   const movementService = getMovementService();
 
@@ -144,7 +161,7 @@ test("Ship rollcost has been tampered", test => {
   test.is(error.message, "Requirements are not correct.");
 });
 
-test("Ship evasioncost has been tampered", test => {
+test("Ship evasioncost has been tampered", (test) => {
   const ship = constructDeployedShip();
   const movementService = getMovementService();
 
@@ -162,7 +179,7 @@ test("Ship evasioncost has been tampered", test => {
   test.is(error.message, "Requirements are not correct.");
 });
 
-test("Destroyed thruster has been used", test => {
+test("Destroyed thruster has been used", (test) => {
   const ship = constructDeployedShip();
   const movementService = getMovementService();
 
@@ -181,7 +198,7 @@ test("Destroyed thruster has been used", test => {
   test.is(error.message, "Thruster id '4' is disabled");
 });
 
-test("Thruster critical has been ignored", test => {
+test("Thruster critical has been ignored", (test) => {
   const ship = constructDeployedShip();
   const movementService = getMovementService();
 
@@ -200,7 +217,7 @@ test("Thruster critical has been ignored", test => {
   test.is(error.message, "Thruster 4 can not channel 5");
 });
 
-test("Ship tries to teleport", test => {
+test("Ship tries to teleport", (test) => {
   const ship = constructDeployedShip();
   const movementService = getMovementService();
 
@@ -218,7 +235,7 @@ test("Ship tries to teleport", test => {
   test.is(error.message, "Evade movement is constructed wrong");
 });
 
-test("Ship pivots more than its limitation", test => {
+test("Ship pivots more than its limitation", (test) => {
   const ship = constructDeployedShip();
   const movementService = getMovementService();
 

@@ -310,6 +310,35 @@ class ExplosionEffect extends Animation {
 
   createMain(amount, radius) {
     var size = radius;
+
+    this.emitterContainer
+      .getNormalParticle(this.context)
+      .setSize(this.size)
+      .setOpacity(1)
+      .setFadeOut(this.time + 500)
+      .setColor(getCoreColor())
+      .setPosition({
+        x: this.position.x + (Math.floor(Math.random() * radius) - radius) / 8,
+        y: this.position.y + (Math.floor(Math.random() * radius) - radius) / 8,
+        z: this.position.z + (Math.floor(Math.random() * radius) - radius) / 8,
+      })
+      .setTexture(TEXTURE_GLOW)
+      .setActivationTime(this.time);
+
+    this.emitterContainer
+      .getNormalParticle(this.context)
+      .setSize(this.size * 2)
+      .setOpacity(0.5)
+      .setFadeOut(this.time + 500)
+      .setColor(getYellowColor())
+      .setPosition({
+        x: this.position.x + (Math.floor(Math.random() * radius) - radius) / 8,
+        y: this.position.y + (Math.floor(Math.random() * radius) - radius) / 8,
+        z: this.position.z + (Math.floor(Math.random() * radius) - radius) / 8,
+      })
+      .setTexture(TEXTURE_GLOW)
+      .setActivationTime(this.time);
+
     while (amount--) {
       var particle = this.emitterContainer.getParticle(this.context);
       var activationTime =

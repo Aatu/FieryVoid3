@@ -32,7 +32,7 @@ const getMovementService = () =>
   new MovementService().update({ turn: 1 }, { relayEvent: () => null });
 
 const constructShip = (id = 123, player) => {
-  let ship = new TestShip({ id, player });
+  let ship = new TestShip({ id, player }).setShipLoadout();
   ship.movement.addMovement(startMove);
   return ship;
 };
@@ -46,29 +46,21 @@ const constructDeployedShip = (id, player) => {
 
 const compareMovements = (test, moves1, moves2) => {
   test.deepEqual(
-    moves1.map(move =>
-      move
-        .clone()
-        .setRequiredThrust(null)
-        .setId(null)
-        .round()
+    moves1.map((move) =>
+      move.clone().setRequiredThrust(null).setId(null).round()
     ),
-    moves2.map(move =>
-      move
-        .clone()
-        .setRequiredThrust(null)
-        .setId(null)
-        .round()
+    moves2.map((move) =>
+      move.clone().setRequiredThrust(null).setId(null).round()
     )
   );
 };
 
-test("Submit movement", test => {
+test("Submit movement", (test) => {
   const serverGame = new GameData({
     id: 123,
     turn: 1,
     phase: 1,
-    activeShips: [1, 2]
+    activeShips: [1, 2],
   });
 
   const user = new User(989, "Nönmän");

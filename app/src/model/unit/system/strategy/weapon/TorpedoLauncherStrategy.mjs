@@ -33,15 +33,15 @@ class TorpedoLauncherStrategy extends ShipSystemStrategy {
               : this.turnsLoaded,
           torpedoClass: this.torpedoClass,
           launchTarget: this.launchTarget,
-          launcher: this
-        }
-      }
+          launcher: this,
+        },
+      },
     ];
   }
 
   serialize(payload, previousResponse = []) {
     const response = {
-      ...previousResponse
+      ...previousResponse,
     };
 
     response[`torpedoLauncherStrategy${this.launcherIndex}`] = {
@@ -50,7 +50,7 @@ class TorpedoLauncherStrategy extends ShipSystemStrategy {
         ? this.loadedTorpedo.constructor.name
         : null,
       changeAmmo: this.changeAmmo,
-      launchTarget: this.launchTarget
+      launchTarget: this.launchTarget,
     };
 
     return response;
@@ -138,29 +138,29 @@ class TorpedoLauncherStrategy extends ShipSystemStrategy {
     let newAmmo = null;
 
     const same = possibleNewTorpedos.find(
-      torpedo => torpedo.object.constructor === this.loadedTorpedo.constructor
+      (torpedo) => torpedo.object.constructor === this.loadedTorpedo.constructor
     );
 
     if (same) {
       const cargoBay = this.system.shipSystems
         .getSystems()
-        .find(system =>
+        .find((system) =>
           system.callHandler("hasCargo", { object: same.object }, false)
         );
       newAmmo = {
         ammo: same.object.constructor.name,
-        from: cargoBay.id
+        from: cargoBay.id,
       };
     } else if (possibleNewTorpedos.length > 0) {
       const newTorpedo = possibleNewTorpedos.pop().object;
       const cargoBay = this.system.shipSystems
         .getSystems()
-        .find(system =>
+        .find((system) =>
           system.callHandler("hasCargo", { object: newTorpedo }, false)
         );
       newAmmo = {
         ammo: newTorpedo.constructor.name,
-        from: cargoBay.id
+        from: cargoBay.id,
       };
     }
 
@@ -185,7 +185,9 @@ class TorpedoLauncherStrategy extends ShipSystemStrategy {
 
     const system = this.system.shipSystems
       .getSystems()
-      .find(system => system.callHandler("hasCargo", { object: ammo }, false));
+      .find((system) =>
+        system.callHandler("hasCargo", { object: ammo }, false)
+      );
 
     system.callHandler("removeCargo", { object: ammo });
 
@@ -209,7 +211,7 @@ class TorpedoLauncherStrategy extends ShipSystemStrategy {
       this.turnsLoaded = 0;
       this.changeAmmo = {
         ammo: ammo.constructor.name,
-        from: system.id
+        from: system.id,
       };
       this.loadedTorpedo = ammo;
     }
@@ -245,7 +247,11 @@ class TorpedoLauncherStrategy extends ShipSystemStrategy {
     this.turnsLoaded = 0;
   }
 
-  receivePlayerData({ clientSystem, gameData }) {
+  receivePlayerData({ clientSystem, gameData, phase }) {
+    if (phase !== 1) {
+      return;
+    }
+
     if (!clientSystem) {
       return;
     }
@@ -280,16 +286,16 @@ class TorpedoLauncherStrategy extends ShipSystemStrategy {
 
   getPossibleTorpedosToLoad() {
     const ammo = [];
-    this.system.shipSystems.getSystems().forEach(system => {
+    this.system.shipSystems.getSystems().forEach((system) => {
       const possibleAmmo = system.callHandler(
         "getCargoByParentClass",
         this.torpedoClass,
         []
       );
 
-      possibleAmmo.forEach(cargo => {
+      possibleAmmo.forEach((cargo) => {
         const entry = ammo.find(
-          ammoEntry =>
+          (ammoEntry) =>
             ammoEntry.object.constructor.name === cargo.object.constructor.name
         );
 
@@ -298,7 +304,7 @@ class TorpedoLauncherStrategy extends ShipSystemStrategy {
         } else {
           ammo.push({
             object: cargo.object,
-            amount: cargo.amount
+            amount: cargo.amount,
           });
         }
       });
@@ -323,7 +329,7 @@ class TorpedoLauncherStrategy extends ShipSystemStrategy {
 
 const getThisStrategy = (system, launcherIndex) => {
   return system.strategies.find(
-    strategy =>
+    (strategy) =>
       strategy instanceof TorpedoLauncherStrategy &&
       strategy.launcherIndex === launcherIndex
   );
