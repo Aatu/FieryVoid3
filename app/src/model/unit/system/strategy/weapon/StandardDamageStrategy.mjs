@@ -173,7 +173,7 @@ class StandardDamageStrategy extends ShipSystemStrategy {
     const section = ship.systems.sections.getSectionBySystem(system);
     const structure = section.getStructure();
 
-    if (!structure || structure.id === system.id) {
+    if (!structure || structure.id === system.id || structure.isDestroyed()) {
       return null;
     }
 

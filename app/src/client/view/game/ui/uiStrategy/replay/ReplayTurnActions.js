@@ -11,15 +11,11 @@ import WeaponFireService from "../../../../../../model/weapon/WeaponFireService.
 import { getSeededRandomGenerator } from "../../../../../../model/utils/math.mjs";
 import ShipWeaponAnimationService from "./ShipWeaponAnimationService";
 import CombatLogShipMovement from "../../../../../../model/combatLog/CombatLogShipMovement.mjs";
-import ShipVelocityAnimation from "../../../animation/ShipVelocityAnimation";
-import CombatLogShipVelocity from "../../../../../../model/combatLog/CombatLogShipVelocity.mjs";
 import CameraPositionAnimation from "../../../animation/CameraPositionAnimation";
-import CombatLogWeaponFire from "../../../../../../model/combatLog/CombatLogWeaponFire.mjs";
 import CombatLogGroupedWeaponFire from "../../../../../../model/combatLog/CombatLogGroupedWeaponFire.mjs";
 import SystemDestroyedTextAnimation from "../../../animation/SystemDestroyedTextAnimation";
 import Vector from "../../../../../../model/utils/Vector.mjs";
 import TorpedoMovementAnimation from "../../../animation/TorpedoMovementAnimation";
-import CombatLogTorpedoMove from "../../../../../../model/combatLog/CombatLogTorpedoMove.mjs";
 import CombatLogGroupedTorpedoAttack from "../../../../../../model/combatLog/CombatLogGroupedTorpedoAttack.mjs";
 import { TORPEDO_Z } from "../../../../../../model/gameConfig.mjs";
 import ExplosionEffect from "../../../animation/effect/ExplosionEffect";
@@ -27,6 +23,7 @@ import TorpedoExplosionHE from "../../../animation/TorpedoExplosion/TorpedoExplo
 import TorpedoExplosionMSV from "../../../animation/TorpedoExplosion/TorpedoExplosionMSV";
 import CombatLogTorpedoLaunch from "../../../../../../model/combatLog/CombatLogTorpedoLaunch.mjs";
 import ShipDamageAnimation from "../../../animation/ShipDamageAnimation";
+import ShipDestroyedAnimation from "../../../animation/ShipDestroyedAnimation";
 
 const getMovesForShip = (gameDatas, ship) =>
   gameDatas.reduce((moves, gameData) => {
@@ -97,6 +94,41 @@ class ReplayTurnActions extends AnimationUiStrategy {
     this.buildShipDamageAnimations(gameDatas);
   }
 
+  buildDestroyedShipsAnimation(gameDatas, ship) {
+    const {
+      gameCamera,
+      shipIconContainer,
+      particleEmitterContainer,
+      scene,
+    } = this.services;
+
+    const start = this.replayContext.getDestroyedShipsStart();
+    const cameraDuration = 2000;
+    const effectStart = start + cameraDuration;
+
+    const endMove = getEndMoveForShip(gameDatas, ship);
+    const position = endMove.getPosition();
+    const icon = shipIconContainer.getByShip(ship);
+
+    this.animations.push(
+      new CameraPositionAnimation(position, start, effectStart, gameCamera)
+    );
+
+    this.animations.push(
+      new ShipDestroyedAnimation(
+        icon,
+        endMove.getFacing(),
+        endMove.getPosition(),
+        effectStart,
+        this.getRandom,
+        particleEmitterContainer,
+        scene
+      )
+    );
+
+    this.replayContext.addDestroyedShipsDuration(cameraDuration + 5000);
+  }
+
   buildShipDamageAnimations(gameDatas) {
     const { shipIconContainer } = this.services;
 
@@ -105,6 +137,13 @@ class ReplayTurnActions extends AnimationUiStrategy {
       const systemsDestroyed = this.replayContext.getDestroyedStructuresByShip(
         ship
       );
+
+      let end = null;
+
+      if (ship.isDestroyedThisTurn()) {
+        end = this.replayContext.getDestroyedShipsStart() + 2000;
+        this.buildDestroyedShipsAnimation(gameDatas, ship);
+      }
 
       let destroyedSections = ship.systems.sections
         .getSectionsWithStructure()
@@ -146,7 +185,7 @@ class ReplayTurnActions extends AnimationUiStrategy {
         destroyedAnimations.push({
           sections: destroyedSections,
           start: time,
-          end: null,
+          end: end,
         });
       });
 
@@ -155,27 +194,6 @@ class ReplayTurnActions extends AnimationUiStrategy {
           new ShipDamageAnimation(icon, sections, start, end)
         );
       });
-
-      /*
-        this.animations.push(
-          new ShipDamageAnimation(icon, destroyedSections, 0, change)
-        );
-        */
-      /*
-
-      const change =
-        this.replayContext.getNextFireStart() + (this.getRandom() - 0.5) * 2000;
-
-      this.animations.push(new ShipDamageAnimation(icon, ship, 0, change));
-      this.animations.push(
-        new ShipDamageAnimation(
-          icon,
-          gameDatas[1].ships.getShipById(ship.id),
-          change,
-          null
-        )
-      );
-      */
     });
   }
 
@@ -418,8 +436,8 @@ class ReplayTurnActions extends AnimationUiStrategy {
   buildTorpedoMoveAnimation(combatLogEntry, gameDatas) {
     const { torpedoIconContainer } = this.services;
 
-    const duration = 3000;
-    const start = this.replayContext.getTorpedoMovementStart();
+    const duration = 5000;
+    const start = this.replayContext.getMovementStart();
     this.replayContext.setTorpedoMovementDuration(duration);
 
     const flight = gameDatas[0].torpedos.getTorpedoFlightById(
@@ -506,6 +524,7 @@ class ReplayTurnActions extends AnimationUiStrategy {
         animationStartTime: fireStart,
         totalShots: fireEntry.totalShots,
         shotsHit: fireEntry.shotsHit,
+        fireEntry,
       });
 
       this.animations.push(animation);

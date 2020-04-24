@@ -9,3 +9,4 @@ IDEA: do not allow thrusting to same direction with thrusters facing different d
 BUG: Effects to show destroyed structures not showing after NEW turn replay
 BUG: MSV torpedoes do not seem to do any damage
 TODO: What happens if ship boosts thruster but end up with invalid power and has to revert moves. Invalid movement is automatically reverted until valid?
+TODO: display out of ammo warning on system

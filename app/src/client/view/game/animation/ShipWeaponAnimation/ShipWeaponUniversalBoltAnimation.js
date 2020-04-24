@@ -91,7 +91,13 @@ class ShipWeaponUniversalBoltAnimation extends ShipWeaponAnimation {
   }
 
   setEndPosition() {
-    const { targetIcon, impactPosition, getPosition, shotsHit } = this.props;
+    const {
+      targetIcon,
+      impactPosition,
+      getPosition,
+      shotsHit,
+      fireEntry,
+    } = this.props;
 
     if (impactPosition) {
       if (shotsHit === 0) {
@@ -100,10 +106,43 @@ class ShipWeaponUniversalBoltAnimation extends ShipWeaponAnimation {
         this.endPosition = impactPosition;
       }
     } else {
-      this.endPosition = getPosition(targetIcon.ship).position.add(
-        this.getRandomPosition(20)
-      );
-      this.endPosition.z += targetIcon.shipZ;
+      const { position, facing } = getPosition(targetIcon.ship);
+      if (shotsHit === 0) {
+        this.endPosition = this.getRandomLocationOnShip(targetIcon, facing)
+          .add(position)
+          .add(this.getRandomPosition(50));
+      } else {
+        const damage =
+          fireEntry.damages.length > 0
+            ? fireEntry.damages[
+                Math.floor(this.getRandom() * fireEntry.damages.length)
+              ]
+            : null;
+
+        const damageEntry =
+          damage && damage.entries.length > 0
+            ? damage.entries[
+                Math.floor(this.getRandom() * damage.entries.length)
+              ]
+            : null;
+
+        if (damageEntry) {
+          const system = targetIcon.ship.systems.getSystemById(
+            damageEntry.systemId
+          );
+
+          this.endPosition = this.getLocationForSystemOrRandomLocationOnSection(
+            system,
+            targetIcon,
+            facing
+          ).add(position);
+        } else {
+          this.endPosition = getPosition(targetIcon.ship).position.add(
+            this.getRandomPosition(20)
+          );
+          this.endPosition.z += targetIcon.shipZ;
+        }
+      }
     }
   }
 

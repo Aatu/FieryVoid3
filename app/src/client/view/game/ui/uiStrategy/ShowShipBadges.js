@@ -28,6 +28,11 @@ class ShowShipBadges extends AnimationUiStrategy {
 
   updateShip(ship) {
     const { shipIconContainer, uiState } = this.services;
+
+    if (ship.isDestroyed()) {
+      return;
+    }
+
     const icon = shipIconContainer.getByShip(ship);
     uiState.showShipBadge(icon);
   }
@@ -42,9 +47,12 @@ class ShowShipBadges extends AnimationUiStrategy {
   show(showName) {
     const { shipIconContainer, uiState } = this.services;
 
-    shipIconContainer.getArray().forEach((icon) => {
-      uiState.showShipBadge(icon, showName);
-    });
+    shipIconContainer
+      .getArray()
+      .filter((icon) => !icon.ship.isDestroyed())
+      .forEach((icon) => {
+        uiState.showShipBadge(icon, showName);
+      });
     this.showing = true;
     this.showingName = showName;
   }

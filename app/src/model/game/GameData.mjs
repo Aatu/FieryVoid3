@@ -26,7 +26,7 @@ class GameData {
   }
 
   addPlayer(user) {
-    if (this.players.find(player => player.id === user.id)) {
+    if (this.players.find((player) => player.id === user.id)) {
       return;
     }
 
@@ -34,19 +34,23 @@ class GameData {
   }
 
   removePlayer(user) {
-    this.players = this.players.filter(player => player.id !== user.id);
+    this.players = this.players.filter((player) => player.id !== user.id);
   }
 
   isPlayerInGame(user) {
-    return this.players.find(player => player.id === user.id);
+    return this.players.find((player) => player.id === user.id);
   }
 
   isPlayerActive(user) {
     return this.activePlayerIds.includes(user.id);
   }
 
-  setPlayerActive(user) {
+  setPlayerActive(user, requireShips = false) {
     if (this.isPlayerActive(user)) {
+      return;
+    }
+
+    if (requireShips && this.ships.getUsersShips(user).length === 0) {
       return;
     }
 
@@ -54,7 +58,7 @@ class GameData {
   }
 
   setPlayerInactive(user) {
-    this.activePlayerIds = this.activePlayerIds.filter(id => id !== user.id);
+    this.activePlayerIds = this.activePlayerIds.filter((id) => id !== user.id);
   }
 
   validateForGameCreate(user) {
@@ -69,7 +73,7 @@ class GameData {
     }
 
     const teams = {};
-    slots.forEach(slot => (teams[slot.team] = true));
+    slots.forEach((slot) => (teams[slot.team] = true));
 
     if (Object.keys(teams).length < 2) {
       return "Game has to have atleast two teams";
@@ -77,7 +81,7 @@ class GameData {
 
     let error = undefined;
 
-    slots.forEach(slot => {
+    slots.forEach((slot) => {
       const slotError = slot.validate();
       if (slotError) {
         error = slotError;
@@ -88,11 +92,11 @@ class GameData {
       return error;
     }
 
-    if (!slots.some(slot => slot.userId === user.id)) {
+    if (!slots.some((slot) => slot.userId === user.id)) {
       return "Game creator has to occupy atleast one slot";
     }
 
-    if (slots.some(slot => slot.userId && slot.userId !== user.id)) {
+    if (slots.some((slot) => slot.userId && slot.userId !== user.id)) {
       return "Other players can not occupy slots at this stage";
     }
   }
@@ -100,14 +104,14 @@ class GameData {
   getActiveShips() {
     return this.ships
       .getShips()
-      .filter(ship => this.activeShips.isActive(ship));
+      .filter((ship) => this.activeShips.isActive(ship));
   }
 
   getActiveShipsForUser(user) {
     return this.ships
       .getShips()
       .filter(
-        ship => this.activeShips.isActive(ship) && ship.player.isUsers(user)
+        (ship) => this.activeShips.isActive(ship) && ship.player.isUsers(user)
       );
   }
 
@@ -124,7 +128,7 @@ class GameData {
   }
 
   getShipsForUser(user) {
-    return this.ships.getShips().filter(ship => ship.player.isUsers(user));
+    return this.ships.getShips().filter((ship) => ship.player.isUsers(user));
   }
 
   serialize() {
@@ -138,13 +142,13 @@ class GameData {
         ...this.slots.serialize(),
         terrain: this.terrain.serialize(),
         combatLog: this.combatLog.serialize(),
-        torpedos: this.torpedos.serialize()
+        torpedos: this.torpedos.serialize(),
       },
       ships: this.ships.serialize(),
       activeShips: this.activeShips.serialize(),
       creatorId: this.creatorId,
       status: this.status,
-      players: this.players.map(player => player.serialize())
+      players: this.players.map((player) => player.serialize()),
     };
   }
 
@@ -155,7 +159,7 @@ class GameData {
     this.phase = data.phase || gamePhases.DEPLOYMENT;
     this.turn = data.turn || 1;
     this.players = data.players
-      ? data.players.map(player => new User().deserialize(player))
+      ? data.players.map((player) => new User().deserialize(player))
       : [];
     this.activePlayerIds = gameData.activePlayerIds || [];
     this.slots = new GameSlots(this).deserialize(gameData);
@@ -176,7 +180,7 @@ class GameData {
   }
 
   censorForUser(user) {
-    this.ships.getShips().forEach(ship => {
+    this.ships.getShips().forEach((ship) => {
       ship.movement.removeMovementForOtherTurns(this.turn);
       const mine = user && ship.player.is(user);
       ship.censorForUser(user, mine);
@@ -186,21 +190,24 @@ class GameData {
   }
 
   endTurn() {
-    this.ships.getShips().forEach(ship => {
+    this.ships.getShips().forEach((ship) => {
       ship.endTurn(this.turn);
     });
   }
 
   advanceTurn() {
     this.turn++;
-    this.players.forEach(player => this.setPlayerActive(player));
+    this.players.forEach((player) => this.setPlayerActive(player, true));
     this.combatLog.advanceTurn();
     this.torpedos.advanceTurn();
 
-    this.ships.getShips().forEach(ship => {
-      ship.advanceTurn(this.turn);
-      this.setActiveShip(ship);
-    });
+    this.ships
+      .getShips()
+      .filter((ship) => !ship.isDestroyed())
+      .forEach((ship) => {
+        ship.advanceTurn(this.turn);
+        this.setActiveShip(ship);
+      });
   }
 }
 

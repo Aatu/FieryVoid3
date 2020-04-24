@@ -6,20 +6,27 @@ class ReplayContext {
   constructor(phaseStrategy) {
     this.firingDuration = 0;
     this.movementDuration = 0;
-    this.torpedoMovementDuration = 0;
     this.torpedoAttackDuration = 0;
+    this.destroyedShipsDuration = 0;
     this.phaseStrategy = phaseStrategy;
     this.systemsDestroyed = [];
   }
 
-  getTorpedoMovementStart() {
+  getDestroyedShipsStart() {
     return (
-      this.movementDuration + this.firingDuration + this.torpedoAttackDuration
+      this.firingDuration +
+      this.torpedoAttackDuration +
+      this.movementDuration +
+      this.destroyedShipsDuration
     );
   }
 
-  setTorpedoMovementDuration(duration) {
-    this.torpedoMovementDuration = duration;
+  addDestroyedShipsDuration(duration) {
+    this.destroyedShipsDuration += duration;
+  }
+
+  getDestroyedShipsDuration() {
+    return this.destroyedShipsDuration;
   }
 
   getMovementStart() {
@@ -39,9 +46,7 @@ class ReplayContext {
   }
 
   getNextTorpedoAttackStart() {
-    return (
-      this.movementDuration + this.firingDuration + this.torpedoAttackDuration
-    );
+    return this.movementDuration + this.firingDuration;
   }
 
   addTorpedoAttackAnimationDuration(duration) {
@@ -62,7 +67,7 @@ class ReplayContext {
 
   rewindToFiring() {
     this.phaseStrategy.setAnimationTime(
-      this.movementDuration + this.torpedoMovementDuration - 1
+      this.firingDuration + this.torpedoAttackDuration + this.movementDuration
     );
   }
 
@@ -73,7 +78,7 @@ class ReplayContext {
       this.firingDuration +
       this.torpedoAttackDuration +
       this.movementDuration +
-      this.torpedoMovementDuration
+      this.destroyedShipsDuration
     );
   }
 

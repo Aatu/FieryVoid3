@@ -2,7 +2,7 @@ import ShipSystemStrategy from "../ShipSystemStrategy.mjs";
 import {
   addToDirection,
   getCompassHeadingOfPoint,
-  hexFacingToAngle
+  hexFacingToAngle,
 } from "../../../../utils/math.mjs";
 
 class WeaponArcStrategy extends ShipSystemStrategy {
@@ -47,14 +47,14 @@ class WeaponArcStrategy extends ShipSystemStrategy {
     return this.arcs.map(({ start, end }) => {
       if (this.system.shipSystems.ship.movement.isRolled()) {
         return {
-          start: addToDirection(addToDirection(0, -end), -facing),
-          end: addToDirection(addToDirection(0, -start), -facing)
+          start: addToDirection(addToDirection(0, -end), facing),
+          end: addToDirection(addToDirection(0, -start), facing),
         };
       }
 
       return {
         start: addToDirection(start, facing),
-        end: addToDirection(end, facing)
+        end: addToDirection(end, facing),
       };
     });
   }

@@ -121,12 +121,17 @@ class Ship {
     this.electronicWarfare = new ShipElectronicWarfare(this).deserialize(
       shipData.electronicWarfare
     );
-    this.destroyedThisTurn = data.destroyedThisTurn || false;
+    this.destroyedThisTurn = shipData.destroyedThisTurn || false;
 
     return this;
   }
 
   serialize() {
+    /*
+    NOTE: shipData gets serialized normally. Everything else has custom handling
+    If you want to serialize something, serialize it inside of shipData
+    (This is like the fifth time I am wondering why stuff doesnt get serialized:P)  
+    */
     return {
       id: this.id,
       gameId: this.gameId,
@@ -138,8 +143,8 @@ class Ship {
         systems: this.systems.serialize(),
         player: this.player.serialize(),
         electronicWarfare: this.electronicWarfare.serialize(),
+        destroyedThisTurn: this.destroyedThisTurn,
       },
-      destroyedThisTurn: this.destroyedThisTurn,
     };
   }
 
@@ -171,7 +176,6 @@ class Ship {
     this.systems.advanceTurn(turn);
     this.electronicWarfare.activatePlannedElectronicWarfare();
     this.electronicWarfare.removeAll();
-    //this.electronicWarfare.repeatElectonicWarfare();
 
     this.destroyedThisTurn = false;
     return this;

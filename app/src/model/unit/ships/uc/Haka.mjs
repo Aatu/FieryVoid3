@@ -126,7 +126,7 @@ class Haka extends Ship {
         0
       ),
 
-      new systems.RailgunTurreted2x140mm({ id: 202 }, { start: 345, end: 150 }),
+      new systems.RailgunTurreted2x140mm({ id: 202 }, { start: 345, end: 190 }),
 
       new systems.TorpedoLauncherQuadruple158({
         id: 210,
@@ -163,7 +163,7 @@ class Haka extends Ship {
         5,
       ]),
 
-      new systems.MediumCoilcunTurretedUC({ id: 602 }, { start: 165, end: 0 }),
+      new systems.MediumCoilgunTurretedUC({ id: 602 }, { start: 165, end: 0 }),
 
       new systems.RailgunTurreted140mmUC(
         { id: 603 },
@@ -180,7 +180,7 @@ class Haka extends Ship {
         0
       ),
 
-      new systems.MediumCoilcunTurretedUC({ id: 606 }, { start: 210, end: 15 }),
+      new systems.MediumCoilgunTurretedUC({ id: 606 }, { start: 190, end: 15 }),
     ]);
 
     this.systems.addAftSystem([

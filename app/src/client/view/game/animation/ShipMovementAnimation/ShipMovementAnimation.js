@@ -109,11 +109,15 @@ class ShipMovementAnimation extends Animation {
   }
 
   render(payload) {
-    const turnDone = this.getMovementTurnDone(payload);
-
-    if (turnDone === 1) {
+    if (
+      this.shipIcon.ship.isDestroyed() &&
+      !this.shipIcon.ship.isDestroyedThisTurn()
+    ) {
+      this.shipIcon.hide();
       return;
     }
+
+    const turnDone = this.getMovementTurnDone(payload);
 
     const turn = Math.floor(turnDone);
     const percentDone = turnDone < 1 ? turnDone % 1 : 1;

@@ -7,7 +7,7 @@ import {
   SectionRight,
   Section,
   colors,
-  TooltipButton
+  TooltipButton,
 } from "../../../styled";
 import * as gamePhases from "../../../../model/game/gamePhases";
 
@@ -24,7 +24,7 @@ const ReadySection = styled(SectionRight)`
 `;
 
 const ReadyContainer = styled.div`
-  ${props => (props.ready ? "cursor:pointer;" : "cursor:not-allowed;")}
+  ${(props) => (props.ready ? "cursor:pointer;" : "cursor:not-allowed;")}
 `;
 
 class TurnHeader extends React.PureComponent {
@@ -48,7 +48,7 @@ class TurnHeader extends React.PureComponent {
             {gameData.phase === gamePhases.DEPLOYMENT && "DEPLOYMENT"}
             {waiting && " Waiting"}
           </Title>
-          {!waiting && (
+          {!waiting && ready && (
             <ReadySection>
               <TooltipButton onClick={this.onReady.bind(this)}>
                 <icons.CheckMark />

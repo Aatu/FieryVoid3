@@ -69,7 +69,7 @@ const GameUiComponent = ({ game }) => {
         <ReplayUI uiState={uiState} replayContext={state.replayUi} />
       )}
 
-      <LeftPanel uiState={uiState} {...state} />
+      {!state.replayUi && <LeftPanel uiState={uiState} {...state} />}
 
       {uiState.state.combatLog && (
         <CombatLog

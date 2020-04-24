@@ -3,7 +3,7 @@ import UiStrategy from "../UiStrategy";
 import {
   degreeToRadian,
   addToDirection,
-  getArcLength
+  getArcLength,
 } from "../../../../../../model/utils/math";
 import abstractCanvas from "../../../utils/abstractCanvas";
 
@@ -49,7 +49,7 @@ class WeaponArcsOnSystemMouseOver extends UiStrategy {
       color: new THREE.Color("rgb(20,80,128)"),
       opacity: 1,
       transparent: true,
-      map: texture
+      map: texture,
     });
 
     const geometry = new THREE.CircleGeometry(
@@ -60,11 +60,11 @@ class WeaponArcsOnSystemMouseOver extends UiStrategy {
     );
 
     geometry.faceVertexUvs = [
-      geometry.faceVertexUvs[0].map(_ => [
+      geometry.faceVertexUvs[0].map((_) => [
         new THREE.Vector2(1, 0),
         new THREE.Vector2(1, 0),
-        new THREE.Vector2(0, 0)
-      ])
+        new THREE.Vector2(0, 0),
+      ]),
     ];
 
     geometry.uvsNeedUpdate = true;
@@ -97,7 +97,7 @@ class WeaponArcsOnSystemMouseOver extends UiStrategy {
     const distance = maxRange * coordinateConverter.getHexDistance();
 
     const arcsList = system.callHandler("getArcs", {
-      facing: icon.getFacing()
+      facing: icon.getFacing(),
     });
 
     const canvas = abstractCanvas.create(maxRange + 1, 1);
@@ -105,7 +105,7 @@ class WeaponArcsOnSystemMouseOver extends UiStrategy {
 
     for (let range = 0; range <= maxRange; range++) {
       const rangePenalty = system.callHandler("getRangeModifier", {
-        distance: range
+        distance: range,
       });
 
       const opacity = (100 + rangePenalty) / 100;
@@ -125,10 +125,10 @@ class WeaponArcsOnSystemMouseOver extends UiStrategy {
       color: new THREE.Color("rgb(20,80,128)"),
       opacity: 1,
       transparent: true,
-      map: texture
+      map: texture,
     });
 
-    arcsList.forEach(arcs => {
+    arcsList.forEach((arcs) => {
       const arcLenght =
         arcs.start === arcs.end ? 360 : getArcLength(arcs.start, arcs.end);
 
@@ -140,11 +140,11 @@ class WeaponArcsOnSystemMouseOver extends UiStrategy {
       );
 
       geometry.faceVertexUvs = [
-        geometry.faceVertexUvs[0].map(intial => [
+        geometry.faceVertexUvs[0].map((intial) => [
           new THREE.Vector2(1, 0),
           new THREE.Vector2(1, 0),
-          new THREE.Vector2(0, 0)
-        ])
+          new THREE.Vector2(0, 0),
+        ]),
       ];
 
       geometry.uvsNeedUpdate = true;

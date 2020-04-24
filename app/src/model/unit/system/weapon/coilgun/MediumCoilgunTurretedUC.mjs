@@ -10,7 +10,7 @@ import BoostableSystemStrategy from "../../strategy/BoostableSystemStrategy.mjs"
 import RequiresPowerSystemStrategy from "../../strategy/RequiresPowerSystemStrategy.mjs";
 import OutputHeatOnlineStrategy from "../../strategy/OutputHeatOnlineStrategy.mjs";
 
-class MediumCoilcunTurretedUC extends Weapon {
+class MediumCoilgunTurretedUC extends Weapon {
   constructor({ id }, arcs) {
     super({ id, hitpoints: 14, armor: 5 }, [
       new FireOrderStrategy(1),
@@ -19,7 +19,7 @@ class MediumCoilcunTurretedUC extends Weapon {
       new StandardRangeStrategy([
         { range: 0, modifier: -200 },
         { range: 120, modifier: -20 },
-        { range: 610, modifier: -200 }
+        { range: 610, modifier: -200 },
       ]),
       new StandardLoadingStrategy(4),
       new RequiresPowerSystemStrategy(10),
@@ -31,9 +31,9 @@ class MediumCoilcunTurretedUC extends Weapon {
         speed: 5,
         color: [0.8, 0.1, 0.4],
         explosionSize: 20,
-        explosionType: "gas"
+        explosionType: "gas",
       }),
-      new OutputHeatOnlineStrategy(6, 2)
+      new OutputHeatOnlineStrategy(6, 2),
     ]);
   }
 
@@ -46,4 +46,4 @@ class MediumCoilcunTurretedUC extends Weapon {
   }
 }
 
-export default MediumCoilcunTurretedUC;
+export default MediumCoilgunTurretedUC;

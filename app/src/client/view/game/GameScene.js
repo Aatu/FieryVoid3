@@ -3,12 +3,7 @@ import HexGridRenderer from "./renderer/hexgrid/HexGridRender";
 import StarField from "./terrain/StarField";
 import { ZOOM_MAX, ZOOM_MIN } from "../../../model/gameConfig";
 import { ParticleEmitterContainer } from "./animation/particle";
-import LineSprite from "./renderer/sprite/LineSprite";
-import Vector from "../../../model/utils/Vector.mjs";
-import { loadObject } from "./utils/objectLoader";
 import GameCamera from "./GameCamera";
-import TorpedoObject from "./renderer/ships/TorpedoObject";
-import TorpedoFlight from "../../../model/unit/TorpedoFlight.mjs";
 
 window.THREE = THREE;
 

@@ -35,7 +35,9 @@ class GameShips {
   }
 
   getUsersShips(user) {
-    return this.ships.filter((ship) => ship.player.isUsers(user));
+    return this.ships.filter(
+      (ship) => ship.player.isUsers(user) && !ship.isDestroyed()
+    );
   }
 
   getShipsInSameTeam(user) {
@@ -46,14 +48,18 @@ class GameShips {
     const team = slot.pop().team;
 
     return this.ships.filter(
-      (ship) => this.gameData.slots.getSlotByShip(ship).team === team
+      (ship) =>
+        this.gameData.slots.getSlotByShip(ship).team === team &&
+        !ship.isDestroyed()
     );
   }
 
   getShipsEnemyTeams(user) {
     const teamShips = this.getShipsInSameTeam(user);
 
-    return this.ships.filter((ship) => !teamShips.includes(ship));
+    return this.ships.filter(
+      (ship) => !teamShips.includes(ship) && !ship.isDestroyed()
+    );
   }
 
   serialize() {

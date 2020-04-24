@@ -1,4 +1,5 @@
 import TestWeapon from "./TestWeapon.mjs";
+import OverPoweredTestWeapon from "./OverPoweredTestWeapon.mjs";
 
 import * as coilguns from "./coilgun/index.mjs";
 
@@ -16,7 +17,8 @@ const merged = {
   ...coilguns,
   ...railguns,
   ...launchers,
-  AutoCannon85mm
+  AutoCannon85mm,
+  OverPoweredTestWeapon,
 };
 
 export default merged;
