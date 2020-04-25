@@ -438,7 +438,7 @@ class ReplayTurnActions extends AnimationUiStrategy {
 
     const duration = 5000;
     const start = this.replayContext.getMovementStart();
-    this.replayContext.setTorpedoMovementDuration(duration);
+    this.replayContext.setMovementDuration(duration);
 
     const flight = gameDatas[0].torpedos.getTorpedoFlightById(
       combatLogEntry.torpedoFlightId

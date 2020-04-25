@@ -34,10 +34,10 @@ const Amount = styled.div`
 
 class CCEWButtons extends React.PureComponent {
   render() {
-    const { name, ship, uiState, ccew } = this.props;
+    const { name, ship, uiState, ccew, ...rest } = this.props;
 
     return (
-      <Container>
+      <Container {...rest}>
         {name && <ShipName>{name}</ShipName>}
         <TooltipButton
           img="/img/removeCCEW.png"

@@ -1,10 +1,4 @@
-import HexagonMath from "../../model/utils/HexagonMath.mjs";
-import TorpedoMovementService from "../../model/movement/TorpedoMovementService.mjs";
 import CombatLogTorpedoAttack from "../../model/combatLog/CombatLogTorpedoAttack.mjs";
-import CombatLogTorpedoMove from "../../model/combatLog/CombatLogTorpedoMove.mjs";
-import CombatLogTorpedoOutOfTime from "../../model/combatLog/CombatLogTorpedoOutOfTime.mjs";
-import CombatLogTorpedoNotArmed from "../../model/combatLog/CombatLogTorpedoNotArmed.mjs";
-import coordinateConverter from "../../model/utils/CoordinateConverter.mjs";
 import CombatLogTorpedoIntercept from "../../model/combatLog/CombatLogTorpedoIntercept.mjs";
 import TorpedoAttackService from "../../model/weapon/TorpedoAttackService.mjs";
 
@@ -68,19 +62,29 @@ class TorpedoHandler {
           return -1;
         }
 
-        const aHeat = a.heat.getOverheatPercentage(
-          a.callHandler("getInterceptHeat", null, 0)
-        );
-        const bHeat = b.heat.getOverheatPercentage(
-          b.callHandler("getInterceptHeat", null, 0)
-        );
+        const {
+          overheatPercentage: aHeat,
+          coolingPercent: aCooling,
+        } = a.heat.predictHeatChange();
+        const {
+          overheatPercentage: bHeat,
+          coolingPercent: bCooling,
+        } = b.heat.predictHeatChange();
+
+        if (aHeat > bHeat) {
+          return -1;
+        }
 
         if (aHeat < bHeat) {
           return 1;
         }
 
-        if (aHeat > bHeat) {
+        if (aCooling > bCooling) {
           return -1;
+        }
+
+        if (aCooling < bCooling) {
+          return 1;
         }
 
         return 0;

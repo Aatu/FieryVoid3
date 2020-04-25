@@ -9,7 +9,7 @@ import {
   TooltipEntry,
   TooltipValue,
   TooltipValueHeader,
-  TooltipButton
+  TooltipButton,
 } from "../../../../styled";
 import TorpedoAttack from "./TorpedoAttack";
 import ShipTooltipDetails from "./ShipTooltipDetails";
@@ -17,6 +17,7 @@ import { X } from "../../../../styled/icon";
 import GameShipTooltipMenuBack from "./GameShipTooltipMenuBack";
 import TorpedoDefense from "./TorpedoDefense";
 import ShipName from "../ShipName";
+import GameShipTooltipMenuTorpedoDefense from "./GameShipTooltipMenuTorpedoDefense";
 
 const InfoHeader = styled(TooltipHeader)`
   display: flex;
@@ -29,9 +30,9 @@ const ShipTooltipContainer = styled(Tooltip)`
   opacity: 0.95;
   position: absolute;
   top: 50px;
-  ${props => (props.right ? "right: 220px;" : "left: 220px;")}
+  ${(props) => (props.right ? "right: 220px;" : "left: 220px;")}
 
-  ${props => (props.interactable ? "z-index: 4;" : "z-index: 1;")}
+  ${(props) => (props.interactable ? "z-index: 4;" : "z-index: 1;")}
 `;
 
 export const Entry = styled(TooltipEntry)`
@@ -82,6 +83,9 @@ class ShipTooltip extends React.Component {
     }
 
     if (tooltipTab && ui) {
+      if (tooltipTab === TOOLTIP_TAB_TORPEDO_DEFENSE) {
+        return GameShipTooltipMenuTorpedoDefense;
+      }
       return GameShipTooltipMenuBack;
     }
 

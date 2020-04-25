@@ -15,12 +15,6 @@ import SystemStrategyUiComponent from "./SystemStrategyUi/SystemStrategyUiCompon
 
 const TooltipContainer = styled(RelativeOrStaticTooltip)`
   max-height: 85vh;
-  overflow-y: scroll;
-  scrollbar-width: 0;
-
-  &::-webkit-scrollbar {
-    width: 0;
-  }
 `;
 
 const Warning = styled.div`
@@ -61,6 +55,15 @@ export const HeaderMenuItem = styled.div`
 const SystemStrategyUiComponentContainer = styled.div`
   margin: 0 8px;
   position: relative;
+`;
+
+const LogContainer = styled.div`
+  overflow-y: scroll;
+  scrollbar-width: 0;
+
+  &::-webkit-scrollbar {
+    width: 0;
+  }
 `;
 
 class SystemInfo extends React.Component {
@@ -138,14 +141,14 @@ class SystemInfo extends React.Component {
     const messages = system.log.getWithTurns();
 
     return messages.reverse().map(({ turn, messages }, index) => (
-      <div key={`systemlog-turn-${turn}-${index}`}>
+      <LogContainer key={`systemlog-turn-${turn}-${index}`}>
         <TooltipSubHeader>{`Log, turn ${turn}`}</TooltipSubHeader>
         {messages.map((message, messageIndex) => (
           <TooltipEntry key={`logmessage-${turn}-${index}-${messageIndex}`}>
             <TooltipValue>{message}</TooltipValue>
           </TooltipEntry>
         ))}
-      </div>
+      </LogContainer>
     ));
   }
 

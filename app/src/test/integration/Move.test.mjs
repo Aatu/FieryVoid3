@@ -49,26 +49,16 @@ const constructDeployedShip = (id, player) => {
 
 const compareMovements = (test, moves1, moves2) => {
   test.deepEqual(
-    moves1.map(move =>
-      move
-        .clone()
-        .setRequiredThrust(null)
-        .setId(null)
-        .setIndex(0)
-        .round()
+    moves1.map((move) =>
+      move.clone().setRequiredThrust(null).setId(null).setIndex(0).round()
     ),
-    moves2.map(move =>
-      move
-        .clone()
-        .setRequiredThrust(null)
-        .setId(null)
-        .setIndex(0)
-        .round()
+    moves2.map((move) =>
+      move.clone().setRequiredThrust(null).setId(null).setIndex(0).round()
     )
   );
 };
 
-test.serial("Submit movement for first player, success", async test => {
+test.serial("Submit movement for first player, success", async (test) => {
   const db = new TestDatabaseConnection("movement");
   await db.resetDatabase();
 
@@ -83,7 +73,7 @@ test.serial("Submit movement for first player, success", async test => {
 
   const ship1 = gameData.ships
     .getShips()
-    .find(ship => ship.name === "UCS Achilles");
+    .find((ship) => ship.name === "UCS Achilles");
 
   movementService.thrust(ship1, 0);
   movementService.thrust(ship1, 0);
@@ -94,13 +84,13 @@ test.serial("Submit movement for first player, success", async test => {
 
   const achilles = newGameData.ships
     .getShips()
-    .find(ship => ship.name === "UCS Achilles");
+    .find((ship) => ship.name === "UCS Achilles");
   const eclipse = newGameData.ships
     .getShips()
-    .find(ship => ship.name === "UCS Eclipse");
+    .find((ship) => ship.name === "UCS Eclipse");
   const biliyaz = newGameData.ships
     .getShips()
-    .find(ship => ship.name === "GEPS Biliyaz");
+    .find((ship) => ship.name === "GEPS Biliyaz");
 
   test.is(achilles.movement.getMovement().length, 5);
   test.is(eclipse.movement.getMovement().length, 2);
@@ -114,13 +104,13 @@ test.serial("Submit movement for first player, success", async test => {
   const newGameData2 = await controller.getGameData(gameData.id, user2);
   const achilles2 = newGameData2.ships
     .getShips()
-    .find(ship => ship.name === "UCS Achilles");
+    .find((ship) => ship.name === "UCS Achilles");
   test.is(achilles2.movement.getMovement().length, 2);
 
   db.close();
 });
 
-test.serial("Submit movement for both players, success", async test => {
+test.serial("Submit movement for both players, success", async (test) => {
   const db = new TestDatabaseConnection("movement");
   await db.resetDatabase();
 
@@ -135,15 +125,15 @@ test.serial("Submit movement for both players, success", async test => {
 
   const achillesInitial = gameData.ships
     .getShips()
-    .find(ship => ship.name === "UCS Achilles");
+    .find((ship) => ship.name === "UCS Achilles");
 
   const eclipseInitial = gameData.ships
     .getShips()
-    .find(ship => ship.name === "UCS Eclipse");
+    .find((ship) => ship.name === "UCS Eclipse");
 
   const biliyazInitial = gameData.ships
     .getShips()
-    .find(ship => ship.name === "GEPS Biliyaz");
+    .find((ship) => ship.name === "GEPS Biliyaz");
 
   movementService.thrust(achillesInitial, 0);
   movementService.thrust(achillesInitial, 0);
@@ -161,13 +151,13 @@ test.serial("Submit movement for both players, success", async test => {
 
   const achilles = newGameData.ships
     .getShips()
-    .find(ship => ship.name === "UCS Achilles");
+    .find((ship) => ship.name === "UCS Achilles");
   const eclipse = newGameData.ships
     .getShips()
-    .find(ship => ship.name === "UCS Eclipse");
+    .find((ship) => ship.name === "UCS Eclipse");
   const biliyaz = newGameData.ships
     .getShips()
-    .find(ship => ship.name === "GEPS Biliyaz");
+    .find((ship) => ship.name === "GEPS Biliyaz");
 
   test.is(achilles.movement.getMovement().length, 1);
   test.is(eclipse.movement.getMovement().length, 1);
@@ -190,7 +180,7 @@ test.serial("Submit movement for both players, success", async test => {
       0,
       false,
       2
-    )
+    ),
   ]);
 
   compareMovements(test, achilles.movement.getMovement(), [
@@ -206,7 +196,7 @@ test.serial("Submit movement for both players, success", async test => {
       undefined,
       0,
       1
-    )
+    ),
   ]);
 
   compareMovements(test, biliyaz.movement.getMovement(), [
@@ -218,8 +208,85 @@ test.serial("Submit movement for both players, success", async test => {
       0,
       true,
       2
-    )
+    ),
   ]);
+
+  db.close();
+});
+
+test.serial("Use boosted hybrid fusion thrusters", async (test) => {
+  const db = new TestDatabaseConnection("movement");
+  await db.resetDatabase();
+
+  const controller = new GameController(db);
+
+  const user = new User(1, "Nönmän");
+  const user2 = new User(2, "Bädmän");
+
+  const gameData = await constructDeployedGame(user, user2, controller);
+
+  const movementService = getMovementService();
+
+  const achillesInitial = gameData.ships
+    .getShips()
+    .find((ship) => ship.name === "UCS Achilles");
+
+  achillesInitial.systems.getSystemById(5).power.setOffline();
+  achillesInitial.systems.getSystemById(6).power.setOffline();
+
+  achillesInitial.systems.getSystemById(3).callHandler("boost");
+  achillesInitial.systems.getSystemById(3).callHandler("boost");
+  achillesInitial.systems.getSystemById(3).callHandler("boost");
+  achillesInitial.systems.getSystemById(3).callHandler("boost");
+  achillesInitial.systems.getSystemById(3).callHandler("boost");
+  achillesInitial.systems.getSystemById(3).callHandler("boost");
+
+  /*
+  achillesInitial.systems.getSystemById(4).callHandler("boost");
+  achillesInitial.systems.getSystemById(4).callHandler("boost");
+  achillesInitial.systems.getSystemById(4).callHandler("boost");
+  achillesInitial.systems.getSystemById(4).callHandler("boost");
+  achillesInitial.systems.getSystemById(4).callHandler("boost");
+  achillesInitial.systems.getSystemById(4).callHandler("boost");
+*/
+
+  movementService.thrust(achillesInitial, 0);
+  movementService.thrust(achillesInitial, 0);
+  movementService.thrust(achillesInitial, 0);
+  movementService.thrust(achillesInitial, 0);
+  movementService.thrust(achillesInitial, 0);
+  movementService.thrust(achillesInitial, 0);
+  movementService.thrust(achillesInitial, 0);
+  movementService.thrust(achillesInitial, 0);
+  movementService.thrust(achillesInitial, 0);
+  movementService.thrust(achillesInitial, 0);
+
+  const thruster3HeatPrediction = achillesInitial.systems
+    .getSystemById(3)
+    .heat.predictHeatChange();
+  const thruster4HeatPrediction = achillesInitial.systems
+    .getSystemById(4)
+    .heat.predictHeatChange();
+
+  console.log(thruster3HeatPrediction, thruster4HeatPrediction);
+
+  await controller.commitTurn(gameData.id, gameData.serialize(), user);
+  await controller.commitTurn(gameData.id, gameData.serialize(), user2);
+  const newGameData = await controller.getGameData(gameData.id);
+
+  const achilles = newGameData.ships
+    .getShips()
+    .find((ship) => ship.name === "UCS Achilles");
+
+  test.deepEqual(
+    thruster3HeatPrediction.overheat,
+    achilles.systems.getSystemById(3).heat.overheat
+  );
+
+  test.deepEqual(
+    thruster4HeatPrediction.overheat,
+    achilles.systems.getSystemById(4).heat.overheat
+  );
 
   db.close();
 });

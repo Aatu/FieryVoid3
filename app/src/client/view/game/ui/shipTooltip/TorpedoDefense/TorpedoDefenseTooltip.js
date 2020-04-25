@@ -57,6 +57,11 @@ const getInterceptors = (shooter, target, torpedoFlight, uiState) => {
     if (!entry) {
       entry = {
         name: intercept.interceptor.getDisplayName(),
+        intercepts: intercept.interceptor.callHandler(
+          "getNumberOfIntercepts",
+          null,
+          1
+        ),
         min: null,
         max: null,
         amount: 0,
@@ -94,7 +99,7 @@ const getInterceptors = (shooter, target, torpedoFlight, uiState) => {
 
   return interceptorGroups.map((group) => {
     return {
-      header: `${group.amount}x ${group.name}`,
+      header: `${group.amount * group.intercepts}x ${group.name}`,
       value: getInterceptValue(group.min, group.max),
     };
   });

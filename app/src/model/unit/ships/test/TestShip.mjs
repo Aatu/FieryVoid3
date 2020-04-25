@@ -35,8 +35,8 @@ class TestShip extends Ship {
       new systems.Thruster({ id: 2, hitpoints: 10, armor: 3 }, 5, 0),
       new systems.Thruster({ id: 8, hitpoints: 10, armor: 3 }, 5, [1, 2]),
       new systems.Thruster({ id: 9, hitpoints: 10, armor: 3 }, 5, [4, 5]),
-      new systems.Thruster({ id: 3, hitpoints: 10, armor: 3 }, 5, 3),
-      new systems.Thruster({ id: 4, hitpoints: 10, armor: 3 }, 5, 3),
+      new systems.Thruster({ id: 3, hitpoints: 10, armor: 3 }, 15, 3),
+      new systems.Thruster({ id: 4, hitpoints: 10, armor: 3 }, 15, 3),
       new systems.ManeuveringThruster(
         { id: 10, hitpoints: 10, armor: 3 },
         9,
