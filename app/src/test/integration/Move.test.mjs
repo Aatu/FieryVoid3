@@ -268,7 +268,71 @@ test.serial("Use boosted hybrid fusion thrusters", async (test) => {
     .getSystemById(4)
     .heat.predictHeatChange();
 
-  console.log(thruster3HeatPrediction, thruster4HeatPrediction);
+  await controller.commitTurn(gameData.id, gameData.serialize(), user);
+  await controller.commitTurn(gameData.id, gameData.serialize(), user2);
+  const newGameData = await controller.getGameData(gameData.id);
+
+  const achilles = newGameData.ships
+    .getShips()
+    .find((ship) => ship.name === "UCS Achilles");
+
+  test.deepEqual(
+    thruster3HeatPrediction.overheat,
+    achilles.systems.getSystemById(3).heat.overheat
+  );
+
+  test.deepEqual(
+    thruster4HeatPrediction.overheat,
+    achilles.systems.getSystemById(4).heat.overheat
+  );
+
+  db.close();
+});
+
+test.serial("Use hybrid fusion thrusters in chemical mode", async (test) => {
+  const db = new TestDatabaseConnection("movement");
+  await db.resetDatabase();
+
+  const controller = new GameController(db);
+
+  const user = new User(1, "Nönmän");
+  const user2 = new User(2, "Bädmän");
+
+  const gameData = await constructDeployedGame(user, user2, controller);
+
+  const movementService = getMovementService();
+
+  const achillesInitial = gameData.ships
+    .getShips()
+    .find((ship) => ship.name === "UCS Achilles");
+
+  const thruster1 = achillesInitial.systems.getSystemById(3);
+  const thruster2 = achillesInitial.systems.getSystemById(4);
+  thruster1.callHandler("changeMode");
+  thruster2.callHandler("changeMode");
+
+  /*
+  achillesInitial.systems.getSystemById(4).callHandler("boost");
+  achillesInitial.systems.getSystemById(4).callHandler("boost");
+  achillesInitial.systems.getSystemById(4).callHandler("boost");
+  achillesInitial.systems.getSystemById(4).callHandler("boost");
+  achillesInitial.systems.getSystemById(4).callHandler("boost");
+  achillesInitial.systems.getSystemById(4).callHandler("boost");
+*/
+
+  movementService.thrust(achillesInitial, 0);
+  movementService.thrust(achillesInitial, 0);
+  movementService.thrust(achillesInitial, 0);
+  movementService.thrust(achillesInitial, 0);
+  movementService.thrust(achillesInitial, 0);
+  movementService.thrust(achillesInitial, 0);
+  movementService.thrust(achillesInitial, 0);
+  movementService.thrust(achillesInitial, 0);
+  movementService.thrust(achillesInitial, 0);
+  movementService.thrust(achillesInitial, 0);
+
+  const thruster3HeatPrediction = thruster1.heat.predictHeatChange();
+  const thruster4HeatPrediction = thruster2.heat.predictHeatChange();
 
   await controller.commitTurn(gameData.id, gameData.serialize(), user);
   await controller.commitTurn(gameData.id, gameData.serialize(), user2);

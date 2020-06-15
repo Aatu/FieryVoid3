@@ -156,6 +156,7 @@ class ThrustChannelSystemStrategy extends ShipSystemStrategy {
       thrustChannelSystemStrategy: {
         channeled: this.channeled,
         newMode: this.newMode,
+        mode: this.mode,
       },
     };
   }
@@ -164,6 +165,7 @@ class ThrustChannelSystemStrategy extends ShipSystemStrategy {
     const thisData = data.thrustChannelSystemStrategy || {};
     this.channeled = thisData.channeled || 0;
     this.newMode = thisData.newMode || null;
+    this.mode = thisData.mode || this.mode;
 
     return this;
   }
@@ -342,7 +344,11 @@ class ThrustChannelSystemStrategy extends ShipSystemStrategy {
     );
   }
 
-  getRequiredPhasesForReceivingPlayerData() {
+  getRequiredPhasesForReceivingPlayerData(payload, previousResponse = 1) {
+    if (previousResponse > 3) {
+      return previousResponse;
+    }
+
     return 3;
   }
 

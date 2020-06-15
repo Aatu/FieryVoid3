@@ -128,6 +128,13 @@ class GameScene {
     this.renderer.setSize(this.width, this.height);
     this.renderer.autoClear = false;
     this.renderer.context.getExtension("OES_standard_derivatives");
+    this.renderer.context.getExtension("GL_OES_standard_derivatives");
+
+    const gl =
+      this.renderer.domElement.getContext("webgl") ||
+      this.renderer.domElement.getContext("experimental-webgl");
+    gl.getExtension("OES_standard_derivatives");
+
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFShadowMap;
     this.renderer.gammaOutput = true;

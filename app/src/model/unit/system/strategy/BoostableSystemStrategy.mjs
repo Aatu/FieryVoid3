@@ -83,7 +83,11 @@ class BoostableSystemStrategy extends ShipSystemStrategy {
     this.system.callHandler("onSystemPowerLevelDecrease");
   }
 
-  getRequiredPhasesForReceivingPlayerData() {
+  getRequiredPhasesForReceivingPlayerData(payload, previousResponse = 1) {
+    if (previousResponse > 2) {
+      return previousResponse;
+    }
+
     return 2;
   }
 

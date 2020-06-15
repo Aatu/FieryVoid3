@@ -1,6 +1,5 @@
 import * as React from "react";
 import styled from "styled-components";
-import { Section } from ".";
 import { Error } from "./Error";
 
 class InputAndLabel extends React.Component {

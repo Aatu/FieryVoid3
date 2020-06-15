@@ -5,7 +5,7 @@ export const StateStore = React.createContext({});
 export const DispatchStore = React.createContext({});
 
 const initialState = {
-  currentUser: undefined
+  currentUser: undefined,
 };
 
 const StoreProvider = ({ children }) => {
