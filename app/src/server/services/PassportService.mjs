@@ -27,7 +27,7 @@ class PassportService {
             return done(null, false, { message: "Incorrect username." });
           }
 
-          if (!(await this.userService.checkPassword(password))) {
+          if (!(await this.userService.checkPassword(username, password))) {
             return done(null, false, { message: "Incorrect password." });
           }
 

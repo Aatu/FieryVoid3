@@ -29,7 +29,7 @@ class UserRepository {
       "select * from user where username = ? and password = PASSWORD( ? )",
       [username, password + "molecular-pulsar"]
     );
-    return Boolean(data);
+    return Boolean(data[0]);
   }
 
   async insertUser(username, password) {

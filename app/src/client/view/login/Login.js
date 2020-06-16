@@ -1,8 +1,9 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { getCurrentUser } from "../../state/actions";
 import { login as loginUser } from "../../api/user";
+import styled from "styled-components";
 
 import {
   Title,
@@ -13,18 +14,31 @@ import {
   Link,
   TooltipContainer,
   TooltipHeader,
-  Cell50
+  Cell50,
+  Error,
 } from "../../styled";
 import { StateStore, DispatchStore } from "../../state/StoreProvider";
+
+const ErrorContainer = styled.div`
+  margin: 0 8px 8px 8px;
+`;
 
 const Login = ({ className }) => {
   const dispatch = useContext(DispatchStore);
   const { currentUser } = useContext(StateStore);
+  const [error, setError] = useState(null);
 
   const onSubmit = async (values, { setSubmitting }) => {
-    await loginUser(values.username, values.password);
-    console.log("user logged in!");
-    await getCurrentUser(dispatch);
+    try {
+      await loginUser(values.username, values.password);
+      await getCurrentUser(dispatch);
+      setSubmitting(false);
+    } catch (e) {
+      if (e.status === 401) {
+        setError("Wrong password or user not found.");
+      }
+    }
+
     setSubmitting(false);
   };
 
@@ -38,10 +52,10 @@ const Login = ({ className }) => {
       onSubmit={onSubmit}
       validationSchema={Yup.object().shape({
         username: Yup.string().required("Required"),
-        password: Yup.string().required("Required")
+        password: Yup.string().required("Required"),
       })}
     >
-      {props => {
+      {(props) => {
         const {
           values,
           touched,
@@ -49,8 +63,13 @@ const Login = ({ className }) => {
           isSubmitting,
           handleChange,
           handleBlur,
-          handleSubmit
+          handleSubmit,
         } = props;
+
+        const wrappedHandleChange = (event) => {
+          setError(null);
+          handleChange(event);
+        };
 
         return (
           <TooltipContainer
@@ -66,7 +85,7 @@ const Login = ({ className }) => {
                   id="username"
                   placeholder="Username"
                   value={values.username}
-                  onChange={handleChange}
+                  onChange={wrappedHandleChange}
                   onBlur={handleBlur}
                   error={touched.username && errors.username}
                 />
@@ -77,7 +96,7 @@ const Login = ({ className }) => {
                   id="password"
                   placeholder="Password"
                   value={values.password}
-                  onChange={handleChange}
+                  onChange={wrappedHandleChange}
                   onBlur={handleBlur}
                   error={touched.password && errors.password}
                   type="password"
@@ -85,6 +104,11 @@ const Login = ({ className }) => {
               </Cell50>
             </Section>
 
+            {error && (
+              <ErrorContainer>
+                <Error>{error}</Error>
+              </ErrorContainer>
+            )}
             <Section>
               <Cell50>
                 <Button
@@ -98,7 +122,7 @@ const Login = ({ className }) => {
               <Cell50>
                 <Button
                   buttonStyle="button-grey"
-                  onClick={e => {
+                  onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
 
