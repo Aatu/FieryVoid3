@@ -1,69 +1,58 @@
-import React, { Component } from "react";
+import React, { useCallback, useContext, useState } from "react";
+import {
+  Button,
+  Link,
+  TooltipContainer,
+  TooltipHeader,
+  Section,
+  Label,
+  Value,
+  TooltipValue,
+} from "../../styled";
+import { createTestGameGame } from "../../api/game";
+import { StateStore } from "../../state/StoreProvider";
+import { LinkInline } from "../../styled/Link";
 import styled from "styled-components";
-import { Button, Link, TooltipContainer, TooltipHeader } from "../../styled";
-import HomeSceneComponent from "./HomeSceneComponent";
-import Login from "../login/Login";
-import LoginFloater from "../login/LoginFloater";
 
-const Logo = styled.div`
-  height: 58px;
-  width: 412px;
-  background-image: url(img/coldvoid.png);
-  position: absolute;
-  top: 45px;
-  left: 30px;
-  opacity: 0.8;
-  z-index: -1;
+const GameIdContainer = styled.div`
+  margin: 8px;
+  text-transform: uppercase;
 `;
 
-const SuperContainer = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  flex-wrap: wrap-reverse;
-  margin: 5px;
-`;
-const ContainerLeft = styled.div`
-  width: 40%;
-  min-width: 800px;
-  margin: 5px;
-`;
+const Home = () => {
+  const { currentUser } = useContext(StateStore);
+  const [gameId, setGameId] = useState(null);
 
-const ContainerRight = styled.div`
-  width: 21%;
-  min-width: 200px;
-  margin: 5px;
-`;
+  const createGame = useCallback(() => {
+    const callApi = async () => {
+      const response = await createTestGameGame();
+      console.log(response);
+      setGameId(response.data.gameId);
+    };
 
-class Home extends Component {
-  render() {
-    return (
-      <>
-        <Logo />
-        <HomeSceneComponent />
-        <SuperContainer>
-          <ContainerLeft>
-            <TooltipContainer>
-              <TooltipHeader>Home</TooltipHeader>
+    callApi();
+  }, [setGameId, createTestGameGame]);
 
-              <Link to="/createGame">
-                <Button type="button" buttonStyle="button-grey">
-                  Create game
-                </Button>
-              </Link>
-              <Link to="/logout">
-                <Button type="button" buttonStyle="button-grey">
-                  Log out
-                </Button>
-              </Link>
-            </TooltipContainer>
-          </ContainerLeft>
-          <ContainerRight>
-            <Login />
-          </ContainerRight>
-        </SuperContainer>
-      </>
-    );
-  }
-}
+  return (
+    <TooltipContainer>
+      <TooltipHeader>Home</TooltipHeader>
+
+      {currentUser && (currentUser.id === 1 || currentUser.id === 2) && (
+        <Button type="button" buttonStyle="button-grey" onClick={createGame}>
+          Create test game
+        </Button>
+      )}
+
+      {gameId && (
+        <GameIdContainer>
+          <Label>Game created:</Label>
+          <Value>
+            <LinkInline to={`/game/${gameId}`}>{`/game/${gameId}`}</LinkInline>
+          </Value>
+        </GameIdContainer>
+      )}
+    </TooltipContainer>
+  );
+};
 
 export default Home;

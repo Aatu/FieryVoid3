@@ -42,7 +42,7 @@ const Container = styled.div`
   box-sizing: border-box;
   flex-direction: column;
   flex-grow: 1;
-  margin: 5px 0px;
+  margin: 5px 8px;
 `;
 
 const SubContainer = styled.div`

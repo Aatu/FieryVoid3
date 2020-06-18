@@ -12,6 +12,7 @@ import Ammo30mm from "../ammunition/conventional/Ammo30mm.mjs";
 import AmmunitionStrategy from "../../strategy/weapon/AmmunitionStrategy.mjs";
 import ArmorBoostOfflineSystemStrategy from "../../strategy/ArmorBoostOfflineSystemStrategy.mjs";
 import FireOrderHeatStrategy from "../../strategy/FireOrderHeatStrategy.mjs";
+import { MEDIUM_WEAPON_RANGE } from "../../../../gameConfig.mjs";
 
 class PDC30mm extends Weapon {
   constructor({ id }, arcs) {
@@ -22,10 +23,10 @@ class PDC30mm extends Weapon {
       new StandardHitStrategy(30),
       new StandardRangeStrategy([
         { range: 0, modifier: 0 },
-        { range: 10, modifier: -20 },
-        { range: 15, modifier: -50 },
-        { range: 18, modifier: -100 },
-        { range: 20, modifier: -200 }
+        { range: Math.round(MEDIUM_WEAPON_RANGE * 0.3), modifier: -20 },
+        { range: Math.round(MEDIUM_WEAPON_RANGE * 0.5), modifier: -50 },
+        { range: Math.round(MEDIUM_WEAPON_RANGE * 0.6), modifier: -100 },
+        { range: Math.round(MEDIUM_WEAPON_RANGE * 0.8), modifier: -200 },
       ]),
       new StandardLoadingStrategy(1),
       new BurstDamageStrategy(null, null, 0, 6, 5),
@@ -35,10 +36,10 @@ class PDC30mm extends Weapon {
         size: 6,
         speed: 0.35,
         color: [1.0, 0.9, 0.8],
-        explosionSize: 3
+        explosionSize: 3,
       }),
       new ArmorBoostOfflineSystemStrategy(3),
-      new FireOrderHeatStrategy(3)
+      new FireOrderHeatStrategy(3),
     ]);
   }
 

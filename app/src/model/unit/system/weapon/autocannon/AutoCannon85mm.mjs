@@ -12,6 +12,7 @@ import AmmunitionStrategy from "../../strategy/weapon/AmmunitionStrategy.mjs";
 import { Ammo85mmAP, Ammo85mmHE } from "../ammunition/conventional/index.mjs";
 import ArmorBoostOfflineSystemStrategy from "../../strategy/ArmorBoostOfflineSystemStrategy.mjs";
 import FireOrderHeatStrategy from "../../strategy/FireOrderHeatStrategy.mjs";
+import { MEDIUM_WEAPON_RANGE } from "../../../../gameConfig.mjs";
 
 class AutoCannon85mm extends Weapon {
   constructor({ id }, arcs) {
@@ -22,9 +23,9 @@ class AutoCannon85mm extends Weapon {
       new StandardHitStrategy(20),
       new StandardRangeStrategy([
         { range: 0, modifier: 0 },
-        { range: 20, modifier: -20 },
-        { range: 50, modifier: -50 },
-        { range: 100, modifier: -200 }
+        { range: Math.round(MEDIUM_WEAPON_RANGE * 0.5), modifier: -20 },
+        { range: MEDIUM_WEAPON_RANGE, modifier: -50 },
+        { range: Math.round(MEDIUM_WEAPON_RANGE * 1.5), modifier: -200 },
       ]),
       new StandardLoadingStrategy(1),
       new BurstDamageStrategy(null, null, 0, 3, 10),
@@ -34,10 +35,10 @@ class AutoCannon85mm extends Weapon {
         size: 8,
         speed: 0.5,
         color: [1.0, 0.7, 0.7],
-        explosionSize: 5
+        explosionSize: 5,
       }),
       new ArmorBoostOfflineSystemStrategy(3),
-      new FireOrderHeatStrategy(8)
+      new FireOrderHeatStrategy(8),
     ]);
   }
 

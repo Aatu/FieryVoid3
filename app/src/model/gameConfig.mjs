@@ -1,6 +1,6 @@
 import THREE from "three";
 
-const HEX_SIZE = 12.5;
+const HEX_SIZE = 25.0;
 const ZOOM_MAX = 40;
 const ZOOM_MIN = 0.05;
 const ZOOM_PERSPECTIVE_MIN = 100;
@@ -18,6 +18,8 @@ const COLOR_ENEMY_HIGHLIGHT = COLOR_ENEMY.clone().multiplyScalar(1.5);
 const COLOR_OEW_FRIENDLY = new THREE.Color(160 / 255, 150 / 255, 250 / 255);
 const COLOR_OEW_ENEMY = new THREE.Color(255 / 255, 40 / 255, 40 / 255);
 
+const MEDIUM_WEAPON_RANGE = 25;
+
 export {
   HEX_SIZE,
   ZOOM_MAX,
@@ -32,5 +34,6 @@ export {
   ZOOM_FOR_SHIPBADGE,
   ZOOM_FOR_SHIPBADGE_NAME,
   ZOOM_PERSPECTIVE_MIN,
-  TORPEDO_Z
+  TORPEDO_Z,
+  MEDIUM_WEAPON_RANGE,
 };

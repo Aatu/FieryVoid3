@@ -5,15 +5,37 @@ import LobbySlots from "./LobbySlots";
 import FleetStore from "./FleetStore";
 import shipClasses from "../../../../../model/unit/ships";
 
-import { Title, PanelContainer, Section } from "../../../../styled";
+import {
+  Title,
+  PanelContainer,
+  Section,
+  TooltipContainer,
+  TooltipHeader,
+} from "../../../../styled";
+import { SuperContainer } from "../../../baseView";
 
-const LobbyContainer = styled(PanelContainer)`
-  width: 1200px;
+const LobbyContainer = styled.div`
+  display: flex;
   position: absolute;
-  top: 20px;
+  top: 5px;
   max-height: calc(100vh - 40px);
-  left: calc(50vw - 600px);
-  right: calc(50vw - 600px);
+  left: calc(50vw - 400px);
+  right: 5px;
+  bottom: 5px;
+  z-index: 3;
+`;
+
+const ContainerLeft = styled.div`
+  width: 50%;
+  min-width: 800px;
+  margin: 5px;
+  z-index: 3;
+`;
+
+const ContainerRight = styled.div`
+  width: 50%;
+  min-width: 200px;
+  margin: 5px;
   z-index: 3;
 `;
 
@@ -23,7 +45,7 @@ class Lobby extends Component {
 
     this.state = {
       selectedSlot: null,
-      ships: []
+      ships: [],
     };
   }
 
@@ -39,13 +61,13 @@ class Lobby extends Component {
       const selectedSlot =
         gameData.slots
           .getSlots()
-          .find(slot => slot.isOccupiedBy(currentUser)) || null;
+          .find((slot) => slot.isOccupiedBy(currentUser)) || null;
 
       const ships = selectedSlot ? selectedSlot.getShips() : [];
       return {
         ...prevState,
         selectedSlot,
-        ships
+        ships,
       };
     }
 
@@ -94,6 +116,37 @@ class Lobby extends Component {
 
     return (
       <LobbyContainer>
+        <ContainerLeft>
+          <TooltipContainer>
+            <TooltipHeader>GAME: {gameData.name}</TooltipHeader>
+            <LobbySlots
+              gameData={gameData}
+              edit={false}
+              currentUser={currentUser}
+              take={true}
+              select={true}
+              selectedSlot={selectedSlot}
+              game={game}
+              ships={ships}
+              uiState={uiState}
+              onReady={this.onReady.bind(this)}
+            />
+          </TooltipContainer>
+        </ContainerLeft>
+        <ContainerRight>
+          <TooltipContainer>
+            <TooltipHeader>Buy your fleet</TooltipHeader>
+            <FleetStore uiState={uiState} buyShip={this.buyShip.bind(this)} />
+          </TooltipContainer>
+        </ContainerRight>
+      </LobbyContainer>
+    );
+  }
+}
+
+/*
+
+      <LobbyContainer>
         <Section>
           <div>
             <Title>GAME: '{gameData.name}'</Title>
@@ -114,8 +167,6 @@ class Lobby extends Component {
           <FleetStore uiState={uiState} buyShip={this.buyShip.bind(this)} />
         </Section>
       </LobbyContainer>
-    );
-  }
-}
 
+      */
 export default Lobby;

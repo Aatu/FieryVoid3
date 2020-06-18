@@ -1,17 +1,19 @@
 import React, { Component, useContext } from "react";
 import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
-import Home from "./view/home";
 import Game from "./view/game";
-import Register from "./view/register";
 import Logout from "./view/logout";
-import CreateGame from "./view/createGame";
 import { StateStore } from "./state/StoreProvider";
+import { BaseView } from "./view/baseView";
 
-const PrivateRoute = ({ component: Component, authed, ...rest }) => {
+export const PrivateRoute = ({ component: Component, ...rest }) => {
+  const { currentUser } = useContext(StateStore);
+
+  const authed = Boolean(currentUser);
+
   return (
     <Route
       {...rest}
-      render={props =>
+      render={(props) =>
         authed === true ? (
           <Component {...props} />
         ) : (
@@ -22,35 +24,20 @@ const PrivateRoute = ({ component: Component, authed, ...rest }) => {
   );
 };
 
-class Routes extends Component {
-  render() {
-    const state = this.context;
-    const user = state.currentUser;
+const Routes = () => {
+  const { currentUser } = useContext(StateStore);
 
-    if (user === undefined) {
-      return null;
-    }
-
-    return (
-      <Router>
-        <Route exact path="/" component={Home} />
-        <PrivateRoute
-          authed={Boolean(user)}
-          exact
-          path="/createGame"
-          component={CreateGame}
-        />
-        <Route exact path="/logout" component={Logout} />
-        <PrivateRoute
-          authed={Boolean(user)}
-          path="/game/:gameid"
-          component={Game}
-        />
-      </Router>
-    );
+  if (currentUser === undefined) {
+    return null;
   }
-}
 
-Routes.contextType = StateStore;
+  return (
+    <Router>
+      <PrivateRoute exact path="/game/:gameid" component={Game} />
+      <Route exact path="/logout" component={Logout} />
+      <Route path="*" component={BaseView} />
+    </Router>
+  );
+};
 
 export default Routes;

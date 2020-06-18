@@ -3,7 +3,7 @@ import HETorpedoDamageStrategy from "./torpedoDamageStrategy/HETorpedoDamageStra
 
 class Torpedo158Nuclear extends Torpedo158 {
   constructor(args) {
-    super({});
+    super({ evasion: 20 });
 
     this.damageStrategy = new HETorpedoDamageStrategy("d10+4", 0, "d20+60");
   }
@@ -13,9 +13,9 @@ class Torpedo158Nuclear extends Torpedo158 {
 
     return [
       {
-        value: "A long range torpedo with a nuclear payload."
+        value: "A long range torpedo with a nuclear payload.",
       },
-      ...previousResponse
+      ...previousResponse,
     ];
   }
 

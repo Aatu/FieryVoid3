@@ -1,5 +1,7 @@
 import styled, { css } from "styled-components";
 import React from "react";
+import { TooltipButton } from "./Tooltip";
+import { X } from "./icon";
 
 const text = css`
   display: inline;
@@ -27,7 +29,10 @@ const greyButton = css`
   flex-grow: 1;
   flex-basis: 100%;
   border: none;
-  margin: 0;
+  margin: 0 8px;
+
+  flex-grow: 1;
+  flex-basis: calc(50% - 16px);
 
   justify-content: center;
 
@@ -86,7 +91,7 @@ const ButtonContainer = styled.button`
   position: relative;
   margin: 3px 5px;
 
-  ${props => {
+  ${(props) => {
     if (props.icon) {
       return iconStyle;
     }
@@ -101,7 +106,7 @@ const ButtonContainer = styled.button`
   }}
 `;
 
-const Button = props => (
+export const Button = (props) => (
   <ButtonContainer {...props}>
     {props.icon && (
       <IconContainer>
@@ -112,4 +117,22 @@ const Button = props => (
   </ButtonContainer>
 );
 
-export { Button };
+const CloseButtonContainer = styled(TooltipButton)`
+  height: 10px;
+  width: 10px;
+  padding: 0;
+  margin-left: 5px;
+
+  & svg {
+    width: 100%;
+    height: 100%;
+  }
+`;
+
+export const CloseButton = (props) => {
+  return (
+    <CloseButtonContainer {...props}>
+      <X />
+    </CloseButtonContainer>
+  );
+};

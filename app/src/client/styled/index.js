@@ -10,7 +10,6 @@ export {
   ContainerRounded,
   ContainerRoundedRightSide,
   defaultPadding,
-  PanelContainer,
   DarkContainer,
   Section,
   SectionRight,

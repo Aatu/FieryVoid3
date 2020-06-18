@@ -9,6 +9,7 @@ import PiercingDamageStrategy from "../../strategy/weapon/PiercingDamageStrategy
 import BoostableSystemStrategy from "../../strategy/BoostableSystemStrategy.mjs";
 import RequiresPowerSystemStrategy from "../../strategy/RequiresPowerSystemStrategy.mjs";
 import OutputHeatOnlineStrategy from "../../strategy/OutputHeatOnlineStrategy.mjs";
+import { MEDIUM_WEAPON_RANGE } from "../../../../gameConfig.mjs";
 
 class MediumCoilgunTurretedUC extends Weapon {
   constructor({ id }, arcs) {
@@ -18,8 +19,10 @@ class MediumCoilgunTurretedUC extends Weapon {
       new StandardHitStrategy(20),
       new StandardRangeStrategy([
         { range: 0, modifier: -200 },
-        { range: 120, modifier: -20 },
-        { range: 610, modifier: -200 },
+        { range: Math.round(MEDIUM_WEAPON_RANGE * 1.6), modifier: -20 },
+        { range: Math.round(MEDIUM_WEAPON_RANGE * 2), modifier: -40 },
+        { range: Math.round(MEDIUM_WEAPON_RANGE * 2.5), modifier: -60 },
+        { range: Math.round(MEDIUM_WEAPON_RANGE * 4), modifier: -200 },
       ]),
       new StandardLoadingStrategy(4),
       new RequiresPowerSystemStrategy(10),

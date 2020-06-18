@@ -9,6 +9,15 @@ class StandardHitStrategy extends ShipSystemStrategy {
     this.numberOfShots = numberOfShots;
   }
 
+  getMessages(payload, previousResponse = []) {
+    previousResponse.push({
+      header: "Fire control",
+      value: this.fireControl,
+    });
+
+    return previousResponse;
+  }
+
   getBaseHitChance({ shooter, target }) {
     return target.getHitProfile(shooter.getPosition());
   }

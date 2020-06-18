@@ -190,6 +190,7 @@ class Ship {
   }
 
   setShipLoadout() {
+    this.systems.callAllSystemHandlers("onGameStart");
     this.systems.callAllSystemHandlers("loadTargetInstant");
     this.systems.callAllSystemHandlers("setMaxFuel");
   }

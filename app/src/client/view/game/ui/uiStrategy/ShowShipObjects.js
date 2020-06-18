@@ -11,9 +11,11 @@ class ShowShipObjects extends AnimationUiStrategy {
     super();
   }
 
-  update(gamedata) {
+  async update(gamedata) {
     super.update(gamedata);
     const { shipIconContainer } = this.services;
+
+    await shipIconContainer.shipsLoaded();
 
     shipIconContainer.getArray().forEach((icon) => {
       const ship = icon.ship;

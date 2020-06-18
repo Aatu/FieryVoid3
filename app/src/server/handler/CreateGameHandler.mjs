@@ -2,6 +2,7 @@ import GameData from "../../model/game/GameData.mjs";
 import * as gameStatuses from "../../model/game/gameStatuses.mjs";
 import { InvalidGameDataError, UnauthorizedError } from "../errors/index.mjs";
 import Sun from "../../model/terrain/Sun.mjs";
+import User from "../../model/User.mjs";
 
 class CreateGameHandler {
   createGame(clientGameData, user) {
@@ -40,7 +41,7 @@ class CreateGameHandler {
       gameData.creatorId !== user.id &&
       !gameData.slots
         .getSlots()
-        .every(slot => !slot.isTaken() || !slot.isOccupiedBy(user))
+        .every((slot) => !slot.isTaken() || !slot.isOccupiedBy(user))
     ) {
       throw new InvalidGameDataError(
         "Only game creator or last player can remove game"
@@ -97,12 +98,12 @@ class CreateGameHandler {
 
     slot.leaveSlot(user);
 
-    if (gameData.slots.getSlots().every(slot => !slot.isOccupiedBy(user))) {
+    if (gameData.slots.getSlots().every((slot) => !slot.isOccupiedBy(user))) {
       gameData.removePlayer(user);
       gameData.setPlayerInactive(user);
     }
 
-    if (gameData.slots.getSlots().every(slot => !slot.isTaken())) {
+    if (gameData.slots.getSlots().every((slot) => !slot.isTaken())) {
       gameData.setStatus(gameStatuses.ABANDONED);
     }
   }

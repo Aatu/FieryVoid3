@@ -9,6 +9,7 @@ import GameClients from "./GameClients.mjs";
 import * as gameMessages from "../../model/game/gameMessage.mjs";
 import * as gamePhases from "../../model/game/gamePhases.mjs";
 import ReplayHandler from "../handler/ReplayHandler.mjs";
+import CreateTestGameHandler from "../handler/CreateTestGameHandler.mjs";
 
 class GameController {
   constructor(dbConnection) {
@@ -19,6 +20,7 @@ class GameController {
     this.gameClients = new GameClients();
 
     this.createGameHandler = new CreateGameHandler();
+    this.createTestGameHandler = new CreateTestGameHandler();
     this.buyShipsHandler = new BuyShipsHandler();
     this.deploymentHandler = new DeploymentHandler();
     this.gameHandler = new GameHandler();
@@ -92,6 +94,16 @@ class GameController {
     return gameId;
   }
 
+  async createTestGame() {
+    const serverGameData = this.createTestGameHandler.createTestGame();
+    const gameId = await this.gameDataService.createGame(serverGameData);
+    const { key, gameData } = await this.gameDataService.reserveGame(gameId);
+    this.createTestGameHandler.createTestShips(gameData);
+    await this.gameDataService.saveGame(key, gameData);
+
+    return gameId;
+  }
+
   async removeGame(gameId, user) {
     const { key, gameData } = await this.gameDataService.reserveGame(gameId);
     this.createGameHandler.removeGame(gameData, user);
@@ -129,7 +141,7 @@ class GameController {
     clientGameData = new GameData(clientGameData);
     const {
       key,
-      gameData: serverGameData
+      gameData: serverGameData,
     } = await this.gameDataService.reserveGame(gameId);
 
     this.deploymentHandler.deploy(serverGameData, clientGameData, user);
@@ -142,7 +154,7 @@ class GameController {
     clientGameData = new GameData(clientGameData);
     const {
       key,
-      gameData: serverGameData
+      gameData: serverGameData,
     } = await this.gameDataService.reserveGame(gameId);
 
     try {

@@ -1,12 +1,18 @@
 import Torpedo from "./Torpedo.mjs";
+import { MEDIUM_WEAPON_RANGE } from "../../../../../gameConfig.mjs";
 
 class Torpedo72 extends Torpedo {
-  constructor({ minRange = 170, maxRange = 380, hitSize = 0, evasion = 50 }) {
+  constructor({
+    minRange = MEDIUM_WEAPON_RANGE * 2,
+    maxRange = Math.round(MEDIUM_WEAPON_RANGE * 3.5),
+    hitSize = 0,
+    evasion = 50,
+  }) {
     super({
       minRange,
       maxRange,
       hitSize,
-      evasion
+      evasion,
     });
   }
 }

@@ -10,6 +10,7 @@ import WeaponAnimationStrategy from "../../strategy/weapon/WeaponAnimationStrate
 import InterceptorStrategy from "../../strategy/weapon/InterceptorStrategy.mjs";
 import { Ammo30mm } from "../ammunition/conventional/index.mjs";
 import AmmunitionStrategy from "../../strategy/weapon/AmmunitionStrategy.mjs";
+import { MEDIUM_WEAPON_RANGE } from "../../../../gameConfig.mjs";
 
 class X2PDC30mm extends Weapon {
   constructor(args, arcs) {
@@ -20,10 +21,10 @@ class X2PDC30mm extends Weapon {
       new StandardHitStrategy(30),
       new StandardRangeStrategy([
         { range: 0, modifier: 0 },
-        { range: 10, modifier: -20 },
-        { range: 15, modifier: -50 },
-        { range: 18, modifier: -100 },
-        { range: 20, modifier: -200 }
+        { range: Math.round(MEDIUM_WEAPON_RANGE * 0.3), modifier: -20 },
+        { range: Math.round(MEDIUM_WEAPON_RANGE * 0.5), modifier: -50 },
+        { range: Math.round(MEDIUM_WEAPON_RANGE * 0.6), modifier: -100 },
+        { range: Math.round(MEDIUM_WEAPON_RANGE * 0.8), modifier: -200 },
       ]),
       new StandardLoadingStrategy(1),
       new BurstDamageStrategy("d2", "d3+2", 0, 6, 5),
@@ -33,8 +34,8 @@ class X2PDC30mm extends Weapon {
         size: 6,
         speed: 0.35,
         color: [1.0, 0.8, 0.4],
-        shots: 6
-      })
+        shots: 6,
+      }),
     ]);
   }
 

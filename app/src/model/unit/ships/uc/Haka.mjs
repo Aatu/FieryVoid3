@@ -29,8 +29,8 @@ class Haka extends Ship {
     this.pivotcost = 10;
     this.evasioncost = 10;
 
-    this.frontHitProfile = 70;
-    this.sideHitProfile = 100;
+    this.frontHitProfile = 60;
+    this.sideHitProfile = 80;
 
     this.description = ``;
 

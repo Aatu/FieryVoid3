@@ -53,13 +53,6 @@ const DarkContainer = styled(Container)`
   background-color: ${darkBlue}
 `;
 
-const PanelContainer = styled(Container)`
-  ${defaultPadding}
-  ${defaultWidth}
-  border-radius: 5px;
-  margin: 30px auto;
-`;
-
 const Section = styled.div`
   display: flex;
   margin: 0;
@@ -74,7 +67,7 @@ const SectionRight = styled(Section)`
 
 const Cell50 = styled.div`
   display: flex;
-  margin: 0 8px;
+  margin: 0;
   flex-grow: 1;
   flex-basis: calc(50% - 16px);
 `;
@@ -87,8 +80,7 @@ export {
   ContainerRounded,
   ContainerRoundedRightSide,
   defaultPadding,
-  PanelContainer,
   DarkContainer,
   Section,
-  SectionRight
+  SectionRight,
 };

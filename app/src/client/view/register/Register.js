@@ -4,13 +4,7 @@ import * as Yup from "yup";
 import { getCurrentUser } from "../../state/actions";
 import { login as loginUser, register as registerUser } from "../../api/user";
 
-import {
-  Title,
-  InputAndLabel,
-  PanelContainer,
-  Button,
-  Error
-} from "../../styled";
+import { Title, InputAndLabel, Button, Error } from "../../styled";
 import { DispatchStore } from "../../state/StoreProvider";
 
 class Register extends React.Component {
@@ -18,7 +12,7 @@ class Register extends React.Component {
     super(props);
 
     this.state = {
-      error: null
+      error: null,
     };
   }
 
@@ -56,10 +50,10 @@ class Register extends React.Component {
             .required("Required"),
           passwordConfirm: Yup.string()
             .oneOf([Yup.ref("password"), null], "Passwords must match")
-            .required("Required")
+            .required("Required"),
         })}
       >
-        {props => {
+        {(props) => {
           const {
             values,
             touched,
@@ -67,11 +61,11 @@ class Register extends React.Component {
             isSubmitting,
             handleChange,
             handleBlur,
-            handleSubmit
+            handleSubmit,
           } = props;
 
           return (
-            <PanelContainer as="form" onSubmit={handleSubmit}>
+            <div as="form" onSubmit={handleSubmit}>
               <Title>
                 Register a new user {error && <Error>{error}</Error>}
               </Title>
@@ -115,7 +109,7 @@ class Register extends React.Component {
               >
                 Register
               </Button>
-            </PanelContainer>
+            </div>
           );
         }}
       </Formik>

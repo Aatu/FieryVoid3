@@ -4,6 +4,8 @@ import { colors } from "./index";
 import { tooltipButtonColor } from "./Colors";
 
 const TooltipContainer = styled.div`
+  display: flex;
+  flex-direction: column;
   opacity: 0.95;
   text-align: center;
   font-family: arial;

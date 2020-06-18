@@ -1,8 +1,13 @@
 import styled from "styled-components";
 import { Link as RouterLink } from "react-router-dom";
 
-const Link = styled(RouterLink)`
+export const Link = styled(RouterLink)`
   text-decoration: none;
+  width: 100%;
+  display: flex;
 `;
 
-export { Link };
+export const LinkInline = styled(RouterLink)`
+  text-decoration: none;
+  color: inherit;
+`;

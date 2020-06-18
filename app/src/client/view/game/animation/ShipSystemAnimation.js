@@ -10,7 +10,9 @@ class ShipSystemAnimation extends Animation {
   }
 
   updateAll() {
-    this.ship.systems.getSystems().forEach(system => this.updateSystem(system));
+    this.ship.systems
+      .getSystems()
+      .forEach((system) => this.updateSystem(system));
   }
 
   updateSystem(system) {

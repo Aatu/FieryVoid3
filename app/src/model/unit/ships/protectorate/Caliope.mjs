@@ -27,6 +27,9 @@ class Caliope extends Ship {
     this.pivotcost = 3;
     this.evasioncost = 3;
 
+    this.frontHitProfile = 45;
+    this.sideHitProfile = 60;
+
     this.description = `
         Caliope cruiser was initially conceived with grandiose goals of including
         battleship capabilities on cruiser tonnage class spaceframe. 

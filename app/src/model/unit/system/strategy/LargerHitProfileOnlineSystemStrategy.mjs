@@ -14,8 +14,8 @@ class LargerHitProfileOnlineSystemStrategy extends ShipSystemStrategy {
     return {
       ...previousResponse,
       largerHitProfileOnlineSystemStrategy: {
-        turnsOffline: this.turnsOffline
-      }
+        turnsOffline: this.turnsOffline,
+      },
     };
   }
 
@@ -40,27 +40,28 @@ class LargerHitProfileOnlineSystemStrategy extends ShipSystemStrategy {
   getMessages(payload, previousResponse = []) {
     previousResponse.push({
       header: "Increases profile when online",
-      value: `${this.front}/${this.side}`
+      value: `${this.front}/${this.side}`,
     });
     previousResponse.push({
       header: "Modifies system hit allocation size",
-      value: `x${this.hitSizeMultiplier}`
+      value: `x${this.hitSizeMultiplier}`,
     });
 
     if (!this.system.isDestroyed()) {
       if (this.turnsOffline > 1) {
         previousResponse.push({
-          value: `NOTE: System has been offline long enough for the profile increase to cease.`
+          value: `NOTE: System has been offline long enough for the profile increase to cease.`,
         });
       } else {
         previousResponse.push({
-          value: `NOTE: System has to be offline ${2 -
-            this.turnsOffline} turn(s) before profile increase ceases.`
+          value: `NOTE: System has to be offline ${
+            2 - this.turnsOffline
+          } turn(s) before profile increase ceases.`,
         });
       }
     } else {
       previousResponse.push({
-        value: `NOTE: Destroyed system will not increase ship profile.`
+        value: `NOTE: Destroyed system will not increase ship profile.`,
       });
     }
 
@@ -88,6 +89,16 @@ class LargerHitProfileOnlineSystemStrategy extends ShipSystemStrategy {
     } else {
       this.turnsOffline = 0;
     }
+  }
+
+  onGameStart() {
+    console.log("is online", this.system.power.isOnline());
+    if (this.system.power.isOnline()) {
+      console.log("set offline");
+      this.system.power.setOffline();
+    }
+
+    this.turnsOffline = 99;
   }
 }
 

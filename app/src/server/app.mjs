@@ -21,14 +21,14 @@ app.use(
   cors({
     origin: ["http://localhost:3000", "http://95.217.10.191"],
     methods: ["GET", "POST"],
-    credentials: true
+    credentials: true,
   })
 );
 app.use(
   session({
     secret: "keyboard cat",
     resave: false,
-    saveUninitialized: true
+    saveUninitialized: true,
   })
 );
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -39,7 +39,7 @@ const dbConnection = new DbConnection({
   user: "root",
   password: "root",
   database: `fieryvoid`,
-  connectionLimit: 5
+  connectionLimit: 5,
 });
 const userService = new UserService(new UserRepository(dbConnection));
 const passportService = new PassportService(userService);
@@ -76,8 +76,13 @@ app.post("/game", async (req, res) => {
   res.status(200).json({ gameId });
 });
 
+app.post("/testGame", async (req, res) => {
+  const gameId = await gameController.createTestGame(req.body, req.user);
+  res.status(200).json({ gameId });
+});
+
 app.ws("/game/:gameId", (ws, req) => {
-  ws.on("message", message => {
+  ws.on("message", (message) => {
     try {
       gameController.onMessage(
         JSON.parse(message),
@@ -89,12 +94,12 @@ app.ws("/game/:gameId", (ws, req) => {
       console.log(error);
       ws.send({
         type: "error",
-        payload: error
+        payload: error,
       });
     }
   });
 
-  ws.on("close", msg => {
+  ws.on("close", (msg) => {
     gameController.closeConnection(ws, req.user, req.params.gameId);
   });
 

@@ -5,7 +5,7 @@ import TorpedoLauncherStrategy from "../../strategy/weapon/TorpedoLauncherStrate
 
 class TorpedoLauncher158 extends Weapon {
   constructor(args) {
-    super(args, [new TorpedoLauncherStrategy(1, null, Torpedo158, 5)]);
+    super(args, [new TorpedoLauncherStrategy(1, null, Torpedo158, 10)]);
   }
 
   getDisplayName() {

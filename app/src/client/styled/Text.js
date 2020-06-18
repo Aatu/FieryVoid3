@@ -9,11 +9,9 @@ const Paragraph = styled.p`
 `;
 
 const Label = styled.span`
-  display: flex;
   font-family: arial;
   font-size: 12px;
-  color: #deebff;
-  padding: 10px;
+  color: white;
 `;
 
 const Value = styled.span`

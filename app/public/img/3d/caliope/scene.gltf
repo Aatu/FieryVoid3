@@ -1,6 +1,6 @@
 {
     "asset" : {
-        "generator" : "Khronos glTF Blender I/O v1.0.5",
+        "generator" : "Khronos glTF Blender I/O v1.1.46",
         "version" : "2.0"
     },
     "scene" : 0,
@@ -41,7 +41,7 @@
                 0.09017064422369003
             ],
             "translation" : [
-                9.635307312011719,
+                2.3031129837036133,
                 0.001396365463733673,
                 0
             ]
@@ -56,7 +56,7 @@
                 0.7071067690849304
             ],
             "translation" : [
-                -14.864784240722656,
+                -22.196979522705078,
                 0.0013962164521217346,
                 10.241628646850586
             ]
@@ -71,7 +71,7 @@
                 0.35355329513549805
             ],
             "translation" : [
-                -14.864788055419922,
+                -22.196983337402344,
                 8.869827270507812,
                 -5.120172500610352
             ]
@@ -86,7 +86,7 @@
                 -0.35355350375175476
             ],
             "translation" : [
-                -14.864788055419922,
+                -22.196983337402344,
                 -8.868764877319336,
                 -5.1212005615234375
             ]
@@ -101,7 +101,7 @@
                 0.7062105536460876
             ],
             "translation" : [
-                -4.680789470672607,
+                -12.012983322143555,
                 0.0013962164521217346,
                 9.703229904174805
             ]
@@ -116,7 +116,7 @@
                 0.3839268088340759
             ],
             "translation" : [
-                -4.680789470672607,
+                -12.012983322143555,
                 8.404245376586914,
                 -4.85329008102417
             ]
@@ -131,7 +131,7 @@
                 -0.3222837746143341
             ],
             "translation" : [
-                -4.680789470672607,
+                -12.012983322143555,
                 -8.40145492553711,
                 -4.85329008102417
             ]
@@ -146,7 +146,7 @@
                 0.7070739269256592
             ],
             "translation" : [
-                21.561559677124023,
+                14.229365348815918,
                 0.0013962164521217346,
                 6.311853885650635
             ]
@@ -161,7 +161,7 @@
                 0.006816165521740913
             ],
             "translation" : [
-                21.561559677124023,
+                14.229365348815918,
                 0.0013962164521217346,
                 -6.318375587463379
             ]
@@ -176,7 +176,7 @@
                 0.7013270258903503
             ],
             "translation" : [
-                36.88034439086914,
+                29.54814910888672,
                 6.272550582885742,
                 2.2182998657226562
             ]
@@ -191,7 +191,7 @@
                 0.6962493062019348
             ],
             "translation" : [
-                36.88034439086914,
+                29.54814910888672,
                 -6.269752502441406,
                 2.2182998657226562
             ]
@@ -206,7 +206,7 @@
                 -0.05655204877257347
             ],
             "translation" : [
-                36.88034439086914,
+                29.54814910888672,
                 -6.269752502441406,
                 -2.2182998657226562
             ]
@@ -221,7 +221,7 @@
                 0.1014624536037445
             ],
             "translation" : [
-                36.88034439086914,
+                29.54814910888672,
                 6.272550582885742,
                 -2.2182998657226562
             ]
@@ -236,7 +236,7 @@
                 0.5242915749549866
             ],
             "translation" : [
-                37.98257827758789,
+                30.65038299560547,
                 9.413148880004883,
                 0
             ]
@@ -251,7 +251,7 @@
                 0.4744664132595062
             ],
             "translation" : [
-                37.98260498046875,
+                30.650409698486328,
                 -9.41035270690918,
                 0
             ]
@@ -266,7 +266,7 @@
                 0.4999999701976776
             ],
             "translation" : [
-                -28.260639190673828,
+                -35.59283447265625,
                 0.0013962164521217346,
                 5.752176761627197
             ]
@@ -281,7 +281,7 @@
                 -0.18301275372505188
             ],
             "translation" : [
-                -28.260639190673828,
+                -35.59283447265625,
                 4.6239776611328125,
                 -2.872159719467163
             ]
@@ -296,7 +296,7 @@
                 -0.6830127835273743
             ],
             "translation" : [
-                -28.260639190673828,
+                -35.59283447265625,
                 -4.621185302734375,
                 -2.872159719467163
             ]
@@ -316,7 +316,7 @@
                 0.8490959405899048
             ],
             "translation" : [
-                45.579322814941406,
+                38.247127532958984,
                 -2.619720220565796,
                 0
             ]
@@ -336,7 +336,7 @@
                 0.8490959405899048
             ],
             "translation" : [
-                45.579322814941406,
+                38.247127532958984,
                 2.6197245121002197,
                 0
             ]
@@ -345,6 +345,11 @@
     "materials" : [
         {
             "doubleSided" : true,
+            "emissiveFactor" : [
+                0,
+                0,
+                0
+            ],
             "name" : "ShipMaterial",
             "pbrMetallicRoughness" : {
                 "baseColorTexture" : {
@@ -357,6 +362,11 @@
         },
         {
             "doubleSided" : true,
+            "emissiveFactor" : [
+                0,
+                0,
+                0
+            ],
             "name" : "Material.001",
             "pbrMetallicRoughness" : {
                 "baseColorFactor" : [
@@ -371,6 +381,11 @@
         },
         {
             "doubleSided" : true,
+            "emissiveFactor" : [
+                0,
+                0,
+                0
+            ],
             "name" : "Material.002",
             "pbrMetallicRoughness" : {
                 "baseColorFactor" : [
@@ -385,6 +400,11 @@
         },
         {
             "doubleSided" : true,
+            "emissiveFactor" : [
+                0,
+                0,
+                0
+            ],
             "name" : "Material.003",
             "pbrMetallicRoughness" : {
                 "baseColorFactor" : [
@@ -399,6 +419,11 @@
         },
         {
             "doubleSided" : true,
+            "emissiveFactor" : [
+                0,
+                0,
+                0
+            ],
             "name" : "Material.004",
             "pbrMetallicRoughness" : {
                 "baseColorFactor" : [
@@ -413,6 +438,11 @@
         },
         {
             "doubleSided" : true,
+            "emissiveFactor" : [
+                0,
+                0,
+                0
+            ],
             "name" : "Material.005",
             "pbrMetallicRoughness" : {
                 "baseColorFactor" : [
@@ -427,6 +457,11 @@
         },
         {
             "doubleSided" : true,
+            "emissiveFactor" : [
+                0,
+                0,
+                0
+            ],
             "name" : "Material.006",
             "pbrMetallicRoughness" : {
                 "baseColorFactor" : [
@@ -441,6 +476,11 @@
         },
         {
             "doubleSided" : true,
+            "emissiveFactor" : [
+                0,
+                0,
+                0
+            ],
             "name" : "Material.007",
             "pbrMetallicRoughness" : {
                 "baseColorFactor" : [
@@ -455,6 +495,11 @@
         },
         {
             "doubleSided" : true,
+            "emissiveFactor" : [
+                0,
+                0,
+                0
+            ],
             "name" : "Material.008",
             "pbrMetallicRoughness" : {
                 "baseColorFactor" : [
@@ -469,6 +514,11 @@
         },
         {
             "doubleSided" : true,
+            "emissiveFactor" : [
+                0,
+                0,
+                0
+            ],
             "name" : "Material.009",
             "pbrMetallicRoughness" : {
                 "baseColorFactor" : [
@@ -483,6 +533,11 @@
         },
         {
             "doubleSided" : true,
+            "emissiveFactor" : [
+                0,
+                0,
+                0
+            ],
             "name" : "Material.010",
             "pbrMetallicRoughness" : {
                 "baseColorFactor" : [
@@ -497,6 +552,11 @@
         },
         {
             "doubleSided" : true,
+            "emissiveFactor" : [
+                0,
+                0,
+                0
+            ],
             "name" : "Material.011",
             "pbrMetallicRoughness" : {
                 "baseColorFactor" : [
@@ -511,6 +571,11 @@
         },
         {
             "doubleSided" : true,
+            "emissiveFactor" : [
+                0,
+                0,
+                0
+            ],
             "name" : "Material.012",
             "pbrMetallicRoughness" : {
                 "baseColorFactor" : [
@@ -525,6 +590,11 @@
         },
         {
             "doubleSided" : true,
+            "emissiveFactor" : [
+                0,
+                0,
+                0
+            ],
             "name" : "Material.013",
             "pbrMetallicRoughness" : {
                 "baseColorFactor" : [
@@ -539,6 +609,11 @@
         },
         {
             "doubleSided" : true,
+            "emissiveFactor" : [
+                0,
+                0,
+                0
+            ],
             "name" : "Material.014",
             "pbrMetallicRoughness" : {
                 "baseColorFactor" : [

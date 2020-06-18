@@ -18,6 +18,7 @@ import GameShipTooltipMenuBack from "./GameShipTooltipMenuBack";
 import TorpedoDefense from "./TorpedoDefense";
 import ShipName from "../ShipName";
 import GameShipTooltipMenuTorpedoDefense from "./GameShipTooltipMenuTorpedoDefense";
+import { CloseButton } from "../../../../styled/Button";
 
 const InfoHeader = styled(TooltipHeader)`
   display: flex;
@@ -44,18 +45,6 @@ export const Entry = styled(TooltipEntry)`
 
 export const Header = styled.span`
   color: white;
-`;
-
-const CloseButton = styled(TooltipButton)`
-  height: 10px;
-  width: 10px;
-  padding: 0;
-  margin-left: 5px;
-
-  & svg {
-    width: 100%;
-    height: 100%;
-  }
 `;
 
 export const TOOLTIP_TAB_TORPEDO_ATTACK = "tooltip_tab_torpedo_attack";
@@ -152,9 +141,7 @@ class ShipTooltip extends React.Component {
                 uiState.hideShipTooltip(ship);
                 uiState.customEvent("shipTooltipClosed", ship);
               }}
-            >
-              <X />
-            </CloseButton>
+            />
           </div>
         </InfoHeader>
         {Menu && (

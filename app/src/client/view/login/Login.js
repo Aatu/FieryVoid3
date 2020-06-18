@@ -16,6 +16,8 @@ import {
   TooltipHeader,
   Cell50,
   Error,
+  Label,
+  Value,
 } from "../../styled";
 import { StateStore, DispatchStore } from "../../state/StoreProvider";
 
@@ -43,7 +45,17 @@ const Login = ({ className }) => {
   };
 
   if (currentUser) {
-    return null;
+    return (
+      <TooltipContainer>
+        <TooltipHeader>
+          You are logged in as <Value>{currentUser.username}</Value>
+        </TooltipHeader>
+
+        <Link to="/logout">
+          <Button buttonStyle="button-grey">Log out</Button>
+        </Link>
+      </TooltipContainer>
+    );
   }
 
   return (
@@ -110,28 +122,24 @@ const Login = ({ className }) => {
               </ErrorContainer>
             )}
             <Section>
-              <Cell50>
-                <Button
-                  buttonStyle="button-grey"
-                  type="submit"
-                  disabled={isSubmitting || Object.entries(errors).length !== 0}
-                >
-                  Login
-                </Button>
-              </Cell50>
-              <Cell50>
-                <Button
-                  buttonStyle="button-grey"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
+              <Button
+                buttonStyle="button-grey"
+                type="submit"
+                disabled={isSubmitting || Object.entries(errors).length !== 0}
+              >
+                Login
+              </Button>
+              <Button
+                buttonStyle="button-grey"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
 
-                    alert("not implemented");
-                  }}
-                >
-                  Register
-                </Button>
-              </Cell50>
+                  alert("not implemented");
+                }}
+              >
+                Register
+              </Button>
             </Section>
           </TooltipContainer>
         );

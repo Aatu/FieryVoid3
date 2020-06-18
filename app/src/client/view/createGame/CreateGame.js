@@ -3,7 +3,7 @@ import React, {
   useContext,
   useState,
   useEffect,
-  useCallback
+  useCallback,
 } from "react";
 import { Redirect } from "react-router-dom";
 import styled from "styled-components";
@@ -16,13 +16,16 @@ import { createGame } from "../../api/game";
 import {
   Title,
   InputAndLabel,
-  PanelContainer,
   Button,
-  Link
+  Link,
+  TooltipContainer,
+  TooltipHeader,
 } from "../../styled";
 import { StateStore } from "../../state/StoreProvider";
+import { CloseButton } from "../../styled/Button";
+import { LinkInline } from "../../styled/Link";
 
-const Container = styled(PanelContainer)`
+const Container = styled.div`
   width: 1200px;
 `;
 
@@ -39,7 +42,7 @@ const CreateGame = ({ location }) => {
         points: 3000,
         userId: user.id,
         deploymentLocation: new hexagon.Offset(-150, 0),
-        deploymentVector: new hexagon.Offset(10, 0)
+        deploymentVector: new hexagon.Offset(10, 0),
       })
     );
 
@@ -50,7 +53,7 @@ const CreateGame = ({ location }) => {
         points: 3000,
         userId: null,
         deploymentLocation: new hexagon.Offset(150, 0),
-        deploymentVector: new hexagon.Offset(-10, 0)
+        deploymentVector: new hexagon.Offset(-10, 0),
       })
     );
 
@@ -61,7 +64,7 @@ const CreateGame = ({ location }) => {
   }, [setGameData]);
 
   const changeGameName = useCallback(
-    e => {
+    (e) => {
       gameData.name = e.target.value;
       setGameData(gameData.clone());
     },
@@ -89,29 +92,28 @@ const CreateGame = ({ location }) => {
   }
 
   return (
-    <Container>
-      <Link to="/">
-        <Button type="button" buttonStyle="button-grey">
-          Back
-        </Button>
-      </Link>
-      <Title>Create game</Title>
-      <InputAndLabel
-        placeholder="name"
-        value={gameData.name}
-        onChange={changeGameName}
-        error={!gameData.name ? "Name is required" : false}
-      />
+    <>
+      <TooltipContainer>
+        <TooltipHeader>
+          Create game
+          <LinkInline to="/">
+            <CloseButton />
+          </LinkInline>
+        </TooltipHeader>
 
-      <Slots gameData={gameData} />
-      <Button
-        type="button"
-        buttonStyle="button-grey"
-        onClick={createGameCallBack}
-      >
-        Create game
-      </Button>
-    </Container>
+        <InputAndLabel
+          placeholder="name"
+          value={gameData.name}
+          onChange={changeGameName}
+          error={!gameData.name ? "Name is required" : false}
+        />
+
+        <Slots gameData={gameData} />
+        <Button buttonStyle="button-grey" onClick={createGameCallBack}>
+          Create game
+        </Button>
+      </TooltipContainer>
+    </>
   );
 };
 

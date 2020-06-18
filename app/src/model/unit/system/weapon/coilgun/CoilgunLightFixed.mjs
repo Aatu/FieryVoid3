@@ -9,6 +9,7 @@ import PiercingDamageStrategy from "../../strategy/weapon/PiercingDamageStrategy
 import BoostableSystemStrategy from "../../strategy/BoostableSystemStrategy.mjs";
 import RequiresPowerSystemStrategy from "../../strategy/RequiresPowerSystemStrategy.mjs";
 import OutputHeatOnlineStrategy from "../../strategy/OutputHeatOnlineStrategy.mjs";
+import { MEDIUM_WEAPON_RANGE } from "../../../../gameConfig.mjs";
 
 class CoilgunLightFixed extends Weapon {
   constructor({ id }, arcs) {
@@ -18,9 +19,9 @@ class CoilgunLightFixed extends Weapon {
       new StandardHitStrategy(20),
       new StandardRangeStrategy([
         { range: 0, modifier: -100 },
-        { range: 120, modifier: -20 },
-        { range: 170, modifier: -40 },
-        { range: 250, modifier: -200 }
+        { range: Math.round(MEDIUM_WEAPON_RANGE * 1.5), modifier: -20 },
+        { range: Math.round(MEDIUM_WEAPON_RANGE * 2), modifier: -40 },
+        { range: Math.round(MEDIUM_WEAPON_RANGE * 3), modifier: -200 },
       ]),
       new StandardLoadingStrategy(4),
       new RequiresPowerSystemStrategy(6),
@@ -32,9 +33,9 @@ class CoilgunLightFixed extends Weapon {
         speed: 5,
         color: [0.8, 0.1, 0.4],
         explosionSize: 20,
-        explosionType: "gas"
+        explosionType: "gas",
       }),
-      new OutputHeatOnlineStrategy(4, 2)
+      new OutputHeatOnlineStrategy(4, 2),
     ]);
   }
 

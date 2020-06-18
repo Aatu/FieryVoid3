@@ -13,17 +13,19 @@ import Ammo140mmHE from "../ammunition/conventional/Ammo140mmHE.mjs";
 import AmmunitionStrategy from "../../strategy/weapon/AmmunitionStrategy.mjs";
 import OutputHeatOnlineStrategy from "../../strategy/OutputHeatOnlineStrategy.mjs";
 import BurstDamageStrategy from "../../strategy/weapon/BurstDamageStrategy.mjs";
+import { MEDIUM_WEAPON_RANGE } from "../../../../gameConfig.mjs";
 
 class RailgunTurreted140mmUC extends Weapon {
   constructor({ id }, arcs) {
     super({ id, hitpoints: 9, armor: 3 }, [
       new FireOrderStrategy(1),
       new WeaponArcStrategy(arcs),
-      new StandardHitStrategy(15),
+      new StandardHitStrategy(25),
       new StandardRangeStrategy([
         { range: 0, modifier: -50 },
-        { range: 10, modifier: 0 },
-        { range: 250, modifier: -200 },
+        { range: Math.round(MEDIUM_WEAPON_RANGE * 0.2), modifier: -20 },
+        { range: Math.round(MEDIUM_WEAPON_RANGE * 1.6), modifier: -70 },
+        { range: Math.round(MEDIUM_WEAPON_RANGE * 2.4), modifier: -200 },
       ]),
       new StandardLoadingStrategy(3),
       new RequiresPowerSystemStrategy(4),
