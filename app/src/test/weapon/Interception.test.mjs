@@ -27,7 +27,7 @@ const createShipAndTorpedo = () => {
     new PDC30mm({ id: 14, hitpoints: 5, armor: 3 }, { start: 0, end: 0 }),
     new Reactor({ id: 7, hitpoints: 10, armor: 3 }, 20),
     new Structure({ id: 8, hitpoints: 50, armor: 4 }),
-    new EwArray({ id: 9, hitpoints: 20, armor: 5 }, 8)
+    new EwArray({ id: 9, hitpoints: 20, armor: 5 }, 8),
   ]);
 
   ship.movement.addMovement(
@@ -50,7 +50,7 @@ const createShipAndTorpedo = () => {
   const shooter = new Ship({ id: 2 });
   shooter.systems.addPrimarySystem([
     new Reactor({ id: 7, hitpoints: 10, armor: 3 }, 20),
-    new Structure({ id: 8, hitpoints: 50, armor: 4 })
+    new Structure({ id: 8, hitpoints: 50, armor: 4 }),
   ]);
 
   const torpedo = new TorpedoFlight(new Torpedo158MSV(), 1, 2, 3, 1);
@@ -62,7 +62,7 @@ const createShipAndTorpedo = () => {
   ship.player.setUser(new User(1, "testUser"));
   const slot = new GameSlot(
     {
-      userId: 1
+      userId: 1,
     },
     gameData
   );
@@ -74,7 +74,7 @@ const createShipAndTorpedo = () => {
   shooter.player.setUser(new User(2, "testEnemy"));
   const slot2 = new GameSlot(
     {
-      userId: 2
+      userId: 2,
     },
     gameData
   );
@@ -88,7 +88,7 @@ const createShipAndTorpedo = () => {
   return gameData;
 };
 
-test("Torpedo can be intercepted", test => {
+test("Torpedo can be intercepted", (test) => {
   const gameData = createShipAndTorpedo();
   const handler = new TorpedoHandler();
   const torpedoFlight = gameData.torpedos.getTorpedoFlights()[0];
@@ -104,7 +104,7 @@ test("Torpedo can be intercepted", test => {
   test.is(interceptor.id, 14);
 });
 
-test("Torpedo can not be intercepted, if weapon is offline", test => {
+test("Torpedo can not be intercepted, if weapon is offline", (test) => {
   const gameData = createShipAndTorpedo();
 
   const pdc = gameData.ships.getShips()[0].systems.getSystemById(14);
@@ -124,7 +124,7 @@ test("Torpedo can not be intercepted, if weapon is offline", test => {
   test.is(interceptor, undefined);
 });
 
-test("Torpedo can not be intercepted, if weapon is not on arc", test => {
+test("Torpedo can not be intercepted, if weapon is not on arc", (test) => {
   const gameData = createShipAndTorpedo();
 
   const ship = gameData.ships.getShips()[0];
@@ -132,7 +132,7 @@ test("Torpedo can not be intercepted, if weapon is not on arc", test => {
   pdc.power.setOffline();
 
   ship.systems.addPrimarySystem([
-    new PDC30mm({ id: 15, hitpoints: 5, armor: 3 }, { start: 90, end: 270 })
+    new PDC30mm({ id: 15, hitpoints: 5, armor: 3 }, { start: 90, end: 270 }),
   ]);
 
   const handler = new TorpedoHandler();
@@ -149,7 +149,7 @@ test("Torpedo can not be intercepted, if weapon is not on arc", test => {
   test.is(interceptor, undefined);
 });
 
-test("Torpedo can not be intercepted, if weapon is already used", test => {
+test("Torpedo can not be intercepted, if weapon is already used", (test) => {
   const gameData = createShipAndTorpedo();
 
   const ship = gameData.ships.getShips()[0];
@@ -169,19 +169,19 @@ test("Torpedo can not be intercepted, if weapon is already used", test => {
   test.is(interceptor, undefined);
 });
 
-test("Better interceptor is used first", test => {
+test("Better interceptor is used first", (test) => {
   const gameData = createShipAndTorpedo();
 
   const ship = gameData.ships.getShips()[0];
   ship.systems.addPrimarySystem([
-    new PDC30mm({ id: 15, hitpoints: 5, armor: 3 }, { start: 0, end: 0 })
+    new PDC30mm({ id: 15, hitpoints: 5, armor: 3 }, { start: 0, end: 0 }),
   ]);
 
   const pdc = ship.systems.getSystemById(15);
   const pdc2 = ship.systems.getSystemById(14);
 
   pdc.strategies.find(
-    strategy => strategy instanceof StandardHitStrategy
+    (strategy) => strategy instanceof StandardHitStrategy
   ).fireControl = 50;
 
   const handler = new TorpedoHandler();
@@ -198,7 +198,7 @@ test("Better interceptor is used first", test => {
   test.is(interceptor.id, 15);
 });
 
-test("Intercept hit change is calculated properly", test => {
+test("Intercept hit change is calculated properly", (test) => {
   const gameData = createShipAndTorpedo();
   const ship = gameData.ships.getShips()[0];
   ship.electronicWarfare.assignCcEw(8);
@@ -209,13 +209,13 @@ test("Intercept hit change is calculated properly", test => {
   const torpedoFlight = gameData.torpedos.getTorpedoFlights()[0];
   const result = pdc.callHandler("getInterceptChance", {
     target: ship,
-    torpedoFlight
+    torpedoFlight,
   });
 
   test.deepEqual(
     result,
     new WeaponHitChance({
-      absoluteResult: 34,
+      absoluteResult: 30,
       baseToHit: 0,
       dew: 0,
       distance: 2,
@@ -223,9 +223,9 @@ test("Intercept hit change is calculated properly", test => {
       fireControl: 30,
       oew: 8,
       outOfRange: false,
-      rangeModifier: -16,
+      rangeModifier: -20,
       rollingPenalty: -20,
-      result: 34
+      result: 30,
     })
   );
 });

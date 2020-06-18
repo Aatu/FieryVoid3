@@ -25,7 +25,7 @@ import CombatLogDamageEntry from "../../model/combatLog/CombatLogDamageEntry.mjs
 import CombatLogWeaponFireHitResult from "../../model/combatLog/CombatLogWeaponFireHitResult.mjs";
 import CombatLogTorpedoIntercept from "../../model/combatLog/CombatLogTorpedoIntercept.mjs";
 
-test.serial("Submit successfull launch order", async test => {
+test.serial("Submit successfull launch order", async (test) => {
   const db = new TestDatabaseConnection("torpedo");
   await db.resetDatabase();
 
@@ -36,7 +36,7 @@ test.serial("Submit successfull launch order", async test => {
     user,
     user2,
     controller,
-    new Offset(-200, 0)
+    new Offset(-30, 0)
   );
 
   const gameId = gameData.id;
@@ -45,11 +45,11 @@ test.serial("Submit successfull launch order", async test => {
 
   const shooter = gameData.ships
     .getShips()
-    .find(ship => ship.name === "UCS Achilles");
+    .find((ship) => ship.name === "UCS Achilles");
 
   const target = gameData.ships
     .getShips()
-    .find(ship => ship.name === "GEPS Biliyaz");
+    .find((ship) => ship.name === "GEPS Biliyaz");
 
   const launchers = shooter.systems
     .getSystemById(202)
@@ -63,7 +63,7 @@ test.serial("Submit successfull launch order", async test => {
 
   const shooterTurn2 = newGameData.ships
     .getShips()
-    .find(ship => ship.name === "UCS Achilles");
+    .find((ship) => ship.name === "UCS Achilles");
 
   const launchersTurn2 = shooterTurn2.systems.getSystemById(202);
   test.is(launchersTurn2.strategies[1].launchTarget, null);
@@ -82,15 +82,15 @@ test.serial("Submit successfull launch order", async test => {
     202,
     1
   )
-    .setStrikePosition(new Vector(-411.36206679760835, 0))
-    .setLaunchPosition(new Vector(-4384.25360665872, 56.25));
+    .setStrikePosition(new Vector(-324.7595264191645, 37.5))
+    .setLaunchPosition(new Vector(-1407.2912811497129, 112.5));
 
   expected.id = null;
   test.deepEqual(actual, expected);
   db.close();
 });
 
-test.serial("Execute a successful torpedo attack", async test => {
+test.serial("Execute a successful torpedo attack", async (test) => {
   const db = new TestDatabaseConnection("torpedo");
   await db.resetDatabase();
 
@@ -101,18 +101,18 @@ test.serial("Execute a successful torpedo attack", async test => {
     user,
     user2,
     controller,
-    new Offset(-200, 0)
+    new Offset(-20, 0)
   );
 
   const gameId = gameData.id;
 
   const shooter = gameData.ships
     .getShips()
-    .find(ship => ship.name === "UCS Achilles");
+    .find((ship) => ship.name === "UCS Achilles");
 
   const target = gameData.ships
     .getShips()
-    .find(ship => ship.name === "GEPS Biliyaz");
+    .find((ship) => ship.name === "GEPS Biliyaz");
 
   const launchers = shooter.systems
     .getSystemById(203)
@@ -143,7 +143,7 @@ test.serial("Execute a successful torpedo attack", async test => {
   db.close();
 });
 
-test.serial("Try to intercept torpedo attack", async test => {
+test.serial("Try to intercept torpedo attack", async (test) => {
   const db = new TestDatabaseConnection("torpedo");
   await db.resetDatabase();
 
@@ -154,18 +154,18 @@ test.serial("Try to intercept torpedo attack", async test => {
     user,
     user2,
     controller,
-    new Offset(-200, 0)
+    new Offset(-20, 0)
   );
 
   const gameId = gameData.id;
 
   const shooter = gameData.ships
     .getShips()
-    .find(ship => ship.name === "UCS Achilles");
+    .find((ship) => ship.name === "UCS Achilles");
 
   let target = gameData.ships
     .getShips()
-    .find(ship => ship.name === "GEPS Biliyaz");
+    .find((ship) => ship.name === "GEPS Biliyaz");
 
   const launchers = shooter.systems
     .getSystemById(203)
@@ -178,7 +178,7 @@ test.serial("Try to intercept torpedo attack", async test => {
   let newGameData = await controller.getGameData(gameData.id, user);
   target = newGameData.ships
     .getShips()
-    .find(ship => ship.name === "GEPS Biliyaz");
+    .find((ship) => ship.name === "GEPS Biliyaz");
 
   target.electronicWarfare.assignCcEw(10);
 
@@ -188,7 +188,7 @@ test.serial("Try to intercept torpedo attack", async test => {
 
   target = newGameData.ships
     .getShips()
-    .find(ship => ship.name === "GEPS Biliyaz");
+    .find((ship) => ship.name === "GEPS Biliyaz");
   //await evaluateTorpedoTurn(2, gameData.id, controller, user);
 
   test.is(target.electronicWarfare.inEffect.getCcEw(), 10);
@@ -202,14 +202,14 @@ test.serial("Try to intercept torpedo attack", async test => {
 
   test.true(
     replay[0].combatLog.entries.some(
-      entry => entry instanceof CombatLogTorpedoIntercept && entry.shipId
+      (entry) => entry instanceof CombatLogTorpedoIntercept && entry.shipId
     )
   );
 
   db.close();
 });
 
-test.serial("Try to intercept multiple torpedos", async test => {
+test.serial("Try to intercept multiple torpedos", async (test) => {
   const db = new TestDatabaseConnection("torpedo");
   await db.resetDatabase();
 
@@ -220,18 +220,18 @@ test.serial("Try to intercept multiple torpedos", async test => {
     user,
     user2,
     controller,
-    new Offset(-200, 0)
+    new Offset(-20, 0)
   );
 
   const gameId = gameData.id;
 
   const shooter = gameData.ships
     .getShips()
-    .find(ship => ship.name === "UCS Achilles");
+    .find((ship) => ship.name === "UCS Achilles");
 
   let target = gameData.ships
     .getShips()
-    .find(ship => ship.name === "GEPS Biliyaz");
+    .find((ship) => ship.name === "GEPS Biliyaz");
 
   const launchers = shooter.systems
     .getSystemById(203)
@@ -253,7 +253,7 @@ test.serial("Try to intercept multiple torpedos", async test => {
 
   target = newGameData.ships
     .getShips()
-    .find(ship => ship.name === "GEPS Biliyaz");
+    .find((ship) => ship.name === "GEPS Biliyaz");
 
   target.electronicWarfare.assignCcEw(10);
 
@@ -264,7 +264,7 @@ test.serial("Try to intercept multiple torpedos", async test => {
 
   target = newGameData.ships
     .getShips()
-    .find(ship => ship.name === "GEPS Biliyaz");
+    .find((ship) => ship.name === "GEPS Biliyaz");
   //await evaluateTorpedoTurn(2, gameData.id, controller, user);
 
   test.is(target.electronicWarfare.inEffect.getCcEw(), 10);
@@ -278,7 +278,7 @@ test.serial("Try to intercept multiple torpedos", async test => {
 
   test.true(
     replay[0].combatLog.entries.some(
-      entry => entry instanceof CombatLogTorpedoIntercept && entry.shipId
+      (entry) => entry instanceof CombatLogTorpedoIntercept && entry.shipId
     )
   );
 
