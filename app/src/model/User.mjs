@@ -5,11 +5,15 @@ class User {
     this.accessLevel = accessLevel;
   }
 
+  isAi() {
+    return this.id < 0;
+  }
+
   serialize() {
     return {
       id: this.id,
       username: this.username,
-      accessLevel: this.accessLevel
+      accessLevel: this.accessLevel,
     };
   }
 

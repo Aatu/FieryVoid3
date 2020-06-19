@@ -189,6 +189,13 @@ class GameData {
     return this;
   }
 
+  getAiUsers() {
+    return this.slots.slots
+      .filter((slot) => slot.userId < 0)
+      .map((slot) => this.players.find((player) => player.id === slot.userId))
+      .filter((value, index, self) => self.indexOf(value) === index);
+  }
+
   endTurn() {
     this.ships.getShips().forEach((ship) => {
       ship.endTurn(this.turn);

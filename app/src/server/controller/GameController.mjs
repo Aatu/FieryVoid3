@@ -162,6 +162,11 @@ class GameController {
       const toSend = [];
 
       this.gameHandler.submit(serverGameData, clientGameData, user);
+
+      if (this.gameHandler.isHumansReady(serverGameData)) {
+        this.gameHandler.processAi(serverGameData);
+      }
+
       toSave.push(serverGameData.clone());
 
       if (this.gameHandler.isReady(serverGameData)) {
@@ -180,7 +185,6 @@ class GameController {
         this.gameClients.sendTurnChange(replays);
       } else {
         toSend.push(serverGameData.clone());
-        //TODO: toSend is not actually sent anywhere here
         await this.gameDataService.saveGame(key, toSave);
       }
 

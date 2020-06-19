@@ -4,7 +4,7 @@ import hexagon from "../../model/hexagon";
 import TestShip from "../../model/unit/ships/test/TestShip";
 import MovementService from "../../model/movement/MovementService";
 
-export const constructLobbyGame = user => {
+export const constructLobbyGame = (user) => {
   const gameData = new GameData();
   gameData.name = "Very nice test game";
 
@@ -15,7 +15,7 @@ export const constructLobbyGame = user => {
       points: 3000,
       userId: user.id,
       deploymentLocation: new hexagon.Offset(-30, 0),
-      deploymentVector: new hexagon.Offset(30, 0)
+      deploymentVector: new hexagon.Offset(30, 0),
     })
   );
 
@@ -26,7 +26,7 @@ export const constructLobbyGame = user => {
       points: 3000,
       userId: null,
       deploymentLocation: new hexagon.Offset(30, 0),
-      deploymentVector: new hexagon.Offset(-30, 0)
+      deploymentVector: new hexagon.Offset(-30, 0),
     })
   );
 
@@ -50,7 +50,7 @@ export const constructLobbyGameWithSlotsTaken = async (
       points: 3000,
       userId: user1.id,
       deploymentLocation: new hexagon.Offset(-30, 0).add(deployOffset1),
-      deploymentVector: new hexagon.Offset(30, 0)
+      deploymentVector: new hexagon.Offset(30, 0),
     })
   );
 
@@ -61,7 +61,7 @@ export const constructLobbyGameWithSlotsTaken = async (
       points: 3000,
       userId: null,
       deploymentLocation: new hexagon.Offset(30, 0).add(deployOffset2),
-      deploymentVector: new hexagon.Offset(-30, 0)
+      deploymentVector: new hexagon.Offset(-30, 0),
     })
   );
 
@@ -83,7 +83,7 @@ export const constructDeploymentGame = async (user1, user2, controller) => {
       points: 3000,
       userId: user1.id,
       deploymentLocation: new hexagon.Offset(-30, 0),
-      deploymentVector: new hexagon.Offset(30, 0)
+      deploymentVector: new hexagon.Offset(30, 0),
     })
   );
 
@@ -94,7 +94,7 @@ export const constructDeploymentGame = async (user1, user2, controller) => {
       points: 3000,
       userId: null,
       deploymentLocation: new hexagon.Offset(30, 0),
-      deploymentVector: new hexagon.Offset(-30, 0)
+      deploymentVector: new hexagon.Offset(-30, 0),
     })
   );
 
@@ -128,7 +128,7 @@ export const constructShipsBoughtGame = async (
     slot1.id,
     [
       new TestShip({ name: "UCS Achilles" }).serialize(),
-      new TestShip({ name: "UCS Eclipse" }).serialize()
+      new TestShip({ name: "UCS Eclipse" }).serialize(),
     ],
     user1
   );
@@ -166,17 +166,17 @@ export const constructDeployedGame = async (
   );
 
   movementService.deploy(
-    gameData.ships.getShips().find(ship => ship.name === "UCS Achilles"),
+    gameData.ships.getShips().find((ship) => ship.name === "UCS Achilles"),
     new hexagon.Offset(-32, 3).add(deployOffset1)
   );
 
   movementService.deploy(
-    gameData.ships.getShips().find(ship => ship.name === "UCS Eclipse"),
+    gameData.ships.getShips().find((ship) => ship.name === "UCS Eclipse"),
     new hexagon.Offset(-34, 3).add(deployOffset1)
   );
 
   movementService.deploy(
-    gameData.ships.getShips().find(ship => ship.name === "GEPS Biliyaz"),
+    gameData.ships.getShips().find((ship) => ship.name === "GEPS Biliyaz"),
     new hexagon.Offset(34, 0).add(deployOffset2)
   );
 
