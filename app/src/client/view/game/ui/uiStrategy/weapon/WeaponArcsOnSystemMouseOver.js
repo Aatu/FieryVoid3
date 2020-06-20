@@ -71,7 +71,7 @@ class WeaponArcsOnSystemMouseOver extends UiStrategy {
     const circle = new THREE.Mesh(geometry, material);
     circle.position.z = -1;
     icon.mesh.add(circle);
-    this.weaponArcs.push({ mesh: icon.mesh, circle });
+    this.weaponArcs.push({ mesh: icon.mesh, circle, texture });
   }
 
   torpedoMouseOut() {
@@ -84,8 +84,11 @@ class WeaponArcsOnSystemMouseOver extends UiStrategy {
 
   hide() {
     const { scene } = this.services;
-    this.weaponArcs = this.weaponArcs.filter(({ mesh, circle }) => {
+    this.weaponArcs = this.weaponArcs.filter(({ mesh, circle, texture }) => {
       mesh.remove(circle);
+      circle.material.dispose();
+      circle.geometry.dispose();
+      texture.dispose();
     });
   }
 
@@ -151,7 +154,7 @@ class WeaponArcsOnSystemMouseOver extends UiStrategy {
       const circle = new THREE.Mesh(geometry, material);
       circle.position.z = -1;
       icon.mesh.add(circle);
-      this.weaponArcs.push({ mesh: icon.mesh, circle });
+      this.weaponArcs.push({ mesh: icon.mesh, circle, texture });
     });
   }
 }

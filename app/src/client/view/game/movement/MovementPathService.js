@@ -11,7 +11,7 @@ class MovementPathService {
   }
 
   getPath(ship) {
-    return this.paths.find(path => path.ship.id === ship.id);
+    return this.paths.find((path) => path.ship.id === ship.id);
   }
 
   update(gameData) {
@@ -19,7 +19,7 @@ class MovementPathService {
   }
 
   hideAllMovementPaths() {
-    this.paths.forEach(path => path.movementPath.remove(this.scene));
+    this.paths.forEach((path) => path.movementPath.remove(this.scene));
     this.paths = [];
   }
 
@@ -30,7 +30,7 @@ class MovementPathService {
     }
 
     path.movementPath.remove(this.scene);
-    this.paths = this.paths.filter(path => path.ship !== ship);
+    this.paths = this.paths.filter((path) => path.ship !== ship);
   }
 
   showMovementPath(ship) {
@@ -40,7 +40,7 @@ class MovementPathService {
       path = {
         ship,
         ghost: this.shipIconContainer.getGhostShipIconByShip(ship),
-        movementPath: null
+        movementPath: null,
       };
       this.paths.push(path);
     }

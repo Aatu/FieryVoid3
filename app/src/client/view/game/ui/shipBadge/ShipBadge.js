@@ -93,6 +93,7 @@ const getNumberOfMissilesImpacting = (ship, gameData) => {
 };
 
 const ShipBadge = ({ icon, uiState, showName, visible }) => {
+  console.log("SHIP BADGE, this should not happen");
   const { currentUser } = uiState.services;
   const isMine = icon.ship.player.is(currentUser);
 

@@ -1,4 +1,4 @@
-export default dbName => `
+export default (dbName) => `
 DROP DATABASE IF EXISTS fieryvoidtest_${dbName};
 CREATE DATABASE fieryvoidtest_${dbName};
 USE fieryvoidtest_${dbName};
@@ -114,4 +114,5 @@ CREATE TABLE game_ship_data (
 
 INSERT INTO user (username, password, access_level) VALUES ('Nönmän', 'lol', 1);
 INSERT INTO user (username, password, access_level) VALUES ('Bädmän', 'lol', 1);
+INSERT INTO user (id, username, password, access_level) VALUES (-1, 'AI opponent', '', 1);
 `;

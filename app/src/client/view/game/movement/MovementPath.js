@@ -98,7 +98,8 @@ const createMovementFacing = (ghost, facing, target, color) => {
   ghost.setPosition(target);
   ghost.setFacing(-hexFacingToAngle(facing));
   ghost.setGhostShipEmissive(color);
-  ghost.setOpacity(0.2);
+  ghost.replaceColor(color.clone().addScalar(-0.2));
+  //ghost.setOpacity(0.2);
 
   ghost.mapIcon
     .setMovementTarget()

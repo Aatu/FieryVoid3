@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import Stats from "stats.js";
 import HexGridRenderer from "./renderer/hexgrid/HexGridRender";
 import StarField from "./terrain/StarField";
 import { ZOOM_MAX, ZOOM_MIN } from "../../../model/gameConfig";
@@ -34,6 +35,7 @@ class GameScene {
   }
 
   init(element, { width, height }, gameId) {
+    console.log("gamescene init");
     this.element = element;
 
     this.scene = new THREE.Scene();
@@ -146,6 +148,10 @@ class GameScene {
     this.hexGridRenderer.renderHexGrid(this.scene, ZOOM_MIN, ZOOM_MAX);
     this.starField = new StarField(this.starFieldScene, gameId);
 
+    this.stats = new Stats();
+    this.stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
+    document.body.appendChild(this.stats.dom);
+
     this.render();
   }
 
@@ -212,6 +218,8 @@ class GameScene {
       return;
     }
 
+    this.stats.begin();
+
     this.phaseDirector.render(this.scene, this.coordinateConverter, this.zoom);
 
     this.renderer.clear();
@@ -222,6 +230,16 @@ class GameScene {
     this.animateZoom();
     this.starField.render();
 
+    console.log(
+      "performance, geometries",
+      this.renderer.info.memory.geometries,
+      "textures",
+      this.renderer.info.memory.textures,
+      "programs",
+      this.renderer.info.programs.length
+    );
+
+    this.stats.end();
     requestAnimationFrame(this.render.bind(this));
   }
 
