@@ -30,7 +30,7 @@ class MovementPathService {
     }
 
     path.movementPath.remove(this.scene);
-    this.paths = this.paths.filter((path) => path.ship !== ship);
+    this.paths = this.paths.filter((path) => path.ship.id !== ship.i);
   }
 
   showMovementPath(ship) {
@@ -43,22 +43,23 @@ class MovementPathService {
         movementPath: null,
       };
       this.paths.push(path);
+    } else {
+      path.ship = ship;
     }
 
     if (path.movementPath) {
       //TODO: this is inefficient and causes flickering
-      path.movementPath.remove(this.scene);
+      //path.movementPath.remove(this.scene);
+      path.movementPath.update(ship);
+    } else {
+      path.movementPath = new MovementPath(
+        ship,
+        this.scene,
+        this.terrain,
+        path.ghost,
+        ship.player.is(this.currentUser)
+      );
     }
-
-    path.ship = ship;
-
-    path.movementPath = new MovementPath(
-      ship,
-      this.scene,
-      this.terrain,
-      path.ghost,
-      ship.player.is(this.currentUser)
-    );
   }
 }
 

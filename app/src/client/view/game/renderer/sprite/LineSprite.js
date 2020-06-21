@@ -49,7 +49,7 @@ class LineSprite {
       },
       transparent: true,
       depthWrite: false,
-      depthTest: false,
+      depthTest: true,
       side: THREE.DoubleSide,
       blending: args.blending || THREE.NormalBlending,
       vertexShader: line2dVertexShader,
@@ -87,8 +87,9 @@ class LineSprite {
     this.material.needsUpdate = true;
 
     const geometry = await GEOMETRY;
+
     this.mesh = new THREE.Mesh(
-      geometry.scene.children[0].geometry.clone(),
+      geometry.scene.children[0].geometry,
       this.material
     );
   }
@@ -174,8 +175,8 @@ class LineSprite {
   }
 
   async destroy() {
-    console.log("destroy line");
     await GEOMETRY;
+
     this.scene.remove(this.mesh);
     this.mesh.material.dispose();
     this.mesh.geometry.dispose();
