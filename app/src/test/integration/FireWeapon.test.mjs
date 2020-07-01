@@ -166,8 +166,8 @@ test.serial("Submit successfull fire order for both players", async (test) => {
       oew: 5,
       distance: 8,
       rangeModifier: -5,
-      result: 10050,
-      absoluteResult: 10050,
+      result: 10150,
+      absoluteResult: 10150,
       rollingPenalty: -20,
       outOfRange: false,
     })
@@ -284,8 +284,8 @@ test.serial(
         oew: 5,
         distance: 8,
         rangeModifier: -5,
-        result: 10050,
-        absoluteResult: 10050,
+        result: 10150,
+        absoluteResult: 10150,
         rollingPenalty: -20,
         outOfRange: false,
       })

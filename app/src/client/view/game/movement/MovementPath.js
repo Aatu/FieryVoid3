@@ -13,10 +13,9 @@ import Vector from "../../../../model/utils/Vector.mjs";
 import MovementService from "../../../../model/movement/MovementService.mjs";
 
 class MovementPath {
-  constructor(ship, scene, terrain, ghost, mine) {
+  constructor(ship, scene, ghost, mine) {
     this.ship = ship;
     this.scene = scene;
-    this.terrain = terrain;
     this.ghost = ghost;
 
     this.color = mine ? COLOR_FRIENDLY : COLOR_ENEMY;
@@ -40,7 +39,7 @@ class MovementPath {
   update(ship) {
     this.ship = ship;
     const startMove = this.ship.movement.getLastEndMoveOrSurrogate();
-    const endMove = this.movementService.getNewEndMove(this.ship, this.terrain);
+    const endMove = this.movementService.getNewEndMove(this.ship);
     const start = startMove.position;
     const end = endMove.position;
     const facing = endMove.facing;
@@ -69,7 +68,7 @@ class MovementPath {
 
   create() {
     const startMove = this.ship.movement.getLastEndMoveOrSurrogate();
-    const endMove = this.movementService.getNewEndMove(this.ship, this.terrain);
+    const endMove = this.movementService.getNewEndMove(this.ship);
     this.start = startMove.position;
     this.end = endMove.position;
     this.facing = endMove.facing;

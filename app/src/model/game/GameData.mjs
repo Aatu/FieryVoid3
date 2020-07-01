@@ -21,10 +21,6 @@ class GameData {
     this.phase = phase;
   }
 
-  advanceTurn() {
-    this.turn++;
-  }
-
   addPlayer(user) {
     if (this.players.find((player) => player.id === user.id)) {
       return;
@@ -214,6 +210,13 @@ class GameData {
       .forEach((ship) => {
         ship.advanceTurn(this.turn);
         this.setActiveShip(ship);
+      });
+
+    this.ships
+      .getShips()
+      .filter((ship) => ship.isDestroyed())
+      .forEach((ship) => {
+        ship.destroyedThisTurn = false;
       });
   }
 }

@@ -7,10 +7,11 @@ import { getAngleBetween } from "../../../../../model/utils/math.mjs";
 import { addToDirection } from "../../../../../model/utils/math.mjs";
 
 class ShipMovementAnimation extends Animation {
-  constructor(shipIcon, moves, start, end) {
+  constructor(shipIcon, ship, moves, start, end) {
     super();
 
     this.shipIcon = shipIcon;
+    this.ship = ship;
     this.moves = moves;
 
     this.doneCallback = null;
@@ -109,10 +110,7 @@ class ShipMovementAnimation extends Animation {
   }
 
   render(payload) {
-    if (
-      this.shipIcon.ship.isDestroyed() &&
-      !this.shipIcon.ship.isDestroyedThisTurn()
-    ) {
+    if (this.ship.isDestroyed() && !this.ship.isDestroyedThisTurn()) {
       this.shipIcon.hide();
       return;
     }

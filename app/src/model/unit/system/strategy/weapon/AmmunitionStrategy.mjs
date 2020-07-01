@@ -531,6 +531,7 @@ class AmmunitionStrategy extends ShipSystemStrategy {
       }
     }
 
+    this.loaded = this.loaded.filter((entry) => entry.amount > 0);
     this._changeSelectedAmmoIfOutOfAmmo();
   }
 }

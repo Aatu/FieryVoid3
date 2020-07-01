@@ -4,7 +4,6 @@ class MovementPathService {
   constructor(scene, shipIconContainer, currentUser) {
     this.scene = scene;
     this.shipIconContainer = shipIconContainer;
-    this.terrain = null;
     this.currentUser = currentUser;
 
     this.paths = [];
@@ -14,9 +13,7 @@ class MovementPathService {
     return this.paths.find((path) => path.ship.id === ship.id);
   }
 
-  update(gameData) {
-    this.terrain = gameData.terrain;
-  }
+  update(gameData) {}
 
   hideAllMovementPaths() {
     this.paths.forEach((path) => path.movementPath.remove(this.scene));
@@ -55,7 +52,6 @@ class MovementPathService {
       path.movementPath = new MovementPath(
         ship,
         this.scene,
-        this.terrain,
         path.ghost,
         ship.player.is(this.currentUser)
       );

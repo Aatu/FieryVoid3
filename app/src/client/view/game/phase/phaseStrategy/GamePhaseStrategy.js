@@ -54,7 +54,7 @@ class GamePhaseStrategy extends PhaseStrategy {
       new SelectedShipEwList(),
       new UnderHexForShips(),
       new ShowMapIcons(),
-      //new ShowShipBadges(),
+      new ShowShipBadges(),
       new ShowTorpedoObjects(),
       new ShowShipDEWandCCEW(),
     ];

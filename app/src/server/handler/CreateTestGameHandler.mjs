@@ -54,9 +54,9 @@ class CreateTestGameHandler {
     );
   }
 
-  createTestShips(serverGameData) {
+  createTestShips(serverGameData, { useAI = false }) {
     const user1 = new User(1, "player1");
-    const user2 = USER_AI;
+    const user2 = useAI ? USER_AI : new User(2, "player2");
 
     const slot1 = serverGameData.slots.slots[0];
     const slot2 = serverGameData.slots.slots[1];
@@ -122,9 +122,9 @@ class CreateTestGameHandler {
     return serverGameData;
   }
 
-  createTestGame() {
+  createTestGame({ useAI = false }) {
     const user1 = new User(1, "player1");
-    const user2 = USER_AI;
+    const user2 = useAI ? USER_AI : new User(2, "player2");
 
     const serverGamedata = new GameData();
 

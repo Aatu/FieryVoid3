@@ -70,10 +70,13 @@ class HighlightSelectedShip extends UiStrategy {
     //if (ghost.hidden) {
 
     const color = COLOR_FRIENDLY_HIGHLIGHT.clone().multiplyScalar(opacity);
+    const ghostColor = COLOR_FRIENDLY_HIGHLIGHT.clone().add(
+      new THREE.Color(1, 1, 1).multiplyScalar(opacity)
+    );
 
     this.icon.replaceEmissive(color);
 
-    ghost.setGhostShipEmissive(color);
+    ghost.setGhostShipEmissive(ghostColor);
     //ghost.replaceOpacity(opacity);
     ghost.mapIcon
       .setMovementTarget()

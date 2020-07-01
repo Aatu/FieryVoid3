@@ -1,10 +1,12 @@
 import { MovementOrder, movementTypes, MovementResolver } from "./index.mjs";
 import hexagon from "../hexagon/index.mjs";
 import { addToHexFacing } from "../utils/math.mjs";
+import GameTerrain from "../game/GameTerrain.mjs";
 
 class MovementService {
   constructor() {
     this.gamedata = null;
+    this.terrain = new GameTerrain();
   }
 
   update(gamedata, phaseDirector) {
@@ -27,19 +29,19 @@ class MovementService {
   getShipsInSameHex(ship, hex) {
     hex = hex && this.getMostRecentMove(ship).position;
     return this.gamedata.ships.filter(
-      ship2 =>
+      (ship2) =>
         ship2.isDestroyed() &&
         ship !== ship2 &&
         this.getMostRecentMove(ship2).position.equals(hex)
     );
   }
 
-  getNewEndMove(ship, terrain) {
+  getNewEndMove(ship) {
     const startMove = ship.movement.getLastEndMoveOrSurrogate();
     const lastMove = ship.movement.getLastMove();
     const vector = lastMove.getVelocity();
 
-    const { position, velocity } = terrain.getGravityVectorForTurn(
+    const { position, velocity } = this.terrain.getGravityVectorForTurn(
       startMove.position,
       vector
     );

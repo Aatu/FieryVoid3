@@ -7,7 +7,7 @@ import {
   TooltipSubHeader,
   TooltipEntry,
   colors,
-  IconAndLabel
+  IconAndLabel,
 } from "../../../../styled";
 import CargoItem from "../system/SystemStrategyUi/cargo/CargoItem";
 import TorpedoAttackTooltip from "./TorpedoAttackTooltip";
@@ -48,7 +48,7 @@ class TorpedoAttack extends React.Component {
 
     const ships = gameData.ships
       .getShips()
-      .filter(otherShip => !gameData.ships.isSameTeam(target, otherShip))
+      .filter((otherShip) => !gameData.ships.isSameTeam(target, otherShip))
       .sort((a, b) => {
         if (a.distanceTo(target) < b.distanceTo(target)) {
           return 1;
@@ -63,8 +63,9 @@ class TorpedoAttack extends React.Component {
 
     return (
       <Container>
-        {ships.map(shooter => (
+        {ships.map((shooter) => (
           <WeaponTargetingList
+            showZeroHitChance={false}
             shooter={shooter}
             uiState={uiState}
             ship={target}

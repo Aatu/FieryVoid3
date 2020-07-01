@@ -9,7 +9,7 @@ class CargoService {
 
     let amount = cargo.amount;
     while (amount > 0) {
-      cargoBays.forEach(system => {
+      cargoBays.forEach((system) => {
         if (
           amount > 0 &&
           system.callHandler(
@@ -48,8 +48,9 @@ class CargoService {
   getBaysWithSpace(ship) {
     return ship.systems
       .getSystems()
+      .filter((system) => !system.isDestroyed())
       .filter(
-        system => system.callHandler("getAvailableCargoSpace", {}, 0) > 0
+        (system) => system.callHandler("getAvailableCargoSpace", {}, 0) > 0
       );
   }
 }

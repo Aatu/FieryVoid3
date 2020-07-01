@@ -94,11 +94,13 @@ class GameController {
     return gameId;
   }
 
-  async createTestGame() {
-    const serverGameData = this.createTestGameHandler.createTestGame();
+  async createTestGame(requestBody) {
+    const serverGameData = this.createTestGameHandler.createTestGame(
+      requestBody
+    );
     const gameId = await this.gameDataService.createGame(serverGameData);
     const { key, gameData } = await this.gameDataService.reserveGame(gameId);
-    this.createTestGameHandler.createTestShips(gameData);
+    this.createTestGameHandler.createTestShips(gameData, requestBody);
     await this.gameDataService.saveGame(key, gameData);
 
     return gameId;

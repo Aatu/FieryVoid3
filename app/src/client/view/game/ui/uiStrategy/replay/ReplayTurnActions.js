@@ -482,10 +482,7 @@ class ReplayTurnActions extends AnimationUiStrategy {
     const target = gameData.ships.getShipById(combatLogEntry.targetId);
     const targetIcon = shipIconContainer.getByShip(target);
 
-    const position = getStartMoveForShip(
-      gameDatas,
-      targetIcon.ship
-    ).getPosition();
+    const position = getStartMoveForShip(gameDatas, target).getPosition();
 
     this.animations.push(
       new CameraPositionAnimation(position, start, fireStart, gameCamera)
@@ -562,13 +559,14 @@ class ReplayTurnActions extends AnimationUiStrategy {
     const duration = 5000;
     const start = this.replayContext.getMovementStart();
 
+    const ship = gameDatas[0].ships.getShipById(combatLogEntry.shipId);
     const icon = shipIconContainer.getById(combatLogEntry.shipId);
-    const ship = icon.ship;
 
     icon.show();
 
     const animation = new ShipMovementAnimation(
       icon,
+      ship,
       getMovesForShip(gameDatas, ship),
       start,
       start + duration

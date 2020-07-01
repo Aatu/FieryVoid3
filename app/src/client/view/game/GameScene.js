@@ -230,6 +230,7 @@ class GameScene {
     this.animateZoom();
     this.starField.render();
 
+    /*
     console.log(
       "performance, geometries",
       this.renderer.info.memory.geometries,
@@ -238,6 +239,7 @@ class GameScene {
       "programs",
       this.renderer.info.programs.length
     );
+    */
 
     this.stats.end();
     requestAnimationFrame(this.render.bind(this));

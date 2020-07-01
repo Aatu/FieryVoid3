@@ -183,7 +183,6 @@ class Ship {
     this.electronicWarfare.activatePlannedElectronicWarfare();
     this.electronicWarfare.removeAll();
 
-    this.destroyedThisTurn = false;
     return this;
   }
 

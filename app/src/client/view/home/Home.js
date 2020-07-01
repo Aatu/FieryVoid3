@@ -33,14 +33,34 @@ const Home = () => {
     callApi();
   }, [setGameId, createTestGameGame]);
 
+  const createGameAi = useCallback(() => {
+    const callApi = async () => {
+      const response = await createTestGameGame({ useAI: true });
+      console.log(response);
+      setGameId(response.data.gameId);
+    };
+
+    callApi();
+  }, [setGameId, createTestGameGame]);
+
   return (
     <TooltipContainer>
       <TooltipHeader>Home</TooltipHeader>
 
       {currentUser && (currentUser.id === 1 || currentUser.id === 2) && (
-        <Button type="button" buttonStyle="button-grey" onClick={createGame}>
-          Create test game
-        </Button>
+        <>
+          <Button type="button" buttonStyle="button-grey" onClick={createGame}>
+            Create test game
+          </Button>
+          <Button
+            type="button"
+            buttonStyle="button-grey"
+            onClick={createGameAi}
+          >
+            Create test game AGAINST AI (Note, the AI can only pass turns for
+            now:)
+          </Button>
+        </>
       )}
 
       {gameId && (

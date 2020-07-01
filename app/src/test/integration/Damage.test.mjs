@@ -44,7 +44,7 @@ test.serial("Ship gets destroyed", async (test) => {
   await controller.commitTurn(gameData.id, gameData.serialize(), user);
   await controller.commitTurn(gameData.id, gameData.serialize(), user2);
 
-  const newGameData = await controller.getGameData(gameData.id, user);
+  let newGameData = await controller.getGameData(gameData.id, user);
 
   const biliyaz = newGameData.ships
     .getShips()
@@ -56,7 +56,7 @@ test.serial("Ship gets destroyed", async (test) => {
 
   test.true(biliyaz.isDestroyed());
 
-  const replay = await controller.replayHandler.requestReplay(
+  let replay = await controller.replayHandler.requestReplay(
     newGameData.id,
     newGameData.turn - 1,
     newGameData.turn,
@@ -64,6 +64,23 @@ test.serial("Ship gets destroyed", async (test) => {
   );
 
   test.true(replay[0].ships.getShipById(biliyaz.id).isDestroyedThisTurn());
+
+  await controller.commitTurn(newGameData.id, newGameData.serialize(), user);
+  //await controller.commitTurn(newGameData.id, newGameData.serialize(), user2);
+
+  newGameData = await controller.getGameData(gameData.id, user);
+
+  test.deepEqual(newGameData.turn, 4);
+
+  replay = await controller.replayHandler.requestReplay(
+    newGameData.id,
+    newGameData.turn - 1,
+    newGameData.turn,
+    user
+  );
+
+  test.false(replay[0].ships.getShipById(biliyaz.id).isDestroyedThisTurn());
+
   /*
 
   test.is(biliyaz.systems.getSystemById(7).getRemainingHitpoints(), 10);
