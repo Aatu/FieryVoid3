@@ -13,6 +13,7 @@ import { createTestGameGame } from "../../api/game";
 import { StateStore } from "../../state/StoreProvider";
 import { LinkInline } from "../../styled/Link";
 import styled from "styled-components";
+import { ChangeLog } from "../game/components/ChangeLog";
 
 const GameIdContainer = styled.div`
   margin: 8px;
@@ -49,6 +50,7 @@ const Home = () => {
 
       {currentUser && (currentUser.id === 1 || currentUser.id === 2) && (
         <>
+          <ChangeLog />
           <Button type="button" buttonStyle="button-grey" onClick={createGame}>
             Create test game
           </Button>
