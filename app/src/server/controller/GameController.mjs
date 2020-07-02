@@ -94,11 +94,13 @@ class GameController {
     return gameId;
   }
 
-  async createTestGame() {
-    const serverGameData = this.createTestGameHandler.createTestGame();
+  async createTestGame(requestBody) {
+    const serverGameData = this.createTestGameHandler.createTestGame(
+      requestBody
+    );
     const gameId = await this.gameDataService.createGame(serverGameData);
     const { key, gameData } = await this.gameDataService.reserveGame(gameId);
-    this.createTestGameHandler.createTestShips(gameData);
+    this.createTestGameHandler.createTestShips(gameData, requestBody);
     await this.gameDataService.saveGame(key, gameData);
 
     return gameId;
@@ -162,6 +164,11 @@ class GameController {
       const toSend = [];
 
       this.gameHandler.submit(serverGameData, clientGameData, user);
+
+      if (this.gameHandler.isHumansReady(serverGameData)) {
+        this.gameHandler.processAi(serverGameData);
+      }
+
       toSave.push(serverGameData.clone());
 
       if (this.gameHandler.isReady(serverGameData)) {
@@ -180,7 +187,6 @@ class GameController {
         this.gameClients.sendTurnChange(replays);
       } else {
         toSend.push(serverGameData.clone());
-        //TODO: toSend is not actually sent anywhere here
         await this.gameDataService.saveGame(key, toSave);
       }
 

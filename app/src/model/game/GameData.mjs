@@ -21,10 +21,6 @@ class GameData {
     this.phase = phase;
   }
 
-  advanceTurn() {
-    this.turn++;
-  }
-
   addPlayer(user) {
     if (this.players.find((player) => player.id === user.id)) {
       return;
@@ -189,6 +185,13 @@ class GameData {
     return this;
   }
 
+  getAiUsers() {
+    return this.slots.slots
+      .filter((slot) => slot.userId < 0)
+      .map((slot) => this.players.find((player) => player.id === slot.userId))
+      .filter((value, index, self) => self.indexOf(value) === index);
+  }
+
   endTurn() {
     this.ships.getShips().forEach((ship) => {
       ship.endTurn(this.turn);
@@ -207,6 +210,13 @@ class GameData {
       .forEach((ship) => {
         ship.advanceTurn(this.turn);
         this.setActiveShip(ship);
+      });
+
+    this.ships
+      .getShips()
+      .filter((ship) => ship.isDestroyed())
+      .forEach((ship) => {
+        ship.destroyedThisTurn = false;
       });
   }
 }

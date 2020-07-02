@@ -61,6 +61,8 @@ const System = styled.div`
       return "hue-rotate(0deg) brightness(4) grayscale(0)"; //"grayscale(100%) brightness(6) drop-shadow(0px 0px 5px white)";
     } else if (props.destroyed) {
       return "blur(1px) brightness(0.5)";
+    } else if (props.inactive) {
+      return "brightness(0.5)";
     } else {
       return "none";
     }
@@ -226,6 +228,7 @@ class SystemIcon extends React.Component {
       selected = false,
       text = null,
       target = null,
+      inactive = false,
       ...rest
     } = this.props;
     const { mouseOveredSystem } = this.state;
@@ -303,6 +306,7 @@ class SystemIcon extends React.Component {
             reserved={reserved}
             destroyed={system.isDestroyed()}
             boosted={system.callHandler("getBoost", 0, false)}
+            inactive={inactive}
           >
             {overheat > 0.25 && Boolean(!disabled) && (
               <Overheat overheat={overheat} />

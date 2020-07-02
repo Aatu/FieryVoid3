@@ -24,7 +24,7 @@ import {
   ShowShipBadges,
   ShowTorpedoObjects,
   WeaponTargetingMouseoverShowsLine,
-  ShowShipDEWandCCEW
+  ShowShipDEWandCCEW,
 } from "../../ui/uiStrategy";
 
 class GamePhaseStrategy extends PhaseStrategy {
@@ -56,7 +56,7 @@ class GamePhaseStrategy extends PhaseStrategy {
       new ShowMapIcons(),
       new ShowShipBadges(),
       new ShowTorpedoObjects(),
-      new ShowShipDEWandCCEW()
+      new ShowShipDEWandCCEW(),
     ];
   }
 

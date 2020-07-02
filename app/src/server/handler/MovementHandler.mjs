@@ -34,9 +34,7 @@ class MovementHandler {
   advance(gameData) {
     gameData.ships.getShips().forEach((ship) => {
       ship.movement.addMovement(
-        this.movementService
-          .getNewEndMove(ship, gameData.terrain)
-          .setId(uuidv4())
+        this.movementService.getNewEndMove(ship).setId(uuidv4())
       );
       gameData.combatLog.addEntry(new CombatLogShipMovement(ship.id));
     });

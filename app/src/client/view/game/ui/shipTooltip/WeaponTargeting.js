@@ -17,7 +17,7 @@ class WeaponTargeting extends React.Component {
 
     const hitChance = system.callHandler("getHitChance", {
       shooter: ship,
-      target
+      target,
     });
 
     return (
@@ -33,9 +33,10 @@ class WeaponTargeting extends React.Component {
           target={target}
           weaponTargeting={{
             target: target,
-            hitChance: hitChance
+            hitChance: hitChance,
           }}
           text={hitChance.result + "%"}
+          inactive={hitChance.result <= 0}
           {...rest}
         />
       </Container>

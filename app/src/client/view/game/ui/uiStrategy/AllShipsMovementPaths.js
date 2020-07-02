@@ -45,7 +45,7 @@ class AllShipsMovementPaths extends UiStrategy {
 
     if (uiState.hasGameUiMode(gameUiModes.MOVEMENT)) {
       const ships = this.gameData.ships.getAliveShips();
-      ships.forEach(ship => movementPathService.showMovementPath(ship));
+      ships.forEach((ship) => movementPathService.showMovementPath(ship));
     } else {
       movementPathService.hideAllMovementPaths();
 

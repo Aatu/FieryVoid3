@@ -19,18 +19,25 @@ expressWs(app);
 
 app.use(
   cors({
-    origin: ["http://localhost:3000", "http://95.217.10.191"],
+    origin: [
+      "http://localhost:3000",
+      "http://95.217.10.191",
+      "http://coldvoidgame.com",
+      "https://coldvoidgame.com",
+    ],
     methods: ["GET", "POST"],
     credentials: true,
   })
 );
+
 app.use(
   session({
-    secret: "keyboard cat",
+    secret: "molecular pulsar cat",
     resave: false,
     saveUninitialized: true,
   })
 );
+
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
@@ -41,6 +48,7 @@ const dbConnection = new DbConnection({
   database: `fieryvoid`,
   connectionLimit: 5,
 });
+
 const userService = new UserService(new UserRepository(dbConnection));
 const passportService = new PassportService(userService);
 passportService.init(app);

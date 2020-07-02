@@ -29,7 +29,7 @@ const greyButton = css`
   flex-grow: 1;
   flex-basis: 100%;
   border: none;
-  margin: 0 8px;
+  margin: 3px 8px 0px 8px;
 
   flex-grow: 1;
   flex-basis: calc(50% - 16px);

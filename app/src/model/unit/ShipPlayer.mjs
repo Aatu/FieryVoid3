@@ -5,6 +5,10 @@ class ShipPlayer {
     this.user = null;
   }
 
+  isAi() {
+    return this.user && this.user.isAi();
+  }
+
   is(user) {
     return user && this.user.id === user.id;
   }

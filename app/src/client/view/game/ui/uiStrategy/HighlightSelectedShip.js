@@ -4,7 +4,7 @@ import {
   COLOR_FRIENDLY,
   COLOR_ENEMY,
   COLOR_FRIENDLY_HIGHLIGHT,
-  COLOR_ENEMY_HIGHLIGHT
+  COLOR_ENEMY_HIGHLIGHT,
 } from "../../../../../model/gameConfig.mjs";
 
 class HighlightSelectedShip extends UiStrategy {
@@ -22,9 +22,9 @@ class HighlightSelectedShip extends UiStrategy {
     if (this.icon) {
       this.icon.revertEmissive();
       this.icon.mapIcon.revertColor();
-      this.icon.hexSprites.forEach(sprite => sprite.revertColor());
+      this.icon.hexSprites.forEach((sprite) => sprite.revertColor());
       const ghost = shipIconContainer.getGhostShipIconByShip(this.icon.ship);
-      ghost.revertOpacity();
+      //ghost.revertOpacity();
       ghost.mapIcon.setMovementTarget();
       ghost.mapIcon.revertColor();
     }
@@ -70,16 +70,21 @@ class HighlightSelectedShip extends UiStrategy {
     //if (ghost.hidden) {
 
     const color = COLOR_FRIENDLY_HIGHLIGHT.clone().multiplyScalar(opacity);
+    const ghostColor = COLOR_FRIENDLY_HIGHLIGHT.clone().add(
+      new THREE.Color(1, 1, 1).multiplyScalar(opacity)
+    );
 
     this.icon.replaceEmissive(color);
 
-    ghost.setGhostShipEmissive(color);
-    ghost.replaceOpacity(opacity);
+    ghost.setGhostShipEmissive(ghostColor);
+    //ghost.replaceOpacity(opacity);
     ghost.mapIcon
       .setMovementTarget()
       .replaceColor(color)
       .setOverlayColorAlpha(1);
-    this.icon.hexSprites.forEach(sprite => sprite.replaceColor(color.clone()));
+    this.icon.hexSprites.forEach((sprite) =>
+      sprite.replaceColor(color.clone())
+    );
     this.icon.mapIcon.replaceColor(color);
     this.activeTime += delta;
   }

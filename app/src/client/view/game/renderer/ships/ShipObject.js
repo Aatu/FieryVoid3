@@ -426,6 +426,8 @@ class ShipObject {
     await this.isShipObjectLoaded;
 
     this.shipObject.traverse((child) => {
+      child.material.depthWrite = false;
+      child.material.depthTest = false;
       child.material.transparent = true;
       child.material.opacity = opacity;
       child.material.needsUpdate = true;
@@ -490,8 +492,16 @@ class ShipObject {
 
   setGhostShip(mine) {
     this.ghost = true;
-    //this.setGhostShipEmissive(mine);
-    //this.setOpacity(0.2);
+  }
+
+  async replaceColor(color) {
+    await this.isShipObjectLoaded;
+
+    this.shipObject.traverse((child) => {
+      child.material.map = null;
+      child.material.color = color;
+      child.material.needsUpdate = true;
+    });
   }
 
   async setGhostShipEmissive(color) {

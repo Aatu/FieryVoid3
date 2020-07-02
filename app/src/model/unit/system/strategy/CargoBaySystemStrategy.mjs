@@ -14,30 +14,30 @@ class CargoBaySystemStrategy extends ShipSystemStrategy {
       {
         name: "CargoList",
         props: {
-          list: this.cargo.map(cargo => ({
+          list: this.cargo.map((cargo) => ({
             object: cargo.object,
-            amount: cargo.amount
-          }))
-        }
-      }
+            amount: cargo.amount,
+          })),
+        },
+      },
     ];
   }
 
   serialize(payload, previousResponse = []) {
     return {
       ...previousResponse,
-      cargoBaySystemStrategy: this.cargo.map(cargo => ({
+      cargoBaySystemStrategy: this.cargo.map((cargo) => ({
         className: cargo.object.constructor.name,
-        amount: cargo.amount
-      }))
+        amount: cargo.amount,
+      })),
     };
   }
 
   deserialize(data = {}) {
     this.cargo = data.cargoBaySystemStrategy
-      ? data.cargoBaySystemStrategy.map(data => ({
+      ? data.cargoBaySystemStrategy.map((data) => ({
           object: new cargoClasses[data.className](),
-          amount: data.amount
+          amount: data.amount,
         }))
       : [];
 
@@ -60,20 +60,36 @@ class CargoBaySystemStrategy extends ShipSystemStrategy {
   }
 
   hasSpaceFor({ object, amount }) {
+    if (this.system.isDestroyed()) {
+      return false;
+    }
+
     return this.getAvailableCargoSpace() >= object.getSpaceRequired() * amount;
   }
 
   getCargoEntry(object) {
+    if (this.system.isDestroyed()) {
+      return undefined;
+    }
+
     return this.cargo.find(
-      stored => stored.object.constructor === object.constructor
+      (stored) => stored.object.constructor === object.constructor
     );
   }
 
   getCargoByParentClass(parentClass) {
-    return this.cargo.filter(cargo => cargo.object instanceof parentClass);
+    if (this.system.isDestroyed()) {
+      return [];
+    }
+
+    return this.cargo.filter((cargo) => cargo.object instanceof parentClass);
   }
 
   hasCargo({ object, amount = 1 }) {
+    if (this.system.isDestroyed()) {
+      return false;
+    }
+
     const entry = this.getCargoEntry(object);
 
     if (!entry) {
@@ -92,7 +108,7 @@ class CargoBaySystemStrategy extends ShipSystemStrategy {
 
     entry.amount -= amount;
 
-    this.cargo = this.cargo.filter(entry => entry.amount > 0);
+    this.cargo = this.cargo.filter((entry) => entry.amount > 0);
   }
 
   addCargo({ object, amount = 1 }) {
@@ -107,7 +123,7 @@ class CargoBaySystemStrategy extends ShipSystemStrategy {
     } else {
       entry = {
         object: new cargoClasses[object.constructor.name](),
-        amount
+        amount,
       };
 
       this.cargo.push(entry);

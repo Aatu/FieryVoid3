@@ -422,7 +422,7 @@ test("Get an end move", (test) => {
   movementService.evade(ship, 1);
   movementService.pivot(ship, 1);
   movementService.thrust(ship, 1);
-  const endMove = movementService.getNewEndMove(ship, new GameTerrain());
+  const endMove = movementService.getNewEndMove(ship);
 
   compareMovements(
     test,

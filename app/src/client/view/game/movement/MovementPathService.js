@@ -4,22 +4,19 @@ class MovementPathService {
   constructor(scene, shipIconContainer, currentUser) {
     this.scene = scene;
     this.shipIconContainer = shipIconContainer;
-    this.terrain = null;
     this.currentUser = currentUser;
 
     this.paths = [];
   }
 
   getPath(ship) {
-    return this.paths.find(path => path.ship.id === ship.id);
+    return this.paths.find((path) => path.ship.id === ship.id);
   }
 
-  update(gameData) {
-    this.terrain = gameData.terrain;
-  }
+  update(gameData) {}
 
   hideAllMovementPaths() {
-    this.paths.forEach(path => path.movementPath.remove(this.scene));
+    this.paths.forEach((path) => path.movementPath.remove(this.scene));
     this.paths = [];
   }
 
@@ -30,7 +27,7 @@ class MovementPathService {
     }
 
     path.movementPath.remove(this.scene);
-    this.paths = this.paths.filter(path => path.ship !== ship);
+    this.paths = this.paths.filter((path) => path.ship.id !== ship.i);
   }
 
   showMovementPath(ship) {
@@ -40,25 +37,25 @@ class MovementPathService {
       path = {
         ship,
         ghost: this.shipIconContainer.getGhostShipIconByShip(ship),
-        movementPath: null
+        movementPath: null,
       };
       this.paths.push(path);
+    } else {
+      path.ship = ship;
     }
 
     if (path.movementPath) {
       //TODO: this is inefficient and causes flickering
-      path.movementPath.remove(this.scene);
+      //path.movementPath.remove(this.scene);
+      path.movementPath.update(ship);
+    } else {
+      path.movementPath = new MovementPath(
+        ship,
+        this.scene,
+        path.ghost,
+        ship.player.is(this.currentUser)
+      );
     }
-
-    path.ship = ship;
-
-    path.movementPath = new MovementPath(
-      ship,
-      this.scene,
-      this.terrain,
-      path.ghost,
-      ship.player.is(this.currentUser)
-    );
   }
 }
 

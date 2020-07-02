@@ -92,9 +92,7 @@ class LargerHitProfileOnlineSystemStrategy extends ShipSystemStrategy {
   }
 
   onGameStart() {
-    console.log("is online", this.system.power.isOnline());
     if (this.system.power.isOnline()) {
-      console.log("set offline");
       this.system.power.setOffline();
     }
 

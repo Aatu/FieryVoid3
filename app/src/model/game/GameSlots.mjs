@@ -7,7 +7,7 @@ class GameSlots {
   }
 
   getTeamForShip(ship) {
-    const slot = this.slots.find(slot => slot.includesShip(ship));
+    const slot = this.slots.find((slot) => slot.includesShip(ship));
 
     return slot.team;
   }
@@ -15,13 +15,13 @@ class GameSlots {
   getSlotsByTeams() {
     const teams = [];
 
-    this.slots.forEach(slot => {
-      let team = teams.find(t => t.team === slot.team);
+    this.slots.forEach((slot) => {
+      let team = teams.find((t) => t.team === slot.team);
 
       if (!team) {
         team = {
           team: slot.team,
-          slots: [slot]
+          slots: [slot],
         };
         teams.push(team);
       } else {
@@ -33,7 +33,7 @@ class GameSlots {
   }
 
   isShipInUsersTeam(user, ship) {
-    const userSlot = this.slots.find(s => s.userId === user.id);
+    const userSlot = this.slots.find((s) => s.userId === user.id);
 
     if (!userSlot) {
       return false;
@@ -43,7 +43,7 @@ class GameSlots {
   }
 
   isUsersTeam(user, team) {
-    const userSlot = this.slots.find(s => s.userId === user.id);
+    const userSlot = this.slots.find((s) => s.userId === user.id);
 
     if (!userSlot) {
       return false;
@@ -53,7 +53,7 @@ class GameSlots {
   }
 
   isUsersTeamSlot(slot, user) {
-    const userSlot = this.slots.find(s => s.userId === user);
+    const userSlot = this.slots.find((s) => s.userId === user);
 
     if (!userSlot) {
       return false;
@@ -63,15 +63,15 @@ class GameSlots {
   }
 
   getUsersSlots(user) {
-    return this.slots.filter(slot => slot.isUsers(user));
+    return this.slots.filter((slot) => slot.isUsers(user));
   }
 
   getSlotByShip(ship) {
-    return this.slots.find(slot => slot.includesShip(ship));
+    return this.slots.find((slot) => slot.includesShip(ship));
   }
 
   getSlotById(id) {
-    return this.slots.find(slot => slot.id === id);
+    return this.slots.find((slot) => slot.id === id);
   }
 
   setSlots(slots) {
@@ -89,13 +89,13 @@ class GameSlots {
 
   serialize() {
     return {
-      slots: this.slots.map(slot => slot.serialize())
+      slots: this.slots.map((slot) => slot.serialize()),
     };
   }
 
   deserialize(data = {}) {
     this.slots = data.slots
-      ? data.slots.map(slotData => new GameSlot(slotData, this.gameData))
+      ? data.slots.map((slotData) => new GameSlot(slotData, this.gameData))
       : [];
 
     return this;

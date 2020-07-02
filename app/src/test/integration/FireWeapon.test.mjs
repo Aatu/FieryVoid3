@@ -1,28 +1,12 @@
 import test from "ava";
-import GameData from "../../model/game/GameData";
-import MovementHandler from "../../server/handler/MovementHandler";
 import GameController from "../../server/controller/GameController.mjs";
 import TestDatabaseConnection from "../support/TestDatabaseConnection.mjs";
 import { constructDeployedGame } from "../support/constructGame.mjs";
 import MovementService from "../../model/movement/MovementService";
 import WeaponFireService from "../../model/weapon/WeaponFireService";
-import movementTypes from "../../model/movement/movementTypes";
-import MovementOrder from "../../model/movement/MovementOrder";
-import hexagon from "../../model/hexagon";
-import TestShip from "../../model/unit/ships/test/TestShip";
 import User from "../../model/User";
 import FireOrder from "../../model/weapon/FireOrder.mjs";
 import WeaponHitChance from "../../model/weapon/WeaponHitChance.mjs";
-import TorpedoFlight from "../../model/unit/TorpedoFlight.mjs";
-import Torpedo158MSV from "../../model/unit/system/weapon/ammunition/torpedo/Torpedo158MSV.mjs";
-import Vector from "../../model/utils/Vector.mjs";
-import Offset from "../../model/hexagon/Offset.mjs";
-import coordinateConverter from "../../model/utils/CoordinateConverter.mjs";
-import CombatLogTorpedoLaunch from "../../model/combatLog/CombatLogTorpedoLaunch.mjs";
-import CombatLogTorpedoAttack from "../../model/combatLog/CombatLogTorpedoAttack.mjs";
-import CombatLogTorpedoMove from "../../model/combatLog/CombatLogTorpedoMove.mjs";
-import CombatLogDamageEntry from "../../model/combatLog/CombatLogDamageEntry.mjs";
-import CombatLogWeaponFireHitResult from "../../model/combatLog/CombatLogWeaponFireHitResult.mjs";
 
 test.serial("Submit successfull fire order for first player", async (test) => {
   const db = new TestDatabaseConnection("fire");
@@ -182,8 +166,8 @@ test.serial("Submit successfull fire order for both players", async (test) => {
       oew: 5,
       distance: 8,
       rangeModifier: -5,
-      result: 10050,
-      absoluteResult: 10050,
+      result: 10150,
+      absoluteResult: 10150,
       rollingPenalty: -20,
       outOfRange: false,
     })
@@ -300,8 +284,8 @@ test.serial(
         oew: 5,
         distance: 8,
         rangeModifier: -5,
-        result: 10050,
-        absoluteResult: 10050,
+        result: 10150,
+        absoluteResult: 10150,
         rollingPenalty: -20,
         outOfRange: false,
       })

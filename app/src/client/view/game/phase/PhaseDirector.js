@@ -96,6 +96,8 @@ class PhaseDirector {
     window.gameData = this.gameDataCache;
     this.gameDataCache.setCurrent(gameData);
     this.resolvePhaseStrategy();
+
+    console.log(gameData);
   }
 
   receiveReplay(gameDatas) {

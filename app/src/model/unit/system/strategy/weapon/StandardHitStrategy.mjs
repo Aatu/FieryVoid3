@@ -69,7 +69,7 @@ class StandardHitStrategy extends ShipSystemStrategy {
       baseToHit +
       rollingPenalty +
       this.getFireControl() +
-      oew * 5 -
+      oew * 5 +
       dew * 5 +
       rangeModifier +
       noLockPenalty +

@@ -1,0 +1,15 @@
+[
+  {
+    "version": "0.1.1",
+    "released": "2020.07.02",
+    "entries": [
+      "FIX: DEW was accidentally added to the hit chance instead of substracted",
+      "FIX: Performance issue related to the movement paths",
+      "FIX: Destroyed ships keeps exploding",
+      "FIX: Able to load ammo even though all cargo bays are destroyed",
+      "FEATURE: Show weapons that could fire, but have hit chance of zero",
+      "FEATURE: Weapon arcs are show from movement target when movement mode is selected",
+      "FEATURE: Initial AI. It does not do anything else than passes turns for now"
+    ]
+  }
+]

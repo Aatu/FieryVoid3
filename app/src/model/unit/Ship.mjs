@@ -123,6 +123,8 @@ class Ship {
     );
     this.destroyedThisTurn = shipData.destroyedThisTurn || false;
 
+    this.aiRole = shipData.aiRole || null;
+
     return this;
   }
 
@@ -144,6 +146,10 @@ class Ship {
         player: this.player.serialize(),
         electronicWarfare: this.electronicWarfare.serialize(),
         destroyedThisTurn: this.destroyedThisTurn,
+        aiRole:
+          this.aiRole && this.aiRole.serialize
+            ? this.aiRole.serialize()
+            : this.aiRole,
       },
     };
   }
@@ -177,7 +183,6 @@ class Ship {
     this.electronicWarfare.activatePlannedElectronicWarfare();
     this.electronicWarfare.removeAll();
 
-    this.destroyedThisTurn = false;
     return this;
   }
 

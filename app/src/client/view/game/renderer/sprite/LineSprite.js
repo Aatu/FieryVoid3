@@ -2,20 +2,25 @@ import * as THREE from "three";
 
 import { line2dVertexShader, line2dFragmentShader } from "../shader";
 import { loadObject } from "../../utils/objectLoader";
-import Vector from "../../../../../model/utils/Vector.mjs";
 
 const GEOMETRY = loadObject("/img/3d/line3/scene.gltf");
+
+const textureLoader = new THREE.TextureLoader();
+const TEXTURE_DASHED = textureLoader.load("/img/line/dash.png");
+const TEXTURE_DASHED_ARROW = textureLoader.load("/img/line/dashArrow.png");
+const TEXTURE_DASHED_CIRCLE = textureLoader.load("/img/line/dashCircle.png");
+const TEXTURE_DASHED_FULL = textureLoader.load("/img/line/full.png");
 
 const getTexture = (type = "") => {
   switch (type) {
     case "dashed":
-      return new THREE.TextureLoader().load("/img/line/dash.png");
+      return TEXTURE_DASHED;
     case "dashed-arrow":
-      return new THREE.TextureLoader().load("/img/line/dashArrow.png");
+      return TEXTURE_DASHED_ARROW;
     case "dashed-circle":
-      return new THREE.TextureLoader().load("/img/line/dashCircle.png");
+      return TEXTURE_DASHED_CIRCLE;
     default:
-      return new THREE.TextureLoader().load("/img/line/full.png");
+      return TEXTURE_DASHED_FULL;
   }
 };
 
@@ -30,7 +35,7 @@ class LineSprite {
     this.material = new THREE.RawShaderMaterial({
       uniforms: {
         map: {
-          value: getTexture(args.type)
+          value: getTexture(args.type),
         },
         time: { type: "f", value: 0.0 },
         zoom: { type: "f", value: 0.0 },
@@ -39,8 +44,8 @@ class LineSprite {
         textureRepeat: { type: "f", value: 1.0 },
         pulse: {
           type: "v2",
-          value: [args.pulseAmount || 0, args.pulseSpeed || 1]
-        }
+          value: [args.pulseAmount || 0, args.pulseSpeed || 1],
+        },
       },
       transparent: true,
       depthWrite: false,
@@ -48,7 +53,7 @@ class LineSprite {
       side: THREE.DoubleSide,
       blending: args.blending || THREE.NormalBlending,
       vertexShader: line2dVertexShader,
-      fragmentShader: line2dFragmentShader
+      fragmentShader: line2dFragmentShader,
       //wireframe: true
     });
 
@@ -82,8 +87,9 @@ class LineSprite {
     this.material.needsUpdate = true;
 
     const geometry = await GEOMETRY;
+
     this.mesh = new THREE.Mesh(
-      geometry.scene.children[0].geometry.clone(),
+      geometry.scene.children[0].geometry,
       this.material
     );
   }
@@ -170,8 +176,10 @@ class LineSprite {
 
   async destroy() {
     await GEOMETRY;
+
     this.scene.remove(this.mesh);
     this.mesh.material.dispose();
+    this.mesh.geometry.dispose();
   }
 }
 

@@ -9,6 +9,7 @@ import GameSlot from "../../model/game/GameSlot.mjs";
 import * as gamePhases from "../../model/game/gamePhases.mjs";
 import * as gameStatuses from "../../model/game/gameStatuses.mjs";
 import Fulcrum from "../../model/unit/ships/protectorate/Fulcrum.mjs";
+import { USER_AI } from "../../model/AIUser.mjs";
 
 class CreateTestGameHandler {
   initializeShip(serverShip, name, gameData, slot, user, position) {
@@ -53,9 +54,9 @@ class CreateTestGameHandler {
     );
   }
 
-  createTestShips(serverGameData) {
+  createTestShips(serverGameData, { useAI = false }) {
     const user1 = new User(1, "player1");
-    const user2 = new User(2, "player2");
+    const user2 = useAI ? USER_AI : new User(2, "player2");
 
     const slot1 = serverGameData.slots.slots[0];
     const slot2 = serverGameData.slots.slots[1];
@@ -121,9 +122,9 @@ class CreateTestGameHandler {
     return serverGameData;
   }
 
-  createTestGame() {
+  createTestGame({ useAI = false }) {
     const user1 = new User(1, "player1");
-    const user2 = new User(2, "player2");
+    const user2 = useAI ? USER_AI : new User(2, "player2");
 
     const serverGamedata = new GameData();
 
@@ -158,6 +159,7 @@ class CreateTestGameHandler {
     serverGamedata.setPlayerActive(user1);
     serverGamedata.addPlayer(user2);
     serverGamedata.setPlayerActive(user2);
+    console.log("players", serverGamedata.players);
 
     return serverGamedata;
   }

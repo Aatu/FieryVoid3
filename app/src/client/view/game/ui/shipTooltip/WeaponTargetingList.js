@@ -6,7 +6,7 @@ import {
   TooltipHeader,
   TooltipEntry,
   colors,
-  TooltipValue
+  TooltipValue,
 } from "../../../../styled";
 import TorpedoLauncherStrategy from "../../../../../model/unit/system/strategy/weapon/TorpedoLauncherStrategy.mjs";
 import TorpedoAttackService from "../../../../../model/weapon/TorpedoAttackService.mjs";
@@ -65,6 +65,15 @@ class WeaponTargetingList extends React.Component {
   targetShip(system, ship, target, uiState) {
     const { weaponFireService } = uiState.services;
 
+    const hitChance = system.callHandler("getHitChance", {
+      shooter: ship,
+      target,
+    });
+
+    if (hitChance.result <= 0) {
+      return;
+    }
+
     return () => {
       weaponFireService.removeFireOrders(ship, system);
       weaponFireService.addFireOrder(ship, target, system);
@@ -85,7 +94,7 @@ class WeaponTargetingList extends React.Component {
   }
 
   render() {
-    const { ship, uiState, ...rest } = this.props;
+    const { ship, uiState, showZeroHitChance = true, ...rest } = this.props;
     let { shooter } = this.props;
     const { weaponFireService } = uiState.services;
 
@@ -98,14 +107,6 @@ class WeaponTargetingList extends React.Component {
     }
 
     const systems = [
-      ...shooter.systems.getSystems().filter(
-        system =>
-          weaponFireService.canFire(shooter, ship, system) &&
-          system.callHandler("getHitChance", {
-            shooter,
-            target: ship
-          }).result > 0
-      ),
       ...this.torpedoAttackService
         .getPossibleTorpedosFrom(shooter, ship)
         .sort((a, b) => {
@@ -144,7 +145,40 @@ class WeaponTargetingList extends React.Component {
           }
 
           return 0;
-        })
+        }),
+      ...shooter.systems
+        .getSystems()
+        .filter(
+          (system) =>
+            weaponFireService.canFire(shooter, ship, system) &&
+            (showZeroHitChance ||
+              system.callHandler("getHitChance", {
+                shooter,
+                target: ship,
+              }).result > 0)
+        )
+        .sort((a, b) => {
+          const hitChanceA = a.callHandler("getHitChance", {
+            shooter,
+            target: ship,
+          }).result;
+
+          const hitChanceB = b.callHandler("getHitChance", {
+            shooter,
+            target: ship,
+          }).result;
+
+          console.log("sort", hitChanceA, hitChanceB);
+          if (hitChanceA > hitChanceB) {
+            return -1;
+          }
+
+          if (hitChanceA < hitChanceB) {
+            return 1;
+          }
+
+          return 0;
+        }),
     ];
 
     if (systems.length === 0) {

@@ -6,6 +6,8 @@ import {
   getArcLength,
 } from "../../../../../../model/utils/math";
 import abstractCanvas from "../../../utils/abstractCanvas";
+import { MOVEMENT } from "../../gameUiModes";
+import { hexFacingToAngle } from "../../../../../../model/utils/math.mjs";
 
 class WeaponArcsOnSystemMouseOver extends UiStrategy {
   constructor() {
@@ -71,7 +73,7 @@ class WeaponArcsOnSystemMouseOver extends UiStrategy {
     const circle = new THREE.Mesh(geometry, material);
     circle.position.z = -1;
     icon.mesh.add(circle);
-    this.weaponArcs.push({ mesh: icon.mesh, circle });
+    this.weaponArcs.push({ mesh: icon.mesh, circle, texture });
   }
 
   torpedoMouseOut() {
@@ -84,9 +86,31 @@ class WeaponArcsOnSystemMouseOver extends UiStrategy {
 
   hide() {
     const { scene } = this.services;
-    this.weaponArcs = this.weaponArcs.filter(({ mesh, circle }) => {
+    this.weaponArcs = this.weaponArcs.filter(({ mesh, circle, texture }) => {
       mesh.remove(circle);
+      circle.material.dispose();
+      circle.geometry.dispose();
+      texture.dispose();
     });
+  }
+
+  getFacing(icon) {
+    const { uiState, movementService } = this.services;
+    if (uiState.hasGameUiMode(MOVEMENT)) {
+      const endMove = movementService.getNewEndMove(icon.ship);
+      return hexFacingToAngle(endMove.facing);
+    }
+
+    return icon.getFacing();
+  }
+
+  getMesh(icon) {
+    const { uiState, shipIconContainer } = this.services;
+    if (uiState.hasGameUiMode(MOVEMENT)) {
+      return shipIconContainer.getGhostShipIconByShip(icon.ship).mesh;
+    }
+
+    return icon.mesh;
   }
 
   show(ship, system) {
@@ -97,7 +121,7 @@ class WeaponArcsOnSystemMouseOver extends UiStrategy {
     const distance = maxRange * coordinateConverter.getHexDistance();
 
     const arcsList = system.callHandler("getArcs", {
-      facing: icon.getFacing(),
+      facing: this.getFacing(icon),
     });
 
     const canvas = abstractCanvas.create(maxRange + 1, 1);
@@ -150,8 +174,10 @@ class WeaponArcsOnSystemMouseOver extends UiStrategy {
       geometry.uvsNeedUpdate = true;
       const circle = new THREE.Mesh(geometry, material);
       circle.position.z = -1;
-      icon.mesh.add(circle);
-      this.weaponArcs.push({ mesh: icon.mesh, circle });
+
+      const mesh = this.getMesh(icon);
+      mesh.add(circle);
+      this.weaponArcs.push({ mesh, circle, texture });
     });
   }
 }

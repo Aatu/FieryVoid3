@@ -6,10 +6,9 @@ import { UnauthorizedError, InvalidGameDataError } from "../errors/index.mjs";
 import SystemDataHandler from "./SystemDataHandler.mjs";
 import TorpedoHandler from "./TorpedoHandler.mjs";
 import LaunchHandler from "./LaunchHandler.mjs";
-import CombatLogShipVelocity from "../../model/combatLog/CombatLogShipVelocity.mjs";
 import CriticalHandler from "./CriticalHandler.mjs";
 import HeatHandler from "./HeatHandler.mjs";
-import Haka from "../../model/unit/ships/uc/Haka.mjs";
+import AiHandler from "../ai/AiHandler.mjs";
 
 class GameHandler {
   constructor() {
@@ -22,6 +21,7 @@ class GameHandler {
     this.torpedoHandler = new TorpedoHandler();
     this.criticalHandler = new CriticalHandler();
     this.heatHandler = new HeatHandler();
+    this.aiHandler = new AiHandler();
   }
 
   submit(serverGameData, clientGameData, user) {
@@ -85,6 +85,14 @@ class GameHandler {
 
   isReady(gameData) {
     return gameData.getActiveShips().length === 0;
+  }
+
+  isHumansReady(gameData) {
+    return gameData.getActiveShips().every((ship) => ship.player.isAi());
+  }
+
+  processAi(gameData) {
+    this.aiHandler.playAiTurn(this, gameData);
   }
 
   advance(gameData) {
