@@ -9,7 +9,7 @@
     "express-session": "^1.16.2",
     "express-ws": "^4.0.0",
     "mariadb": "^2.1.5",
-    "mathjs": "^6.0.3",
+    "mathjs": "^7.5.1",
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
     "rpg-dice-roller": "^3.1.5",
