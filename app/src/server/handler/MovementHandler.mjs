@@ -1,7 +1,7 @@
 import { InvalidGameDataError, UnauthorizedError } from "../errors/index.mjs";
 import MovementValidator from "../services/validation/MovementValidator.mjs";
 import MovementService from "../../model/movement/MovementService.mjs";
-import uuidv4 from "uuid/v4.js";
+import { v4 as uuidv4 } from "uuid";
 import CollisionAvoider from "../services/movement/CollisionAvoider.mjs";
 import CombatLogShipMovement from "../../model/combatLog/CombatLogShipMovement.mjs";
 

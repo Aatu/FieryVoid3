@@ -1,4 +1,4 @@
-import uuidv4 from "uuid/v4.js";
+import { v4 as uuidv4 } from "uuid";
 import movementTypes from "../../model/movement/movementTypes.mjs";
 import MovementOrder from "../../model/movement/MovementOrder.mjs";
 import { InvalidGameDataError } from "../errors/index.mjs";
@@ -22,7 +22,7 @@ class DeploymentHandler {
       throw new InvalidGameDataError(`Invalid deployment: no active ships`);
     }
 
-    serverShips.forEach(serverShip => {
+    serverShips.forEach((serverShip) => {
       const clientShip = clientGameData.ships.getShipById(serverShip.id);
       const deployMove = clientShip.movement.getDeployMove();
 
@@ -48,9 +48,7 @@ class DeploymentHandler {
 
       if (deployMove.facing < 0 || deployMove.facing > 5) {
         throw new InvalidGameDataError(
-          `Invalid deployment for ship ${
-            serverShip.name
-          }: not a valid deployment facing`
+          `Invalid deployment for ship ${serverShip.name}: not a valid deployment facing`
         );
       }
 
@@ -73,9 +71,7 @@ class DeploymentHandler {
 
       if (!serverDeployMove.equals(deployMove)) {
         throw new InvalidGameDataError(
-          `Invalid deployment for ship ${
-            serverShip.name
-          }: deployment move malformed`
+          `Invalid deployment for ship ${serverShip.name}: deployment move malformed`
         );
       }
 
@@ -92,9 +88,9 @@ class DeploymentHandler {
   }
 
   checkShipsOnSamePosition(serverShips) {
-    serverShips.forEach(ship => {
+    serverShips.forEach((ship) => {
       const other = serverShips.find(
-        otherShip =>
+        (otherShip) =>
           otherShip.id !== ship.id &&
           otherShip.getHexPosition().equals(ship.getHexPosition())
       );
@@ -110,8 +106,8 @@ class DeploymentHandler {
   }
 
   advance(gameData) {
-    gameData.players.forEach(player => gameData.setPlayerActive(player));
-    gameData.ships.getShips().forEach(ship => gameData.setActiveShip(ship));
+    gameData.players.forEach((player) => gameData.setPlayerActive(player));
+    gameData.ships.getShips().forEach((ship) => gameData.setActiveShip(ship));
     gameData.setPhase(gamePhases.GAME);
   }
 }

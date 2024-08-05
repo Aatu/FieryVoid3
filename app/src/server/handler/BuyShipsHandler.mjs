@@ -1,13 +1,13 @@
 import { InvalidGameDataError } from "../errors/index.mjs";
 import {
   createShipObject,
-  createBareShipObject
+  createBareShipObject,
 } from "../../model/unit/createShipObject.mjs";
 import * as gameStatuses from "../../model/game/gameStatuses.mjs";
 import * as gamePhases from "../../model/game/gamePhases.mjs";
 import MovementOrder from "../../model/movement/MovementOrder.mjs";
 import movementTypes from "../../model/movement/movementTypes.mjs";
-import uuidv4 from "uuid/v4.js";
+import { v4 as uuidv4 } from "uuid";
 
 class BuyShipsHandler {
   buyShips(gameData, slotId, ships, user) {
@@ -40,19 +40,19 @@ class BuyShipsHandler {
       );
     }
 
-    ships.forEach(ship => this.initializeShip(ship, gameData, slot, user));
+    ships.forEach((ship) => this.initializeShip(ship, gameData, slot, user));
 
     slot.setBought();
 
     if (
       gameData.slots
         .getSlots()
-        .every(slot => !slot.isOccupiedBy(user) || slot.isBought())
+        .every((slot) => !slot.isOccupiedBy(user) || slot.isBought())
     ) {
       gameData.setPlayerInactive(user);
     }
 
-    if (gameData.slots.getSlots().every(slot => slot.isBought())) {
+    if (gameData.slots.getSlots().every((slot) => slot.isBought())) {
       this.advance(gameData);
     }
   }
@@ -100,8 +100,8 @@ class BuyShipsHandler {
     while (!position) {
       position = slot.deploymentLocation
         .spiral(slot.deploymentRadius)
-        .find(pos =>
-          gameData.ships.getShips().every(ship => {
+        .find((pos) =>
+          gameData.ships.getShips().every((ship) => {
             const shipPos = ship.getHexPosition();
             return !shipPos || !shipPos.equals(pos);
           })
@@ -127,7 +127,7 @@ class BuyShipsHandler {
   }
 
   advance(gameData) {
-    gameData.players.forEach(player => gameData.setPlayerActive(player));
+    gameData.players.forEach((player) => gameData.setPlayerActive(player));
     gameData.setStatus(gameStatuses.ACTIVE);
     gameData.setPhase(gamePhases.DEPLOYMENT);
     gameData.ships.setShipLoadouts();

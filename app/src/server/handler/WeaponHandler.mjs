@@ -1,6 +1,6 @@
 import { InvalidGameDataError, UnauthorizedError } from "../errors/index.mjs";
 import WeaponFireService from "../../model/weapon/WeaponFireService.mjs";
-import uuidv4 from "uuid/v4.js";
+import { v4 as uuidv4 } from "uuid";
 import { shuffleArray } from "../../model/utils/math.mjs";
 
 class WeaponHandler {
@@ -8,12 +8,12 @@ class WeaponHandler {
     const clientFireService = new WeaponFireService().update(clientGameData);
     const serverFireService = new WeaponFireService().update(serverGameData);
 
-    activeShips.forEach(serverShip => {
+    activeShips.forEach((serverShip) => {
       const clientShip = clientGameData.ships.getShipById(serverShip.id);
 
       clientFireService
         .getAllFireOrdersForShip(clientShip)
-        .forEach(fireOrder => {
+        .forEach((fireOrder) => {
           const shooter = serverGameData.ships.getShipById(fireOrder.shooterId);
           const target = serverGameData.ships.getShipById(fireOrder.targetId);
           const weapon = shooter.systems.getSystemById(fireOrder.weaponId);
@@ -24,7 +24,7 @@ class WeaponHandler {
 
           serverFireService
             .addFireOrder(shooter, target, weapon)
-            .forEach(order => order.setId(uuidv4()));
+            .forEach((order) => order.setId(uuidv4()));
         });
     });
   }
@@ -54,7 +54,7 @@ class WeaponHandler {
 
         return 0;
       })
-      .forEach(system => {
+      .forEach((system) => {
         system.callHandler("executeFireOrders", { gameData });
       });
   }
@@ -65,7 +65,7 @@ class WeaponHandler {
         ...total,
         ...ship.systems
           .getSystems()
-          .filter(system => system.callHandler("hasFireOrder", null, false))
+          .filter((system) => system.callHandler("hasFireOrder", null, false)),
       ];
     }, []);
   }
