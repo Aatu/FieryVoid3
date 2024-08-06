@@ -2,7 +2,7 @@ import BoostableSystemStrategy from "./BoostableSystemStrategy.mjs";
 import ThrustOutputSystemStrategy from "./ThrustOutputSystemStrategy.mjs";
 import RequiresPowerSystemStrategy from "./RequiresPowerSystemStrategy.mjs";
 import PowerOutputSystemStrategy from "./PowerOutputSystemStrategy.mjs";
-import ThrustChannelSystemStrategy from "./ThrustChannelSystemStrategy.mjs";
+import ThrustChannelSystemStrategy from "./ThrustChannelSystemStrategy.js";
 import AllowsEvasionSystemStrategy from "./AllowsEvasionSystemStrategy.mjs";
 import ElectronicWarfareProvider from "./ElectronicWarfareProvider.mjs";
 import LargerHitProfileOnlineSystemStrategy from "./LargerHitProfileOnlineSystemStrategy.mjs";

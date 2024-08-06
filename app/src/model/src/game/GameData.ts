@@ -1,4 +1,4 @@
-import GameSlots from "./GameSlots.mjs";
+import GameSlots from "./GameSlots.js";
 import GameShips from "./GameShips";
 import GameActiveShips from "./GameActiveShips.mjs";
 import GameTerrain from "./GameTerrain.mjs";
@@ -6,14 +6,36 @@ import GameTorpedos from "./GameTorpedos.mjs";
 import CombatLogData from "../combatLog/CombatLogData.mjs";
 import { GAME_STATUS } from "./gameStatus";
 import { GAME_PHASE } from "./gamePhase";
-import { User } from "../User/User";
+import { IUser, User } from "../User/User";
+
+export type SerializedGameData = {
+  id?: number;
+  phase?: GAME_PHASE;
+  name?: string;
+  turn: number;
+  data?: {
+    activePlayerIds?: number[];
+    terrain?: SerializedGameTerrain;
+    combatLog?: SerializedCombatLogData;
+    torpedos?: SerializedGameTorpedos;
+  };
+  ships?: SerializedGameShips;
+  activeShips?: SerializedGameActiveShips;
+  creatorId?: number;
+  status?: GAME_STATUS;
+  players?: IUser[];
+};
 
 class GameData {
-  private status!: GAME_STATUS;
-  private id!: number;
-  private phase!: GAME_PHASE;
-  private players: User[] = [];
-  private activePlayerIds: number[] = [];
+  public status!: GAME_STATUS;
+  public id!: number;
+  public phase!: GAME_PHASE;
+  public players: User[] = [];
+  public activePlayerIds: number[] = [];
+  public ships!: GameShips;
+  public name!: string;
+  public slots!: GameSlots;
+  public turn!: number;
 
   constructor(data) {
     this.deserialize(data);
@@ -59,11 +81,11 @@ class GameData {
     this.activePlayerIds.push(user.id);
   }
 
-  setPlayerInactive(user) {
+  setPlayerInactive(user: User) {
     this.activePlayerIds = this.activePlayerIds.filter((id) => id !== user.id);
   }
 
-  validateForGameCreate(user) {
+  validateForGameCreate(user: User) {
     if (!this.name) {
       return "Game needs a name";
     }
@@ -158,7 +180,7 @@ class GameData {
     const gameData = data.data || {};
     this.id = data.id || null;
     this.name = data.name;
-    this.phase = data.phase || gamePhases.DEPLOYMENT;
+    this.phase = data.phase || GAME_PHASE.DEPLOYMENT;
     this.turn = data.turn || 1;
     this.players = data.players
       ? data.players.map((player) => new User().deserialize(player))
@@ -185,7 +207,7 @@ class GameData {
     this.ships.getShips().forEach((ship) => {
       ship.movement.removeMovementForOtherTurns(this.turn);
       const mine = user && ship.player.is(user);
-      ship.censorForUser(user, mine);
+      ship.censorForUser(user, mine, this.turn);
     });
 
     return this;

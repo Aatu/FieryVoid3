@@ -4,8 +4,8 @@ import Critical, { SerializedCritical } from "./criticals/Critical.js";
 import ShipSystem from "./ShipSystem";
 
 export type SerializedSystemDamage = {
-  entries: SerializedDamageEntry[];
-  criticals: SerializedCritical[];
+  entries?: SerializedDamageEntry[];
+  criticals?: SerializedCritical[];
 };
 
 class SystemDamage {
@@ -26,7 +26,7 @@ class SystemDamage {
     };
   }
 
-  deserialize(data: SerializedSystemDamage) {
+  deserialize(data: SerializedSystemDamage = {}) {
     this.entries = data.entries
       ? data.entries.map((entry) => new DamageEntry().deserialize(entry))
       : [];
@@ -114,7 +114,7 @@ class SystemDamage {
     return this.getTotalDamage() >= this.system.hitpoints;
   }
 
-  advanceTurn() {
+  advanceTurn(turn: number) {
     this.entries = this.entries
       .map((entry) => entry.advanceTurn())
       .filter(Boolean);

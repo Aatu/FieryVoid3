@@ -1,14 +1,25 @@
-import SystemDamage from "./SystemDamage";
-import SystemPower from "./SystemPower";
-import SystemHeat from "./SystemHeat";
-import ShipSystemLog from "./ShipSystemLog/ShipSystemLog.mjs";
-import ShipSystemLogEntryDamage from "./ShipSystemLog/ShipSystemLogEntryDamage.mjs";
-import { formatNumber } from "../../utils/format.mjs";
+import SystemDamage, { SerializedSystemDamage } from "./SystemDamage";
+import SystemPower, { SerializedSystemPower } from "./SystemPower";
+import SystemHeat, { SerializedSystemHeat } from "./SystemHeat";
 import ShipSystemStrategy from "./strategy/ShipSystemStrategy";
-import { SYSTEM_HANDLERS } from "./strategy/types/SystemHandlersTypes";
+import {
+  SYSTEM_HANDLERS,
+  SystemMessage,
+} from "./strategy/types/SystemHandlersTypes";
+import ShipSystems from "../ShipSystems";
+import Ship from "../Ship";
+import DamageEntry from "./DamageEntry";
+import Critical from "./criticals/Critical";
+import ShipSystemLog, {
+  SerializedShipSystemLog,
+} from "./ShipSystemLog/ShipSystemLog";
+import ShipSystemLogEntryDamage from "./ShipSystemLog/ShipSystemLogEntryDamage";
 
-type SerializedShipSystem = Record<string, unknown> & {
-  power: Record<string, unknown>;
+export type SerializedShipSystem = {
+  power?: SerializedSystemPower;
+  damage?: SerializedSystemDamage;
+  heat?: SerializedSystemHeat;
+  log?: SerializedShipSystemLog;
 };
 
 export type SystemArgs = {
@@ -22,8 +33,11 @@ class ShipSystem {
   public hitpoints: number;
   public armor: number;
   public strategies: ShipSystemStrategy[] = [];
-  private power: SystemPower;
-  private damage: SystemDamage;
+  public power: SystemPower;
+  public damage: SystemDamage;
+  public shipSystems: null | ShipSystems;
+  public heat: SystemHeat;
+  public log: ShipSystemLog;
 
   constructor(args: SystemArgs, strategies = []) {
     this.id = args.id;
@@ -55,12 +69,12 @@ class ShipSystem {
     strategy.init(this);
   }
 
-  addShipSystemsReference(shipSystems) {
+  addShipSystemsReference(shipSystems: ShipSystems) {
     this.shipSystems = shipSystems;
   }
 
-  getSystemInfo(ship) {
-    const heatMessages = [];
+  getSystemInfo(ship: Ship): SystemMessage[] {
+    const heatMessages: SystemMessage[] = [];
 
     if (this.heat.shouldDisplayHeat()) {
       if (!this.heat.isHeatStorage()) {
@@ -87,7 +101,7 @@ class ShipSystem {
         ],
       },
       ...heatMessages,
-      ...this.callHandler("getMessages", null, []),
+      ...this.callHandler(SYSTEM_HANDLERS.getMessages, null, []),
     ];
   }
 
@@ -100,7 +114,7 @@ class ShipSystem {
   }
 
   getIconText() {
-    return this.callHandler("getIconText", null, "");
+    return this.callHandler(SYSTEM_HANDLERS.getIconText, null, "");
   }
 
   isDestroyed() {
@@ -112,7 +126,11 @@ class ShipSystem {
   }
 
   getArmor() {
-    const armorMod = this.callHandler("getArmorModifier", null, 0);
+    const armorMod = this.callHandler(
+      SYSTEM_HANDLERS.getArmorModifier,
+      null,
+      0
+    );
 
     return this.armor + armorMod;
   }
@@ -125,7 +143,7 @@ class ShipSystem {
     return this.damage.getTotalDamage();
   }
 
-  addDamage(damage) {
+  addDamage(damage: DamageEntry) {
     const shipWasDestroyed = this.shipSystems
       ? this.shipSystems.isDestroyed()
       : undefined;
@@ -137,7 +155,9 @@ class ShipSystem {
       damage.setDestroyedSystem();
     }
 
-    const logEntry = this.log.getOpenLogEntryByClass(ShipSystemLogEntryDamage);
+    const logEntry = this.log.getOpenLogEntryByClass<ShipSystemLogEntryDamage>(
+      ShipSystemLogEntryDamage
+    );
     logEntry.addDamage(damage);
 
     if (
@@ -149,7 +169,7 @@ class ShipSystem {
     }
   }
 
-  addCritical(critical) {
+  addCritical(critical: Critical) {
     this.damage.addCritical(critical);
   }
 
@@ -157,7 +177,7 @@ class ShipSystem {
     return this.damage.hasAnyCritical();
   }
 
-  hasCritical(name) {
+  hasCritical(name: string) {
     return this.damage.hasCritical(name);
   }
 
@@ -181,36 +201,36 @@ class ShipSystem {
     ) as T[];
   }
 
-  deserialize(data = {}) {
+  deserialize(data: SerializedShipSystem = {}) {
     this.damage.deserialize(data.damage);
     this.power.deserialize(data.power);
     this.heat.deserialize(data.heat);
     this.log.deserialize(data.log);
-    this.callHandler("deserialize", data);
+    this.callHandler(SYSTEM_HANDLERS.deserialize, data, undefined);
 
     return this;
   }
 
-  serialize() {
+  serialize(): SerializedShipSystem {
     return {
       damage: this.damage.serialize(),
       power: this.power.serialize(),
       heat: this.heat.serialize(),
       log: this.log.serialize(),
-      ...this.callHandler("serialize"),
+      ...this.callHandler(SYSTEM_HANDLERS.serialize, null, {}),
     };
   }
 
-  endTurn(turn) {
+  endTurn(turn: number) {
     this.log.endTurn(turn);
   }
 
-  advanceTurn(turn) {
+  advanceTurn(turn: number) {
     this.damage.advanceTurn(turn);
     this.power.advanceTurn(turn);
     this.heat.advanceTurn(turn);
     this.log.advanceTurn(turn);
-    this.callHandler("advanceTurn", turn);
+    this.callHandler(SYSTEM_HANDLERS.advanceTurn, turn, undefined);
   }
 
   isWeapon() {

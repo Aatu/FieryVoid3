@@ -1,25 +1,27 @@
 import { createShipObject } from "../unit/createShipObject.mjs";
+import Ship from "../unit/Ship";
+import { User } from "../User/User";
 import GameData from "./GameData";
 
 class GameShips {
   private gameData: GameData;
-  private ships: [];
+  private ships: Ship[] = [];
 
   constructor(gameData: GameData) {
     this.gameData = gameData;
     this.ships = [];
   }
 
-  isSameTeam(shipA, shipB) {
+  isSameTeam(shipA: Ship, shipB: Ship) {
     return (
       this.gameData.slots.getTeamForShip(shipA) ===
       this.gameData.slots.getTeamForShip(shipB)
     );
   }
 
-  addShip(ship) {
+  addShip(ship: Ship) {
     if (ship.id && this.getShipById(ship.id)) {
-      throw new Error("Duplicate ship id added to gamedata");
+      throw new Error("Duplicate ship is added to gamedata");
     }
 
     this.ships.push(ship);
@@ -34,11 +36,11 @@ class GameShips {
     return this.ships.filter((ship) => !ship.isDestroyed());
   }
 
-  getShipById(id) {
+  getShipById(id: string) {
     return this.ships.find((ship) => ship.id === id);
   }
 
-  getUsersShips(user) {
+  getUsersShips(user: User) {
     return this.ships.filter(
       (ship) => ship.player.isUsers(user) && !ship.isDestroyed()
     );

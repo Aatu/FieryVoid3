@@ -1,4 +1,4 @@
-import HETorpedoDamageStrategy from "./torpedoDamageStrategy/HETorpedoDamageStrategy.mjs";
+import HETorpedoDamageStrategy from "./torpedoDamageStrategy/HETorpedoDamageStrategy.js";
 import Torpedo158 from "./Torpedo158.mjs";
 
 class Torpedo158HE extends Torpedo158 {
@@ -13,9 +13,9 @@ class Torpedo158HE extends Torpedo158 {
 
     return [
       {
-        value: "A long range torpedo with high explosive warhead."
+        value: "A long range torpedo with high explosive warhead.",
       },
-      ...previousResponse
+      ...previousResponse,
     ];
   }
 

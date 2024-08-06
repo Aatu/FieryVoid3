@@ -2,8 +2,8 @@ import ShipSystem from "../ShipSystem.mjs";
 import { ThrustChannelSystemStrategy } from "../strategy/index.mjs";
 import RequiresPowerSystemStrategy from "../strategy/RequiresPowerSystemStrategy.mjs";
 import BoostableSystemStrategy from "../strategy/BoostableSystemStrategy.mjs";
-import { THRUSTER_MODE_FUSION } from "../strategy/ThrustChannelSystemStrategy.mjs";
-import { THRUSTER_MODE_CHEMICAL } from "../strategy/ThrustChannelSystemStrategy.mjs";
+import { THRUSTER_MODE_FUSION } from "../strategy/ThrustChannelSystemStrategy.js";
+import { THRUSTER_MODE_CHEMICAL } from "../strategy/ThrustChannelSystemStrategy.js";
 
 class Thruster extends ShipSystem {
   constructor(

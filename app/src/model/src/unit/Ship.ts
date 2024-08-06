@@ -1,27 +1,59 @@
-import ShipSystems from "./ShipSystems.js";
-import ShipElectronicWarfare from "./ShipElectronicWarfare.mjs";
-import ShipPlayer from "./ShipPlayer.mjs";
-import ShipMovement from "./ShipMovement.mjs";
+import ShipSystems, { SerializedShipSystems } from "./ShipSystems";
+import ShipElectronicWarfare from "./ShipElectronicWarfare";
+import ShipPlayer from "./ShipPlayer";
+import ShipMovement from "./ShipMovement.js";
 import {
   getCompassHeadingOfPoint,
   addToDirection,
   hexFacingToAngle,
-} from "../utils/math.mjs";
-import coordinateConverter from "../utils/CoordinateConverter.mjs";
+} from "../utils/math.js";
+import coordinateConverter from "../utils/CoordinateConverter";
+import { IHexPosition, Offset } from "../hexagon/index";
+import Vector, { IVector } from "../utils/Vector";
+import { IUser, User } from "../User/User.js";
+import { SearializedShipCurrentElectronicWarfare } from "./ShipCurrentElectronicWarfare";
+import { SYSTEM_HANDLERS } from "./system/strategy/types/SystemHandlersTypes";
+import { SerializedMovementOrder } from "../movement/MovementOrder";
+import GameData from "../game/GameData";
 
-class Ship {
-
+export type SerializedShip = {
+  id?: string | null;
+  gameId?: string;
+  name?: string;
+  shipClass?: string;
+  slotId?: string | null;
+  movement?: SerializedMovementOrder[];
+  shipData?: {
+    systems?: SerializedShipSystems;
+    player?: IUser;
+    electronicWarfare?: SearializedShipCurrentElectronicWarfare;
+    destroyedThisTurn?: boolean;
+    aiRole?: any;
+  };
+};
+class Ship implements IHexPosition {
+  public id: string | null = null;
+  public name: string | null = null;
   public systems: ShipSystems;
   public pointCost: number;
   public accelcost: number;
   public rollcost: number;
   public pivotcost: number;
-  public maxPivots: number;
+  public maxPivots: number | null;
   public evasioncost: number;
   public frontHitProfile: number;
   public sideHitProfile: number;
-  public hexSizes: any[];
-
+  public hexSizes: Offset[];
+  public shipTypeName: string;
+  public shipClass!: string;
+  public gameId: string | null = null;
+  public slotId: string | null = null;
+  public player: ShipPlayer | null = null;
+  public movement!: ShipMovement;
+  public electronicWarfare!: ShipElectronicWarfare;
+  public destroyedThisTurn!: boolean;
+  public aiRole: unknown;
+  public shipModel: unknown | null = null;
 
   constructor(data = {}) {
     this.systems = new ShipSystems(this);
@@ -40,6 +72,13 @@ class Ship {
     this.setShipProperties();
     this.deserialize(data);
   }
+  getId(): string {
+    if (!this.id) {
+      throw new Error("ship has no Id");
+    }
+
+    return this.id;
+  }
 
   setShipProperties() {}
 
@@ -47,7 +86,9 @@ class Ship {
     return (
       this.frontHitProfile +
       this.systems
-        .callAllSystemHandlers("getHitProfile", { front: true })
+        .callAllSystemHandlers<number>(SYSTEM_HANDLERS.getHitProfile, {
+          front: true,
+        })
         .reduce((total, entry) => total + entry, 0)
     );
   }
@@ -56,12 +97,14 @@ class Ship {
     return (
       this.sideHitProfile +
       this.systems
-        .callAllSystemHandlers("getHitProfile", { front: false })
+        .callAllSystemHandlers<number>(SYSTEM_HANDLERS.getHitProfile, {
+          front: false,
+        })
         .reduce((total, entry) => total + entry, 0)
     );
   }
 
-  getHitProfile(position) {
+  getHitProfile(position: IVector) {
     const heading = addToDirection(
       getCompassHeadingOfPoint(this.getPosition(), position),
       -hexFacingToAngle(this.getFacing())
@@ -78,19 +121,19 @@ class Ship {
     return this.pointCost;
   }
 
-  getFacing() {
+  getFacing(): number {
     const lastMove = this.movement.getLastEndMoveOrSurrogate();
     if (!lastMove) {
-      return null;
+      throw new Error("ship has no facing");
     }
 
     return lastMove.getFacing();
   }
 
-  getPosition() {
+  getPosition(): Vector {
     const lastMove = this.movement.getLastEndMoveOrSurrogate();
     if (!lastMove) {
-      return null;
+      throw new Error("ship has no position");
     }
 
     return lastMove.getPosition();
@@ -100,11 +143,11 @@ class Ship {
     return coordinateConverter.fromGameToHex(this.getPosition());
   }
 
-  distanceTo(target) {
+  distanceTo(target: Ship) {
     return this.getPosition().distanceTo(target.getPosition());
   }
 
-  hexDistanceTo(target) {
+  hexDistanceTo(target: Ship) {
     return this.getHexPosition().distanceTo(target.getHexPosition());
   }
 
@@ -121,7 +164,7 @@ class Ship {
     return this.hexSizes.map((hex) => hex.rotate(hexFacing));
   }
 
-  deserialize(data = {}) {
+  deserialize(data: SerializedShip = {}) {
     const shipData = data.shipData || {};
     this.id = data.id || null;
     this.name = data.name || "Unnamed ship ";
@@ -129,7 +172,9 @@ class Ship {
     this.slotId = data.slotId || null;
 
     this.systems.deserialize(shipData.systems);
-    this.player = new ShipPlayer(this).deserialize(shipData.player);
+    this.player = shipData.player
+      ? new ShipPlayer().deserialize(shipData.player)
+      : null;
     this.movement = new ShipMovement(this).deserialize(data.movement);
     this.electronicWarfare = new ShipElectronicWarfare(this).deserialize(
       shipData.electronicWarfare
@@ -156,7 +201,7 @@ class Ship {
       movement: this.movement.serialize(),
       shipData: {
         systems: this.systems.serialize(),
-        player: this.player.serialize(),
+        player: this.player?.serialize(),
         electronicWarfare: this.electronicWarfare.serialize(),
         destroyedThisTurn: this.destroyedThisTurn,
         aiRole:
@@ -179,18 +224,18 @@ class Ship {
     this.destroyedThisTurn = true;
   }
 
-  censorForUser(user, mine) {
+  censorForUser(user: User, mine: boolean, turn: number) {
     if (!mine) {
-      this.movement.removeMovementExceptEnd(this.turn);
+      this.movement.removeMovementExceptEnd(turn);
     }
     this.systems.censorForUser(user, mine);
   }
 
-  endTurn(turn) {
+  endTurn(turn: number) {
     this.systems.endTurn(turn);
   }
 
-  advanceTurn(turn) {
+  advanceTurn(turn: number) {
     this.movement.removeMovementForOtherTurns(turn);
     this.systems.advanceTurn(turn);
     this.electronicWarfare.activatePlannedElectronicWarfare();
@@ -203,14 +248,17 @@ class Ship {
     return this.systems.getRequiredPhasesForReceivingPlayerData();
   }
 
-  receivePlayerData(clientShip, gameData, phase) {
+  receivePlayerData(clientShip: Ship, gameData: GameData, phase: number) {
     this.systems.receivePlayerData(clientShip, gameData, phase);
   }
 
   setShipLoadout() {
-    this.systems.callAllSystemHandlers("onGameStart");
-    this.systems.callAllSystemHandlers("loadTargetInstant");
-    this.systems.callAllSystemHandlers("setMaxFuel");
+    this.systems.callAllSystemHandlers(SYSTEM_HANDLERS.onGameStart, undefined);
+    this.systems.callAllSystemHandlers(
+      SYSTEM_HANDLERS.loadTargetInstant,
+      undefined
+    );
+    this.systems.callAllSystemHandlers(SYSTEM_HANDLERS.setMaxFuel, undefined);
   }
 }
 

@@ -1,4 +1,4 @@
-import StandardDamageStrategy from "../../../../strategy/weapon/StandardDamageStrategy.mjs";
+import StandardDamageStrategy from "../../../../strategy/weapon/StandardDamageStrategy.js";
 import CombatLogDamageEntry from "../../../../../../combatLog/CombatLogDamageEntry.mjs";
 
 class MSVTorpedoDamageStrategy extends StandardDamageStrategy {

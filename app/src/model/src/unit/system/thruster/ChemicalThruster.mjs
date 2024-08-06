@@ -1,6 +1,6 @@
 import ShipSystem from "../ShipSystem.mjs";
 import { ThrustChannelSystemStrategy } from "../strategy/index.mjs";
-import { THRUSTER_MODE_CHEMICAL } from "../strategy/ThrustChannelSystemStrategy.mjs";
+import { THRUSTER_MODE_CHEMICAL } from "../strategy/ThrustChannelSystemStrategy.js";
 
 class ChemicalThruster extends ShipSystem {
   constructor(args, output, direction) {

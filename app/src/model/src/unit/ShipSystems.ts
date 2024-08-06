@@ -1,12 +1,27 @@
-import ShipPower from "./ShipPower.mjs";
-import ShipSystemSections from "./system/ShipSystemSections.mjs";
-import { hexFacingToAngle } from "../utils/math.mjs";
+import ShipPower from "./ShipPower";
+import ShipSystemSections from "./system/ShipSystemSections";
+import { hexFacingToAngle } from "../utils/math";
 import Ship from "./Ship";
+import ShipSystem, { SerializedShipSystem } from "./system/ShipSystem";
+import { IVector } from "../utils/Vector";
+import SystemSection from "./system/systemSection/SystemSection";
+import { SYSTEM_HANDLERS } from "./system/strategy/types/SystemHandlersTypes";
+import GameData from "../game/GameData";
+import { GAME_PHASE } from "../game/gamePhase";
+import { User } from "../User/User";
+
+export type SerializedShipSystems = {
+  systemId: number;
+  data: SerializedShipSystem;
+}[];
 
 class ShipSystems {
-  private ship: Ship;
+  public ship: Ship;
+  private systems: Record<number, ShipSystem>;
+  private systemsAsArray: ShipSystem[];
+  public power: ShipPower;
+  public sections: ShipSystemSections;
 
-  
   constructor(ship: Ship) {
     this.ship = ship;
     this.systems = {};
@@ -42,7 +57,7 @@ class ShipSystems {
       return total;
     }, 0);
 
-    const primaryStructure = this.sections.getPrimarySection().getStructure();
+    const primaryStructure = this.sections.getPrimarySection()?.getStructure();
 
     return (
       (!primaryStructure || primaryStructure.isDestroyed()) &&
@@ -50,7 +65,7 @@ class ShipSystems {
     );
   }
 
-  getSectionsForHit(attackPosition, lastSection) {
+  getSectionsForHit(attackPosition: IVector, lastSection: SystemSection) {
     return this.sections.getHitSections(
       attackPosition,
       this.ship.getPosition(),
@@ -59,7 +74,7 @@ class ShipSystems {
     );
   }
 
-  getSystemsForHit(attackPosition, lastSection) {
+  getSystemsForHit(attackPosition: IVector, lastSection: SystemSection) {
     const systems = this.getSectionsForHit(attackPosition, lastSection).reduce(
       (all, section) => {
         return [
@@ -67,18 +82,18 @@ class ShipSystems {
           ...section.getSystems().filter((system) => !system.isDestroyed()),
         ];
       },
-      []
+      [] as ShipSystem[]
     );
 
     return [
       ...systems,
       ...this.getSystems().filter((system) =>
-        system.callHandler("canBeTargeted", null, false)
+        system.callHandler(SYSTEM_HANDLERS.canBeTargeted, null, false)
       ),
     ];
   }
 
-  addSystem(system, section) {
+  addSystem(system: ShipSystem, section: SystemSection) {
     if (this.getSystemById(system.id)) {
       throw new Error("System with duplicate id! " + system.id);
     }
@@ -95,70 +110,97 @@ class ShipSystems {
     return this;
   }
 
-  addPrimarySystem(systems) {
-    systems = [].concat(systems);
-    systems.forEach((system) =>
-      this.addSystem(system, this.sections.getPrimarySection())
-    );
+  addPrimarySystem(systems: ShipSystem[] | ShipSystem) {
+    const section = this.sections.getPrimarySection();
+    if (!section) {
+      throw new Error("ship does not have primary section");
+    }
+
+    systems = ([] as ShipSystem[]).concat(systems);
+    systems.forEach((system) => this.addSystem(system, section));
 
     return this;
   }
 
-  addFrontSystem(systems) {
-    systems = [].concat(systems);
-    systems.forEach((system) =>
-      this.addSystem(system, this.sections.getFrontSection())
-    );
+  addFrontSystem(systems: ShipSystem[] | ShipSystem) {
+    const section = this.sections.getFrontSection();
+    if (!section) {
+      throw new Error("ship does not have front section");
+    }
+
+    systems = ([] as ShipSystem[]).concat(systems);
+
+    systems.forEach((system) => this.addSystem(system, section));
 
     return this;
   }
 
-  addAftSystem(systems) {
-    systems = [].concat(systems);
-    systems.forEach((system) =>
-      this.addSystem(system, this.sections.getAftSection())
-    );
+  addAftSystem(systems: ShipSystem[] | ShipSystem) {
+    const section = this.sections.getAftSection();
+    if (!section) {
+      throw new Error("ship does not have aft section");
+    }
+
+    systems = ([] as ShipSystem[]).concat(systems);
+
+    systems.forEach((system) => this.addSystem(system, section));
 
     return this;
   }
 
-  addStarboardFrontSystem(systems) {
-    systems = [].concat(systems);
-    systems.forEach((system) =>
-      this.addSystem(system, this.sections.getStarboardFrontSection())
-    );
+  addStarboardFrontSystem(systems: ShipSystem[] | ShipSystem) {
+    const section = this.sections.getStarboardFrontSection();
+    if (!section) {
+      throw new Error("ship does not have starboard front section");
+    }
+
+    systems = ([] as ShipSystem[]).concat(systems);
+
+    systems.forEach((system) => this.addSystem(system, section));
 
     return this;
   }
 
-  addStarboardAftSystem(systems) {
-    systems = [].concat(systems);
-    systems.forEach((system) =>
-      this.addSystem(system, this.sections.getStarboardAftSection())
-    );
+  addStarboardAftSystem(systems: ShipSystem[] | ShipSystem) {
+    const section = this.sections.getStarboardAftSection();
+    if (!section) {
+      throw new Error("ship does not have starboard aft section");
+    }
+
+    systems = ([] as ShipSystem[]).concat(systems);
+
+    systems.forEach((system) => this.addSystem(system, section));
 
     return this;
   }
 
-  addPortFrontSystem(systems) {
-    systems = [].concat(systems);
-    systems.forEach((system) =>
-      this.addSystem(system, this.sections.getPortFrontSection())
-    );
+  addPortFrontSystem(systems: ShipSystem[] | ShipSystem) {
+    const section = this.sections.getPortFrontSection();
+    if (!section) {
+      throw new Error("ship does not have port front section");
+    }
+
+    systems = ([] as ShipSystem[]).concat(systems);
+
+    systems.forEach((system) => this.addSystem(system, section));
 
     return this;
   }
 
-  addPortAftSystem(systems) {
-    systems = [].concat(systems);
-    systems.forEach((system) =>
-      this.addSystem(system, this.sections.getPortAftSection())
-    );
+  addPortAftSystem(systems: ShipSystem[] | ShipSystem) {
+    const section = this.sections.getPortAftSection();
+    if (!section) {
+      throw new Error("ship does not have port aft section");
+    }
+
+    systems = ([] as ShipSystem[]).concat(systems);
+
+    systems.forEach((system) => this.addSystem(system, section));
 
     return this;
   }
 
-  getSystemById(id) {
+  getSystemById(id: number) {
     return this.systems[id];
   }
 
@@ -166,7 +208,7 @@ class ShipSystems {
     return this.systemsAsArray;
   }
 
-  deserialize(data = []) {
+  deserialize(data: SerializedShipSystems = []) {
     data.forEach((systemData) => {
       const system = this.getSystemById(systemData.systemId);
       if (system) {
@@ -177,20 +219,20 @@ class ShipSystems {
     return this;
   }
 
-  serialize() {
+  serialize(): SerializedShipSystems {
     return this.systemsAsArray.map((system) => ({
       systemId: system.id,
       data: system.serialize(),
     }));
   }
 
-  endTurn(turn) {
+  endTurn(turn: number) {
     this.getSystems().forEach((system) => {
       system.endTurn(turn);
     });
   }
 
-  advanceTurn(turn) {
+  advanceTurn(turn: number) {
     this.getSystems().forEach((system) => {
       system.advanceTurn(turn);
     });
@@ -202,7 +244,11 @@ class ShipSystems {
   getRequiredPhasesForReceivingPlayerData() {
     return this.getSystems()
       .map((system) =>
-        system.callHandler("getRequiredPhasesForReceivingPlayerData", null, 0)
+        system.callHandler(
+          SYSTEM_HANDLERS.getRequiredPhasesForReceivingPlayerData,
+          null,
+          0
+        )
       )
       .sort((a, b) => {
         if (a > b) {
@@ -217,38 +263,52 @@ class ShipSystems {
       })[0];
   }
 
-  receivePlayerData(clientShip, gameData, phase) {
+  receivePlayerData(clientShip: Ship, gameData: GameData, phase: GAME_PHASE) {
     this.getSystems().forEach((system) => {
       if (
         phase >
-        system.callHandler("getRequiredPhasesForReceivingPlayerData", null, 1)
+        system.callHandler(
+          SYSTEM_HANDLERS.getRequiredPhasesForReceivingPlayerData,
+          null,
+          1
+        )
       ) {
         return;
       }
 
-      system.callHandler("receivePlayerData", {
-        clientShip,
-        clientSystem: clientShip.systems.getSystemById(system.id),
-        gameData,
-        phase,
-      });
+      system.callHandler(
+        SYSTEM_HANDLERS.receivePlayerData,
+        {
+          clientShip,
+          clientSystem: clientShip.systems.getSystemById(system.id),
+          gameData,
+          phase,
+        },
+        undefined
+      );
     });
   }
 
-  censorForUser(user, mine) {
+  censorForUser(user: User, mine: boolean) {
     this.getSystems().forEach((system) => {
-      system.callHandler("censorForUser", { user, mine });
+      system.callHandler(
+        SYSTEM_HANDLERS.censorForUser,
+        { user, mine },
+        undefined
+      );
     });
   }
 
-  callAllSystemHandlers(name, payload) {
+  callAllSystemHandlers<T>(name: SYSTEM_HANDLERS, payload: unknown): T[] {
     return this.getSystems()
       .reduce(
         (total, system) => [
           ...total,
-          ...[].concat(system.callHandler(name, payload)),
+          ...([] as T[]).concat(
+            system.callHandler(name, payload, undefined as unknown as T)
+          ),
         ],
-        []
+        [] as T[]
       )
       .filter(Boolean);
   }

@@ -3,7 +3,7 @@ import ShipSystem from "./ShipSystem";
 import { SYSTEM_HANDLERS } from "./strategy/types/SystemHandlersTypes";
 
 export type SerializedSystemPower = {
-  entries: SerializedPowerEntry[];
+  entries?: SerializedPowerEntry[];
 };
 
 class SystemPower {
@@ -21,7 +21,7 @@ class SystemPower {
     };
   }
 
-  deserialize(data: SerializedSystemPower) {
+  deserialize(data: SerializedSystemPower = {}) {
     this.entries = data.entries
       ? data.entries.map((entry) => new PowerEntry().deserialize(entry))
       : [];
@@ -117,7 +117,7 @@ class SystemPower {
     );
   }
 
-  advanceTurn() {
+  advanceTurn(turn: number) {
     if (this.isOffline()) {
       this.entries = [new PowerEntry(POWER_TYPE.OFFLINE)];
     } else {

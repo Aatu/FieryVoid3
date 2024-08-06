@@ -1,4 +1,4 @@
-import StandardDamageStrategy from "./StandardDamageStrategy.mjs";
+import StandardDamageStrategy from "./StandardDamageStrategy.js";
 import Structure from "../../structure/Structure.js";
 
 class PiercingDamageStrategy extends StandardDamageStrategy {

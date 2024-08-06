@@ -3,8 +3,8 @@ import CargoEntity from "../../cargo/CargoEntity.js";
 import { SystemMessage } from "../../strategy/types/SystemHandlersTypes.js";
 
 class Ammo extends CargoEntity {
-  private damageFormula: string | number;
-  private armorPiercingFormula: string | number;
+  public damageFormula: string | number;
+  public armorPiercingFormula: string | number;
 
   constructor(
     damageFormula: string | number,

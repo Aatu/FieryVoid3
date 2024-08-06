@@ -1,5 +1,5 @@
 import Torpedo72 from "./Torpedo72.mjs";
-import HETorpedoDamageStrategy from "./torpedoDamageStrategy/HETorpedoDamageStrategy.mjs";
+import HETorpedoDamageStrategy from "./torpedoDamageStrategy/HETorpedoDamageStrategy.js";
 
 class Torpedo72HE extends Torpedo72 {
   constructor() {
@@ -13,9 +13,9 @@ class Torpedo72HE extends Torpedo72 {
 
     return [
       {
-        value: "A medium range torpedo with high explosive warhead."
+        value: "A medium range torpedo with high explosive warhead.",
       },
-      ...previousResponse
+      ...previousResponse,
     ];
   }
 

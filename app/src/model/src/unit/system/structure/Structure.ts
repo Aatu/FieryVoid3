@@ -1,5 +1,5 @@
 import ShipSystem, { SystemArgs } from "../ShipSystem.js";
-import CargoBaySystemStrategy from "../strategy/CargoBaySystemStrategy.mjs";
+import CargoBaySystemStrategy from "../strategy/CargoBaySystemStrategy.js";
 import StoreHeatStrategy from "../strategy/StoreHeatStrategy.mjs";
 import RadiateHeatStrategy from "../strategy/RadiateHeatStrategy.mjs";
 import FuelTankSystemStrategy from "../strategy/FuelTankSystemStrategy.mjs";

@@ -1,4 +1,4 @@
 export enum GAME_PHASE {
-  DEPLOYMENT = "deployment",
-  GAME = "game",
+  DEPLOYMENT = 0,
+  GAME = 1,
 }

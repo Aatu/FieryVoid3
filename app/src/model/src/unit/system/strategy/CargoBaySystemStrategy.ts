@@ -1,5 +1,5 @@
 import ShipSystemStrategy from "./ShipSystemStrategy.js";
-import { cargoClasses } from "../cargo/cargo.mjs";
+import { cargoClasses } from "../cargo/cargo.js";
 
 class CargoBaySystemStrategy extends ShipSystemStrategy {
   private space: number;

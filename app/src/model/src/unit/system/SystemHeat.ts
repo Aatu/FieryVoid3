@@ -35,7 +35,7 @@ class SystemHeat {
     };
   }
 
-  deserialize(data: SerializedSystemHeat) {
+  deserialize(data: SerializedSystemHeat = {}) {
     this.heat = data.heat || 0;
     this.overheat = data.overheat || 0;
 
@@ -258,7 +258,7 @@ class SystemHeat {
     );
   }
 
-  advanceTurn() {
+  advanceTurn(turn: number) {
     this.heatTransferred = 0;
   }
 }

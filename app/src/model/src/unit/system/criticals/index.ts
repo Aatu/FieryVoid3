@@ -7,6 +7,12 @@ import LoadingTimeIncreased from "./LoadingTimeIncreased";
 import ForcedOffline from "./ForcedOffline";
 import ForcedOfflineOverheat from "./ForcedOfflineOverheat";
 import ThrustChannelHeatIncreased from "./ThrustChannelHeatIncreased";
+import Critical from "./Critical";
+
+export type CriticalTableEntry = {
+  severity: number;
+  critical: Critical;
+};
 
 export {
   ThrustChannelHeatIncreased,
