@@ -1,6 +1,7 @@
 import { DiceRoller } from "../../../../utils/DiceRoller.js";
 import CargoEntity from "../../cargo/CargoEntity.js";
 import { SystemMessage } from "../../strategy/types/SystemHandlersTypes.js";
+import { AmmunitionType } from "./index.js";
 
 class Ammo extends CargoEntity {
   public damageFormula: string | number;
@@ -15,17 +16,17 @@ class Ammo extends CargoEntity {
     this.armorPiercingFormula = armorPiercingFormula;
   }
 
-  getDamage(diceRoller: DiceRoller) {
+  getDamage(diceRoller: DiceRoller): number {
     if (Number.isInteger(this.damageFormula)) {
-      return this.armorPiercingFormula;
+      return this.damageFormula as number;
     }
 
     return diceRoller.roll(this.damageFormula);
   }
 
-  getArmorPiercing(diceRoller: DiceRoller) {
+  getArmorPiercing(diceRoller: DiceRoller): number {
     if (Number.isInteger(this.armorPiercingFormula)) {
-      return this.armorPiercingFormula;
+      return this.armorPiercingFormula as number;
     }
 
     return diceRoller.roll(this.armorPiercingFormula);
@@ -49,6 +50,10 @@ class Ammo extends CargoEntity {
 
   getIconText() {
     return "";
+  }
+
+  getConstructorName(): AmmunitionType {
+    return this.constructor.name as AmmunitionType;
   }
 }
 

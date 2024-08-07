@@ -7,7 +7,7 @@ export class DiceRoller {
   private static instance: DiceRoller;
   private diceRoller: RpgDiceRoller;
 
-  private constructor() {
+  public constructor() {
     this.diceRoller = new RpgDiceRoller();
   }
 

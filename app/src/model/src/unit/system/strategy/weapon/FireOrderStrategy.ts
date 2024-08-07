@@ -1,9 +1,16 @@
 import ShipSystemStrategy from "../ShipSystemStrategy.js";
-import FireOrder from "../../../../weapon/FireOrder.mjs";
-import CombatLogWeaponOutOfArc from "../../../../combatLog/CombatLogWeaponOutOfArc.mjs";
-import CombatLogWeaponFire from "../../../../combatLog/CombatLogWeaponFire.mjs";
+import FireOrder, {
+  SerializedFireOrder,
+} from "../../../../weapon/FireOrder.js";
+import CombatLogWeaponFire from "../../../../combatLog/CombatLogWeaponFire.js";
 import GameData from "../../../../game/GameData.js";
+import { SYSTEM_HANDLERS } from "../types/SystemHandlersTypes.js";
+import Ammo from "../../weapon/ammunition/Ammo.js";
+import Ship from "../../../Ship.js";
 
+export type SerializedFireOrderStrategy = {
+  fireOrderStrategy?: SerializedFireOrder[];
+};
 class FireOrderStrategy extends ShipSystemStrategy {
   private numberOfShots: number;
   private resolutionPriority: number;
@@ -20,7 +27,7 @@ class FireOrderStrategy extends ShipSystemStrategy {
 
   executeFireOrders({ gameData }: { gameData: GameData }) {
     this.fireOrders.forEach((fireOrder) => {
-      const weapon = this.system;
+      const weapon = this.getSystem();
       const shooter = gameData.ships.getShipById(fireOrder.shooterId);
       const target = gameData.ships.getShipById(fireOrder.targetId);
       const weaponSettings = fireOrder.weaponSettings;
@@ -32,37 +39,55 @@ class FireOrderStrategy extends ShipSystemStrategy {
       }
       */
 
-      if (!this.system.callHandler("canFire", { shooter, target }, true)) {
+      if (
+        !this.getSystem().callHandler(
+          SYSTEM_HANDLERS.canFire,
+          { shooter, target },
+          true
+        )
+      ) {
         return false;
       }
 
       const combatLogEntry = new CombatLogWeaponFire(
-        fireOrder.id,
+        fireOrder.getId(),
         fireOrder.targetId,
         fireOrder.shooterId,
-        weapon.callHandler("getSelectedAmmo", null, null)
+        weapon.callHandler(
+          SYSTEM_HANDLERS.getSelectedAmmo,
+          null,
+          null as Ammo | null
+        )
       );
 
-      const hitResolution = weapon.callHandler("checkFireOrderHits", {
-        shooter,
-        target,
-        weaponSettings,
-        gameData,
-        fireOrder,
-        combatLogEntry,
-      });
+      const hitResolution = weapon.callHandler(
+        SYSTEM_HANDLERS.checkFireOrderHits,
+        {
+          shooter,
+          target,
+          weaponSettings,
+          gameData,
+          fireOrder,
+          combatLogEntry,
+        },
+        undefined
+      );
 
-      weapon.callHandler("applyDamageFromWeaponFire", {
-        shooter,
-        target,
-        weaponSettings,
-        gameData,
-        fireOrder,
-        combatLogEntry,
-        hitResolution,
-      });
+      weapon.callHandler(
+        SYSTEM_HANDLERS.applyDamageFromWeaponFire,
+        {
+          shooter,
+          target,
+          weaponSettings,
+          gameData,
+          fireOrder,
+          combatLogEntry,
+          hitResolution,
+        },
+        undefined
+      );
 
-      weapon.callHandler("onWeaponFired");
+      weapon.callHandler(SYSTEM_HANDLERS.onWeaponFired, undefined, undefined);
       fireOrder.setResolved();
       gameData.combatLog.addEntry(combatLogEntry);
     });
@@ -92,40 +117,55 @@ class FireOrderStrategy extends ShipSystemStrategy {
     this.fireOrders = [];
   }
 
-  addFireOrder({ shooter, target, weaponSettings }) {
+  addFireOrder({
+    shooter,
+    target,
+    weaponSettings,
+  }: {
+    shooter: Ship;
+    target: Ship;
+    weaponSettings: Record<string, unknown>;
+  }) {
     this.fireOrders = [];
 
     let shots = this.numberOfShots;
     while (shots--) {
-      const order = new FireOrder(shooter, target, this.system, weaponSettings);
+      const order = new FireOrder(
+        null,
+        shooter,
+        target,
+        this.getSystem(),
+        weaponSettings
+      );
       this.fireOrders.push(order);
     }
 
     return this.fireOrders;
   }
 
-  serialize(payload, previousResponse = []) {
+  serialize(
+    payload: unknown,
+    previousResponse = []
+  ): SerializedFireOrderStrategy {
     return {
       ...previousResponse,
       fireOrderStrategy: this.fireOrders.map((fire) => fire.serialize()),
     };
   }
 
-  deserialize(data = {}) {
+  deserialize(data: SerializedFireOrderStrategy = {}) {
     this.fireOrders = data.fireOrderStrategy
-      ? data.fireOrderStrategy.map((entry) =>
-          new FireOrder().deserialize(entry)
-        )
+      ? data.fireOrderStrategy.map((entry) => FireOrder.fromData(entry))
       : [];
 
     return this;
   }
 
-  advanceTurn(turn) {
+  advanceTurn(turn: number) {
     this.fireOrders = [];
   }
 
-  censorForUser({ mine }) {
+  censorForUser({ mine }: { mine: boolean }) {
     if (!mine) {
       this.fireOrders = [];
     }

@@ -1,12 +1,12 @@
 import Weapon from "../Weapon.mjs";
 import FireOrderStrategy from "../../strategy/weapon/FireOrderStrategy.mjs";
-import WeaponArcStrategy from "../../strategy/weapon/WeaponArcStrategy.mjs";
+import WeaponArcStrategy from "../../strategy/weapon/WeaponArcStrategy.js";
 import StandardHitStrategy from "../../strategy/weapon/StandardHitStrategy.mjs";
 import StandardRangeStrategy from "../../strategy/weapon/StandardRangeStrategy.mjs";
 import StandardLoadingStrategy from "../../strategy/weapon/StandardLoadingStrategy.mjs";
 import BurstDamageStrategy from "../../strategy/weapon/BurstDamageStrategy.mjs";
-import RequiresPowerSystemStrategy from "../../strategy/RequiresPowerSystemStrategy.mjs";
-import WeaponAnimationStrategy from "../../strategy/weapon/WeaponAnimationStrategy.mjs";
+import RequiresPowerSystemStrategy from "../../strategy/RequiresPowerSystemStrategy.js";
+import WeaponAnimationStrategy from "../../strategy/weapon/WeaponAnimationStrategy.js";
 import InterceptorStrategy from "../../strategy/weapon/InterceptorStrategy.mjs";
 import { Ammo30mm } from "../ammunition/conventional/index.mjs";
 import AmmunitionStrategy from "../../strategy/weapon/AmmunitionStrategy.mjs";

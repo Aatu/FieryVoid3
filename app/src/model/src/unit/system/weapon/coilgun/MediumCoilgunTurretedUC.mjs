@@ -1,14 +1,14 @@
 import Weapon from "../Weapon.mjs";
 import FireOrderStrategy from "../../strategy/weapon/FireOrderStrategy.mjs";
-import WeaponArcStrategy from "../../strategy/weapon/WeaponArcStrategy.mjs";
+import WeaponArcStrategy from "../../strategy/weapon/WeaponArcStrategy.js";
 import StandardHitStrategy from "../../strategy/weapon/StandardHitStrategy.mjs";
 import StandardRangeStrategy from "../../strategy/weapon/StandardRangeStrategy.mjs";
 import StandardLoadingStrategy from "../../strategy/weapon/StandardLoadingStrategy.mjs";
-import WeaponAnimationStrategy from "../../strategy/weapon/WeaponAnimationStrategy.mjs";
+import WeaponAnimationStrategy from "../../strategy/weapon/WeaponAnimationStrategy.js";
 import PiercingDamageStrategy from "../../strategy/weapon/PiercingDamageStrategy.mjs";
 import BoostableSystemStrategy from "../../strategy/BoostableSystemStrategy.mjs";
-import RequiresPowerSystemStrategy from "../../strategy/RequiresPowerSystemStrategy.mjs";
-import OutputHeatOnlineStrategy from "../../strategy/OutputHeatOnlineStrategy.mjs";
+import RequiresPowerSystemStrategy from "../../strategy/RequiresPowerSystemStrategy.js";
+import OutputHeatOnlineStrategy from "../../strategy/OutputHeatOnlineStrategy.js";
 import { MEDIUM_WEAPON_RANGE } from "../../../../gameConfig.mjs";
 
 class MediumCoilgunTurretedUC extends Weapon {

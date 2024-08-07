@@ -1,6 +1,3 @@
-import { System_GetMaxEvasion } from "../AllowsEvasionSystemStrategy";
-import ShipSystemStrategy from "../ShipSystemStrategy";
-
 export enum SYSTEM_HANDLERS {
   getMaxEvasion = "getMaxEvasion",
   canBeTargeted = "canBeTargeted",
@@ -55,10 +52,34 @@ export enum SYSTEM_HANDLERS {
   onGameStart = "onGameStart",
   loadTargetInstant = "loadTargetInstant",
   setMaxFuel = "setMaxFuel",
+  getFireOrders = "getFireOrders",
+  getHitSystemSizeMultiplier = "getHitSystemSizeMultiplier",
+  canFire = "canFire",
+  checkFireOrderHits = "checkFireOrderHits",
+  applyDamageFromWeaponFire = "applyDamageFromWeaponFire",
+  onWeaponFired = "onWeaponFired",
+  getBackgroundImage = "getBackgroundImage",
+  onSystemPowerLevelIncrease = "onSystemPowerLevelIncrease",
+  onSystemPowerLevelDecrease = "onSystemPowerLevelDecrease",
+  isBoostable = "isBoostable",
+  canBoost = "canBoost",
+  boost = "boost",
+  deBoost = "deBoost",
+  canDeBoost = "canDeBoost",
+  getOutputForBoost = "getOutputForBoost",
+  getPowerRequiredForBoost = "getPowerRequiredForBoost",
+  getUsageVsOutputText = "getUsageVsOutputText",
+  getTotalCargoSpace = "getTotalCargoSpace",
+  getAvailableCargoSpace = "getAvailableCargoSpace",
+  isLoaded = "isLoaded",
+  hasSpaceFor = "hasSpaceFor",
+  addCargo = "addCargo",
+  removeCargo = "removeCargo",
+  getCargoEntry = "getCargoEntry",
 }
 
 export type SystemMessage = {
-  value?: string | SystemMessage[];
+  value?: string | number | SystemMessage[];
   header?: string;
   sort?: string;
   component?: string;

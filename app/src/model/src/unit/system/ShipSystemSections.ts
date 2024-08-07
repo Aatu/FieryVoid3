@@ -81,7 +81,7 @@ class ShipSystemSections {
     shooterPosition: IVector,
     shipPosition: IVector,
     shipFacing: number,
-    lastSection: SystemSection
+    lastSection: SystemSection | null = null
   ) {
     const heading = this.getHitSectionHeading(
       shooterPosition,
@@ -172,10 +172,16 @@ class ShipSystemSections {
     return this.sections.find((section) => section instanceof location);
   }
 
-  getSectionBySystem(system: ShipSystem) {
-    return this.sections.find((section) =>
+  getSectionBySystem(system: ShipSystem): SystemSection {
+    const section = this.sections.find((section) =>
       section.getSystems().find((otherSystem) => system.id === otherSystem.id)
     );
+
+    if (!section) {
+      throw new Error("Every system must be in a section");
+    }
+
+    return section;
   }
 
   getSectionsWithStructure() {

@@ -1,4 +1,4 @@
-import { ammunition } from "../weapon/ammunition/index.mjs";
+import { ammunition } from "../weapon/ammunition/index";
 
 export const cargoClasses = { ...ammunition };
 

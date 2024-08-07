@@ -53,7 +53,7 @@ class ThrustChannelSystemStrategy extends ShipSystemStrategy {
 
   constructor(
     output: number,
-    direction: number | number[],
+    direction: THRUSTER_DIRECTION | THRUSTER_DIRECTION[],
     {
       thrustHeatExtra = 0.3,
       fuelExtra = 0.1,

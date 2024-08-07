@@ -1,28 +1,42 @@
 import BoostableSystemStrategy from "./BoostableSystemStrategy.js";
+import { SYSTEM_HANDLERS } from "./types/SystemHandlersTypes.js";
 
 class BoostablePlusOneOutputSystemStrategy extends BoostableSystemStrategy {
-  constructor(maxLevel = null, basePowerRequirement = null) {
+  public basePowerRequirement: number | null;
+
+  constructor(
+    maxLevel: number | null = null,
+    basePowerRequirement: number | null = null
+  ) {
     super(0, maxLevel);
     this.basePowerRequirement = basePowerRequirement;
   }
 
-  getPowerRequiredForBoost(payload, previousResponse = 0) {
+  getPowerRequiredForBoost(payload: unknown, previousResponse = 0) {
     const output =
       this.basePowerRequirement !== null
         ? this.basePowerRequirement
-        : this.system.callHandler("getOutputForBoost", null, 0);
+        : this.getSystem().callHandler(
+            SYSTEM_HANDLERS.getOutputForBoost,
+            null,
+            0
+          );
     return output + this.boostLevel + previousResponse + 1;
   }
 
-  getPowerRequirement(payload, previousResponse = 0) {
-    if (this.system.isDisabled()) {
+  getPowerRequirement(payload: undefined, previousResponse = 0) {
+    if (this.getSystem().isDisabled()) {
       return previousResponse;
     }
 
     const output =
       this.basePowerRequirement !== null
         ? this.basePowerRequirement
-        : this.system.callHandler("getOutputForBoost", null, 0);
+        : this.getSystem().callHandler(
+            SYSTEM_HANDLERS.getOutputForBoost,
+            null,
+            0
+          );
     const power = this.boostLevel * output + this.boostLevel;
     return power + previousResponse;
   }

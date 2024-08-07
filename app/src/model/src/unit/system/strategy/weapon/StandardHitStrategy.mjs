@@ -1,5 +1,5 @@
 import ShipSystemStrategy from "../ShipSystemStrategy.js";
-import WeaponHitChance from "../../../../weapon/WeaponHitChance.mjs";
+import WeaponHitChance from "../../../../weapon/WeaponHitChance.js";
 import CombatLogWeaponFireHitResult from "../../../../combatLog/CombatLogWeaponFireHitResult.mjs";
 
 class StandardHitStrategy extends ShipSystemStrategy {

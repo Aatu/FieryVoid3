@@ -1,13 +1,7 @@
 import ShipSystemStrategy from "./ShipSystemStrategy";
-import {
-  OutputReduced2,
-  OutputReduced4,
-  OutputReduced6,
-  OutputReduced8,
-} from "../criticals/index.mjs";
-import ElectronicWarfareEntry from "../../../electronicWarfare/ElectronicWarfareEntry.mjs";
+import ElectronicWarfareEntry from "../../../electronicWarfare/ElectronicWarfareEntry";
 import Ship from "../../Ship";
-import OutputReduced from "../criticals/OutputReduced.mjs";
+import OutputReduced from "../criticals/OutputReduced";
 import { EW_TYPE } from "../../../electronicWarfare/electronicWarfareTypes";
 import { SerializedElectronicWarfareEntry } from "../../../electronicWarfare/ElectronicWarfareEntry";
 import { SYSTEM_HANDLERS, SystemMessage } from "./types/SystemHandlersTypes";

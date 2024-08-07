@@ -1,7 +1,13 @@
 import StandardDamageStrategy from "./StandardDamageStrategy.js";
 
 class ExplosiveDamageStrategy extends StandardDamageStrategy {
-  constructor(damageFormula, armorPiercingFormula, numberOfDamagesFormula = 1) {
+  private numberOfDamagesFormula: string | number;
+
+  constructor(
+    damageFormula: number | string,
+    armorPiercingFormula: number | string,
+    numberOfDamagesFormula: number | string = 1
+  ) {
     super(damageFormula, armorPiercingFormula);
 
     this.numberOfDamagesFormula = numberOfDamagesFormula;

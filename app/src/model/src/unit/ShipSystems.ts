@@ -65,7 +65,10 @@ class ShipSystems {
     );
   }
 
-  getSectionsForHit(attackPosition: IVector, lastSection: SystemSection) {
+  getSectionsForHit(
+    attackPosition: IVector,
+    lastSection: SystemSection | null
+  ) {
     return this.sections.getHitSections(
       attackPosition,
       this.ship.getPosition(),
@@ -74,7 +77,7 @@ class ShipSystems {
     );
   }
 
-  getSystemsForHit(attackPosition: IVector, lastSection: SystemSection) {
+  getSystemsForHit(attackPosition: IVector, lastSection: SystemSection | null) {
     const systems = this.getSectionsForHit(attackPosition, lastSection).reduce(
       (all, section) => {
         return [
@@ -200,7 +203,7 @@ class ShipSystems {
     return this;
   }
 
-  getSystemById(id: number) {
+  getSystemById(id: number): ShipSystem {
     return this.systems[id];
   }
 

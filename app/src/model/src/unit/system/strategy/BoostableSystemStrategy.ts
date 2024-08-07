@@ -1,11 +1,16 @@
+import ShipSystem from "../ShipSystem";
 import ShipSystemStrategy from "./ShipSystemStrategy";
+import { SYSTEM_HANDLERS } from "./types/SystemHandlersTypes";
 
+export type SerializedBoostableSystemStrategy = {
+  boostableSystemStrategy: { boostLevel: number };
+};
 class BoostableSystemStrategy extends ShipSystemStrategy {
   protected power: number;
   protected maxLevel: number | null;
   protected boostLevel: number;
 
-  constructor(power = 0, maxLevel = null) {
+  constructor(power = 0, maxLevel: number | null = null) {
     super();
     this.power = power;
 
@@ -21,15 +26,16 @@ class BoostableSystemStrategy extends ShipSystemStrategy {
     return this.maxLevel !== 0;
   }
 
-  canBoost(payload, previousResponse = true) {
+  canBoost(payload: unknown, previousResponse = true) {
     if (previousResponse === false) {
       return false;
     }
 
-    const remainginPower =
-      this.getSystem().shipSystems.power.getRemainingPowerOutput();
+    const remainginPower = this.getSystem()
+      .getShipSystems()
+      .power.getRemainingPowerOutput();
 
-    if (this.system.isDisabled()) {
+    if (this.getSystem().isDisabled()) {
       return false;
     }
 
@@ -37,27 +43,27 @@ class BoostableSystemStrategy extends ShipSystemStrategy {
       return false;
     }
 
-    return remainginPower >= this.getPowerRequiredForBoost();
+    return remainginPower >= this.getPowerRequiredForBoost(undefined, 0);
   }
 
-  canDeBoost(payload, previousResponse) {
+  canDeBoost(payload: unknown, previousResponse: unknown) {
     return this.boostLevel > 0;
   }
 
-  getPowerRequiredForBoost(payload, previousResponse = 0) {
+  getPowerRequiredForBoost(payload: unknown, previousResponse = 0) {
     return this.power + previousResponse;
   }
 
-  getBoost(payload, previousResponse = 0) {
-    if (this.system.isDisabled()) {
+  getBoost(payload: unknown, previousResponse = 0) {
+    if (this.getSystem().isDisabled()) {
       return previousResponse;
     }
 
     return previousResponse + this.boostLevel;
   }
 
-  getPowerRequirement(payload, previousResponse = 0) {
-    if (this.system.isDisabled()) {
+  getPowerRequirement(payload: unknown, previousResponse = 0) {
+    if (this.getSystem().isDisabled()) {
       return previousResponse;
     }
 
@@ -65,30 +71,45 @@ class BoostableSystemStrategy extends ShipSystemStrategy {
     return power + previousResponse;
   }
 
-  boost(payload, previousResponse) {
+  boost(payload: unknown, previousResponse: unknown) {
     if (!this.canBoost(payload)) {
       return false;
     }
 
     this.boostLevel++;
-    this.system.callHandler("onSystemPowerLevelIncrease");
+    this.getSystem().callHandler(
+      SYSTEM_HANDLERS.onSystemPowerLevelIncrease,
+      undefined,
+      0
+    );
   }
 
-  deBoost(payload, previousResponse) {
+  deBoost(payload: unknown, previousResponse: unknown) {
     if (this.boostLevel === 0) {
       return false;
     }
 
     this.boostLevel--;
-    this.system.callHandler("onSystemPowerLevelDecrease");
+    this.getSystem().callHandler(
+      SYSTEM_HANDLERS.onSystemPowerLevelDecrease,
+      undefined,
+      undefined
+    );
   }
 
   resetBoost() {
     this.boostLevel = 0;
-    this.system.callHandler("onSystemPowerLevelDecrease");
+    this.getSystem().callHandler(
+      SYSTEM_HANDLERS.onSystemPowerLevelDecrease,
+      undefined,
+      undefined
+    );
   }
 
-  getRequiredPhasesForReceivingPlayerData(payload, previousResponse = 1) {
+  getRequiredPhasesForReceivingPlayerData(
+    payload: unknown,
+    previousResponse = 1
+  ) {
     if (previousResponse > 2) {
       return previousResponse;
     }
@@ -96,20 +117,27 @@ class BoostableSystemStrategy extends ShipSystemStrategy {
     return 2;
   }
 
-  receivePlayerData({ clientSystem, phase }) {
+  receivePlayerData({
+    clientSystem,
+    phase,
+  }: {
+    clientSystem: ShipSystem;
+    phase: number;
+  }) {
     if (!clientSystem) {
       return;
     }
 
-    if (this.system.isDisabled()) {
+    if (this.getSystem().isDisabled()) {
       return;
     }
 
-    const clientStrategy = clientSystem.getStrategiesByInstance(
-      BoostableSystemStrategy
-    )[0];
+    const clientStrategy =
+      clientSystem.getStrategiesByInstance<BoostableSystemStrategy>(
+        BoostableSystemStrategy
+      )[0];
 
-    const targetBoostlevel = clientStrategy.boostLevel;
+    const targetBoostlevel = clientStrategy?.boostLevel;
 
     if (this.boostLevel > targetBoostlevel && phase === 2) {
       while (true) {
@@ -117,11 +145,11 @@ class BoostableSystemStrategy extends ShipSystemStrategy {
           return;
         }
 
-        if (!this.canDeBoost()) {
+        if (!this.canDeBoost(undefined, false)) {
           return;
         }
 
-        this.deBoost();
+        this.deBoost(undefined, undefined);
       }
     } else if (this.boostLevel < targetBoostlevel && phase === 1) {
       while (true) {
@@ -129,21 +157,28 @@ class BoostableSystemStrategy extends ShipSystemStrategy {
           return;
         }
 
-        if (!this.canBoost()) {
+        if (!this.canBoost(undefined, false)) {
           return;
         }
 
-        this.boost();
+        this.boost(undefined, undefined);
       }
     }
   }
 
-  getTooltipMenuButton({ myShip }, previousResponse = []) {
+  getTooltipMenuButton({ myShip }: { myShip: boolean }, previousResponse = []) {
     if (!myShip) {
       return previousResponse;
     }
 
-    if (this.system.isDisabled() || !this.system.callHandler("isBoostable")) {
+    if (
+      this.getSystem().isDisabled() ||
+      !this.getSystem().callHandler(
+        SYSTEM_HANDLERS.isBoostable,
+        undefined,
+        false
+      )
+    ) {
       return previousResponse;
     }
 
@@ -152,20 +187,38 @@ class BoostableSystemStrategy extends ShipSystemStrategy {
       {
         sort: 100,
         img: "/img/plus.png",
-        onClickHandler: () => this.system.callHandler("boost"),
-        disabledHandler: () => !this.system.callHandler("canBoost", null, null),
+        onClickHandler: () =>
+          this.getSystem().callHandler(
+            SYSTEM_HANDLERS.boost,
+            undefined,
+            undefined
+          ),
+        disabledHandler: () =>
+          !this.getSystem().callHandler(SYSTEM_HANDLERS.canBoost, null, false),
       },
       {
         sort: 100,
         img: "/img/minus.png",
-        onClickHandler: () => this.system.callHandler("deBoost"),
+        onClickHandler: () =>
+          this.getSystem().callHandler(
+            SYSTEM_HANDLERS.deBoost,
+            undefined,
+            undefined
+          ),
         disabledHandler: () =>
-          !this.system.callHandler("canDeBoost", null, null),
+          !this.getSystem().callHandler(
+            SYSTEM_HANDLERS.canDeBoost,
+            null,
+            false
+          ),
       },
     ];
   }
 
-  serialize(payload, previousResponse = []) {
+  serialize(
+    payload: unknown,
+    previousResponse = []
+  ): SerializedBoostableSystemStrategy {
     return {
       ...previousResponse,
       boostableSystemStrategy: {
@@ -174,7 +227,7 @@ class BoostableSystemStrategy extends ShipSystemStrategy {
     };
   }
 
-  deserialize(data = {}) {
+  deserialize(data: SerializedBoostableSystemStrategy) {
     this.boostLevel = data.boostableSystemStrategy
       ? data.boostableSystemStrategy.boostLevel
       : 0;

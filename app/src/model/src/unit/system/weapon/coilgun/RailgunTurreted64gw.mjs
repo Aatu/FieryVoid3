@@ -1,10 +1,10 @@
 import Weapon from "../Weapon.mjs";
 import FireOrderStrategy from "../../strategy/weapon/FireOrderStrategy.mjs";
-import WeaponArcStrategy from "../../strategy/weapon/WeaponArcStrategy.mjs";
+import WeaponArcStrategy from "../../strategy/weapon/WeaponArcStrategy.js";
 import StandardHitStrategy from "../../strategy/weapon/StandardHitStrategy.mjs";
 import StandardRangeStrategy from "../../strategy/weapon/StandardRangeStrategy.mjs";
 import StandardLoadingStrategy from "../../strategy/weapon/StandardLoadingStrategy.mjs";
-import WeaponAnimationStrategy from "../../strategy/weapon/WeaponAnimationStrategy.mjs";
+import WeaponAnimationStrategy from "../../strategy/weapon/WeaponAnimationStrategy.js";
 import PiercingDamageStrategy from "../../strategy/weapon/PiercingDamageStrategy.mjs";
 
 class RailgunTurreted64gw extends Weapon {
@@ -16,7 +16,7 @@ class RailgunTurreted64gw extends Weapon {
       new StandardRangeStrategy([
         { range: 0, modifier: -100 },
         { range: 10, modifier: 0 },
-        { range: 300, modifier: -200 }
+        { range: 300, modifier: -200 },
       ]),
       new StandardLoadingStrategy(4),
       new PiercingDamageStrategy("6d3", "4d4 + 4"),
@@ -24,8 +24,8 @@ class RailgunTurreted64gw extends Weapon {
         size: 18,
         length: 2000,
         speed: 6,
-        color: [0.8, 0.1, 0.4]
-      })
+        color: [0.8, 0.1, 0.4],
+      }),
     ]);
   }
 

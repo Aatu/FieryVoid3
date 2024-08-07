@@ -15,20 +15,21 @@ import { SearializedShipCurrentElectronicWarfare } from "./ShipCurrentElectronic
 import { SYSTEM_HANDLERS } from "./system/strategy/types/SystemHandlersTypes";
 import { SerializedMovementOrder } from "../movement/MovementOrder";
 import GameData from "../game/GameData";
+import { AiRole } from "../ai/AiRole";
 
 export type SerializedShip = {
   id?: string | null;
-  gameId?: string;
-  name?: string;
+  gameId?: string | null;
+  name?: string | null;
   shipClass?: string;
   slotId?: string | null;
   movement?: SerializedMovementOrder[];
   shipData?: {
     systems?: SerializedShipSystems;
-    player?: IUser;
+    player?: IUser | null;
     electronicWarfare?: SearializedShipCurrentElectronicWarfare;
     destroyedThisTurn?: boolean;
-    aiRole?: any;
+    aiRole?: any | null;
   };
 };
 class Ship implements IHexPosition {
@@ -52,7 +53,7 @@ class Ship implements IHexPosition {
   public movement!: ShipMovement;
   public electronicWarfare!: ShipElectronicWarfare;
   public destroyedThisTurn!: boolean;
-  public aiRole: unknown;
+  public aiRole: AiRole | null = null;
   public shipModel: unknown | null = null;
 
   constructor(data = {}) {
@@ -186,7 +187,7 @@ class Ship implements IHexPosition {
     return this;
   }
 
-  serialize() {
+  serialize(): SerializedShip {
     /*
     NOTE: shipData gets serialized normally. Everything else has custom handling
     If you want to serialize something, serialize it inside of shipData
@@ -201,7 +202,7 @@ class Ship implements IHexPosition {
       movement: this.movement.serialize(),
       shipData: {
         systems: this.systems.serialize(),
-        player: this.player?.serialize(),
+        player: this.player?.serialize() || null,
         electronicWarfare: this.electronicWarfare.serialize(),
         destroyedThisTurn: this.destroyedThisTurn,
         aiRole:
@@ -210,6 +211,14 @@ class Ship implements IHexPosition {
             : this.aiRole,
       },
     };
+  }
+
+  getPlayer(): ShipPlayer {
+    if (!this.player) {
+      throw new Error("ship has no player");
+    }
+
+    return this.player;
   }
 
   isDestroyed() {

@@ -1,5 +1,5 @@
+import { DiceRoller } from "../../../utils/DiceRoller";
 import ShipSystem from "../ShipSystem";
-import { DiceRoller } from "@dice-roller/rpg-dice-roller";
 import { SYSTEM_HANDLERS } from "./types/SystemHandlersTypes";
 
 class ShipSystemStrategy {

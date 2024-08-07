@@ -1,8 +1,8 @@
 import Ship from "../../Ship.mjs";
 import systems from "../../system/index.mjs";
 import Torpedo158MSV from "../../system/weapon/ammunition/torpedo/Torpedo158MSV.mjs";
-import Torpedo72MSV from "../../system/weapon/ammunition/torpedo/Torpedo72MSV.mjs";
-import Torpedo72HE from "../../system/weapon/ammunition/torpedo/Torpedo72HE.mjs";
+import Torpedo72MSV from "../../system/weapon/ammunition/torpedo/Torpedo72MSV.js";
+import Torpedo72HE from "../../system/weapon/ammunition/torpedo/Torpedo72HE.js";
 
 class TestShip extends Ship {
   setShipProperties() {

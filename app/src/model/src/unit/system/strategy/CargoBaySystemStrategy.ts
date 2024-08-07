@@ -1,8 +1,13 @@
 import ShipSystemStrategy from "./ShipSystemStrategy.js";
 import { cargoClasses } from "../cargo/cargo.js";
+import CargoEntity from "../cargo/CargoEntity.js";
 
+export type SerializedCargoBaySystemStrategy = {
+  cargoBaySystemStrategy?: { className: string; amount: number }[];
+};
 class CargoBaySystemStrategy extends ShipSystemStrategy {
   private space: number;
+  private cargo: { object: CargoEntity; amount: number }[];
 
   constructor(space: number) {
     super();
@@ -10,7 +15,7 @@ class CargoBaySystemStrategy extends ShipSystemStrategy {
     this.cargo = [];
   }
 
-  getUiComponents(payload, previousResponse = []) {
+  getUiComponents(payload: unknown, previousResponse = []) {
     return [
       ...previousResponse,
       {
@@ -25,7 +30,10 @@ class CargoBaySystemStrategy extends ShipSystemStrategy {
     ];
   }
 
-  serialize(payload, previousResponse = []) {
+  serialize(
+    payload: unknown,
+    previousResponse = {}
+  ): SerializedCargoBaySystemStrategy {
     return {
       ...previousResponse,
       cargoBaySystemStrategy: this.cargo.map((cargo) => ({
@@ -35,7 +43,7 @@ class CargoBaySystemStrategy extends ShipSystemStrategy {
     };
   }
 
-  deserialize(data = {}) {
+  deserialize(data: SerializedCargoBaySystemStrategy = {}) {
     this.cargo = data.cargoBaySystemStrategy
       ? data.cargoBaySystemStrategy.map((data) => ({
           object: new cargoClasses[data.className](),
@@ -61,16 +69,16 @@ class CargoBaySystemStrategy extends ShipSystemStrategy {
     );
   }
 
-  hasSpaceFor({ object, amount }) {
-    if (this.system.isDestroyed()) {
+  hasSpaceFor({ object, amount }: { object: CargoEntity; amount: number }) {
+    if (this.getSystem().isDestroyed()) {
       return false;
     }
 
     return this.getAvailableCargoSpace() >= object.getSpaceRequired() * amount;
   }
 
-  getCargoEntry(object) {
-    if (this.system.isDestroyed()) {
+  getCargoEntry(object: CargoEntity) {
+    if (this.getSystem().isDestroyed()) {
       return undefined;
     }
 
@@ -79,16 +87,16 @@ class CargoBaySystemStrategy extends ShipSystemStrategy {
     );
   }
 
-  getCargoByParentClass(parentClass) {
-    if (this.system.isDestroyed()) {
+  getCargoByParentClass(parentClass: typeof CargoEntity) {
+    if (this.getSystem().isDestroyed()) {
       return [];
     }
 
     return this.cargo.filter((cargo) => cargo.object instanceof parentClass);
   }
 
-  hasCargo({ object, amount = 1 }) {
-    if (this.system.isDestroyed()) {
+  hasCargo({ object, amount = 1 }: { object: CargoEntity; amount: number }) {
+    if (this.getSystem().isDestroyed()) {
       return false;
     }
 
@@ -101,7 +109,7 @@ class CargoBaySystemStrategy extends ShipSystemStrategy {
     return entry.amount >= amount;
   }
 
-  removeCargo({ object, amount = 1 }) {
+  removeCargo({ object, amount = 1 }: { object: CargoEntity; amount: number }) {
     const entry = this.getCargoEntry(object);
 
     if (!entry || entry.amount < amount) {
@@ -113,7 +121,7 @@ class CargoBaySystemStrategy extends ShipSystemStrategy {
     this.cargo = this.cargo.filter((entry) => entry.amount > 0);
   }
 
-  addCargo({ object, amount = 1 }) {
+  addCargo({ object, amount = 1 }: { object: CargoEntity; amount: number }) {
     if (!this.hasSpaceFor({ object, amount })) {
       throw new Error("No space in cargo bay");
     }

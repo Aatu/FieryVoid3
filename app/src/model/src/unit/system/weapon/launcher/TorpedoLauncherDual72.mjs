@@ -1,7 +1,7 @@
 import Weapon from "../Weapon.mjs";
-import RequiresPowerSystemStrategy from "../../strategy/RequiresPowerSystemStrategy.mjs";
-import TorpedoLauncherStrategy from "../../strategy/weapon/TorpedoLauncherStrategy.mjs";
-import Torpedo72 from "../ammunition/torpedo/Torpedo72.mjs";
+import RequiresPowerSystemStrategy from "../../strategy/RequiresPowerSystemStrategy.js";
+import TorpedoLauncherStrategy from "../../strategy/weapon/TorpedoLauncherStrategy.js";
+import Torpedo72 from "../ammunition/torpedo/Torpedo72.js";
 
 class TorpedoLauncherDual72 extends Weapon {
   constructor(args) {

@@ -15,6 +15,14 @@ class ShipPlayer {
     return user && this.user?.id === user.id;
   }
 
+  getUser(): User {
+    if (!this.user) {
+      throw new Error("Player has no user");
+    }
+
+    return this.user;
+  }
+
   setUser(user: User) {
     this.user = user;
   }

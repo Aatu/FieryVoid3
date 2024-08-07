@@ -1,4 +1,4 @@
-import CombatLogDamageEntry from "../../../../../../combatLog/CombatLogDamageEntry.mjs";
+import CombatLogDamageEntry from "../../../../../../combatLog/CombatLogDamageEntry.js";
 import ExplosiveDamageStrategy from "../../../../strategy/weapon/ExplosiveDamageStrategy.js";
 
 class HETorpedoDamageStrategy extends ExplosiveDamageStrategy {

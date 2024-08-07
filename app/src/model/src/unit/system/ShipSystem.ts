@@ -39,7 +39,7 @@ class ShipSystem {
   public heat: SystemHeat;
   public log: ShipSystemLog;
 
-  constructor(args: SystemArgs, strategies = []) {
+  constructor(args: SystemArgs, strategies: ShipSystemStrategy[] = []) {
     this.id = args.id;
     this.hitpoints = args.hitpoints;
     this.armor = args.armor || 0;
@@ -58,6 +58,14 @@ class ShipSystem {
 
     this.heat = new SystemHeat(this);
     this.log = new ShipSystemLog(this);
+  }
+
+  getShipSystems(): ShipSystems {
+    if (!this.shipSystems) {
+      throw new Error("ShipSystems not set");
+    }
+
+    return this.shipSystems;
   }
 
   getSystemDescription() {
@@ -109,8 +117,8 @@ class ShipSystem {
     return null;
   }
 
-  getBackgroundImage() {
-    return null;
+  getBackgroundImage(): string {
+    return "";
   }
 
   getIconText() {
@@ -177,7 +185,7 @@ class ShipSystem {
     return this.damage.hasAnyCritical();
   }
 
-  hasCritical(name: string) {
+  hasCritical(name: typeof Critical) {
     return this.damage.hasCritical(name);
   }
 
@@ -193,9 +201,7 @@ class ShipSystem {
     return response;
   }
 
-  getStrategiesByInstance<T extends ShipSystemStrategy>(
-    instance: typeof ShipSystemStrategy
-  ): T[] {
+  getStrategiesByInstance<T extends ShipSystemStrategy>(instance: any): T[] {
     return this.strategies.filter(
       (strategy) => strategy instanceof instance
     ) as T[];

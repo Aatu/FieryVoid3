@@ -1,26 +1,31 @@
 import GameSlots from "./GameSlots.js";
 import GameShips from "./GameShips";
-import GameActiveShips from "./GameActiveShips.mjs";
-import GameTerrain from "./GameTerrain.mjs";
-import GameTorpedos from "./GameTorpedos.mjs";
-import CombatLogData from "../combatLog/CombatLogData.mjs";
+import GameActiveShips from "./GameActiveShips";
+import GameTerrain, { SerializedGameTerrain } from "./GameTerrain";
+import GameTorpedos, { SerializedGameTorpedos } from "./GameTorpedos";
+import CombatLogData, {
+  SerializedCombatLogData,
+} from "../combatLog/CombatLogData";
 import { GAME_STATUS } from "./gameStatus";
 import { GAME_PHASE } from "./gamePhase";
 import { IUser, User } from "../User/User";
+import Ship, { SerializedShip } from "../unit/Ship.js";
+import { SerializedGameSlot } from "./GameSlot.js";
 
 export type SerializedGameData = {
   id?: number;
   phase?: GAME_PHASE;
   name?: string;
-  turn: number;
+  turn?: number;
   data?: {
     activePlayerIds?: number[];
     terrain?: SerializedGameTerrain;
     combatLog?: SerializedCombatLogData;
     torpedos?: SerializedGameTorpedos;
+    slots?: SerializedGameSlot[];
   };
-  ships?: SerializedGameShips;
-  activeShips?: SerializedGameActiveShips;
+  ships?: SerializedShip[];
+  activeShips?: string[];
   creatorId?: number;
   status?: GAME_STATUS;
   players?: IUser[];
@@ -28,16 +33,21 @@ export type SerializedGameData = {
 
 class GameData {
   public status!: GAME_STATUS;
-  public id!: number;
+  public id!: number | null;
   public phase!: GAME_PHASE;
   public players: User[] = [];
   public activePlayerIds: number[] = [];
   public ships!: GameShips;
-  public name!: string;
+  public name!: string | undefined;
   public slots!: GameSlots;
   public turn!: number;
+  public creatorId!: number;
+  public terrain!: GameTerrain;
+  public combatLog!: CombatLogData;
+  public torpedos!: GameTorpedos;
+  public activeShips!: GameActiveShips;
 
-  constructor(data) {
+  constructor(data: SerializedGameData) {
     this.deserialize(data);
   }
 
@@ -96,7 +106,7 @@ class GameData {
       return "Game has to have atleast two slots";
     }
 
-    const teams = {};
+    const teams: Record<number, boolean> = {};
     slots.forEach((slot) => (teams[slot.team] = true));
 
     if (Object.keys(teams).length < 2) {
@@ -131,39 +141,42 @@ class GameData {
       .filter((ship) => this.activeShips.isActive(ship));
   }
 
-  getActiveShipsForUser(user) {
+  getActiveShipsForUser(user: User) {
     return this.ships
       .getShips()
       .filter(
-        (ship) => this.activeShips.isActive(ship) && ship.player.isUsers(user)
+        (ship) =>
+          this.activeShips.isActive(ship) && ship.getPlayer().isUsers(user)
       );
   }
 
-  isActiveShip(ship) {
+  isActiveShip(ship: Ship) {
     return this.activeShips.isActive(ship);
   }
 
-  setActiveShip(ship) {
+  setActiveShip(ship: Ship) {
     this.activeShips.setActive(ship);
   }
 
-  setInactiveShip(ship) {
+  setInactiveShip(ship: Ship) {
     this.activeShips.setInactive(ship);
   }
 
-  getShipsForUser(user) {
-    return this.ships.getShips().filter((ship) => ship.player.isUsers(user));
+  getShipsForUser(user: User) {
+    return this.ships
+      .getShips()
+      .filter((ship) => ship.getPlayer().isUsers(user));
   }
 
-  serialize() {
+  serialize(): SerializedGameData {
     return {
-      id: this.id,
+      id: this.id || undefined,
       phase: this.phase,
       name: this.name,
       turn: this.turn,
       data: {
         activePlayerIds: this.activePlayerIds,
-        ...this.slots.serialize(),
+        slots: this.slots.serialize(),
         terrain: this.terrain.serialize(),
         combatLog: this.combatLog.serialize(),
         torpedos: this.torpedos.serialize(),
@@ -176,21 +189,21 @@ class GameData {
     };
   }
 
-  deserialize(data = {}) {
+  deserialize(data: SerializedGameData = {}) {
     const gameData = data.data || {};
     this.id = data.id || null;
     this.name = data.name;
     this.phase = data.phase || GAME_PHASE.DEPLOYMENT;
     this.turn = data.turn || 1;
     this.players = data.players
-      ? data.players.map((player) => new User().deserialize(player))
+      ? data.players.map((player) => new User(player))
       : [];
     this.activePlayerIds = gameData.activePlayerIds || [];
-    this.slots = new GameSlots(this).deserialize(gameData);
+    this.slots = new GameSlots(this).deserialize(gameData.slots);
     this.ships = new GameShips(this).deserialize(data.ships);
     this.activeShips = new GameActiveShips(this).deserialize(data.activeShips);
-    this.creatorId = data.creatorId;
-    this.status = data.status || gameStatuses.LOBBY;
+    this.creatorId = data.creatorId || 0;
+    this.status = data.status || GAME_STATUS.LOBBY;
 
     this.torpedos = new GameTorpedos().deserialize(gameData.torpedos);
     this.terrain = new GameTerrain(this).deserialize(gameData.terrain);
@@ -203,10 +216,10 @@ class GameData {
     return new GameData(this.serialize());
   }
 
-  censorForUser(user) {
+  censorForUser(user: User) {
     this.ships.getShips().forEach((ship) => {
       ship.movement.removeMovementForOtherTurns(this.turn);
-      const mine = user && ship.player.is(user);
+      const mine = user && ship.getPlayer().is(user);
       ship.censorForUser(user, mine, this.turn);
     });
 
@@ -215,7 +228,7 @@ class GameData {
 
   getAiUsers() {
     return this.slots.slots
-      .filter((slot) => slot.userId < 0)
+      .filter((slot) => slot.userId !== null && slot.userId < 0)
       .map((slot) => this.players.find((player) => player.id === slot.userId))
       .filter((value, index, self) => self.indexOf(value) === index);
   }

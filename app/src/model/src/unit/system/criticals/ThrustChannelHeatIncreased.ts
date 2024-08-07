@@ -1,4 +1,3 @@
-import { SystemMessage } from "../strategy/types/SystemHandlersTypes";
 import Critical, { SerializedCritical } from "./Critical";
 
 export type SerializedThrustChannelHeatIncreased = SerializedCritical & {

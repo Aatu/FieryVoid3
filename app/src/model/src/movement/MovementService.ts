@@ -1,7 +1,7 @@
 import { MOVEMENT_TYPE, MovementOrder, MovementResolver } from "./index.js";
 
 import { addToHexFacing } from "../utils/math";
-import GameTerrain from "../game/GameTerrain.mjs";
+import GameTerrain from "../game/GameTerrain.js";
 import GameData from "../game/GameData";
 import Ship from "../unit/Ship.js";
 import Vector from "../utils/Vector.js";

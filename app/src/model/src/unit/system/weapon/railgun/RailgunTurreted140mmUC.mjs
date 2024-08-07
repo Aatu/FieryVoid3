@@ -1,17 +1,17 @@
 import Weapon from "../Weapon.mjs";
 import FireOrderStrategy from "../../strategy/weapon/FireOrderStrategy.mjs";
-import WeaponArcStrategy from "../../strategy/weapon/WeaponArcStrategy.mjs";
+import WeaponArcStrategy from "../../strategy/weapon/WeaponArcStrategy.js";
 import StandardHitStrategy from "../../strategy/weapon/StandardHitStrategy.mjs";
 import StandardRangeStrategy from "../../strategy/weapon/StandardRangeStrategy.mjs";
 import StandardLoadingStrategy from "../../strategy/weapon/StandardLoadingStrategy.mjs";
 import StandardDamageStrategy from "../../strategy/weapon/StandardDamageStrategy.mjs";
-import WeaponAnimationStrategy from "../../strategy/weapon/WeaponAnimationStrategy.mjs";
-import RequiresPowerSystemStrategy from "../../strategy/RequiresPowerSystemStrategy.mjs";
+import WeaponAnimationStrategy from "../../strategy/weapon/WeaponAnimationStrategy.js";
+import RequiresPowerSystemStrategy from "../../strategy/RequiresPowerSystemStrategy.js";
 import BoostableSystemStrategy from "../../strategy/BoostableSystemStrategy.mjs";
 import Ammo140mmAP from "../ammunition/conventional/Ammo140mmAP.mjs";
 import Ammo140mmHE from "../ammunition/conventional/Ammo140mmHE.mjs";
 import AmmunitionStrategy from "../../strategy/weapon/AmmunitionStrategy.mjs";
-import OutputHeatOnlineStrategy from "../../strategy/OutputHeatOnlineStrategy.mjs";
+import OutputHeatOnlineStrategy from "../../strategy/OutputHeatOnlineStrategy.js";
 import BurstDamageStrategy from "../../strategy/weapon/BurstDamageStrategy.mjs";
 import { MEDIUM_WEAPON_RANGE } from "../../../../gameConfig.mjs";
 

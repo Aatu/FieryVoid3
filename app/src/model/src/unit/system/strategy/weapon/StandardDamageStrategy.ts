@@ -1,19 +1,46 @@
-import ShipSystemStrategy from "../ShipSystemStrategy.js";
-import HitSystemRandomizer from "./utils/HitSystemRandomizer.mjs";
+import ShipSystemStrategy from "../ShipSystemStrategy";
+import HitSystemRandomizer from "./utils/HitSystemRandomizer";
 import DamageEntry from "../../DamageEntry.js";
-import CombatLogDamageEntry from "../../../../combatLog/CombatLogDamageEntry.mjs";
+import CombatLogDamageEntry from "../../../../combatLog/CombatLogDamageEntry";
 import {
   SYSTEM_HANDLERS,
   SystemMessage,
 } from "../types/SystemHandlersTypes.js";
 import Ammo from "../../weapon/ammunition/Ammo";
+import CombatLogWeaponFireHitResult from "../../../../combatLog/CombatLogWeaponFireHitResult";
+import Ship from "../../../Ship";
+import Vector from "../../../../utils/Vector";
+import SystemSection from "../../systemSection/SystemSection";
+import FireOrder from "../../../../weapon/FireOrder";
+import CombatLogWeaponFire from "../../../../combatLog/CombatLogWeaponFire";
+import ShipSystem from "../../ShipSystem";
+
+export type applyDamageFromWeaponFirePayload = {
+  target: Ship;
+  shooter: Ship;
+  fireOrder: FireOrder;
+  hitResolution: CombatLogWeaponFireHitResult;
+  combatLogEntry: CombatLogWeaponFire;
+  shooterPosition: Vector;
+};
+
+export type ChooseHitSystemFunction<T> = (
+  payload: {
+    target: Ship;
+    shooterPosition: Vector;
+    lastSection: SystemSection | null;
+  } & T
+) => ShipSystem | null;
 
 class StandardDamageStrategy extends ShipSystemStrategy {
-  private damageFormula: string | number;
-  private armorPiercingFormula: string | number;
-  private hitSystemRandomizer: HitSystemRandomizer;
+  protected damageFormula: string | number;
+  protected armorPiercingFormula: string | number;
+  protected hitSystemRandomizer: HitSystemRandomizer;
 
-  constructor(damageFormula = 0, armorPiercingFormula = 0) {
+  constructor(
+    damageFormula: string | number = 0,
+    armorPiercingFormula: string | number = 0
+  ) {
     super();
 
     this.damageFormula = damageFormula;
@@ -91,8 +118,10 @@ class StandardDamageStrategy extends ShipSystemStrategy {
     return previousResponse;
   }
 
-  applyDamageFromWeaponFire(payload) {
-    const { fireOrder, combatLogEntry, hitResolution } = payload;
+  applyDamageFromWeaponFire(
+    payload: Omit<applyDamageFromWeaponFirePayload, "shooterPosition">
+  ) {
+    const { shooter, combatLogEntry, hitResolution } = payload;
 
     const hit = hitResolution.result;
 
@@ -101,9 +130,10 @@ class StandardDamageStrategy extends ShipSystemStrategy {
 
     if (hit) {
       combatLogEntry.setShots(1, 1);
-      this._doDamage(
-        { shooterPosition: payload.shooter.getPosition(), ...payload },
-        result
+      this.doDamage(
+        { shooterPosition: shooter.getPosition(), ...payload },
+        result,
+        null
       );
     } else {
       combatLogEntry.setShots(0, 1);
@@ -111,23 +141,25 @@ class StandardDamageStrategy extends ShipSystemStrategy {
   }
 
   protected doDamage(
-    payload,
-    damageResult,
-    lastSection,
-    armorPiercing = undefined,
-    damage = undefined
-  ) {
+    payload: applyDamageFromWeaponFirePayload,
+    damageResult: CombatLogDamageEntry,
+    lastSection: SystemSection | null,
+    inputArmorPiercing?: number,
+    inputDamage?: number
+  ): void {
     const { target, shooterPosition } = payload;
 
-    if (armorPiercing === undefined) {
-      armorPiercing = this._getArmorPiercing(payload);
-    }
+    let armorPiercing =
+      inputArmorPiercing === undefined
+        ? this.getArmorPiercing(payload)
+        : inputArmorPiercing;
 
-    if (damage === undefined) {
-      damage = this._getDamageForWeaponHit(payload);
-    }
+    let damage =
+      inputDamage === undefined
+        ? this.getDamageForWeaponHit(payload)
+        : inputDamage;
 
-    const hitSystem = this._chooseHitSystem({
+    const hitSystem = this.chooseHitSystem({
       target,
       shooterPosition,
       lastSection,
@@ -138,11 +170,11 @@ class StandardDamageStrategy extends ShipSystemStrategy {
       return;
     }
 
-    let result = this._doDamageToSystem(
+    let result = this.doDamageToSystem(
       payload,
       damageResult,
       hitSystem,
-      armorPiercing,
+      armorPiercing || 0,
       damage
     );
 
@@ -150,22 +182,22 @@ class StandardDamageStrategy extends ShipSystemStrategy {
     damage = result.damage;
 
     if (damage === 0) {
-      return damageResult;
+      return;
     }
 
-    let overkillSystem = this._findOverkillStructure(hitSystem, target);
+    let overkillSystem = this.findOverkillStructure(hitSystem, target);
 
     if (!overkillSystem) {
       return this.doDamage(
         payload,
         damageResult,
-        target.systems.sections.getSectionBySystem(hitSystem),
+        target.systems.sections.getSectionBySystem(hitSystem) || null,
         armorPiercing,
         damage
       );
     }
 
-    result = this._doDamageToSystem(
+    result = this.doDamageToSystem(
       payload,
       damageResult,
       overkillSystem,
@@ -183,13 +215,13 @@ class StandardDamageStrategy extends ShipSystemStrategy {
     return this.doDamage(
       payload,
       damageResult,
-      target.systems.sections.getSectionBySystem(overkillSystem),
+      target.systems.sections.getSectionBySystem(overkillSystem) || null,
       armorPiercing,
       damage
     );
   }
 
-  protected findOverkillStructure(system, ship) {
+  protected findOverkillStructure(system: ShipSystem, ship: Ship) {
     const section = ship.systems.sections.getSectionBySystem(system);
     const structure = section.getStructure();
 
@@ -201,11 +233,11 @@ class StandardDamageStrategy extends ShipSystemStrategy {
   }
 
   protected doDamageToSystem(
-    {},
-    damageResult,
-    hitSystem,
-    armorPiercing,
-    damage
+    payload: applyDamageFromWeaponFirePayload,
+    damageResult: CombatLogDamageEntry,
+    hitSystem: ShipSystem,
+    armorPiercing: number,
+    damage: number
   ) {
     let armor = hitSystem.getArmor();
     let finalArmor = armor - armorPiercing;
@@ -248,25 +280,35 @@ class StandardDamageStrategy extends ShipSystemStrategy {
     };
   }
 
-  protected chooseHitSystem({ target, shooterPosition, lastSection }) {
-    return this.hitSystemRandomizer.randomizeHitSystem(
-      target.systems.getSystemsForHit(shooterPosition, lastSection)
+  protected chooseHitSystem: ChooseHitSystemFunction<any> = ({
+    target,
+    shooterPosition,
+    lastSection,
+  }) => {
+    return (
+      this.hitSystemRandomizer.randomizeHitSystem(
+        target.systems.getSystemsForHit(shooterPosition, lastSection)
+      ) || null
     );
-  }
+  };
 
-  protected getDamageForWeaponHit({ requiredToHit, rolledToHit }) {
-    let damage = 0;
+  protected getDamageForWeaponHit(payload: applyDamageFromWeaponFirePayload) {
+    let damage: number = 0;
     if (Number.isInteger(this.damageFormula)) {
-      damage = this.damageFormula;
+      damage = this.damageFormula as number;
     } else if (this.damageFormula !== null) {
-      damage = this.diceRoller.roll(this.damageFormula).total;
+      damage = this.diceRoller.roll(this.damageFormula);
     }
 
     if (!this.system) {
       return damage;
     }
 
-    const ammo = this.system.callHandler("getSelectedAmmo", null, null);
+    const ammo = this.system.callHandler(
+      SYSTEM_HANDLERS.getSelectedAmmo,
+      null,
+      null as Ammo | null
+    );
 
     if (!ammo) {
       return damage;
@@ -275,19 +317,23 @@ class StandardDamageStrategy extends ShipSystemStrategy {
     return damage + ammo.getDamage(this.diceRoller);
   }
 
-  protected getArmorPiercing() {
+  protected getArmorPiercing(payload: applyDamageFromWeaponFirePayload) {
     let armorPiercing = 0;
     if (Number.isInteger(this.armorPiercingFormula)) {
-      armorPiercing = this.armorPiercingFormula;
+      armorPiercing = this.armorPiercingFormula as number;
     } else if (this.armorPiercingFormula !== null) {
-      armorPiercing = this.diceRoller.roll(this.armorPiercingFormula).total;
+      armorPiercing = this.diceRoller.roll(this.armorPiercingFormula);
     }
 
     if (!this.system) {
       return armorPiercing;
     }
 
-    const ammo = this.system.callHandler("getSelectedAmmo", null, null);
+    const ammo = this.system.callHandler(
+      SYSTEM_HANDLERS.getSelectedAmmo,
+      null,
+      null as Ammo | null
+    );
 
     if (!ammo) {
       return armorPiercing;

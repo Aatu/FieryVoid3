@@ -1,7 +1,7 @@
 import Ship from "../../Ship.mjs";
 import systems from "../../system/index.mjs";
 import Offset from "../../../hexagon/Offset.mjs";
-import Torpedo72MSV from "../../system/weapon/ammunition/torpedo/Torpedo72MSV.mjs";
+import Torpedo72MSV from "../../system/weapon/ammunition/torpedo/Torpedo72MSV.js";
 import CargoService from "../../../cargo/CargoService.mjs";
 import Ammo30mm from "../../system/weapon/ammunition/conventional/Ammo30mm.mjs";
 import Ammo120mmAP from "../../system/weapon/ammunition/conventional/Ammo120mmAP.mjs";
@@ -18,7 +18,7 @@ class Fulcrum extends Ship {
 
     this.description = `
        Fulcrum was ordered to fill the role of a fleet destroyer. A ship that packs enough of a punch in 
-       sufficiently armored frame to engage in front line fleet combat. The design requirements allowed
+       sufficiently armored frame to engage in frontline fleet combat. The design requirements allowed
        a considerable defieciency in endurance making the Fulcrum a ship that needs a supporting fleet
        to operate in a meaningful role on a modern battlefield. 
 

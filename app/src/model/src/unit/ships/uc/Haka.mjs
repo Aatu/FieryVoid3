@@ -1,7 +1,7 @@
 import Ship from "../../Ship.mjs";
 import systems from "../../system/index.mjs";
 import Offset from "../../../hexagon/Offset.mjs";
-import Torpedo72MSV from "../../system/weapon/ammunition/torpedo/Torpedo72MSV.mjs";
+import Torpedo72MSV from "../../system/weapon/ammunition/torpedo/Torpedo72MSV.js";
 import Torpedo158MSV from "../../system/weapon/ammunition/torpedo/Torpedo158MSV.mjs";
 import Torpedo158Nuclear from "../../system/weapon/ammunition/torpedo/Torpedo158Nuclear.mjs";
 import Ammo140mmAP from "../../system/weapon/ammunition/conventional/Ammo140mmAP.mjs";
@@ -11,7 +11,7 @@ import Ammo85mmAP from "../../system/weapon/ammunition/conventional/Ammo85mmAP.m
 import Ammo85mmHE from "../../system/weapon/ammunition/conventional/Ammo85mmHE.mjs";
 import CargoService from "../../../cargo/CargoService.mjs";
 import Ammo30mm from "../../system/weapon/ammunition/conventional/Ammo30mm.mjs";
-import Torpedo72HE from "../../system/weapon/ammunition/torpedo/Torpedo72HE.mjs";
+import Torpedo72HE from "../../system/weapon/ammunition/torpedo/Torpedo72HE.js";
 import Torpedo158MSV2 from "../../system/weapon/ammunition/torpedo/Torpedo158MSV2.mjs";
 import Torpedo158HE from "../../system/weapon/ammunition/torpedo/Torpedo158HE.mjs";
 
@@ -115,10 +115,11 @@ class Haka extends Ship {
     ]);
 
     this.systems.addStarboardFrontSystem([
-      new systems.ChemicalThruster({ id: 201, hitpoints: 10, armor: 3 }, 5, [
-        1,
-        2,
-      ]),
+      new systems.ChemicalThruster(
+        { id: 201, hitpoints: 10, armor: 3 },
+        5,
+        [1, 2]
+      ),
 
       new systems.ManeuveringThrusterRight(
         { id: 205, hitpoints: 10, armor: 3 },
@@ -158,10 +159,11 @@ class Haka extends Ship {
         radiator: 15,
       }),
 
-      new systems.ChemicalThruster({ id: 601, hitpoints: 10, armor: 3 }, 5, [
-        4,
+      new systems.ChemicalThruster(
+        { id: 601, hitpoints: 10, armor: 3 },
         5,
-      ]),
+        [4, 5]
+      ),
 
       new systems.MediumCoilgunTurretedUC({ id: 602 }, { start: 165, end: 0 }),
 

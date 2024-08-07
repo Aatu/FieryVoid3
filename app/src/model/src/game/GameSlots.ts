@@ -3,13 +3,9 @@ import { User } from "../User/User.js";
 import GameData from "./GameData.js";
 import GameSlot, { SerializedGameSlot } from "./GameSlot.js";
 
-export type SerializedGameSlots = {
-  slots: SerializedGameSlot[];
-};
-
 class GameSlots {
   private gameData: GameData;
-  private slots: GameSlot[];
+  public slots: GameSlot[];
 
   constructor(gameData: GameData) {
     this.gameData = gameData;
@@ -79,8 +75,13 @@ class GameSlots {
     return this.slots.filter((slot) => slot.isUsers(user));
   }
 
-  getSlotByShip(ship: Ship) {
-    return this.slots.find((slot) => slot.includesShip(ship));
+  getSlotByShip(ship: Ship): GameSlot {
+    const slot = this.slots.find((slot) => slot.includesShip(ship));
+    if (!slot) {
+      throw new Error("ship has no slot");
+    }
+
+    return slot;
   }
 
   getSlotById(id: string) {
@@ -100,15 +101,13 @@ class GameSlots {
     return slot;
   }
 
-  serialize() {
-    return {
-      slots: this.slots.map((slot) => slot.serialize()),
-    };
+  serialize(): SerializedGameSlot[] {
+    return this.slots.map((slot) => slot.serialize());
   }
 
-  deserialize(data: SerializedGameSlots) {
-    this.slots = data.slots
-      ? data.slots.map((slotData) => new GameSlot(slotData, this.gameData))
+  deserialize(data: SerializedGameSlot[] = []) {
+    this.slots = data
+      ? data.map((slotData) => new GameSlot(slotData, this.gameData))
       : [];
 
     return this;

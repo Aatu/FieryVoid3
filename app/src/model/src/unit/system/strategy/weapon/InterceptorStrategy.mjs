@@ -1,7 +1,7 @@
 import ShipSystemStrategy from "../ShipSystemStrategy.mjs";
 import { getCompassHeadingOfPoint } from "../../../../utils/math.mjs";
 import { getDistanceBetweenDirections } from "../../../../utils/math.mjs";
-import WeaponHitChance from "../../../../weapon/WeaponHitChance.mjs";
+import WeaponHitChance from "../../../../weapon/WeaponHitChance.js";
 
 class InterceptorStrategy extends ShipSystemStrategy {
   constructor(numberOfIntercepts = 1, heatPerIntercept = 0) {
