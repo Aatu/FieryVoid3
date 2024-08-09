@@ -1,11 +1,11 @@
 import test from "ava";
-import GameController from "../../server/controller/GameController.mjs";
-import TestDatabaseConnection from "../support/TestDatabaseConnection.mjs";
-import { constructDeployedGame } from "../support/constructGame.mjs";
+import GameController from "../../server/controller/GameController";
+import TestDatabaseConnection from "../support/TestDatabaseConnection";
+import { constructDeployedGame } from "../support/constructGame";
 import User from "../../model/User";
-import Ammo140mmAP from "../../model/unit/system/weapon/ammunition/conventional/Ammo140mmAP.mjs";
-import Ammo140mmHE from "../../model/unit/system/weapon/ammunition/conventional/Ammo140mmHE.mjs";
-import MovementService from "../../model/movement/MovementService.mjs";
+import Ammo140mmAP from "../../model/unit/system/weapon/ammunition/conventional/Ammo140mmAP";
+import Ammo140mmHE from "../../model/unit/system/weapon/ammunition/conventional/Ammo140mmHE";
+import MovementService from "../../model/movement/MovementService";
 
 test.serial("Test weapon heats up", async (test) => {
   const db = new TestDatabaseConnection("heat");

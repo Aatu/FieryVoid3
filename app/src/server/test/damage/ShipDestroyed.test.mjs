@@ -1,10 +1,10 @@
 import test from "ava";
-import Reactor from "../../model/unit/system/reactor/Reactor.mjs";
-import Structure from "../../model/unit/system/structure/Structure.mjs";
-import { PDC30mm } from "../../model/unit/system/weapon/pdc/index.mjs";
-import Ship from "../../model/unit/Ship.mjs";
-import Engine from "../../model/unit/system/engine/Engine.mjs";
-import DamageEntry from "../../model/unit/system/DamageEntry.mjs";
+import Reactor from "../../model/unit/system/reactor/Reactor";
+import Structure from "../../model/unit/system/structure/Structure";
+import { PDC30mm } from "../../model/unit/system/weapon/pdc/index";
+import Ship from "../../model/unit/Ship";
+import Engine from "../../model/unit/system/engine/Engine";
+import DamageEntry from "../../model/unit/system/DamageEntry";
 
 const constructShip = (id = 123) => {
   let ship = new Ship({

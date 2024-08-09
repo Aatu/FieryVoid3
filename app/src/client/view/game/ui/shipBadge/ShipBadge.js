@@ -2,9 +2,9 @@ import React, { useMemo, useCallback } from "react";
 import styled from "styled-components";
 import GamePositionComponent from "../GamePositionComponent";
 import { Tooltip, IconAndLabel } from "../../../../styled";
-import TorpedoMovementService from "../../../../../model/movement/TorpedoMovementService.mjs";
-import GameData from "../../../../../model/game/GameData.mjs";
-import coordinateConverter from "../../../../../model/utils/CoordinateConverter.mjs";
+import TorpedoMovementService from "../../../../../model/movement/TorpedoMovementService";
+import GameData from "../../../../../model/game/GameData";
+import coordinateConverter from "../../../../../model/utils/CoordinateConverter";
 
 const ShipBadgeContainer = styled.div`
   text-align: left;

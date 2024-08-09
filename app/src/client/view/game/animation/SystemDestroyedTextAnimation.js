@@ -1,6 +1,6 @@
 import TextSprite from "../renderer/sprite/TextSprite";
 import Animation from "./Animation";
-import coordinateConverter from "../../../../model/utils/CoordinateConverter.mjs";
+import coordinateConverter from "../../../../model/utils/CoordinateConverter";
 
 const TEXTURE_SIZE = 256;
 
@@ -16,7 +16,7 @@ const getSprite = (name, position, scene) => {
       position.z + 30,
       {
         fontSize: "24px",
-        size: 512
+        size: 512,
       }
     );
   } else {
@@ -26,7 +26,7 @@ const getSprite = (name, position, scene) => {
       position.z + 30,
       {
         fontSize: "18px",
-        size: 512
+        size: 512,
       }
     );
   }
@@ -55,13 +55,15 @@ const changeTimeIfNeccessary = (position, time, texts) => {
 const getInSameHex = (position, texts) => {
   const gamePosition = coordinateConverter.fromGameToHex(position);
 
-  return texts.filter(text =>
+  return texts.filter((text) =>
     coordinateConverter.fromGameToHex(text.position).equals(gamePosition)
   );
 };
 
 const isTooClose = (time, texts) => {
-  return texts.some(text => text.time - time < 200 && text.time - time > -200);
+  return texts.some(
+    (text) => text.time - time < 200 && text.time - time > -200
+  );
 };
 
 class SystemDestroyedTextAnimation extends Animation {
@@ -77,7 +79,7 @@ class SystemDestroyedTextAnimation extends Animation {
   }
 
   deactivate() {
-    this.destroyedTexts.forEach(destroyedText => {
+    this.destroyedTexts.forEach((destroyedText) => {
       this.scene.remove(destroyedText.sprite.mesh);
       destroyedText.sprite.destroy();
     }, this);
@@ -87,17 +89,17 @@ class SystemDestroyedTextAnimation extends Animation {
 
   add(position, names, time) {
     names = [].concat(names);
-    names.filter(Boolean).forEach(name => {
+    names.filter(Boolean).forEach((name) => {
       this.destroyedTexts.push({
         time: changeTimeIfNeccessary(position, time, this.destroyedTexts),
         position,
-        sprite: getSprite(name, position, this.scene)
+        sprite: getSprite(name, position, this.scene),
       });
     }, this);
   }
 
   render({ now, total, last, delta, zoom }) {
-    this.destroyedTexts.forEach(text => {
+    this.destroyedTexts.forEach((text) => {
       const time = text.time;
       const sprite = text.sprite;
 
@@ -110,7 +112,7 @@ class SystemDestroyedTextAnimation extends Animation {
       const ellapsedTime = total - time;
       const newPos = {
         ...text.position,
-        y: text.position.y + this.velocity * zoom * ellapsedTime
+        y: text.position.y + this.velocity * zoom * ellapsedTime,
       };
       sprite.setPosition(newPos);
 

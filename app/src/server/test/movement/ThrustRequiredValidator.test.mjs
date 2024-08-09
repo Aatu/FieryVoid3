@@ -3,15 +3,15 @@ import MovementService from "../../model/movement/MovementService";
 import movementTypes from "../../model/movement/movementTypes";
 import MovementOrder from "../../model/movement/MovementOrder";
 import RequiredThrust from "../../model/movement/RequiredThrust";
-import RequiredThrustValidator from "../../server/services/validation/RequiredThrustValidator.mjs";
+import RequiredThrustValidator from "../../server/services/validation/RequiredThrustValidator";
 import hexagon from "../../model/hexagon";
-import Ship from "../../model/unit/Ship.mjs";
+import Ship from "../../model/unit/Ship";
 
-import Thruster from "../../model/unit/system/thruster/Thruster.mjs";
-import Engine from "../../model/unit/system/engine/Engine.mjs";
-import Reactor from "../../model/unit/system/reactor/Reactor.mjs";
-import DamageEntry from "../../model/unit/system/DamageEntry.mjs";
-import ManeuveringThruster from "../../model/unit/system/thruster/ManeuveringThruster.mjs";
+import Thruster from "../../model/unit/system/thruster/Thruster";
+import Engine from "../../model/unit/system/engine/Engine";
+import Reactor from "../../model/unit/system/reactor/Reactor";
+import DamageEntry from "../../model/unit/system/DamageEntry";
+import ManeuveringThruster from "../../model/unit/system/thruster/ManeuveringThruster";
 
 const startMove = new MovementOrder(
   -1,
@@ -42,7 +42,7 @@ const constructShip = (id = 123) => {
     accelcost: 3,
     rollcost: 3,
     pivotcost: 3,
-    evasioncost: 3
+    evasioncost: 3,
   });
   ship.systems.addPrimarySystem([
     new Thruster({ id: 1, hitpoints: 10, armor: 3 }, 5, 0),
@@ -54,14 +54,14 @@ const constructShip = (id = 123) => {
     new ManeuveringThruster({ id: 10, hitpoints: 10, armor: 3 }, 6, 3),
     new Engine({ id: 5, hitpoints: 10, armor: 3 }, 12, 6, 2),
     new Engine({ id: 6, hitpoints: 10, armor: 3 }, 12, 6, 2),
-    new Reactor({ id: 7, hitpoints: 10, armor: 3 }, 20)
+    new Reactor({ id: 7, hitpoints: 10, armor: 3 }, 20),
   ]);
 
   ship.movement.addMovement(startMove);
   return ship;
 };
 
-const constructDeployedShip = id => {
+const constructDeployedShip = (id) => {
   const ship = constructShip(id);
   ship.movement.addMovement(deployMove);
   return ship;
@@ -69,12 +69,12 @@ const constructDeployedShip = id => {
 
 const compareMovements = (test, moves1, moves2) => {
   test.deepEqual(
-    moves1.map(move => move.clone().setRequiredThrust(null)),
-    moves2.map(move => move.clone().setRequiredThrust(null))
+    moves1.map((move) => move.clone().setRequiredThrust(null)),
+    moves2.map((move) => move.clone().setRequiredThrust(null))
   );
 };
 
-test("Required thrust validates stuff", test => {
+test("Required thrust validates stuff", (test) => {
   const ship = constructDeployedShip();
   ship.accelcost = 10;
   const move = new MovementOrder(
@@ -105,7 +105,7 @@ test("Required thrust validates stuff", test => {
   test.true(validator.ensureThrustersAreValid(requiredThrust));
 });
 
-test("Detect insufficient fulfilment", test => {
+test("Detect insufficient fulfilment", (test) => {
   const ship = constructDeployedShip();
   ship.accelcost = 10;
   const move = new MovementOrder(
@@ -136,7 +136,7 @@ test("Detect insufficient fulfilment", test => {
   test.is(error.message, "Unpaid thrust: 1 for direction 3");
 });
 
-test("Detect non existing thruster", test => {
+test("Detect non existing thruster", (test) => {
   const ship = constructDeployedShip();
   ship.accelcost = 10;
   const move = new MovementOrder(
@@ -173,7 +173,7 @@ test("Detect non existing thruster", test => {
   test.is(error.message, "Thruster id '87' not found");
 });
 
-test("Detect destroyed thruster", test => {
+test("Detect destroyed thruster", (test) => {
   const ship = constructDeployedShip();
   ship.accelcost = 10;
   const move = new MovementOrder(
@@ -208,7 +208,7 @@ test("Detect destroyed thruster", test => {
   test.is(error.message, "Thruster id '4' is disabled");
 });
 
-test("Requirements are correct", test => {
+test("Requirements are correct", (test) => {
   const ship = constructDeployedShip();
   ship.accelcost = 10;
   const move = new MovementOrder(
@@ -229,7 +229,7 @@ test("Requirements are correct", test => {
   test.true(validator.validateRequirementsAreCorrect(requiredThrust));
 });
 
-test("Requirements are wrong", test => {
+test("Requirements are wrong", (test) => {
   const ship = constructDeployedShip();
   ship.accelcost = 10;
   const move = new MovementOrder(
@@ -255,7 +255,7 @@ test("Requirements are wrong", test => {
   test.is(error.message, "Requirements are not correct.");
 });
 
-test("Requirements are wrong (too much!)", test => {
+test("Requirements are wrong (too much!)", (test) => {
   const ship = constructDeployedShip();
   ship.accelcost = 10;
   const move = new MovementOrder(
@@ -280,7 +280,7 @@ test("Requirements are wrong (too much!)", test => {
   test.is(error.message, "Requirements are not correct.");
 });
 
-test("Wrong thruster", test => {
+test("Wrong thruster", (test) => {
   const ship = constructDeployedShip();
   ship.accelcost = 10;
   const move = new MovementOrder(

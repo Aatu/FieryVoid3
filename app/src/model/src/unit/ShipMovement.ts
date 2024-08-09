@@ -60,18 +60,18 @@ class ShipMovement {
       .map((move) => move.clone());
   }
 
-  getLastMove() {
+  getLastMove(): MovementOrder {
     if (this.moves.length === 0) {
-      return null;
+      throw new Error("No moves found");
     }
 
     return this.moves[this.moves.length - 1].clone();
   }
 
-  getStartMove() {
+  getStartMove(): MovementOrder {
     const start = this.moves.find((move) => move.isStart());
     if (!start) {
-      return null;
+      throw new Error("There should always be a start move");
     }
 
     return start.clone();
@@ -152,13 +152,16 @@ class ShipMovement {
     return end.clone();
   }
 
-  getLastEndMoveOrSurrogate() {
+  getLastEndMoveOrSurrogate(): MovementOrder {
     const end = this.getLastEndMove();
     if (!end) {
       const deploy = this.getDeployMove();
 
       if (!deploy) {
         const start = this.getStartMove();
+        if (!start) {
+          throw new Error("No start move found");
+        }
         return start;
       }
 
@@ -197,14 +200,14 @@ class ShipMovement {
     return move.clone();
   }
 
-  getEvasion() {
+  getEvasion(): number {
     const move = this.getEvadeMove();
 
     if (!move) {
       return 0;
     }
 
-    return move.value;
+    return move.value as number;
   }
 
   getActiveEvasion() {

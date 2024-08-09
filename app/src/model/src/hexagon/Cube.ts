@@ -88,7 +88,7 @@ class Cube {
     return neighbours;
   }
 
-  moveToDirection(direction: number, steps = 1) {
+  moveToDirection(direction: number, steps: number = 1) {
     return this.add(new Cube(NEIGHBOURS[direction]).scale(steps));
   }
 

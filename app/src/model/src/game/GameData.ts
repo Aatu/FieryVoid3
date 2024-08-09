@@ -12,23 +12,25 @@ import { IUser, User } from "../User/User";
 import Ship, { SerializedShip } from "../unit/Ship.js";
 import { SerializedGameSlot } from "./GameSlot.js";
 
+export type SerializedGameDataSubData = {
+  activePlayerIds?: number[];
+  terrain?: SerializedGameTerrain;
+  combatLog?: SerializedCombatLogData;
+  torpedos?: SerializedGameTorpedos;
+  slots?: SerializedGameSlot[];
+};
+
 export type SerializedGameData = {
   id?: number;
   phase?: GAME_PHASE;
   name?: string;
   turn?: number;
-  data?: {
-    activePlayerIds?: number[];
-    terrain?: SerializedGameTerrain;
-    combatLog?: SerializedCombatLogData;
-    torpedos?: SerializedGameTorpedos;
-    slots?: SerializedGameSlot[];
-  };
-  ships?: SerializedShip[];
+  data?: SerializedGameDataSubData;
+  ships: SerializedShip[];
   activeShips?: string[];
   creatorId?: number;
   status?: GAME_STATUS;
-  players?: IUser[];
+  players: IUser[];
 };
 
 class GameData {
@@ -47,8 +49,15 @@ class GameData {
   public torpedos!: GameTorpedos;
   public activeShips!: GameActiveShips;
 
-  constructor(data: SerializedGameData) {
+  constructor(data?: SerializedGameData) {
     this.deserialize(data);
+  }
+
+  getId(): number {
+    if (!this.id) {
+      throw new Error("Game does not have an id");
+    }
+    return this.id;
   }
 
   setStatus(status: GAME_STATUS) {
@@ -189,7 +198,7 @@ class GameData {
     };
   }
 
-  deserialize(data: SerializedGameData = {}) {
+  deserialize(data: SerializedGameData = { players: [], ships: [] }) {
     const gameData = data.data || {};
     this.id = data.id || null;
     this.name = data.name;
@@ -216,10 +225,10 @@ class GameData {
     return new GameData(this.serialize());
   }
 
-  censorForUser(user: User) {
+  censorForUser(user: User | null) {
     this.ships.getShips().forEach((ship) => {
       ship.movement.removeMovementForOtherTurns(this.turn);
-      const mine = user && ship.getPlayer().is(user);
+      const mine = Boolean(user && ship.getPlayer().is(user));
       ship.censorForUser(user, mine, this.turn);
     });
 

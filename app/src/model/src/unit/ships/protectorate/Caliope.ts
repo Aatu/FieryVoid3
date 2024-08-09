@@ -1,17 +1,18 @@
 import Ship from "../../Ship";
 import systems from "../../system/index";
-import Offset from "../../../hexagon/Offset.mjs";
+import Offset from "../../../hexagon/Offset";
 import Torpedo72MSV from "../../system/weapon/ammunition/torpedo/Torpedo72MSV.js";
 import Torpedo158MSV from "../../system/weapon/ammunition/torpedo/Torpedo158MSV.js";
 import Torpedo158Nuclear from "../../system/weapon/ammunition/torpedo/Torpedo158Nuclear.js";
-import Ammo140mmAP from "../../system/weapon/ammunition/conventional/Ammo140mmAP.mjs";
-import Ammo120mmAP from "../../system/weapon/ammunition/conventional/Ammo120mmAP.mjs";
-import Ammo140mmHE from "../../system/weapon/ammunition/conventional/Ammo140mmHE.mjs";
-import Ammo85mmAP from "../../system/weapon/ammunition/conventional/Ammo85mmAP.mjs";
-import Ammo85mmHE from "../../system/weapon/ammunition/conventional/Ammo85mmHE.mjs";
+import Ammo140mmAP from "../../system/weapon/ammunition/conventional/Ammo140mmAP";
+import Ammo140mmHE from "../../system/weapon/ammunition/conventional/Ammo140mmHE";
+import Ammo85mmAP from "../../system/weapon/ammunition/conventional/Ammo85mmAP";
+import Ammo85mmHE from "../../system/weapon/ammunition/conventional/Ammo85mmHE";
 import CargoService from "../../../cargo/CargoService.js";
-import Ammo30mm from "../../system/weapon/ammunition/conventional/Ammo30mm.mjs";
+import Ammo30mm from "../../system/weapon/ammunition/conventional/Ammo30mm";
 import Torpedo72HE from "../../system/weapon/ammunition/torpedo/Torpedo72HE.js";
+import { SYSTEM_HANDLERS } from "../../system/strategy/types/SystemHandlersTypes";
+import { THRUSTER_DIRECTION } from "../../system/strategy/ThrustChannelSystemStrategy";
 
 class Caliope extends Ship {
   setShipProperties() {
@@ -261,32 +262,57 @@ class Caliope extends Ship {
       amount: 400,
     });
 
-    this.systems.getSystemById(303).callHandler("loadAmmoInstant", {
-      ammo: new Torpedo158MSV(),
-      launcherIndex: 1,
-    });
-    this.systems.getSystemById(503).callHandler("loadAmmoInstant", {
-      ammo: new Torpedo158MSV(),
-      launcherIndex: 1,
-    });
+    this.systems.getSystemById(303).callHandler(
+      SYSTEM_HANDLERS.loadAmmoInstant,
+      {
+        ammo: new Torpedo158MSV(),
+        launcherIndex: 1,
+      },
+      undefined
+    );
 
-    this.systems.getSystemById(304).callHandler("loadAmmoInstant", {
-      ammo: new Torpedo72MSV(),
-      launcherIndex: 1,
-    });
-    this.systems.getSystemById(304).callHandler("loadAmmoInstant", {
-      ammo: new Torpedo72HE(),
-      launcherIndex: 2,
-    });
+    this.systems.getSystemById(503).callHandler(
+      SYSTEM_HANDLERS.loadAmmoInstant,
+      {
+        ammo: new Torpedo158MSV(),
+        launcherIndex: 1,
+      },
+      undefined
+    );
 
-    this.systems.getSystemById(504).callHandler("loadAmmoInstant", {
-      ammo: new Torpedo72MSV(),
-      launcherIndex: 1,
-    });
-    this.systems.getSystemById(504).callHandler("loadAmmoInstant", {
-      ammo: new Torpedo72HE(),
-      launcherIndex: 2,
-    });
+    this.systems.getSystemById(304).callHandler(
+      SYSTEM_HANDLERS.loadAmmoInstant,
+      {
+        ammo: new Torpedo72MSV(),
+        launcherIndex: 1,
+      },
+      undefined
+    );
+    this.systems.getSystemById(304).callHandler(
+      SYSTEM_HANDLERS.loadAmmoInstant,
+      {
+        ammo: new Torpedo72HE(),
+        launcherIndex: 2,
+      },
+      undefined
+    );
+
+    this.systems.getSystemById(504).callHandler(
+      SYSTEM_HANDLERS.loadAmmoInstant,
+      {
+        ammo: new Torpedo72MSV(),
+        launcherIndex: 1,
+      },
+      undefined
+    );
+    this.systems.getSystemById(504).callHandler(
+      SYSTEM_HANDLERS.loadAmmoInstant,
+      {
+        ammo: new Torpedo72HE(),
+        launcherIndex: 2,
+      },
+      undefined
+    );
   }
 }
 

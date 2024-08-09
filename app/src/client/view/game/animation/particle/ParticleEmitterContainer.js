@@ -1,7 +1,7 @@
 import ParticleEmitter from "./ParticleEmitter";
 import { StarParticleEmitter } from ".";
 import BoltInstanceFactory from "./BoltParticleEmitter/BoltInstanceFactory";
-import Vector from "../../../../../model/utils/Vector.mjs";
+import Vector from "../../../../../model/utils/Vector";
 import * as THREE from "three";
 
 class ParticleEmitterContainer {

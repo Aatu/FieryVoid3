@@ -1,6 +1,6 @@
 import test from "ava";
-import ThrustAssignment from "../../model/movement/ThrustAssignment.mjs";
-import Thruster from "../../model/unit/system/thruster/Thruster.mjs";
+import ThrustAssignment from "../../model/movement/ThrustAssignment";
+import Thruster from "../../model/unit/system/thruster/Thruster";
 
 let id = 0;
 
@@ -12,7 +12,7 @@ const getThruster = (direction = 0, output = 3, criticals = []) => {
     output,
     direction
   );
-  criticals.forEach(crit => thruster.addCritical(new crit()));
+  criticals.forEach((crit) => thruster.addCritical(new crit()));
   return thruster;
 };
 

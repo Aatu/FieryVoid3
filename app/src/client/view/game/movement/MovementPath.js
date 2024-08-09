@@ -8,9 +8,9 @@ import coordinateConverter from "../../../../model/utils/CoordinateConverter";
 import { CircleSprite, LineSprite } from "../renderer/sprite";
 
 import Line from "../renderer/Line";
-import { COLOR_FRIENDLY, COLOR_ENEMY } from "../../../../model/gameConfig.mjs";
-import Vector from "../../../../model/utils/Vector.mjs";
-import MovementService from "../../../../model/movement/MovementService.mjs";
+import { COLOR_FRIENDLY, COLOR_ENEMY } from "../../../../model/gameConfig";
+import Vector from "../../../../model/utils/Vector";
+import MovementService from "../../../../model/movement/MovementService";
 
 class MovementPath {
   constructor(ship, scene, ghost, mine) {

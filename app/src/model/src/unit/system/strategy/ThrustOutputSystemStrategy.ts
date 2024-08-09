@@ -1,5 +1,6 @@
 import ShipSystemStrategy from "./ShipSystemStrategy";
 import {
+  CriticalTableEntry,
   OutputReduced2,
   OutputReduced4,
   OutputReduced6,
@@ -48,7 +49,10 @@ class ThrustOutputSystemStrategy extends ShipSystemStrategy {
     );
   }
 
-  getPossibleCriticals(payload: unknown, previousResponse = []) {
+  getPossibleCriticals(
+    payload: unknown,
+    previousResponse = []
+  ): CriticalTableEntry[] {
     return [
       ...previousResponse,
       { severity: 20, critical: new OutputReduced(2, 2) },

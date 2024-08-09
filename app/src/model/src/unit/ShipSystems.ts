@@ -292,7 +292,7 @@ class ShipSystems {
     });
   }
 
-  censorForUser(user: User, mine: boolean) {
+  censorForUser(user: User | null, mine: boolean) {
     this.getSystems().forEach((system) => {
       system.callHandler(
         SYSTEM_HANDLERS.censorForUser,

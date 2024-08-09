@@ -14,7 +14,7 @@ class TestDamageStrategy extends StandardDamageStrategy {
     this.damage = damage;
   }
 
-  getDamageForWeaponHit({}) {
+  getDamageForWeaponHit(payload: unknown) {
     return this.damage;
   }
 

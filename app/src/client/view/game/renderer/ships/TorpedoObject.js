@@ -1,6 +1,6 @@
 import { loadObject, cloneObject } from "../../utils/objectLoader";
 import LineSprite from "../sprite/LineSprite";
-import Vector from "../../../../../model/utils/Vector.mjs";
+import Vector from "../../../../../model/utils/Vector";
 import Line from "../Line";
 import * as THREE from "three";
 import StarParticleEmitter from "../../animation/particle/StarParticleEmitter";
@@ -10,8 +10,8 @@ import {
   TEXTURE_STARLINE,
   TEXTURE_GAS,
 } from "../../animation/particle/BaseParticle";
-import { getSeededRandomGenerator } from "../../../../../model/utils/math.mjs";
-import { degreeToRadian } from "../../../../../model/utils/math.mjs";
+import { getSeededRandomGenerator } from "../../../../../model/utils/math";
+import { degreeToRadian } from "../../../../../model/utils/math";
 
 const torpedoMesh = loadObject("/img/3d/torpedo/scene.gltf");
 

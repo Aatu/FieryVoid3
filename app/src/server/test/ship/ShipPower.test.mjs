@@ -5,15 +5,15 @@ import MovementOrder from "../../model/movement/MovementOrder";
 import hexagon from "../../model/hexagon";
 import TestShip from "../../model/unit/ships/test/TestShip";
 import { createShipObject } from "../../model/unit/createShipObject";
-import DamageEntry from "../../model/unit/system/DamageEntry.mjs";
+import DamageEntry from "../../model/unit/system/DamageEntry";
 import User from "../../model/User";
 
 import {
   OutputReduced8,
-  OutputReduced6
+  OutputReduced6,
 } from "../../model/unit/system/criticals";
 
-test("Ship resolves valid power", test => {
+test("Ship resolves valid power", (test) => {
   let ship = new TestShip({ id: 123 });
   ship.systems.getSystemById(7).addCritical(new OutputReduced8());
   ship.systems.getSystemById(7).addCritical(new OutputReduced6());

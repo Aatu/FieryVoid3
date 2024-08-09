@@ -1,6 +1,6 @@
 import * as THREE from "three";
-import { degreeToRadian } from "../../../../../../model/utils/math.mjs";
-import Vector from "../../../../../../model/utils/Vector.mjs";
+import { degreeToRadian } from "../../../../../../model/utils/math";
+import Vector from "../../../../../../model/utils/Vector";
 
 class BoltInstance {
   constructor(boltContainer) {

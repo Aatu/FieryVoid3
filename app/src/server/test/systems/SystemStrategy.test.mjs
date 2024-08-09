@@ -1,8 +1,8 @@
 import test from "ava";
-import ShipSystem from "../../model/unit/system/ShipSystem.mjs";
-import ShipSystemStrategy from "../../model/unit/system/strategy/ShipSystemStrategy.mjs";
+import ShipSystem from "../../model/unit/system/ShipSystem";
+import ShipSystemStrategy from "../../model/unit/system/strategy/ShipSystemStrategy";
 
-test("ShipSystem calls its strategies", test => {
+test("ShipSystem calls its strategies", (test) => {
   const testStrategy1 = new ShipSystemStrategy();
   testStrategy1.onTest = (payload, response = {}) => {
     const number = response.number || 0;

@@ -1,4 +1,4 @@
-import * as torpedoes from "./torpedo/index";
+import { torpedoes } from "./torpedo/index";
 import * as conventional from "./conventional/index";
 import NoAmmunitionLoaded from "./NoAmmunitionLoaded";
 import Ammo from "./Ammo";

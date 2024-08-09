@@ -6,28 +6,28 @@ import Vector, { IVector } from "../utils/Vector";
 import { Offset } from "../hexagon";
 
 export type SerializedMovementOrder = {
-  id: number | null;
+  id: string | null;
   type: MOVEMENT_TYPE;
   position: IVector;
   velocity: IVector;
   facing: number;
   rolled: boolean;
   turn: number;
-  value: number;
+  value: number | boolean;
   requiredThrust: SerializedRequiredThrust;
   index: number;
   evasion: number;
 };
 
 class MovementOrder {
-  public id: number | null;
+  public id: string | null;
   public type: MOVEMENT_TYPE;
   public position!: Vector;
   public velocity!: Vector;
   public facing: number;
   public rolled: boolean;
   public turn: number;
-  public value: number;
+  public value: number | boolean;
   public requiredThrust: RequiredThrust;
   public index: number;
   public evasion: number;
@@ -48,17 +48,17 @@ class MovementOrder {
     );
   }
   constructor(
-    id: number | null,
+    id: string | null,
     type: MOVEMENT_TYPE,
     position: Vector | Offset,
     velocity: Vector | Offset,
     facing: number,
     rolled: boolean,
     turn: number,
-    value = 0,
+    value: number | boolean = 0,
     requiredThrust: RequiredThrust | null = null,
-    index = 0,
-    evasion = 0
+    index: number = 0,
+    evasion: number = 0
   ) {
     this.id = id;
     this.type = type;
@@ -129,7 +129,7 @@ class MovementOrder {
     return this;
   }
 
-  setId(id: number) {
+  setId(id: string) {
     this.id = id;
     return this;
   }
@@ -242,7 +242,10 @@ class MovementOrder {
   isOpposite(move: MovementOrder) {
     switch (move.type) {
       case MOVEMENT_TYPE.SPEED:
-        return this.isSpeed() && this.value === addToHexFacing(move.value, 3);
+        return (
+          this.isSpeed() &&
+          this.value === addToHexFacing(move.value as number, 3)
+        );
       default:
         return false;
     }

@@ -14,14 +14,28 @@ import SystemSection from "../../systemSection/SystemSection";
 import FireOrder from "../../../../weapon/FireOrder";
 import CombatLogWeaponFire from "../../../../combatLog/CombatLogWeaponFire";
 import ShipSystem from "../../ShipSystem";
+import TorpedoFlight from "../../../TorpedoFlight";
+import GameData from "../../../../game/GameData";
+import CombatLogTorpedoAttack from "../../../../combatLog/CombatLogTorpedoAttack";
 
-export type applyDamageFromWeaponFirePayload = {
+export type DamagePayload = {
   target: Ship;
   shooter: Ship;
-  fireOrder: FireOrder;
-  hitResolution: CombatLogWeaponFireHitResult;
+  fireOrder?: FireOrder;
+  hitResolution?: CombatLogWeaponFireHitResult;
+  combatLogEntry: CombatLogWeaponFire | CombatLogTorpedoAttack;
+  torpedoFlight?: TorpedoFlight;
+};
+
+export type StandardDamagePayload = DamagePayload & {
   combatLogEntry: CombatLogWeaponFire;
-  shooterPosition: Vector;
+  hitResolution: CombatLogWeaponFireHitResult;
+};
+
+export const isStandardDamagePayload = (
+  payload: DamagePayload
+): payload is StandardDamagePayload => {
+  return payload.combatLogEntry instanceof CombatLogWeaponFire;
 };
 
 export type ChooseHitSystemFunction<T> = (
@@ -33,13 +47,13 @@ export type ChooseHitSystemFunction<T> = (
 ) => ShipSystem | null;
 
 class StandardDamageStrategy extends ShipSystemStrategy {
-  protected damageFormula: string | number;
-  protected armorPiercingFormula: string | number;
+  protected damageFormula: string | number | null;
+  protected armorPiercingFormula: string | number | null;
   protected hitSystemRandomizer: HitSystemRandomizer;
 
   constructor(
-    damageFormula: string | number = 0,
-    armorPiercingFormula: string | number = 0
+    damageFormula: string | number | null = 0,
+    armorPiercingFormula: string | number | null = 0
   ) {
     super();
 
@@ -118,9 +132,11 @@ class StandardDamageStrategy extends ShipSystemStrategy {
     return previousResponse;
   }
 
-  applyDamageFromWeaponFire(
-    payload: Omit<applyDamageFromWeaponFirePayload, "shooterPosition">
-  ) {
+  applyDamageFromWeaponFire(payload: DamagePayload) {
+    if (!isStandardDamagePayload(payload) || !payload.hitResolution) {
+      throw new Error("Invalid payload");
+    }
+
     const { shooter, combatLogEntry, hitResolution } = payload;
 
     const hit = hitResolution.result;
@@ -141,7 +157,7 @@ class StandardDamageStrategy extends ShipSystemStrategy {
   }
 
   protected doDamage(
-    payload: applyDamageFromWeaponFirePayload,
+    payload: DamagePayload & { shooterPosition: Vector },
     damageResult: CombatLogDamageEntry,
     lastSection: SystemSection | null,
     inputArmorPiercing?: number,
@@ -233,7 +249,7 @@ class StandardDamageStrategy extends ShipSystemStrategy {
   }
 
   protected doDamageToSystem(
-    payload: applyDamageFromWeaponFirePayload,
+    payload: DamagePayload,
     damageResult: CombatLogDamageEntry,
     hitSystem: ShipSystem,
     armorPiercing: number,
@@ -292,7 +308,7 @@ class StandardDamageStrategy extends ShipSystemStrategy {
     );
   };
 
-  protected getDamageForWeaponHit(payload: applyDamageFromWeaponFirePayload) {
+  protected getDamageForWeaponHit(payload?: DamagePayload) {
     let damage: number = 0;
     if (Number.isInteger(this.damageFormula)) {
       damage = this.damageFormula as number;
@@ -317,7 +333,7 @@ class StandardDamageStrategy extends ShipSystemStrategy {
     return damage + ammo.getDamage(this.diceRoller);
   }
 
-  protected getArmorPiercing(payload: applyDamageFromWeaponFirePayload) {
+  protected getArmorPiercing(payload?: DamagePayload) {
     let armorPiercing = 0;
     if (Number.isInteger(this.armorPiercingFormula)) {
       armorPiercing = this.armorPiercingFormula as number;

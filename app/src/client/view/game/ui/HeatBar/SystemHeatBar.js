@@ -9,7 +9,7 @@ import {
   TooltipValue,
   InlineTooltipEntry,
 } from "../../../../styled";
-import { formatNumber } from "../../../../../model/utils/format.mjs";
+import { formatNumber } from "../../../../../model/utils/format";
 import { HeaderMenuItem } from "../system/SystemInfo";
 
 const Container = styled.div`

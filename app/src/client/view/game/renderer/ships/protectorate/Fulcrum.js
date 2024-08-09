@@ -1,7 +1,7 @@
 import ShipObject from "../ShipObject";
 import { loadObject3d } from "../../object3d/Object3d";
 import * as THREE from "three";
-import Vector from "../../../../../../model/utils/Vector.mjs";
+import Vector from "../../../../../../model/utils/Vector";
 
 const textureLoader = new THREE.TextureLoader();
 

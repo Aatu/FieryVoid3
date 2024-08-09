@@ -1,6 +1,7 @@
 import StandardDamageStrategy, {
-  applyDamageFromWeaponFirePayload,
+  DamagePayload,
   ChooseHitSystemFunction,
+  StandardDamagePayload,
 } from "./StandardDamageStrategy";
 import Structure from "../../structure/Structure";
 import { SystemMessage } from "../types/SystemHandlersTypes";
@@ -60,7 +61,7 @@ class PiercingDamageStrategy extends StandardDamageStrategy {
   };
 
   protected doDamage(
-    payload: applyDamageFromWeaponFirePayload,
+    payload: StandardDamagePayload & { shooterPosition: Vector },
     damageResult: CombatLogDamageEntry,
     lastSection: SystemSection | null,
     armorPiercing: number = 0,

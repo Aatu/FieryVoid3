@@ -1,6 +1,6 @@
 import * as gameUiModes from "./gameUiModes";
-import { HEX_SIZE } from "../../../../model/gameConfig.mjs";
-import { angleToHexFacing } from "../../../../model/utils/math.mjs";
+import { HEX_SIZE } from "../../../../model/gameConfig";
+import { angleToHexFacing } from "../../../../model/utils/math";
 
 class UIState {
   constructor() {
@@ -368,11 +368,8 @@ class UIState {
   }
 
   showShipDeploymentMovement(ship) {
-    const {
-      shipIconContainer,
-      coordinateConverter,
-      movementService,
-    } = this.services;
+    const { shipIconContainer, coordinateConverter, movementService } =
+      this.services;
 
     this.state.shipMovement = {
       ship,
@@ -387,11 +384,8 @@ class UIState {
   }
 
   showShipMovement(ship) {
-    const {
-      shipIconContainer,
-      coordinateConverter,
-      movementService,
-    } = this.services;
+    const { shipIconContainer, coordinateConverter, movementService } =
+      this.services;
 
     this.state.shipMovement = {
       ship,

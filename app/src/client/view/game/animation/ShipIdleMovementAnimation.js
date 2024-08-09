@@ -1,7 +1,7 @@
-import { hexFacingToAngle } from "../../../../model/utils/math.mjs";
+import { hexFacingToAngle } from "../../../../model/utils/math";
 
 import Animation from "./Animation";
-import MovementService from "../../../../model/movement/MovementService.mjs";
+import MovementService from "../../../../model/movement/MovementService";
 
 class ShipIdleMovementAnimation extends Animation {
   constructor(shipIcon, gameTerrain) {

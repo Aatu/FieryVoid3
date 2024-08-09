@@ -1,7 +1,7 @@
 import test from "ava";
-import Ship from "../../model/unit/Ship.mjs";
+import Ship from "../../model/unit/Ship";
 
-test("Gets the correct hit profile", test => {
+test("Gets the correct hit profile", (test) => {
   const ship = new Ship({});
   ship.frontHitProfile = 30;
   ship.sideHitProfile = 50;

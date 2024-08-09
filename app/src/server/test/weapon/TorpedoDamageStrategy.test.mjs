@@ -4,30 +4,30 @@ import {
   BurstDamageStrategy,
   PiercingDamageStrategy,
   ExplosiveDamageStrategy,
-} from "../../model/unit/system/strategy/index.mjs";
-import FireOrder from "../../model/weapon/FireOrder.mjs";
-import Reactor from "../../model/unit/system/reactor/Reactor.mjs";
-import HitSystemRandomizer from "../../model/unit/system/strategy/weapon/utils/HitSystemRandomizer.mjs";
-import Structure from "../../model/unit/system/structure/Structure.mjs";
-import { PDC30mm } from "../../model/unit/system/weapon/pdc/index.mjs";
-import { RailgunTurreted32gw } from "../../model/unit/system/weapon/coilgun/index.mjs";
-import Ship from "../../model/unit/Ship.mjs";
-import Thruster from "../../model/unit/system/thruster/Thruster.mjs";
-import Engine from "../../model/unit/system/engine/Engine.mjs";
-import Vector from "../../model/utils/Vector.mjs";
-import Offset from "../../model/hexagon/Offset.mjs";
-import MovementOrder from "../../model/movement/MovementOrder.mjs";
-import movementTypes from "../../model/movement/movementTypes.mjs";
-import DamageEntry from "../../model/unit/system/DamageEntry.mjs";
-import WeaponHitChance from "../../model/weapon/WeaponHitChance.mjs";
-import CombatLogWeaponFire from "../../model/combatLog/CombatLogWeaponFire.mjs";
-import CombatLogWeaponFireHitResult from "../../model/combatLog/CombatLogWeaponFireHitResult.mjs";
-import HETorpedoDamageStrategy from "../../model/unit/system/weapon/ammunition/torpedo/torpedoDamageStrategy/HETorpedoDamageStrategy.mjs";
-import TorpedoFlight from "../../model/unit/TorpedoFlight.mjs";
-import Torpedo72HE from "../../model/unit/system/weapon/ammunition/torpedo/Torpedo72HE.mjs";
-import CombatLogTorpedoAttack from "../../model/combatLog/CombatLogTorpedoAttack.mjs";
-import MSVTorpedoDamageStrategy from "../../model/unit/system/weapon/ammunition/torpedo/torpedoDamageStrategy/MSVTorpedoDamageStrategy.mjs";
-import Torpedo158MSV from "../../model/unit/system/weapon/ammunition/torpedo/Torpedo158MSV.mjs";
+} from "../../model/unit/system/strategy/index";
+import FireOrder from "../../model/weapon/FireOrder";
+import Reactor from "../../model/unit/system/reactor/Reactor";
+import HitSystemRandomizer from "../../model/unit/system/strategy/weapon/utils/HitSystemRandomizer";
+import Structure from "../../model/unit/system/structure/Structure";
+import { PDC30mm } from "../../model/unit/system/weapon/pdc/index";
+import { RailgunTurreted32gw } from "../../model/unit/system/weapon/coilgun/index";
+import Ship from "../../model/unit/Ship";
+import Thruster from "../../model/unit/system/thruster/Thruster";
+import Engine from "../../model/unit/system/engine/Engine";
+import Vector from "../../model/utils/Vector";
+import Offset from "../../model/hexagon/Offset";
+import MovementOrder from "../../model/movement/MovementOrder";
+import movementTypes from "../../model/movement/movementTypes";
+import DamageEntry from "../../model/unit/system/DamageEntry";
+import WeaponHitChance from "../../model/weapon/WeaponHitChance";
+import CombatLogWeaponFire from "../../model/combatLog/CombatLogWeaponFire";
+import CombatLogWeaponFireHitResult from "../../model/combatLog/CombatLogWeaponFireHitResult";
+import HETorpedoDamageStrategy from "../../model/unit/system/weapon/ammunition/torpedo/torpedoDamageStrategy/HETorpedoDamageStrategy";
+import TorpedoFlight from "../../model/unit/TorpedoFlight";
+import Torpedo72HE from "../../model/unit/system/weapon/ammunition/torpedo/Torpedo72HE";
+import CombatLogTorpedoAttack from "../../model/combatLog/CombatLogTorpedoAttack";
+import MSVTorpedoDamageStrategy from "../../model/unit/system/weapon/ammunition/torpedo/torpedoDamageStrategy/MSVTorpedoDamageStrategy";
+import Torpedo158MSV from "../../model/unit/system/weapon/ammunition/torpedo/Torpedo158MSV";
 
 const constructShip = (id = 123) => {
   let ship = new Ship({

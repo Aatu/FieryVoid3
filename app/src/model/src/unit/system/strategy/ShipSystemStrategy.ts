@@ -1,4 +1,6 @@
 import { DiceRoller } from "../../../utils/DiceRoller";
+import Ship from "../../Ship";
+import ShipSystems from "../../ShipSystems";
 import ShipSystem from "../ShipSystem";
 import { SYSTEM_HANDLERS } from "./types/SystemHandlersTypes";
 
@@ -20,6 +22,22 @@ class ShipSystemStrategy {
       throw new Error("System not initialized");
     }
     return this.system;
+  }
+
+  protected getShip(): Ship {
+    return this.getSystem().getShipSystems().ship;
+  }
+
+  protected getShipSystems(): ShipSystems {
+    return this.getSystem().getShipSystems();
+  }
+
+  protected getSystems(): ShipSystem[] {
+    return this.getShipSystems().getSystems();
+  }
+
+  protected getSystemById(id: number): ShipSystem {
+    return this.getShipSystems().getSystemById(id);
   }
 
   public callHandler = <T>(

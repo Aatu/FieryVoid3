@@ -1,15 +1,15 @@
 import { user } from "../api";
-import User from "../../model/User.mjs";
+import User from "../../model/User";
 
 const actionTypes = {
-  GET_CURRENT_USER: "GET_CURRENT_USER"
+  GET_CURRENT_USER: "GET_CURRENT_USER",
 };
 
-export const getCurrentUser = async dispatch => {
+export const getCurrentUser = async (dispatch) => {
   const payload = await user.getCurrentUser();
   dispatch({
     type: actionTypes.GET_CURRENT_USER,
-    payload: payload
+    payload: payload,
   });
 };
 
@@ -21,7 +21,7 @@ export const reducer = (state, action) => {
         : null;
       return {
         ...state,
-        currentUser: user
+        currentUser: user,
       };
     default:
       return state;

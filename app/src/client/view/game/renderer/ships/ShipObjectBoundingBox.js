@@ -6,8 +6,8 @@ import {
   PortFrontSection,
   StarboardAftSection,
   PortAftSection,
-} from "../../../../../model/unit/system/systemSection/index.mjs";
-import Vector from "../../../../../model/utils/Vector.mjs";
+} from "../../../../../model/unit/system/systemSection/index";
+import Vector from "../../../../../model/utils/Vector";
 
 class ShipObjectBoundingBox {
   constructor(ship) {

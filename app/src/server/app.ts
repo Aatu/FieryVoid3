@@ -11,6 +11,7 @@ import DbConnection from "./repository/DbConnection.js";
 
 import * as errors from "./errors/index.js";
 import passport from "passport";
+import { User } from "../model/src/User/User";
 
 const { app } = expressWs(express());
 const port = 4000;
@@ -86,12 +87,15 @@ app.get("/user", (req, res) => {
 });
 
 app.post("/game", async (req, res) => {
-  const gameId = await gameController.createGame(req.body, req.user);
+  const gameId = await gameController.createGame(req.body, req.user as User);
   res.status(200).json({ gameId });
 });
 
 app.post("/testGame", async (req, res) => {
-  const gameId = await gameController.createTestGame(req.body, req.user);
+  const gameId = await gameController.createTestGame(
+    req.body,
+    req.user as User
+  );
   res.status(200).json({ gameId });
 });
 
@@ -100,8 +104,8 @@ app.ws("/game/:gameId", (ws, req) => {
     try {
       gameController.onMessage(
         JSON.parse(message.toString()),
-        req.user,
-        req.params.gameId
+        req.user as User,
+        parseInt(req.params.gameId, 10)
       );
     } catch (error) {
       console.log("Error on websocket message");
@@ -116,10 +120,17 @@ app.ws("/game/:gameId", (ws, req) => {
   });
 
   ws.on("close", (msg) => {
-    gameController.closeConnection(ws, req.user, req.params.gameId);
+    gameController.closeConnection(
+      ws as unknown as WebSocket,
+      parseInt(req.params.gameId, 10)
+    );
   });
 
-  gameController.openConnection(ws, req.user, req.params.gameId);
+  gameController.openConnection(
+    ws as unknown as WebSocket,
+    req.user as User,
+    parseInt(req.params.gameId, 10)
+  );
 });
 
 app.use((error: Error, req: Request, res: Response, next: unknown) => {

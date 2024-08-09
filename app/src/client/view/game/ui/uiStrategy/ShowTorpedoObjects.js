@@ -1,15 +1,15 @@
 import * as THREE from "three";
 import AnimationUiStrategy from "./AnimationUiStrategy";
-import { getCompassHeadingOfPoint } from "../../../../../model/utils/math.mjs";
-import { getSeededRandomGenerator } from "../../../../../model/utils/math.mjs";
-import Vector from "../../../../../model/utils/Vector.mjs";
-import MovementService from "../../../../../model/movement/MovementService.mjs";
+import { getCompassHeadingOfPoint } from "../../../../../model/utils/math";
+import { getSeededRandomGenerator } from "../../../../../model/utils/math";
+import Vector from "../../../../../model/utils/Vector";
+import MovementService from "../../../../../model/movement/MovementService";
 import Line from "../../renderer/Line";
 import { HexagonSprite } from "../../renderer/sprite";
-import { COLOR_FRIENDLY } from "../../../../../model/gameConfig.mjs";
-import { COLOR_ENEMY } from "../../../../../model/gameConfig.mjs";
+import { COLOR_FRIENDLY } from "../../../../../model/gameConfig";
+import { COLOR_ENEMY } from "../../../../../model/gameConfig";
 import Sprite from "../../renderer/sprite/Sprite";
-import HexagonMath from "../../../../../model/utils/HexagonMath.mjs";
+import HexagonMath from "../../../../../model/utils/HexagonMath";
 
 const TEXTURE = new THREE.TextureLoader().load("/img/torpedoMarker.png");
 
@@ -25,7 +25,7 @@ class ShowTorpedoObjects extends AnimationUiStrategy {
   markHexes(gameData) {
     const hexPositions = [];
     const { scene, currentUser } = this.services;
-    gameData.torpedos.getTorpedoFlights().forEach(flight => {
+    gameData.torpedos.getTorpedoFlights().forEach((flight) => {
       const hexPosition = flight.strikePosition.toOffset();
       const target = gameData.ships.getShipById(flight.targetId);
       const spriteFacing = getCompassHeadingOfPoint(
@@ -44,7 +44,7 @@ class ShowTorpedoObjects extends AnimationUiStrategy {
         hexPositions.push({
           position: hexPosition,
           target: target,
-          facing: spriteFacing
+          facing: spriteFacing,
         });
       }
     });
@@ -57,14 +57,14 @@ class ShowTorpedoObjects extends AnimationUiStrategy {
 
       if (
         !this.hexes.find(
-          hex => hex.isPosition(pos) && hex.isOverlayColor(color)
+          (hex) => hex.isPosition(pos) && hex.isOverlayColor(color)
         )
       ) {
         const sprite = new Sprite(
           TEXTURE,
           {
             width: HexagonMath.getTextureWidth() * 0.8,
-            height: HexagonMath.getTextureHeight() * 0.8
+            height: HexagonMath.getTextureHeight() * 0.8,
           },
           0
         )
@@ -79,7 +79,7 @@ class ShowTorpedoObjects extends AnimationUiStrategy {
       }
     });
 
-    this.hexes = this.hexes.filter(sprite => {
+    this.hexes = this.hexes.filter((sprite) => {
       if (
         !hexPositions.find(({ position }) =>
           sprite.isPosition(position.toVector())
@@ -96,7 +96,7 @@ class ShowTorpedoObjects extends AnimationUiStrategy {
   update(gameData) {
     super.update(gameData);
 
-    gameData.torpedos.getTorpedoFlights().forEach(flight => {
+    gameData.torpedos.getTorpedoFlights().forEach((flight) => {
       const target = gameData.ships.getShipById(flight.targetId);
       this.handleImpactingTorpedo(flight, target);
     });
@@ -111,8 +111,8 @@ class ShowTorpedoObjects extends AnimationUiStrategy {
 
     this.gameData.torpedos
       .getTorpedoFlights()
-      .filter(flight => flight.targetId === ship.id)
-      .forEach(flight => {
+      .filter((flight) => flight.targetId === ship.id)
+      .forEach((flight) => {
         this.handleImpactingTorpedo(flight, ship);
       });
 
@@ -151,13 +151,13 @@ class ShowTorpedoObjects extends AnimationUiStrategy {
         width: 2,
         color: new THREE.Color(255 / 255, 40 / 255, 40 / 255),
         opacity: 0.01,
-        pulseAmount: 1
+        pulseAmount: 1,
       });
       line.show();
       this.lines.push({
         targetId: target.id,
         flightId: flight.id,
-        line
+        line,
       });
     } else {
       line.line.update(
@@ -172,12 +172,12 @@ class ShowTorpedoObjects extends AnimationUiStrategy {
 
   deactivate() {
     const { torpedoIconContainer, scene } = this.services;
-    torpedoIconContainer.getArray().forEach(icon => {
+    torpedoIconContainer.getArray().forEach((icon) => {
       icon.hide();
     }, this);
 
-    this.lines.forEach(line => line.line.destroy());
-    this.hexes.forEach(sprite => scene.remove(sprite.mesh));
+    this.lines.forEach((line) => line.line.destroy());
+    this.hexes.forEach((sprite) => scene.remove(sprite.mesh));
     return super.deactivate();
   }
 
@@ -189,11 +189,11 @@ class ShowTorpedoObjects extends AnimationUiStrategy {
     this.zoom = zoom;
 
     if (zoom > 1) {
-      this.hexes.forEach(sprite => {
+      this.hexes.forEach((sprite) => {
         sprite.setScale(zoom * 0.8, zoom * 0.8);
       });
     } else {
-      this.hexes.forEach(sprite => {
+      this.hexes.forEach((sprite) => {
         sprite.setScale(1, 1);
       });
     }

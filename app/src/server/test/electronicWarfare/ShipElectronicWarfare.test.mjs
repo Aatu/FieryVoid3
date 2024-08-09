@@ -2,19 +2,19 @@ import test from "ava";
 import systems from "../../model/unit/system";
 import ShipElectronicWarfare from "../../model/unit/ShipElectronicWarfare";
 import { OutputReduced2 } from "../../model/unit/system/criticals";
-import TestShip from "../../model/unit/ships/test/TestShip.mjs";
+import TestShip from "../../model/unit/ships/test/TestShip";
 
-const constructTestShipElectronicWarfare = allSystems =>
+const constructTestShipElectronicWarfare = (allSystems) =>
   new ShipElectronicWarfare({
     id: "puuppa-alus",
     systems: {
-      getSystems: () => allSystems
-    }
+      getSystems: () => allSystems,
+    },
   });
 
-test("Assign offensive electronic warfare succesfully", test => {
+test("Assign offensive electronic warfare succesfully", (test) => {
   const shipEw = constructTestShipElectronicWarfare([
-    new systems.EwArray({ id: 1, hitpoints: 10, armor: 3 }, 10)
+    new systems.EwArray({ id: 1, hitpoints: 10, armor: 3 }, 10),
   ]);
 
   shipEw.assignOffensiveEw("tuupero", 6);
@@ -25,9 +25,9 @@ test("Assign offensive electronic warfare succesfully", test => {
   test.is(shipEw.getOffensiveEw("nuupero"), 1);
 });
 
-test("Assign too much offensive electronic warfare", test => {
+test("Assign too much offensive electronic warfare", (test) => {
   const shipEw = constructTestShipElectronicWarfare([
-    new systems.EwArray({ id: 1, hitpoints: 10, armor: 3 }, 10)
+    new systems.EwArray({ id: 1, hitpoints: 10, armor: 3 }, 10),
   ]);
 
   shipEw.assignOffensiveEw("tuupero", 6);
@@ -37,10 +37,10 @@ test("Assign too much offensive electronic warfare", test => {
   test.is(error.message, "Invalid EW");
 });
 
-test("Deassign electronic warfare", test => {
+test("Deassign electronic warfare", (test) => {
   const shipEw = constructTestShipElectronicWarfare([
     new systems.EwArray({ id: 1, hitpoints: 10, armor: 3 }, 10),
-    new systems.EwArray({ id: 2, hitpoints: 10, armor: 3 }, 10)
+    new systems.EwArray({ id: 2, hitpoints: 10, armor: 3 }, 10),
   ]);
 
   shipEw.assignOffensiveEw("tuupero", 1);
@@ -54,9 +54,9 @@ test("Deassign electronic warfare", test => {
   test.is(shipEw.getOffensiveEw("tuupero"), 4);
 });
 
-test("Deassigning offensive electronic warfare fails with unhandled negative entries", test => {
+test("Deassigning offensive electronic warfare fails with unhandled negative entries", (test) => {
   const shipEw = constructTestShipElectronicWarfare([
-    new systems.EwArray({ id: 1, hitpoints: 10, armor: 3 }, 10)
+    new systems.EwArray({ id: 1, hitpoints: 10, armor: 3 }, 10),
   ]);
 
   shipEw.assignOffensiveEw("tuupero", 6);
@@ -65,9 +65,9 @@ test("Deassigning offensive electronic warfare fails with unhandled negative ent
   test.is(error.message, "Invalid EW, negative entries left");
 });
 
-test("Assign close combat electronic warfare", test => {
+test("Assign close combat electronic warfare", (test) => {
   const shipEw = constructTestShipElectronicWarfare([
-    new systems.EwArray({ id: 1, hitpoints: 10, armor: 3 }, 10)
+    new systems.EwArray({ id: 1, hitpoints: 10, armor: 3 }, 10),
   ]);
 
   shipEw.assignCcEw(3);
@@ -76,9 +76,9 @@ test("Assign close combat electronic warfare", test => {
   test.is(shipEw.getDefensiveEw(), 7);
 });
 
-test("Assign close combat and offensive electronic warfare", test => {
+test("Assign close combat and offensive electronic warfare", (test) => {
   const shipEw = constructTestShipElectronicWarfare([
-    new systems.EwArray({ id: 1, hitpoints: 10, armor: 3 }, 10)
+    new systems.EwArray({ id: 1, hitpoints: 10, armor: 3 }, 10),
   ]);
 
   shipEw.assignOffensiveEw("tuupero", 3);
@@ -91,7 +91,7 @@ test("Assign close combat and offensive electronic warfare", test => {
   test.is(shipEw.getOffensiveEw("nuupero"), 2);
 });
 
-test("Assign offensive electronic warfare with multiple arrays", test => {
+test("Assign offensive electronic warfare with multiple arrays", (test) => {
   const array1 = new systems.EwArray({ id: 1, hitpoints: 10, armor: 3 }, 5);
   const array2 = new systems.EwArray({ id: 2, hitpoints: 10, armor: 3 }, 5);
   const shipEw = constructTestShipElectronicWarfare([array1, array2]);
@@ -107,7 +107,7 @@ test("Assign offensive electronic warfare with multiple arrays", test => {
   test.is(entries2.length, 1);
 });
 
-test("Assign mixed electronic warfare with multiple arrays", test => {
+test("Assign mixed electronic warfare with multiple arrays", (test) => {
   const array1 = new systems.EwArray({ id: 1, hitpoints: 10, armor: 3 }, 5);
   const array2 = new systems.EwArray({ id: 2, hitpoints: 10, armor: 3 }, 5);
   const shipEw = constructTestShipElectronicWarfare([array1, array2]);
@@ -122,7 +122,7 @@ test("Assign mixed electronic warfare with multiple arrays", test => {
   test.is(shipEw.getOffensiveEw("nuupero"), 2);
 });
 
-test("Assign mixed electronic warfare to arrays with critical damage", test => {
+test("Assign mixed electronic warfare to arrays with critical damage", (test) => {
   const array1 = new systems.EwArray({ id: 1, hitpoints: 10, armor: 3 }, 5);
   const array2 = new systems.EwArray({ id: 2, hitpoints: 10, armor: 3 }, 5);
   array2.addCritical(new OutputReduced2());
@@ -138,7 +138,7 @@ test("Assign mixed electronic warfare to arrays with critical damage", test => {
   test.is(shipEw.getOffensiveEw("nuupero"), 2);
 });
 
-test("Assign mixed electronic warfare to arrays with critical damage fails", test => {
+test("Assign mixed electronic warfare to arrays with critical damage fails", (test) => {
   const array1 = new systems.EwArray({ id: 1, hitpoints: 10, armor: 3 }, 5);
   const array2 = new systems.EwArray({ id: 2, hitpoints: 10, armor: 3 }, 5);
   array2.addCritical(new OutputReduced2());
@@ -151,7 +151,7 @@ test("Assign mixed electronic warfare to arrays with critical damage fails", tes
   test.is(error.message, "Invalid EW");
 });
 
-test("System serializes and deserializes nicely", test => {
+test("System serializes and deserializes nicely", (test) => {
   const array1 = new systems.EwArray({ id: 1, hitpoints: 10, armor: 3 }, 10);
   array1.addCritical(new OutputReduced2());
   const shipEw = constructTestShipElectronicWarfare([array1]);
@@ -178,7 +178,7 @@ test("System serializes and deserializes nicely", test => {
   test.is(shipEw2.getOffensiveEw("nuupero"), 2);
 });
 
-test("Electronic warfare array can be boosted", test => {
+test("Electronic warfare array can be boosted", (test) => {
   const ship = new TestShip();
   const ewArray = ship.systems.getSystemById(11);
   ship.systems.getSystemById(5).power.setOffline();
@@ -192,7 +192,7 @@ test("Electronic warfare array can be boosted", test => {
   test.false(ship.electronicWarfare.canAssignCcEw(11));
 });
 
-test("When deboosting electronic warfare array, extra ew will be removed", test => {
+test("When deboosting electronic warfare array, extra ew will be removed", (test) => {
   const ship = new TestShip({ id: 1 });
   const ship2 = new TestShip({ id: 2 });
 
@@ -214,7 +214,7 @@ test("When deboosting electronic warfare array, extra ew will be removed", test 
   test.is(ship.electronicWarfare.getOffensiveEw(ship2), 0);
 });
 
-test("When setting ew array ofline, it will remove assigned ew", test => {
+test("When setting ew array ofline, it will remove assigned ew", (test) => {
   const ship = new TestShip({ id: 1 });
   const ship2 = new TestShip({ id: 2 });
 

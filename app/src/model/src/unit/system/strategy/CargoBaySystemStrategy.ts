@@ -1,9 +1,13 @@
 import ShipSystemStrategy from "./ShipSystemStrategy.js";
-import { cargoClasses } from "../cargo/cargo.js";
+import {
+  cargoClasses,
+  CargoType,
+  createCargoInstance,
+} from "../cargo/cargo.js";
 import CargoEntity from "../cargo/CargoEntity.js";
 
 export type SerializedCargoBaySystemStrategy = {
-  cargoBaySystemStrategy?: { className: string; amount: number }[];
+  cargoBaySystemStrategy?: { className: CargoType; amount: number }[];
 };
 class CargoBaySystemStrategy extends ShipSystemStrategy {
   private space: number;
@@ -37,7 +41,7 @@ class CargoBaySystemStrategy extends ShipSystemStrategy {
     return {
       ...previousResponse,
       cargoBaySystemStrategy: this.cargo.map((cargo) => ({
-        className: cargo.object.constructor.name,
+        className: cargo.object.getCargoClassName(),
         amount: cargo.amount,
       })),
     };
@@ -46,7 +50,7 @@ class CargoBaySystemStrategy extends ShipSystemStrategy {
   deserialize(data: SerializedCargoBaySystemStrategy = {}) {
     this.cargo = data.cargoBaySystemStrategy
       ? data.cargoBaySystemStrategy.map((data) => ({
-          object: new cargoClasses[data.className](),
+          object: createCargoInstance(data.className),
           amount: data.amount,
         }))
       : [];
@@ -132,7 +136,7 @@ class CargoBaySystemStrategy extends ShipSystemStrategy {
       entry.amount += amount;
     } else {
       entry = {
-        object: new cargoClasses[object.constructor.name](),
+        object: createCargoInstance(object.getCargoClassName()),
         amount,
       };
 

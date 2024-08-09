@@ -1,12 +1,16 @@
 import Ship from "../unit/Ship";
+import { THRUSTER_DIRECTION } from "../unit/system/strategy/ThrustChannelSystemStrategy";
 import { SYSTEM_HANDLERS } from "../unit/system/strategy/types/SystemHandlersTypes.js";
 import { MovementOrder, RequiredThrust, ThrustAssignment } from "./index";
+import { ThrustRequirementSummary } from "./RequiredThrust";
 
 class ThrustBill {
   private ship: Ship;
   private movement: MovementOrder[];
   private thrusters: ThrustAssignment[];
   private fuel: number;
+  private paid: boolean | null = null;
+  private directionsRequired: ThrustRequirementSummary;
 
   constructor(ship: Ship, movement: MovementOrder[]) {
     this.ship = ship;
@@ -29,20 +33,19 @@ class ThrustBill {
   }
 
   getRequiredThrustDirections() {
-    const result = this.movement.reduce(
-      (accumulator, move) => move.requiredThrust.accumulate(accumulator),
-      {}
-    );
+    const result = {
+      [THRUSTER_DIRECTION.FORWARD]: 0,
+      [THRUSTER_DIRECTION.STARBOARD_FORWARD]: 0,
+      [THRUSTER_DIRECTION.STARBOARD_AFT]: 0,
+      [THRUSTER_DIRECTION.AFT]: 0,
+      [THRUSTER_DIRECTION.PORT_FORWARD]: 0,
+      [THRUSTER_DIRECTION.PORT_AFT]: 0,
+      [THRUSTER_DIRECTION.PIVOT_RIGHT]: 0,
+      [THRUSTER_DIRECTION.PIVOT_LEFT]: 0,
+      [THRUSTER_DIRECTION.MANOUVER]: 0,
+    };
 
-    result[0] = result[0] || 0;
-    result[1] = result[1] || 0;
-    result[2] = result[2] || 0;
-    result[3] = result[3] || 0;
-    result[4] = result[4] || 0;
-    result[5] = result[5] || 0;
-    result[6] = result[6] || 0;
-    result[7] = result[7] || 0;
-    result[8] = result[8] || 0;
+    this.movement.forEach((move) => move.requiredThrust.accumulate(result));
 
     return result;
   }
@@ -100,7 +103,7 @@ class ThrustBill {
     );
   }
 
-  getAllUsableThrusters(direction) {
+  getAllUsableThrusters(direction: THRUSTER_DIRECTION) {
     return this.thrusters
       .filter((thruster) => {
         const capacity = thruster.getThrustCapacity();
@@ -114,7 +117,7 @@ class ThrustBill {
       .sort(this.sortThrusters);
   }
 
-  sortThrusters(a, b) {
+  sortThrusters(a: ThrustAssignment, b: ThrustAssignment) {
     const { overheatPercentage: aHeat, coolingPercent: aCooling } =
       a.getOverheat();
     const { overheatPercentage: bHeat, coolingPercent: bCooling } =
@@ -165,8 +168,8 @@ class ThrustBill {
 
       this.paid = this.isPaid();
       return this.paid;
-    } catch (e) {
-      if (e.message === "over budget") {
+    } catch (e: unknown) {
+      if ((e as { message: string })?.message === "over budget") {
         this.paid = false;
         return this.paid;
       }
@@ -176,9 +179,9 @@ class ThrustBill {
   }
 
   process() {
-    Object.keys(this.directionsRequired).forEach((direction) => {
+    Object.keys(this.directionsRequired).forEach((directionString) => {
+      const direction = parseInt(directionString, 10) as THRUSTER_DIRECTION;
       const required = this.directionsRequired[direction];
-      direction = parseInt(direction, 10);
 
       if (required === 0) {
         return;
@@ -190,7 +193,7 @@ class ThrustBill {
     return this.isPaid();
   }
 
-  useThrusters(direction, required) {
+  useThrusters(direction: THRUSTER_DIRECTION, required: number) {
     let assigned = 0;
 
     while (true) {
@@ -204,16 +207,16 @@ class ThrustBill {
         return;
       }
 
-      const thruster = thrusters.pop();
+      const thruster = thrusters[thrusters.length - 1];
       thruster.channel(1);
       this.directionsRequired[direction] -= 1;
       assigned += 1;
     }
   }
 
-  buildRequiredThrust(movement) {
+  buildRequiredThrust(movement: MovementOrder[]) {
     movement.forEach((move) =>
-      move.setRequiredThrust(new RequiredThrust(this.ship, move))
+      move.setRequiredThrust(new RequiredThrust().calculate(this.ship, move))
     );
   }
 

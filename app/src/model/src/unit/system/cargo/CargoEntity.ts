@@ -1,4 +1,5 @@
 import { SystemMessage } from "../strategy/types/SystemHandlersTypes";
+import { CargoType } from "./cargo";
 
 export interface ICargoEntity {
   getSpaceRequired(): number;
@@ -9,6 +10,10 @@ export interface ICargoEntity {
 }
 
 class CargoEntity implements ICargoEntity {
+  getCargoClassName(): CargoType {
+    return this.constructor.name as CargoType;
+  }
+
   getSpaceRequired() {
     return 0.1;
   }
@@ -27,6 +32,22 @@ class CargoEntity implements ICargoEntity {
 
   getBackgroundImage() {
     return "";
+  }
+
+  isInstanceOf(other: CargoEntity | null) {
+    if (!other) {
+      return false;
+    }
+
+    return this instanceof other.constructor;
+  }
+
+  equals(other?: CargoEntity | null) {
+    if (!other) {
+      return false;
+    }
+
+    return this.constructor.name === other.constructor.name;
   }
 }
 

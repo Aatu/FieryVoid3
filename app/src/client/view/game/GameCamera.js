@@ -1,7 +1,7 @@
 import * as THREE from "three";
-import Vector from "../../../model/utils/Vector.mjs";
-import { degreeToRadian } from "../../../model/utils/math.mjs";
-import { ZOOM_PERSPECTIVE_MIN } from "../../../model/gameConfig.mjs";
+import Vector from "../../../model/utils/Vector";
+import { degreeToRadian } from "../../../model/utils/math";
+import { ZOOM_PERSPECTIVE_MIN } from "../../../model/gameConfig";
 
 class GameCamera {
   constructor(zoom, width, height, z) {
@@ -59,7 +59,7 @@ class GameCamera {
 
     return {
       width: opposite * 3 * this.perspective.aspect,
-      height: opposite * 2
+      height: opposite * 2,
     };
   }
 

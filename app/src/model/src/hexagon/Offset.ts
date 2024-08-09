@@ -87,7 +87,7 @@ class Offset {
     return this.toCube().scale(scale).toOffset();
   }
 
-  moveToDirection(direction: number, steps: number) {
+  moveToDirection(direction: number, steps: number = 1) {
     return this.toCube().moveToDirection(direction, steps).toOffset();
   }
 

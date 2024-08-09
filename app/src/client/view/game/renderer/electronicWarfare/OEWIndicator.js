@@ -5,7 +5,7 @@ import {
   COLOR_OEW_FRIENDLY,
   COLOR_OEW_ENEMY,
   COLOR_FRIENDLY_HIGHLIGHT,
-} from "../../../../../model/gameConfig.mjs";
+} from "../../../../../model/gameConfig";
 
 class OEWIndicator {
   constructor(

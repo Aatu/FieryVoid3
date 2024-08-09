@@ -1,5 +1,11 @@
+import GameData from "../game/GameData";
+
+export enum AI_ROLE {
+  DESTROYER = "DestroyerAIRole",
+}
 export interface AiRole {
-  playTurn(): void;
+  playTurn(gameData: GameData): void;
   serialize(): Record<string, unknown>;
-  deserialize(): AiRole;
+  deserialize(data: Record<string, unknown>): this;
+  type: AI_ROLE;
 }

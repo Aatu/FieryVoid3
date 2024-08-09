@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import Animation from "./Animation";
-import { hexFacingToAngle } from "../../../../model/utils/math.mjs";
+import { hexFacingToAngle } from "../../../../model/utils/math";
 
 class ShipVelocityAnimation extends Animation {
   constructor(shipIcon, endMove, start, end) {
@@ -39,7 +39,7 @@ class ShipVelocityAnimation extends Animation {
 
     return {
       facing: this.endMove.facing,
-      position: this.positionCurve.getPoint(percentDone)
+      position: this.positionCurve.getPoint(percentDone),
     };
   }
 

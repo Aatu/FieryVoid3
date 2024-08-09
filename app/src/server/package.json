@@ -1,6 +1,7 @@
 {
   "scripts": {
-    "start": "nodemon --experimental-modules app.mjs"
+    "start": "nodemon --experimental-modules app",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@dice-roller/rpg-dice-roller": "^5.5.0",
@@ -28,6 +29,7 @@
     "@types/passport-local": "^1.0.38",
     "@types/uuid": "^10.0.0",
     "nodemon": "^1.19.1",
-    "typescript": "^5.5.4"
+    "typescript": "^5.5.4",
+    "vitest": "^2.0.5"
   }
 }

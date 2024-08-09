@@ -61,6 +61,8 @@ class RequiredThrust {
         default:
       }
     }
+
+    return this;
   }
 
   serialize(): SerializedRequiredThrust {
@@ -133,7 +135,7 @@ class RequiredThrust {
   }
 
   requireEvade(ship: Ship, move: MovementOrder) {
-    this.requirements[8] = ship.evasioncost * move.value;
+    this.requirements[8] = ship.evasioncost * (move.value as number);
   }
 
   requirePivot(ship: Ship, move: MovementOrder) {
@@ -156,7 +158,7 @@ class RequiredThrust {
     const facing = move.facing;
     const direction = move.value;
     const actualDirection = addToHexFacing(
-      addToHexFacing(direction, -facing),
+      addToHexFacing(direction as number, -facing),
       3
     );
 
@@ -167,8 +169,9 @@ class RequiredThrust {
     }
   }
 
-  accumulate(total) {
-    Object.keys(this.requirements).forEach((direction) => {
+  accumulate(total: ThrustRequirementSummary) {
+    Object.keys(THRUSTER_DIRECTION).forEach((directionString: string) => {
+      const direction = parseInt(directionString, 10) as THRUSTER_DIRECTION;
       total[direction] = total[direction]
         ? total[direction] + this.requirements[direction]
         : this.requirements[direction];
@@ -177,5 +180,17 @@ class RequiredThrust {
     return total;
   }
 }
+
+export type ThrustRequirementSummary = {
+  [THRUSTER_DIRECTION.FORWARD]: number;
+  [THRUSTER_DIRECTION.STARBOARD_FORWARD]: number;
+  [THRUSTER_DIRECTION.STARBOARD_AFT]: number;
+  [THRUSTER_DIRECTION.AFT]: number;
+  [THRUSTER_DIRECTION.PORT_FORWARD]: number;
+  [THRUSTER_DIRECTION.PORT_AFT]: number;
+  [THRUSTER_DIRECTION.PIVOT_RIGHT]: number;
+  [THRUSTER_DIRECTION.PIVOT_LEFT]: number;
+  [THRUSTER_DIRECTION.MANOUVER]: number;
+};
 
 export default RequiredThrust;

@@ -1,6 +1,8 @@
 import CombatLogDamageEntry from "../../../../../../combatLog/CombatLogDamageEntry.js";
+import { SystemMessage } from "../../../../strategy/types/SystemHandlersTypes.js";
 import ExplosiveDamageStrategy from "../../../../strategy/weapon/ExplosiveDamageStrategy.js";
-
+import { DamagePayload } from "../../../../strategy/weapon/StandardDamageStrategy.js";
+import { isMSVTorpedoDamagePayload } from "./MSVTorpedoDamageStrategy.js";
 class HETorpedoDamageStrategy extends ExplosiveDamageStrategy {
   constructor(
     damageFormula: string | number,
@@ -10,33 +12,41 @@ class HETorpedoDamageStrategy extends ExplosiveDamageStrategy {
     super(damageFormula, armorPiercingFormula, numberOfHitsFormula);
   }
 
-  getAttackRunMessages(payload, previousResponse = []) {
+  getAttackRunMessages(
+    payload: unknown,
+    previousResponse: SystemMessage[] = []
+  ): SystemMessage[] {
     return [
       {
         header: "Strike distance",
-        value: this.getStrikeDistance(payload),
+        value: this.getStrikeDistance(),
       },
     ];
   }
-  _getDamageMessage() {
-    return this.damageFormula;
+
+  getDamageMessage() {
+    return (this.damageFormula as string) || "";
   }
 
-  _getArmorPiercingMessage() {
-    return this.armorPiercingFormula;
+  getArmorPiercingMessage() {
+    return (this.armorPiercingFormula as string) || "";
   }
 
   getStrikeDistance() {
     return 1;
   }
 
-  applyDamageFromWeaponFire(payload) {
-    const { torpedoFlight, combatLogEvent } = payload;
+  applyDamageFromWeaponFire(payload: DamagePayload) {
+    if (!isMSVTorpedoDamagePayload(payload)) {
+      throw new Error("Invalid payload");
+    }
+
+    const { torpedoFlight, combatLogEntry } = payload;
     const attackPosition = torpedoFlight.launchPosition;
 
     const result = new CombatLogDamageEntry();
-    combatLogEvent.addDamage(result);
-    this._doDamage({ shooterPosition: attackPosition, ...payload }, result);
+    combatLogEntry.addDamage(result);
+    this.doDamage({ shooterPosition: attackPosition, ...payload }, result);
   }
 }
 

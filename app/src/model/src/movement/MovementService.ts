@@ -7,19 +7,22 @@ import Ship from "../unit/Ship.js";
 import Vector from "../utils/Vector.js";
 import Offset from "../hexagon/Offset.js";
 import { THRUSTER_DIRECTION } from "../unit/system/strategy/ThrustChannelSystemStrategy.js";
+import { IPhaseDirector } from "../game/IPhaseDirector.js";
 
 class MovementService {
-  private gamedata: GameData | null;
-  private terrain: GameTerrain;
+  private gamedata: GameData | null = null;
+  private terrain: GameTerrain | null = null;
+  private phaseDirector: IPhaseDirector | null = null;
 
   constructor() {
     this.gamedata = null;
-    this.terrain = new GameTerrain();
+    this.terrain = null;
   }
 
-  update(gamedata: GameData, phaseDirector) {
+  update(gamedata: GameData, phaseDirector: IPhaseDirector) {
     this.gamedata = gamedata;
     this.phaseDirector = phaseDirector;
+    this.terrain = new GameTerrain(gamedata);
 
     return this;
   }
@@ -32,6 +35,21 @@ class MovementService {
     return this.gamedata;
   }
 
+  getTerrain(): GameTerrain {
+    if (!this.terrain) {
+      throw new Error("Terrain is not set");
+    }
+
+    return this.terrain;
+  }
+
+  getPhaseDirector(): IPhaseDirector {
+    if (!this.phaseDirector) {
+      throw new Error("PhaseDirector is not set");
+    }
+
+    return this.phaseDirector;
+  }
   /*
   isMoved(ship: Ship, turn: number) {
     
@@ -60,17 +78,12 @@ class MovementService {
   getNewEndMove(ship: Ship) {
     const startMove = ship.movement.getLastEndMoveOrSurrogate();
     const lastMove = ship.movement.getLastMove();
-    const vector = lastMove.getVelocity();
-
-    const { position, velocity } = this.terrain.getGravityVectorForTurn(
-      startMove.position,
-      vector
-    );
+    const velocity = lastMove.getVelocity();
 
     return new MovementOrder(
       null,
       MOVEMENT_TYPE.END,
-      position,
+      startMove.position.add(velocity),
       velocity,
       lastMove.facing,
       lastMove.rolled,
@@ -85,7 +98,7 @@ class MovementService {
     if (!deployMove) {
       const lastMove = ship.movement.getLastMove();
       deployMove = new MovementOrder(
-        -1,
+        null,
         MOVEMENT_TYPE.DEPLOY,
         pos,
         lastMove.velocity,
@@ -105,12 +118,18 @@ class MovementService {
 
   doDeploymentTurn(ship: Ship, step: 1 | -1) {
     const deployMove = ship.movement.getDeployMove();
+
+    if (!deployMove) {
+      throw new Error("Deployment move not found");
+    }
+
     const newfacing = addToHexFacing(deployMove.facing, step);
     deployMove.facing = newfacing;
     ship.movement.replaceDeployMove(deployMove);
     this.shipStateChanged(ship);
   }
 
+  /*
   getPositionAtStartOfTurn(ship: Ship, currentTurn: number) {
     if (currentTurn === undefined) {
       currentTurn = this.getGameData().turn;
@@ -127,9 +146,10 @@ class MovementService {
 
     return new Offset(move.position);
   }
+    */
 
   shipStateChanged(ship: Ship) {
-    this.phaseDirector.relayEvent("shipStateChanged", ship);
+    this.getPhaseDirector().relayEvent("shipStateChanged", ship);
   }
 
   canThrust(ship: Ship, direction: THRUSTER_DIRECTION) {

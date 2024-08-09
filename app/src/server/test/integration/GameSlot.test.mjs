@@ -1,13 +1,13 @@
 import test from "ava";
-import GameController from "../../server/controller/GameController.mjs";
-import TestDatabaseConnection from "../support/TestDatabaseConnection.mjs";
+import GameController from "../../server/controller/GameController";
+import TestDatabaseConnection from "../support/TestDatabaseConnection";
 import User from "../../model/User";
-import GameData from "../../model/game/GameData.mjs";
-import GameSlot from "../../model/game/GameSlot.mjs";
+import GameData from "../../model/game/GameData";
+import GameSlot from "../../model/game/GameSlot";
 import hexagon from "../../model/hexagon";
-import { constructLobbyGame } from "../support/constructGame.mjs";
+import { constructLobbyGame } from "../support/constructGame";
 
-test.serial("Take slot", async test => {
+test.serial("Take slot", async (test) => {
   const db = new TestDatabaseConnection("take_slot");
   await db.resetDatabase();
 
@@ -26,11 +26,11 @@ test.serial("Take slot", async test => {
 
   const newSlot = newGameData.slots.getSlots()[1];
   test.is(newSlot.userId, user2.id);
-  test.true(newGameData.players.some(player => player.id === user2.id));
+  test.true(newGameData.players.some((player) => player.id === user2.id));
   test.true(newGameData.isPlayerActive(user2));
 });
 
-test.serial("Leave slot", async test => {
+test.serial("Leave slot", async (test) => {
   const db = new TestDatabaseConnection("take_slot");
   await db.resetDatabase();
 
@@ -49,11 +49,11 @@ test.serial("Leave slot", async test => {
   const newGameData = await controller.getGameData(gameId);
   const newSlot = newGameData.slots.getSlots()[1];
   test.is(newSlot.userId, null);
-  test.true(newGameData.players.every(player => player.id !== user2.id));
+  test.true(newGameData.players.every((player) => player.id !== user2.id));
   test.false(newGameData.isPlayerActive(user2));
 });
 
-test.serial("Leave the last slot", async test => {
+test.serial("Leave the last slot", async (test) => {
   const db = new TestDatabaseConnection("take_slot");
   await db.resetDatabase();
 
@@ -71,7 +71,7 @@ test.serial("Leave the last slot", async test => {
   test.is(newGameData.status, "abandoned");
 });
 
-test.serial("Remove the game as a creator", async test => {
+test.serial("Remove the game as a creator", async (test) => {
   const db = new TestDatabaseConnection("take_slot");
   await db.resetDatabase();
 
@@ -87,7 +87,7 @@ test.serial("Remove the game as a creator", async test => {
   test.is(newGameData.status, "abandoned");
 });
 
-test.serial("Fail to remove game as non creator", async test => {
+test.serial("Fail to remove game as non creator", async (test) => {
   const db = new TestDatabaseConnection("take_slot");
   await db.resetDatabase();
 
@@ -111,7 +111,7 @@ test.serial("Fail to remove game as non creator", async test => {
   test.is(newGameData.status, "lobby");
 });
 
-test.serial("Remove game as last player", async test => {
+test.serial("Remove game as last player", async (test) => {
   const db = new TestDatabaseConnection("take_slot");
   await db.resetDatabase();
 
@@ -134,7 +134,7 @@ test.serial("Remove game as last player", async test => {
   test.is(newGameData.status, "abandoned");
 });
 
-test.serial("Take both slots", async test => {
+test.serial("Take both slots", async (test) => {
   const db = new TestDatabaseConnection("take_slot");
   await db.resetDatabase();
 
@@ -152,13 +152,13 @@ test.serial("Take both slots", async test => {
   const newGameData = await controller.getGameData(gameId);
   test.is(newGameData.slots.getSlots()[0].userId, user.id);
   test.is(newGameData.slots.getSlots()[1].userId, user.id);
-  test.true(newGameData.players.some(player => player.id === user.id));
+  test.true(newGameData.players.some((player) => player.id === user.id));
   test.is(newGameData.players.length, 1);
   test.false(newGameData.isPlayerActive(user2));
   test.true(newGameData.isPlayerActive(user));
 });
 
-test.serial("Take and leave slot", async test => {
+test.serial("Take and leave slot", async (test) => {
   const db = new TestDatabaseConnection("take_slot");
   await db.resetDatabase();
 
@@ -178,13 +178,13 @@ test.serial("Take and leave slot", async test => {
 
   test.is(newGameData.slots.getSlots()[0].userId, user.id);
   test.is(newGameData.slots.getSlots()[1].userId, null);
-  test.true(newGameData.players.some(player => player.id === user.id));
+  test.true(newGameData.players.some((player) => player.id === user.id));
   test.is(newGameData.players.length, 1);
   test.false(newGameData.isPlayerActive(user2));
   test.true(newGameData.isPlayerActive(user));
 });
 
-test.serial("Try to take occupied slot", async test => {
+test.serial("Try to take occupied slot", async (test) => {
   const db = new TestDatabaseConnection("take_slot");
   await db.resetDatabase();
 
@@ -204,6 +204,6 @@ test.serial("Try to take occupied slot", async test => {
 
   const newGameData = await controller.getGameData(gameId);
   test.is(newGameData.slots.getSlots()[0].userId, user.id);
-  test.true(newGameData.players.every(player => player.id !== user2.id));
+  test.true(newGameData.players.every((player) => player.id !== user2.id));
   test.false(newGameData.isPlayerActive(user2));
 });

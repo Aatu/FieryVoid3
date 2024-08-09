@@ -1,9 +1,9 @@
 import test from "ava";
 import GameData from "../../model/game/GameData";
 import MovementHandler from "../../server/handler/MovementHandler";
-import GameController from "../../server/controller/GameController.mjs";
-import TestDatabaseConnection from "../support/TestDatabaseConnection.mjs";
-import { constructDeployedGame } from "../support/constructGame.mjs";
+import GameController from "../../server/controller/GameController";
+import TestDatabaseConnection from "../support/TestDatabaseConnection";
+import { constructDeployedGame } from "../support/constructGame";
 import MovementService from "../../model/movement/MovementService";
 import movementTypes from "../../model/movement/movementTypes";
 import MovementOrder from "../../model/movement/MovementOrder";
@@ -13,7 +13,7 @@ import User from "../../model/User";
 
 test.serial(
   "Submit successfull electronic warfare for first player",
-  async test => {
+  async (test) => {
     const db = new TestDatabaseConnection("electronicWarfare");
     await db.resetDatabase();
 
@@ -24,11 +24,11 @@ test.serial(
 
     const achillesInitial = gameData.ships
       .getShips()
-      .find(ship => ship.name === "UCS Achilles");
+      .find((ship) => ship.name === "UCS Achilles");
 
     const biliyazInitial = gameData.ships
       .getShips()
-      .find(ship => ship.name === "GEPS Biliyaz");
+      .find((ship) => ship.name === "GEPS Biliyaz");
 
     achillesInitial.electronicWarfare.assignOffensiveEw(biliyazInitial, 5);
 
@@ -37,10 +37,10 @@ test.serial(
 
     const achilles = newGameData.ships
       .getShips()
-      .find(ship => ship.name === "UCS Achilles");
+      .find((ship) => ship.name === "UCS Achilles");
     const biliyaz = newGameData.ships
       .getShips()
-      .find(ship => ship.name === "GEPS Biliyaz");
+      .find((ship) => ship.name === "GEPS Biliyaz");
 
     test.is(achilles.electronicWarfare.getOffensiveEw(biliyaz), 5);
 
@@ -50,7 +50,7 @@ test.serial(
 
 test.serial(
   "Submit successfull electronic warfare for both players",
-  async test => {
+  async (test) => {
     const db = new TestDatabaseConnection("electronicWarfare");
     await db.resetDatabase();
 
@@ -61,11 +61,11 @@ test.serial(
 
     const achillesInitial = gameData.ships
       .getShips()
-      .find(ship => ship.name === "UCS Achilles");
+      .find((ship) => ship.name === "UCS Achilles");
 
     const biliyazInitial = gameData.ships
       .getShips()
-      .find(ship => ship.name === "GEPS Biliyaz");
+      .find((ship) => ship.name === "GEPS Biliyaz");
 
     biliyazInitial.electronicWarfare.assignCcEw(3);
     achillesInitial.electronicWarfare.assignOffensiveEw(biliyazInitial, 5);
@@ -76,10 +76,10 @@ test.serial(
 
     const achilles = newGameData.ships
       .getShips()
-      .find(ship => ship.name === "UCS Achilles");
+      .find((ship) => ship.name === "UCS Achilles");
     const biliyaz = newGameData.ships
       .getShips()
-      .find(ship => ship.name === "GEPS Biliyaz");
+      .find((ship) => ship.name === "GEPS Biliyaz");
 
     test.is(newGameData.turn, 2);
     test.is(achilles.electronicWarfare.getOffensiveEw(biliyaz), 0);

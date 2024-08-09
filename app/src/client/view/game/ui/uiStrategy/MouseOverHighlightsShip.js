@@ -3,8 +3,8 @@ import {
   COLOR_FRIENDLY,
   COLOR_ENEMY,
   COLOR_FRIENDLY_HIGHLIGHT,
-  COLOR_ENEMY_HIGHLIGHT
-} from "../../../../../model/gameConfig.mjs";
+  COLOR_ENEMY_HIGHLIGHT,
+} from "../../../../../model/gameConfig";
 
 class MouseOverHighlightsShip extends UiStrategy {
   deactivate(payload) {
@@ -22,7 +22,7 @@ class MouseOverHighlightsShip extends UiStrategy {
 
   hide() {
     const { shipIconContainer } = this.services;
-    shipIconContainer.getArray().forEach(icon => {
+    shipIconContainer.getArray().forEach((icon) => {
       icon.revertEmissive();
     });
   }

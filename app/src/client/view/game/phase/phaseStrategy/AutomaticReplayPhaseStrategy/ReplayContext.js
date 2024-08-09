@@ -1,6 +1,6 @@
 import { ShipMovementAnimation } from "../../../animation";
 import ShipVelocityAnimation from "../../../animation/ShipVelocityAnimation";
-import Structure from "../../../../../../model/unit/system/structure/Structure.mjs";
+import Structure from "../../../../../../model/unit/system/structure/Structure";
 
 class ReplayContext {
   constructor(phaseStrategy) {

@@ -1,12 +1,12 @@
 import * as THREE from "three";
-import { getSeededRandomGenerator } from "../../../../../model/utils/math.mjs";
+import { getSeededRandomGenerator } from "../../../../../model/utils/math";
 
 const getRandomPosition = (maxDistance, getRandom) => ({
   x: getRandom() * maxDistance - maxDistance / 2,
-  y: getRandom() * maxDistance - maxDistance / 2
+  y: getRandom() * maxDistance - maxDistance / 2,
 });
 
-const constructFirstCurve = nextPosition => {
+const constructFirstCurve = (nextPosition) => {
   return new THREE.CubicBezierCurve(
     new THREE.Vector2(0, 0),
     new THREE.Vector2(0, 0),
@@ -33,7 +33,7 @@ const constructEvasionCurves = (evasion, maxDistance, getRandom) => {
 
   const positions = new Array(evasion + 1)
     .fill(0)
-    .map(i => getRandomPosition(maxDistance, getRandom));
+    .map((i) => getRandomPosition(maxDistance, getRandom));
 
   for (let i = 0; i < positions.length; i++) {
     const position = positions[i];

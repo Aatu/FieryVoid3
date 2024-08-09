@@ -6,10 +6,10 @@ import BaseParticle, {
   TEXTURE_STARLINE,
 } from "../particle/BaseParticle";
 import Animation from "../Animation";
-import { getPointInDirection } from "../../../../../model/utils/math.mjs";
+import { getPointInDirection } from "../../../../../model/utils/math";
 import * as THREE from "three";
 import BoltEffect from "./BoltEffect";
-import Vector from "../../../../../model/utils/Vector.mjs";
+import Vector from "../../../../../model/utils/Vector";
 
 const boltEffect = new BoltEffect();
 

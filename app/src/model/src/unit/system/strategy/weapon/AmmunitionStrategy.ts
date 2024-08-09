@@ -1,5 +1,4 @@
 import ShipSystemStrategy from "../ShipSystemStrategy";
-import { cargoClasses } from "../../cargo/cargo";
 import CargoService, { CargoEntry } from "../../../../cargo/CargoService";
 import Ammo from "../../weapon/ammunition/Ammo";
 import { AmmunitionType, createAmmoInstance } from "../../weapon/ammunition";

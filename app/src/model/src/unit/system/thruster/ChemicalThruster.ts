@@ -6,7 +6,11 @@ import ThrustChannelSystemStrategy, {
 import { SYSTEM_HANDLERS } from "../strategy/types/SystemHandlersTypes";
 
 class ChemicalThruster extends ShipSystem {
-  constructor(args: SystemArgs, output: number, direction: THRUSTER_DIRECTION) {
+  constructor(
+    args: SystemArgs,
+    output: number,
+    direction: THRUSTER_DIRECTION | THRUSTER_DIRECTION[]
+  ) {
     super(args, [
       new ThrustChannelSystemStrategy(
         output,

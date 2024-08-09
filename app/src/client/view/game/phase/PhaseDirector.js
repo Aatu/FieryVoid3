@@ -16,9 +16,9 @@ import WaitingPhaseStrategy from "./phaseStrategy/WaitingPhaseStrategy";
 import GamePhaseStrategy from "./phaseStrategy/GamePhaseStrategy";
 import AutomaticReplayPhaseStrategy from "./phaseStrategy/AutomaticReplayPhaseStrategy/index.js";
 import GameDataCache from "./GameDataCache";
-import GameData from "../../../../model/game/GameData.mjs";
+import GameData from "../../../../model/game/GameData";
 import TorpedoIconContainer from "../renderer/icon/TorpedoIconContainer";
-import TorpedoAttackService from "../../../../model/weapon/TorpedoAttackService.mjs";
+import TorpedoAttackService from "../../../../model/weapon/TorpedoAttackService";
 
 class PhaseDirector {
   constructor(uiState, currentUser, coordinateConverter, gameConnector) {
@@ -54,11 +54,12 @@ class PhaseDirector {
 
     this.shipIconContainer = new ShipIconContainer(scene, this.currentUser);
     this.torpedoIconContainer = new TorpedoIconContainer(scene);
-    this.electronicWarfareIndicatorService = new ElectronicWarfareIndicatorService(
-      scene,
-      this.shipIconContainer,
-      this.currentUser
-    );
+    this.electronicWarfareIndicatorService =
+      new ElectronicWarfareIndicatorService(
+        scene,
+        this.shipIconContainer,
+        this.currentUser
+      );
     this.shipWindowManager = new ShipWindowManager(
       this.uiState,
       this.movementService

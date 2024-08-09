@@ -1,7 +1,7 @@
 import test from "ava";
-import GameController from "../../server/controller/GameController.mjs";
-import TestDatabaseConnection from "../support/TestDatabaseConnection.mjs";
-import { constructDeployedGame } from "../support/constructGame.mjs";
+import GameController from "../../server/controller/GameController";
+import TestDatabaseConnection from "../support/TestDatabaseConnection";
+import { constructDeployedGame } from "../support/constructGame";
 import WeaponFireService from "../../model/weapon/WeaponFireService";
 import User from "../../model/User";
 

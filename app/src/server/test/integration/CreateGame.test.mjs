@@ -1,12 +1,12 @@
 import test from "ava";
-import GameController from "../../server/controller/GameController.mjs";
-import TestDatabaseConnection from "../support/TestDatabaseConnection.mjs";
+import GameController from "../../server/controller/GameController";
+import TestDatabaseConnection from "../support/TestDatabaseConnection";
 import User from "../../model/User";
-import GameData from "../../model/game/GameData.mjs";
-import GameSlot from "../../model/game/GameSlot.mjs";
+import GameData from "../../model/game/GameData";
+import GameSlot from "../../model/game/GameSlot";
 import hexagon from "../../model/hexagon";
 
-test.serial("Create game successfull", async test => {
+test.serial("Create game successfull", async (test) => {
   const db = new TestDatabaseConnection("create_game");
   await db.resetDatabase();
 
@@ -22,7 +22,7 @@ test.serial("Create game successfull", async test => {
       points: 3000,
       userId: user.id,
       deploymentLocation: new hexagon.Offset(-30, 0),
-      deploymentVector: new hexagon.Offset(30, 0)
+      deploymentVector: new hexagon.Offset(30, 0),
     })
   );
 
@@ -33,7 +33,7 @@ test.serial("Create game successfull", async test => {
       points: 3000,
       userId: null,
       deploymentLocation: new hexagon.Offset(30, 0),
-      deploymentVector: new hexagon.Offset(-30, 0)
+      deploymentVector: new hexagon.Offset(-30, 0),
     })
   );
 
@@ -46,11 +46,11 @@ test.serial("Create game successfull", async test => {
   test.is(newGameData.id, gameId);
   test.is(newGameData.slots.getSlots().length, 2);
   test.deepEqual(newGameData.slots.serialize(), gameData.slots.serialize());
-  test.true(newGameData.players.some(player => player.id === user.id));
+  test.true(newGameData.players.some((player) => player.id === user.id));
   test.true(newGameData.isPlayerActive(user));
 });
 
-test("Create game, user is not in a slot", async test => {
+test("Create game, user is not in a slot", async (test) => {
   const db = new TestDatabaseConnection();
   const user = new User(1, "Nönmän");
 
@@ -64,7 +64,7 @@ test("Create game, user is not in a slot", async test => {
       points: 3000,
       userId: null,
       deploymentLocation: new hexagon.Offset(-30, 0),
-      deploymentVector: new hexagon.Offset(30, 0)
+      deploymentVector: new hexagon.Offset(30, 0),
     })
   );
 
@@ -75,7 +75,7 @@ test("Create game, user is not in a slot", async test => {
       points: 3000,
       userId: null,
       deploymentLocation: new hexagon.Offset(30, 0),
-      deploymentVector: new hexagon.Offset(-30, 0)
+      deploymentVector: new hexagon.Offset(-30, 0),
     })
   );
 
@@ -87,7 +87,7 @@ test("Create game, user is not in a slot", async test => {
   test.is(error.message, "Game creator has to occupy atleast one slot");
 });
 
-test("Create game, only one slot", async test => {
+test("Create game, only one slot", async (test) => {
   const db = new TestDatabaseConnection();
   const user = new User(1, "Nönmän");
 
@@ -101,7 +101,7 @@ test("Create game, only one slot", async test => {
       points: 3000,
       userId: user.id,
       deploymentLocation: new hexagon.Offset(-30, 0),
-      deploymentVector: new hexagon.Offset(30, 0)
+      deploymentVector: new hexagon.Offset(30, 0),
     })
   );
 
@@ -113,7 +113,7 @@ test("Create game, only one slot", async test => {
   test.is(error.message, "Game has to have atleast two slots");
 });
 
-test("Create game, multiple users in slots", async test => {
+test("Create game, multiple users in slots", async (test) => {
   const user = new User(1, "Nönmän");
   const user2 = new User(2, "Bädmän");
 
@@ -127,7 +127,7 @@ test("Create game, multiple users in slots", async test => {
       points: 3000,
       userId: user.id,
       deploymentLocation: new hexagon.Offset(-30, 0),
-      deploymentVector: new hexagon.Offset(30, 0)
+      deploymentVector: new hexagon.Offset(30, 0),
     })
   );
 
@@ -138,7 +138,7 @@ test("Create game, multiple users in slots", async test => {
       points: 3000,
       userId: user2.id,
       deploymentLocation: new hexagon.Offset(30, 0),
-      deploymentVector: new hexagon.Offset(-30, 0)
+      deploymentVector: new hexagon.Offset(-30, 0),
     })
   );
 

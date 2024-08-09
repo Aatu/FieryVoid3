@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import styled from "styled-components";
 import ShipFleetBadge from "./ShipFleetBadge";
 import { StateStore } from "../../../../state/StoreProvider";
-import GameData from "../../../../../model/game/GameData.mjs";
+import GameData from "../../../../../model/game/GameData";
 
 const Container = styled.div`
   position: absolute;

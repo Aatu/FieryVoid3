@@ -5,6 +5,7 @@ import ThrustChannelSystemStrategy, {
   THRUSTER_DIRECTION,
   THRUSTER_MODE,
 } from "../strategy/ThrustChannelSystemStrategy";
+import { SYSTEM_HANDLERS } from "../strategy/types/SystemHandlersTypes";
 
 export type ThrusterArgs = {
   power?: number;
@@ -52,7 +53,7 @@ class Thruster extends ShipSystem {
   }
 
   getBackgroundImage() {
-    return this.callHandler("getBackgroundImage");
+    return this.callHandler(SYSTEM_HANDLERS.getBackgroundImage, null, "");
   }
 }
 

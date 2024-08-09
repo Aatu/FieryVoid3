@@ -1,7 +1,8 @@
+import { SystemArgs } from "../ShipSystem";
 import Radiator from "./Radiator";
 
 class Radiator10x40 extends Radiator {
-  constructor({ id }: { id: number }) {
+  constructor({ id }: SystemArgs) {
     super({ id, hitpoints: 10, armor: 0 }, 20, 20, 6);
   }
 

@@ -1,9 +1,9 @@
 import test from "ava";
-import Ship from "../../model/unit/Ship.mjs";
-import Offset from "../../model/hexagon/Offset.mjs";
-import MovementOrder from "../../model/movement/MovementOrder.mjs";
-import movementTypes from "../../model/movement/movementTypes.mjs";
-import MovementHandler from "../../server/handler/MovementHandler.mjs";
+import Ship from "../../model/unit/Ship";
+import Offset from "../../model/hexagon/Offset";
+import MovementOrder from "../../model/movement/MovementOrder";
+import movementTypes from "../../model/movement/movementTypes";
+import MovementHandler from "../../server/handler/MovementHandler";
 
 /*
 const nothingCollides = ships =>

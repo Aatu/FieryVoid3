@@ -7,13 +7,16 @@ import {
 import { IVector } from "../../../../utils/Vector";
 import Ship from "../../../Ship";
 
-class WeaponArcStrategy extends ShipSystemStrategy {
-  private arcs: { start: number; end: number }[];
+export type WeaponArc = { start: number; end: number };
+export type WeaponArcs = WeaponArc | WeaponArc[];
 
-  constructor(arcs = []) {
+class WeaponArcStrategy extends ShipSystemStrategy {
+  private arcs: WeaponArc[];
+
+  constructor(arcs: WeaponArcs = []) {
     super();
 
-    this.arcs = [].concat(arcs);
+    this.arcs = ([] as WeaponArc[]).concat(arcs);
   }
 
   hasArcs() {

@@ -1,9 +1,9 @@
 import test from "ava";
-import Ship from "../../model/unit/Ship.mjs";
-import TorpedoLauncherDual158 from "../../model/unit/system/weapon/launcher/TorpedoLauncherDual158.mjs";
-import CargoBay from "../../model/unit/system/cargo/CargoBay.mjs";
-import Torpedo158MSV from "../../model/unit/system/weapon/ammunition/torpedo/Torpedo158MSV.mjs";
-import Torpedo158Nuclear from "../../model/unit/system/weapon/ammunition/torpedo/Torpedo158Nuclear.mjs";
+import Ship from "../../model/unit/Ship";
+import TorpedoLauncherDual158 from "../../model/unit/system/weapon/launcher/TorpedoLauncherDual158";
+import CargoBay from "../../model/unit/system/cargo/CargoBay";
+import Torpedo158MSV from "../../model/unit/system/weapon/ammunition/torpedo/Torpedo158MSV";
+import Torpedo158Nuclear from "../../model/unit/system/weapon/ammunition/torpedo/Torpedo158Nuclear";
 
 const createShip = (data = { id: 1 }) => {
   const ship = new Ship(data);

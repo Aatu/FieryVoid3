@@ -5,7 +5,7 @@ import MovementOrder from "../../model/movement/MovementOrder";
 import hexagon from "../../model/hexagon";
 import TestShip from "../../model/unit/ships/test/TestShip";
 import { createShipObject } from "../../model/unit/createShipObject";
-import DamageEntry from "../../model/unit/system/DamageEntry.mjs";
+import DamageEntry from "../../model/unit/system/DamageEntry";
 import User from "../../model/User";
 
 const startMove = new MovementOrder(
@@ -46,7 +46,7 @@ const constructDeployedShip = (id, user) => {
 
 const compareMovements = (test, moves1, moves2) => {
   test.deepEqual(
-    moves1.map(move => move.clone().setRequiredThrust(null)),
-    moves2.map(move => move.clone().setRequiredThrust(null))
+    moves1.map((move) => move.clone().setRequiredThrust(null)),
+    moves2.map((move) => move.clone().setRequiredThrust(null))
   );
 };

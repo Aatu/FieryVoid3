@@ -7,21 +7,21 @@ import {
 import * as THREE from "three";
 
 import AnimationUiStrategy from "../AnimationUiStrategy";
-import WeaponFireService from "../../../../../../model/weapon/WeaponFireService.mjs";
-import { getSeededRandomGenerator } from "../../../../../../model/utils/math.mjs";
+import WeaponFireService from "../../../../../../model/weapon/WeaponFireService";
+import { getSeededRandomGenerator } from "../../../../../../model/utils/math";
 import ShipWeaponAnimationService from "./ShipWeaponAnimationService";
-import CombatLogShipMovement from "../../../../../../model/combatLog/CombatLogShipMovement.mjs";
+import CombatLogShipMovement from "../../../../../../model/combatLog/CombatLogShipMovement";
 import CameraPositionAnimation from "../../../animation/CameraPositionAnimation";
-import CombatLogGroupedWeaponFire from "../../../../../../model/combatLog/CombatLogGroupedWeaponFire.mjs";
+import CombatLogGroupedWeaponFire from "../../../../../../model/combatLog/CombatLogGroupedWeaponFire";
 import SystemDestroyedTextAnimation from "../../../animation/SystemDestroyedTextAnimation";
-import Vector from "../../../../../../model/utils/Vector.mjs";
+import Vector from "../../../../../../model/utils/Vector";
 import TorpedoMovementAnimation from "../../../animation/TorpedoMovementAnimation";
-import CombatLogGroupedTorpedoAttack from "../../../../../../model/combatLog/CombatLogGroupedTorpedoAttack.mjs";
-import { TORPEDO_Z } from "../../../../../../model/gameConfig.mjs";
+import CombatLogGroupedTorpedoAttack from "../../../../../../model/combatLog/CombatLogGroupedTorpedoAttack";
+import { TORPEDO_Z } from "../../../../../../model/gameConfig";
 import ExplosionEffect from "../../../animation/effect/ExplosionEffect";
 import TorpedoExplosionHE from "../../../animation/TorpedoExplosion/TorpedoExplosionHE";
 import TorpedoExplosionMSV from "../../../animation/TorpedoExplosion/TorpedoExplosionMSV";
-import CombatLogTorpedoLaunch from "../../../../../../model/combatLog/CombatLogTorpedoLaunch.mjs";
+import CombatLogTorpedoLaunch from "../../../../../../model/combatLog/CombatLogTorpedoLaunch";
 import ShipDamageAnimation from "../../../animation/ShipDamageAnimation";
 import ShipDestroyedAnimation from "../../../animation/ShipDestroyedAnimation";
 
@@ -58,12 +58,8 @@ class ReplayTurnActions extends AnimationUiStrategy {
   }
 
   async newTurn(gameDatas) {
-    const {
-      shipIconContainer,
-      particleEmitterContainer,
-      uiState,
-      scene,
-    } = this.services;
+    const { shipIconContainer, particleEmitterContainer, uiState, scene } =
+      this.services;
 
     await shipIconContainer.shipsLoaded();
     await particleEmitterContainer.ready();
@@ -95,12 +91,8 @@ class ReplayTurnActions extends AnimationUiStrategy {
   }
 
   buildDestroyedShipsAnimation(gameDatas, ship) {
-    const {
-      gameCamera,
-      shipIconContainer,
-      particleEmitterContainer,
-      scene,
-    } = this.services;
+    const { gameCamera, shipIconContainer, particleEmitterContainer, scene } =
+      this.services;
 
     const start = this.replayContext.getDestroyedShipsStart();
     const cameraDuration = 2000;
@@ -134,9 +126,8 @@ class ReplayTurnActions extends AnimationUiStrategy {
 
     gameDatas[0].ships.getShips().forEach((ship) => {
       const icon = shipIconContainer.getByShip(ship);
-      const systemsDestroyed = this.replayContext.getDestroyedStructuresByShip(
-        ship
-      );
+      const systemsDestroyed =
+        this.replayContext.getDestroyedStructuresByShip(ship);
 
       let end = null;
 
@@ -459,12 +450,8 @@ class ReplayTurnActions extends AnimationUiStrategy {
   }
 
   buildWeaponFireAnimation(combatLogEntry, gameDatas) {
-    const {
-      shipIconContainer,
-      gameCamera,
-      particleEmitterContainer,
-      uiState,
-    } = this.services;
+    const { shipIconContainer, gameCamera, particleEmitterContainer, uiState } =
+      this.services;
     const gameData = gameDatas[0];
 
     const weaponFireService = new WeaponFireService().update(gameData);
@@ -587,11 +574,8 @@ class ReplayTurnActions extends AnimationUiStrategy {
   }
 
   deactivate() {
-    const {
-      shipIconContainer,
-      uiState,
-      particleEmitterContainer,
-    } = this.services;
+    const { shipIconContainer, uiState, particleEmitterContainer } =
+      this.services;
     shipIconContainer.getArray().forEach(function (icon) {
       icon.hide();
     }, this);

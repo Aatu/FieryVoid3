@@ -1,5 +1,5 @@
-import MovementOrder from "./MovementOrder.mjs";
-import movementTypes from "./movementTypes.mjs";
+import MovementOrder from "./MovementOrder";
+import movementTypes from "./movementTypes";
 
 class TerrainMovementOrder extends MovementOrder {
   constructor(position, target, turn = 1) {

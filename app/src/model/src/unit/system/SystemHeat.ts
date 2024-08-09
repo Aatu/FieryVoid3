@@ -6,6 +6,17 @@ export type SerializedSystemHeat = {
   overheat?: number;
 };
 
+export type HeatChangePrediction = {
+  overheat: number;
+  newHeat: number;
+  overheatPercentage: number;
+  cooling: number;
+  coolingPercent: number;
+  overHeatThreshold: number;
+  maximumPossibleOverheatReduction: number;
+  maxCooling: number;
+};
+
 class SystemHeat {
   private system: ShipSystem;
   private heat: number;
@@ -40,6 +51,10 @@ class SystemHeat {
     this.overheat = data.overheat || 0;
 
     return this;
+  }
+
+  getHeatTransferred() {
+    return this.heatTransferred;
   }
 
   getHeatTransferPerStructure() {
@@ -123,15 +138,17 @@ class SystemHeat {
     );
   }
 
-  predictHeatChange() {
+  predictHeatChange(): HeatChangePrediction {
     if (this.isHeatStorage() || this.system.isDestroyed()) {
       return {
         overheat: 0,
         newHeat: 0,
         overheatPercentage: 0,
         cooling: 0,
+        coolingPercent: 0,
         overHeatThreshold: 0,
         maximumPossibleOverheatReduction: 0,
+        maxCooling: 0,
       };
     }
 

@@ -7,7 +7,7 @@ import {
 } from "../../../../../../model/utils/math";
 import abstractCanvas from "../../../utils/abstractCanvas";
 import { MOVEMENT } from "../../gameUiModes";
-import { hexFacingToAngle } from "../../../../../../model/utils/math.mjs";
+import { hexFacingToAngle } from "../../../../../../model/utils/math";
 
 class WeaponArcsOnSystemMouseOver extends UiStrategy {
   constructor() {

@@ -1,7 +1,7 @@
 import {
   addToDirection,
-  hexFacingToAngle
-} from "../../../../../model/utils/math.mjs";
+  hexFacingToAngle,
+} from "../../../../../model/utils/math";
 
 const shouldEaseIn = (
   startsAndEnds,
@@ -87,50 +87,50 @@ const betweenMap = (
       between,
       betweenIndex,
       move
-    )
+    ),
   };
 };
 
-const startsAndEndsToSteps = startsAndEnds => {
+const startsAndEndsToSteps = (startsAndEnds) => {
   return startsAndEnds.map(({ start, end, between }, startEndIndex) => {
     return {
       startFacing: hexFacingToAngle(start.facing),
       endFacing: hexFacingToAngle(end.facing),
       steps: between.map((move, i) => {
         return betweenMap(startsAndEnds, startEndIndex, between, i, move);
-      })
+      }),
     };
   });
 };
 
-const setStartFacings = path => {
+const setStartFacings = (path) => {
   return path.map(({ startFacing, endFacing, steps }) => {
     return {
       startFacing,
       endFacing,
-      steps: steps.map(step => {
+      steps: steps.map((step) => {
         if (step === null) {
           return { facing: startFacing };
         }
 
         const newStep = {
           ...step,
-          startFacing
+          startFacing,
         };
 
         startFacing = addToDirection(startFacing, step.pivot);
         return newStep;
-      })
+      }),
     };
   });
 };
 
-const movesToSteps = moves => {
+const movesToSteps = (moves) => {
   const startsAndEnds = [];
   let between = [];
   let start = null;
 
-  moves.forEach(move => {
+  moves.forEach((move) => {
     if (move.isDeploy()) {
       start = move;
     } else if (move.isEnd() && !start) {
@@ -139,7 +139,7 @@ const movesToSteps = moves => {
       startsAndEnds.push({
         start: start,
         between: [...between],
-        end: move
+        end: move,
       });
 
       start = move;

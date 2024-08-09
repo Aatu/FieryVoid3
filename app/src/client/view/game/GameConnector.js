@@ -1,5 +1,5 @@
 import { SERVER_WEBSOCKET_URL } from "../../config";
-import GameData from "../../../model/game/GameData.mjs";
+import GameData from "../../../model/game/GameData";
 import * as gameMessages from "../../../model/game/gameMessage";
 
 class GameConnector {

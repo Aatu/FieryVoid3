@@ -1,3 +1,6 @@
+import { SerializedShip } from "../unit/Ship";
+import { SerializedGameData } from "./GameData";
+
 export enum GAME_MESSAGE {
   TAKE_SLOT = "takeSlot",
   LEAVE_SLOT = "leaveSlot",
@@ -8,4 +11,32 @@ export enum GAME_MESSAGE {
   REPLAY = "replay",
   GAMEDATA = "gameData",
   TURN_CHANGED = "turnChanged",
+}
+
+export interface GameMessage {
+  type: GAME_MESSAGE;
+  payload: unknown;
+}
+
+export interface TakeSlotMessage extends GameMessage {
+  payload: string;
+}
+
+export interface LeaveSlotMessage extends GameMessage {
+  payload: string;
+}
+
+export interface BuyShipsMessage extends GameMessage {
+  payload: {
+    slotId: string;
+    ships: SerializedShip[];
+  };
+}
+
+export interface GameDataMessage extends GameMessage {
+  payload: SerializedGameData;
+}
+
+export interface RequestReplayMessage extends GameMessage {
+  payload: { start: number; end: number | null };
 }

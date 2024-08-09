@@ -8,8 +8,8 @@ import {
   colors,
   TooltipValue,
 } from "../../../../styled";
-import TorpedoLauncherStrategy from "../../../../../model/unit/system/strategy/weapon/TorpedoLauncherStrategy.mjs";
-import TorpedoAttackService from "../../../../../model/weapon/TorpedoAttackService.mjs";
+import TorpedoLauncherStrategy from "../../../../../model/unit/system/strategy/weapon/TorpedoLauncherStrategy";
+import TorpedoAttackService from "../../../../../model/weapon/TorpedoAttackService";
 import TorpedoAttackEntry from "./TorpedoAttackEntry";
 
 const InfoHeader = styled(TooltipHeader)`

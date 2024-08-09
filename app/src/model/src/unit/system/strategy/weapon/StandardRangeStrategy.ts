@@ -34,7 +34,7 @@ class StandardRangeStrategy extends ShipSystemStrategy {
     return this.rangesAndPenalties[this.rangesAndPenalties.length - 1].range;
   }
 
-  getRangeModifier({ distance: currentRange }: { distance: number }) {
+  getRangeModifier({ distance: currentRange }: { distance: number }): number {
     const exactModifier = this.rangesAndPenalties.find(
       ({ range }) => range === currentRange
     );

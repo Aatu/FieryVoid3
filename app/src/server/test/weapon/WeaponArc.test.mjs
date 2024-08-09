@@ -1,8 +1,8 @@
 import test from "ava";
-import Vector from "../../model/utils/Vector.mjs";
-import { WeaponArcStrategy } from "../../model/unit/system/strategy/index.mjs";
+import Vector from "../../model/utils/Vector";
+import { WeaponArcStrategy } from "../../model/unit/system/strategy/index";
 
-test("Ship is on weapon arc", test => {
+test("Ship is on weapon arc", (test) => {
   const arcStrategy = new WeaponArcStrategy([{ start: 330, end: 30 }]);
 
   let shooterPosition = new Vector(0, 0);
@@ -12,14 +12,14 @@ test("Ship is on weapon arc", test => {
     getPosition: () => shooterPosition,
     getFacing: () => shooterFacing,
     movement: {
-      isRolled: () => false
-    }
+      isRolled: () => false,
+    },
   };
 
   arcStrategy.system = {
     shipSystems: {
-      ship: shooter
-    }
+      ship: shooter,
+    },
   };
 
   const target = { getPosition: () => targetPosition };
@@ -31,7 +31,7 @@ test("Ship is on weapon arc", test => {
   test.true(arcStrategy.isOnArc({ target }));
 });
 
-test("When ship is rolled, weapon arcs are flipped", test => {
+test("When ship is rolled, weapon arcs are flipped", (test) => {
   const arcStrategy = new WeaponArcStrategy([{ start: 180, end: 0 }]);
 
   let shooterPosition = new Vector(0, 0);
@@ -41,14 +41,14 @@ test("When ship is rolled, weapon arcs are flipped", test => {
     getPosition: () => shooterPosition,
     getFacing: () => shooterFacing,
     movement: {
-      isRolled: () => true
-    }
+      isRolled: () => true,
+    },
   };
 
   arcStrategy.system = {
     shipSystems: {
-      ship: shooter
-    }
+      ship: shooter,
+    },
   };
 
   const target = { getPosition: () => targetPosition };

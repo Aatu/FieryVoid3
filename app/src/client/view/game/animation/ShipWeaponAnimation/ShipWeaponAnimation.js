@@ -1,8 +1,8 @@
 import * as THREE from "three";
 import Animation from "../Animation";
 import Vector from "../../../../../model/utils/Vector";
-import { degreeToRadian } from "../../../../../model/utils/math.mjs";
-import { hexFacingToAngle } from "../../../../../model/utils/math.mjs";
+import { degreeToRadian } from "../../../../../model/utils/math";
+import { hexFacingToAngle } from "../../../../../model/utils/math";
 
 class ShipWeaponAnimation extends Animation {
   constructor(props) {

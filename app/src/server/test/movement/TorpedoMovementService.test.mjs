@@ -1,14 +1,14 @@
 import test from "ava";
-import TorpedoMovementService from "../../model/movement/TorpedoMovementService.mjs";
-import TorpedoFlight from "../../model/unit/TorpedoFlight.mjs";
-import Torpedo158 from "../../model/unit/system/weapon/ammunition/torpedo/Torpedo158.mjs";
-import Ship from "../../model/unit/Ship.mjs";
-import MovementOrder from "../../model/movement/MovementOrder.mjs";
-import Offset from "../../model/hexagon/Offset.mjs";
-import movementTypes from "../../model/movement/movementTypes.mjs";
-import coordinateConverter from "../../model/utils/CoordinateConverter.mjs";
-import Vector from "../../model/utils/Vector.mjs";
-import Torpedo158MSV from "../../model/unit/system/weapon/ammunition/torpedo/Torpedo158MSV.mjs";
+import TorpedoMovementService from "../../model/movement/TorpedoMovementService";
+import TorpedoFlight from "../../model/unit/TorpedoFlight";
+import Torpedo158 from "../../model/unit/system/weapon/ammunition/torpedo/Torpedo158";
+import Ship from "../../model/unit/Ship";
+import MovementOrder from "../../model/movement/MovementOrder";
+import Offset from "../../model/hexagon/Offset";
+import movementTypes from "../../model/movement/movementTypes";
+import coordinateConverter from "../../model/utils/CoordinateConverter";
+import Vector from "../../model/utils/Vector";
+import Torpedo158MSV from "../../model/unit/system/weapon/ammunition/torpedo/Torpedo158MSV";
 /*
 test("Torpedo moves properly", test => {
   const torpedoMovementService = new TorpedoMovementService();
@@ -250,7 +250,7 @@ test("Torpedo impact is predicted properly", test => {
 });
 */
 
-test("Test torpedo movement standardize function", test => {
+test("Test torpedo movement standardize function", (test) => {
   const torpedoMovementService = new TorpedoMovementService();
 
   const result = torpedoMovementService.standardize(
@@ -263,11 +263,11 @@ test("Test torpedo movement standardize function", test => {
   test.deepEqual(result, {
     newTargetPosition: new Vector(966.3382366102873, 0),
     newShooterVelocity: new Vector(1339.0785580469899, 69.97966070341435),
-    φ: -0.05473537736695087
+    φ: -0.05473537736695087,
   });
 });
 
-test("Torpedo math fails with with equal positions", test => {
+test("Torpedo math fails with with equal positions", (test) => {
   const torpedoMovementService = new TorpedoMovementService();
 
   const error = test.throws(() =>
@@ -282,7 +282,7 @@ test("Torpedo math fails with with equal positions", test => {
   test.is(error.message, "Shooter and target positions can not be same");
 });
 
-test("Torpedo math fails if torpedo acceleration is zero", test => {
+test("Torpedo math fails if torpedo acceleration is zero", (test) => {
   const torpedoMovementService = new TorpedoMovementService();
 
   const error = test.throws(() =>

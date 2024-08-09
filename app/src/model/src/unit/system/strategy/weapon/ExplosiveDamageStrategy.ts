@@ -1,4 +1,10 @@
-import StandardDamageStrategy from "./StandardDamageStrategy.js";
+import CombatLogDamageEntry from "../../../../combatLog/CombatLogDamageEntry.js";
+import Vector from "../../../../utils/Vector.js";
+import { SystemMessage } from "../types/SystemHandlersTypes.js";
+import StandardDamageStrategy, {
+  DamagePayload,
+  StandardDamagePayload,
+} from "./StandardDamageStrategy.js";
 
 class ExplosiveDamageStrategy extends StandardDamageStrategy {
   private numberOfDamagesFormula: string | number;
@@ -13,14 +19,17 @@ class ExplosiveDamageStrategy extends StandardDamageStrategy {
     this.numberOfDamagesFormula = numberOfDamagesFormula;
   }
 
-  _getDamageTypeMessage() {
+  protected getDamageTypeMessage() {
     return "Explosive";
   }
 
-  getMessages(payload, previousResponse = []) {
+  getMessages(
+    payload: unknown,
+    previousResponse: SystemMessage[] = []
+  ): SystemMessage[] {
     previousResponse.push({
       header: "Damage type",
-      value: this._getDamageTypeMessage(),
+      value: this.getDamageTypeMessage(),
     });
 
     previousResponse.push({
@@ -30,31 +39,34 @@ class ExplosiveDamageStrategy extends StandardDamageStrategy {
 
     previousResponse.push({
       header: "Damage per hit",
-      value: this._getDamageMessage(),
+      value: this.getDamageMessage(),
     });
 
     previousResponse.push({
       header: "Armor piercing per hit",
-      value: this._getArmorPiercingMessage(),
+      value: this.getArmorPiercingMessage(),
     });
 
     return previousResponse;
   }
 
-  _getNumberOfDamagesForWeaponHit() {
+  protected getNumberOfDamagesForWeaponHit(): number {
     if (Number.isInteger(this.numberOfDamagesFormula)) {
-      return this.numberOfDamagesFormula;
+      return this.numberOfDamagesFormula as number;
     }
-    return this.diceRoller.roll(this.numberOfDamagesFormula).total;
+    return this.diceRoller.roll(this.numberOfDamagesFormula);
   }
 
-  _doDamage(payload, damageResult) {
+  protected doDamage(
+    payload: DamagePayload & { shooterPosition: Vector },
+    damageResult: CombatLogDamageEntry
+  ) {
     const { target, shooterPosition } = payload;
 
-    let numberOfDamages = this._getNumberOfDamagesForWeaponHit();
+    let numberOfDamages = this.getNumberOfDamagesForWeaponHit();
 
     while (numberOfDamages--) {
-      const hitSystem = this._chooseHitSystem({
+      const hitSystem = this.chooseHitSystem({
         target,
         shooterPosition,
       });
@@ -63,12 +75,12 @@ class ExplosiveDamageStrategy extends StandardDamageStrategy {
         return;
       }
 
-      this._doDamageToSystem(
+      this.doDamageToSystem(
         payload,
         damageResult,
         hitSystem,
-        this._getArmorPiercing(),
-        this._getDamageForWeaponHit(payload)
+        this.getArmorPiercing(payload),
+        this.getDamageForWeaponHit(payload)
       );
     }
   }

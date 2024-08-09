@@ -1,16 +1,24 @@
-import hexagon from "../hexagon/index.mjs";
-import { addToHexFacing } from "../utils/math.mjs";
-
-import { MovementOrder, movementTypes, ThrustBill } from "./index.js";
+import Ship from "../unit/Ship";
+import { addToHexFacing } from "../utils/math";
+import {
+  MOVEMENT_TYPE,
+  MovementOrder,
+  MovementService,
+  ThrustBill,
+} from "./index";
 
 class MovementResolver {
-  constructor(ship, movementService, turn) {
+  public ship: Ship;
+  public movementService: MovementService;
+  public turn: number;
+
+  constructor(ship: Ship, movementService: MovementService, turn: number) {
     this.ship = ship;
     this.movementService = movementService;
     this.turn = turn;
   }
 
-  billAndPay(bill, commit = true) {
+  billAndPay(bill: ThrustBill, commit = true) {
     if (bill.pay()) {
       const newMovement = bill.getMoves();
 
@@ -45,13 +53,13 @@ class MovementResolver {
     } else {
       rollMove = new MovementOrder(
         null,
-        movementTypes.ROLL,
+        MOVEMENT_TYPE.ROLL,
         endMove.position,
         endMove.velocity,
         endMove.facing,
         endMove.rolled,
         this.turn,
-        endMove.rolled ? false : true
+        endMove.rolled ? 0 : 1
       );
 
       const playerAdded = movements.filter((move) => move.isPlayerAdded());
@@ -65,24 +73,27 @@ class MovementResolver {
     return this.billAndPay(bill, commit);
   }
 
-  canEvade(step) {
+  canEvade(step: number) {
     return this.evade(step, false);
   }
 
-  evade(step, commit = true) {
+  evade(step: number, commit = true) {
     let evadeMove = this.ship.movement.getEvadeMove();
 
     const endMove = this.ship.movement.getLastEndMoveOrSurrogate();
 
     if (evadeMove) {
-      if (evadeMove.value + step > this.ship.movement.getMaxEvasion()) {
+      if (
+        (evadeMove.value as number) + step >
+        this.ship.movement.getMaxEvasion()
+      ) {
         return false;
       }
 
-      if (evadeMove.value + step < 0) {
+      if ((evadeMove.value as number) + step < 0) {
         return false;
       }
-      evadeMove.value += step;
+      (evadeMove.value as number) += step;
     } else {
       if (step < 0) {
         return false;
@@ -90,7 +101,7 @@ class MovementResolver {
 
       evadeMove = new MovementOrder(
         null,
-        movementTypes.EVADE,
+        MOVEMENT_TYPE.EVADE,
         endMove.position,
         endMove.velocity,
         endMove.facing,
@@ -119,16 +130,16 @@ class MovementResolver {
     return this.billAndPay(bill, commit);
   }
 
-  canPivot(pivotDirection) {
+  canPivot(pivotDirection: 1 | -1) {
     return this.pivot(pivotDirection, false);
   }
 
-  pivot(pivotDirection, commit = true) {
+  pivot(pivotDirection: 1 | -1, commit = true) {
     const lastMove = this.ship.movement.getLastMove();
 
     const pivotMove = new MovementOrder(
       null,
-      movementTypes.PIVOT,
+      MOVEMENT_TYPE.PIVOT,
       lastMove.position,
       lastMove.velocity,
       addToHexFacing(lastMove.facing, pivotDirection),
@@ -158,16 +169,16 @@ class MovementResolver {
     return this.billAndPay(bill, commit);
   }
 
-  canThrust(direction) {
+  canThrust(direction: number) {
     return this.thrust(direction, false);
   }
 
-  thrust(direction, commit = true) {
+  thrust(direction: number, commit = true) {
     const lastMove = this.ship.movement.getLastMove();
 
     const thrustMove = new MovementOrder(
       null,
-      movementTypes.SPEED,
+      MOVEMENT_TYPE.SPEED,
       lastMove.position,
       lastMove.getHexVelocity().moveToDirection(direction),
       lastMove.facing,

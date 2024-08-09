@@ -1,5 +1,5 @@
-import Offset from "../../../model/hexagon/Offset.mjs";
-import { shuffleArray } from "../../../model/utils/math.mjs";
+import Offset from "../../../model/hexagon/Offset";
+import { shuffleArray } from "../../../model/utils/math";
 
 class CollisionAvoider {
   avoidCollisions(gameData) {
@@ -12,7 +12,7 @@ class CollisionAvoider {
 }
 
 const isOverlapping = (ship, ships) => {
-  return ships.filter(otherShip => {
+  return ships.filter((otherShip) => {
     if (ship === otherShip) {
       return false;
     }
@@ -29,7 +29,7 @@ const isOverlappingSameSize = (ship, ships) => {
   const overlapping = isOverlapping(ship, ships);
 
   return overlapping.some(
-    otherShip => otherShip.hexSizes.length >= ship.hexSizes.length
+    (otherShip) => otherShip.hexSizes.length >= ship.hexSizes.length
   );
 };
 
@@ -44,7 +44,7 @@ const doForceMove = (ship, ships, careAboutSmall) => {
 
   const facings = [0, 3]
     .concat(shuffleArray([1, 2, 4, 5]))
-    .map(facing => {
+    .map((facing) => {
       let stepsRequired = 0;
       let found = false;
       let position = initialPosition.clone();
@@ -59,7 +59,7 @@ const doForceMove = (ship, ships, careAboutSmall) => {
       return {
         facing,
         stepsRequired,
-        position
+        position,
       };
     })
     .sort((a, b) => {
@@ -86,15 +86,12 @@ const tryPosition = (ship, move, ships, careAboutSmall) => {
   return !isOverlappingSameSize(ship, ships);
 };
 
-const findColliding = ships => {
+const findColliding = (ships) => {
   const colliding = ships
-    .filter(ship => isOverlappingSameSize(ship, ships))
+    .filter((ship) => isOverlappingSameSize(ship, ships))
     .filter(
-      ship =>
-        !ship.movement
-          .getLastMove()
-          .getHexVelocity()
-          .equals(new Offset(0, 0))
+      (ship) =>
+        !ship.movement.getLastMove().getHexVelocity().equals(new Offset(0, 0))
     );
 
   colliding.sort((a, b) => {
@@ -122,14 +119,14 @@ const findColliding = ships => {
   return colliding;
 };
 
-const avoid = ships => {
+const avoid = (ships) => {
   let colliding = findColliding(ships);
 
   if (colliding.length === 0) {
     return true;
   }
 
-  colliding.forEach(ship => doForceMove(ship, ships, false));
+  colliding.forEach((ship) => doForceMove(ship, ships, false));
 
   return false;
 };

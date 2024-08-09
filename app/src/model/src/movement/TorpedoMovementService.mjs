@@ -1,8 +1,8 @@
-import coordinateConverter from "../utils/CoordinateConverter.mjs";
-import HexagonMath from "../utils/HexagonMath.mjs";
-import Vector from "../utils/Vector.mjs";
+import coordinateConverter from "../utils/CoordinateConverter";
+import HexagonMath from "../utils/HexagonMath";
+import Vector from "../utils/Vector";
 import THREE from "three";
-import { radianToDegree } from "../utils/math.mjs";
+import { radianToDegree } from "../utils/math";
 
 class TorpedoMovementService {
   reachesTargetThisTurn(flight, target) {
@@ -73,7 +73,7 @@ class TorpedoMovementService {
       impactVelocity: Math.round(
         result.impactVelocity / HexagonMath.getHexWidth()
       ),
-      effectiveness
+      effectiveness,
     };
   }
 
@@ -118,7 +118,7 @@ class TorpedoMovementService {
     return {
       newTargetPosition,
       newShooterVelocity,
-      φ
+      φ,
     };
   }
 
@@ -161,7 +161,7 @@ class TorpedoMovementService {
 
       result = {
         accelerationAngle: φ,
-        impactTurn
+        impactTurn,
       };
     } else if (newShooterVelocity.y > 0) {
       const θ = this.findRoot(
@@ -176,7 +176,7 @@ class TorpedoMovementService {
 
       result = {
         accelerationAngle: θ + φ,
-        impactTurn
+        impactTurn,
       };
     } else {
       const θ = this.findRoot(
@@ -191,7 +191,7 @@ class TorpedoMovementService {
 
       result = {
         accelerationAngle: 2 * Math.PI - θ + φ,
-        impactTurn
+        impactTurn,
       };
     }
 

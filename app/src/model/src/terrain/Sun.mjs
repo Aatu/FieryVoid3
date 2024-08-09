@@ -1,4 +1,4 @@
-import GameTerrainEntity from "../game/GameTerrainEntity.mjs";
+import GameTerrainEntity from "../game/GameTerrainEntity";
 import THREE from "three";
 
 class Sun extends GameTerrainEntity {
@@ -8,7 +8,7 @@ class Sun extends GameTerrainEntity {
       position: new THREE.Vector3(0, 0, 0),
       target: new THREE.Vector3(0, 0, 0),
       mass: 1000000000,
-      diameter: 7
+      diameter: 7,
     });
   }
 }

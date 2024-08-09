@@ -5,7 +5,7 @@ import {
   COLOR_ENEMY,
   COLOR_FRIENDLY_HIGHLIGHT,
   COLOR_ENEMY_HIGHLIGHT,
-} from "../../../../../model/gameConfig.mjs";
+} from "../../../../../model/gameConfig";
 
 class HighlightSelectedShip extends UiStrategy {
   constructor() {

@@ -1,5 +1,5 @@
-import GameData from "../../model/game/GameData.mjs";
-import GameSlot from "../../model/game/GameSlot.mjs";
+import GameData from "../../model/game/GameData";
+import GameSlot from "../../model/game/GameSlot";
 import hexagon from "../../model/hexagon";
 import TestShip from "../../model/unit/ships/test/TestShip";
 import MovementService from "../../model/movement/MovementService";

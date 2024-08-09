@@ -1,12 +1,12 @@
 import test from "ava";
-import GameController from "../../server/controller/GameController.mjs";
-import TestDatabaseConnection from "../support/TestDatabaseConnection.mjs";
-import { constructDeployedGame } from "../support/constructGame.mjs";
+import GameController from "../../server/controller/GameController";
+import TestDatabaseConnection from "../support/TestDatabaseConnection";
+import { constructDeployedGame } from "../support/constructGame";
 import MovementService from "../../model/movement/MovementService";
 import WeaponFireService from "../../model/weapon/WeaponFireService";
 import User from "../../model/User";
-import FireOrder from "../../model/weapon/FireOrder.mjs";
-import WeaponHitChance from "../../model/weapon/WeaponHitChance.mjs";
+import FireOrder from "../../model/weapon/FireOrder";
+import WeaponHitChance from "../../model/weapon/WeaponHitChance";
 
 test.serial("Submit successfull fire order for first player", async (test) => {
   const db = new TestDatabaseConnection("fire");

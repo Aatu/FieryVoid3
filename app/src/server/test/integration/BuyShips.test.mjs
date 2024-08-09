@@ -1,35 +1,27 @@
 import test from "ava";
-import GameController from "../../server/controller/GameController.mjs";
-import TestDatabaseConnection from "../support/TestDatabaseConnection.mjs";
+import GameController from "../../server/controller/GameController";
+import TestDatabaseConnection from "../support/TestDatabaseConnection";
 import User from "../../model/User";
-import { constructLobbyGameWithSlotsTaken } from "../support/constructGame.mjs";
+import { constructLobbyGameWithSlotsTaken } from "../support/constructGame";
 import TestShip from "../../model/unit/ships/test/TestShip";
 import hexagon from "../../model/hexagon";
 import MovementOrder from "../../model/movement/MovementOrder";
 import movementTypes from "../../model/movement/movementTypes";
-import Impetous from "../../model/unit/ships/federation/Impetous.mjs";
-import Torpedo158MSV from "../../model/unit/system/weapon/ammunition/torpedo/Torpedo158MSV.mjs";
+import Impetous from "../../model/unit/ships/federation/Impetous";
+import Torpedo158MSV from "../../model/unit/system/weapon/ammunition/torpedo/Torpedo158MSV";
 
 const compareMovements = (test, moves1, moves2) => {
   test.deepEqual(
-    moves1.map(move =>
-      move
-        .clone()
-        .setRequiredThrust(null)
-        .setId(null)
-        .round()
+    moves1.map((move) =>
+      move.clone().setRequiredThrust(null).setId(null).round()
     ),
-    moves2.map(move =>
-      move
-        .clone()
-        .setRequiredThrust(null)
-        .setId(null)
-        .round()
+    moves2.map((move) =>
+      move.clone().setRequiredThrust(null).setId(null).round()
     )
   );
 };
 
-test.serial("Buy ships for first player", async test => {
+test.serial("Buy ships for first player", async (test) => {
   const db = new TestDatabaseConnection("buy_ships");
   await db.resetDatabase();
   const controller = new GameController(db);
@@ -50,7 +42,7 @@ test.serial("Buy ships for first player", async test => {
     slot1.id,
     [
       new TestShip({ name: "UCS Achilles" }).serialize(),
-      new TestShip({ name: "UCS Eclipse" }).serialize()
+      new TestShip({ name: "UCS Eclipse" }).serialize(),
     ],
     user
   );
@@ -79,7 +71,7 @@ test.serial("Buy ships for first player", async test => {
   test.is(ships[0].movement.getStartMove().index, 1);
 });
 
-test.serial("Buy ships for player that is in multiple slots", async test => {
+test.serial("Buy ships for player that is in multiple slots", async (test) => {
   const db = new TestDatabaseConnection("buy_ships");
   await db.resetDatabase();
   const controller = new GameController(db);
@@ -102,7 +94,7 @@ test.serial("Buy ships for player that is in multiple slots", async test => {
     slot1.id,
     [
       new TestShip({ name: "UCS Achilles" }).serialize(),
-      new TestShip({ name: "UCS Eclipse" }).serialize()
+      new TestShip({ name: "UCS Eclipse" }).serialize(),
     ],
     user
   );
@@ -124,7 +116,7 @@ test.serial("Buy ships for player that is in multiple slots", async test => {
   test.true(newGameData.isPlayerActive(user));
 });
 
-test.serial("Buy ships for both players", async test => {
+test.serial("Buy ships for both players", async (test) => {
   const db = new TestDatabaseConnection("buy_ships");
   await db.resetDatabase();
   const controller = new GameController(db);
@@ -145,7 +137,7 @@ test.serial("Buy ships for both players", async test => {
     slot1.id,
     [
       new TestShip({ name: "UCS Achilles" }).serialize(),
-      new TestShip({ name: "UCS Eclipse" }).serialize()
+      new TestShip({ name: "UCS Eclipse" }).serialize(),
     ],
     user
   );
@@ -166,9 +158,9 @@ test.serial("Buy ships for both players", async test => {
   test.not(ships[1].id, null);
   test.not(ships[2].id, null);
 
-  const biliyaz = ships.find(ship => ship.name === "GEPS Biliyaz");
-  const achilles = ships.find(ship => ship.name === "UCS Achilles");
-  const eclipse = ships.find(ship => ship.name === "UCS Eclipse");
+  const biliyaz = ships.find((ship) => ship.name === "GEPS Biliyaz");
+  const achilles = ships.find((ship) => ship.name === "UCS Achilles");
+  const eclipse = ships.find((ship) => ship.name === "UCS Eclipse");
 
   test.true(
     newGameData.slots.getSlotById(slot1.id).shipIds.includes(achilles.id)
@@ -214,7 +206,7 @@ test.serial("Buy ships for both players", async test => {
       0,
       null,
       2
-    )
+    ),
   ]);
 
   test.true(newGameData.isActiveShip(biliyaz));
@@ -222,7 +214,7 @@ test.serial("Buy ships for both players", async test => {
   test.true(newGameData.isActiveShip(eclipse));
 });
 
-test.serial("Try to buy too expensive ships", async test => {
+test.serial("Try to buy too expensive ships", async (test) => {
   const db = new TestDatabaseConnection("buy_ships");
   await db.resetDatabase();
   const controller = new GameController(db);
@@ -254,7 +246,7 @@ test.serial("Try to buy too expensive ships", async test => {
         new TestShip({ name: "UCS 10" }).serialize(),
         new TestShip({ name: "UCS 11" }).serialize(),
         new TestShip({ name: "UCS 12" }).serialize(),
-        new TestShip({ name: "UCS 13" }).serialize()
+        new TestShip({ name: "UCS 13" }).serialize(),
       ],
       user
     )
@@ -265,7 +257,7 @@ test.serial("Try to buy too expensive ships", async test => {
   );
 });
 
-test.serial("Try to buy ships for wrong slot", async test => {
+test.serial("Try to buy ships for wrong slot", async (test) => {
   const db = new TestDatabaseConnection("buy_ships");
   await db.resetDatabase();
   const controller = new GameController(db);
@@ -286,7 +278,7 @@ test.serial("Try to buy ships for wrong slot", async test => {
     slot1.id,
     [
       new TestShip({ name: "UCS Achilles" }).serialize(),
-      new TestShip({ name: "UCS Eclipse" }).serialize()
+      new TestShip({ name: "UCS Eclipse" }).serialize(),
     ],
     user
   );
@@ -302,7 +294,7 @@ test.serial("Try to buy ships for wrong slot", async test => {
   test.is(error.message, "Slot taken by other user");
 });
 
-test.serial("Ship loadout is set", async test => {
+test.serial("Ship loadout is set", async (test) => {
   const db = new TestDatabaseConnection("buy_ships");
   await db.resetDatabase();
   const controller = new GameController(db);
@@ -335,13 +327,13 @@ test.serial("Ship loadout is set", async test => {
   const newGameData = await controller.getGameData(gameData.id);
 
   const ships = newGameData.ships.getShips();
-  const achilles = ships.find(ship => ship.name === "UCS Achilles");
+  const achilles = ships.find((ship) => ship.name === "UCS Achilles");
   const cargoBay = achilles.systems.getSystemById(204);
 
   test.true(
     cargoBay.callHandler("hasCargo", {
       object: new Torpedo158MSV(),
-      amount: 12
+      amount: 12,
     })
   );
 });

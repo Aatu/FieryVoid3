@@ -1,4 +1,4 @@
-import StandardDamageStrategy from "./StandardDamageStrategy.mjs";
+import StandardDamageStrategy from "./StandardDamageStrategy";
 
 class PiercingDamageStrategy extends StandardDamageStrategy {
   _getDamageTypeMessage() {
@@ -21,7 +21,7 @@ class PiercingDamageStrategy extends StandardDamageStrategy {
     const hitSystem = this._chooseHitSystem({
       target,
       shooterPosition,
-      lastSection
+      lastSection,
     });
 
     if (!hitSystem) {

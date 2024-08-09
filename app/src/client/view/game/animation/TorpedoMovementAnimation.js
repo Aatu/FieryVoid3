@@ -1,9 +1,9 @@
 import * as THREE from "three";
 import Animation from "./Animation";
-import { hexFacingToAngle } from "../../../../model/utils/math.mjs";
-import { getCompassHeadingOfPoint } from "../../../../model/utils/math.mjs";
-import Vector from "../../../../model/utils/Vector.mjs";
-import { getSeededRandomGenerator } from "../../../../model/utils/math.mjs";
+import { hexFacingToAngle } from "../../../../model/utils/math";
+import { getCompassHeadingOfPoint } from "../../../../model/utils/math";
+import Vector from "../../../../model/utils/Vector";
+import { getSeededRandomGenerator } from "../../../../model/utils/math";
 
 class TorpedoMovementAnimation extends Animation {
   constructor(
@@ -58,7 +58,7 @@ class TorpedoMovementAnimation extends Animation {
 
     return {
       facing: this.endMove.facing,
-      position: this.positionCurve.getPoint(percentDone)
+      position: this.positionCurve.getPoint(percentDone),
     };
   }
 
@@ -109,7 +109,7 @@ class TorpedoMovementAnimation extends Animation {
     this.icon.setPosition({
       x: position.x + this.variance.x,
       y: position.y + this.variance.y,
-      z: position.z
+      z: position.z,
     });
     this.icon.setFacing(
       -getCompassHeadingOfPoint(this.startPosition, this.endPosition)

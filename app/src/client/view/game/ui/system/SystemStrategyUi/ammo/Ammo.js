@@ -9,11 +9,11 @@ import {
   TooltipValue,
   InlineTooltipEntry,
   CenteredTooltipEntry,
-  TooltipButton
+  TooltipButton,
 } from "../../../../../../styled";
 import styled from "styled-components";
 import CargoItem from "../cargo/CargoItem";
-import NoAmmunitionLoaded from "../../../../../../../model/unit/system/weapon/ammunition/NoAmmunitionLoaded.mjs";
+import NoAmmunitionLoaded from "../../../../../../../model/unit/system/weapon/ammunition/NoAmmunitionLoaded";
 
 const LoadingList = styled.div`
   display: flex;
@@ -68,13 +68,13 @@ class Ammo extends React.Component {
     const loadingTarget = ammoStrategy.getLoadingTarget();
     ammoStrategy.ammunitionClasses
       .filter(
-        className =>
-          !loadingTarget.find(entry => entry.object instanceof className)
+        (className) =>
+          !loadingTarget.find((entry) => entry.object instanceof className)
       )
-      .forEach(notFound => {
+      .forEach((notFound) => {
         loadingTarget.push({
           object: new notFound(),
-          amount: 0
+          amount: 0,
         });
       });
 
@@ -96,7 +96,7 @@ class Ammo extends React.Component {
           <NewTargetContainer key={`new-loading-${i}`}>
             <LoadingButton
               img="/img/minus.png"
-              onClick={e => {
+              onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
 
@@ -111,7 +111,7 @@ class Ammo extends React.Component {
             />
             <LoadingButton
               img="/img/plus.png"
-              onClick={e => {
+              onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
 
@@ -170,7 +170,7 @@ class Ammo extends React.Component {
 
             <CenteredTooltipEntry
               clickable
-              onClick={e => {
+              onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
                 this.setState({ loadingOpen: true });
@@ -213,7 +213,7 @@ class Ammo extends React.Component {
             {this.getNewLoadOutButtons()}
             <CenteredTooltipEntry
               clickable
-              onClick={e => {
+              onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
                 this.setState({ loadingOpen: false });
@@ -223,17 +223,17 @@ class Ammo extends React.Component {
             </CenteredTooltipEntry>
             <CenteredTooltipEntry
               clickable
-              onClick={e => {
+              onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
 
                 ship.systems
                   .getSystems()
                   .filter(
-                    system =>
+                    (system) =>
                       system.constructor === ammoStrategy.system.constructor
                   )
-                  .forEach(system =>
+                  .forEach((system) =>
                     system.callHandler(
                       "setNewLoadingTarget",
                       ammoStrategy.getLoadingTarget()

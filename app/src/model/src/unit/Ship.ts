@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from "uuid";
 import ShipSystems, { SerializedShipSystems } from "./ShipSystems";
 import ShipElectronicWarfare from "./ShipElectronicWarfare";
 import ShipPlayer from "./ShipPlayer";
@@ -17,23 +18,27 @@ import { SerializedMovementOrder } from "../movement/MovementOrder";
 import GameData from "../game/GameData";
 import { AiRole } from "../ai/AiRole";
 
-export type SerializedShip = {
-  id?: string | null;
-  gameId?: string | null;
-  name?: string | null;
-  shipClass?: string;
-  slotId?: string | null;
-  movement?: SerializedMovementOrder[];
-  shipData?: {
-    systems?: SerializedShipSystems;
-    player?: IUser | null;
-    electronicWarfare?: SearializedShipCurrentElectronicWarfare;
-    destroyedThisTurn?: boolean;
-    aiRole?: any | null;
-  };
+export type ShipBase = {
+  id: string;
+  gameId: number | null;
+  name: string | null;
+  shipClass: string;
+  slotId: string | null;
 };
+
+export type ShipData = {
+  systems?: SerializedShipSystems;
+  player?: IUser | null;
+  electronicWarfare?: SearializedShipCurrentElectronicWarfare;
+  destroyedThisTurn?: boolean;
+  aiRole?: any | null;
+};
+
+export type SerializedShip = ShipBase &
+  ShipData & { movement: SerializedMovementOrder[]; shipData?: ShipData };
+
 class Ship implements IHexPosition {
-  public id: string | null = null;
+  public id: string = uuidv4();
   public name: string | null = null;
   public systems: ShipSystems;
   public pointCost: number;
@@ -47,7 +52,7 @@ class Ship implements IHexPosition {
   public hexSizes: Offset[];
   public shipTypeName: string;
   public shipClass!: string;
-  public gameId: string | null = null;
+  public gameId: number | null = null;
   public slotId: string | null = null;
   public player: ShipPlayer | null = null;
   public movement!: ShipMovement;
@@ -55,8 +60,9 @@ class Ship implements IHexPosition {
   public destroyedThisTurn!: boolean;
   public aiRole: AiRole | null = null;
   public shipModel: unknown | null = null;
+  public description: string = "";
 
-  constructor(data = {}) {
+  constructor(data?: SerializedShip | ShipBase) {
     this.systems = new ShipSystems(this);
     this.pointCost = 0;
     this.accelcost = 1;
@@ -73,12 +79,21 @@ class Ship implements IHexPosition {
     this.setShipProperties();
     this.deserialize(data);
   }
+
   getId(): string {
     if (!this.id) {
       throw new Error("ship has no Id");
     }
 
     return this.id;
+  }
+
+  getAIRole(): AiRole {
+    if (!this.aiRole) {
+      throw new Error("ship has no ai role");
+    }
+
+    return this.aiRole;
   }
 
   setShipProperties() {}
@@ -165,18 +180,20 @@ class Ship implements IHexPosition {
     return this.hexSizes.map((hex) => hex.rotate(hexFacing));
   }
 
-  deserialize(data: SerializedShip = {}) {
-    const shipData = data.shipData || {};
-    this.id = data.id || null;
-    this.name = data.name || "Unnamed ship ";
+  deserialize(data?: SerializedShip | ShipBase | undefined): Ship {
+    const shipData = (data as SerializedShip)?.shipData || {};
+    this.id = data?.id || uuidv4();
+    this.name = data?.name || "Unnamed ship ";
     this.shipClass = this.constructor.name;
-    this.slotId = data.slotId || null;
+    this.slotId = data?.slotId || null;
 
     this.systems.deserialize(shipData.systems);
     this.player = shipData.player
       ? new ShipPlayer().deserialize(shipData.player)
       : null;
-    this.movement = new ShipMovement(this).deserialize(data.movement);
+    this.movement = new ShipMovement(this).deserialize(
+      (data as SerializedShip)?.movement
+    );
     this.electronicWarfare = new ShipElectronicWarfare(this).deserialize(
       shipData.electronicWarfare
     );
@@ -233,7 +250,7 @@ class Ship implements IHexPosition {
     this.destroyedThisTurn = true;
   }
 
-  censorForUser(user: User, mine: boolean, turn: number) {
+  censorForUser(user: User | null, mine: boolean, turn: number) {
     if (!mine) {
       this.movement.removeMovementExceptEnd(turn);
     }

@@ -52,10 +52,8 @@ export enum SYSTEM_HANDLERS {
   onGameStart = "onGameStart",
   loadTargetInstant = "loadTargetInstant",
   setMaxFuel = "setMaxFuel",
-  getFireOrders = "getFireOrders",
   getHitSystemSizeMultiplier = "getHitSystemSizeMultiplier",
   canFire = "canFire",
-  checkFireOrderHits = "checkFireOrderHits",
   applyDamageFromWeaponFire = "applyDamageFromWeaponFire",
   onWeaponFired = "onWeaponFired",
   getBackgroundImage = "getBackgroundImage",
@@ -76,6 +74,39 @@ export enum SYSTEM_HANDLERS {
   addCargo = "addCargo",
   removeCargo = "removeCargo",
   getCargoEntry = "getCargoEntry",
+  loadAmmoInstant = "loadAmmoInstant",
+  getBaseHitChance = "getBaseHitChance",
+  getRangeModifier = "getRangeModifier",
+  isOnRange = "isOnRange",
+  getFireControl = "getFireControl",
+  hasCargo = "hasCargo",
+  getCargoByParentClass = "getCargoByParentClass",
+  getPossibleCriticals = "getPossibleCriticals",
+  getRadiatedHeat = "getRadiatedHeat",
+
+  canIntercept = "canIntercept",
+  getNumberOfIntercepts = "getNumberOfIntercepts",
+  getInterceptChance = "getInterceptChance",
+  addTimesIntercepted = "addTimesIntercepted",
+  onIntercept = "onIntercept",
+
+  isPositionOnArc = "isPositionOnArc",
+  isOnArc = "isOnArc",
+
+  getLoadedLaunchers = "getLoadedLaunchers",
+  launchTorpedo = "launchTorpedo",
+
+  getFireOrders = "getFireOrders",
+  addFireOrder = "addFireOrder",
+  removeFireOrders = "removeFireOrders",
+  usesFireOrders = "usesFireOrders",
+  hasFireOrder = "hasFireOrder",
+  executeFireOrders = "executeFireOrders",
+  getFireOrderResolutionPriority = "getFireOrderResolutionPriority",
+  checkFireOrderHits = "checkFireOrderHits",
+
+  getHitChance = "getHitChance",
+  getLoadingTime = "getLoadingTime",
 }
 
 export type SystemMessage = {

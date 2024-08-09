@@ -3,9 +3,9 @@ import styled from "styled-components";
 import HitChance from "./HitChance";
 import { Highlight, DangerHighlight } from "./styled";
 import DamageLine from "./DamageLine";
-import CombatLogWeaponFire from "../../../../../model/combatLog/CombatLogWeaponFire.mjs";
-import WeaponFireService from "../../../../../model/weapon/WeaponFireService.mjs";
-import CombatLogTorpedoAttack from "../../../../../model/combatLog/CombatLogTorpedoAttack.mjs";
+import CombatLogWeaponFire from "../../../../../model/combatLog/CombatLogWeaponFire";
+import WeaponFireService from "../../../../../model/weapon/WeaponFireService";
+import CombatLogTorpedoAttack from "../../../../../model/combatLog/CombatLogTorpedoAttack";
 
 const LineContainer = styled.div`
   color: #d6d6d6;

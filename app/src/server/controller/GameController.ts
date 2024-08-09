@@ -1,25 +1,42 @@
-import GameDataService from "../services/GameDataService.js";
-import GameDataRepository from "../repository/GameDataRepository.js";
-import GameData from "../../model/game/GameData.mjs";
-import CreateGameHandler from "../handler/CreateGameHandler.mjs";
-import BuyShipsHandler from "../handler/BuyShipsHandler.mjs";
-import DeploymentHandler from "../handler/DeploymentHandler.mjs";
-import GameHandler from "../handler/GameHandler.mjs";
-import GameClients from "./GameClients.mjs";
-import * as gameMessages from "../../model/game/gameMessage.mjs";
-import * as gamePhases from "../../model/game/gamePhases.mjs";
-import ReplayHandler from "../handler/ReplayHandler.mjs";
-import CreateTestGameHandler from "../handler/CreateTestGameHandler.mjs";
+import GameData, { SerializedGameData } from "../../model/src/game/GameData";
+import {
+  BuyShipsMessage,
+  GAME_MESSAGE,
+  GameDataMessage,
+  GameMessage,
+  LeaveSlotMessage,
+  RequestReplayMessage,
+  TakeSlotMessage,
+} from "../../model/src/game/gameMessage";
+import Ship, { SerializedShip } from "../../model/src/unit/Ship";
+import { User } from "../../model/src/User/User";
+import BuyShipsHandler from "../handler/BuyShipsHandler";
+import CreateGameHandler from "../handler/CreateGameHandler";
+import CreateTestGameHandler from "../handler/CreateTestGameHandler";
+import DeploymentHandler from "../handler/DeploymentHandler";
+import GameHandler from "../handler/GameHandler";
+import ReplayHandler from "../handler/ReplayHandler";
 import DbConnection from "../repository/DbConnection";
+import GameDataRepository from "../repository/GameDataRepository";
+import GameDataService from "../services/GameDataService";
+import GameClients from "./GameClients";
 
 class GameController {
+  public gameDataService: GameDataService;
+  private gameClients: GameClients;
+  private createGameHandler: CreateGameHandler;
+  private createTestGameHandler: CreateTestGameHandler;
+  private buyShipsHandler: BuyShipsHandler;
+  private deploymentHandler: DeploymentHandler;
+  private gameHandler: GameHandler;
+  private replayHandler: ReplayHandler;
+
   constructor(dbConnection: DbConnection) {
     this.gameDataService = new GameDataService(
       new GameDataRepository(dbConnection)
     );
 
     this.gameClients = new GameClients();
-
     this.createGameHandler = new CreateGameHandler();
     this.createTestGameHandler = new CreateTestGameHandler();
     this.buyShipsHandler = new BuyShipsHandler();
@@ -28,7 +45,15 @@ class GameController {
     this.replayHandler = new ReplayHandler(this.gameDataService);
   }
 
-  async openConnection(connection, user, gameId) {
+  async openConnection(
+    connection: WebSocket,
+    user: User | undefined,
+    gameId: number
+  ) {
+    if (!user) {
+      return;
+    }
+
     this.gameClients.subscribeToGame(connection, user, gameId);
     const gameData = await this.gameDataService.loadGame(gameId);
     if (gameData.turn > 1) {
@@ -44,30 +69,58 @@ class GameController {
     this.gameClients.sendGameData(gameData, user, connection);
   }
 
-  closeConnection(connection, user, gameId) {
+  closeConnection(connection: WebSocket, gameId: number) {
     this.gameClients.unSubscribeFromGame(connection, gameId);
   }
 
-  async onMessage(message, user, gameId) {
+  async onMessage(
+    message: GameMessage,
+    user: User | undefined,
+    gameId: number
+  ) {
+    if (!user) {
+      return;
+    }
+
     try {
       switch (message.type) {
-        case gameMessages.MESSAGE_TAKE_SLOT:
-          return this.takeSlot(gameId, message.payload, user);
-        case gameMessages.MESSAGE_LEAVE_SLOT:
-          return this.leaveSlot(gameId, message.payload, user);
-        case gameMessages.MESSAGE_BUY_SHIPS:
-          return this.buyShips(
+        case GAME_MESSAGE.TAKE_SLOT:
+          return this.takeSlot(
             gameId,
-            message.payload.slotId,
-            message.payload.ships,
+            (message as TakeSlotMessage).payload,
             user
           );
-        case gameMessages.MESSAGE_COMMIT_DEPLOYMENT:
-          return this.commitDeployment(gameId, message.payload, user);
-        case gameMessages.MESSAGE_COMMIT_TURN:
-          return this.commitTurn(gameId, message.payload, user);
-        case gameMessages.MESSAGE_REQUEST_REPLAY:
-          return this.requestReplay(gameId, message.payload, user);
+        case GAME_MESSAGE.LEAVE_SLOT:
+          return this.leaveSlot(
+            gameId,
+            (message as LeaveSlotMessage).payload,
+            user
+          );
+        case GAME_MESSAGE.BUY_SHIPS:
+          return this.buyShips(
+            gameId,
+            (message as BuyShipsMessage).payload.slotId,
+            (message as BuyShipsMessage).payload.ships,
+            user
+          );
+        case GAME_MESSAGE.COMMIT_DEPLOYMENT:
+          return this.commitDeployment(
+            gameId,
+            (message as GameDataMessage).payload,
+            user
+          );
+        case GAME_MESSAGE.COMMIT_TURN:
+          return this.commitTurn(
+            gameId,
+            (message as GameDataMessage).payload,
+            user
+          );
+        case GAME_MESSAGE.REQUEST_REPLAY:
+          return this.requestReplay(
+            gameId,
+            (message as RequestReplayMessage).payload,
+            user
+          );
         default:
           throw new Error(`Unrecognized message type ${message.type}`);
       }
@@ -78,24 +131,33 @@ class GameController {
     }
   }
 
-  async requestReplay(gameId, { start = null, end = null }, user) {
-    const gameDatas = this.replayHandler.requestReplay(gameId, start, end);
+  async requestReplay(
+    gameId: number,
+    { start = 1, end = null }: { start: number; end: number | null },
+    user: User
+  ) {
+    const gameDatas = await this.replayHandler.requestReplay(
+      gameId,
+      start,
+      end
+    );
 
     this.gameClients.sendReplay(gameDatas, user);
   }
 
-  async createGame(clientGameData, user) {
-    clientGameData = new GameData(clientGameData);
-    const serverGameData = this.createGameHandler.createGame(
-      clientGameData,
-      user
-    );
+  async createGame(clientGameData: SerializedGameData, user: User) {
+    const game = new GameData(clientGameData);
+    const serverGameData = this.createGameHandler.createGame(game, user);
 
     const gameId = await this.gameDataService.createGame(serverGameData);
     return gameId;
   }
 
-  async createTestGame(requestBody) {
+  async createTestGame(requestBody: { useAI: boolean }, user: User) {
+    if (!user) {
+      return;
+    }
+
     const serverGameData =
       this.createTestGameHandler.createTestGame(requestBody);
     const gameId = await this.gameDataService.createGame(serverGameData);
@@ -106,60 +168,73 @@ class GameController {
     return gameId;
   }
 
-  async removeGame(gameId, user) {
+  async removeGame(gameId: number, user: User) {
     const { key, gameData } = await this.gameDataService.reserveGame(gameId);
     this.createGameHandler.removeGame(gameData, user);
     this.gameClients.sendGameDataAll(gameData);
     await this.gameDataService.saveGame(key, gameData);
   }
 
-  async getGameData(gameId, user) {
+  async getGameData(gameId: number, user: User) {
     const game = await this.gameDataService.loadGame(gameId);
     return game.censorForUser(user);
   }
 
-  async takeSlot(gameId, slotId, user) {
+  async takeSlot(gameId: number, slotId: string, user: User) {
     const { key, gameData } = await this.gameDataService.reserveGame(gameId);
     this.createGameHandler.takeSlot(gameData, slotId, user);
     this.gameClients.sendGameDataAll(gameData);
     await this.gameDataService.saveGame(key, gameData);
   }
 
-  async leaveSlot(gameId, slotId, user) {
+  async leaveSlot(gameId: number, slotId: string, user: User) {
     const { key, gameData } = await this.gameDataService.reserveGame(gameId);
     this.createGameHandler.leaveSlot(gameData, slotId, user);
     this.gameClients.sendGameDataAll(gameData);
     await this.gameDataService.saveGame(key, gameData);
   }
 
-  async buyShips(gameId, slotId, ships, user) {
+  async buyShips(
+    gameId: number,
+    slotId: string,
+    ships: SerializedShip[],
+    user: User
+  ) {
     const { key, gameData } = await this.gameDataService.reserveGame(gameId);
     this.buyShipsHandler.buyShips(gameData, slotId, ships, user);
     this.gameClients.sendGameDataAll(gameData);
     await this.gameDataService.saveGame(key, gameData);
   }
 
-  async commitDeployment(gameId, clientGameData, user) {
-    clientGameData = new GameData(clientGameData);
+  async commitDeployment(
+    gameId: number,
+    clientGameData: SerializedGameData,
+    user: User
+  ) {
+    const gameData = new GameData(clientGameData);
     const { key, gameData: serverGameData } =
       await this.gameDataService.reserveGame(gameId);
 
-    this.deploymentHandler.deploy(serverGameData, clientGameData, user);
+    this.deploymentHandler.deploy(serverGameData, gameData, user);
 
     this.gameClients.sendGameDataAll(serverGameData);
     await this.gameDataService.saveGame(key, serverGameData);
   }
 
-  async commitTurn(gameId, clientGameData, user) {
-    clientGameData = new GameData(clientGameData);
+  async commitTurn(
+    gameId: number,
+    clientGameData: SerializedGameData,
+    user: User
+  ) {
+    const gameData = new GameData(clientGameData);
     const { key, gameData: serverGameData } =
       await this.gameDataService.reserveGame(gameId);
 
     try {
-      const toSave = [];
-      const toSend = [];
+      const toSave: GameData[] = [];
+      const toSend: GameData[] = [];
 
-      this.gameHandler.submit(serverGameData, clientGameData, user);
+      this.gameHandler.submit(serverGameData, gameData, user);
 
       if (this.gameHandler.isHumansReady(serverGameData)) {
         this.gameHandler.processAi(serverGameData);
@@ -168,7 +243,10 @@ class GameController {
       toSave.push(serverGameData.clone());
 
       if (this.gameHandler.isReady(serverGameData)) {
-        toSave.push(this.gameHandler.advance(serverGameData));
+        const advanced = this.gameHandler.advance(serverGameData);
+        if (advanced) {
+          toSave.push(advanced);
+        }
         toSave.push(serverGameData);
 
         await this.gameDataService.saveGame(key, toSave);

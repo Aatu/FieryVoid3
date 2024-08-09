@@ -2,7 +2,7 @@ import * as THREE from "three";
 
 import { loadObject, cloneObject } from "../utils/objectLoader";
 import { lineFragmentShader, lineVertexShader } from "./shader";
-import { degreeToRadian } from "../../../../model/utils/math.mjs";
+import { degreeToRadian } from "../../../../model/utils/math";
 
 let hexagonMesh = null;
 
@@ -13,11 +13,11 @@ const baseMaterial = new THREE.ShaderMaterial({
   depthWrite: false,
   //depthTest: false,
   side: THREE.DoubleSide,
-  blending: THREE.AdditiveBlending
+  blending: THREE.AdditiveBlending,
 });
 
 const uniforms = {
-  time: { type: "f", value: 0.0 }
+  time: { type: "f", value: 0.0 },
 };
 
 baseMaterial.uniforms = uniforms;
@@ -55,7 +55,7 @@ class Line {
     this.length = new THREE.Vector3().subVectors(this.start, this.end).length();
     this.type = args.type || "laser";
 
-    this.ready = new Promise(resolve => {
+    this.ready = new Promise((resolve) => {
       this.resolveReady = resolve;
     });
 

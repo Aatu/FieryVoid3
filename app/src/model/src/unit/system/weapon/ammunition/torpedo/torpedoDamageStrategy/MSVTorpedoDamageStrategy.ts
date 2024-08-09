@@ -1,14 +1,38 @@
-import StandardDamageStrategy from "../../../../strategy/weapon/StandardDamageStrategy.js";
+import StandardDamageStrategy, {
+  DamagePayload,
+} from "../../../../strategy/weapon/StandardDamageStrategy.js";
 import CombatLogDamageEntry from "../../../../../../combatLog/CombatLogDamageEntry.js";
+import { SystemMessage } from "../../../../strategy/types/SystemHandlersTypes.js";
+import TorpedoFlight from "../../../../../TorpedoFlight.js";
+import Ship from "../../../../../Ship.js";
+import CombatLogWeaponFire from "../../../../../../combatLog/CombatLogWeaponFire.js";
+import CombatLogTorpedoAttack from "../../../../../../combatLog/CombatLogTorpedoAttack.js";
+
+export type MSVTorpedoDamageStrategyDamagePayload = DamagePayload & {
+  torpedoFlight: TorpedoFlight;
+  combatLogEntry: CombatLogTorpedoAttack;
+};
+
+export const isMSVTorpedoDamagePayload = (
+  payload: DamagePayload
+): payload is MSVTorpedoDamageStrategyDamagePayload => {
+  return !!(payload as MSVTorpedoDamageStrategyDamagePayload).torpedoFlight;
+};
 
 class MSVTorpedoDamageStrategy extends StandardDamageStrategy {
+  public rangePenalty: number;
+  public numberOfShots: number;
+  public strikeHitChance: number;
+  public minStrikeDistance: number;
+  public msv: boolean;
+
   constructor(
-    damageFormula,
-    armorPiercingFormula,
-    rangePenalty,
-    numberOfShots,
-    strikeHitChance = 20,
-    minStrikeDistance = 1
+    damageFormula: string | number,
+    armorPiercingFormula: string | number,
+    rangePenalty: number,
+    numberOfShots: number,
+    strikeHitChance: number = 20,
+    minStrikeDistance: number = 1
   ) {
     super(damageFormula, armorPiercingFormula);
     this.rangePenalty = rangePenalty;
@@ -18,7 +42,10 @@ class MSVTorpedoDamageStrategy extends StandardDamageStrategy {
     this.msv = true;
   }
 
-  getAttackRunMessages(payload, previousResponse = []) {
+  getAttackRunMessages(
+    payload: { target: Ship; torpedoFlight: TorpedoFlight },
+    previousResponse: SystemMessage[] = []
+  ): SystemMessage[] {
     return [
       {
         header: "Strike distance",
@@ -27,7 +54,7 @@ class MSVTorpedoDamageStrategy extends StandardDamageStrategy {
     ];
   }
 
-  getMessages(payload, previousResponse = []) {
+  getMessages(payload: unknown, previousResponse: SystemMessage[] = []) {
     previousResponse.push({
       header: "Number of SVs",
       value: this.numberOfShots,
@@ -35,12 +62,12 @@ class MSVTorpedoDamageStrategy extends StandardDamageStrategy {
 
     previousResponse.push({
       header: "Damage per SV",
-      value: this.damageFormula,
+      value: this.damageFormula || "None",
     });
 
     previousResponse.push({
       header: "Armor piercing per SV",
-      value: this.armorPiercingFormula,
+      value: this.armorPiercingFormula || "None",
     });
 
     previousResponse.push({
@@ -56,22 +83,32 @@ class MSVTorpedoDamageStrategy extends StandardDamageStrategy {
     return previousResponse;
   }
 
-  _getDamageForWeaponHit({ torpedoFlight }) {
+  _getDamageForWeaponHit({ torpedoFlight }: { torpedoFlight: TorpedoFlight }) {
     if (Number.isInteger(this.damageFormula)) {
-      return Math.ceil(this.damageFormula);
+      return Math.ceil(this.damageFormula as number);
     }
-    return Math.ceil(this.diceRoller.roll(this.damageFormula).total);
+    return Math.ceil(this.diceRoller.roll(this.damageFormula as string));
   }
 
-  _getArmorPiercing({ torpedoFlight }) {
+  _getArmorPiercing({ torpedoFlight }: { torpedoFlight: TorpedoFlight }) {
     if (Number.isInteger(this.armorPiercingFormula)) {
-      return Math.round(this.armorPiercingFormula);
+      return Math.round(this.armorPiercingFormula as number);
     }
 
-    return Math.round(this.diceRoller.roll(this.armorPiercingFormula).total);
+    return Math.round(
+      this.diceRoller.roll(this.armorPiercingFormula as string)
+    );
   }
 
-  getHitChance({ target, torpedoFlight, distance }) {
+  getHitChance({
+    target,
+    torpedoFlight,
+    distance,
+  }: {
+    target: Ship;
+    torpedoFlight: TorpedoFlight;
+    distance: number;
+  }) {
     const hitProfile = target.getHitProfile(torpedoFlight.strikePosition);
     const rangeModifier =
       this.rangePenalty * (1 + target.movement.getEvasion() / 10) * distance;
@@ -79,7 +116,7 @@ class MSVTorpedoDamageStrategy extends StandardDamageStrategy {
     return hitProfile - rangeModifier;
   }
 
-  getStrikeDistance(payload) {
+  getStrikeDistance(payload: { target: Ship; torpedoFlight: TorpedoFlight }) {
     let distance = 11;
 
     while (distance--) {
@@ -95,8 +132,12 @@ class MSVTorpedoDamageStrategy extends StandardDamageStrategy {
     return 1;
   }
 
-  applyDamageFromWeaponFire(payload) {
-    const { torpedoFlight, combatLogEvent } = payload;
+  applyDamageFromWeaponFire(payload: DamagePayload) {
+    if (!isMSVTorpedoDamagePayload(payload)) {
+      throw new Error("Invalid payload for MSV torpedo damage strategy.");
+    }
+
+    const { torpedoFlight, combatLogEntry } = payload;
     const attackPosition = torpedoFlight.strikePosition;
 
     let shots = this.numberOfShots;
@@ -104,7 +145,7 @@ class MSVTorpedoDamageStrategy extends StandardDamageStrategy {
     const distance = this.getStrikeDistance(payload);
     const hitChance = this.getHitChance({ ...payload, distance });
 
-    combatLogEvent.addNote(
+    combatLogEntry.addNote(
       `MSV with ${this.numberOfShots} projectiles at distance ${distance} with hit chance of ${hitChance}% each.`
     );
 
@@ -117,12 +158,16 @@ class MSVTorpedoDamageStrategy extends StandardDamageStrategy {
       if (hit) {
         hits++;
         const result = new CombatLogDamageEntry();
-        combatLogEvent.addDamage(result);
-        this._doDamage({ shooterPosition: attackPosition, ...payload }, result);
+        combatLogEntry.addDamage(result);
+        this.doDamage(
+          { shooterPosition: attackPosition, ...payload },
+          result,
+          null
+        );
       }
     }
 
-    combatLogEvent.addNote(`${hits} MSVs hit target.`);
+    combatLogEntry.addNote(`${hits} MSVs hit target.`);
   }
 }
 

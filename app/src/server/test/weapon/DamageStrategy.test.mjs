@@ -3,64 +3,64 @@ import {
   StandardDamageStrategy,
   BurstDamageStrategy,
   PiercingDamageStrategy,
-  ExplosiveDamageStrategy
-} from "../../model/unit/system/strategy/index.mjs";
-import FireOrder from "../../model/weapon/FireOrder.mjs";
-import Reactor from "../../model/unit/system/reactor/Reactor.mjs";
-import HitSystemRandomizer from "../../model/unit/system/strategy/weapon/utils/HitSystemRandomizer.mjs";
-import Structure from "../../model/unit/system/structure/Structure.mjs";
-import { PDC30mm } from "../../model/unit/system/weapon/pdc/index.mjs";
-import { RailgunTurreted32gw } from "../../model/unit/system/weapon/coilgun/index.mjs";
-import Ship from "../../model/unit/Ship.mjs";
-import Thruster from "../../model/unit/system/thruster/Thruster.mjs";
-import Engine from "../../model/unit/system/engine/Engine.mjs";
-import Vector from "../../model/utils/Vector.mjs";
-import Offset from "../../model/hexagon/Offset.mjs";
-import MovementOrder from "../../model/movement/MovementOrder.mjs";
-import movementTypes from "../../model/movement/movementTypes.mjs";
-import DamageEntry from "../../model/unit/system/DamageEntry.mjs";
-import WeaponHitChance from "../../model/weapon/WeaponHitChance.mjs";
-import CombatLogWeaponFire from "../../model/combatLog/CombatLogWeaponFire.mjs";
-import CombatLogWeaponFireHitResult from "../../model/combatLog/CombatLogWeaponFireHitResult.mjs";
-import HETorpedoDamageStrategy from "../../model/unit/system/weapon/ammunition/torpedo/torpedoDamageStrategy/HETorpedoDamageStrategy.mjs";
-import TorpedoFlight from "../../model/unit/TorpedoFlight.mjs";
-import Torpedo72HE from "../../model/unit/system/weapon/ammunition/torpedo/Torpedo72HE.mjs";
-import CombatLogTorpedoAttack from "../../model/combatLog/CombatLogTorpedoAttack.mjs";
+  ExplosiveDamageStrategy,
+} from "../../model/unit/system/strategy/index";
+import FireOrder from "../../model/weapon/FireOrder";
+import Reactor from "../../model/unit/system/reactor/Reactor";
+import HitSystemRandomizer from "../../model/unit/system/strategy/weapon/utils/HitSystemRandomizer";
+import Structure from "../../model/unit/system/structure/Structure";
+import { PDC30mm } from "../../model/unit/system/weapon/pdc/index";
+import { RailgunTurreted32gw } from "../../model/unit/system/weapon/coilgun/index";
+import Ship from "../../model/unit/Ship";
+import Thruster from "../../model/unit/system/thruster/Thruster";
+import Engine from "../../model/unit/system/engine/Engine";
+import Vector from "../../model/utils/Vector";
+import Offset from "../../model/hexagon/Offset";
+import MovementOrder from "../../model/movement/MovementOrder";
+import movementTypes from "../../model/movement/movementTypes";
+import DamageEntry from "../../model/unit/system/DamageEntry";
+import WeaponHitChance from "../../model/weapon/WeaponHitChance";
+import CombatLogWeaponFire from "../../model/combatLog/CombatLogWeaponFire";
+import CombatLogWeaponFireHitResult from "../../model/combatLog/CombatLogWeaponFireHitResult";
+import HETorpedoDamageStrategy from "../../model/unit/system/weapon/ammunition/torpedo/torpedoDamageStrategy/HETorpedoDamageStrategy";
+import TorpedoFlight from "../../model/unit/TorpedoFlight";
+import Torpedo72HE from "../../model/unit/system/weapon/ammunition/torpedo/Torpedo72HE";
+import CombatLogTorpedoAttack from "../../model/combatLog/CombatLogTorpedoAttack";
 
 const constructShip = (id = 123) => {
   let ship = new Ship({
     id,
-    accelcost: 3
+    accelcost: 3,
   });
 
   ship.systems.addFrontSystem([
-    new Structure({ id: 100, hitpoints: 50, armor: 4 })
+    new Structure({ id: 100, hitpoints: 50, armor: 4 }),
   ]);
 
   ship.systems.addPrimarySystem([
     new Engine({ id: 6, hitpoints: 10, armor: 3 }, 12, 6, 2),
     new Reactor({ id: 7, hitpoints: 10, armor: 3 }, 20),
-    new Structure({ id: 8, hitpoints: 50, armor: 4 })
+    new Structure({ id: 8, hitpoints: 50, armor: 4 }),
   ]);
 
   ship.systems.addPortAftSystem([
     new PDC30mm({ id: 501, hitpoints: 5, armor: 3 }),
-    new Structure({ id: 500, hitpoints: 50, armor: 4 })
+    new Structure({ id: 500, hitpoints: 50, armor: 4 }),
   ]);
 
   ship.systems.addStarboardAftSystem([
     new PDC30mm({ id: 301, hitpoints: 5, armor: 3 }),
-    new Structure({ id: 300, hitpoints: 50, armor: 4 })
+    new Structure({ id: 300, hitpoints: 50, armor: 4 }),
   ]);
 
   ship.systems.addAftSystem([
-    new Structure({ id: 400, hitpoints: 50, armor: 4 })
+    new Structure({ id: 400, hitpoints: 50, armor: 4 }),
   ]);
 
   return ship;
 };
 
-test("Standard damage strategy overkills all the way trough", test => {
+test("Standard damage strategy overkills all the way trough", (test) => {
   const ship = constructShip();
   ship.movement.addMovement(
     new MovementOrder(
@@ -91,7 +91,7 @@ test("Standard damage strategy overkills all the way trough", test => {
   const damageStrategy = new StandardDamageStrategy(400, 10);
 
   damageStrategy.hitSystemRandomizer = {
-    randomizeHitSystem: systems => systems[0]
+    randomizeHitSystem: (systems) => systems[0],
   };
 
   damageStrategy.applyDamageFromWeaponFire({
@@ -103,39 +103,39 @@ test("Standard damage strategy overkills all the way trough", test => {
       new WeaponHitChance({ result: 10 }),
       10
     ),
-    combatLogEntry: new CombatLogWeaponFire()
+    combatLogEntry: new CombatLogWeaponFire(),
   });
 
   const destroyedIds = ship.systems
     .getSystems()
-    .filter(system => system.isDestroyed())
-    .map(system => system.id);
+    .filter((system) => system.isDestroyed())
+    .map((system) => system.id);
   test.deepEqual(destroyedIds.sort(), [6, 8, 400, 100].sort());
 });
 
-test("Piercing damage strategy will damage multiple systems", test => {
+test("Piercing damage strategy will damage multiple systems", (test) => {
   const ship = new Ship({
-    id: 999
+    id: 999,
   });
 
   ship.systems.addPrimarySystem([
     new Engine({ id: 6, hitpoints: 10, armor: 3 }, 12, 6, 2),
     new Reactor({ id: 7, hitpoints: 10, armor: 3 }, 20),
-    new Structure({ id: 8, hitpoints: 50, armor: 4 })
+    new Structure({ id: 8, hitpoints: 50, armor: 4 }),
   ]);
 
   ship.systems.addPortAftSystem([
     new PDC30mm({ id: 501 }),
-    new Structure({ id: 500, hitpoints: 50, armor: 4 })
+    new Structure({ id: 500, hitpoints: 50, armor: 4 }),
   ]);
 
   ship.systems.addStarboardFrontSystem([
     new PDC30mm({ id: 201 }),
-    new Structure({ id: 200, hitpoints: 50, armor: 4 })
+    new Structure({ id: 200, hitpoints: 50, armor: 4 }),
   ]);
 
   ship.systems.addAftSystem([
-    new Structure({ id: 400, hitpoints: 50, armor: 4 })
+    new Structure({ id: 400, hitpoints: 50, armor: 4 }),
   ]);
 
   ship.movement.addMovement(
@@ -168,7 +168,7 @@ test("Piercing damage strategy will damage multiple systems", test => {
 
   let i = 0;
   damageStrategy.hitSystemRandomizer = {
-    randomizeHitSystem: systems => {
+    randomizeHitSystem: (systems) => {
       if (i > systems.length - 1) {
         i = 0;
       }
@@ -177,7 +177,7 @@ test("Piercing damage strategy will damage multiple systems", test => {
       i++;
 
       return system;
-    }
+    },
   };
 
   damageStrategy.applyDamageFromWeaponFire({
@@ -189,39 +189,39 @@ test("Piercing damage strategy will damage multiple systems", test => {
       10
     ),
     combatLogEntry: new CombatLogWeaponFire(),
-    fireOrder: new FireOrder()
+    fireOrder: new FireOrder(),
   });
 
   const destroyedIds = ship.systems
     .getSystems()
-    .filter(system => system.getTotalDamage() > 0)
-    .map(system => system.id);
+    .filter((system) => system.getTotalDamage() > 0)
+    .map((system) => system.id);
   test.deepEqual(destroyedIds.sort(), [400, 500, 501, 6, 7, 8].sort());
 });
 
-test("Piercing damage strategy will stop when armor piercing runs out", test => {
+test("Piercing damage strategy will stop when armor piercing runs out", (test) => {
   const ship = new Ship({
-    id: 999
+    id: 999,
   });
 
   ship.systems.addPrimarySystem([
     new Engine({ id: 6, hitpoints: 10, armor: 3 }, 12, 6, 2),
     new Reactor({ id: 7, hitpoints: 10, armor: 3 }, 20),
-    new Structure({ id: 8, hitpoints: 50, armor: 4 })
+    new Structure({ id: 8, hitpoints: 50, armor: 4 }),
   ]);
 
   ship.systems.addPortAftSystem([
     new PDC30mm({ id: 501 }),
-    new Structure({ id: 500, hitpoints: 50, armor: 4 })
+    new Structure({ id: 500, hitpoints: 50, armor: 4 }),
   ]);
 
   ship.systems.addStarboardFrontSystem([
     new PDC30mm({ id: 201 }),
-    new Structure({ id: 200, hitpoints: 50, armor: 4 })
+    new Structure({ id: 200, hitpoints: 50, armor: 4 }),
   ]);
 
   ship.systems.addAftSystem([
-    new Structure({ id: 400, hitpoints: 50, armor: 4 })
+    new Structure({ id: 400, hitpoints: 50, armor: 4 }),
   ]);
 
   ship.movement.addMovement(
@@ -254,7 +254,7 @@ test("Piercing damage strategy will stop when armor piercing runs out", test => 
 
   let i = 0;
   damageStrategy.hitSystemRandomizer = {
-    randomizeHitSystem: systems => {
+    randomizeHitSystem: (systems) => {
       if (i > systems.length - 1) {
         i = 0;
       }
@@ -263,7 +263,7 @@ test("Piercing damage strategy will stop when armor piercing runs out", test => 
       i++;
 
       return system;
-    }
+    },
   };
 
   damageStrategy.applyDamageFromWeaponFire({
@@ -275,17 +275,17 @@ test("Piercing damage strategy will stop when armor piercing runs out", test => 
       10
     ),
     combatLogEntry: new CombatLogWeaponFire(),
-    fireOrder: new FireOrder()
+    fireOrder: new FireOrder(),
   });
 
   const destroyedIds = ship.systems
     .getSystems()
-    .filter(system => system.getTotalDamage() > 0)
-    .map(system => system.id);
+    .filter((system) => system.getTotalDamage() > 0)
+    .map((system) => system.id);
   test.deepEqual(destroyedIds.sort(), [400, 501].sort());
 });
 
-test("Damage strategy returns reasonable damage numbers", test => {
+test("Damage strategy returns reasonable damage numbers", (test) => {
   test.is(new StandardDamageStrategy(10)._getDamageForWeaponHit({}), 10);
   test.true(
     Number.isInteger(
@@ -299,14 +299,14 @@ test("Damage strategy returns reasonable damage numbers", test => {
   );
 });
 
-test("Burst damage strategy amount of shots works", test => {
+test("Burst damage strategy amount of shots works", (test) => {
   test.is(
     new BurstDamageStrategy(10, 0, 1, 6, 10)._getNumberOfShots({
       hitResolution: new CombatLogWeaponFireHitResult(
         true,
         new WeaponHitChance({ result: 80 }),
         55
-      )
+      ),
     }),
     3
   );
@@ -317,7 +317,7 @@ test("Burst damage strategy amount of shots works", test => {
         true,
         new WeaponHitChance({ result: 80 }),
         5
-      )
+      ),
     }),
     6
   );
@@ -328,13 +328,13 @@ test("Burst damage strategy amount of shots works", test => {
         true,
         new WeaponHitChance({ result: 130 }),
         100
-      )
+      ),
     }),
     6
   );
 });
 
-test("Burst damage strategy applies damage properly", test => {
+test("Burst damage strategy applies damage properly", (test) => {
   const strategy = new BurstDamageStrategy(10, 0, 1, 6, 10);
   const fireOrder = new FireOrder(1, 2, 3);
   const system = new Reactor({ id: 7, hitpoints: 200, armor: 3 }, 20);
@@ -351,35 +351,35 @@ test("Burst damage strategy applies damage properly", test => {
       new WeaponHitChance({ result: 80 }),
       55
     ),
-    combatLogEntry
+    combatLogEntry,
   });
 
   test.is(combatLogEntry.damages.length, 3);
 });
 
-test("Explosive damage strategy will... um... explode", test => {
+test("Explosive damage strategy will... um... explode", (test) => {
   const ship = new Ship({
-    id: 999
+    id: 999,
   });
 
   ship.systems.addPrimarySystem([
     new Engine({ id: 6, hitpoints: 10, armor: 3 }, 12, 6, 2),
     new Reactor({ id: 7, hitpoints: 10, armor: 3 }, 20),
-    new Structure({ id: 8, hitpoints: 50, armor: 4 })
+    new Structure({ id: 8, hitpoints: 50, armor: 4 }),
   ]);
 
   ship.systems.addPortAftSystem([
     new PDC30mm({ id: 501, hitpoints: 5, armor: 3 }),
-    new Structure({ id: 500, hitpoints: 50, armor: 4 })
+    new Structure({ id: 500, hitpoints: 50, armor: 4 }),
   ]);
 
   ship.systems.addStarboardFrontSystem([
     new PDC30mm({ id: 201, hitpoints: 5, armor: 3 }),
-    new Structure({ id: 200, hitpoints: 50, armor: 4 })
+    new Structure({ id: 200, hitpoints: 50, armor: 4 }),
   ]);
 
   ship.systems.addAftSystem([
-    new Structure({ id: 400, hitpoints: 50, armor: 4 })
+    new Structure({ id: 400, hitpoints: 50, armor: 4 }),
   ]);
 
   ship.movement.addMovement(
@@ -410,7 +410,7 @@ test("Explosive damage strategy will... um... explode", test => {
   const damageStrategy = new ExplosiveDamageStrategy(5, 400, 4);
 
   damageStrategy.hitSystemRandomizer = {
-    randomizeHitSystem: systems => systems[0]
+    randomizeHitSystem: (systems) => systems[0],
   };
 
   damageStrategy.applyDamageFromWeaponFire({
@@ -422,7 +422,7 @@ test("Explosive damage strategy will... um... explode", test => {
       new WeaponHitChance({ result: 10 }),
       10
     ),
-    combatLogEntry: new CombatLogWeaponFire()
+    combatLogEntry: new CombatLogWeaponFire(),
   });
 
   const expectedDamage = 20;
@@ -434,29 +434,29 @@ test("Explosive damage strategy will... um... explode", test => {
   test.deepEqual(totalDamage, expectedDamage);
 });
 
-test("Torpedo explosive damage strategy will also...  um... explode", test => {
+test("Torpedo explosive damage strategy will also...  um... explode", (test) => {
   const ship = new Ship({
-    id: 999
+    id: 999,
   });
 
   ship.systems.addPrimarySystem([
     new Engine({ id: 6, hitpoints: 10, armor: 3 }, 12, 6, 2),
     new Reactor({ id: 7, hitpoints: 10, armor: 3 }, 20),
-    new Structure({ id: 8, hitpoints: 50, armor: 4 })
+    new Structure({ id: 8, hitpoints: 50, armor: 4 }),
   ]);
 
   ship.systems.addPortAftSystem([
     new PDC30mm({ id: 501, hitpoints: 5, armor: 3 }),
-    new Structure({ id: 500, hitpoints: 50, armor: 4 })
+    new Structure({ id: 500, hitpoints: 50, armor: 4 }),
   ]);
 
   ship.systems.addStarboardFrontSystem([
     new PDC30mm({ id: 201, hitpoints: 5, armor: 3 }),
-    new Structure({ id: 200, hitpoints: 50, armor: 4 })
+    new Structure({ id: 200, hitpoints: 50, armor: 4 }),
   ]);
 
   ship.systems.addAftSystem([
-    new Structure({ id: 400, hitpoints: 50, armor: 4 })
+    new Structure({ id: 400, hitpoints: 50, armor: 4 }),
   ]);
 
   ship.movement.addMovement(
@@ -487,7 +487,7 @@ test("Torpedo explosive damage strategy will also...  um... explode", test => {
   const damageStrategy = new HETorpedoDamageStrategy(5, 400, 4);
 
   damageStrategy.hitSystemRandomizer = {
-    randomizeHitSystem: systems => systems[0]
+    randomizeHitSystem: (systems) => systems[0],
   };
 
   const torpedoFlight = new TorpedoFlight(new Torpedo72HE(), 1, 1, 1, 1);
@@ -496,7 +496,7 @@ test("Torpedo explosive damage strategy will also...  um... explode", test => {
   damageStrategy.applyDamageFromWeaponFire({
     target: ship,
     torpedoFlight,
-    combatLogEvent: new CombatLogTorpedoAttack(1, 1)
+    combatLogEvent: new CombatLogTorpedoAttack(1, 1),
   });
 
   const expectedDamage = 20;

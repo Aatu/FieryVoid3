@@ -1,16 +1,19 @@
 import Vector from "../utils/Vector";
-import { cargoClasses } from "./system/cargo/cargo";
 import { v4 as uuidv4 } from "uuid";
 import Torpedo from "./system/weapon/ammunition/torpedo/Torpedo";
 import Ship from "./Ship";
+import {
+  createTorpedoInstance,
+  TropedoType,
+} from "./system/weapon/ammunition/torpedo";
 
 export type SerializedTorpedoFlight = {
   id: string;
-  torpedo: string;
+  torpedo: TropedoType;
   targetId: string;
   strikePosition: Vector;
   shooterId: string;
-  weaponId: string;
+  weaponId: number;
   launcherIndex: number;
   intercepted: boolean;
   launchPosition: Vector;
@@ -21,7 +24,7 @@ class TorpedoFlight {
   public torpedo: Torpedo;
   public targetId: string;
   public shooterId: string;
-  public weaponId: string;
+  public weaponId: number;
   public launcherIndex: number;
   public launchPosition: Vector;
   public strikePosition: Vector;
@@ -32,7 +35,7 @@ class TorpedoFlight {
     torpedo: Torpedo,
     targetId: string,
     shooterId: string,
-    weaponId: string,
+    weaponId: number,
     launcherIndex: number
   ) {
     this.id = uuidv4();
@@ -45,6 +48,10 @@ class TorpedoFlight {
     this.strikePosition = new Vector();
     this.intercepted = false;
     this.done = false;
+  }
+
+  getTargetId() {
+    return this.targetId;
   }
 
   setDone() {
@@ -76,7 +83,7 @@ class TorpedoFlight {
   serialize(): SerializedTorpedoFlight {
     return {
       id: this.id,
-      torpedo: this.torpedo.constructor.name,
+      torpedo: this.torpedo.constructor.name as TropedoType,
       targetId: this.targetId,
       strikePosition: this.strikePosition,
       shooterId: this.shooterId,
@@ -89,7 +96,7 @@ class TorpedoFlight {
 
   deserialize(data: SerializedTorpedoFlight) {
     this.id = data.id;
-    this.torpedo = new cargoClasses[data.torpedo]();
+    this.torpedo = createTorpedoInstance(data.torpedo);
     this.targetId = data.targetId;
     this.strikePosition = new Vector(data.strikePosition);
     this.launchPosition = new Vector(data.launchPosition);
@@ -103,7 +110,7 @@ class TorpedoFlight {
 
   public static fromData(data: SerializedTorpedoFlight): TorpedoFlight {
     return new TorpedoFlight(
-      new cargoClasses[data.torpedo](),
+      createTorpedoInstance(data.torpedo),
       data.targetId,
       data.shooterId,
       data.weaponId,

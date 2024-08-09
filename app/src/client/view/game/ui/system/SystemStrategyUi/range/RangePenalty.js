@@ -10,11 +10,11 @@ import {
   InlineTooltipEntry,
   CenteredTooltipEntry,
   TooltipButton,
-  colors
+  colors,
 } from "../../../../../../styled";
 import styled from "styled-components";
 import CargoItem from "../cargo/CargoItem";
-import NoAmmunitionLoaded from "../../../../../../../model/unit/system/weapon/ammunition/NoAmmunitionLoaded.mjs";
+import NoAmmunitionLoaded from "../../../../../../../model/unit/system/weapon/ammunition/NoAmmunitionLoaded";
 
 const RangeContainer = styled.div`
   display: flex;
@@ -35,7 +35,7 @@ const RangeStep = styled.div`
   width: 1%;
   height: 100%;
   background-image: url("/img/lightBluePixel.png");
-  background-size: 100% ${props => `${props.height}%`};
+  background-size: 100% ${(props) => `${props.height}%`};
   background-repeat: no-repeat;
   background-position: bottom 0 left 0;
   opacity: 0.25;
@@ -80,13 +80,13 @@ class RangePenalty extends React.Component {
     const steps = [];
     for (let i = 0; i < 100; i++) {
       const rangePenalty = rangeStrategy.getRangeModifier({
-        distance: i * step
+        distance: i * step,
       });
 
       steps.push({
         range: i,
         rangePenalty,
-        height: Math.abs(rangePenalty / 200) * 100
+        height: Math.abs(rangePenalty / 200) * 100,
       });
     }
 
@@ -110,7 +110,7 @@ class RangePenalty extends React.Component {
   }
 }
 
-const getMaxRange = rangeStrategy => {
+const getMaxRange = (rangeStrategy) => {
   const ranges = rangeStrategy.rangesAndPenalties;
   return ranges[ranges.length - 1].range;
 };

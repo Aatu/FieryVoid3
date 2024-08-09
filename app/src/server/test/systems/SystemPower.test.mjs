@@ -1,11 +1,11 @@
 import test from "ava";
-import Engine from "../../model/unit/system/engine/Engine.mjs";
-import Reactor from "../../model/unit/system/reactor/Reactor.mjs";
-import PDC30mm from "../../model/unit/system/weapon/pdc/PDC30mm.mjs";
+import Engine from "../../model/unit/system/engine/Engine";
+import Reactor from "../../model/unit/system/reactor/Reactor";
+import PDC30mm from "../../model/unit/system/weapon/pdc/PDC30mm";
 
-import ShipSystems from "../../model/unit/ShipSystems.mjs";
-import CoilgunLightFixed from "../../model/unit/system/weapon/coilgun/CoilgunLightFixed.mjs";
-import { OutputReduced8 } from "../../model/unit/system/criticals/index.mjs";
+import ShipSystems from "../../model/unit/ShipSystems";
+import CoilgunLightFixed from "../../model/unit/system/weapon/coilgun/CoilgunLightFixed";
+import { OutputReduced8 } from "../../model/unit/system/criticals/index";
 
 test("System can change its power states", (test) => {
   const engine = new Engine({ id: 123, hitpoints: 10, armor: 3 }, 12, 6, 2);

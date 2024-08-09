@@ -1,15 +1,15 @@
 import * as THREE from "three";
 import * as shipObjects from ".";
-import Vector from "../../../../../model/utils/Vector.mjs";
+import Vector from "../../../../../model/utils/Vector";
 
 import { degreeToRadian } from "../../../../../model/utils/math";
 
 import { ShipEWSprite, DottedCircleSprite, HexagonSprite } from "../sprite";
 
 import Line from "../Line";
-import coordinateConverter from "../../../../../model/utils/CoordinateConverter.mjs";
+import coordinateConverter from "../../../../../model/utils/CoordinateConverter";
 import ShipMapIcon from "./ShipMapIcon";
-import { angleToHexFacing } from "../../../../../model/utils/math.mjs";
+import { angleToHexFacing } from "../../../../../model/utils/math";
 import { ParticleEmitterContainer } from "../../animation/particle";
 import ShipObjectBoundingBox from "./ShipObjectBoundingBox";
 import ShipObjectSectionDamageEffect from "./ShipObjectSectionDamageEffect";

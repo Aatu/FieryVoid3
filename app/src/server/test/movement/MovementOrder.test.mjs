@@ -3,12 +3,12 @@ import movementTypes from "../../model/movement/movementTypes";
 import MovementOrder from "../../model/movement/MovementOrder";
 import RequiredThrust from "../../model/movement/RequiredThrust";
 import hexagon from "../../model/hexagon";
-import Ship from "../../model/unit/Ship.mjs";
+import Ship from "../../model/unit/Ship";
 
-import Thruster from "../../model/unit/system/thruster/Thruster.mjs";
-import Engine from "../../model/unit/system/engine/Engine.mjs";
-import Reactor from "../../model/unit/system/reactor/Reactor.mjs";
-import ManeuveringThruster from "../../model/unit/system/thruster/ManeuveringThruster.mjs";
+import Thruster from "../../model/unit/system/thruster/Thruster";
+import Engine from "../../model/unit/system/engine/Engine";
+import Reactor from "../../model/unit/system/reactor/Reactor";
+import ManeuveringThruster from "../../model/unit/system/thruster/ManeuveringThruster";
 
 const startMove = new MovementOrder(
   -1,
@@ -22,7 +22,7 @@ const startMove = new MovementOrder(
 
 const constructShip = (id = 123) => {
   let ship = new Ship({
-    id
+    id,
   });
 
   ship.accelcost = 3;
@@ -40,14 +40,14 @@ const constructShip = (id = 123) => {
     new ManeuveringThruster({ id: 10, hitpoints: 10, armor: 3 }, 6, 3),
     new Engine({ id: 5, hitpoints: 10, armor: 3 }, 12, 6, 2),
     new Engine({ id: 6, hitpoints: 10, armor: 3 }, 12, 6, 2),
-    new Reactor({ id: 7, hitpoints: 10, armor: 3 }, 20)
+    new Reactor({ id: 7, hitpoints: 10, armor: 3 }, 20),
   ]);
 
   ship.movement.addMovement(startMove);
   return ship;
 };
 
-test("MovementOrder serializes and deserializes nicely", test => {
+test("MovementOrder serializes and deserializes nicely", (test) => {
   const ship = constructShip();
 
   const move = new MovementOrder(

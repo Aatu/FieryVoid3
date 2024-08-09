@@ -1,4 +1,4 @@
-import { getSeededRandomGenerator } from "../../../../../model/utils/math.mjs";
+import { getSeededRandomGenerator } from "../../../../../model/utils/math";
 import ExplosionEffect from "../../animation/effect/ExplosionEffect";
 import * as THREE from "three";
 import {
@@ -8,7 +8,7 @@ import {
   TEXTURE_RING,
   TEXTURE_STARLINE,
 } from "../../animation/particle/BaseParticle";
-import Vector from "../../../../../model/utils/Vector.mjs";
+import Vector from "../../../../../model/utils/Vector";
 
 class ShipObjectSectionDamageEffect {
   constructor(ship) {

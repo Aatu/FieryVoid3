@@ -1,9 +1,9 @@
 import test from "ava";
-import Engine from "../../model/unit/system/engine/Engine.mjs";
-import DamageEntry from "../../model/unit/system/DamageEntry.mjs";
+import Engine from "../../model/unit/system/engine/Engine";
+import DamageEntry from "../../model/unit/system/DamageEntry";
 import { OutputReduced6 } from "../../model/unit/system/criticals";
 
-test("System can be assigned an critical", test => {
+test("System can be assigned an critical", (test) => {
   const engine = new Engine({ id: 123, hitpoints: 10, armor: 3 }, 12, 6, 2);
   engine.addCritical(new OutputReduced6());
   test.true(engine.hasCritical(new OutputReduced6()));
@@ -11,7 +11,7 @@ test("System can be assigned an critical", test => {
   test.true(engine.hasCritical("OutputReduced6"));
 });
 
-test("System critical with duration will go away", test => {
+test("System critical with duration will go away", (test) => {
   const engine = new Engine({ id: 123, hitpoints: 10, armor: 3 }, 12, 6, 2);
   engine.addCritical(new OutputReduced6(2));
   test.true(engine.hasCritical("OutputReduced6"));
@@ -23,7 +23,7 @@ test("System critical with duration will go away", test => {
   test.false(engine.hasCritical("OutputReduced6"));
 });
 
-test("System critical serializes and deserializes nicely", test => {
+test("System critical serializes and deserializes nicely", (test) => {
   const engine = new Engine({ id: 123, hitpoints: 10, armor: 3 }, 12, 6, 2);
   engine.addCritical(new OutputReduced6(2));
   test.true(engine.hasCritical("OutputReduced6"));

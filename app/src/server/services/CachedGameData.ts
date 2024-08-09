@@ -1,9 +1,31 @@
 import { v4 as uuidv4 } from "uuid";
+import GameDataRepository from "../repository/GameDataRepository";
+import GameData from "../../model/src/game/GameData";
+
+type ResolveResult = { key: string | null; gameData: GameData };
+type ReservedResolveResult = { key: string; gameData: GameData };
+
+type Resolve = (value: ResolveResult) => void;
+type ReservedResolve = (value: ReservedResolveResult) => void;
+
+type Reservation = {
+  resolve: Resolve | ReservedResolve;
+  reject: (reason: any) => void;
+  lock: boolean;
+};
+
+export type GameDataPromise = Promise<ResolveResult>;
+export type ReservedGameDataPromise = Promise<ReservedResolveResult>;
 
 class CachedGameData {
   private id: number;
+  private gameDataRepository: GameDataRepository;
+  private gameData: GameData | null;
+  private reservations: Reservation[];
+  private key: string | null;
+  public lastRequested: number;
 
-  constructor(id, gameDataRepository) {
+  constructor(id: number, gameDataRepository: GameDataRepository) {
     this.id = id;
     this.gameDataRepository = gameDataRepository;
     this.gameData = null;
@@ -29,7 +51,7 @@ class CachedGameData {
     this.rejectAll(new Error("This cache is dying"));
   }
 
-  rejectAll(e) {
+  rejectAll(e: unknown) {
     this.reservations.forEach(({ resolve, reject }) => {
       reject(e);
     });
@@ -38,27 +60,31 @@ class CachedGameData {
     this.key = null;
   }
 
-  async release(key, gameDatas) {
+  async release(key: string, gameDatas: GameData[]) {
     if (key !== this.key) {
       throw new Error("Wrong key for gamedata update");
     }
 
-    gameDatas = [].concat(gameDatas);
+    gameDatas = ([] as GameData[]).concat(gameDatas);
+
+    if (gameDatas.length === 0) {
+      throw new Error("No gamedata to save");
+    }
 
     try {
-      await this.gameDataRepository.saveGame(gameDatas, true);
+      await this.gameDataRepository.saveGame(gameDatas);
     } catch (e) {
       this.rejectAll(e);
       throw e;
     }
 
-    this.gameData = gameDatas.pop().clone();
+    this.gameData = gameDatas[gameDatas.length - 1]?.clone();
 
     this.key = null;
     this.processReservations();
   }
 
-  async cancel(key, gameDatas) {
+  async cancel(key: string) {
     if (key !== this.key) {
       throw new Error("Wrong key for gamedata update");
     }
@@ -67,18 +93,18 @@ class CachedGameData {
     this.processReservations();
   }
 
-  get() {
+  get(): GameDataPromise {
     this.lastRequested = Date.now();
-    const promise = new Promise((resolve, reject) => {
+    const promise = new Promise<ResolveResult>((resolve, reject) => {
       this.reservations.push({ resolve, reject, lock: false });
     });
     this.processReservations();
     return promise;
   }
 
-  reserve() {
+  reserve(): ReservedGameDataPromise {
     this.lastRequested = Date.now();
-    const promise = new Promise((resolve, reject) => {
+    const promise = new Promise<ReservedResolveResult>((resolve, reject) => {
       this.reservations.push({ resolve, reject, lock: true });
     });
     this.processReservations();
@@ -94,7 +120,7 @@ class CachedGameData {
     this.reservations = this.reservations.filter(
       ({ resolve, reject, lock }) => {
         if (!lock) {
-          resolve(this.gameData.clone());
+          (resolve as Resolve)({ key: null, gameData: this.gameData!.clone() });
           return false;
         }
         return true;
@@ -106,7 +132,7 @@ class CachedGameData {
     }
 
     //lock and resolve
-    const { resolve, reject, lock } = this.reservations.shift();
+    const { resolve, reject, lock } = this.reservations.shift() as Reservation;
     let key = null;
 
     if (lock) {
@@ -114,7 +140,7 @@ class CachedGameData {
       this.key = key;
     }
 
-    resolve({ key, gameData: this.gameData.clone() });
+    (resolve as Resolve)({ key, gameData: this.gameData.clone() });
     this.processReservations();
   }
 }

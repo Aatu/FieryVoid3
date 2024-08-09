@@ -36,8 +36,14 @@ class GameShips {
     return this.ships.filter((ship) => !ship.isDestroyed());
   }
 
-  getShipById(id: string) {
-    return this.ships.find((ship) => ship.id === id);
+  getShipById(id: string): Ship {
+    const ship = this.ships.find((ship) => ship.id === id);
+
+    if (!ship) {
+      throw new Error(`Ship with id ${id} not found`);
+    }
+
+    return ship;
   }
 
   getUsersShips(user: User) {

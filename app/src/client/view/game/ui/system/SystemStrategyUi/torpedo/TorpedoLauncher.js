@@ -7,11 +7,11 @@ import {
   TooltipEntry,
   TooltipValueHeader,
   TooltipValue,
-  InlineTooltipEntry
+  InlineTooltipEntry,
 } from "../../../../../../styled";
 import styled from "styled-components";
 import CargoItem from "../cargo/CargoItem";
-import NoAmmunitionLoaded from "../../../../../../../model/unit/system/weapon/ammunition/NoAmmunitionLoaded.mjs";
+import NoAmmunitionLoaded from "../../../../../../../model/unit/system/weapon/ammunition/NoAmmunitionLoaded";
 
 const TorpedoList = styled.div`
   display: flex;
@@ -20,7 +20,7 @@ const TorpedoList = styled.div`
 
 const TorpedoCargoItem = styled(CargoItem)`
   ${IconAndLabel} {
-    ${props => {
+    ${(props) => {
       const { target } = props;
 
       if (target) {
@@ -52,7 +52,7 @@ class TorpedoLauncher extends React.PureComponent {
   }
 
   unloadAmmo() {
-    return e => {
+    return (e) => {
       e.preventDefault();
       e.stopPropagation();
       const { ship, launcher, uiState, launcherIndex } = this.props;
@@ -63,7 +63,7 @@ class TorpedoLauncher extends React.PureComponent {
   }
 
   loadTorpedo(torpedo) {
-    return e => {
+    return (e) => {
       e.preventDefault();
       e.stopPropagation();
       const { ship, launcher, uiState, launcherIndex } = this.props;
@@ -79,7 +79,7 @@ class TorpedoLauncher extends React.PureComponent {
 
       uiState.customEvent("torpedoMouseOut", {
         ship,
-        torpedo
+        torpedo,
       });
     };
   }
@@ -91,7 +91,7 @@ class TorpedoLauncher extends React.PureComponent {
       uiState.customEvent("torpedoMouseOver", {
         ship,
         torpedo,
-        target: this.getLoadedTorpedoTarget()
+        target: this.getLoadedTorpedoTarget(),
       });
     };
   }
@@ -115,13 +115,8 @@ class TorpedoLauncher extends React.PureComponent {
   }
 
   render() {
-    const {
-      launcherIndex,
-      loadedTorpedo,
-      loadingTime,
-      turnsLoaded,
-      launcher
-    } = this.props;
+    const { launcherIndex, loadedTorpedo, loadingTime, turnsLoaded, launcher } =
+      this.props;
 
     return (
       <>

@@ -24,7 +24,7 @@ export type SerializedShipSystem = {
 
 export type SystemArgs = {
   id: number;
-  hitpoints: number;
+  hitpoints?: number;
   armor?: number;
 };
 
@@ -41,7 +41,7 @@ class ShipSystem {
 
   constructor(args: SystemArgs, strategies: ShipSystemStrategy[] = []) {
     this.id = args.id;
-    this.hitpoints = args.hitpoints;
+    this.hitpoints = args.hitpoints || 10;
     this.armor = args.armor || 0;
     this.strategies = strategies;
 

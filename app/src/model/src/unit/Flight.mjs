@@ -1,4 +1,4 @@
-import Ship from "./Ship.mjs";
+import Ship from "./Ship";
 
 /*
 Flight is a combination of multiple ships

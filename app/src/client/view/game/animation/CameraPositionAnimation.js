@@ -1,6 +1,6 @@
 import { Animation } from ".";
 import * as THREE from "three";
-import { getPointBetween } from "../../../../model/utils/math.mjs";
+import { getPointBetween } from "../../../../model/utils/math";
 
 class CameraPositionAnimation extends Animation {
   constructor(position, time, endTime, gameCamera) {

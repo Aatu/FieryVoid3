@@ -1,7 +1,7 @@
 import test from "ava";
-import ShipSystem from "../../model/unit/system/ShipSystem.mjs";
-import DamageEntry from "../../model/unit/system/DamageEntry.mjs";
-import ForcedOffline from "../../model/unit/system/criticals/ForcedOffline.mjs";
+import ShipSystem from "../../model/unit/system/ShipSystem";
+import DamageEntry from "../../model/unit/system/DamageEntry";
+import ForcedOffline from "../../model/unit/system/criticals/ForcedOffline";
 
 test("System takes damage and is destroyed", (test) => {
   const system = new ShipSystem({ id: 123, hitpoints: 10, armor: 3 });

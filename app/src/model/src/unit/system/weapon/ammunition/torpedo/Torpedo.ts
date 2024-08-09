@@ -12,10 +12,10 @@ export type TorpedoDamageStrategy = StandardDamageStrategy & {
 };
 
 class Torpedo extends CargoEntity {
-  private minRange: number;
-  private maxRange: number;
-  private hitSize: number;
-  private evasion: number;
+  public minRange: number;
+  public maxRange: number;
+  public hitSize: number;
+  public evasion: number;
   public damageStrategy: TorpedoDamageStrategy | null = null;
   public visuals: Record<string, unknown>;
 

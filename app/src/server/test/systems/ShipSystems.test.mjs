@@ -1,14 +1,14 @@
 import test from "ava";
-import Ship from "../../model/unit/Ship.mjs";
-import Thruster from "../../model/unit/system/thruster/Thruster.mjs";
-import Engine from "../../model/unit/system/engine/Engine.mjs";
-import Reactor from "../../model/unit/system/reactor/Reactor.mjs";
-import DamageEntry from "../../model/unit/system/DamageEntry.mjs";
+import Ship from "../../model/unit/Ship";
+import Thruster from "../../model/unit/system/thruster/Thruster";
+import Engine from "../../model/unit/system/engine/Engine";
+import Reactor from "../../model/unit/system/reactor/Reactor";
+import DamageEntry from "../../model/unit/system/DamageEntry";
 
 const constructShip = (id = 123) => {
   let ship = new Ship({
     id,
-    accelcost: 3
+    accelcost: 3,
   });
   ship.systems.addPrimarySystem([
     new Thruster({ id: 1, hitpoints: 10, armor: 3 }, 5, 0),
@@ -17,13 +17,13 @@ const constructShip = (id = 123) => {
     new Thruster({ id: 4, hitpoints: 10, armor: 3 }, 5, 3),
     new Engine({ id: 5, hitpoints: 10, armor: 3 }, 12, 6, 2),
     new Engine({ id: 6, hitpoints: 10, armor: 3 }, 12, 6, 2),
-    new Reactor({ id: 7, hitpoints: 10, armor: 3 }, 20)
+    new Reactor({ id: 7, hitpoints: 10, armor: 3 }, 20),
   ]);
 
   return ship;
 };
 
-test("Ship systems serializes and deserializes nicely", test => {
+test("Ship systems serializes and deserializes nicely", (test) => {
   let ship = constructShip(73);
 
   ship.systems.getSystemById(1).addDamage(new DamageEntry(3));

@@ -3,12 +3,12 @@ import { THRUSTER_DIRECTION } from "../unit/system/strategy/ThrustChannelSystemS
 import { SYSTEM_HANDLERS } from "../unit/system/strategy/types/SystemHandlersTypes";
 
 class ThrustAssignment {
-  private thruster: ShipSystem;
-  private directions: THRUSTER_DIRECTION[];
-  private paid: number;
-  private channeled: number;
-  private capacity: number;
-  private assigned: number;
+  public thruster: ShipSystem;
+  public directions: THRUSTER_DIRECTION[];
+  public paid: number;
+  public channeled: number;
+  public capacity: number;
+  public assigned: number;
 
   constructor(thruster: ShipSystem) {
     this.thruster = thruster;

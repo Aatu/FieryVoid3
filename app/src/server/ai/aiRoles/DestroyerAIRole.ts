@@ -1,9 +1,11 @@
 import { getShipsThatShouldTargetOffensive } from "../analyzers/AiEWAnalyzer";
 import Ship from "../../../model/src/unit/Ship";
 import GameData from "../../../model/src/game/GameData";
+import { AI_ROLE, AiRole } from "../../../model/src/ai/AiRole";
 
-class DestroyerAIRole {
+class DestroyerAIRole implements AiRole {
   public ship: Ship;
+  public type = AI_ROLE.DESTROYER;
 
   constructor(ship: Ship) {
     this.ship = ship;
@@ -45,7 +47,7 @@ class DestroyerAIRole {
     };
   }
 
-  deserialize() {
+  deserialize(data: unknown) {
     return this;
   }
 }

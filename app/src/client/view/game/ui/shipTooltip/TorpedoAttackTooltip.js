@@ -3,26 +3,26 @@ import {
   TooltipHeader,
   TooltipEntry,
   TooltipValueHeader,
-  TooltipValue
+  TooltipValue,
 } from "../../../../styled";
-import coordinateConverter from "../../../../../model/utils/CoordinateConverter.mjs";
-import HexagonMath from "../../../../../model/utils/HexagonMath.mjs";
+import coordinateConverter from "../../../../../model/utils/CoordinateConverter";
+import HexagonMath from "../../../../../model/utils/HexagonMath";
 
 const getTorpedoTooltip = (shooter, target, torpedo, strikePrediction) => {
   if (strikePrediction) {
     const entries = [
       {
         value:
-          "Following prediction depends on relative velocity, position of target, launched torpedo and is subject to change"
+          "Following prediction depends on relative velocity, position of target, launched torpedo and is subject to change",
       },
       {
         header: `Impact in`,
-        value: `+${Math.floor(strikePrediction.impactTurn)} turns`
+        value: `+${Math.floor(strikePrediction.impactTurn)} turns`,
       },
       {
         header: "Relative velocity",
-        value: `${strikePrediction.impactVelocity} h/t`
-      }
+        value: `${strikePrediction.impactVelocity} h/t`,
+      },
       /*
       {
         header: "Strike position",
@@ -39,7 +39,7 @@ const getTorpedoTooltip = (shooter, target, torpedo, strikePrediction) => {
 
     if (strikePrediction.note) {
       entries.push({
-        value: strikePrediction.note
+        value: strikePrediction.note,
       });
     }
 

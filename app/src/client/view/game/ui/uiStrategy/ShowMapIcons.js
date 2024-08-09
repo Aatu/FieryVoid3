@@ -5,8 +5,8 @@ import {
   ZOOM_FOR_MAPICONS,
   COLOR_FRIENDLY_HIGHLIGHT,
   COLOR_ENEMY_HIGHLIGHT,
-  ZOOM_MAX
-} from "../../../../../model/gameConfig.mjs";
+  ZOOM_MAX,
+} from "../../../../../model/gameConfig";
 
 class ShowMapIcons extends AnimationUiStrategy {
   constructor() {
@@ -27,7 +27,7 @@ class ShowMapIcons extends AnimationUiStrategy {
 
   hideHighligh() {
     const { shipIconContainer, currentUser } = this.services;
-    shipIconContainer.getArray().forEach(icon => {
+    shipIconContainer.getArray().forEach((icon) => {
       const ghost = shipIconContainer.getGhostShipIconByShip(icon.ship);
       ghost.mapIcon.revertColor();
       icon.mapIcon.revertColor();
@@ -59,7 +59,7 @@ class ShowMapIcons extends AnimationUiStrategy {
   showIcons() {
     this.changeScale(1);
     const { shipIconContainer, currentUser, gameCamera } = this.services;
-    shipIconContainer.getArray().forEach(icon => {
+    shipIconContainer.getArray().forEach((icon) => {
       const color = icon.ship.player.isUsers(currentUser)
         ? COLOR_FRIENDLY
         : COLOR_ENEMY;
@@ -75,7 +75,7 @@ class ShowMapIcons extends AnimationUiStrategy {
   hideIcons() {
     this.changeScale(1);
     const { shipIconContainer, gameCamera } = this.services;
-    shipIconContainer.getArray().forEach(icon => {
+    shipIconContainer.getArray().forEach((icon) => {
       icon.hideMapIcon();
       const ghost = shipIconContainer.getGhostShipIconByShip(icon.ship);
       ghost.hideMapIcon();
@@ -87,7 +87,7 @@ class ShowMapIcons extends AnimationUiStrategy {
 
   changeScale(scale) {
     const { shipIconContainer } = this.services;
-    shipIconContainer.getArray().forEach(icon => {
+    shipIconContainer.getArray().forEach((icon) => {
       icon.mapIcon.setScale(scale);
       const ghost = shipIconContainer.getGhostShipIconByShip(icon.ship);
       ghost.mapIcon.setScale(scale);

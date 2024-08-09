@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { degreeToRadian } from "../../../../../model/utils/math";
-import { radianToDegree } from "../../../../../model/utils/math.mjs";
+import { radianToDegree } from "../../../../../model/utils/math";
 
 const changeAttribute = (geometry, index, key, values) => {
   values = [].concat(values);

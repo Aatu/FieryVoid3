@@ -1,17 +1,17 @@
 import test from "ava";
 import TestShip from "../../model/unit/ships/test/TestShip";
-import DamageEntry from "../../model/unit/system/DamageEntry.mjs";
-import CriticalHandler from "../../server/handler/CriticalHandler.mjs";
-import OutputReduced from "../../model/unit/system/criticals/OutputReduced.mjs";
-import ForcedOffline from "../../model/unit/system/criticals/ForcedOffline.mjs";
-import Ship from "../../model/unit/Ship.mjs";
-import HeatSink from "../../model/unit/system/heat/HeatSink.mjs";
-import Radiator from "../../model/unit/system/heat/Radiator.mjs";
-import ShipSystem from "../../model/unit/system/ShipSystem.mjs";
-import OutputHeatOnlineStrategy from "../../model/unit/system/strategy/OutputHeatOnlineStrategy.mjs";
-import HeatHandler from "../../server/handler/HeatHandler.mjs";
-import ForcedOfflineOverheat from "../../model/unit/system/criticals/ForcedOfflineOverheat.mjs";
-import ShipSystemLogEntryHeat from "../../model/unit/system/ShipSystemLog/ShipSystemLogEntryHeat.mjs";
+import DamageEntry from "../../model/unit/system/DamageEntry";
+import CriticalHandler from "../../server/handler/CriticalHandler";
+import OutputReduced from "../../model/unit/system/criticals/OutputReduced";
+import ForcedOffline from "../../model/unit/system/criticals/ForcedOffline";
+import Ship from "../../model/unit/Ship";
+import HeatSink from "../../model/unit/system/heat/HeatSink";
+import Radiator from "../../model/unit/system/heat/Radiator";
+import ShipSystem from "../../model/unit/system/ShipSystem";
+import OutputHeatOnlineStrategy from "../../model/unit/system/strategy/OutputHeatOnlineStrategy";
+import HeatHandler from "../../server/handler/HeatHandler";
+import ForcedOfflineOverheat from "../../model/unit/system/criticals/ForcedOfflineOverheat";
+import ShipSystemLogEntryHeat from "../../model/unit/system/ShipSystemLog/ShipSystemLogEntryHeat";
 
 test("Heat is generated", (test) => {
   const ship = new Ship({ id: 1 });

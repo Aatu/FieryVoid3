@@ -6,7 +6,7 @@ import {
   ZOOM_FOR_SHIPBADGE,
   ZOOM_FOR_SHIPBADGE_NAME,
   ZOOM_MAX,
-} from "../../../../../model/gameConfig.mjs";
+} from "../../../../../model/gameConfig";
 
 class ShowShipBadges extends AnimationUiStrategy {
   constructor() {

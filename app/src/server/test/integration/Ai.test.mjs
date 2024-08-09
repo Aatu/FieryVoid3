@@ -1,10 +1,10 @@
 import test from "ava";
-import GameController from "../../server/controller/GameController.mjs";
-import TestDatabaseConnection from "../support/TestDatabaseConnection.mjs";
-import { constructDeployedGame } from "../support/constructGame.mjs";
+import GameController from "../../server/controller/GameController";
+import TestDatabaseConnection from "../support/TestDatabaseConnection";
+import { constructDeployedGame } from "../support/constructGame";
 import User from "../../model/User";
-import { USER_AI } from "../../model/AIUser.mjs";
-import Offset from "../../model/hexagon/Offset.mjs";
+import { USER_AI } from "../../model/AIUser";
+import Offset from "../../model/hexagon/Offset";
 
 test.serial("Ai ship targets enemy", async (test) => {
   const db = new TestDatabaseConnection("ai");

@@ -1,5 +1,5 @@
 import React from "react";
-import TorpedoAttackService from "../../../../../model/weapon/TorpedoAttackService.mjs";
+import TorpedoAttackService from "../../../../../model/weapon/TorpedoAttackService";
 import styled from "styled-components";
 import {
   Tooltip,
@@ -11,8 +11,8 @@ import {
 } from "../../../../styled";
 import CargoItem from "../system/SystemStrategyUi/cargo/CargoItem";
 import TorpedoAttackTooltip from "./TorpedoAttackTooltip";
-import TorpedoMovementService from "../../../../../model/movement/TorpedoMovementService.mjs";
-import TorpedoFlight from "../../../../../model/unit/TorpedoFlight.mjs";
+import TorpedoMovementService from "../../../../../model/movement/TorpedoMovementService";
+import TorpedoFlight from "../../../../../model/unit/TorpedoFlight";
 import WeaponTargetingList from "./WeaponTargetingList";
 
 const Container = styled.div`

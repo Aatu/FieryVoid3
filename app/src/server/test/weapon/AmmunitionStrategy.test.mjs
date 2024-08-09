@@ -1,13 +1,13 @@
 import test from "ava";
-import Ship from "../../model/unit/Ship.mjs";
-import CargoBay from "../../model/unit/system/cargo/CargoBay.mjs";
-import AutoCannon85mm from "../../model/unit/system/weapon/autocannon/AutoCannon85mm.mjs";
+import Ship from "../../model/unit/Ship";
+import CargoBay from "../../model/unit/system/cargo/CargoBay";
+import AutoCannon85mm from "../../model/unit/system/weapon/autocannon/AutoCannon85mm";
 import {
   Ammo85mmAP,
   Ammo85mmHE,
-} from "../../model/unit/system/weapon/ammunition/conventional/index.mjs";
-import AmmunitionStrategy from "../../model/unit/system/strategy/weapon/AmmunitionStrategy.mjs";
-import DamageEntry from "../../model/unit/system/DamageEntry.mjs";
+} from "../../model/unit/system/weapon/ammunition/conventional/index";
+import AmmunitionStrategy from "../../model/unit/system/strategy/weapon/AmmunitionStrategy";
+import DamageEntry from "../../model/unit/system/DamageEntry";
 
 const createShip = (data = { id: 1 }) => {
   const ship = new Ship(data);

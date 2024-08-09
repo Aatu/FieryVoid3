@@ -1,15 +1,15 @@
 import test from "ava";
-import ThrustBill from "../../model/movement/ThrustBill.mjs";
-import MovementOrder from "../../model/movement/MovementOrder.mjs";
-import movementTypes from "../../model/movement/movementTypes.mjs";
+import ThrustBill from "../../model/movement/ThrustBill";
+import MovementOrder from "../../model/movement/MovementOrder";
+import movementTypes from "../../model/movement/movementTypes";
 import hexagon from "../../model/hexagon";
-import Thruster from "../../model/unit/system/thruster/Thruster.mjs";
-import ManeuveringThruster from "../../model/unit/system/thruster/ManeuveringThruster.mjs";
-import Ship from "../../model/unit/Ship.mjs";
-import ThrustChannelHeatIncreased from "../../model/unit/system/criticals/ThrustChannelHeatIncreased.mjs";
-import OutputReduced from "../../model/unit/system/criticals/OutputReduced.mjs";
-import ManeuveringThrusterLeft from "../../model/unit/system/thruster/ManeuveringThrusterLeft.mjs";
-import ManeuveringThrusterRight from "../../model/unit/system/thruster/ManeuveringThrusterRight.mjs";
+import Thruster from "../../model/unit/system/thruster/Thruster";
+import ManeuveringThruster from "../../model/unit/system/thruster/ManeuveringThruster";
+import Ship from "../../model/unit/Ship";
+import ThrustChannelHeatIncreased from "../../model/unit/system/criticals/ThrustChannelHeatIncreased";
+import OutputReduced from "../../model/unit/system/criticals/OutputReduced";
+import ManeuveringThrusterLeft from "../../model/unit/system/thruster/ManeuveringThrusterLeft";
+import ManeuveringThrusterRight from "../../model/unit/system/thruster/ManeuveringThrusterRight";
 
 let id = 0;
 
@@ -76,15 +76,15 @@ test("simple speed move", (test) => {
   const bill = new ThrustBill(ship, moves);
   bill.fuel = 999;
   test.deepEqual(bill.directionsRequired, {
-    "0": 0,
-    "3": 3,
-    "1": 0,
-    "2": 0,
-    "4": 0,
-    "5": 0,
-    "6": 0,
-    "7": 0,
-    "8": 0,
+    0: 0,
+    3: 3,
+    1: 0,
+    2: 0,
+    4: 0,
+    5: 0,
+    6: 0,
+    7: 0,
+    8: 0,
   });
 });
 
@@ -100,15 +100,15 @@ test("multiple speed moves", (test) => {
   ];
   const bill = new ThrustBill(ship, moves);
   test.deepEqual(bill.directionsRequired, {
-    "0": 3,
-    "3": 3,
-    "1": 6,
-    "2": 3,
-    "4": 3,
-    "5": 3,
-    "6": 0,
-    "7": 0,
-    "8": 0,
+    0: 3,
+    3: 3,
+    1: 6,
+    2: 3,
+    4: 3,
+    5: 3,
+    6: 0,
+    7: 0,
+    8: 0,
   });
 });
 

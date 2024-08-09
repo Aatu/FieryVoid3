@@ -4,15 +4,15 @@ import MovementService from "../../model/movement/MovementService";
 import movementTypes from "../../model/movement/movementTypes";
 import MovementOrder from "../../model/movement/MovementOrder";
 import hexagon from "../../model/hexagon";
-import Ship from "../../model/unit/Ship.mjs";
+import Ship from "../../model/unit/Ship";
 
-import Thruster from "../../model/unit/system/thruster/Thruster.mjs";
-import Engine from "../../model/unit/system/engine/Engine.mjs";
-import Reactor from "../../model/unit/system/reactor/Reactor.mjs";
-import DamageEntry from "../../model/unit/system/DamageEntry.mjs";
-import ManeuveringThruster from "../../model/unit/system/thruster/ManeuveringThruster.mjs";
-import OutputReduced from "../../model/unit/system/criticals/OutputReduced.mjs";
-import FuelTank from "../../model/unit/system/cargo/FuelTank.mjs";
+import Thruster from "../../model/unit/system/thruster/Thruster";
+import Engine from "../../model/unit/system/engine/Engine";
+import Reactor from "../../model/unit/system/reactor/Reactor";
+import DamageEntry from "../../model/unit/system/DamageEntry";
+import ManeuveringThruster from "../../model/unit/system/thruster/ManeuveringThruster";
+import OutputReduced from "../../model/unit/system/criticals/OutputReduced";
+import FuelTank from "../../model/unit/system/cargo/FuelTank";
 
 const startMove = new MovementOrder(
   -1,

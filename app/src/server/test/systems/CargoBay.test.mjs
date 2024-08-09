@@ -1,9 +1,9 @@
 import test from "ava";
-import CargoBay from "../../model/unit/system/cargo/CargoBay.mjs";
-import Torpedo158MSV from "../../model/unit/system/weapon/ammunition/torpedo/Torpedo158MSV.mjs";
-import Torpedo158Nuclear from "../../model/unit/system/weapon/ammunition/torpedo/Torpedo158Nuclear.mjs";
+import CargoBay from "../../model/unit/system/cargo/CargoBay";
+import Torpedo158MSV from "../../model/unit/system/weapon/ammunition/torpedo/Torpedo158MSV";
+import Torpedo158Nuclear from "../../model/unit/system/weapon/ammunition/torpedo/Torpedo158Nuclear";
 
-test("Cargo bay can store stuff", test => {
+test("Cargo bay can store stuff", (test) => {
   const torpedo1 = new Torpedo158MSV();
   const torpedo2 = new Torpedo158Nuclear();
 

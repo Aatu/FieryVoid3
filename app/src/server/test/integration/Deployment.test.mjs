@@ -1,9 +1,9 @@
 import test from "ava";
 import GameData from "../../model/game/GameData";
 import MovementHandler from "../../server/handler/MovementHandler";
-import GameController from "../../server/controller/GameController.mjs";
-import TestDatabaseConnection from "../support/TestDatabaseConnection.mjs";
-import { constructShipsBoughtGame } from "../support/constructGame.mjs";
+import GameController from "../../server/controller/GameController";
+import TestDatabaseConnection from "../support/TestDatabaseConnection";
+import { constructShipsBoughtGame } from "../support/constructGame";
 import MovementService from "../../model/movement/MovementService";
 import movementTypes from "../../model/movement/movementTypes";
 import MovementOrder from "../../model/movement/MovementOrder";
@@ -49,24 +49,14 @@ const constructDeployedShip = (id, player) => {
 
 const compareMovements = (test, moves1, moves2) => {
   test.deepEqual(
-    moves1.map(move =>
-      move
-        .clone()
-        .setRequiredThrust(null)
-        .round()
-    ),
-    moves2.map(move =>
-      move
-        .clone()
-        .setRequiredThrust(null)
-        .round()
-    )
+    moves1.map((move) => move.clone().setRequiredThrust(null).round()),
+    moves2.map((move) => move.clone().setRequiredThrust(null).round())
   );
 };
 
 test.serial(
   "Submit deployment, but ship is missing deploy move",
-  async test => {
+  async (test) => {
     const db = new TestDatabaseConnection("deployment");
     await db.resetDatabase();
 
@@ -79,15 +69,15 @@ test.serial(
 
     const movementService = getMovementService();
     movementService.deploy(
-      gameData.ships.getShips().find(ship => ship.name === "UCS Achilles"),
+      gameData.ships.getShips().find((ship) => ship.name === "UCS Achilles"),
       new hexagon.Offset(-32, 3)
     );
 
     const undeployedShip = gameData.ships
       .getShips()
-      .find(ship => ship.name === "UCS Eclipse");
+      .find((ship) => ship.name === "UCS Eclipse");
     undeployedShip.movement.moves = undeployedShip.movement.moves.filter(
-      move => !move.isDeploy()
+      (move) => !move.isDeploy()
     );
 
     const error = await test.throwsAsync(() =>
@@ -104,7 +94,7 @@ test.serial(
 
 test.serial(
   "Submit deployment with invalid deployment position",
-  async test => {
+  async (test) => {
     const db = new TestDatabaseConnection("deployment");
     await db.resetDatabase();
 
@@ -117,12 +107,12 @@ test.serial(
 
     const movementService = getMovementService();
     movementService.deploy(
-      gameData.ships.getShips().find(ship => ship.name === "UCS Achilles"),
+      gameData.ships.getShips().find((ship) => ship.name === "UCS Achilles"),
       new hexagon.Offset(-32, 3)
     );
 
     movementService.deploy(
-      gameData.ships.getShips().find(ship => ship.name === "UCS Eclipse"),
+      gameData.ships.getShips().find((ship) => ship.name === "UCS Eclipse"),
       new hexagon.Offset(-3400000, 3)
     );
 
@@ -138,7 +128,7 @@ test.serial(
   }
 );
 
-test.serial("Submit deployment with ships on same hex", async test => {
+test.serial("Submit deployment with ships on same hex", async (test) => {
   const db = new TestDatabaseConnection("deployment");
   await db.resetDatabase();
 
@@ -151,12 +141,12 @@ test.serial("Submit deployment with ships on same hex", async test => {
 
   const movementService = getMovementService();
   movementService.deploy(
-    gameData.ships.getShips().find(ship => ship.name === "UCS Achilles"),
+    gameData.ships.getShips().find((ship) => ship.name === "UCS Achilles"),
     new hexagon.Offset(-32, 3)
   );
 
   movementService.deploy(
-    gameData.ships.getShips().find(ship => ship.name === "UCS Eclipse"),
+    gameData.ships.getShips().find((ship) => ship.name === "UCS Eclipse"),
     new hexagon.Offset(-32, 3)
   );
 
@@ -171,7 +161,7 @@ test.serial("Submit deployment with ships on same hex", async test => {
   db.close();
 });
 
-test.serial("Submit valid deployment", async test => {
+test.serial("Submit valid deployment", async (test) => {
   const db = new TestDatabaseConnection("deployment");
   await db.resetDatabase();
 
@@ -184,12 +174,12 @@ test.serial("Submit valid deployment", async test => {
 
   const movementService = getMovementService();
   movementService.deploy(
-    gameData.ships.getShips().find(ship => ship.name === "UCS Achilles"),
+    gameData.ships.getShips().find((ship) => ship.name === "UCS Achilles"),
     new hexagon.Offset(-32, 3)
   );
 
   movementService.deploy(
-    gameData.ships.getShips().find(ship => ship.name === "UCS Eclipse"),
+    gameData.ships.getShips().find((ship) => ship.name === "UCS Eclipse"),
     new hexagon.Offset(-34, 3)
   );
 
@@ -198,10 +188,10 @@ test.serial("Submit valid deployment", async test => {
 
   const achilles = newGameData.ships
     .getShips()
-    .find(ship => ship.name === "UCS Achilles");
+    .find((ship) => ship.name === "UCS Achilles");
   const eclipse = newGameData.ships
     .getShips()
-    .find(ship => ship.name === "UCS Eclipse");
+    .find((ship) => ship.name === "UCS Eclipse");
 
   test.true(
     achilles.movement
@@ -222,7 +212,7 @@ test.serial("Submit valid deployment", async test => {
   db.close();
 });
 
-test.serial("Submit deployment for both players", async test => {
+test.serial("Submit deployment for both players", async (test) => {
   const db = new TestDatabaseConnection("deployment");
   await db.resetDatabase();
 
@@ -235,17 +225,17 @@ test.serial("Submit deployment for both players", async test => {
 
   const movementService = getMovementService();
   movementService.deploy(
-    gameData.ships.getShips().find(ship => ship.name === "UCS Achilles"),
+    gameData.ships.getShips().find((ship) => ship.name === "UCS Achilles"),
     new hexagon.Offset(-32, 3)
   );
 
   movementService.deploy(
-    gameData.ships.getShips().find(ship => ship.name === "UCS Eclipse"),
+    gameData.ships.getShips().find((ship) => ship.name === "UCS Eclipse"),
     new hexagon.Offset(-34, 3)
   );
 
   movementService.deploy(
-    gameData.ships.getShips().find(ship => ship.name === "GEPS Biliyaz"),
+    gameData.ships.getShips().find((ship) => ship.name === "GEPS Biliyaz"),
     new hexagon.Offset(34, 0)
   );
 
@@ -256,13 +246,13 @@ test.serial("Submit deployment for both players", async test => {
 
   const achilles = newGameData.ships
     .getShips()
-    .find(ship => ship.name === "UCS Achilles");
+    .find((ship) => ship.name === "UCS Achilles");
   const eclipse = newGameData.ships
     .getShips()
-    .find(ship => ship.name === "UCS Eclipse");
+    .find((ship) => ship.name === "UCS Eclipse");
   const biliyaz = newGameData.ships
     .getShips()
-    .find(ship => ship.name === "GEPS Biliyaz");
+    .find((ship) => ship.name === "GEPS Biliyaz");
 
   test.true(
     achilles.movement
@@ -290,7 +280,7 @@ test.serial("Submit deployment for both players", async test => {
   db.close();
 });
 
-test.serial("Try to submit deployment twice", async test => {
+test.serial("Try to submit deployment twice", async (test) => {
   const db = new TestDatabaseConnection("deployment");
   await db.resetDatabase();
 
@@ -303,12 +293,12 @@ test.serial("Try to submit deployment twice", async test => {
 
   const movementService = getMovementService();
   movementService.deploy(
-    gameData.ships.getShips().find(ship => ship.name === "UCS Achilles"),
+    gameData.ships.getShips().find((ship) => ship.name === "UCS Achilles"),
     new hexagon.Offset(-32, 3)
   );
 
   movementService.deploy(
-    gameData.ships.getShips().find(ship => ship.name === "UCS Eclipse"),
+    gameData.ships.getShips().find((ship) => ship.name === "UCS Eclipse"),
     new hexagon.Offset(-34, 3)
   );
 
@@ -321,40 +311,43 @@ test.serial("Try to submit deployment twice", async test => {
   db.close();
 });
 
-test.serial("Try to submit deployment after game has moved on", async test => {
-  const db = new TestDatabaseConnection("deployment");
-  await db.resetDatabase();
+test.serial(
+  "Try to submit deployment after game has moved on",
+  async (test) => {
+    const db = new TestDatabaseConnection("deployment");
+    await db.resetDatabase();
 
-  const controller = new GameController(db);
+    const controller = new GameController(db);
 
-  const user = new User(1, "Nönmän");
-  const user2 = new User(2, "Bädmän");
+    const user = new User(1, "Nönmän");
+    const user2 = new User(2, "Bädmän");
 
-  const gameData = await constructShipsBoughtGame(user, user2, controller);
+    const gameData = await constructShipsBoughtGame(user, user2, controller);
 
-  const movementService = getMovementService();
-  movementService.deploy(
-    gameData.ships.getShips().find(ship => ship.name === "UCS Achilles"),
-    new hexagon.Offset(-32, 3)
-  );
+    const movementService = getMovementService();
+    movementService.deploy(
+      gameData.ships.getShips().find((ship) => ship.name === "UCS Achilles"),
+      new hexagon.Offset(-32, 3)
+    );
 
-  movementService.deploy(
-    gameData.ships.getShips().find(ship => ship.name === "UCS Eclipse"),
-    new hexagon.Offset(-34, 3)
-  );
+    movementService.deploy(
+      gameData.ships.getShips().find((ship) => ship.name === "UCS Eclipse"),
+      new hexagon.Offset(-34, 3)
+    );
 
-  movementService.deploy(
-    gameData.ships.getShips().find(ship => ship.name === "GEPS Biliyaz"),
-    new hexagon.Offset(34, 0)
-  );
+    movementService.deploy(
+      gameData.ships.getShips().find((ship) => ship.name === "GEPS Biliyaz"),
+      new hexagon.Offset(34, 0)
+    );
 
-  await controller.commitDeployment(gameData.id, gameData.serialize(), user);
-  await controller.commitDeployment(gameData.id, gameData.serialize(), user2);
-  const error = await test.throwsAsync(() =>
-    controller.commitDeployment(gameData.id, gameData.serialize(), user)
-  );
+    await controller.commitDeployment(gameData.id, gameData.serialize(), user);
+    await controller.commitDeployment(gameData.id, gameData.serialize(), user2);
+    const error = await test.throwsAsync(() =>
+      controller.commitDeployment(gameData.id, gameData.serialize(), user)
+    );
 
-  test.is(error.message, "Invalid deployment: game phase is not deployment");
+    test.is(error.message, "Invalid deployment: game phase is not deployment");
 
-  db.close();
-});
+    db.close();
+  }
+);
