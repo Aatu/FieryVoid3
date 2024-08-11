@@ -19,11 +19,11 @@ import GameData from "../game/GameData";
 import { AiRole } from "../ai/AiRole";
 
 export type ShipBase = {
-  id: string;
-  gameId: number | null;
-  name: string | null;
-  shipClass: string;
-  slotId: string | null;
+  id?: string;
+  gameId?: number | null;
+  name?: string | null;
+  shipClass?: string;
+  slotId?: string | null;
 };
 
 export type ShipData = {

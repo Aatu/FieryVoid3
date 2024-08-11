@@ -175,7 +175,7 @@ class GameController {
     await this.gameDataService.saveGame(key, gameData);
   }
 
-  async getGameData(gameId: number, user: User) {
+  async getGameData(gameId: number, user: User | null = null) {
     const game = await this.gameDataService.loadGame(gameId);
     return game.censorForUser(user);
   }

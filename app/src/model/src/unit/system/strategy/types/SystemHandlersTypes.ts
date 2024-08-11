@@ -113,6 +113,7 @@ export enum SYSTEM_HANDLERS {
   setNewLoadingTarget = "setNewLoadingTarget",
   getLoadingTarget = "getLoadingTarget",
   setNewSelectedAmmo = "setNewSelectedAmmo",
+  getTurnsLoaded = "getTurnsLoaded",
 }
 
 export type SystemMessage = {

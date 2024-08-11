@@ -1,3 +1,4 @@
+import { GAME_PHASE } from "../../../game/gamePhase";
 import ShipSystem from "../ShipSystem";
 import ShipSystemStrategy from "./ShipSystemStrategy";
 import { SYSTEM_HANDLERS } from "./types/SystemHandlersTypes";
@@ -110,11 +111,11 @@ class BoostableSystemStrategy extends ShipSystemStrategy {
     payload: unknown,
     previousResponse = 1
   ) {
-    if (previousResponse > 2) {
+    if (previousResponse > GAME_PHASE.GAME) {
       return previousResponse;
     }
 
-    return 2;
+    return GAME_PHASE.GAME;
   }
 
   receivePlayerData({
@@ -122,7 +123,7 @@ class BoostableSystemStrategy extends ShipSystemStrategy {
     phase,
   }: {
     clientSystem: ShipSystem;
-    phase: number;
+    phase: GAME_PHASE;
   }) {
     if (!clientSystem) {
       return;
@@ -139,25 +140,25 @@ class BoostableSystemStrategy extends ShipSystemStrategy {
 
     const targetBoostlevel = clientStrategy?.boostLevel;
 
-    if (this.boostLevel > targetBoostlevel && phase === 2) {
+    if (this.boostLevel > targetBoostlevel) {
       while (true) {
         if (this.boostLevel === targetBoostlevel) {
           return;
         }
 
-        if (!this.canDeBoost(undefined, false)) {
+        if (!this.canDeBoost(undefined, true)) {
           return;
         }
 
         this.deBoost(undefined, undefined);
       }
-    } else if (this.boostLevel < targetBoostlevel && phase === 1) {
+    } else if (this.boostLevel < targetBoostlevel) {
       while (true) {
         if (this.boostLevel === targetBoostlevel) {
           return;
         }
 
-        if (!this.canBoost(undefined, false)) {
+        if (!this.canBoost(undefined, true)) {
           return;
         }
 

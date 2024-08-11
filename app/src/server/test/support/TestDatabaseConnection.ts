@@ -1,30 +1,35 @@
-import DbConnection from "../../server/repository/DbConnection";
+import DbConnection from "../../repository/DbConnection";
 import createDatabase from "./createDatabase";
+import mariadb from "mariadb";
 
 class TestDbConnection extends DbConnection {
-  constructor(dbName) {
+  public dbName: string;
+  private poolForCreatingDatabase: mariadb.Pool;
+
+  constructor(dbName: string) {
     super({
       host: "localhost",
       user: "root",
       password: "root",
       database: `fieryvoidtest_${dbName}`,
-      connectionLimit: 5
+      connectionLimit: 5,
+      multipleStatements: true,
     });
 
     this.dbName = dbName;
 
-    this.createPool = this.createPool({
+    this.poolForCreatingDatabase = this.createPool({
       host: "localhost",
       user: "root",
       password: "root",
       connectionLimit: 5,
-      multipleStatements: true
+      multipleStatements: true,
     });
   }
 
   async getCreateConnection() {
     try {
-      return await this.createPool.getConnection();
+      return await this.poolForCreatingDatabase.getConnection();
     } catch (err) {
       throw err;
     }
@@ -34,7 +39,7 @@ class TestDbConnection extends DbConnection {
     const conn = await this.getCreateConnection();
     await this.query(conn, createDatabase(this.dbName));
     await conn.end();
-    await this.createPool.end();
+    await this.poolForCreatingDatabase.end();
   }
 }
 

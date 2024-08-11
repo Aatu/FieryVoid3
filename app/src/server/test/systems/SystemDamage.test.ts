@@ -1,21 +1,21 @@
-import test from "ava";
-import ShipSystem from "../../model/unit/system/ShipSystem";
-import DamageEntry from "../../model/unit/system/DamageEntry";
-import ForcedOffline from "../../model/unit/system/criticals/ForcedOffline";
+import { expect, test } from "vitest";
+import ShipSystem from "../../../model/src/unit/system/ShipSystem";
+import DamageEntry from "../../../model/src/unit/system/DamageEntry";
+import ForcedOffline from "../../../model/src/unit/system/criticals/ForcedOffline";
 
 test("System takes damage and is destroyed", (test) => {
   const system = new ShipSystem({ id: 123, hitpoints: 10, armor: 3 });
   system.addDamage(new DamageEntry(3));
-  test.false(system.isDestroyed());
-  test.deepEqual(system.getTotalDamage(), 3);
+  expect(system.isDestroyed()).toBe(false);
+  expect(system.getTotalDamage()).toBe(3);
   system.addDamage(new DamageEntry(7));
-  test.true(system.isDestroyed());
+  expect(system.isDestroyed()).toBe(true);
 });
 
 test("System takes critical damage", (test) => {
   const system = new ShipSystem({ id: 123, hitpoints: 10, armor: 3 });
   system.addCritical(new ForcedOffline(3));
-  test.true(system.hasCritical(ForcedOffline));
+  expect(system.hasCritical(ForcedOffline)).toBe(true);
 });
 
 test("Stuff serializes and deserializes nicely", (test) => {
@@ -26,14 +26,14 @@ test("Stuff serializes and deserializes nicely", (test) => {
 
   const serialized = system.serialize();
 
-  system.damage.entries.forEach((entry) => (entry.new = false));
+  system.damage["entries"].forEach((entry) => (entry.new = false));
 
   const system2 = new ShipSystem({
     id: 123,
     hitpoints: 10,
     armor: 3,
   }).deserialize(serialized);
-  test.deepEqual(system, system2);
+  expect(system).toEqual(system2);
 });
 
 test("Ship system gets destroyed", (test) => {
@@ -41,8 +41,8 @@ test("Ship system gets destroyed", (test) => {
 
   const damage = new DamageEntry(10, 3);
   system.addDamage(damage);
-  test.true(damage.destroyedSystem);
-  test.true(system.isDestroyed());
+  expect(damage.destroyedSystem).toBe(true);
+  expect(system.isDestroyed()).toBe(true);
 
   const newSystem = new ShipSystem({
     id: 123,
@@ -50,5 +50,5 @@ test("Ship system gets destroyed", (test) => {
     armor: 3,
   }).deserialize(system.serialize());
 
-  test.true(newSystem.damage.entries[0].destroyedSystem);
+  expect(newSystem.damage["entries"][0].destroyedSystem).toBe(true);
 });

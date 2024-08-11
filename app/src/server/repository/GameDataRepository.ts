@@ -173,7 +173,7 @@ class GameDataRepository {
     return {
       ...response,
       data: await this.getGameData(conn, id, turn),
-      activeShips: JSON.parse(response.activeShips) as string[],
+      activeShips: response.activeShips,
     };
   }
 
@@ -181,6 +181,7 @@ class GameDataRepository {
     conn: Connection | null,
     data: SerializedGameData
   ): Promise<number> {
+    console.log("inserting game, phase", data.phase);
     const insertId = await this.db.insert(
       conn,
       `INSERT INTO game (
@@ -260,7 +261,7 @@ class GameDataRepository {
       )
     )[0];
 
-    return JSON.parse(response.data) as SerializedGameDataSubData;
+    return response.data as SerializedGameDataSubData;
   }
 
   async getShipsForGame(conn: Connection | null, id: number) {
@@ -308,17 +309,17 @@ class GameDataRepository {
         name = ?,
         ship_class = ?`,
       [
-        data.id,
+        data.id || "",
         gameId,
         data?.shipData?.player?.id || -1,
         data.slotId || "",
         data.name || "",
-        data.shipClass,
+        data.shipClass || "",
         gameId,
         data?.shipData?.player?.id || -1,
         data.slotId || "",
         data.name || "",
-        data.shipClass,
+        data.shipClass || "",
       ]
     );
   }
@@ -428,7 +429,7 @@ class GameDataRepository {
           ?,UuidToBin(?),?,?
       ) ON DUPLICATE KEY UPDATE
         data = ?`,
-        [gameId, data.id, turn, data.shipData || {}, data.shipData || {}]
+        [gameId, data.id || "", turn, data.shipData || {}, data.shipData || {}]
       )
     )[0];
   }

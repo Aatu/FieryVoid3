@@ -56,7 +56,7 @@ CREATE TABLE `game` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` text,
   `turn` int(11) DEFAULT NULL,
-  `phase` ENUM('deployment','game') DEFAULT 'deployment',
+  `phase` int(11) DEFAULT 0,
   `active_ships` JSON DEFAULT '[]',
   `creator_id` int(11) DEFAULT NULL,
   `status` ENUM('lobby','active','finished', 'abandoned') DEFAULT 'lobby',

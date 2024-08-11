@@ -21,18 +21,19 @@ type Config = {
   host: string;
   user: string;
   password: string;
-  database: string;
+  database?: string;
   connectionLimit: number;
+  multipleStatements?: boolean;
 };
 
 class DbConnection {
-  private pool: mariadb.Pool;
+  protected pool: mariadb.Pool;
 
   constructor(config: Config) {
     this.pool = this.createPool(config);
   }
 
-  private createPool(config: Config) {
+  protected createPool(config: Config) {
     return mariadb.createPool(config);
   }
 
