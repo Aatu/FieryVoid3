@@ -319,8 +319,7 @@ class AmmunitionStrategy extends ShipSystemStrategy {
       changeTargetLoad.forEach((entry) => {
         if (
           !this.ammunitionClasses.some(
-            // @ts-expect-error
-            (className) => entry.object instanceof className
+            (className) => entry.object.getCargoClassName() === className
           )
         ) {
           throw new Error(
@@ -348,8 +347,7 @@ class AmmunitionStrategy extends ShipSystemStrategy {
     if (changeSelectedAmmo) {
       if (
         !this.ammunitionClasses.some(
-          // @ts-expect-error
-          (ammoClass) => changeSelectedAmmo instanceof ammoClass
+          (ammoClass) => changeSelectedAmmo.getCargoClassName() === ammoClass
         )
       ) {
         throw new Error(

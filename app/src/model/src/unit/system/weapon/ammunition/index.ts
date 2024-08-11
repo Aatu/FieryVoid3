@@ -10,9 +10,9 @@ export const ammunition = {
 };
 export type AmmunitionType = keyof typeof ammunition;
 
-export const createAmmoInstance = (classname: AmmunitionType): Ammo => {
+export const createAmmoInstance = (className: AmmunitionType): Ammo => {
   //@ts-ignore
-  return new classname();
+  return new ammunition[className]();
 };
 
 export const ammunitionClasses = Object.values(ammunition);

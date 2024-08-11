@@ -16,8 +16,8 @@ export type HitResolution = {
 };
 
 class StandardHitStrategy extends ShipSystemStrategy {
-  protected fireControl: number;
-  protected numberOfShots: number;
+  public fireControl: number;
+  public numberOfShots: number;
 
   constructor(fireControl: number = 0, numberOfShots: number = 1) {
     super();

@@ -47,9 +47,9 @@ export type ChooseHitSystemFunction<T> = (
 ) => ShipSystem | null;
 
 class StandardDamageStrategy extends ShipSystemStrategy {
-  protected damageFormula: string | number | null;
-  protected armorPiercingFormula: string | number | null;
-  protected hitSystemRandomizer: HitSystemRandomizer;
+  public damageFormula: string | number | null;
+  public armorPiercingFormula: string | number | null;
+  public hitSystemRandomizer: HitSystemRandomizer;
 
   constructor(
     damageFormula: string | number | null = 0,

@@ -1,4 +1,4 @@
-import THREE from "three";
+import * as THREE from "three";
 import coordinateConverter from "./CoordinateConverter";
 import { degreeToRadian } from "./math";
 

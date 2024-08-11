@@ -20,7 +20,7 @@ class GameShips {
   }
 
   addShip(ship: Ship) {
-    if (ship.id && this.getShipById(ship.id)) {
+    if (ship.id && this.hasShipById(ship.id)) {
       throw new Error("Duplicate ship is added to gamedata");
     }
 
@@ -34,6 +34,10 @@ class GameShips {
 
   getAliveShips() {
     return this.ships.filter((ship) => !ship.isDestroyed());
+  }
+
+  hasShipById(id: string): boolean {
+    return Boolean(this.ships.find((ship) => ship.id === id));
   }
 
   getShipById(id: string): Ship {

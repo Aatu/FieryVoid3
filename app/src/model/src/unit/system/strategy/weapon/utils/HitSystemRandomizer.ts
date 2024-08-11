@@ -2,11 +2,11 @@ import ShipSystem from "../../../ShipSystem";
 import { SYSTEM_HANDLERS } from "../../types/SystemHandlersTypes";
 
 class HitSystemRandomizer {
-  rollForSystem(totalStructure: number) {
+  private rollForSystem(totalStructure: number) {
     return Math.ceil(Math.random() * totalStructure);
   }
 
-  randomizeHitSystem(systems: ShipSystem[]) {
+  public randomizeHitSystem(systems: ShipSystem[]) {
     if (systems.length === 0) {
       return null;
     }
@@ -30,7 +30,7 @@ class HitSystemRandomizer {
     });
   }
 
-  getSystemHitSize(system: ShipSystem) {
+  private getSystemHitSize(system: ShipSystem) {
     return (
       system.hitpoints *
       system.callHandler(SYSTEM_HANDLERS.getHitSystemSizeMultiplier, null, 1)

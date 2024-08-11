@@ -186,8 +186,8 @@ class ShipMovement {
     return end?.rolled || false;
   }
 
-  isRolling() {
-    return this.getRollMove();
+  isRolling(): boolean {
+    return Boolean(this.getRollMove());
   }
 
   getRollMove() {

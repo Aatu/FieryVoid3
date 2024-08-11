@@ -1,4 +1,4 @@
-import THREE from "three";
+import * as THREE from "three";
 import Vector, { IVector } from "./Vector";
 import * as gameConfig from "../config/gameConfig";
 import HexagonMath from "./HexagonMath";
@@ -129,7 +129,7 @@ class CoordinateConverter {
     };
 
     this.raycaster.setFromCamera(
-      { x: pos.xR, y: pos.yR },
+      new THREE.Vector2(pos.xR, pos.yR),
       this.getCamera().getCamera()
     );
     const intersects = this.raycaster.intersectObjects(
@@ -152,7 +152,7 @@ class CoordinateConverter {
     const result: unknown[] = [];
 
     this.raycaster.setFromCamera(
-      { x: pos.xR, y: pos.yR },
+      new THREE.Vector2(pos.xR, pos.yR),
       this.getCamera().getCamera()
     );
     var intersects = this.raycaster.intersectObjects(

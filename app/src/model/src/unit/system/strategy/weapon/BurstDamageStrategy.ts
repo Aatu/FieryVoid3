@@ -17,7 +17,7 @@ class BurstDamageStrategy extends StandardDamageStrategy {
   constructor(
     damageFormula: number | string | null,
     armorPiercingFormula: number | string | null,
-    shotsFormula: number = 6,
+    shotsFormula: number | string = 6,
     maxShots: number = 6,
     grouping: number = 10
   ) {

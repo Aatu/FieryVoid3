@@ -3,7 +3,7 @@ import yup from "yup";
 export type IUser = {
   id: number;
   username: string;
-  accessLevel: number;
+  accessLevel?: number;
 };
 
 export class User implements IUser {
@@ -30,7 +30,7 @@ export class User implements IUser {
   deserialize(data: IUser) {
     this.id = data.id;
     this.username = data.username;
-    this.accessLevel = data.accessLevel;
+    this.accessLevel = data.accessLevel || 1;
 
     return this;
   }

@@ -107,6 +107,12 @@ export enum SYSTEM_HANDLERS {
 
   getHitChance = "getHitChance",
   getLoadingTime = "getLoadingTime",
+
+  loadAmmo = "loadAmmo",
+  getAmmoInMagazine = "getAmmoInMagazine",
+  setNewLoadingTarget = "setNewLoadingTarget",
+  getLoadingTarget = "getLoadingTarget",
+  setNewSelectedAmmo = "setNewSelectedAmmo",
 }
 
 export type SystemMessage = {

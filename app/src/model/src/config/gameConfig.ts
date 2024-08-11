@@ -1,4 +1,4 @@
-import THREE from "three";
+import * as THREE from "three";
 
 const HEX_SIZE = 25.0;
 const ZOOM_MAX = 40;

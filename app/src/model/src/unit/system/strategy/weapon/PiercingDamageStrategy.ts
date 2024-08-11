@@ -64,9 +64,9 @@ class PiercingDamageStrategy extends StandardDamageStrategy {
     payload: StandardDamagePayload & { shooterPosition: Vector },
     damageResult: CombatLogDamageEntry,
     lastSection: SystemSection | null,
-    armorPiercing: number = 0,
+    armorPiercing?: number,
     inputDamage?: number,
-    shotsResolved: number = 0,
+    shotsResolved?: number,
     systemsHit: ShipSystem[] = []
   ): void {
     const { target, shooterPosition, combatLogEntry } = payload;
@@ -113,7 +113,7 @@ class PiercingDamageStrategy extends StandardDamageStrategy {
       null,
       armorPiercing,
       0,
-      shotsResolved + 1,
+      shotsResolved !== undefined ? shotsResolved + 1 : 1,
       systemsHit
     );
   }
