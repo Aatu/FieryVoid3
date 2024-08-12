@@ -54,7 +54,7 @@ class Ship implements IHexPosition {
   public shipClass!: string;
   public gameId: number | null = null;
   public slotId: string | null = null;
-  public player: ShipPlayer | null = null;
+  public player: ShipPlayer;
   public movement!: ShipMovement;
   public electronicWarfare!: ShipElectronicWarfare;
   public destroyedThisTurn!: boolean;
@@ -76,6 +76,8 @@ class Ship implements IHexPosition {
 
     this.shipModel = null;
     this.shipTypeName = "";
+
+    this.player = new ShipPlayer();
     this.setShipProperties();
     this.deserialize(data);
   }
@@ -188,9 +190,7 @@ class Ship implements IHexPosition {
     this.slotId = data?.slotId || null;
 
     this.systems.deserialize(shipData.systems);
-    this.player = shipData.player
-      ? new ShipPlayer().deserialize(shipData.player)
-      : null;
+    shipData.player ? this.player.deserialize(shipData.player) : null;
     this.movement = new ShipMovement(this).deserialize(
       (data as SerializedShip)?.movement
     );

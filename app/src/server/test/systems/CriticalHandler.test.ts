@@ -1,13 +1,14 @@
-import test from "ava";
-import TestShip from "../../model/unit/ships/test/TestShip";
-import DamageEntry from "../../model/unit/system/DamageEntry";
-import CriticalHandler from "../../server/handler/CriticalHandler";
-import OutputReduced from "../../model/unit/system/criticals/OutputReduced";
-import ForcedOffline from "../../model/unit/system/criticals/ForcedOffline";
-import ShipSystemLogEntryCriticalHit from "../../model/unit/system/ShipSystemLog/ShipSystemLogEntryCriticalHit";
+import { expect, test } from "vitest";
+import TestShip from "../../../model/src/unit/ships/test/TestShip";
+import DamageEntry from "../../../model/src/unit/system/DamageEntry";
+import CriticalHandler from "../../handler/CriticalHandler";
+import GameData from "../../../model/src/game/GameData";
+import ForcedOffline from "../../../model/src/unit/system/criticals/ForcedOffline";
+import ShipSystemLogEntryCriticalHit from "../../../model/src/unit/system/ShipSystemLog/ShipSystemLogEntryCriticalHit";
+import OutputReduced from "../../../model/src/unit/system/criticals/OutputReduced";
 
-test("Critical handler adds a critical", (test) => {
-  const ship = new TestShip({ id: 1 });
+test("Critical handler adds a critical", () => {
+  const ship = new TestShip({ id: "1" });
   const engine = ship.systems.getSystemById(5);
   engine.addDamage(new DamageEntry(5));
 
@@ -17,19 +18,21 @@ test("Critical handler adds a critical", (test) => {
   };
   criticalHandler.getRandomBonus = () => 50;
 
-  criticalHandler.advance({ ships: { getShips: () => [ship] } });
+  criticalHandler.advance({
+    ships: { getShips: () => [ship] },
+  } as unknown as GameData);
 
   const actual = engine.damage.getCriticals()[0];
-  actual.id = null;
+  actual.id = "";
   const expected = new ForcedOffline(4);
-  expected.id = null;
-  test.deepEqual(actual, expected);
+  expected.id = "";
+  expect(actual).toEqual(expected);
 
   const logEntry = engine.log.getOpenLogEntryByClass(
     ShipSystemLogEntryCriticalHit
   );
 
-  test.deepEqual(logEntry.getMessage(), [
+  expect(logEntry.getMessage()).toEqual([
     "Tested for critical damage:",
     "Existing damage: 0, new: 38, overheat: 0, random: 50, total: 88",
     "Resulted in critical:",
@@ -38,7 +41,7 @@ test("Critical handler adds a critical", (test) => {
 });
 
 test("Critical handler upgrades a critical", (test) => {
-  const ship = new TestShip({ id: 1 });
+  const ship = new TestShip({ id: "1" });
   const engine = ship.systems.getSystemById(5);
   engine.addDamage(new DamageEntry(5));
   engine.addCritical(new OutputReduced(2, 2));
@@ -49,17 +52,19 @@ test("Critical handler upgrades a critical", (test) => {
   };
   criticalHandler.getRandomBonus = () => 50;
 
-  criticalHandler.advance({ ships: { getShips: () => [ship] } });
+  criticalHandler.advance({
+    ships: { getShips: () => [ship] },
+  } as unknown as GameData);
 
   const actual = engine.damage.getCriticals()[0];
-  actual.id = null;
+  actual.id = "";
   const expected = new OutputReduced(2, 3);
-  expected.id = null;
-  test.deepEqual(actual, expected);
+  expected.id = "";
+  expect(actual).toEqual(expected);
 });
 
 test("Critical handler chooses best critical if ceiling is too high", (test) => {
-  const ship = new TestShip({ id: 1 });
+  const ship = new TestShip({ id: "1" });
   const engine = ship.systems.getSystemById(5);
   engine.addDamage(new DamageEntry(5));
 
@@ -71,17 +76,19 @@ test("Critical handler chooses best critical if ceiling is too high", (test) => 
   criticalHandler.getCeil = () => 100;
   criticalHandler.getFloor = () => 100;
 
-  criticalHandler.advance({ ships: { getShips: () => [ship] } });
+  criticalHandler.advance({
+    ships: { getShips: () => [ship] },
+  } as unknown as GameData);
 
   const actual = engine.damage.getCriticals()[0];
-  actual.id = null;
+  actual.id = "";
   const expected = new OutputReduced(6);
-  expected.id = null;
-  test.deepEqual(actual, expected);
+  expected.id = "";
+  expect(actual).toEqual(expected);
 });
 
 test("Critical handler does not add a critical if dice says so", (test) => {
-  const ship = new TestShip({ id: 1 });
+  const ship = new TestShip({ id: "1" });
   const engine = ship.systems.getSystemById(5);
   engine.addDamage(new DamageEntry(1));
 
@@ -91,7 +98,9 @@ test("Critical handler does not add a critical if dice says so", (test) => {
   };
   criticalHandler.getRandomBonus = () => 1;
 
-  criticalHandler.advance({ ships: { getShips: () => [ship] } });
+  criticalHandler.advance({
+    ships: { getShips: () => [ship] },
+  } as unknown as GameData);
 
-  test.deepEqual(engine.damage.getCriticals(), []);
+  expect(engine.damage.getCriticals()).toEqual([]);
 });

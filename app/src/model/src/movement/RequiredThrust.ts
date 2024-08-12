@@ -58,7 +58,12 @@ class RequiredThrust {
         case MOVEMENT_TYPE.EVADE:
           this.requireEvade(ship, move);
           break;
+        case MOVEMENT_TYPE.START:
+        case MOVEMENT_TYPE.END:
+        case MOVEMENT_TYPE.DEPLOY:
+          return this;
         default:
+          throw new Error(`Unknown movement type "${move.type}"`);
       }
     }
 
@@ -172,9 +177,18 @@ class RequiredThrust {
   accumulate(total: ThrustRequirementSummary) {
     Object.keys(THRUSTER_DIRECTION).forEach((directionString: string) => {
       const direction = parseInt(directionString, 10) as THRUSTER_DIRECTION;
-      total[direction] = total[direction]
-        ? total[direction] + this.requirements[direction]
-        : this.requirements[direction];
+
+      if (isNaN(direction)) {
+        return;
+      }
+
+      const requirement = this.requirements[direction];
+
+      if (isNaN(requirement)) {
+        return;
+      }
+
+      total[direction] += requirement;
     });
 
     return total;

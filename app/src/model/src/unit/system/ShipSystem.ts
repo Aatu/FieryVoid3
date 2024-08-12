@@ -185,7 +185,7 @@ class ShipSystem {
     return this.damage.hasAnyCritical();
   }
 
-  hasCritical(name: typeof Critical) {
+  hasCritical(name: typeof Critical | Critical | string) {
     return this.damage.hasCritical(name);
   }
 

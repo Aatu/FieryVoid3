@@ -1,10 +1,15 @@
-import test from "ava";
-import ThrustAssignment from "../../model/movement/ThrustAssignment";
-import Thruster from "../../model/unit/system/thruster/Thruster";
+import { expect, test } from "vitest";
+import Thruster from "../../../model/src/unit/system/thruster/Thruster";
+import Critical from "../../../model/src/unit/system/criticals/Critical";
+import ThrustAssignment from "../../../model/src/movement/ThrustAssignment";
 
 let id = 0;
 
-const getThruster = (direction = 0, output = 3, criticals = []) => {
+const getThruster = (
+  direction = 0,
+  output = 3,
+  criticals: (typeof Critical)[] = []
+) => {
   id++;
 
   const thruster = new Thruster(
@@ -16,29 +21,21 @@ const getThruster = (direction = 0, output = 3, criticals = []) => {
   return thruster;
 };
 
+test("isDirection", () => {
+  const thrustAssignment = new ThrustAssignment(getThruster(0, 6));
+  expect(thrustAssignment.isDirection(0)).toBe(true);
+  expect(thrustAssignment.isDirection(3)).toBe(false);
+});
+
+test("getCost, no damage, no overthrust", () => {
+  const thrustAssignment = new ThrustAssignment(getThruster(0, 6));
+  const capacity = thrustAssignment.getThrustCapacity();
+
+  expect(capacity).toBe(6);
+});
+
 /*
-test("isDirection", test => {
-  const thrustAssignment = new ThrustAssignment(getThruster(0, 6));
-  test.true(thrustAssignment.isDirection(0));
-  test.false(thrustAssignment.isDirection(3));
-});
-
-test("getCost, no damage, no overthrust", test => {
-  const thrustAssignment = new ThrustAssignment(getThruster(0, 6));
-  const {
-    capacity,
-    overCapacity,
-    extraCost,
-    costMultiplier
-  } = thrustAssignment.getThrustCapacity();
-
-  test.deepEqual(capacity, 6);
-  test.deepEqual(overCapacity, 6);
-  test.deepEqual(extraCost, 0);
-  test.deepEqual(costMultiplier, 1);
-});
-
-test("channel wihtout overthrusting", test => {
+test("channel wihtout overthrusting", () => {
   const thrustAssignment = new ThrustAssignment(getThruster(0, 6));
 
   const { channeled, overChanneled, cost } = thrustAssignment.channel(3);
@@ -47,18 +44,16 @@ test("channel wihtout overthrusting", test => {
   test.deepEqual(overChanneled, 0);
   test.deepEqual(cost, 3);
 
-  const {
-    capacity,
-    overCapacity,
-    extraCost,
-    costMultiplier
-  } = thrustAssignment.getThrustCapacity();
+  const { capacity, overCapacity, extraCost, costMultiplier } =
+    thrustAssignment.getThrustCapacity();
 
   test.deepEqual(capacity, 3);
   test.deepEqual(overCapacity, 6);
   test.deepEqual(extraCost, 0);
   test.deepEqual(costMultiplier, 1);
 });
+
+/*
 
 test("overchannel a lot", test => {
   const thrustAssignment = new ThrustAssignment(getThruster(0, 6));

@@ -147,7 +147,7 @@ class GameDataRepository {
         name: string;
         turn: number;
         phase: GAME_PHASE;
-        activeShips: string;
+        activeShips: string[];
         creatorId: number;
         status: GAME_STATUS;
       }>(
@@ -181,7 +181,6 @@ class GameDataRepository {
     conn: Connection | null,
     data: SerializedGameData
   ): Promise<number> {
-    console.log("inserting game, phase", data.phase);
     const insertId = await this.db.insert(
       conn,
       `INSERT INTO game (

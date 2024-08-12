@@ -1,15 +1,15 @@
-import test from "ava";
-import Ship from "../../model/unit/Ship";
-import Thruster from "../../model/unit/system/thruster/Thruster";
-import Engine from "../../model/unit/system/engine/Engine";
-import Reactor from "../../model/unit/system/reactor/Reactor";
-import DamageEntry from "../../model/unit/system/DamageEntry";
+import { expect, test } from "vitest";
+import Ship from "../../../model/src/unit/Ship";
+import Thruster from "../../../model/src/unit/system/thruster/Thruster";
+import Engine from "../../../model/src/unit/system/engine/Engine";
+import Reactor from "../../../model/src/unit/system/reactor/Reactor";
+import DamageEntry from "../../../model/src/unit/system/DamageEntry";
 
-const constructShip = (id = 123) => {
+const constructShip = (id: string = "123") => {
   let ship = new Ship({
     id,
-    accelcost: 3,
   });
+
   ship.systems.addPrimarySystem([
     new Thruster({ id: 1, hitpoints: 10, armor: 3 }, 5, 0),
     new Thruster({ id: 2, hitpoints: 10, armor: 3 }, 5, 0),
@@ -24,7 +24,7 @@ const constructShip = (id = 123) => {
 };
 
 test("Ship systems serializes and deserializes nicely", (test) => {
-  let ship = constructShip(73);
+  let ship = constructShip("73");
 
   ship.systems.getSystemById(1).addDamage(new DamageEntry(3));
   ship.systems.getSystemById(3).addDamage(new DamageEntry(10));
@@ -33,8 +33,8 @@ test("Ship systems serializes and deserializes nicely", (test) => {
   const serialized = ship.serialize();
 
   let ship2 = constructShip().deserialize(serialized);
-  test.is(ship2.systems.getSystemById(1).getTotalDamage(), 3);
-  test.true(ship2.systems.getSystemById(3).isDestroyed());
-  test.true(ship2.systems.getSystemById(5) instanceof Engine);
-  test.true(ship2.systems.getSystemById(5).power.isOffline());
+  expect(ship2.systems.getSystemById(1).getTotalDamage()).toBe(3);
+  expect(ship2.systems.getSystemById(3).isDestroyed()).toBe(true);
+  expect(ship2.systems.getSystemById(5) instanceof Engine).toBe(true);
+  expect(ship2.systems.getSystemById(5).power.isOffline()).toBe(true);
 });

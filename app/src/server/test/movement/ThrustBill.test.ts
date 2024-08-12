@@ -1,19 +1,26 @@
-import test from "ava";
-import ThrustBill from "../../model/movement/ThrustBill";
-import MovementOrder from "../../model/movement/MovementOrder";
-import movementTypes from "../../model/movement/movementTypes";
-import hexagon from "../../model/hexagon";
-import Thruster from "../../model/unit/system/thruster/Thruster";
-import ManeuveringThruster from "../../model/unit/system/thruster/ManeuveringThruster";
-import Ship from "../../model/unit/Ship";
-import ThrustChannelHeatIncreased from "../../model/unit/system/criticals/ThrustChannelHeatIncreased";
-import OutputReduced from "../../model/unit/system/criticals/OutputReduced";
-import ManeuveringThrusterLeft from "../../model/unit/system/thruster/ManeuveringThrusterLeft";
-import ManeuveringThrusterRight from "../../model/unit/system/thruster/ManeuveringThrusterRight";
+import { expect, test } from "vitest";
+import ManeuveringThruster from "../../../model/src/unit/system/thruster/ManeuveringThruster";
+import Critical from "../../../model/src/unit/system/criticals/Critical";
+import Thruster from "../../../model/src/unit/system/thruster/Thruster";
+import Ship from "../../../model/src/unit/Ship";
+import {
+  MOVEMENT_TYPE,
+  MovementOrder,
+  ThrustBill,
+} from "../../../model/src/movement";
+import Offset from "../../../model/src/hexagon/Offset";
+import ThrustChannelHeatIncreased from "../../../model/src/unit/system/criticals/ThrustChannelHeatIncreased";
+import OutputReduced from "../../../model/src/unit/system/criticals/OutputReduced";
+import ManeuveringThrusterLeft from "../../../model/src/unit/system/thruster/ManeuveringThrusterLeft";
+import ManeuveringThrusterRight from "../../../model/src/unit/system/thruster/ManeuveringThrusterRight";
 
 let id = 0;
 
-const getManouveringThruster = (output = 3, evasion = 0, criticals = []) => {
+const getManouveringThruster = (
+  output = 3,
+  evasion = 0,
+  criticals: (typeof Critical)[] = []
+) => {
   id++;
 
   const thruster = new ManeuveringThruster(
@@ -25,7 +32,11 @@ const getManouveringThruster = (output = 3, evasion = 0, criticals = []) => {
   return thruster;
 };
 
-const getThruster = (direction = 0, output = 3, criticals = []) => {
+const getThruster = (
+  direction: number | number[] = 0,
+  output = 3,
+  criticals: (typeof Critical)[] = []
+) => {
   id++;
 
   const thruster = new Thruster(
@@ -57,25 +68,28 @@ systems: [
 ]
 */
 
-const getMovementOrder = (type = "speed", facing = 0, value = 0) =>
+const getMovementOrder = (
+  type: MOVEMENT_TYPE = MOVEMENT_TYPE.SPEED,
+  facing = 0,
+  value = 0
+) =>
   new MovementOrder(
     null,
     type,
-    new hexagon.Offset(0, 0),
-    new hexagon.Offset(0, 0),
+    new Offset(0, 0),
+    new Offset(0, 0),
     facing,
-    0,
     false,
+    1,
     value,
-    null,
     null
   );
 
 test("simple speed move", (test) => {
-  const moves = [getMovementOrder("speed", 0, 0)];
+  const moves = [getMovementOrder(MOVEMENT_TYPE.SPEED, 0, 0)];
   const bill = new ThrustBill(ship, moves);
-  bill.fuel = 999;
-  test.deepEqual(bill.directionsRequired, {
+  bill["fuel"] = 999;
+  expect(bill["directionsRequired"]).toEqual({
     0: 0,
     3: 3,
     1: 0,
@@ -90,16 +104,16 @@ test("simple speed move", (test) => {
 
 test("multiple speed moves", (test) => {
   const moves = [
-    getMovementOrder("speed", 0, 0),
-    getMovementOrder("speed", 0, 3),
-    getMovementOrder("speed", 0, 1),
-    getMovementOrder("speed", 0, 2),
-    getMovementOrder("speed", 0, 4),
-    getMovementOrder("speed", 0, 4),
-    getMovementOrder("speed", 0, 5),
+    getMovementOrder(MOVEMENT_TYPE.SPEED, 0, 0),
+    getMovementOrder(MOVEMENT_TYPE.SPEED, 0, 3),
+    getMovementOrder(MOVEMENT_TYPE.SPEED, 0, 1),
+    getMovementOrder(MOVEMENT_TYPE.SPEED, 0, 2),
+    getMovementOrder(MOVEMENT_TYPE.SPEED, 0, 4),
+    getMovementOrder(MOVEMENT_TYPE.SPEED, 0, 4),
+    getMovementOrder(MOVEMENT_TYPE.SPEED, 0, 5),
   ];
   const bill = new ThrustBill(ship, moves);
-  test.deepEqual(bill.directionsRequired, {
+  expect(bill["directionsRequired"]).toEqual({
     0: 3,
     3: 3,
     1: 6,
@@ -121,10 +135,10 @@ test("it uses thrusters properly", (test) => {
   ship.systems.addPrimarySystem([getThruster(0, 3), getThruster(0, 3)]);
 
   const bill = new ThrustBill(ship, []);
-  bill.fuel = 999;
+  bill["fuel"] = 999;
   bill.useThrusters(0, 5);
-  test.deepEqual(bill.thrusters[0].channeled, 2);
-  test.deepEqual(bill.thrusters[1].channeled, 3);
+  expect(bill["thrusters"][0].channeled).toBe(2);
+  expect(bill["thrusters"][1].channeled).toBe(3);
 });
 
 test("it uses thrusters properly, with one thruster already overheating", (test) => {
@@ -134,14 +148,14 @@ test("it uses thrusters properly, with one thruster already overheating", (test)
   ship.accelcost = 3;
 
   const thruster = getThruster(0, 5);
-  thruster.heat.overheat = 2;
+  thruster.heat["overheat"] = 2;
   ship.systems.addPrimarySystem([getThruster(0, 5), thruster]);
 
   const bill = new ThrustBill(ship, []);
-  bill.fuel = 999;
+  bill["fuel"] = 999;
   bill.useThrusters(0, 6);
-  test.deepEqual(bill.thrusters[0].channeled, 5);
-  test.deepEqual(bill.thrusters[1].channeled, 1);
+  expect(bill["thrusters"][0].channeled).toBe(5);
+  expect(bill["thrusters"][1].channeled).toBe(1);
 });
 
 test("it uses thrusters properly, when one thruster heats faster", (test) => {
@@ -155,10 +169,10 @@ test("it uses thrusters properly, when one thruster heats faster", (test) => {
   ship.systems.addPrimarySystem([getThruster(0, 5), thruster]);
 
   const bill = new ThrustBill(ship, []);
-  bill.fuel = 999;
+  bill["fuel"] = 999;
   bill.useThrusters(0, 6);
-  test.deepEqual(bill.thrusters[0].channeled, 4);
-  test.deepEqual(bill.thrusters[1].channeled, 2);
+  expect(bill["thrusters"][0].channeled).toBe(4);
+  expect(bill["thrusters"][1].channeled).toBe(2);
 });
 
 test("it uses thrusters properly, when one thruster has output reduced", (test) => {
@@ -172,10 +186,10 @@ test("it uses thrusters properly, when one thruster has output reduced", (test) 
   ship.systems.addPrimarySystem([getThruster(0, 5), thruster]);
 
   const bill = new ThrustBill(ship, []);
-  bill.fuel = 999;
+  bill["fuel"] = 999;
   bill.useThrusters(0, 6);
-  test.deepEqual(bill.thrusters[0].channeled, 5);
-  test.deepEqual(bill.thrusters[1].channeled, 1);
+  expect(bill["thrusters"][0].channeled).toBe(5);
+  expect(bill["thrusters"][1].channeled).toBe(1);
 });
 
 test("It manages to pay a simple manouver", (test) => {
@@ -187,13 +201,13 @@ test("It manages to pay a simple manouver", (test) => {
   ship.systems.addPrimarySystem([getThruster(0, 3), getThruster(3, 3)]);
 
   const moves = [
-    getMovementOrder("speed", 0, 0),
-    getMovementOrder("speed", 0, 3),
+    getMovementOrder(MOVEMENT_TYPE.SPEED, 0, 0),
+    getMovementOrder(MOVEMENT_TYPE.SPEED, 0, 3),
   ];
 
   const bill = new ThrustBill(ship, moves);
-  bill.fuel = 999;
-  test.true(bill.pay());
+  bill["fuel"] = 999;
+  expect(bill.pay()).toBe(true);
 });
 
 test("It uses manouveringThrusters correctly", (test) => {
@@ -210,9 +224,9 @@ test("It uses manouveringThrusters correctly", (test) => {
   const moves = [
     new MovementOrder(
       null,
-      movementTypes.ROLL,
-      new hexagon.Offset(0, 0),
-      new hexagon.Offset(0, 0),
+      MOVEMENT_TYPE.ROLL,
+      new Offset(0, 0),
+      new Offset(0, 0),
       0,
       true,
       999,
@@ -220,9 +234,9 @@ test("It uses manouveringThrusters correctly", (test) => {
     ),
     new MovementOrder(
       null,
-      movementTypes.ROLL,
-      new hexagon.Offset(0, 0),
-      new hexagon.Offset(0, 0),
+      MOVEMENT_TYPE.ROLL,
+      new Offset(0, 0),
+      new Offset(0, 0),
       0,
       true,
       999,
@@ -231,12 +245,12 @@ test("It uses manouveringThrusters correctly", (test) => {
   ];
 
   const bill = new ThrustBill(ship, moves);
-  bill.fuel = 999;
-  test.true(bill.pay());
+  bill["fuel"] = 999;
+  expect(bill.pay()).toBe(true);
   bill.getMoves();
 });
 
-test("It uses manouveringThrusters correctly when there is only directional thruster", (test) => {
+test("It uses manouveringThrusters correctly when there is only directional thruster", () => {
   ship = new Ship();
   ship.movement.isRolled = () => false;
 
@@ -253,9 +267,9 @@ test("It uses manouveringThrusters correctly when there is only directional thru
   const moves = [
     new MovementOrder(
       null,
-      movementTypes.EVADE,
-      new hexagon.Offset(0, 0),
-      new hexagon.Offset(0, 0),
+      MOVEMENT_TYPE.EVADE,
+      new Offset(0, 0),
+      new Offset(0, 0),
       0,
       true,
       999,
@@ -263,9 +277,9 @@ test("It uses manouveringThrusters correctly when there is only directional thru
     ),
     new MovementOrder(
       null,
-      movementTypes.EVADE,
-      new hexagon.Offset(0, 0),
-      new hexagon.Offset(0, 0),
+      MOVEMENT_TYPE.EVADE,
+      new Offset(0, 0),
+      new Offset(0, 0),
       0,
       true,
       999,
@@ -273,9 +287,9 @@ test("It uses manouveringThrusters correctly when there is only directional thru
     ),
     new MovementOrder(
       null,
-      movementTypes.PIVOT,
-      new hexagon.Offset(0, 0),
-      new hexagon.Offset(0, 0),
+      MOVEMENT_TYPE.PIVOT,
+      new Offset(0, 0),
+      new Offset(0, 0),
       1,
       true,
       999,
@@ -284,7 +298,7 @@ test("It uses manouveringThrusters correctly when there is only directional thru
   ];
 
   const bill = new ThrustBill(ship, moves);
-  bill.fuel = 999;
-  test.true(bill.pay());
+  bill["fuel"] = 999;
+  expect(bill.pay()).toBe(true);
   bill.getMoves();
 });
