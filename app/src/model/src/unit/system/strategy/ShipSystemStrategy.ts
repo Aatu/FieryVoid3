@@ -1,10 +1,11 @@
 import { DiceRoller } from "../../../utils/DiceRoller";
 import Ship from "../../Ship";
+import { IShipSystemStrategy } from "../../ShipSystemHandlers";
 import ShipSystems from "../../ShipSystems";
 import ShipSystem from "../ShipSystem";
 import { SYSTEM_HANDLERS } from "./types/SystemHandlersTypes";
 
-class ShipSystemStrategy {
+class ShipSystemStrategy implements IShipSystemStrategy {
   protected system: ShipSystem | null = null;
   protected diceRoller: DiceRoller;
 

@@ -133,32 +133,20 @@ test("Weapon can be boosted", () => {
     coilgun,
   ]);
 
-  expect(
-    coilgun.callHandler(SYSTEM_HANDLERS.isBoostable, undefined, true)
-  ).toBe(true);
-  expect(coilgun.callHandler(SYSTEM_HANDLERS.canBoost, undefined, true)).toBe(
-    true
-  );
-  coilgun.callHandler(SYSTEM_HANDLERS.boost, undefined, undefined);
-  expect(coilgun.callHandler(SYSTEM_HANDLERS.canBoost, undefined, false)).toBe(
-    false
-  );
+  expect(coilgun.handlers.isBoostable()).toBe(true);
+  expect(coilgun.handlers.canBoost()).toBe(true);
+  coilgun.handlers.boost();
+  expect(coilgun.handlers.canBoost()).toBe(false);
 
   expect(systems.power.getRemainingPowerOutput()).toBe(4);
-  coilgun.callHandler(SYSTEM_HANDLERS.deBoost, undefined, undefined);
-  expect(coilgun.callHandler(SYSTEM_HANDLERS.canBoost, undefined, true)).toBe(
-    true
-  );
+  coilgun.handlers.deBoost();
+  expect(coilgun.handlers.canBoost()).toBe(true);
   expect(systems.power.getRemainingPowerOutput()).toBe(10);
 
   reactor1.addCritical(new OutputReduced8());
 
-  expect(
-    coilgun.callHandler(SYSTEM_HANDLERS.isBoostable, undefined, true)
-  ).toBe(true);
-  expect(coilgun.callHandler(SYSTEM_HANDLERS.canBoost, undefined, true)).toBe(
-    false
-  );
+  expect(coilgun.handlers.isBoostable()).toBe(true);
+  expect(coilgun.handlers.canBoost()).toBe(false);
 });
 
 test("Weapon boost affects its loading time", () => {
@@ -173,7 +161,7 @@ test("Weapon boost affects its loading time", () => {
     coilgun,
   ]);
 
-  coilgun.callHandler(SYSTEM_HANDLERS.boost, undefined, undefined);
+  coilgun.handlers.boost();
   coilgun.callHandler(SYSTEM_HANDLERS.onWeaponFired, undefined, undefined);
   systems.advanceTurn(1);
   expect(coilgun.callHandler(SYSTEM_HANDLERS.getLoadingTime, null, 0)).toBe(4);
@@ -205,15 +193,15 @@ test("Engine boost affects thrust output", () => {
     },
   } as Ship;
 
-  engine.callHandler(SYSTEM_HANDLERS.boost, undefined, undefined);
-  engine.callHandler(SYSTEM_HANDLERS.boost, undefined, undefined);
-  engine.callHandler(SYSTEM_HANDLERS.boost, undefined, undefined);
+  engine.handlers.boost();
+  engine.handlers.boost();
+  engine.handlers.boost();
 
   expect(systems.power.getRemainingPowerOutput()).toBe(6);
   expect(
     engine.callHandler(SYSTEM_HANDLERS.getThrustOutput, undefined, 0)
   ).toBe(13);
-  engine.callHandler(SYSTEM_HANDLERS.deBoost, undefined, undefined);
+  engine.handlers.deBoost();
   expect(
     engine.callHandler(SYSTEM_HANDLERS.getThrustOutput, undefined, 0)
   ).toBe(12);
@@ -241,8 +229,8 @@ test("Boosted system passes its state to server", () => {
     ),
   ]);
 
-  coilgun.callHandler(SYSTEM_HANDLERS.boost, undefined, undefined);
-  coilgun.callHandler(SYSTEM_HANDLERS.boost, undefined, undefined);
+  coilgun.handlers.boost();
+  coilgun.handlers.boost();
   expect(coilgun.callHandler(SYSTEM_HANDLERS.getBoost, undefined, 0)).toBe(2);
 
   serverSystems.receivePlayerData(
@@ -257,7 +245,7 @@ test("Boosted system passes its state to server", () => {
       .callHandler(SYSTEM_HANDLERS.getBoost, undefined, 0)
   ).toBe(2);
 
-  coilgun.callHandler(SYSTEM_HANDLERS.deBoost, undefined, undefined);
+  coilgun.handlers.deBoost();
   serverSystems.receivePlayerData(
     { systems } as Ship,
     null as unknown as GameData,

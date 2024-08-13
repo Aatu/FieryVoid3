@@ -82,18 +82,6 @@ const constructDeployedShip = (id?: string) => {
   return ship;
 };
 
-const compareMovements = (moves1: MovementOrder[], moves2: MovementOrder[]) => {
-  expect(
-    moves1.map((move) =>
-      move.clone().setRequiredThrust(null as unknown as RequiredThrust)
-    )
-  ).toEqual(
-    moves2.map((move) =>
-      move.clone().setRequiredThrust(null as unknown as RequiredThrust)
-    )
-  );
-};
-
 test("Valid movement", (test) => {
   const ship = constructDeployedShip();
   const movementService = getMovementService();
@@ -109,7 +97,6 @@ test("Valid movement", (test) => {
   expect(validator.validate()).toBe(true);
 });
 
-/*
 test("Ship accelcost has been tampered", (test) => {
   const ship = constructDeployedShip();
   const movementService = getMovementService();
@@ -124,8 +111,10 @@ test("Ship accelcost has been tampered", (test) => {
   ship.accelcost = 3;
 
   const validator = new MovementValidator(ship, 999, deployMove);
-  const error = test.throws(() => validator.validate());
-  test.is(error.message, "Requirements are not correct.");
+
+  expect(() => validator.validate()).toThrowError(
+    "Requirements are not correct."
+  );
 });
 
 test("Ship tries to move without fuel", (test) => {
@@ -134,11 +123,15 @@ test("Ship tries to move without fuel", (test) => {
 
   ship.accelcost = 1;
   movementService.thrust(ship, 1);
-  ship.systems.getSystemById(12).callHandler("setFuel", 0);
+  ship.systems
+    .getSystemById(12)
+    .callHandler(SYSTEM_HANDLERS.setFuel, 0, undefined);
 
   const validator = new MovementValidator(ship, 999, deployMove);
-  const error = test.throws(() => validator.validate());
-  test.is(error.message, "Unable to pay fuel 1. Ship has fuel 0.");
+
+  expect(() => validator.validate()).toThrowError(
+    "Unable to pay fuel 1. Ship has fuel 0."
+  );
 });
 
 test("Ship pivotcost has been tampered", (test) => {
@@ -155,8 +148,10 @@ test("Ship pivotcost has been tampered", (test) => {
   ship.pivotcost = 3;
 
   const validator = new MovementValidator(ship, 999, deployMove);
-  const error = test.throws(() => validator.validate());
-  test.is(error.message, "Requirements are not correct.");
+
+  expect(() => validator.validate()).toThrowError(
+    "Requirements are not correct."
+  );
 });
 
 test("Ship rollcost has been tampered", (test) => {
@@ -173,8 +168,10 @@ test("Ship rollcost has been tampered", (test) => {
   ship.rollcost = 3;
 
   const validator = new MovementValidator(ship, 999, deployMove);
-  const error = test.throws(() => validator.validate());
-  test.is(error.message, "Requirements are not correct.");
+
+  expect(() => validator.validate()).toThrowError(
+    "Requirements are not correct."
+  );
 });
 
 test("Ship evasioncost has been tampered", (test) => {
@@ -191,8 +188,9 @@ test("Ship evasioncost has been tampered", (test) => {
   ship.evasioncost = 3;
 
   const validator = new MovementValidator(ship, 999, deployMove);
-  const error = test.throws(() => validator.validate());
-  test.is(error.message, "Requirements are not correct.");
+  expect(() => validator.validate()).toThrowError(
+    "Requirements are not correct."
+  );
 });
 
 test("Destroyed thruster has been used", (test) => {
@@ -210,8 +208,10 @@ test("Destroyed thruster has been used", (test) => {
   thruster.addDamage(new DamageEntry(20));
 
   const validator = new MovementValidator(ship, 999, deployMove);
-  const error = test.throws(() => validator.validate());
-  test.is(error.message, "Thruster id '4' is disabled");
+
+  expect(() => validator.validate()).toThrowError(
+    "Thruster id '4' is disabled"
+  );
 });
 
 test("Thruster critical has been ignored", (test) => {
@@ -229,8 +229,10 @@ test("Thruster critical has been ignored", (test) => {
   thruster.addCritical(new OutputReduced(4));
 
   const validator = new MovementValidator(ship, 999, deployMove);
-  const error = test.throws(() => validator.validate());
-  test.is(error.message, "Thruster 4 can not channel 5");
+
+  expect(() => validator.validate()).toThrowError(
+    "Thruster 4 can not channel 5"
+  );
 });
 
 test("Ship tries to teleport", (test) => {
@@ -244,11 +246,13 @@ test("Ship tries to teleport", (test) => {
   movementService.thrust(ship, 1);
   movementService.thrust(ship, 1);
 
-  ship.movement.moves[3].position = new hexagon.Offset(10, -4);
+  ship.movement["moves"][3].position = new Offset(10, -4).toVector();
 
   const validator = new MovementValidator(ship, 999, deployMove);
-  const error = test.throws(() => validator.validate());
-  test.is(error.message, "Evade movement is constructed wrong");
+
+  expect(() => validator.validate()).toThrowError(
+    "Evade movement is constructed wrong"
+  );
 });
 
 test("Ship pivots more than its limitation", (test) => {
@@ -262,7 +266,8 @@ test("Ship pivots more than its limitation", (test) => {
   ship.maxPivots = 1;
 
   const validator = new MovementValidator(ship, 999, deployMove);
-  const error = test.throws(() => validator.validate());
-  test.is(error.message, "Ship has pivoted more than allowed");
+
+  expect(() => validator.validate()).toThrowError(
+    "Ship has pivoted more than allowed"
+  );
 });
-*/

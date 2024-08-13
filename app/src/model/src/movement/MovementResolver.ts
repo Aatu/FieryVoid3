@@ -59,7 +59,7 @@ class MovementResolver {
         endMove.facing,
         endMove.rolled,
         this.turn,
-        endMove.rolled ? 0 : 1
+        endMove.rolled ? false : true
       );
 
       const playerAdded = movements.filter((move) => move.isPlayerAdded());

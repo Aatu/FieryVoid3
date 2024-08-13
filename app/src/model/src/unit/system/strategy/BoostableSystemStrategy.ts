@@ -1,4 +1,5 @@
 import { GAME_PHASE } from "../../../game/gamePhase";
+import { IShipSystemStrategy } from "../../ShipSystemHandlers";
 import ShipSystem from "../ShipSystem";
 import ShipSystemStrategy from "./ShipSystemStrategy";
 import { SYSTEM_HANDLERS } from "./types/SystemHandlersTypes";
@@ -6,7 +7,10 @@ import { SYSTEM_HANDLERS } from "./types/SystemHandlersTypes";
 export type SerializedBoostableSystemStrategy = {
   boostableSystemStrategy: { boostLevel: number };
 };
-class BoostableSystemStrategy extends ShipSystemStrategy {
+class BoostableSystemStrategy
+  extends ShipSystemStrategy
+  implements IShipSystemStrategy
+{
   protected power: number;
   protected maxLevel: number | null;
   protected boostLevel: number;
@@ -19,7 +23,7 @@ class BoostableSystemStrategy extends ShipSystemStrategy {
     this.boostLevel = 0;
   }
 
-  isBoostable(_: unknown, previousResponse = true): boolean {
+  isBoostable(payload: unknown, previousResponse: boolean = true): boolean {
     if (previousResponse === false) {
       return false;
     }
@@ -55,7 +59,7 @@ class BoostableSystemStrategy extends ShipSystemStrategy {
     return this.power + previousResponse;
   }
 
-  getBoost(payload: unknown, previousResponse = 0) {
+  getBoost(payload: unknown, previousResponse: number = 0) {
     if (this.getSystem().isDisabled()) {
       return previousResponse;
     }
@@ -174,11 +178,7 @@ class BoostableSystemStrategy extends ShipSystemStrategy {
 
     if (
       this.getSystem().isDisabled() ||
-      !this.getSystem().callHandler(
-        SYSTEM_HANDLERS.isBoostable,
-        undefined,
-        false
-      )
+      !this.getSystem().handlers.isBoostable()
     ) {
       return previousResponse;
     }
@@ -188,30 +188,14 @@ class BoostableSystemStrategy extends ShipSystemStrategy {
       {
         sort: 100,
         img: "/img/plus.png",
-        onClickHandler: () =>
-          this.getSystem().callHandler(
-            SYSTEM_HANDLERS.boost,
-            undefined,
-            undefined
-          ),
-        disabledHandler: () =>
-          !this.getSystem().callHandler(SYSTEM_HANDLERS.canBoost, null, false),
+        onClickHandler: () => this.getSystem().handlers.boost(),
+        disabledHandler: () => !this.getSystem().handlers.canBoost(),
       },
       {
         sort: 100,
         img: "/img/minus.png",
-        onClickHandler: () =>
-          this.getSystem().callHandler(
-            SYSTEM_HANDLERS.deBoost,
-            undefined,
-            undefined
-          ),
-        disabledHandler: () =>
-          !this.getSystem().callHandler(
-            SYSTEM_HANDLERS.canDeBoost,
-            null,
-            false
-          ),
+        onClickHandler: () => this.getSystem().handlers.deBoost(),
+        disabledHandler: () => !this.getSystem().handlers.canDeBoost(),
       },
     ];
   }

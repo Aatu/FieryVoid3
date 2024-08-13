@@ -59,11 +59,7 @@ export enum SYSTEM_HANDLERS {
   getBackgroundImage = "getBackgroundImage",
   onSystemPowerLevelIncrease = "onSystemPowerLevelIncrease",
   onSystemPowerLevelDecrease = "onSystemPowerLevelDecrease",
-  isBoostable = "isBoostable",
-  canBoost = "canBoost",
-  boost = "boost",
-  deBoost = "deBoost",
-  canDeBoost = "canDeBoost",
+
   getOutputForBoost = "getOutputForBoost",
   getPowerRequiredForBoost = "getPowerRequiredForBoost",
   getUsageVsOutputText = "getUsageVsOutputText",
@@ -114,6 +110,8 @@ export enum SYSTEM_HANDLERS {
   getLoadingTarget = "getLoadingTarget",
   setNewSelectedAmmo = "setNewSelectedAmmo",
   getTurnsLoaded = "getTurnsLoaded",
+
+  setFuel = "setFuel",
 }
 
 export type SystemMessage = {

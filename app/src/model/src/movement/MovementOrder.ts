@@ -129,7 +129,7 @@ class MovementOrder {
     return this;
   }
 
-  setId(id: string) {
+  setId(id: string | null) {
     this.id = id;
     return this;
   }

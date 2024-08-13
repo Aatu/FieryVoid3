@@ -1,26 +1,26 @@
-import test from "ava";
-import movementTypes from "../../model/movement/movementTypes";
-import MovementOrder from "../../model/movement/MovementOrder";
-import RequiredThrust from "../../model/movement/RequiredThrust";
-import hexagon from "../../model/hexagon";
-import Ship from "../../model/unit/Ship";
-
-import Thruster from "../../model/unit/system/thruster/Thruster";
-import Engine from "../../model/unit/system/engine/Engine";
-import Reactor from "../../model/unit/system/reactor/Reactor";
-import ManeuveringThruster from "../../model/unit/system/thruster/ManeuveringThruster";
+import { expect, test } from "vitest";
+import MovementOrder from "../../../model/src/movement/MovementOrder";
+import { MOVEMENT_TYPE, RequiredThrust } from "../../../model/src/movement";
+import Offset from "../../../model/src/hexagon/Offset";
+import Ship from "../../../model/src/unit/Ship";
+import { Engine } from "../../../model/src/unit/system/engine";
+import { Reactor } from "../../../model/src/unit/system/reactor";
+import {
+  Thruster,
+  ManeuveringThruster,
+} from "../../../model/src/unit/system/thruster";
 
 const startMove = new MovementOrder(
-  -1,
-  movementTypes.START,
-  new hexagon.Offset(-32, 5),
-  new hexagon.Offset(3, 2),
+  null,
+  MOVEMENT_TYPE.START,
+  new Offset(-32, 5),
+  new Offset(3, 2),
   0,
   false,
   999
 );
 
-const constructShip = (id = 123) => {
+const constructShip = (id: string = "123") => {
   let ship = new Ship({
     id,
   });
@@ -51,21 +51,21 @@ test("MovementOrder serializes and deserializes nicely", (test) => {
   const ship = constructShip();
 
   const move = new MovementOrder(
-    -1,
-    movementTypes.SPEED,
-    new hexagon.Offset(0, 0),
-    new hexagon.Offset(1, 0),
+    null,
+    MOVEMENT_TYPE.SPEED,
+    new Offset(0, 0),
+    new Offset(1, 0),
     2,
     false,
     999
   );
 
   const thruster = ship.systems.getSystemById(8);
-  const requirement = new RequiredThrust(ship, move);
+  const requirement = new RequiredThrust().calculate(ship, move);
   requirement.fulfill(1, 2, thruster);
 
   move.setRequiredThrust(requirement);
 
-  const move2 = new MovementOrder().deserialize(move.serialize());
-  test.deepEqual(move, move2);
+  const move2 = MovementOrder.fromData(move.serialize());
+  expect(move).toEqual(move2);
 });

@@ -14,6 +14,7 @@ import ShipSystemLog, {
   SerializedShipSystemLog,
 } from "./ShipSystemLog/ShipSystemLog";
 import ShipSystemLogEntryDamage from "./ShipSystemLog/ShipSystemLogEntryDamage";
+import { SystemHandlers } from "../ShipSystemHandlers";
 
 export type SerializedShipSystem = {
   power?: SerializedSystemPower;
@@ -38,12 +39,14 @@ class ShipSystem {
   public shipSystems: null | ShipSystems;
   public heat: SystemHeat;
   public log: ShipSystemLog;
+  public handlers: SystemHandlers;
 
   constructor(args: SystemArgs, strategies: ShipSystemStrategy[] = []) {
     this.id = args.id;
     this.hitpoints = args.hitpoints || 10;
     this.armor = args.armor || 0;
     this.strategies = strategies;
+    this.handlers = new SystemHandlers(this);
 
     if (!this.hitpoints) {
       throw new Error("System must have hitpoints");
