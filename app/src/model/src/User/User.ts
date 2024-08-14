@@ -14,6 +14,9 @@ export class User implements IUser {
   constructor(data: IUser) {
     this.deserialize(data);
   }
+  public static create(id: number, username: string): User {
+    return new User({ id, username });
+  }
 
   isAi(): boolean {
     return this.id < 0;

@@ -1,22 +1,16 @@
-import test from "ava";
-import HitSystemRandomizer from "../../model/unit/system/strategy/weapon/utils/HitSystemRandomizer";
-import Structure from "../../model/unit/system/structure/Structure";
-import { PDC30mm } from "../../model/unit/system/weapon/pdc/index";
-import { RailgunTurreted32gw } from "../../model/unit/system/weapon/coilgun/index";
-import Ship from "../../model/unit/Ship";
-import Thruster from "../../model/unit/system/thruster/Thruster";
-import Engine from "../../model/unit/system/engine/Engine";
-import Reactor from "../../model/unit/system/reactor/Reactor";
-import Vector from "../../model/utils/Vector";
-import Offset from "../../model/hexagon/Offset";
-import MovementOrder from "../../model/movement/MovementOrder";
-import movementTypes from "../../model/movement/movementTypes";
-import DamageEntry from "../../model/unit/system/DamageEntry";
+import { expect, test } from "vitest";
+import { Offset } from "../../../model/src/hexagon";
+import { MOVEMENT_TYPE, MovementOrder } from "../../../model/src/movement";
+import Ship from "../../../model/src/unit/Ship";
+import DamageEntry from "../../../model/src/unit/system/DamageEntry";
+import { Engine } from "../../../model/src/unit/system/engine";
+import { Reactor } from "../../../model/src/unit/system/reactor";
+import { Structure } from "../../../model/src/unit/system/structure";
+import { PDC30mm } from "../../../model/src/unit/system/weapon/pdc";
 
-const constructShip = (id = 123) => {
+const constructShip = (id: string = "123") => {
   let ship = new Ship({
     id,
-    accelcost: 3,
   });
   ship.systems.addPrimarySystem([
     new Engine({ id: 6, hitpoints: 10, armor: 3 }, 12, 6, 2),
@@ -25,12 +19,12 @@ const constructShip = (id = 123) => {
   ]);
 
   ship.systems.addPortAftSystem([
-    new PDC30mm({ id: 501, hitpoints: 5, armor: 3 }),
+    new PDC30mm({ id: 501, hitpoints: 5, armor: 3 }, { start: 0, end: 0 }),
     new Structure({ id: 500, hitpoints: 50, armor: 4 }),
   ]);
 
   ship.systems.addStarboardAftSystem([
-    new PDC30mm({ id: 301, hitpoints: 5, armor: 3 }),
+    new PDC30mm({ id: 301, hitpoints: 5, armor: 3 }, { start: 0, end: 0 }),
     new Structure({ id: 300, hitpoints: 50, armor: 4 }),
   ]);
 
@@ -41,14 +35,13 @@ const constructShip = (id = 123) => {
   return ship;
 };
 
-const constructNoStructureShip = (id = 123) => {
+const constructNoStructureShip = (id: string = "123") => {
   let ship = new Ship({
     id,
-    accelcost: 3,
   });
 
   ship.systems.addFrontSystem([
-    new PDC30mm({ id: 101, hitpoints: 5, armor: 3 }),
+    new PDC30mm({ id: 101, hitpoints: 5, armor: 3 }, { start: 0, end: 0 }),
   ]);
 
   ship.systems.addPrimarySystem([
@@ -57,12 +50,12 @@ const constructNoStructureShip = (id = 123) => {
   ]);
 
   ship.systems.addPortAftSystem([
-    new PDC30mm({ id: 501, hitpoints: 5, armor: 3 }),
+    new PDC30mm({ id: 501, hitpoints: 5, armor: 3 }, { start: 0, end: 0 }),
     new Structure({ id: 500, hitpoints: 50, armor: 4 }),
   ]);
 
   ship.systems.addStarboardAftSystem([
-    new PDC30mm({ id: 301, hitpoints: 5, armor: 3 }),
+    new PDC30mm({ id: 301, hitpoints: 5, armor: 3 }, { start: 0, end: 0 }),
     new Structure({ id: 300, hitpoints: 50, armor: 4 }),
   ]);
 
@@ -77,12 +70,12 @@ test("Returns systems available for hit with structures blocking", (test) => {
   const ship = constructShip();
   ship.movement.addMovement(
     new MovementOrder(
-      -1,
-      movementTypes.END,
+      null,
+      MOVEMENT_TYPE.END,
       new Offset(-3, 3),
       new Offset(0, 0),
       0,
-      0,
+      false,
       1
     )
   );
@@ -90,35 +83,34 @@ test("Returns systems available for hit with structures blocking", (test) => {
   const shooter = constructShip();
   shooter.movement.addMovement(
     new MovementOrder(
-      -1,
-      movementTypes.END,
+      null,
+      MOVEMENT_TYPE.END,
       new Offset(-5, 7),
       new Offset(0, 0),
       0,
-      0,
+      false,
       1
     )
   );
 
-  test.deepEqual(
+  expect(
     ship.systems
-      .getSystemsForHit(shooter.getPosition())
+      .getSystemsForHit(shooter.getPosition(), null)
       .map((system) => system.id)
-      .sort(),
-    [400, 501, 500].sort()
-  );
+      .sort()
+  ).toEqual([400, 501, 500].sort());
 });
 
 test("Returns systems available for hit ignoring destroyed structures", (test) => {
   const ship = constructShip();
   ship.movement.addMovement(
     new MovementOrder(
-      -1,
-      movementTypes.END,
+      null,
+      MOVEMENT_TYPE.END,
       new Offset(-3, 3),
       new Offset(0, 0),
       0,
-      0,
+      false,
       1
     )
   );
@@ -126,37 +118,36 @@ test("Returns systems available for hit ignoring destroyed structures", (test) =
   const shooter = constructShip();
   shooter.movement.addMovement(
     new MovementOrder(
-      -1,
-      movementTypes.END,
+      null,
+      MOVEMENT_TYPE.END,
       new Offset(-5, 7),
       new Offset(0, 0),
       0,
-      0,
+      false,
       1
     )
   );
 
   ship.systems.getSystemById(400).addDamage(new DamageEntry(100, 0));
 
-  test.deepEqual(
+  expect(
     ship.systems
-      .getSystemsForHit(shooter.getPosition())
+      .getSystemsForHit(shooter.getPosition(), null)
       .map((system) => system.id)
-      .sort(),
-    [501, 500, 300, 301].sort()
-  );
+      .sort()
+  ).toEqual([501, 500, 300, 301].sort());
 });
 
 test("Ignores section when looking for overkill system", (test) => {
   const ship = constructShip();
   ship.movement.addMovement(
     new MovementOrder(
-      -1,
-      movementTypes.END,
+      null,
+      MOVEMENT_TYPE.END,
       new Offset(-3, 3),
       new Offset(0, 0),
       0,
-      0,
+      false,
       1
     )
   );
@@ -164,17 +155,17 @@ test("Ignores section when looking for overkill system", (test) => {
   const shooter = constructShip();
   shooter.movement.addMovement(
     new MovementOrder(
-      -1,
-      movementTypes.END,
+      null,
+      MOVEMENT_TYPE.END,
       new Offset(-5, 7),
       new Offset(0, 0),
       0,
-      0,
+      false,
       1
     )
   );
 
-  test.deepEqual(
+  expect(
     ship.systems
       .getSystemsForHit(
         shooter.getPosition(),
@@ -183,21 +174,20 @@ test("Ignores section when looking for overkill system", (test) => {
         )
       )
       .map((system) => system.id)
-      .sort(),
-    [6, 7, 8].sort()
-  );
+      .sort()
+  ).toEqual([6, 7, 8].sort());
 });
 
 test("Ignores destroyed section when looking for overkill system", (test) => {
   const ship = constructShip();
   ship.movement.addMovement(
     new MovementOrder(
-      -1,
-      movementTypes.END,
+      null,
+      MOVEMENT_TYPE.END,
       new Offset(-3, 3),
       new Offset(0, 0),
       0,
-      0,
+      false,
       1
     )
   );
@@ -205,41 +195,40 @@ test("Ignores destroyed section when looking for overkill system", (test) => {
   const shooter = constructShip();
   shooter.movement.addMovement(
     new MovementOrder(
-      -1,
-      movementTypes.END,
+      null,
+      MOVEMENT_TYPE.END,
       new Offset(-5, 7),
       new Offset(0, 0),
       0,
-      0,
+      false,
       1
     )
   );
 
   const structure = ship.systems.getSystemById(500);
-  structure.addDamage(new DamageEntry(500, 0, 0));
+  structure.addDamage(new DamageEntry(500, 0));
 
-  test.deepEqual(
+  expect(
     ship.systems
       .getSystemsForHit(
         shooter.getPosition(),
         ship.systems.sections.getSectionBySystem(structure)
       )
       .map((system) => system.id)
-      .sort(),
-    [6, 7, 8].sort()
-  );
+      .sort()
+  ).toEqual([6, 7, 8].sort());
 });
 
 test("Penetrates whole ship if no structures intevene", (test) => {
   const ship = constructNoStructureShip();
   ship.movement.addMovement(
     new MovementOrder(
-      -1,
-      movementTypes.END,
+      null,
+      MOVEMENT_TYPE.END,
       new Offset(-3, 3),
       new Offset(0, 0),
       1,
-      0,
+      false,
       1
     )
   );
@@ -247,33 +236,32 @@ test("Penetrates whole ship if no structures intevene", (test) => {
   const shooter = constructShip();
   shooter.movement.addMovement(
     new MovementOrder(
-      -1,
-      movementTypes.END,
+      null,
+      MOVEMENT_TYPE.END,
       new Offset(-5, 7),
       new Offset(0, 0),
       0,
-      0,
+      false,
       1
     )
   );
 
   const structure = ship.systems.getSystemById(400);
 
-  test.deepEqual(
+  expect(
     ship.systems
       .getSystemsForHit(
         shooter.getPosition(),
         ship.systems.sections.getSectionBySystem(structure)
       )
       .map((system) => system.id)
-      .sort(),
-    [6, 7, 101].sort()
-  );
+      .sort()
+  ).toEqual([6, 7, 101].sort());
 });
 
 test("No penetrable section available", (test) => {
   const ship = new Ship({
-    id: 999,
+    id: "999",
   });
 
   ship.systems.addFrontSystem([
@@ -287,12 +275,12 @@ test("No penetrable section available", (test) => {
   ]);
 
   ship.systems.addPortAftSystem([
-    new PDC30mm({ id: 501, hitpoints: 5, armor: 3 }),
+    new PDC30mm({ id: 501, hitpoints: 5, armor: 3 }, { start: 0, end: 0 }),
     new Structure({ id: 500, hitpoints: 50, armor: 4 }),
   ]);
 
   ship.systems.addStarboardAftSystem([
-    new PDC30mm({ id: 301, hitpoints: 5, armor: 3 }),
+    new PDC30mm({ id: 301, hitpoints: 5, armor: 3 }, { start: 0, end: 0 }),
     new Structure({ id: 300, hitpoints: 50, armor: 4 }),
   ]);
 
@@ -302,12 +290,12 @@ test("No penetrable section available", (test) => {
 
   ship.movement.addMovement(
     new MovementOrder(
-      -1,
-      movementTypes.END,
+      null,
+      MOVEMENT_TYPE.END,
       new Offset(-3, 3),
       new Offset(0, 0),
       0,
-      0,
+      false,
       1
     )
   );
@@ -315,25 +303,24 @@ test("No penetrable section available", (test) => {
   const shooter = constructShip();
   shooter.movement.addMovement(
     new MovementOrder(
-      -1,
-      movementTypes.END,
+      null,
+      MOVEMENT_TYPE.END,
       new Offset(-5, 7),
       new Offset(0, 0),
       0,
-      0,
+      false,
       1
     )
   );
 
   const structure = ship.systems.getSystemById(100);
 
-  test.deepEqual(
+  expect(
     ship.systems
       .getSystemsForHit(
         shooter.getPosition(),
         ship.systems.sections.getSectionBySystem(structure)
       )
-      .map((system) => system.id),
-    []
-  );
+      .map((system) => system.id)
+  ).toEqual([]);
 });

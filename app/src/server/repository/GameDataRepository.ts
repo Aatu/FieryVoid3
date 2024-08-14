@@ -50,8 +50,8 @@ class GameDataRepository {
   }
 
   constructShip(
-    shipData: { shipId: string; data: string }[],
-    movementData: { shipId: string; data: string }[],
+    shipData: { shipId: string; data: ShipData }[],
+    movementData: { shipId: string; data: SerializedMovementOrder }[],
     ship: {
       id: string;
       userId: number;
@@ -67,10 +67,10 @@ class GameDataRepository {
       throw new Error("Ship not found in data");
     }
 
-    const newShipData = JSON.parse(thisShipData.data) as ShipData;
-    const movement = movementData
+    const newShipData: ShipData = thisShipData.data;
+    const movement: SerializedMovementOrder[] = movementData
       .filter((data) => data.shipId === ship.id)
-      .map((data) => JSON.parse(data.data)) as SerializedMovementOrder[];
+      .map((data) => data.data);
 
     return {
       ...ship,
@@ -354,7 +354,7 @@ class GameDataRepository {
   }
 
   async getMovementForGame(conn: Connection | null, id: number, turn: number) {
-    return this.db.query<{ shipId: string; data: string }>(
+    return this.db.query<{ shipId: string; data: SerializedMovementOrder }>(
       conn,
       `SELECT  
         CAST(UuidFromBin(ship_id) as CHAR) as shipId,
@@ -399,7 +399,7 @@ class GameDataRepository {
   }
 
   async getShipDataForGame(conn: Connection | null, id: number, turn: number) {
-    return this.db.query<{ shipId: string; data: string }>(
+    return this.db.query<{ shipId: string; data: ShipData }>(
       conn,
       `SELECT 
         CAST(UuidFromBin(ship_id) as CHAR) as shipId,

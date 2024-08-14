@@ -45,7 +45,7 @@ class FireOrder {
     this.resolved = resolved;
   }
 
-  setId(id: string) {
+  setId(id: string | null): FireOrder {
     this.id = id;
     return this;
   }

@@ -1,18 +1,15 @@
-import test from "ava";
-import GameController from "../../server/controller/GameController";
-import TestDatabaseConnection from "../support/TestDatabaseConnection";
-import User from "../../model/User";
-import GameData from "../../model/game/GameData";
-import GameSlot from "../../model/game/GameSlot";
-import hexagon from "../../model/hexagon";
+import { expect, test } from "vitest";
 import { constructLobbyGame } from "../support/constructGame";
+import GameController from "../../controller/GameController";
+import TestDatabaseConnection from "../support/TestDatabaseConnection";
+import { User } from "../../../model/src/User/User";
 
-test.serial("Take slot", async (test) => {
+test("Take slot", async () => {
   const db = new TestDatabaseConnection("take_slot");
   await db.resetDatabase();
 
-  const user = new User(1, "Nönmän");
-  const user2 = new User(2, "Bädmän");
+  const user = User.create(1, "Nönmän");
+  const user2 = User.create(2, "Bädmän");
 
   const gameData = constructLobbyGame(user);
 
@@ -25,17 +22,19 @@ test.serial("Take slot", async (test) => {
   const newGameData = await controller.getGameData(gameId);
 
   const newSlot = newGameData.slots.getSlots()[1];
-  test.is(newSlot.userId, user2.id);
-  test.true(newGameData.players.some((player) => player.id === user2.id));
-  test.true(newGameData.isPlayerActive(user2));
+  expect(newSlot.userId).toEqual(user2.id);
+  expect(newGameData.players.some((player) => player.id === user2.id)).toBe(
+    true
+  );
+  expect(newGameData.isPlayerActive(user2)).toBe(true);
 });
 
-test.serial("Leave slot", async (test) => {
+test("Leave slot", async () => {
   const db = new TestDatabaseConnection("take_slot");
   await db.resetDatabase();
 
-  const user = new User(1, "Nönmän");
-  const user2 = new User(2, "Bädmän");
+  const user = User.create(1, "Nönmän");
+  const user2 = User.create(2, "Bädmän");
 
   const gameData = constructLobbyGame(user);
 
@@ -48,16 +47,18 @@ test.serial("Leave slot", async (test) => {
 
   const newGameData = await controller.getGameData(gameId);
   const newSlot = newGameData.slots.getSlots()[1];
-  test.is(newSlot.userId, null);
-  test.true(newGameData.players.every((player) => player.id !== user2.id));
-  test.false(newGameData.isPlayerActive(user2));
+  expect(newSlot.userId).toEqual(null);
+  expect(newGameData.players.every((player) => player.id !== user2.id)).toBe(
+    true
+  );
+  expect(newGameData.isPlayerActive(user2)).toBe(false);
 });
 
-test.serial("Leave the last slot", async (test) => {
+test("Leave the last slot", async () => {
   const db = new TestDatabaseConnection("take_slot");
   await db.resetDatabase();
 
-  const user = new User(1, "Nönmän");
+  const user = User.create(1, "Nönmän");
 
   const gameData = constructLobbyGame(user);
 
@@ -68,14 +69,14 @@ test.serial("Leave the last slot", async (test) => {
   await controller.leaveSlot(gameId, slot.id, user);
 
   const newGameData = await controller.getGameData(gameId);
-  test.is(newGameData.status, "abandoned");
+  expect(newGameData.status).toEqual("abandoned");
 });
 
-test.serial("Remove the game as a creator", async (test) => {
+test("Remove the game as a creator", async () => {
   const db = new TestDatabaseConnection("take_slot");
   await db.resetDatabase();
 
-  const user = new User(1, "Nönmän");
+  const user = User.create(1, "Nönmän");
 
   const gameData = constructLobbyGame(user);
 
@@ -84,15 +85,15 @@ test.serial("Remove the game as a creator", async (test) => {
   await controller.removeGame(gameId, user);
 
   const newGameData = await controller.getGameData(gameId);
-  test.is(newGameData.status, "abandoned");
+  expect(newGameData.status).toEqual("abandoned");
 });
 
-test.serial("Fail to remove game as non creator", async (test) => {
+test("Fail to remove game as non creator", async () => {
   const db = new TestDatabaseConnection("take_slot");
   await db.resetDatabase();
 
-  const user = new User(1, "Nönmän");
-  const user2 = new User(2, "Bädmän");
+  const user = User.create(1, "Nönmän");
+  const user2 = User.create(2, "Bädmän");
 
   const gameData = constructLobbyGame(user);
 
@@ -102,21 +103,20 @@ test.serial("Fail to remove game as non creator", async (test) => {
   const slot2 = gameData.slots.getSlots()[1];
 
   await controller.takeSlot(gameId, slot2.id, user2);
-  const error = await test.throwsAsync(() =>
-    controller.removeGame(gameId, user2)
+  await expect(() => controller.removeGame(gameId, user2)).rejects.toThrow(
+    "Only game creator or last player can remove game"
   );
-  test.is(error.message, "Only game creator or last player can remove game");
 
   const newGameData = await controller.getGameData(gameId);
-  test.is(newGameData.status, "lobby");
+  expect(newGameData.status).toEqual("lobby");
 });
 
-test.serial("Remove game as last player", async (test) => {
+test("Remove game as last player", async () => {
   const db = new TestDatabaseConnection("take_slot");
   await db.resetDatabase();
 
-  const user = new User(1, "Nönmän");
-  const user2 = new User(2, "Bädmän");
+  const user = User.create(1, "Nönmän");
+  const user2 = User.create(2, "Bädmän");
 
   const gameData = constructLobbyGame(user);
 
@@ -131,15 +131,15 @@ test.serial("Remove game as last player", async (test) => {
   await controller.removeGame(gameId, user);
 
   const newGameData = await controller.getGameData(gameId);
-  test.is(newGameData.status, "abandoned");
+  expect(newGameData.status).toEqual("abandoned");
 });
 
-test.serial("Take both slots", async (test) => {
+test("Take both slots", async () => {
   const db = new TestDatabaseConnection("take_slot");
   await db.resetDatabase();
 
-  const user = new User(1, "Nönmän");
-  const user2 = new User(2, "Bädmän");
+  const user = User.create(1, "Nönmän");
+  const user2 = User.create(2, "Bädmän");
 
   const gameData = constructLobbyGame(user);
 
@@ -150,20 +150,22 @@ test.serial("Take both slots", async (test) => {
   await controller.takeSlot(gameId, slot.id, user);
 
   const newGameData = await controller.getGameData(gameId);
-  test.is(newGameData.slots.getSlots()[0].userId, user.id);
-  test.is(newGameData.slots.getSlots()[1].userId, user.id);
-  test.true(newGameData.players.some((player) => player.id === user.id));
-  test.is(newGameData.players.length, 1);
-  test.false(newGameData.isPlayerActive(user2));
-  test.true(newGameData.isPlayerActive(user));
+  expect(newGameData.slots.getSlots()[0].userId).toEqual(user.id);
+  expect(newGameData.slots.getSlots()[1].userId).toEqual(user.id);
+  expect(newGameData.players.some((player) => player.id === user.id)).toBe(
+    true
+  );
+  expect(newGameData.players.length).toEqual(1);
+  expect(newGameData.isPlayerActive(user2)).toBe(false);
+  expect(newGameData.isPlayerActive(user)).toBe(true);
 });
 
-test.serial("Take and leave slot", async (test) => {
+test("Take and leave slot", async () => {
   const db = new TestDatabaseConnection("take_slot");
   await db.resetDatabase();
 
-  const user = new User(1, "Nönmän");
-  const user2 = new User(2, "Bädmän");
+  const user = User.create(1, "Nönmän");
+  const user2 = User.create(2, "Bädmän");
 
   const gameData = constructLobbyGame(user);
 
@@ -176,20 +178,22 @@ test.serial("Take and leave slot", async (test) => {
 
   const newGameData = await controller.getGameData(gameId);
 
-  test.is(newGameData.slots.getSlots()[0].userId, user.id);
-  test.is(newGameData.slots.getSlots()[1].userId, null);
-  test.true(newGameData.players.some((player) => player.id === user.id));
-  test.is(newGameData.players.length, 1);
-  test.false(newGameData.isPlayerActive(user2));
-  test.true(newGameData.isPlayerActive(user));
+  expect(newGameData.slots.getSlots()[0].userId).toEqual(user.id);
+  expect(newGameData.slots.getSlots()[1].userId).toEqual(null);
+  expect(newGameData.players.some((player) => player.id === user.id)).toBe(
+    true
+  );
+  expect(newGameData.players.length).toEqual(1);
+  expect(newGameData.isPlayerActive(user2)).toBe(false);
+  expect(newGameData.isPlayerActive(user)).toBe(true);
 });
 
-test.serial("Try to take occupied slot", async (test) => {
+test("Try to take occupied slot", async () => {
   const db = new TestDatabaseConnection("take_slot");
   await db.resetDatabase();
 
-  const user = new User(1, "Nönmän");
-  const user2 = new User(2, "Bädmän");
+  const user = User.create(1, "Nönmän");
+  const user2 = User.create(2, "Bädmän");
 
   const gameData = constructLobbyGame(user);
 
@@ -197,13 +201,14 @@ test.serial("Try to take occupied slot", async (test) => {
   const gameId = await controller.createGame(gameData.serialize(), user);
   const slot = gameData.slots.getSlots()[0];
 
-  const error = await test.throwsAsync(() =>
+  await expect(() =>
     controller.takeSlot(gameId, slot.id, user2)
-  );
-  test.is(error.message, "Slot already taken");
+  ).rejects.toThrow("Slot already taken");
 
   const newGameData = await controller.getGameData(gameId);
-  test.is(newGameData.slots.getSlots()[0].userId, user.id);
-  test.true(newGameData.players.every((player) => player.id !== user2.id));
-  test.false(newGameData.isPlayerActive(user2));
+  expect(newGameData.slots.getSlots()[0].userId).toEqual(user.id);
+  expect(newGameData.players.every((player) => player.id !== user2.id)).toBe(
+    true
+  );
+  expect(newGameData.isPlayerActive(user2)).toBe(false);
 });

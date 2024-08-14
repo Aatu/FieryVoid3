@@ -204,44 +204,42 @@ test("Electronic warfare array can be boosted", (test) => {
   expect(ship.electronicWarfare.canAssignCcEw(11)).toBe(false);
 });
 
-/*
 test("When deboosting electronic warfare array, extra ew will be removed", (test) => {
-  const ship = new TestShip({ id: 1 });
-  const ship2 = new TestShip({ id: 2 });
+  const ship = new TestShip({ id: "1" });
+  const ship2 = new TestShip({ id: "2" });
 
   const ewArray = ship.systems.getSystemById(11);
   ship.systems.getSystemById(5).power.setOffline();
   ship.systems.getSystemById(6).power.setOffline();
-  ewArray.callHandler("boost");
+  ewArray.handlers.boost();
 
   ship.electronicWarfare.assignOffensiveEw(ship2, 5);
   ship.electronicWarfare.assignCcEw(6);
-  ewArray.callHandler("deBoost");
+  ewArray.handlers.deBoost();
 
-  expect(ship.electronicWarfare.getCcEw(), 6);
-  expect(ship.electronicWarfare.getDefensiveEw(), 0);
-  expect(ship.electronicWarfare.getOffensiveEw(ship2), 4);
+  expect(ship.electronicWarfare.getCcEw()).toBe(6);
+  expect(ship.electronicWarfare.getDefensiveEw()).toBe(0);
+  expect(ship.electronicWarfare.getOffensiveEw(ship2)).toBe(4);
   ewArray.power.setOffline();
-  expect(ship.electronicWarfare.getCcEw(), 0);
-  expect(ship.electronicWarfare.getDefensiveEw(), 0);
-  expect(ship.electronicWarfare.getOffensiveEw(ship2), 0);
+  expect(ship.electronicWarfare.getCcEw()).toBe(0);
+  expect(ship.electronicWarfare.getDefensiveEw()).toBe(0);
+  expect(ship.electronicWarfare.getOffensiveEw(ship2)).toBe(0);
 });
 
 test("When setting ew array ofline, it will remove assigned ew", (test) => {
-  const ship = new TestShip({ id: 1 });
-  const ship2 = new TestShip({ id: 2 });
+  const ship = new TestShip({ id: "1" });
+  const ship2 = new TestShip({ id: "2" });
 
   const ewArray = ship.systems.getSystemById(11);
 
   ship.electronicWarfare.assignOffensiveEw(ship2, 5);
   ship.electronicWarfare.assignCcEw(5);
 
-  expect(ship.electronicWarfare.getCcEw(), 5);
-  expect(ship.electronicWarfare.getDefensiveEw(), 0);
-  expect(ship.electronicWarfare.getOffensiveEw(ship2), 5);
+  expect(ship.electronicWarfare.getCcEw()).toBe(5);
+  expect(ship.electronicWarfare.getDefensiveEw()).toBe(0);
+  expect(ship.electronicWarfare.getOffensiveEw(ship2)).toBe(5);
   ewArray.power.setOffline();
-  expect(ship.electronicWarfare.getCcEw(), 0);
-  expect(ship.electronicWarfare.getDefensiveEw(), 0);
-  expect(ship.electronicWarfare.getOffensiveEw(ship2), 0);
+  expect(ship.electronicWarfare.getCcEw()).toBe(0);
+  expect(ship.electronicWarfare.getDefensiveEw()).toBe(0);
+  expect(ship.electronicWarfare.getOffensiveEw(ship2)).toBe(0);
 });
-*/

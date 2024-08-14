@@ -1,17 +1,17 @@
-import test from "ava";
-import GameController from "../../server/controller/GameController";
-import TestDatabaseConnection from "../support/TestDatabaseConnection";
+import { expect, test } from "vitest";
+import { User } from "../../../model/src/User/User";
+import GameController from "../../controller/GameController";
+import WeaponFireService from "../../../model/src/weapon/WeaponFireService";
 import { constructDeployedGame } from "../support/constructGame";
-import WeaponFireService from "../../model/weapon/WeaponFireService";
-import User from "../../model/User";
+import TestDatabaseConnection from "../support/TestDatabaseConnection";
 
-test.serial("Ship gets destroyed", async (test) => {
+test("Ship gets destroyed", async () => {
   const db = new TestDatabaseConnection("damage");
   await db.resetDatabase();
 
   const controller = new GameController(db);
-  const user = new User(1, "Nönmän");
-  const user2 = new User(2, "Bädmän");
+  const user = User.create(1, "Nönmän");
+  const user2 = User.create(2, "Bädmän");
   let gameData = await constructDeployedGame(user, user2, controller);
 
   const achillesInitial = gameData.ships
@@ -22,11 +22,11 @@ test.serial("Ship gets destroyed", async (test) => {
     .getShips()
     .find((ship) => ship.name === "GEPS Biliyaz");
 
-  achillesInitial.electronicWarfare.assignOffensiveEw(biliyazInitial, 5);
+  achillesInitial!.electronicWarfare.assignOffensiveEw(biliyazInitial!, 5);
 
-  await controller.commitTurn(gameData.id, gameData.serialize(), user2);
-  await controller.commitTurn(gameData.id, gameData.serialize(), user);
-  gameData = await controller.getGameData(gameData.id, user);
+  await controller.commitTurn(gameData.getId(), gameData.serialize(), user2);
+  await controller.commitTurn(gameData.getId(), gameData.serialize(), user);
+  gameData = await controller.getGameData(gameData.getId(), user);
 
   const shooter = gameData.ships
     .getShips()
@@ -36,15 +36,19 @@ test.serial("Ship gets destroyed", async (test) => {
     .getShips()
     .find((ship) => ship.name === "GEPS Biliyaz");
 
-  test.is(gameData.turn, 2);
+  expect(gameData.turn).toBe(2);
 
   const fireService = new WeaponFireService().update(gameData);
-  fireService.addFireOrder(shooter, target, shooter.systems.getSystemById(21));
+  fireService.addFireOrder(
+    shooter!,
+    target!,
+    shooter!.systems.getSystemById(21)
+  );
 
-  await controller.commitTurn(gameData.id, gameData.serialize(), user);
-  await controller.commitTurn(gameData.id, gameData.serialize(), user2);
+  await controller.commitTurn(gameData.getId(), gameData.serialize(), user);
+  await controller.commitTurn(gameData.getId(), gameData.serialize(), user2);
 
-  let newGameData = await controller.getGameData(gameData.id, user);
+  let newGameData = await controller.getGameData(gameData.getId(), user);
 
   const biliyaz = newGameData.ships
     .getShips()
@@ -54,32 +58,38 @@ test.serial("Ship gets destroyed", async (test) => {
     .getShips()
     .find((ship) => ship.name === "UCS Achilles");
 
-  test.true(biliyaz.isDestroyed());
+  expect(biliyaz!.isDestroyed()).toBe(true);
 
-  let replay = await controller.replayHandler.requestReplay(
-    newGameData.id,
+  let replay = await controller["replayHandler"].requestReplay(
+    newGameData.getId(),
     newGameData.turn - 1,
-    newGameData.turn,
-    user
+    newGameData.turn
   );
 
-  test.true(replay[0].ships.getShipById(biliyaz.id).isDestroyedThisTurn());
+  expect(replay[0].ships.getShipById(biliyaz!.id).isDestroyedThisTurn()).toBe(
+    true
+  );
 
-  await controller.commitTurn(newGameData.id, newGameData.serialize(), user);
+  await controller.commitTurn(
+    newGameData.getId(),
+    newGameData.serialize(),
+    user
+  );
   //await controller.commitTurn(newGameData.id, newGameData.serialize(), user2);
 
-  newGameData = await controller.getGameData(gameData.id, user);
+  newGameData = await controller.getGameData(gameData.getId(), user);
 
-  test.deepEqual(newGameData.turn, 4);
+  expect(newGameData.turn).toBe(4);
 
-  replay = await controller.replayHandler.requestReplay(
-    newGameData.id,
+  replay = await controller["replayHandler"].requestReplay(
+    newGameData.getId(),
     newGameData.turn - 1,
-    newGameData.turn,
-    user
+    newGameData.turn
   );
 
-  test.false(replay[0].ships.getShipById(biliyaz.id).isDestroyedThisTurn());
+  expect(replay[0].ships.getShipById(biliyaz!.id).isDestroyedThisTurn()).toBe(
+    false
+  );
 
   /*
 

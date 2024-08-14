@@ -1,17 +1,17 @@
-import test from "ava";
-import GameController from "../../server/controller/GameController";
-import TestDatabaseConnection from "../support/TestDatabaseConnection";
+import { expect, test } from "vitest";
+import { User } from "../../../model/src/User/User";
+import { USER_AI } from "../../../model/src/User/AIUser";
+import GameController from "../../controller/GameController";
+import { Offset } from "../../../model/src/hexagon";
 import { constructDeployedGame } from "../support/constructGame";
-import User from "../../model/User";
-import { USER_AI } from "../../model/AIUser";
-import Offset from "../../model/hexagon/Offset";
+import TestDatabaseConnection from "../support/TestDatabaseConnection";
 
-test.serial("Ai ship targets enemy", async (test) => {
+test("Ai ship targets enemy", async () => {
   const db = new TestDatabaseConnection("ai");
   await db.resetDatabase();
 
   const controller = new GameController(db);
-  const user = new User(1, "Nönmän");
+  const user = User.create(1, "Nönmän");
   const user2 = USER_AI;
   let gameData = await constructDeployedGame(
     user,
@@ -19,8 +19,8 @@ test.serial("Ai ship targets enemy", async (test) => {
     controller,
     new Offset(40, 0)
   );
-  await controller.commitTurn(gameData.id, gameData.serialize(), user);
-  gameData = await controller.getGameData(gameData.id, user);
+  await controller.commitTurn(gameData.getId(), gameData.serialize(), user);
+  gameData = await controller.getGameData(gameData.getId(), user);
 
   const shooter = gameData.ships
     .getShips()
@@ -30,7 +30,7 @@ test.serial("Ai ship targets enemy", async (test) => {
     .getShips()
     .find((ship) => ship.name === "GEPS Biliyaz");
 
-  test.is(gameData.turn, 2);
+  expect(gameData.turn).toBe(2);
 
   let someEWAssigned = false;
 
@@ -40,6 +40,6 @@ test.serial("Ai ship targets enemy", async (test) => {
     }
   });
 
-  test.true(someEWAssigned);
+  expect(someEWAssigned).toBe(true);
   db.close();
 });
