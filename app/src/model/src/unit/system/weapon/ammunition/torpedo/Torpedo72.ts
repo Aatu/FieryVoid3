@@ -1,4 +1,4 @@
-import { MEDIUM_WEAPON_RANGE } from "../../../../../config/gameConfig.js";
+import { MEDIUM_WEAPON_RANGE } from "../../../../../config/gameConfig";
 import Torpedo from "./Torpedo";
 
 class Torpedo72 extends Torpedo {

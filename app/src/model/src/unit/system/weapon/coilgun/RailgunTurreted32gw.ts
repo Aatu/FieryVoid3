@@ -1,13 +1,13 @@
-import Weapon, { WeaponArgs } from "../Weapon.js";
-import FireOrderStrategy from "../../strategy/weapon/FireOrderStrategy.js";
+import Weapon, { WeaponArgs } from "../Weapon";
+import FireOrderStrategy from "../../strategy/weapon/FireOrderStrategy";
 import WeaponArcStrategy, {
   WeaponArcs,
-} from "../../strategy/weapon/WeaponArcStrategy.js";
-import StandardHitStrategy from "../../strategy/weapon/StandardHitStrategy.js";
-import StandardRangeStrategy from "../../strategy/weapon/StandardRangeStrategy.js";
-import StandardLoadingStrategy from "../../strategy/weapon/StandardLoadingStrategy.js";
-import WeaponAnimationStrategy from "../../strategy/weapon/WeaponAnimationStrategy.js";
-import PiercingDamageStrategy from "../../strategy/weapon/PiercingDamageStrategy.js";
+} from "../../strategy/weapon/WeaponArcStrategy";
+import StandardHitStrategy from "../../strategy/weapon/StandardHitStrategy";
+import StandardRangeStrategy from "../../strategy/weapon/StandardRangeStrategy";
+import StandardLoadingStrategy from "../../strategy/weapon/StandardLoadingStrategy";
+import WeaponAnimationStrategy from "../../strategy/weapon/WeaponAnimationStrategy";
+import PiercingDamageStrategy from "../../strategy/weapon/PiercingDamageStrategy";
 
 class RailgunTurreted32gw extends Weapon {
   constructor(args: WeaponArgs, arcs: WeaponArcs) {

@@ -5,9 +5,9 @@ import StandardDamageStrategy, {
 } from "./StandardDamageStrategy";
 import Structure from "../../structure/Structure";
 import { SystemMessage } from "../types/SystemHandlersTypes";
-import Ship from "../../../Ship.js";
+import Ship from "../../../Ship";
 import Vector from "../../../../utils/Vector";
-import ShipSystem from "../../ShipSystem.js";
+import ShipSystem from "../../ShipSystem";
 import SystemSection from "../../systemSection/SystemSection";
 import CombatLogDamageEntry from "../../../../combatLog/CombatLogDamageEntry";
 

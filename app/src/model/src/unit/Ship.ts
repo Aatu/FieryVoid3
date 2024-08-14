@@ -2,16 +2,16 @@ import { v4 as uuidv4 } from "uuid";
 import ShipSystems, { SerializedShipSystems } from "./ShipSystems";
 import ShipElectronicWarfare from "./ShipElectronicWarfare";
 import ShipPlayer from "./ShipPlayer";
-import ShipMovement from "./ShipMovement.js";
+import ShipMovement from "./ShipMovement";
 import {
   getCompassHeadingOfPoint,
   addToDirection,
   hexFacingToAngle,
-} from "../utils/math.js";
+} from "../utils/math";
 import coordinateConverter from "../utils/CoordinateConverter";
 import { IHexPosition, Offset } from "../hexagon/index";
 import Vector, { IVector } from "../utils/Vector";
-import { IUser, User } from "../User/User.js";
+import { IUser, User } from "../User/User";
 import { SearializedShipCurrentElectronicWarfare } from "./ShipCurrentElectronicWarfare";
 import { SYSTEM_HANDLERS } from "./system/strategy/types/SystemHandlersTypes";
 import { SerializedMovementOrder } from "../movement/MovementOrder";

@@ -1,5 +1,5 @@
-import BoostableSystemStrategy from "./BoostableSystemStrategy.js";
-import { SYSTEM_HANDLERS } from "./types/SystemHandlersTypes.js";
+import BoostableSystemStrategy from "./BoostableSystemStrategy";
+import { SYSTEM_HANDLERS } from "./types/SystemHandlersTypes";
 
 class BoostablePlusOneOutputSystemStrategy extends BoostableSystemStrategy {
   public basePowerRequirement: number | null;

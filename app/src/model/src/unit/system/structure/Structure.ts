@@ -1,8 +1,8 @@
-import ShipSystem, { SystemArgs } from "../ShipSystem.js";
-import CargoBaySystemStrategy from "../strategy/CargoBaySystemStrategy.js";
-import StoreHeatStrategy from "../strategy/StoreHeatStrategy.js";
-import RadiateHeatStrategy from "../strategy/RadiateHeatStrategy.js";
-import FuelTankSystemStrategy from "../strategy/FuelTankSystemStrategy.js";
+import ShipSystem, { SystemArgs } from "../ShipSystem";
+import CargoBaySystemStrategy from "../strategy/CargoBaySystemStrategy";
+import StoreHeatStrategy from "../strategy/StoreHeatStrategy";
+import RadiateHeatStrategy from "../strategy/RadiateHeatStrategy";
+import FuelTankSystemStrategy from "../strategy/FuelTankSystemStrategy";
 
 type StructureArgs = SystemArgs & {
   cargoSpace?: number;

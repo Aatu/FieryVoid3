@@ -1,5 +1,5 @@
-import ShipSystem from "../ShipSystem.js";
-import Critical from "./Critical.js";
+import ShipSystem from "../ShipSystem";
+import Critical from "./Critical";
 
 class ForcedOfflineOverheat extends Critical {
   getMessage() {

@@ -1,11 +1,11 @@
-import ElectronicWarfareEntry from "../electronicWarfare/ElectronicWarfareEntry.js";
-import { EW_TYPE } from "../electronicWarfare/electronicWarfareTypes.js";
-import Ship from "./Ship.js";
+import ElectronicWarfareEntry from "../electronicWarfare/ElectronicWarfareEntry";
+import { EW_TYPE } from "../electronicWarfare/electronicWarfareTypes";
+import Ship from "./Ship";
 import ShipCurrentElectronicWarfare, {
   SearializedShipCurrentElectronicWarfare,
 } from "./ShipCurrentElectronicWarfare";
-import ShipSystem from "./system/ShipSystem.js";
-import { SYSTEM_HANDLERS } from "./system/strategy/types/SystemHandlersTypes.js";
+import ShipSystem from "./system/ShipSystem";
+import { SYSTEM_HANDLERS } from "./system/strategy/types/SystemHandlersTypes";
 
 export class UnableToAssignEw extends Error {}
 

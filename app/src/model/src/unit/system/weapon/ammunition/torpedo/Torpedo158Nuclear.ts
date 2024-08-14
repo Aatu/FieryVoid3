@@ -1,5 +1,5 @@
 import Torpedo158 from "./Torpedo158";
-import HETorpedoDamageStrategy from "./torpedoDamageStrategy/HETorpedoDamageStrategy.js";
+import HETorpedoDamageStrategy from "./torpedoDamageStrategy/HETorpedoDamageStrategy";
 
 class Torpedo158Nuclear extends Torpedo158 {
   constructor() {

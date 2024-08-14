@@ -1,6 +1,6 @@
 import Ship from "../unit/Ship";
 import { THRUSTER_DIRECTION } from "../unit/system/strategy/ThrustChannelSystemStrategy";
-import { SYSTEM_HANDLERS } from "../unit/system/strategy/types/SystemHandlersTypes.js";
+import { SYSTEM_HANDLERS } from "../unit/system/strategy/types/SystemHandlersTypes";
 import { MovementOrder, RequiredThrust, ThrustAssignment } from "./index";
 import { ThrustRequirementSummary } from "./RequiredThrust";
 

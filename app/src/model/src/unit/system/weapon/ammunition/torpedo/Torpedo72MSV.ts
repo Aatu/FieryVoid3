@@ -1,7 +1,7 @@
 import MSVTorpedoDamageStrategy from "./torpedoDamageStrategy/MSVTorpedoDamageStrategy";
-import Torpedo72 from "./Torpedo72.js";
-import TorpedoFlight from "../../../../TorpedoFlight.js";
-import Ship from "../../../../Ship.js";
+import Torpedo72 from "./Torpedo72";
+import TorpedoFlight from "../../../../TorpedoFlight";
+import Ship from "../../../../Ship";
 
 class Torpedo72MSV extends Torpedo72 {
   constructor() {

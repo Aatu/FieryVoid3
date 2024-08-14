@@ -1,4 +1,4 @@
-import ShipSystemStrategy from "./ShipSystemStrategy.js";
+import ShipSystemStrategy from "./ShipSystemStrategy";
 
 export type SerializedFuelTankSystemStrategy = {
   fuelTankSystemStrategy?: {

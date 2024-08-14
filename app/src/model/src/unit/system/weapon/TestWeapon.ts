@@ -2,7 +2,7 @@ import Weapon, { WeaponArgs } from "./Weapon";
 import FireOrderStrategy from "../strategy/weapon/FireOrderStrategy";
 import WeaponArcStrategy, {
   WeaponArcs,
-} from "../strategy/weapon/WeaponArcStrategy.js";
+} from "../strategy/weapon/WeaponArcStrategy";
 import StandardHitStrategy from "../strategy/weapon/StandardHitStrategy";
 import StandardRangeStrategy from "../strategy/weapon/StandardRangeStrategy";
 import StandardLoadingStrategy from "../strategy/weapon/StandardLoadingStrategy";

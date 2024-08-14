@@ -1,5 +1,5 @@
-import { MEDIUM_WEAPON_RANGE } from "../../../../../config/gameConfig.js";
-import Torpedo from "./Torpedo.js";
+import { MEDIUM_WEAPON_RANGE } from "../../../../../config/gameConfig";
+import Torpedo from "./Torpedo";
 class Torpedo158 extends Torpedo {
   constructor({
     minRange = MEDIUM_WEAPON_RANGE * 2,

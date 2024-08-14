@@ -1,8 +1,8 @@
-import ShipSystemStrategy from "../ShipSystemStrategy.js";
-import WeaponHitChance from "../../../../weapon/WeaponHitChance.js";
-import Ship from "../../../Ship.js";
-import TorpedoFlight from "../../../TorpedoFlight.js";
-import { SYSTEM_HANDLERS } from "../types/SystemHandlersTypes.js";
+import ShipSystemStrategy from "../ShipSystemStrategy";
+import WeaponHitChance from "../../../../weapon/WeaponHitChance";
+import Ship from "../../../Ship";
+import TorpedoFlight from "../../../TorpedoFlight";
+import { SYSTEM_HANDLERS } from "../types/SystemHandlersTypes";
 
 class InterceptorStrategy extends ShipSystemStrategy {
   private numberOfIntercepts: number;

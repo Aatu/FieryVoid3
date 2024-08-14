@@ -1,7 +1,7 @@
-import { DiceRoller } from "../../../../utils/DiceRoller.js";
-import CargoEntity from "../../cargo/CargoEntity.js";
-import { SystemMessage } from "../../strategy/types/SystemHandlersTypes.js";
-import { AmmunitionType } from "./index.js";
+import { DiceRoller } from "../../../../utils/DiceRoller";
+import CargoEntity from "../../cargo/CargoEntity";
+import { SystemMessage } from "../../strategy/types/SystemHandlersTypes";
+import { AmmunitionType } from "./index";
 
 class Ammo extends CargoEntity {
   public damageFormula: string | number;

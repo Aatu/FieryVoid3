@@ -1,4 +1,4 @@
-import Critical from "./Critical.js";
+import Critical from "./Critical";
 
 class ForcedOffline extends Critical {
   getMessage() {

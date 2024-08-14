@@ -1,7 +1,7 @@
 import Ship from "../../../../Ship";
 import TorpedoFlight from "../../../../TorpedoFlight";
 import Torpedo158 from "./Torpedo158";
-import MSVTorpedoDamageStrategy from "./torpedoDamageStrategy/MSVTorpedoDamageStrategy.js";
+import MSVTorpedoDamageStrategy from "./torpedoDamageStrategy/MSVTorpedoDamageStrategy";
 
 class Torpedo158MSV2 extends Torpedo158 {
   constructor() {

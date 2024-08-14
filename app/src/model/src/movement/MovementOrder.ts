@@ -1,5 +1,5 @@
 import { addToHexFacing } from "../utils/math";
-import RequiredThrust, { SerializedRequiredThrust } from "./RequiredThrust.js";
+import RequiredThrust, { SerializedRequiredThrust } from "./RequiredThrust";
 import { MOVEMENT_TYPE } from "./movementTypes";
 import coordinateConverter from "../utils/CoordinateConverter";
 import Vector, { IVector } from "../utils/Vector";

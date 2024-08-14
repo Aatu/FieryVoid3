@@ -4,12 +4,12 @@ import session from "express-session";
 import cors from "cors";
 import expressWs from "express-ws";
 import UserService from "./services/UserService";
-import UserRepository from "./repository/UserRepository.js";
+import UserRepository from "./repository/UserRepository";
 import { initPassport } from "./services/PassportMiddleware";
-import GameController from "./controller/GameController.js";
-import DbConnection from "./repository/DbConnection.js";
+import GameController from "./controller/GameController";
+import DbConnection from "./repository/DbConnection";
 
-import * as errors from "./errors/index.js";
+import * as errors from "./errors/index";
 import passport from "passport";
 import { User } from "../model/src/User/User";
 

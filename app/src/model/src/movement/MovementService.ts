@@ -1,13 +1,13 @@
-import { MOVEMENT_TYPE, MovementOrder, MovementResolver } from "./index.js";
+import { MOVEMENT_TYPE, MovementOrder, MovementResolver } from "./index";
 
 import { addToHexFacing } from "../utils/math";
-import GameTerrain from "../game/GameTerrain.js";
+import GameTerrain from "../game/GameTerrain";
 import GameData from "../game/GameData";
-import Ship from "../unit/Ship.js";
-import Vector from "../utils/Vector.js";
-import Offset from "../hexagon/Offset.js";
-import { THRUSTER_DIRECTION } from "../unit/system/strategy/ThrustChannelSystemStrategy.js";
-import { IPhaseDirector } from "../game/IPhaseDirector.js";
+import Ship from "../unit/Ship";
+import Vector from "../utils/Vector";
+import Offset from "../hexagon/Offset";
+import { THRUSTER_DIRECTION } from "../unit/system/strategy/ThrustChannelSystemStrategy";
+import { IPhaseDirector } from "../game/IPhaseDirector";
 
 class MovementService {
   private gamedata: GameData | null = null;

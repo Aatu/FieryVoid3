@@ -1,19 +1,19 @@
-import Weapon, { WeaponArgs } from "../Weapon.js";
-import FireOrderStrategy from "../../strategy/weapon/FireOrderStrategy.js";
+import Weapon, { WeaponArgs } from "../Weapon";
+import FireOrderStrategy from "../../strategy/weapon/FireOrderStrategy";
 import WeaponArcStrategy, {
   WeaponArcs,
-} from "../../strategy/weapon/WeaponArcStrategy.js";
-import StandardHitStrategy from "../../strategy/weapon/StandardHitStrategy.js";
-import StandardRangeStrategy from "../../strategy/weapon/StandardRangeStrategy.js";
-import StandardLoadingStrategy from "../../strategy/weapon/StandardLoadingStrategy.js";
-import BurstDamageStrategy from "../../strategy/weapon/BurstDamageStrategy.js";
-import RequiresPowerSystemStrategy from "../../strategy/RequiresPowerSystemStrategy.js";
-import WeaponAnimationStrategy from "../../strategy/weapon/WeaponAnimationStrategy.js";
-import InterceptorStrategy from "../../strategy/weapon/InterceptorStrategy.js";
-import AmmunitionStrategy from "../../strategy/weapon/AmmunitionStrategy.js";
-import ArmorBoostOfflineSystemStrategy from "../../strategy/ArmorBoostOfflineSystemStrategy.js";
-import FireOrderHeatStrategy from "../../strategy/FireOrderHeatStrategy.js";
-import { MEDIUM_WEAPON_RANGE } from "../../../../config/gameConfig.js";
+} from "../../strategy/weapon/WeaponArcStrategy";
+import StandardHitStrategy from "../../strategy/weapon/StandardHitStrategy";
+import StandardRangeStrategy from "../../strategy/weapon/StandardRangeStrategy";
+import StandardLoadingStrategy from "../../strategy/weapon/StandardLoadingStrategy";
+import BurstDamageStrategy from "../../strategy/weapon/BurstDamageStrategy";
+import RequiresPowerSystemStrategy from "../../strategy/RequiresPowerSystemStrategy";
+import WeaponAnimationStrategy from "../../strategy/weapon/WeaponAnimationStrategy";
+import InterceptorStrategy from "../../strategy/weapon/InterceptorStrategy";
+import AmmunitionStrategy from "../../strategy/weapon/AmmunitionStrategy";
+import ArmorBoostOfflineSystemStrategy from "../../strategy/ArmorBoostOfflineSystemStrategy";
+import FireOrderHeatStrategy from "../../strategy/FireOrderHeatStrategy";
+import { MEDIUM_WEAPON_RANGE } from "../../../../config/gameConfig";
 
 class AutoCannon85mm extends Weapon {
   constructor({ id }: WeaponArgs, arcs: WeaponArcs) {

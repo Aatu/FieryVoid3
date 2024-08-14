@@ -1,12 +1,12 @@
 import StandardDamageStrategy, {
   DamagePayload,
-} from "../../../../strategy/weapon/StandardDamageStrategy.js";
-import CombatLogDamageEntry from "../../../../../../combatLog/CombatLogDamageEntry.js";
-import { SystemMessage } from "../../../../strategy/types/SystemHandlersTypes.js";
-import TorpedoFlight from "../../../../../TorpedoFlight.js";
-import Ship from "../../../../../Ship.js";
-import CombatLogWeaponFire from "../../../../../../combatLog/CombatLogWeaponFire.js";
-import CombatLogTorpedoAttack from "../../../../../../combatLog/CombatLogTorpedoAttack.js";
+} from "../../../../strategy/weapon/StandardDamageStrategy";
+import CombatLogDamageEntry from "../../../../../../combatLog/CombatLogDamageEntry";
+import { SystemMessage } from "../../../../strategy/types/SystemHandlersTypes";
+import TorpedoFlight from "../../../../../TorpedoFlight";
+import Ship from "../../../../../Ship";
+import CombatLogWeaponFire from "../../../../../../combatLog/CombatLogWeaponFire";
+import CombatLogTorpedoAttack from "../../../../../../combatLog/CombatLogTorpedoAttack";
 
 export type MSVTorpedoDamageStrategyDamagePayload = DamagePayload & {
   torpedoFlight: TorpedoFlight;

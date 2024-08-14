@@ -1,16 +1,16 @@
 import Ship from "../../Ship";
 import systems from "../../system/index";
 import Offset from "../../../hexagon/Offset";
-import Torpedo72MSV from "../../system/weapon/ammunition/torpedo/Torpedo72MSV.js";
-import Torpedo158MSV from "../../system/weapon/ammunition/torpedo/Torpedo158MSV.js";
-import Torpedo158Nuclear from "../../system/weapon/ammunition/torpedo/Torpedo158Nuclear.js";
+import Torpedo72MSV from "../../system/weapon/ammunition/torpedo/Torpedo72MSV";
+import Torpedo158MSV from "../../system/weapon/ammunition/torpedo/Torpedo158MSV";
+import Torpedo158Nuclear from "../../system/weapon/ammunition/torpedo/Torpedo158Nuclear";
 import Ammo140mmAP from "../../system/weapon/ammunition/conventional/Ammo140mmAP";
 import Ammo140mmHE from "../../system/weapon/ammunition/conventional/Ammo140mmHE";
 import Ammo85mmAP from "../../system/weapon/ammunition/conventional/Ammo85mmAP";
 import Ammo85mmHE from "../../system/weapon/ammunition/conventional/Ammo85mmHE";
-import CargoService from "../../../cargo/CargoService.js";
+import CargoService from "../../../cargo/CargoService";
 import Ammo30mm from "../../system/weapon/ammunition/conventional/Ammo30mm";
-import Torpedo72HE from "../../system/weapon/ammunition/torpedo/Torpedo72HE.js";
+import Torpedo72HE from "../../system/weapon/ammunition/torpedo/Torpedo72HE";
 import { SYSTEM_HANDLERS } from "../../system/strategy/types/SystemHandlersTypes";
 import { THRUSTER_DIRECTION } from "../../system/strategy/ThrustChannelSystemStrategy";
 

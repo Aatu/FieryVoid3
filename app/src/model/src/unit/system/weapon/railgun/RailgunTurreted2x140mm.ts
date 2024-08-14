@@ -1,21 +1,21 @@
-import Weapon, { WeaponArgs } from "../Weapon.js";
-import FireOrderStrategy from "../../strategy/weapon/FireOrderStrategy.js";
+import Weapon, { WeaponArgs } from "../Weapon";
+import FireOrderStrategy from "../../strategy/weapon/FireOrderStrategy";
 import WeaponArcStrategy, {
   WeaponArcs,
-} from "../../strategy/weapon/WeaponArcStrategy.js";
-import StandardHitStrategy from "../../strategy/weapon/StandardHitStrategy.js";
-import StandardRangeStrategy from "../../strategy/weapon/StandardRangeStrategy.js";
-import StandardLoadingStrategy from "../../strategy/weapon/StandardLoadingStrategy.js";
-import StandardDamageStrategy from "../../strategy/weapon/StandardDamageStrategy.js";
-import WeaponAnimationStrategy from "../../strategy/weapon/WeaponAnimationStrategy.js";
-import RequiresPowerSystemStrategy from "../../strategy/RequiresPowerSystemStrategy.js";
-import BoostableSystemStrategy from "../../strategy/BoostableSystemStrategy.js";
-import Ammo140mmAP from "../ammunition/conventional/Ammo140mmAP.js";
-import Ammo140mmHE from "../ammunition/conventional/Ammo140mmHE.js";
-import AmmunitionStrategy from "../../strategy/weapon/AmmunitionStrategy.js";
-import OutputHeatOnlineStrategy from "../../strategy/OutputHeatOnlineStrategy.js";
-import BurstDamageStrategy from "../../strategy/weapon/BurstDamageStrategy.js";
-import { MEDIUM_WEAPON_RANGE } from "../../../../config/gameConfig.js";
+} from "../../strategy/weapon/WeaponArcStrategy";
+import StandardHitStrategy from "../../strategy/weapon/StandardHitStrategy";
+import StandardRangeStrategy from "../../strategy/weapon/StandardRangeStrategy";
+import StandardLoadingStrategy from "../../strategy/weapon/StandardLoadingStrategy";
+import StandardDamageStrategy from "../../strategy/weapon/StandardDamageStrategy";
+import WeaponAnimationStrategy from "../../strategy/weapon/WeaponAnimationStrategy";
+import RequiresPowerSystemStrategy from "../../strategy/RequiresPowerSystemStrategy";
+import BoostableSystemStrategy from "../../strategy/BoostableSystemStrategy";
+import Ammo140mmAP from "../ammunition/conventional/Ammo140mmAP";
+import Ammo140mmHE from "../ammunition/conventional/Ammo140mmHE";
+import AmmunitionStrategy from "../../strategy/weapon/AmmunitionStrategy";
+import OutputHeatOnlineStrategy from "../../strategy/OutputHeatOnlineStrategy";
+import BurstDamageStrategy from "../../strategy/weapon/BurstDamageStrategy";
+import { MEDIUM_WEAPON_RANGE } from "../../../../config/gameConfig";
 
 class RailgunTurreted2x140mm extends Weapon {
   constructor({ id }: WeaponArgs, arcs: WeaponArcs) {

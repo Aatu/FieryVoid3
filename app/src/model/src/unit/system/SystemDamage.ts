@@ -1,6 +1,6 @@
-import DamageEntry, { SerializedDamageEntry } from "./DamageEntry.js";
-import * as criticals from "./criticals/index.js";
-import Critical, { SerializedCritical } from "./criticals/Critical.js";
+import DamageEntry, { SerializedDamageEntry } from "./DamageEntry";
+import * as criticals from "./criticals/index";
+import Critical, { SerializedCritical } from "./criticals/Critical";
 import ShipSystem from "./ShipSystem";
 
 export type SerializedSystemDamage = {

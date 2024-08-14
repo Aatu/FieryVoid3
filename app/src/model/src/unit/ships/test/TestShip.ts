@@ -1,9 +1,9 @@
-import Ship from "../../Ship.js";
+import Ship from "../../Ship";
 import systems from "../../system/index";
-import Torpedo158MSV from "../../system/weapon/ammunition/torpedo/Torpedo158MSV.js";
-import Torpedo72MSV from "../../system/weapon/ammunition/torpedo/Torpedo72MSV.js";
-import Torpedo72HE from "../../system/weapon/ammunition/torpedo/Torpedo72HE.js";
-import { SYSTEM_HANDLERS } from "../../system/strategy/types/SystemHandlersTypes.js";
+import Torpedo158MSV from "../../system/weapon/ammunition/torpedo/Torpedo158MSV";
+import Torpedo72MSV from "../../system/weapon/ammunition/torpedo/Torpedo72MSV";
+import Torpedo72HE from "../../system/weapon/ammunition/torpedo/Torpedo72HE";
+import { SYSTEM_HANDLERS } from "../../system/strategy/types/SystemHandlersTypes";
 
 class TestShip extends Ship {
   setShipProperties() {

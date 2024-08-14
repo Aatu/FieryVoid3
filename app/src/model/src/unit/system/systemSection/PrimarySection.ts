@@ -1,5 +1,5 @@
-import { SYSTEM_LOCATION } from "./systemLocation.js";
-import SystemSection from "./SystemSection.js";
+import { SYSTEM_LOCATION } from "./systemLocation";
+import SystemSection from "./SystemSection";
 
 class PrimarySection extends SystemSection {
   constructor() {

@@ -12,7 +12,7 @@ import ArmorBoostOfflineSystemStrategy from "./ArmorBoostOfflineSystemStrategy";
 import OutputHeatOnlineStrategy from "./OutputHeatOnlineStrategy";
 import FireOrderHeatStrategy from "./FireOrderHeatStrategy";
 import AlwaysTargetableSystemStrategy from "./AlwaysTargetableSystemStrategy";
-import FuelTankSystemStrategy from "./FuelTankSystemStrategy.js";
+import FuelTankSystemStrategy from "./FuelTankSystemStrategy";
 
 import {
   TestDamageStrategy,

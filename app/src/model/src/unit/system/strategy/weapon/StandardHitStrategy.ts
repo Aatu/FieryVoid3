@@ -1,12 +1,9 @@
-import ShipSystemStrategy from "../ShipSystemStrategy.js";
-import WeaponHitChance from "../../../../weapon/WeaponHitChance.js";
+import ShipSystemStrategy from "../ShipSystemStrategy";
+import WeaponHitChance from "../../../../weapon/WeaponHitChance";
 import CombatLogWeaponFireHitResult from "../../../../combatLog/CombatLogWeaponFireHitResult";
-import {
-  SYSTEM_HANDLERS,
-  SystemMessage,
-} from "../types/SystemHandlersTypes.js";
-import Ship from "../../../Ship.js";
-import CombatLogWeaponFire from "../../../../combatLog/CombatLogWeaponFire.js";
+import { SYSTEM_HANDLERS, SystemMessage } from "../types/SystemHandlersTypes";
+import Ship from "../../../Ship";
+import CombatLogWeaponFire from "../../../../combatLog/CombatLogWeaponFire";
 
 export type HitResolution = {
   shooter: Ship;

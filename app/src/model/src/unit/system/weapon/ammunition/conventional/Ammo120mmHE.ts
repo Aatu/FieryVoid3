@@ -1,4 +1,4 @@
-import Ammo from "../Ammo.js";
+import Ammo from "../Ammo";
 
 class Ammo120mmHE extends Ammo {
   constructor() {

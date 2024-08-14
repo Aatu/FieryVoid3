@@ -1,7 +1,7 @@
 import ElectornicWarfareEntry from "../electronicWarfare/ElectronicWarfareEntry";
-import Ship from "./Ship.js";
-import { SerializedElectronicWarfareEntry } from "../electronicWarfare/ElectronicWarfareEntry.js";
-import { EW_TYPE } from "../electronicWarfare/electronicWarfareTypes.js";
+import Ship from "./Ship";
+import { SerializedElectronicWarfareEntry } from "../electronicWarfare/ElectronicWarfareEntry";
+import { EW_TYPE } from "../electronicWarfare/electronicWarfareTypes";
 
 export type SearializedShipCurrentElectronicWarfare = {
   dew?: number;

@@ -2,16 +2,16 @@ import Weapon, { WeaponArgs } from "../Weapon";
 import FireOrderStrategy from "../../strategy/weapon/FireOrderStrategy";
 import WeaponArcStrategy, {
   WeaponArcs,
-} from "../../strategy/weapon/WeaponArcStrategy.js";
+} from "../../strategy/weapon/WeaponArcStrategy";
 import StandardHitStrategy from "../../strategy/weapon/StandardHitStrategy";
 import StandardRangeStrategy from "../../strategy/weapon/StandardRangeStrategy";
 import StandardLoadingStrategy from "../../strategy/weapon/StandardLoadingStrategy";
-import WeaponAnimationStrategy from "../../strategy/weapon/WeaponAnimationStrategy.js";
-import RequiresPowerSystemStrategy from "../../strategy/RequiresPowerSystemStrategy.js";
+import WeaponAnimationStrategy from "../../strategy/weapon/WeaponAnimationStrategy";
+import RequiresPowerSystemStrategy from "../../strategy/RequiresPowerSystemStrategy";
 import BoostableSystemStrategy from "../../strategy/BoostableSystemStrategy";
 import { Ammo120mmHE, Ammo120mmAP } from "../ammunition/conventional/index";
 import AmmunitionStrategy from "../../strategy/weapon/AmmunitionStrategy";
-import OutputHeatOnlineStrategy from "../../strategy/OutputHeatOnlineStrategy.js";
+import OutputHeatOnlineStrategy from "../../strategy/OutputHeatOnlineStrategy";
 import BurstDamageStrategy from "../../strategy/weapon/BurstDamageStrategy";
 import { MEDIUM_WEAPON_RANGE } from "../../../../config/gameConfig";
 

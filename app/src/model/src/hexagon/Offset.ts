@@ -1,5 +1,5 @@
-import Cube from "./Cube.js";
-import coordinateConverter from "../utils/CoordinateConverter.js";
+import Cube from "./Cube";
+import coordinateConverter from "../utils/CoordinateConverter";
 
 const NEIGHBOURS = [
   [

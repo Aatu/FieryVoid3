@@ -1,6 +1,6 @@
-import ShipSystem, { SystemArgs } from "../ShipSystem.js";
+import ShipSystem, { SystemArgs } from "../ShipSystem";
 import AlwaysTargetableSystemStrategy from "../strategy/AlwaysTargetableSystemStrategy";
-import ShipSystemStrategy from "../strategy/ShipSystemStrategy.js";
+import ShipSystemStrategy from "../strategy/ShipSystemStrategy";
 
 export type WeaponArgs = SystemArgs & { alwaysTargetable?: boolean };
 

@@ -1,5 +1,5 @@
-import Ship from "../unit/Ship.js";
-import ShipSystem from "../unit/system/ShipSystem.js";
+import Ship from "../unit/Ship";
+import ShipSystem from "../unit/system/ShipSystem";
 
 export type SerializedFireOrder = {
   id?: string | null;

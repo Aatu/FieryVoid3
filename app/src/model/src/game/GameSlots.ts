@@ -1,7 +1,7 @@
-import Ship from "../unit/Ship.js";
-import { User } from "../User/User.js";
-import GameData from "./GameData.js";
-import GameSlot, { SerializedGameSlot } from "./GameSlot.js";
+import Ship from "../unit/Ship";
+import { User } from "../User/User";
+import GameData from "./GameData";
+import GameSlot, { SerializedGameSlot } from "./GameSlot";
 
 class GameSlots {
   private gameData: GameData;

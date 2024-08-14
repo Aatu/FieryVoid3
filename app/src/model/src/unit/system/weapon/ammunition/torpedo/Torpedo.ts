@@ -1,8 +1,8 @@
-import Ship from "../../../../Ship.js";
-import TorpedoFlight from "../../../../TorpedoFlight.js";
-import CargoEntity from "../../../cargo/CargoEntity.js";
-import { SystemMessage } from "../../../strategy/types/SystemHandlersTypes.js";
-import StandardDamageStrategy from "../../../strategy/weapon/StandardDamageStrategy.js";
+import Ship from "../../../../Ship";
+import TorpedoFlight from "../../../../TorpedoFlight";
+import CargoEntity from "../../../cargo/CargoEntity";
+import { SystemMessage } from "../../../strategy/types/SystemHandlersTypes";
+import StandardDamageStrategy from "../../../strategy/weapon/StandardDamageStrategy";
 
 export type TorpedoDamageStrategy = StandardDamageStrategy & {
   getStrikeDistance: (payload: {

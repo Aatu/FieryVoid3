@@ -1,4 +1,4 @@
-import { createShipObject } from "../unit/createShipObject.js";
+import { createShipObject } from "../unit/createShipObject";
 import Ship, { SerializedShip } from "../unit/Ship";
 import { User } from "../User/User";
 import GameData from "./GameData";

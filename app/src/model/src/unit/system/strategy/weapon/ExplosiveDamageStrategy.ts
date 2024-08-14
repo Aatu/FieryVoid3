@@ -1,10 +1,10 @@
-import CombatLogDamageEntry from "../../../../combatLog/CombatLogDamageEntry.js";
-import Vector from "../../../../utils/Vector.js";
-import { SystemMessage } from "../types/SystemHandlersTypes.js";
+import CombatLogDamageEntry from "../../../../combatLog/CombatLogDamageEntry";
+import Vector from "../../../../utils/Vector";
+import { SystemMessage } from "../types/SystemHandlersTypes";
 import StandardDamageStrategy, {
   DamagePayload,
   StandardDamagePayload,
-} from "./StandardDamageStrategy.js";
+} from "./StandardDamageStrategy";
 
 class ExplosiveDamageStrategy extends StandardDamageStrategy {
   private numberOfDamagesFormula: string | number;

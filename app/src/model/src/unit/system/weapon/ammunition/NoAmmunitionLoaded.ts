@@ -1,4 +1,4 @@
-import CargoEntity from "../../cargo/CargoEntity.js";
+import CargoEntity from "../../cargo/CargoEntity";
 
 class NoAmmunitionLoaded extends CargoEntity {
   getDisplayName() {

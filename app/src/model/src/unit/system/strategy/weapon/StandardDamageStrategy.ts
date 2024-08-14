@@ -1,11 +1,8 @@
 import ShipSystemStrategy from "../ShipSystemStrategy";
 import HitSystemRandomizer from "./utils/HitSystemRandomizer";
-import DamageEntry from "../../DamageEntry.js";
+import DamageEntry from "../../DamageEntry";
 import CombatLogDamageEntry from "../../../../combatLog/CombatLogDamageEntry";
-import {
-  SYSTEM_HANDLERS,
-  SystemMessage,
-} from "../types/SystemHandlersTypes.js";
+import { SYSTEM_HANDLERS, SystemMessage } from "../types/SystemHandlersTypes";
 import Ammo from "../../weapon/ammunition/Ammo";
 import CombatLogWeaponFireHitResult from "../../../../combatLog/CombatLogWeaponFireHitResult";
 import Ship from "../../../Ship";

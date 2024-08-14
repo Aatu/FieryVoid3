@@ -1,4 +1,4 @@
-import GameSlots from "./GameSlots.js";
+import GameSlots from "./GameSlots";
 import GameShips from "./GameShips";
 import GameActiveShips from "./GameActiveShips";
 import GameTerrain, { SerializedGameTerrain } from "./GameTerrain";
@@ -9,8 +9,8 @@ import CombatLogData, {
 import { GAME_STATUS } from "./gameStatus";
 import { GAME_PHASE } from "./gamePhase";
 import { IUser, User } from "../User/User";
-import Ship, { SerializedShip } from "../unit/Ship.js";
-import { SerializedGameSlot } from "./GameSlot.js";
+import Ship, { SerializedShip } from "../unit/Ship";
+import { SerializedGameSlot } from "./GameSlot";
 
 export type SerializedGameDataSubData = {
   activePlayerIds?: number[];

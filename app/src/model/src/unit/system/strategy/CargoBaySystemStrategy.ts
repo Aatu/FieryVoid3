@@ -1,10 +1,6 @@
-import ShipSystemStrategy from "./ShipSystemStrategy.js";
-import {
-  cargoClasses,
-  CargoType,
-  createCargoInstance,
-} from "../cargo/cargo.js";
-import CargoEntity from "../cargo/CargoEntity.js";
+import ShipSystemStrategy from "./ShipSystemStrategy";
+import { cargoClasses, CargoType, createCargoInstance } from "../cargo/cargo";
+import CargoEntity from "../cargo/CargoEntity";
 
 export type SerializedCargoBaySystemStrategy = {
   cargoBaySystemStrategy?: { className: CargoType; amount: number }[];

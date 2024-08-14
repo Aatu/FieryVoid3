@@ -1,6 +1,6 @@
-import GameData from "../../model/src/game/GameData.js";
-import GameDataRepository from "../repository/GameDataRepository.js";
-import CachedGameData, { ReservedGameDataPromise } from "./CachedGameData.js";
+import GameData from "../../model/src/game/GameData";
+import GameDataRepository from "../repository/GameDataRepository";
+import CachedGameData, { ReservedGameDataPromise } from "./CachedGameData";
 
 class GameDataService {
   private gameDataRepository: GameDataRepository;

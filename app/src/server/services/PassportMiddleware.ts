@@ -47,7 +47,7 @@ class PassportService {
 import * as passportStrategy from "passport-local";
 import passport from "passport";
 import { Request, Response, NextFunction } from "express";
-import { IUser, User } from "../../model/src/User/User.js";
+import { IUser, User } from "../../model/src/User/User";
 import UserService from "./UserService";
 import expressWs from "express-ws";
 

@@ -1,5 +1,5 @@
-import ShipSystemStrategy from "./ShipSystemStrategy.js";
-import { SystemMessage } from "./types/SystemHandlersTypes.js";
+import ShipSystemStrategy from "./ShipSystemStrategy";
+import { SystemMessage } from "./types/SystemHandlersTypes";
 
 interface SerializedAlwaysTargetableSystemStrategy {
   turnsOffline: number;

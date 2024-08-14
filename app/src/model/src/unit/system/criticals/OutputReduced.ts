@@ -1,4 +1,4 @@
-import Critical, { SerializedCritical } from "./Critical.js";
+import Critical, { SerializedCritical } from "./Critical";
 
 export type SerializedOutputReduced = SerializedCritical & {
   outputReduction?: number;

@@ -1,7 +1,7 @@
-import Structure from "../structure/Structure.js";
+import Structure from "../structure/Structure";
 import { SYSTEM_LOCATION } from "./systemLocation";
 import ShipSystem from "../ShipSystem";
-import Offset from "../../../hexagon/Offset.js";
+import Offset from "../../../hexagon/Offset";
 
 class SystemSection {
   private location: SYSTEM_LOCATION;

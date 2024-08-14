@@ -1,7 +1,7 @@
-import { systemLogEntryClasses } from "./systemLogEntryClasses.js";
+import { systemLogEntryClasses } from "./systemLogEntryClasses";
 import ShipSystemLogEntry, {
   SerializedSystemLogEntry,
-} from "./ShipSystemLogEntry.js";
+} from "./ShipSystemLogEntry";
 import ShipSystem from "../ShipSystem";
 
 export type SerializedShipSystemLog = {

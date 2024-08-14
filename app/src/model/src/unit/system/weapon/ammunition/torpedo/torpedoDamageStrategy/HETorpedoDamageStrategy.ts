@@ -1,8 +1,8 @@
-import CombatLogDamageEntry from "../../../../../../combatLog/CombatLogDamageEntry.js";
-import { SystemMessage } from "../../../../strategy/types/SystemHandlersTypes.js";
-import ExplosiveDamageStrategy from "../../../../strategy/weapon/ExplosiveDamageStrategy.js";
-import { DamagePayload } from "../../../../strategy/weapon/StandardDamageStrategy.js";
-import { isMSVTorpedoDamagePayload } from "./MSVTorpedoDamageStrategy.js";
+import CombatLogDamageEntry from "../../../../../../combatLog/CombatLogDamageEntry";
+import { SystemMessage } from "../../../../strategy/types/SystemHandlersTypes";
+import ExplosiveDamageStrategy from "../../../../strategy/weapon/ExplosiveDamageStrategy";
+import { DamagePayload } from "../../../../strategy/weapon/StandardDamageStrategy";
+import { isMSVTorpedoDamagePayload } from "./MSVTorpedoDamageStrategy";
 class HETorpedoDamageStrategy extends ExplosiveDamageStrategy {
   constructor(
     damageFormula: string | number,

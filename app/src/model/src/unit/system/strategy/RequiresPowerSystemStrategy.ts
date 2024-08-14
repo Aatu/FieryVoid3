@@ -1,6 +1,6 @@
-import ShipSystemStrategy from "./ShipSystemStrategy.js";
-import { ForcedOffline } from "../criticals/index.js";
-import { SYSTEM_HANDLERS, SystemMessage } from "./types/SystemHandlersTypes.js";
+import ShipSystemStrategy from "./ShipSystemStrategy";
+import { ForcedOffline } from "../criticals/index";
+import { SYSTEM_HANDLERS, SystemMessage } from "./types/SystemHandlersTypes";
 
 class RequiresPowerSystemStrategy extends ShipSystemStrategy {
   private power: number;

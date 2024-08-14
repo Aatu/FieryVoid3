@@ -1,12 +1,10 @@
-import ShipSystemStrategy from "../ShipSystemStrategy.js";
-import FireOrder, {
-  SerializedFireOrder,
-} from "../../../../weapon/FireOrder.js";
-import CombatLogWeaponFire from "../../../../combatLog/CombatLogWeaponFire.js";
-import GameData from "../../../../game/GameData.js";
-import { SYSTEM_HANDLERS } from "../types/SystemHandlersTypes.js";
-import Ammo from "../../weapon/ammunition/Ammo.js";
-import Ship from "../../../Ship.js";
+import ShipSystemStrategy from "../ShipSystemStrategy";
+import FireOrder, { SerializedFireOrder } from "../../../../weapon/FireOrder";
+import CombatLogWeaponFire from "../../../../combatLog/CombatLogWeaponFire";
+import GameData from "../../../../game/GameData";
+import { SYSTEM_HANDLERS } from "../types/SystemHandlersTypes";
+import Ammo from "../../weapon/ammunition/Ammo";
+import Ship from "../../../Ship";
 
 export type SerializedFireOrderStrategy = {
   fireOrderStrategy?: SerializedFireOrder[];

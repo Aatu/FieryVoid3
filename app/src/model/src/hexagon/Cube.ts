@@ -1,5 +1,5 @@
 import { isIVector, IVector } from "../utils/Vector";
-import Offset from "./Offset.js";
+import Offset from "./Offset";
 
 const PRECISION = 4;
 
