@@ -1,4 +1,4 @@
-import React, { useReducer, useEffect } from "react";
+import React, { useReducer, useEffect, ReactNode } from "react";
 import { reducer, getCurrentUser } from "./actions";
 
 export const StateStore = React.createContext({});
@@ -8,7 +8,7 @@ const initialState = {
   currentUser: undefined,
 };
 
-const StoreProvider = ({ children }) => {
+const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   useEffect(() => {

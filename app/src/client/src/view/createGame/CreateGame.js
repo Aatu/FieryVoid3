@@ -11,7 +11,7 @@ import GameData from "../../../model/game/GameData";
 import GameSlot from "../../../model/game/GameSlot";
 import hexagon from "../../../model/hexagon";
 import Slots from "./Slots";
-import { createGame } from "../../api/game";
+import { createGame } from "../../src/api/game";
 
 import {
   Title,

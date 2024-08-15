@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { getCurrentUser } from "../../state/actions";
-import { login as loginUser } from "../../api/user";
+import { login as loginUser } from "../../src/api/user";
 import styled from "styled-components";
 
 import {

@@ -5,7 +5,10 @@ import Logout from "./view/logout";
 import { StateStore } from "./state/StoreProvider";
 import { BaseView } from "./view/baseView";
 
-export const PrivateRoute = ({ component: Component, ...rest }) => {
+export const PrivateRoute: React.FC<{ component: React.FC }> = ({
+  component: Component,
+  ...rest
+}) => {
   const { currentUser } = useContext(StateStore);
 
   const authed = Boolean(currentUser);

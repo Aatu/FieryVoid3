@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "author": "Aatu Riuttamäki <aatu.riuttamaki@gmail.com>",
   "scripts": {
-    "start": "nodemon --experimental-modules app",
+    "start": "nodemon app.ts",
     "typecheck": "tsc --noEmit",
     "test": "vitest"
   },
@@ -21,6 +21,7 @@
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
     "three": "^0.167.1",
+    "ts-node": "^10.9.2",
     "uuid": "^3.3.2",
     "yup": "^0.27.0"
   },

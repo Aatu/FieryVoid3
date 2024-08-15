@@ -9,7 +9,7 @@ import {
   Value,
   TooltipValue,
 } from "../../styled";
-import { createTestGameGame } from "../../api/game";
+import { createTestGameGame } from "../../src/api/game";
 import { StateStore } from "../../state/StoreProvider";
 import { LinkInline } from "../../styled/Link";
 import styled from "styled-components";
@@ -26,7 +26,7 @@ const Home = () => {
 
   const createGame = useCallback(() => {
     const callApi = async () => {
-      const response = await createTestGameGame();
+      const response = await createTestGame();
       console.log(response);
       setGameId(response.data.gameId);
     };
@@ -36,7 +36,7 @@ const Home = () => {
 
   const createGameAi = useCallback(() => {
     const callApi = async () => {
-      const response = await createTestGameGame({ useAI: true });
+      const response = await createTestGame({ useAI: true });
       console.log(response);
       setGameId(response.data.gameId);
     };

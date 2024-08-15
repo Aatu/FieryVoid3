@@ -1,4 +1,4 @@
-import yup from "yup";
+import * as yup from "yup";
 
 export type IUser = {
   id: number;

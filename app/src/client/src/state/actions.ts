@@ -1,5 +1,4 @@
-import { user } from "../api";
-import User from "../../model/User";
+import { User } from "@fieryvoid3/model/src/User/User";
 
 const actionTypes = {
   GET_CURRENT_USER: "GET_CURRENT_USER",

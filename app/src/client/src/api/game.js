@@ -16,7 +16,7 @@ export const createGame = async (gameData) => {
   }
 };
 
-export const createTestGameGame = async (payload = {}) => {
+export const createTestGame = async (payload = {}) => {
   try {
     return axios.post(`${SERVER_URL}/testGame`, payload, axiosConfig);
   } catch (error) {

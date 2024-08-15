@@ -2,7 +2,7 @@ import React, { useContext, useEffect } from "react";
 import { Redirect } from "react-router-dom";
 
 import { getCurrentUser } from "../../state/actions";
-import { logout as logoutUser } from "../../api/user";
+import { logout as logoutUser } from "../../src/api/user";
 import { DispatchStore, StateStore } from "../../state/StoreProvider";
 
 const Logout = ({ location }) => {
