@@ -1,10 +1,11 @@
-import { loadObject } from "../utils/objectLoader";
 import * as THREE from "three";
 
-import HexagonMath from "../../../../model/utils/HexagonMath";
-
 class TerrainRenderer {
-  constructor(scene) {
+  private scene: THREE.Scene;
+  private terrain: unknown;
+  private terrainObjects: unknown[];
+
+  constructor(scene: THREE.Scene) {
     this.scene = scene;
     this.terrain = null;
     this.terrainObjects = [];
@@ -12,18 +13,22 @@ class TerrainRenderer {
 
   init() {}
 
-  update(terrain) {
+  update() {
     //TODO: This creates new objects every time gamedata updates.
     return;
 
+    /*
     this.terrain = terrain;
 
-    this.terrainObjects = this.terrain.getEntities().forEach(entity => ({
+    this.terrainObjects = this.terrain.getEntities().forEach((entity) => ({
       entity,
-      object: this.createObject(entity)
+      object: this.createObject(entity),
     }));
+
+    */
   }
 
+  /*
   async createObject(entity) {
     const object = await loadObject("/img/3d/sphere/scene.gltf");
 
@@ -36,6 +41,7 @@ class TerrainRenderer {
     object.scale.set(scale, scale, scale);
     this.scene.add(object);
   }
+    */
 
   render() {}
 }

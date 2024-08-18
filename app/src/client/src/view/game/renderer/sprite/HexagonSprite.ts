@@ -33,7 +33,7 @@ class HexagonSprite extends Sprite {
       null,
       {
         width: HexagonMath.getTextureWidth() * scale,
-        height: HexagonMath.getTextureHeight() * scale
+        height: HexagonMath.getTextureHeight() * scale,
       },
       z
     );

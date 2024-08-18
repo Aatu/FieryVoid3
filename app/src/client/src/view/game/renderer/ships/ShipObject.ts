@@ -1,21 +1,56 @@
 import * as THREE from "three";
 import * as shipObjects from ".";
-import Vector from "../../../../../model/utils/Vector";
-
-import { degreeToRadian } from "../../../../../model/utils/math";
 
 import { ShipEWSprite, DottedCircleSprite, HexagonSprite } from "../sprite";
 
 import Line from "../Line";
-import coordinateConverter from "../../../../../model/utils/CoordinateConverter";
-import ShipMapIcon from "./ShipMapIcon";
-import { angleToHexFacing } from "../../../../../model/utils/math";
 import { ParticleEmitterContainer } from "../../animation/particle";
-import ShipObjectBoundingBox from "./ShipObjectBoundingBox";
-import ShipObjectSectionDamageEffect from "./ShipObjectSectionDamageEffect";
+import Ship from "@fieryvoid3/model/src/unit/Ship";
+import Vector, { IVector } from "@fieryvoid3/model/src/utils/Vector";
+import { getPromise } from "@fieryvoid3/model/src/utils/ReadyPromise";
+import { LoadedObject } from "../../utils/objectLoader";
 
 class ShipObject {
-  constructor(ship, scene) {
+  private shipId: string;
+  private ship: Ship;
+  private systemLocations: Record<string, THREE.Vector3>;
+  private bumpMap: THREE.Texture | null;
+  private scene: THREE.Scene;
+  private mesh: THREE.Object3D;
+  private shipObject: THREE.Object3D;
+  private systemObjects: any[];
+  private resolveShipObjectLoaded: any;
+  private isShipObjectLoaded: Promise<boolean>;
+  private mapIcon: ShipMapIcon;
+  private hexSprites: HexagonSprite[];
+  private hexSpriteContainer: THREE.Object3D;
+  private ghostShipObject: any;
+  private shipSideSprite: any;
+  private shipEWSprite: ShipEWSprite;
+  private shipSelectedSprite: DottedCircleSprite;
+  private line: Line | null;
+  private defaultHeight: number;
+  private sideSpriteSize: number;
+  private position: IVector;
+  private shipZ: number | null;
+  private hidden: boolean;
+  private emissiveReplaced: any[];
+  private ghost: boolean;
+  private forcedEmissiveColor: THREE.Color | null;
+  private opacity: number;
+  private rotation: number;
+  private roll: number;
+  private dimensions: IVector;
+  private center: IVector;
+  private ewSpriteDimensions: IVector | null;
+  private shipObjectBoundingBox: ShipObjectBoundingBox;
+  private shipObjectSectionDamageEffect: ShipObjectSectionDamageEffect;
+  private overlaySpriteSize: number = 0;
+  private overlaySpriteOpacity: number = 0;
+  private overlaySpriteColor: THREE.Color = new THREE.Color(0, 0, 0);
+  private overlaySpriteColorAlpha: number = 0;
+
+  constructor(ship: Ship, scene: THREE.Scene) {
     this.shipId = ship.id;
     this.ship = ship;
     this.systemLocations = {};
@@ -29,10 +64,7 @@ class ShipObject {
     this.shipObject = null;
     this.systemObjects = [];
 
-    this.resolveShipObjectLoaded = null;
-    this.isShipObjectLoaded = new Promise((resolve, reject) => {
-      this.resolveShipObjectLoaded = resolve;
-    });
+    this.isShipObjectLoaded = getPromise<boolean>();
 
     this.mapIcon = null;
     this.hexSprites = [];
@@ -58,8 +90,8 @@ class ShipObject {
 
     this.rotation = 0;
     this.roll = 0;
-    this.dimensions = { x: 100, y: 100 };
-    this.center = { x: 0, y: 0 };
+    this.dimensions = { x: 100, y: 100, z: 0 };
+    this.center = { x: 0, y: 0, z: 0 };
     this.ewSpriteDimensions = null;
 
     this.shipObjectBoundingBox = new ShipObjectBoundingBox(ship);
@@ -70,15 +102,18 @@ class ShipObject {
     this.consumeShipdata(this.ship);
   }
 
-  setShipObject(object) {
+  setShipObject(object: LoadedObject) {
     this.shipObject = object;
 
     if (this.bumpMap) {
-      object.scene.children.forEach((mesh) => {
-        mesh.material.bumpMap = this.bumpMap;
-        mesh.material.bumpScale = 0.5;
-        mesh.material.bumpMap.flipY = false;
-        mesh.material.needsUpdate = true;
+      object.object.children.forEach((child) => {
+        const mesh = child as THREE.Mesh;
+        const material = mesh.material as THREE.MeshStandardMaterial;
+
+        material.bumpMap = this.bumpMap;
+        material.bumpScale = 0.5;
+        material.bumpMap!.flipY = false;
+        material.needsUpdate = true;
       });
     }
 
@@ -94,7 +129,7 @@ class ShipObject {
     return new shipObjects[this.ship.shipModel](this.ship, this.scene);
   }
 
-  consumeShipdata(ship) {
+  consumeShipdata(ship: Ship) {
     this.ship = ship;
   }
 
@@ -106,8 +141,8 @@ class ShipObject {
     const opacity = 0.5;
 
     this.line = new Line(this.mesh, {
-      start: { x: 0, y: 0, z: 0 },
-      end: { x: 0, y: 0, z: this.defaultHeight },
+      start: new THREE.Vector3(0, 0, 0),
+      end: new THREE.Vector3(0, 0, this.defaultHeight),
       width: 5,
       color: new THREE.Color(1, 1, 1),
       opacity: 0.1,

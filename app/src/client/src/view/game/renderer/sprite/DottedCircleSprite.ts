@@ -3,7 +3,7 @@ import Sprite from "./Sprite";
 import abstractCanvas from "../../utils/abstractCanvas";
 import { drawDottedCircle } from "../../utils/graphics";
 
-let texture = null;
+let texture: THREE.Texture | null = null;
 const TEXTURE_SIZE = 512;
 
 const createTexture = () => {
@@ -12,7 +12,7 @@ const createTexture = () => {
   }
 
   const canvas = abstractCanvas.create(TEXTURE_SIZE, TEXTURE_SIZE);
-  const context = canvas.getContext("2d");
+  const context = canvas.getContext("2d") as CanvasRenderingContext2D;
   context.strokeStyle = "rgba(78,220,25,1.0)";
   context.fillStyle = "rgba(78,220,25,0.5)";
 
@@ -31,13 +31,17 @@ const createTexture = () => {
 };
 
 class DottedCircleSprite extends Sprite {
-  constructor(size, z, opacity) {
+  constructor(
+    size: { width: number; height: number },
+    z: number,
+    opacity: number
+  ) {
     super(null, size, z);
 
     this.setOpacity(opacity);
 
     createTexture();
-    this.uniforms.texture.value = texture;
+    this.uniforms.texture.value = texture!;
   }
 }
 

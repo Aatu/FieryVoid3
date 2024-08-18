@@ -1,8 +1,14 @@
+import { getSeededRandomGenerator } from "@fieryvoid3/model/src/utils/math";
 import { IVector } from "@fieryvoid3/model/src/utils/Vector";
 import * as THREE from "three";
-const getRandomPosition = (maxDistance: number, getRandom: () => number) => ({
+
+const getRandomPosition = (
+  maxDistance: number,
+  getRandom: () => number
+): IVector => ({
   x: getRandom() * maxDistance - maxDistance / 2,
   y: getRandom() * maxDistance - maxDistance / 2,
+  z: 0,
 });
 
 const constructFirstCurve = (nextPosition: IVector) => {
@@ -57,7 +63,10 @@ const constructEvasionCurves = (
 };
 
 class ShipEvasionMovementPath {
-  constructor(seed, evasion) {
+  private evasion: number;
+  private curves: THREE.CubicBezierCurve[];
+
+  constructor(seed: string, evasion: number) {
     this.evasion = evasion;
 
     this.curves = constructEvasionCurves(
@@ -67,7 +76,7 @@ class ShipEvasionMovementPath {
     );
   }
 
-  getOffset(percent) {
+  getOffset(percent: number) {
     if (this.evasion === 0) {
       return { x: 0, y: 0 };
     }

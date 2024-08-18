@@ -1,10 +1,6 @@
 import * as THREE from "three";
 import Animation from "../Animation";
-import ShipEvasionMovementPath from "./ShipEvasionMovementPath";
 import PivotSteps from "./PivotSteps";
-import Vector from "../../../../../model/utils/Vector";
-import { getAngleBetween } from "../../../../../model/utils/math";
-import { addToDirection } from "../../../../../model/utils/math";
 
 class ShipMovementAnimation extends Animation {
   constructor(shipIcon, ship, moves, start, end) {

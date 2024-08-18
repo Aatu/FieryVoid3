@@ -1,6 +1,6 @@
 import * as THREE from "three";
-import HexagonMath from "../../../../../model/utils/HexagonMath";
 import HexagonTexture from "./HexagonTexture";
+import HexagonMath from "@fieryvoid3/model/src/utils/HexagonMath";
 
 const HEX_COUNT_WIDTH = 9999;
 const HEX_COUNT_HEIGHT = 9999;
@@ -16,6 +16,12 @@ const getGeometryWidth = () => HexagonMath.getGridWidth(HEX_COUNT_WIDTH);
 const getGeometryHeight = () => HexagonMath.getGridHeight(HEX_COUNT_HEIGHT);
 
 class HexGridRenderer {
+  private material: THREE.MeshBasicMaterial | null;
+  private mesh: THREE.Mesh | null;
+  private minZoom: number;
+  private maxZoom: number;
+  private hexSize: number;
+
   constructor() {
     this.material = null;
     this.mesh = null;
@@ -24,7 +30,7 @@ class HexGridRenderer {
     this.hexSize = 128;
   }
 
-  renderHexGrid(scene, minZoom, maxZoom) {
+  renderHexGrid(scene: THREE.Object3D, minZoom: number, maxZoom: number) {
     this.minZoom = minZoom;
     this.maxZoom = maxZoom;
 
@@ -54,7 +60,7 @@ class HexGridRenderer {
     scene.add(this.mesh);
   }
 
-  onZoom = function (zoom) {
+  onZoom = function (zoom: number) {
     if (zoom > 1) {
       //this.material.opacity = (HEX_MAX_OPACITY - HEX_OPACITY) * ((zoom - 1) / (this.maxZoom - 1)) + HEX_OPACITY;
     } else {

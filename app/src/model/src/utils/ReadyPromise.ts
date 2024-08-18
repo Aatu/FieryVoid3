@@ -1,7 +1,11 @@
-export type ReadyPromise<T> = { promise: Promise<T>; ready: boolean };
+export type ReadyPromise<T> = {
+  promise: Promise<T>;
+  ready: boolean;
+  resolve: (value?: T) => void;
+};
 
 export const getPromise = <T>(
-  implementation: () => Promise<T>
+  implementation?: () => Promise<T>
 ): ReadyPromise<T> => {
   let resolve = null;
   let ready: boolean = false;
@@ -11,10 +15,19 @@ export const getPromise = <T>(
   });
 
   (async () => {
-    const result = await implementation();
-    resolve!(result);
-    ready = true;
+    if (implementation !== undefined) {
+      const result = await implementation();
+      resolve!(result);
+      ready = true;
+    }
   })();
 
-  return { promise, ready };
+  return {
+    promise,
+    ready,
+    resolve: (v?: T) => {
+      resolve!(v);
+      ready = true;
+    },
+  };
 };

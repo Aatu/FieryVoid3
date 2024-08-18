@@ -1,32 +1,49 @@
-import * as mathlib from "../../../../model/utils/math";
-
-const clearCanvas = canvasid => {
-  const canvas = document.getElementById(canvasid);
-  canvas.getContext("2d").clearRect(0, 0, canvas.width, canvas.height);
+import { WeaponArc } from "@fieryvoid3/model/src/unit/system/strategy/weapon/WeaponArcStrategy";
+import * as mathlib from "@fieryvoid3/model/src/utils/math";
+type Point = {
+  x: number;
+  y: number;
 };
 
-const clearContext = (context, canvas) => {
+const clearCanvas = (canvasid: string) => {
+  const canvas = document.getElementById(canvasid) as HTMLCanvasElement;
+
+  if (!canvas) {
+    throw new Error("Canvas is null");
+  }
+
+  canvas.getContext("2d")?.clearRect(0, 0, canvas.width, canvas.height);
+};
+
+const clearContext = (
+  context: CanvasRenderingContext2D,
+  canvas: HTMLCanvasElement
+) => {
   context.clearRect(0, 0, canvas.width, canvas.height);
 };
 
-const clearSmallCanvas = context => {
+const clearSmallCanvas = (context: CanvasRenderingContext2D) => {
   context.clearRect(0, 0, 100, 100);
 };
 
-const getCanvas = canvasid => {
+const getCanvas = (canvasid: string): CanvasRenderingContext2D => {
   //console.log(canvasid);
-  var canvas = document.getElementById(canvasid);
+  const canvas = document.getElementById(canvasid) as HTMLCanvasElement;
   if (!canvas) {
-    console.log("Canvas is null");
-    console.trace();
-    return null;
+    throw new Error("Canvas is null");
   }
 
-  var context = canvas.getContext("2d");
-  return context;
+  return canvas.getContext("2d") as CanvasRenderingContext2D;
 };
 
-const drawCone = (canvas, start, p1, p2, arcs, w) => {
+const drawCone = (
+  canvas: CanvasRenderingContext2D,
+  start: Point,
+  p1: Point,
+  p2: Point,
+  arcs: WeaponArc,
+  w: number
+) => {
   canvas.lineWidth = w;
   canvas.beginPath();
   canvas.moveTo(start.x, start.y);
@@ -34,7 +51,7 @@ const drawCone = (canvas, start, p1, p2, arcs, w) => {
   canvas.arc(
     start.x,
     start.y,
-    mathlib.distance(start, p1),
+    mathlib.distance({ ...start, z: 0 }, { ...p1, z: 0 }),
     mathlib.degreeToRadian(arcs.start),
     mathlib.degreeToRadian(arcs.end),
     false
@@ -45,7 +62,13 @@ const drawCone = (canvas, start, p1, p2, arcs, w) => {
   canvas.fill();
 };
 
-const drawBox = (canvas, p, w, h, lw) => {
+const drawBox = (
+  canvas: CanvasRenderingContext2D,
+  p: Point,
+  w: number,
+  h: number,
+  lw: number
+) => {
   canvas.lineWidth = lw;
   canvas.beginPath();
   canvas.moveTo(p.x - w / 2, p.y + h / 2);
@@ -57,7 +80,13 @@ const drawBox = (canvas, p, w, h, lw) => {
   canvas.fill();
 };
 
-const drawCircle = (canvas, x, y, r, w) => {
+const drawCircle = (
+  canvas: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  r: number,
+  w: number
+) => {
   if (r < 1) r = 1;
   canvas.lineWidth = w;
   canvas.beginPath();
@@ -66,7 +95,13 @@ const drawCircle = (canvas, x, y, r, w) => {
   canvas.stroke();
 };
 
-const drawHollowCircleAndFill = (canvas, x, y, r, r2, w) => {
+const drawHollowCircleAndFill = (
+  canvas: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  r: number,
+  r2: number
+) => {
   canvas.beginPath();
   canvas.arc(x, y, r2, 0, Math.PI * 2, false); // outer (filled)
   canvas.moveTo(x + r, y);
@@ -75,7 +110,15 @@ const drawHollowCircleAndFill = (canvas, x, y, r, r2, w) => {
   canvas.fill();
 };
 
-const drawEllipseSegment = (canvas, x, y, rx, ry, s, e) => {
+const drawEllipseSegment = (
+  canvas: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  rx: number,
+  ry: number,
+  s: number,
+  e: number
+) => {
   canvas.beginPath();
   //.ellipse(x, y, radiusX, radiusY, rotation, startAngle, endAngle [, anticlockwise]);
   canvas.ellipse(x, y, rx, ry, 0, s, e, false);
@@ -84,7 +127,15 @@ const drawEllipseSegment = (canvas, x, y, rx, ry, s, e) => {
   canvas.stroke();
 };
 
-const drawCircleSegment = (canvas, x, y, r, r2, s, e) => {
+const drawCircleSegment = (
+  canvas: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  r: number,
+  r2: number,
+  s: number,
+  e: number
+) => {
   canvas.beginPath();
   canvas.arc(x, y, r2, s, e, false); // outer (filled)
 
@@ -99,7 +150,15 @@ const drawCircleSegment = (canvas, x, y, r, r2, s, e) => {
   canvas.fill();
 };
 
-const drawDottedCircle = (canvas, x, y, r, r2, segments, gapratio) => {
+const drawDottedCircle = (
+  canvas: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  r: number,
+  r2: number,
+  segments: number,
+  gapratio: number
+) => {
   const deg = 360 / segments;
   const gap = deg * gapratio;
 
@@ -116,7 +175,13 @@ const drawDottedCircle = (canvas, x, y, r, r2, segments, gapratio) => {
   }
 };
 
-const drawFilledCircle = (canvas, x, y, r1, r2) => {
+const drawFilledCircle = (
+  canvas: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  r1: number,
+  r2: number
+) => {
   drawCircleSegment(
     canvas,
     x,
@@ -128,7 +193,13 @@ const drawFilledCircle = (canvas, x, y, r1, r2) => {
   );
 };
 
-const drawFilledEllipse = (canvas, x, y, r1, r2) => {
+const drawFilledEllipse = (
+  canvas: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  r1: number,
+  r2: number
+) => {
   drawEllipseSegment(
     canvas,
     x,
@@ -140,7 +211,13 @@ const drawFilledEllipse = (canvas, x, y, r1, r2) => {
   );
 };
 
-const drawCircleAndFill = (canvas, x, y, r, w) => {
+const drawCircleAndFill = (
+  canvas: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  r: number,
+  w: number
+) => {
   canvas.lineWidth = w;
   canvas.beginPath();
   canvas.arc(x, y, r, 0, Math.PI * 2, true);
@@ -149,7 +226,13 @@ const drawCircleAndFill = (canvas, x, y, r, w) => {
   canvas.fill();
 };
 
-const drawCircleNoStroke = (canvas, x, y, r, w) => {
+const drawCircleNoStroke = (
+  canvas: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  r: number,
+  w: number
+) => {
   canvas.lineWidth = w;
   canvas.beginPath();
   canvas.arc(x, y, r, 0, Math.PI * 2, true);
@@ -157,7 +240,14 @@ const drawCircleNoStroke = (canvas, x, y, r, w) => {
   canvas.fill();
 };
 
-const drawLine = (canvas, x1, y1, x2, y2, w) => {
+const drawLine = (
+  canvas: CanvasRenderingContext2D,
+  x1: number,
+  y1: number,
+  x2: number,
+  y2: number,
+  w: number
+) => {
   canvas.lineWidth = w;
   canvas.beginPath();
   canvas.moveTo(x1, y1);
@@ -165,42 +255,47 @@ const drawLine = (canvas, x1, y1, x2, y2, w) => {
   canvas.stroke();
 };
 
-const drawArrow = (canvas, x, y, a, s, w) => {
-  var p1, p2, p3, p4, p5, p6, p7;
-
-  p1 = mathlib.getPointInDirection(s * 0.5, -a, x, y);
-  p2 = mathlib.getPointInDirection(
+const drawArrow = (
+  canvas: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  a: number,
+  s: number,
+  w: number
+) => {
+  const p1 = mathlib.getPointInDirection(s * 0.5, -a, x, y);
+  const p2 = mathlib.getPointInDirection(
     s * 0.5,
     -mathlib.addToDirection(a, -140),
     p1.x,
     p1.y
   );
-  p3 = mathlib.getPointInDirection(
+  const p3 = mathlib.getPointInDirection(
     s * 0.15,
     -mathlib.addToDirection(a, 90),
     p2.x,
     p2.y
   );
-  p4 = mathlib.getPointInDirection(
+  const p4 = mathlib.getPointInDirection(
     s * 0.5,
     -mathlib.addToDirection(a, 180),
     p3.x,
     p3.y
   );
 
-  p7 = mathlib.getPointInDirection(
+  const p7 = mathlib.getPointInDirection(
     s * 0.5,
     -mathlib.addToDirection(a, 140),
     p1.x,
     p1.y
   );
-  p6 = mathlib.getPointInDirection(
+  const p6 = mathlib.getPointInDirection(
     s * 0.15,
     -mathlib.addToDirection(a, -90),
     p7.x,
     p7.y
   );
-  p5 = mathlib.getPointInDirection(
+  const p5 = mathlib.getPointInDirection(
     s * 0.5,
     -mathlib.addToDirection(a, 180),
     p6.x,
@@ -221,10 +316,16 @@ const drawArrow = (canvas, x, y, a, s, w) => {
   canvas.stroke();
 };
 
-const drawX = (canvas, x, y, l, w) => {
-  x = parseInt(x);
-  y = parseInt(y);
-  l = parseInt(l);
+const drawX = (
+  canvas: CanvasRenderingContext2D,
+  x: number | string,
+  y: number | string,
+  l: number | string,
+  w: number
+) => {
+  x = parseInt(x.toString());
+  y = parseInt(y.toString());
+  l = parseInt(l.toString());
 
   canvas.lineWidth = w;
   canvas.beginPath();
@@ -238,7 +339,15 @@ const drawX = (canvas, x, y, l, w) => {
   canvas.stroke();
 };
 
-const drawCenteredHexagon = (canvas, x, y, l, leftside, topleft, topright) => {
+const drawCenteredHexagon = (
+  canvas: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  l: number,
+  leftside: boolean,
+  topleft: boolean,
+  topright: boolean
+) => {
   const a = l * Math.sin((30 / 180) * Math.PI);
   const b = l * Math.cos((30 / 180) * Math.PI);
 
@@ -247,18 +356,24 @@ const drawCenteredHexagon = (canvas, x, y, l, leftside, topleft, topright) => {
   drawHexagon(canvas, x, y, l, leftside, topleft, topright);
 };
 
-const drawHexagon = (canvas, x, y, l, leftside, topleft, topright) => {
+const drawHexagon = (
+  canvas: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  l: number,
+  leftside: boolean,
+  topleft: boolean,
+  topright: boolean
+) => {
   const a = l * Math.sin((30 / 180) * Math.PI);
   const b = l * Math.cos((30 / 180) * Math.PI);
 
-  let p1, p2, p3, p4, p5, p6;
-
-  p1 = { x: x, y: y + a + l };
-  p2 = { x: x, y: y + a };
-  p3 = { x: x + b, y: y };
-  p4 = { x: x + 2 * b, y: y + a };
-  p5 = { x: x + 2 * b, y: y + a + l };
-  p6 = { x: x + b, y: y + 2 * l };
+  const p1 = { x: x, y: y + a + l };
+  const p2 = { x: x, y: y + a };
+  const p3 = { x: x + b, y: y };
+  const p4 = { x: x + 2 * b, y: y + a };
+  const p5 = { x: x + 2 * b, y: y + a + l };
+  const p6 = { x: x + b, y: y + 2 * l };
 
   canvas.beginPath();
 
@@ -290,7 +405,16 @@ const drawHexagon = (canvas, x, y, l, leftside, topleft, topright) => {
   canvas.fill();
 };
 
-const drawAndRotate = (canvas, w, h, iw, ih, angle, img, rolled) => {
+const drawAndRotate = (
+  canvas: CanvasRenderingContext2D,
+  w: number,
+  h: number,
+  iw: number,
+  ih: number,
+  angle: number,
+  img: CanvasImageSource,
+  rolled: boolean
+) => {
   const x = Math.round(w / 2);
   const y = Math.round(h / 2);
   const width = iw / 2;
@@ -329,5 +453,5 @@ export {
   drawCenteredHexagon,
   drawHexagon,
   drawAndRotate,
-  drawFilledEllipse
+  drawFilledEllipse,
 };

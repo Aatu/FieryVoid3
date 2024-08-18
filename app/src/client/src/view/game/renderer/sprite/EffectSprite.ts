@@ -3,30 +3,60 @@ import {
   effectSpriteFragmentShader,
   effectSpriteVertexShader,
 } from "../shader";
+import Vector, { IVector } from "@fieryvoid3/model/src/utils/Vector";
+import { RenderPayload } from "../../phase/phaseStrategy/PhaseStrategy";
 import {
   degreeToRadian,
   radianToDegree,
-} from "../../../../../model/utils/math";
-
-export const TEXTURE_GAS = 0;
-export const TEXTURE_BOLT = 1;
-export const TEXTURE_GLOW = 2;
-export const TEXTURE_RING = 3;
-export const TEXTURE_STARLINE = 4;
-export const TEXTURE_FILLED_RING = 5;
+} from "@fieryvoid3/model/src/utils/math";
 
 const textureLoader = new THREE.TextureLoader();
 const texture = textureLoader.load("/img/effect/effectTextures1024.png");
 
+type Args = {
+  activationTime?: number;
+  fadeInDuration?: number;
+  fadeOutDuration?: number;
+  fadeOutTime?: number;
+  blending?: THREE.Blending;
+  scale?: { width: number; height: number };
+  position?: Vector;
+  texture?: number;
+  color?: THREE.Color;
+  opacity?: number;
+  scaleChange?: number | null;
+};
+
 class EffecSprite {
-  constructor(scene, args = {}) {
+  private activationTime: number;
+  private fadeInDuration: number;
+  private fadeOutDuration: number;
+  private fadeOutTime: number | null;
+  private blending: THREE.Blending;
+  private scale: { width: number; height: number };
+  private position: THREE.Vector3;
+  private textureNumber: number;
+  private color: THREE.Color;
+  private opacity: number;
+  private scaleChange: number | null;
+  private mesh: THREE.Mesh | null;
+  private scene: THREE.Object3D;
+  private uniforms: {
+    texture: { value: THREE.Texture };
+    overlayColor: { value: THREE.Color };
+    opacity: { value: number };
+    textureNumber: { value: number };
+  };
+  private material: THREE.ShaderMaterial | null = null;
+
+  constructor(scene: THREE.Object3D, args: Args = {}) {
     this.activationTime = args.activationTime || 0;
     this.fadeInDuration = args.fadeInDuration || 0;
     this.fadeOutDuration = args.fadeOutDuration || 0;
     this.fadeOutTime = args.fadeOutTime || null;
     this.blending = args.blending || THREE.AdditiveBlending;
     this.scale = args.scale || { width: 1, height: 1 };
-    this.position = args.position.toThree() || THREE.Vector3(0, 0, 0);
+    this.position = args?.position?.toThree() || new THREE.Vector3(0, 0, 0);
     this.textureNumber = args.texture || 0;
     this.color = args.color || new THREE.Color(1, 1, 1);
     this.opacity = args.opacity || 1.0;
@@ -37,12 +67,11 @@ class EffecSprite {
 
     this.uniforms = {
       texture: {
-        type: "t",
         value: texture,
       },
-      overlayColor: { type: "v3", value: this.color },
-      opacity: { type: "f", value: 1.0 },
-      textureNumber: { type: "f", value: this.textureNumber },
+      overlayColor: { value: this.color },
+      opacity: { value: 1.0 },
+      textureNumber: { value: this.textureNumber },
     };
 
     this.mesh = this.create();
@@ -50,7 +79,15 @@ class EffecSprite {
     this.setScale(this.scale.width, this.scale.height);
   }
 
-  getOpacity(total) {
+  getMesh() {
+    if (!this.mesh) {
+      throw new Error("Mesh not created");
+    }
+
+    return this.mesh;
+  }
+
+  getOpacity(total: number) {
     if (
       this.fadeOutTime !== null &&
       total >= this.activationTime + this.fadeOutTime + this.fadeOutDuration
@@ -90,7 +127,7 @@ class EffecSprite {
     return 0;
   }
 
-  render({ total }) {
+  render({ total }: RenderPayload) {
     if (this.activationTime > total) {
       this.hide();
       return;
@@ -117,73 +154,76 @@ class EffecSprite {
     this.show();
   }
 
-  setTexture(tex) {
+  setTexture(tex: number) {
     this.uniforms.textureNumber.value = tex;
     return this;
   }
 
   hide() {
-    this.mesh.visible = false;
+    this.getMesh().visible = false;
     return this;
   }
 
   show() {
-    this.mesh.visible = true;
+    this.getMesh().visible = true;
     return this;
   }
 
-  setPosition(pos) {
-    this.mesh.position.x = pos.x;
-    this.mesh.position.y = pos.y;
-    this.mesh.position.z = pos.z;
+  setPosition(pos: IVector) {
+    this.getMesh().position.x = pos.x;
+    this.getMesh().position.y = pos.y;
+    this.getMesh().position.z = pos.z;
     return this;
   }
 
   getPosition() {
-    return this.mesh.position;
+    return this.getMesh().position;
   }
 
-  isPosition(position) {
+  isPosition(position: IVector) {
     return (
-      this.mesh.position.x === position.x &&
-      this.mesh.position.y === position.y &&
-      this.mesh.position.z === position.z
+      this.getMesh().position.x === position.x &&
+      this.getMesh().position.y === position.y &&
+      this.getMesh().position.z === position.z
     );
   }
 
-  setOpacity(opacity) {
+  setOpacity(opacity: number) {
     this.uniforms.opacity.value = opacity * this.opacity;
     return this;
   }
 
-  multiplyOpacity(m) {
+  multiplyOpacity(m: number) {
     this.uniforms.opacity.value = this.opacity * m;
     return this;
   }
 
-  setColor(color) {
+  setColor(color: THREE.Color) {
     this.color = color;
     this.uniforms.overlayColor.value = color;
     return this;
   }
 
-  setScale(width, height) {
-    this.mesh.scale.set(width, height, 1);
+  setScale(width: number, height: number) {
+    this.getMesh().scale.set(width, height, 1);
     return this;
   }
 
   destroy() {
-    this.mesh.material.dispose();
-    this.scene.remove(this.mesh);
+    ([] as THREE.Material[])
+      .concat(this.getMesh().material)
+      .forEach((m) => m.dispose());
+
+    if (this.mesh) this.scene.remove(this.mesh);
   }
 
-  setFacing(facing) {
-    this.mesh.rotation.z = degreeToRadian(facing);
+  setFacing(facing: number) {
+    this.getMesh().rotation.z = degreeToRadian(facing);
     return this;
   }
 
   getFacing() {
-    return radianToDegree(this.mesh.rotation.z);
+    return radianToDegree(this.getMesh().rotation.z);
   }
 
   create() {

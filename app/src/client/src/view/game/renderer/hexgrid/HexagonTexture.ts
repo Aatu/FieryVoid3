@@ -1,13 +1,17 @@
 import * as THREE from "three";
 import { drawCenteredHexagon } from "../../utils/graphics";
 import abstractCanvas from "../../utils/abstractCanvas";
-import HexagonMath from "../../../../../model/utils/HexagonMath";
+import HexagonMath from "@fieryvoid3/model/src/utils/HexagonMath";
 
-const createCanvas = (width, height, debug) => {
+const createCanvas = (width: number, height: number, debug?: boolean) => {
   return abstractCanvas.create(width, height, debug);
 };
 
-const getTexture = function(canvas, gridWidth, gridHeight) {
+const getTexture = function (
+  canvas: HTMLCanvasElement,
+  gridWidth: number,
+  gridHeight: number
+) {
   if (gridWidth === undefined) {
     gridWidth = 1;
   }
@@ -16,7 +20,7 @@ const getTexture = function(canvas, gridWidth, gridHeight) {
     gridHeight = 1;
   }
 
-  var texture = new THREE.Texture(canvas);
+  const texture = new THREE.Texture(canvas);
   texture.needsUpdate = true;
   texture.wrapS = THREE.RepeatWrapping;
   texture.wrapT = THREE.RepeatWrapping;
@@ -30,22 +34,32 @@ const getTexture = function(canvas, gridWidth, gridHeight) {
   return texture;
 };
 
-const getHorizontalRepeat = hexagons => 3 / 4 + ((hexagons - 1) * 2) / 4;
+const getHorizontalRepeat = (hexagons: number) =>
+  3 / 4 + ((hexagons - 1) * 2) / 4;
 
-const getVerticalRepeat = hexagons => 4 / 6 + ((hexagons - 1) * 3) / 6;
+const getVerticalRepeat = (hexagons: number) =>
+  4 / 6 + ((hexagons - 1) * 3) / 6;
 
-const renderHexGrid = (canvasSize, lineColor, fillColor, lineWidth, repeat) => {
-  var scale = { x: 1, y: 1 };
-  var width = canvasSize;
-  var hl = width / 4 / Math.cos((30 / 180) * Math.PI);
-  var a = HexagonMath.getHexA(hl);
-  var b = HexagonMath.getHexB(hl);
-  var x = b;
+const renderHexGrid = (
+  canvasSize: number,
+  lineColor: string,
+  fillColor: string,
+  lineWidth: number,
+  repeat: boolean = false
+) => {
+  const scale = { x: 1, y: 1 };
+  const width = canvasSize;
+  const hl = width / 4 / Math.cos((30 / 180) * Math.PI);
+  const a = HexagonMath.getHexA(hl);
+  const b = HexagonMath.getHexB(hl);
+  const x = b;
 
-  var height = HexagonMath.getTextureHeight(hl);
+  const height = HexagonMath.getTextureHeight(hl);
 
-  var canvas = createCanvas(width, height, false);
-  var context = canvas.getContext("2d", { antialias: true });
+  const canvas = createCanvas(width, height, false);
+  const context = canvas.getContext("2d", {
+    antialias: true,
+  }) as CanvasRenderingContext2D;
   context.fillStyle = lineColor;
   context.strokeStyle = lineColor;
   context.fillStyle = fillColor;
@@ -65,22 +79,22 @@ const renderHexGrid = (canvasSize, lineColor, fillColor, lineWidth, repeat) => {
     drawCenteredHexagon(context, x * 3, hl * 3, hl, true, true, true);
   }
 
-  var canvas2 = createCanvas(width, width, false);
+  const canvas2 = createCanvas(width, width, false);
 
-  canvas2
-    .getContext("2d", { antialias: true })
-    .drawImage(canvas, 0, 0, width, height, 0, 0, width, width);
+  (
+    canvas2.getContext("2d", { antialias: true }) as CanvasRenderingContext2D
+  )?.drawImage(canvas, 0, 0, width, height, 0, 0, width, width);
 
   return canvas2;
 };
 
 const getHexGridTexture = (
-  canvasSize,
-  gridWidth,
-  gridHeight,
-  lineColor,
-  fillColor,
-  lineWidth
+  canvasSize: number,
+  gridWidth: number,
+  gridHeight: number,
+  lineColor: string,
+  fillColor: string,
+  lineWidth: number
 ) => {
   return getTexture(
     renderHexGrid(canvasSize, lineColor, fillColor, lineWidth, true),
@@ -89,7 +103,12 @@ const getHexGridTexture = (
   );
 };
 
-const getHexTexture = (canvasSize, lineColor, fillColor, lineWidth) => {
+const getHexTexture = (
+  canvasSize: number,
+  lineColor: string,
+  fillColor: string,
+  lineWidth: number
+) => {
   return getTexture(
     renderHexGrid(canvasSize, lineColor, fillColor, lineWidth),
     1,
@@ -100,5 +119,5 @@ const getHexTexture = (canvasSize, lineColor, fillColor, lineWidth) => {
 export default {
   renderHexGrid,
   getHexGridTexture,
-  getHexTexture
+  getHexTexture,
 };

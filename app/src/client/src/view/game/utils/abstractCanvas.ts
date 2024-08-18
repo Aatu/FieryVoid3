@@ -1,8 +1,8 @@
-const create = (width, height, debug) => {
+const create = (width: number, height: number, debug?: boolean) => {
   const canvas = document.createElement("canvas");
   canvas.width = width;
   canvas.height = height;
-  canvas.style.zIndex = 1000;
+  canvas.style.zIndex = "1000";
   canvas.style.position = "absolute";
   canvas.style.top = "3px";
   canvas.style.left = "3px";
@@ -16,5 +16,5 @@ const create = (width, height, debug) => {
 };
 
 export default {
-  create
+  create,
 };
