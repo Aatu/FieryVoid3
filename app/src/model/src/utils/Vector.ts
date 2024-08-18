@@ -20,11 +20,19 @@ export const isIVector = (v: any): v is IVector => {
 };
 
 class Vector implements IVector {
-  public x: number;
-  public y: number;
-  public z: number;
+  public x!: number;
+  public y!: number;
+  public z!: number;
 
   constructor(
+    x: number | THREE.Vector3 | THREE.Vector2 | Vector | IVector = 0,
+    y: number = 0,
+    z: number = 0
+  ) {
+    this.set(x, y, z);
+  }
+
+  public set(
     x: number | THREE.Vector3 | THREE.Vector2 | Vector | IVector = 0,
     y: number = 0,
     z: number = 0
@@ -45,6 +53,18 @@ class Vector implements IVector {
       this.x = x;
       this.y = y;
       this.z = z;
+    }
+
+    return this;
+  }
+
+  public static toVector(
+    vector: THREE.Vector3 | THREE.Vector2 | Vector | IVector
+  ) {
+    if (vector instanceof Vector) {
+      return vector;
+    } else {
+      return new Vector(vector);
     }
   }
 

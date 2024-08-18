@@ -6,7 +6,7 @@ import { ZOOM_MAX, ZOOM_MIN } from "../../../model/gameConfig";
 import { ParticleEmitterContainer } from "./animation/particle";
 import GameCamera from "./GameCamera";
 
-window.THREE = THREE;
+//window.THREE = THREE;
 
 class GameScene {
   constructor(phaseDirector, coordinateConverter) {

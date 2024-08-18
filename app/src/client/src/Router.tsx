@@ -1,46 +1,63 @@
-import React, { Component, useContext } from "react";
-import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
+import React, { ReactNode } from "react";
+import {
+  createBrowserRouter,
+  RouterProvider,
+  redirect,
+} from "react-router-dom";
 import Game from "./view/game";
 import Logout from "./view/logout";
-import { StateStore } from "./state/StoreProvider";
 import { BaseView } from "./view/baseView";
+import { useUser } from "./state/userHooks";
 
-export const PrivateRoute: React.FC<{ component: React.FC }> = ({
-  component: Component,
-  ...rest
+export const Route: React.FC<{ isPrivate?: boolean; children: ReactNode }> = ({
+  isPrivate,
+  children,
 }) => {
-  const { currentUser } = useContext(StateStore);
+  const { data: currentUser, isLoading } = useUser();
 
-  const authed = Boolean(currentUser);
-
-  return (
-    <Route
-      {...rest}
-      render={(props) =>
-        authed === true ? (
-          <Component {...props} />
-        ) : (
-          <Redirect to={{ pathname: "/", state: { from: props.location } }} />
-        )
-      }
-    />
-  );
-};
-
-const Routes = () => {
-  const { currentUser } = useContext(StateStore);
-
-  if (currentUser === undefined) {
+  if (isLoading) {
     return null;
   }
 
-  return (
-    <Router>
-      <PrivateRoute exact path="/game/:gameid" component={Game} />
-      <Route exact path="/logout" component={Logout} />
-      <Route path="*" component={BaseView} />
-    </Router>
-  );
+  const authed = Boolean(currentUser);
+
+  if (!authed && isPrivate) {
+    redirect("/");
+    return null;
+  }
+
+  return <>{children}</>;
+};
+
+const router = createBrowserRouter([
+  {
+    path: "/game/:gameid",
+    element: (
+      <Route isPrivate>
+        <Game />
+      </Route>
+    ),
+  },
+  {
+    path: "/logout",
+    element: (
+      <Route isPrivate>
+        <Logout />
+      </Route>
+    ),
+  },
+  {
+    path: "*",
+    element: (
+      <Route>
+        <BaseView />
+      </Route>
+    ),
+  },
+]);
+
+const Routes = () => {
+  return <RouterProvider router={router} />;
 };
 
 export default Routes;
