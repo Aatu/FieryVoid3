@@ -14,12 +14,12 @@ let loadedCube: null | THREE.BufferGeometry = null;
 let numberCreated = 0;
 
 class BoltInstanceFactory {
-  private scene: THREE.Scene;
+  private scene: THREE.Object3D;
   private ready: ReadyPromise<boolean>;
   private material: THREE.RawShaderMaterial;
   private start: number;
 
-  constructor(scene: THREE.Scene) {
+  constructor(scene: THREE.Object3D) {
     this.scene = scene;
 
     this.ready = getPromise<boolean>(async () => {

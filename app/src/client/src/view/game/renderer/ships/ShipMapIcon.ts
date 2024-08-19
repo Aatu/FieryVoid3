@@ -1,8 +1,17 @@
 import { ShipMapSprite } from "../sprite";
+import ShipObject from "./ShipObject";
+import * as THREE from "three";
 
 class ShipMapIcon {
-  constructor(icon) {
-    this.icon = icon;
+  private shipObject: ShipObject;
+  private size: { width: number; height: number };
+  private normalSprite: ShipMapSprite;
+  private movementTargetSprite: ShipMapSprite;
+  private sprite: ShipMapSprite;
+  private scene: THREE.Object3D | null;
+
+  constructor(shipObject: ShipObject) {
+    this.shipObject = shipObject;
 
     this.size = { width: 25, height: 25 };
 
@@ -21,7 +30,10 @@ class ShipMapIcon {
     );
 
     this.sprite = this.normalSprite;
-    this.sprite.mesh.userData = { icon };
+    this.sprite.getMesh().userData = {
+      icon: shipObject,
+      shioObject: shipObject,
+    };
     this.sprite.hide();
     this.normalSprite.hide();
     this.movementTargetSprite.hide();
@@ -29,45 +41,53 @@ class ShipMapIcon {
     this.scene = null;
   }
 
+  getScene() {
+    if (!this.scene) {
+      throw new Error("Scene not set");
+    }
+
+    return this.scene;
+  }
+
   setMovementTarget() {
-    this.scene.remove(this.sprite.mesh);
+    this.getScene().remove(this.sprite.getMesh());
     this.sprite = this.movementTargetSprite;
-    this.scene.add(this.sprite.mesh);
+    this.getScene().add(this.sprite.getMesh());
     return this;
   }
 
-  replaceColor(color) {
+  replaceColor(color: THREE.Color) {
     this.sprite.replaceColor(color);
     return this;
   }
 
   revertColor() {
-    this.sprite.revertColor(this.color);
+    this.sprite.revertColor();
     return this;
   }
 
-  addTo(scene) {
+  addTo(scene: THREE.Object3D) {
     this.scene = scene;
-    scene.add(this.sprite.mesh);
+    scene.add(this.sprite.getMesh());
   }
 
-  setScale(scale) {
+  setScale(scale: number) {
     this.sprite.setScale(scale, scale);
     return this;
   }
 
-  setRotation(rotation) {
+  setRotation(rotation: number) {
     this.normalSprite.setFacing(rotation);
     this.movementTargetSprite.setFacing(rotation);
     return this;
   }
 
-  setOverlayColor(color) {
+  setOverlayColor(color: THREE.Color) {
     this.sprite.setOverlayColor(color);
     return this;
   }
 
-  setOverlayColorAlpha(alpha) {
+  setOverlayColorAlpha(alpha: number) {
     this.sprite.setOverlayColorAlpha(alpha);
     return this;
   }

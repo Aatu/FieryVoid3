@@ -11,7 +11,7 @@ const texture = new THREE.TextureLoader().load(
 );
 
 class StarParticleEmitter extends Animation {
-  private scene: THREE.Scene;
+  private scene: THREE.Object3D;
   private free: number[];
   private effects: number;
   private particleGeometry: THREE.BufferGeometry;
@@ -21,7 +21,7 @@ class StarParticleEmitter extends Animation {
   public needsUpdate: boolean;
 
   constructor(
-    scene: THREE.Scene,
+    scene: THREE.Object3D,
     particleCount: number,
     args: ParticleEmitterArgs = {}
   ) {

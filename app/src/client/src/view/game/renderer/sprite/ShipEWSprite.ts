@@ -5,7 +5,7 @@ import { drawFilledEllipse } from "../../utils/graphics";
 
 const TEXTURE_SIZE = 1028;
 
-const getDEWWidth = (DEW) => {
+const getDEWWidth = (DEW: number) => {
   if (DEW === 0) {
     return 0;
   }
@@ -13,7 +13,7 @@ const getDEWWidth = (DEW) => {
   return DEW * 3 + 5;
 };
 
-const getEvasionWidth = (evasion) => {
+const getEvasionWidth = (evasion: number) => {
   if (evasion === 0) {
     return 0;
   }
@@ -21,7 +21,7 @@ const getEvasionWidth = (evasion) => {
   return evasion * 3 + 5;
 };
 
-const getCCEWWidth = (CCEW) => {
+const getCCEWWidth = (CCEW: number) => {
   if (CCEW === 0) {
     return 0;
   }
@@ -29,16 +29,22 @@ const getCCEWWidth = (CCEW) => {
   return CCEW * 3 + 5;
 };
 
-const drawDEW = (context, DEW, ratios) => {
+const drawDEW = (
+  context: CanvasRenderingContext2D,
+  DEW: number,
+  ratios: { x: number; y: number }
+) => {
   if (!DEW) {
     return;
   }
 
-  var a = 0.4;
+  /*
+  let a = 0.4;
 
   if (DEW < 3) {
     a = 0.7;
   }
+*/
 
   context.strokeStyle = "rgba(144,185,208, 0.7)";
   context.lineWidth = getDEWWidth(DEW);
@@ -47,14 +53,19 @@ const drawDEW = (context, DEW, ratios) => {
   drawFilledEllipse(context, TEXTURE_SIZE / 2, TEXTURE_SIZE / 2, r1, r2);
 };
 
-const getDEWRadiuses = (DEW, ratios) => {
+const getDEWRadiuses = (DEW: number, ratios: { x: number; y: number }) => {
   return {
     r1: (TEXTURE_SIZE * 0.7 * ratios.x) / 2 + getDEWWidth(DEW),
     r2: (TEXTURE_SIZE * 0.7 * ratios.y) / 2 + getDEWWidth(DEW),
   };
 };
 
-const getCCEWRadiuses = (DEW, evasion, CCEW, ratios) => {
+const getCCEWRadiuses = (
+  DEW: number,
+  evasion: number,
+  CCEW: number,
+  ratios: { x: number; y: number }
+) => {
   const { r1, r2 } = getDEWRadiuses(DEW, ratios);
 
   return {
@@ -75,7 +86,11 @@ const getCCEWRadiuses = (DEW, evasion, CCEW, ratios) => {
   };
 };
 
-const getEvasionRadiuses = (DEW, evasion, ratios) => {
+const getEvasionRadiuses = (
+  DEW: number,
+  evasion: number,
+  ratios: { x: number; y: number }
+) => {
   const { r1, r2 } = getDEWRadiuses(DEW, ratios);
 
   return {
@@ -84,16 +99,23 @@ const getEvasionRadiuses = (DEW, evasion, ratios) => {
   };
 };
 
-const drawEvasion = (context, DEW, evasion, ratios) => {
+const drawEvasion = (
+  context: CanvasRenderingContext2D,
+  DEW: number,
+  evasion: number,
+  ratios: { x: number; y: number }
+) => {
   if (!evasion) {
     return;
   }
 
+  /*
   var a = 0.7;
 
   if (evasion < 3) {
     a = 0.9;
   }
+*/
 
   context.strokeStyle = "rgba(20,140,128, 0.9)";
   context.lineWidth = getEvasionWidth(evasion);
@@ -105,16 +127,24 @@ const drawEvasion = (context, DEW, evasion, ratios) => {
   context.setLineDash([]);
 };
 
-const drawCCEW = (context, DEW, evasion, CCEW, ratios) => {
+const drawCCEW = (
+  context: CanvasRenderingContext2D,
+  DEW: number,
+  evasion: number,
+  CCEW: number,
+  ratios: { x: number; y: number }
+) => {
   if (!CCEW) {
     return;
   }
 
+  /*
   var a = 0.7;
 
   if (CCEW < 3) {
     a = 0.9;
   }
+    */
 
   context.strokeStyle = "rgba(20,80,128, 0.9)";
   context.lineWidth = getCCEWWidth(CCEW);
@@ -127,10 +157,20 @@ const drawCCEW = (context, DEW, evasion, CCEW, ratios) => {
 };
 
 class ShipEWSprite extends Sprite {
-  constructor(size, z, dimensions) {
+  private DEW: number;
+  private CCEW: number;
+  private evasion: number;
+  private dimensions: { x: number; y: number };
+
+  constructor(
+    size: { width: number; height: number },
+    z: number,
+    dimensions: { x: number; y: number }
+  ) {
     super(null, size, z);
     this.DEW = 0;
     this.CCEW = 0;
+    this.evasion = 0;
     this.dimensions = dimensions;
   }
 
@@ -148,7 +188,7 @@ class ShipEWSprite extends Sprite {
     return ratios;
   }
 
-  update(DEW, CCEW, evasion) {
+  update(DEW: number, CCEW: number, evasion: number) {
     if (this.DEW === DEW && this.CCEW === CCEW && this.evasion === evasion) {
       return;
     }
@@ -158,7 +198,7 @@ class ShipEWSprite extends Sprite {
     this.evasion = evasion;
 
     const canvas = abstractCanvas.create(TEXTURE_SIZE, TEXTURE_SIZE);
-    const context = canvas.getContext("2d");
+    const context = canvas.getContext("2d") as CanvasRenderingContext2D;
     drawDEW(context, DEW, this.calculateRadiusRatios());
     drawEvasion(context, DEW, evasion, this.calculateRadiusRatios());
     drawCCEW(context, DEW, evasion, CCEW, this.calculateRadiusRatios());

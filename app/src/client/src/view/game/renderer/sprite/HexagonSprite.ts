@@ -1,10 +1,11 @@
 import Sprite from "./Sprite";
 import * as THREE from "three";
 import HexagonTexture from "../hexgrid/HexagonTexture";
-import HexagonMath from "../../../../../model/utils/HexagonMath";
+import Vector from "@fieryvoid3/model/src/utils/Vector";
+import HexagonMath from "@fieryvoid3/model/src/utils/HexagonMath";
 
 const TEXTURE_SIZE = 512;
-let TEXTURE = null;
+let TEXTURE: THREE.Texture | null = null;
 
 const createTexture = () => {
   const canvas = HexagonTexture.renderHexGrid(
@@ -28,7 +29,7 @@ const getFillColor = () => {
 };
 
 class HexagonSprite extends Sprite {
-  constructor(position, z = 0, scale = 1) {
+  constructor(position: Vector, z: number = 0, scale: number = 1) {
     super(
       null,
       {
@@ -42,7 +43,7 @@ class HexagonSprite extends Sprite {
       createTexture();
     }
 
-    this.uniforms.texture.value = TEXTURE;
+    this.uniforms.texture.value = TEXTURE!;
 
     this.setPosition(position);
   }

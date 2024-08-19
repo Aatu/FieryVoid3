@@ -18,7 +18,7 @@ export type ParticleEmitterArgs = {
 };
 
 class ParticleEmitter extends Animation {
-  protected scene: THREE.Scene;
+  protected scene: THREE.Object3D;
   protected free: number[];
   protected effects: number;
   protected particleGeometry: THREE.BufferGeometry;
@@ -28,7 +28,7 @@ class ParticleEmitter extends Animation {
   protected needsUpdate: boolean;
 
   constructor(
-    scene: THREE.Scene,
+    scene: THREE.Object3D,
     particleCount: number,
     args: ParticleEmitterArgs = {}
   ) {
@@ -201,6 +201,15 @@ class ParticleEmitter extends Animation {
     return this.flyParticle.create(i!, this);
   }
 
+  forceGetParticle() {
+    const p = this.getParticle();
+    if (!p) {
+      throw new Error("No free particles");
+    }
+
+    return p;
+  }
+
   getByIndex(index: number) {
     return this.flyParticle.aquire(index, this);
   }
@@ -212,6 +221,10 @@ class ParticleEmitter extends Animation {
       this.flyParticle.create(i).setInitialValues();
     });
     this.free = this.free.concat(particleIndices);
+  }
+
+  getMesh() {
+    return this.mesh;
   }
 }
 

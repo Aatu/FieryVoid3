@@ -1,12 +1,13 @@
 import ShipObject from "../ShipObject";
-import { loadObject3d } from "../../object3d/Object3d";
+import { loadObject3d } from "../../gameObject/GameObject3D";
 import * as THREE from "three";
-import Vector from "../../../../../../model/utils/Vector";
+import Ship from "@fieryvoid3/model/src/unit/Ship";
+import Vector from "@fieryvoid3/model/src/utils/Vector";
 
 const textureLoader = new THREE.TextureLoader();
 
 class Caliope extends ShipObject {
-  constructor(ship, scene) {
+  constructor(ship: Ship, scene: THREE.Object3D) {
     super(ship, scene);
     this.defaultHeight = 80;
     this.sideSpriteSize = 30;
@@ -19,10 +20,10 @@ class Caliope extends ShipObject {
 
   async create() {
     super.create();
-    const object = await loadObject3d("/img/3d/caliope/scene.gltf");
-    this.bumpMap = await textureLoader.load("/img/3d/caliope/heightMap.png");
+    const gameObject = await loadObject3d("/img/3d/caliope/scene.gltf");
+    this.bumpMap = textureLoader.load("/img/3d/caliope/heightMap.png");
 
-    object.object.position.set(0, 0, this.defaultHeight);
+    gameObject.getObject().position.set(0, 0, this.defaultHeight);
 
     const radiator = await loadObject3d("/img/3d/radiator/scene.gltf");
     const autoCannon = await loadObject3d(
@@ -88,7 +89,7 @@ class Caliope extends ShipObject {
       await loadObject3d("/img/3d/systems/thrusters/5mThruster/scene.gltf")
     );
 
-    this.setShipObject(object);
+    this.setShipObject(gameObject);
 
     /*
     const shipMaterial = this.shipObject.children[0].material;

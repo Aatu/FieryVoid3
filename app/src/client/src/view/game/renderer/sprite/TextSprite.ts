@@ -1,10 +1,29 @@
 import * as THREE from "three";
 import abstractCanvas from "../../utils/abstractCanvas";
+import { IVector } from "@fieryvoid3/model/src/utils/Vector";
 
 const TEXTURE_SIZE = 256;
 
+type TextSpriteArgs = {
+  size?: number;
+  fontSize?: string;
+  font?: string;
+};
+
 class TextSprite {
-  constructor(text, color, z, args) {
+  private z: number;
+  private color: string;
+  private fontSize: string;
+  private font: string;
+  private material: THREE.MeshBasicMaterial;
+  private mesh: THREE.Mesh;
+
+  constructor(
+    text: string,
+    color: string,
+    z: number,
+    args: TextSpriteArgs = {}
+  ) {
     if (!args) {
       args = {};
     }
@@ -18,8 +37,8 @@ class TextSprite {
     this.fontSize = args.fontSize || "32px";
     this.font = args.font || "Arial Black";
 
-    var canvas = abstractCanvas.create(size, size);
-    var context = canvas.getContext("2d");
+    const canvas = abstractCanvas.create(size, size);
+    const context = canvas.getContext("2d") as CanvasRenderingContext2D;
     context.save();
     context.fillStyle = this.color;
     context.font = this.fontSize + " " + this.font;
@@ -34,22 +53,22 @@ class TextSprite {
     context.fillText(text, Math.round(size / 2), Math.round(size / 2));
     context.restore();
 
-    var geometry = new THREE.PlaneGeometry(size, size, 1, 1);
+    const geometry = new THREE.PlaneGeometry(size, size, 1, 1);
 
-    var texture = new THREE.Texture(canvas);
+    const texture = new THREE.Texture(canvas);
     texture.needsUpdate = true;
 
     this.material = new THREE.MeshBasicMaterial({
       map: texture,
       transparent: true,
       depthTest: false,
-      depthWrite: false
+      depthWrite: false,
     });
 
     this.mesh = new THREE.Mesh(geometry, this.material);
   }
 
-  setScale(width, height) {
+  setScale(width: number, height: number) {
     this.mesh.scale.set(width, height, 1);
   }
 
@@ -63,11 +82,11 @@ class TextSprite {
     return this;
   }
 
-  setOpacity(opacity) {
+  setOpacity(opacity: number) {
     this.material.opacity = opacity;
   }
 
-  setPosition(pos) {
+  setPosition(pos: IVector) {
     this.mesh.position.x = pos.x;
     this.mesh.position.y = pos.y;
     this.mesh.position.z = this.z;
@@ -75,7 +94,7 @@ class TextSprite {
   }
 
   destroy() {
-    this.mesh.material.dispose();
+    //this.mesh.material.dispose();
   }
 }
 

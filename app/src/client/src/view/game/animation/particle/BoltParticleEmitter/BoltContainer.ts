@@ -16,7 +16,7 @@ class BoltContainer {
   private repeatAttribute: THREE.InstancedBufferAttribute;
   private amount: number;
   private mesh: THREE.Mesh;
-  private scene: THREE.Scene;
+  private scene: THREE.Object3D;
   public numberCreated: number;
   private free: number[];
   public used: number = 0;
@@ -36,7 +36,7 @@ class BoltContainer {
     repeatAttribute: THREE.InstancedBufferAttribute,
     amount: number,
     mesh: THREE.Mesh,
-    scene: THREE.Scene,
+    scene: THREE.Object3D,
     numberCreated: number
   ) {
     this.amount = amount;

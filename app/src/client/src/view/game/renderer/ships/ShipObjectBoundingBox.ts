@@ -1,20 +1,30 @@
+import Ship from "@fieryvoid3/model/src/unit/Ship";
+import ShipSystem from "@fieryvoid3/model/src/unit/system/ShipSystem";
 import {
-  FrontSection,
-  PrimarySection,
   AftSection,
-  StarboardFrontSection,
-  PortFrontSection,
-  StarboardAftSection,
+  FrontSection,
   PortAftSection,
-} from "../../../../../model/unit/system/systemSection/index";
-import Vector from "../../../../../model/utils/Vector";
+  PortFrontSection,
+  PrimarySection,
+  StarboardAftSection,
+  StarboardFrontSection,
+} from "@fieryvoid3/model/src/unit/system/systemSection";
+import SystemSection from "@fieryvoid3/model/src/unit/system/systemSection/SystemSection";
+import Vector, { IVector } from "@fieryvoid3/model/src/utils/Vector";
 
 class ShipObjectBoundingBox {
-  constructor(ship) {
+  private ship: Ship;
+  private dimensions: IVector = {
+    x: 0,
+    y: 0,
+    z: 0,
+  };
+
+  constructor(ship: Ship) {
     this.ship = ship;
   }
 
-  init(dimensions) {
+  init(dimensions: IVector) {
     this.dimensions = dimensions;
   }
 
@@ -32,7 +42,7 @@ class ShipObjectBoundingBox {
     return amount;
   }
 
-  getAmountOfHorizontalSections(section) {
+  getAmountOfHorizontalSections(section: SystemSection): number {
     let amount = 1;
 
     if (section instanceof FrontSection) {
@@ -98,9 +108,11 @@ class ShipObjectBoundingBox {
 
       return amount;
     }
+
+    throw new Error("Unknown section type");
   }
 
-  getBoundsForSectionDisregardStructure(section) {
+  getBoundsForSectionDisregardStructure(section: SystemSection) {
     const { start: startX, end: endX } = this.getX(section, true);
     const { start: startY, end: endY } = this.getY(section, true);
     return {
@@ -109,7 +121,7 @@ class ShipObjectBoundingBox {
     };
   }
 
-  getBoundsForSection(section) {
+  getBoundsForSection(section: SystemSection) {
     const { start: startX, end: endX } = this.getX(section);
     const { start: startY, end: endY } = this.getY(section);
     return {
@@ -118,7 +130,10 @@ class ShipObjectBoundingBox {
     };
   }
 
-  getY(section, disregardStructure = false) {
+  getY(
+    section: SystemSection,
+    disregardStructure = false
+  ): { start: number; end: number } {
     const horizontal = disregardStructure
       ? 3
       : this.getAmountOfHorizontalSections(section);
@@ -149,9 +164,14 @@ class ShipObjectBoundingBox {
         end: this.dimensions.y / 2,
       };
     }
+
+    throw new Error("Unknown section type");
   }
 
-  getX(section, disregardStructure = false) {
+  getX(
+    section: SystemSection,
+    disregardStructure = false
+  ): { start: number; end: number } {
     const vertical = disregardStructure
       ? 3
       : this.getAmountOfVerticalSections();
@@ -179,9 +199,14 @@ class ShipObjectBoundingBox {
         end: -this.dimensions.x / 2 + this.dimensions.x / vertical, // -50 + (100, 50, 33) = 50, 0, -33
       };
     }
+
+    throw new Error("Unknown section type");
   }
 
-  getRandomPositionForSystem(system, getRandom = Math.random) {
+  getRandomPositionForSystem(
+    system: ShipSystem,
+    getRandom: () => number = Math.random
+  ) {
     const section = this.ship.systems.sections.getSectionBySystem(system);
     const bounds = this.getBoundsForSectionDisregardStructure(section);
     const boundSize = new Vector(

@@ -48,7 +48,7 @@ const getTextureHeight = (hexSize?: number) => {
   return Math.floor(hexSize + getHexHeight(hexSize));
 };
 
-const getTextureWidth = (hexSize: number) => {
+const getTextureWidth = (hexSize?: number) => {
   if (!hexSize) {
     hexSize = gameConfig.HEX_SIZE;
   }

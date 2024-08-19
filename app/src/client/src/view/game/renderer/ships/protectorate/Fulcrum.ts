@@ -1,12 +1,13 @@
 import ShipObject from "../ShipObject";
-import { loadObject3d } from "../../object3d/Object3d";
 import * as THREE from "three";
-import Vector from "../../../../../../model/utils/Vector";
+import Ship from "@fieryvoid3/model/src/unit/Ship";
+import { loadObject3d } from "../../gameObject/GameObject3D";
+import Vector from "@fieryvoid3/model/src/utils/Vector";
 
 const textureLoader = new THREE.TextureLoader();
 
 class Fulcrum extends ShipObject {
-  constructor(ship, scene) {
+  constructor(ship: Ship, scene: THREE.Object3D) {
     super(ship, scene);
     this.defaultHeight = 100;
     this.sideSpriteSize = 30;
@@ -26,7 +27,7 @@ class Fulcrum extends ShipObject {
       "/img/3d/ships/protectorate/fulcrum/heightMap.png"
     );
 
-    object.object.position.set(0, 0, this.defaultHeight);
+    object.getObject().position.set(0, 0, this.defaultHeight);
 
     super.replaceSocketByName(
       [

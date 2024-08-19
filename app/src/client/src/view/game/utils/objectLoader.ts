@@ -11,9 +11,15 @@ const entities: {
   url: string;
   value: Promise<GLTF>;
 }[] = [];
+export interface IClonable {
+  scene: {
+    clone: () => Object3D;
+  };
+  animations: AnimationClip[];
+}
 
 export const cloneObject = (
-  source: GLTF /*cloneMaterial = true*/
+  source: IClonable /*cloneMaterial = true*/
 ): LoadedObject => {
   //const sourceLookup = new Map();
   //const cloneLookup = new Map();

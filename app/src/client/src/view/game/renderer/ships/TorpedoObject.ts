@@ -1,22 +1,29 @@
-import { loadObject, cloneObject } from "../../utils/objectLoader";
-import LineSprite from "../sprite/LineSprite";
-import Vector from "../../../../../model/utils/Vector";
-import Line from "../Line";
+import { loadObject } from "../../utils/objectLoader";
+
 import * as THREE from "three";
-import StarParticleEmitter from "../../animation/particle/StarParticleEmitter";
 import { ParticleEmitter } from "../../animation/particle";
+import TorpedoFlight from "@fieryvoid3/model/src/unit/TorpedoFlight";
 import {
-  TEXTURE_GLOW,
-  TEXTURE_STARLINE,
-  TEXTURE_GAS,
-} from "../../animation/particle/BaseParticle";
-import { getSeededRandomGenerator } from "../../../../../model/utils/math";
-import { degreeToRadian } from "../../../../../model/utils/math";
+  degreeToRadian,
+  getSeededRandomGenerator,
+} from "@fieryvoid3/model/src/utils/math";
+import Vector, { IVector } from "@fieryvoid3/model/src/utils/Vector";
+import { PARTICLE_TEXTURE } from "../../animation/particle/BaseParticle";
+import { RenderPayload } from "../../phase/phaseStrategy/PhaseStrategy";
 
 const torpedoMesh = loadObject("/img/3d/torpedo/scene.gltf");
 
 class TorpedoObject {
-  constructor(torpedoFlight, scene) {
+  private torpedoFlight: TorpedoFlight;
+  private scene: THREE.Object3D;
+  private object: THREE.Object3D;
+  private particleEmitter: ParticleEmitter;
+  private lastAnimationTime: number | null;
+  private totalAnimationTime: number;
+  private hidden: boolean;
+  private torpedo: THREE.Object3D | null;
+
+  constructor(torpedoFlight: TorpedoFlight, scene: THREE.Object3D) {
     this.torpedoFlight = torpedoFlight;
     this.scene = scene;
     this.torpedo = null;
@@ -48,20 +55,28 @@ class TorpedoObject {
     this.hidden = false;
   }
 
-  setFacing(facing) {
+  setFacing(facing: number) {
     this.object.quaternion.setFromAxisAngle(
       new THREE.Vector3(0, 0, 1),
       degreeToRadian(facing)
     );
   }
 
-  setPosition(position) {
+  setPosition(position: IVector) {
     this.object.position.set(position.x, position.y, position.z);
     return this;
   }
 
+  getTorpedo() {
+    if (!this.torpedo) {
+      throw new Error("Torpedo not loaded");
+    }
+
+    return this.torpedo;
+  }
+
   getEnginePosition() {
-    const slot = this.torpedo.children.find((child) => {
+    const slot = this.getTorpedo().children.find((child) => {
       if (!child.name) {
         return false;
       }
@@ -81,7 +96,7 @@ class TorpedoObject {
   async create() {
     const scene = await torpedoMesh;
 
-    const torpedo = scene.scene.children[0].clone();
+    const torpedo = scene.object.children[0].clone();
 
     this.torpedo = torpedo;
 
@@ -108,18 +123,16 @@ class TorpedoObject {
 
     const enginePosition = this.getEnginePosition();
 
-    this.particleEmitter.mesh.position.set(
-      enginePosition.x,
-      enginePosition.y,
-      enginePosition.z
-    );
+    this.particleEmitter
+      .getMesh()
+      .position.set(enginePosition.x, enginePosition.y, enginePosition.z);
     const getRandom = getSeededRandomGenerator(this.torpedoFlight.id);
 
     const size = 10;
     const sineFrequency = getRandom() * 50 + 200;
 
     this.particleEmitter
-      .getParticle()
+      .forceGetParticle()
       .setSize(size)
       .setOpacity(0.5)
       .setFadeIn(0, 0)
@@ -131,12 +144,12 @@ class TorpedoObject {
         y: 0,
         z: 0,
       })
-      .setTexture(TEXTURE_GLOW)
+      .setTexture(PARTICLE_TEXTURE.GLOW)
       .setActivationTime(0);
     //.setSine(100, 0.99);
 
     this.particleEmitter
-      .getParticle()
+      .forceGetParticle()
       .setSize(size)
       .setOpacity(0.1)
       .setFadeIn(0, 0)
@@ -148,12 +161,12 @@ class TorpedoObject {
         y: 0,
         z: 0,
       })
-      .setTexture(TEXTURE_GLOW)
+      .setTexture(PARTICLE_TEXTURE.GLOW)
       .setActivationTime(0)
       .setSine(sineFrequency, 0.99);
 
     this.particleEmitter
-      .getParticle()
+      .forceGetParticle()
       .setSize(size * 0.3)
       .setOpacity(0.8)
       .setFadeIn(0, 0)
@@ -165,12 +178,12 @@ class TorpedoObject {
         y: 0,
         z: 0,
       })
-      .setTexture(TEXTURE_GLOW)
+      .setTexture(PARTICLE_TEXTURE.GLOW)
       .setActivationTime(0);
 
     let angle = 90;
     let shines = 2;
-    let angleChange = 0; // getRandom() * 0.05 - 0.025;
+    const angleChange = 0; // getRandom() * 0.05 - 0.025;
 
     while (shines--) {
       angle += 90;
@@ -196,7 +209,7 @@ class TorpedoObject {
       */
 
       this.particleEmitter
-        .getParticle()
+        .forceGetParticle()
         .setActivationTime(0)
         .setFadeIn(0, 0)
         .setFadeOut(0, 0)
@@ -210,19 +223,19 @@ class TorpedoObject {
         .setColor(color)
         //.setSine(getRandom() * 200 + 100, 0.1)
         .setAngle(angle, angleChange)
-        .setTexture(TEXTURE_STARLINE)
+        .setTexture(PARTICLE_TEXTURE.STARLINE)
         .setSine(sineFrequency, 0.99);
     }
 
     this.object.add(torpedo);
   }
 
-  render({ zoom }) {
+  render({ zoom }: RenderPayload) {
     if (this.lastAnimationTime === null) {
       this.lastAnimationTime = Date.now();
     }
 
-    var deltaTime = Date.now() - this.lastAnimationTime;
+    const deltaTime = Date.now() - this.lastAnimationTime;
 
     this.totalAnimationTime += deltaTime;
 
@@ -240,7 +253,7 @@ class TorpedoObject {
     this.scene.remove(this.object);
   }
 
-  update(torpedoFlight) {
+  update(torpedoFlight: TorpedoFlight) {
     this.torpedoFlight = torpedoFlight;
   }
 }

@@ -23,7 +23,7 @@ enum ParticleEmitterType {
 }
 
 class ParticleEmitterContainer {
-  private scene: THREE.Scene;
+  private scene: THREE.Object3D;
   private defaultParticleAmount: number;
   private boltInstanceFactory: BoltInstanceFactory;
   private reservations: {
@@ -41,7 +41,7 @@ class ParticleEmitterContainer {
   private readyPromise: ReadyPromise<boolean>;
   private position: Vector;
 
-  constructor(scene: THREE.Scene, defaultParticleAmount: number) {
+  constructor(scene: THREE.Object3D, defaultParticleAmount: number) {
     this.scene = scene;
     this.defaultParticleAmount = defaultParticleAmount;
 

@@ -15,5 +15,5 @@ export {
   DottedCircleSprite,
   TextSprite,
   CircleSprite,
-  ShipMapSprite
+  ShipMapSprite,
 };

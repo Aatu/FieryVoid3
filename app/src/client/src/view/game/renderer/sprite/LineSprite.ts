@@ -2,6 +2,7 @@ import * as THREE from "three";
 
 import { line2dVertexShader, line2dFragmentShader } from "../shader";
 import { loadObject } from "../../utils/objectLoader";
+import Vector from "@fieryvoid3/model/src/utils/Vector";
 
 const GEOMETRY = loadObject("/img/3d/line3/scene.gltf");
 
@@ -11,21 +12,55 @@ const TEXTURE_DASHED_ARROW = textureLoader.load("/img/line/dashArrow.png");
 const TEXTURE_DASHED_CIRCLE = textureLoader.load("/img/line/dashCircle.png");
 const TEXTURE_DASHED_FULL = textureLoader.load("/img/line/full.png");
 
-const getTexture = (type = "") => {
+const getTexture = (type: LineType = LineType.DASHED_FULL) => {
   switch (type) {
-    case "dashed":
+    case LineType.DASHED:
       return TEXTURE_DASHED;
-    case "dashed-arrow":
+    case LineType.DASHED_ARROW:
       return TEXTURE_DASHED_ARROW;
-    case "dashed-circle":
+    case LineType.DASHED_CIRCLE:
       return TEXTURE_DASHED_CIRCLE;
     default:
       return TEXTURE_DASHED_FULL;
   }
 };
 
+export enum LineType {
+  DASHED = "dashed",
+  DASHED_ARROW = "dashed-arrow",
+  DASHED_CIRCLE = "dashed-circle",
+  DASHED_FULL = "dashed-full",
+}
+
+type LineSpriteArgs = {
+  type?: LineType;
+  color?: THREE.Color;
+  opacity?: number;
+  pulseAmount?: number;
+  pulseSpeed?: number;
+  blending?: THREE.Blending;
+  minFilter?: THREE.TextureFilter;
+  textureSize?: number;
+  roundTestureRepeate?: boolean;
+};
+
 class LineSprite {
-  constructor(start, end, lineWidth, args = {}) {
+  private args: LineSpriteArgs;
+  private mesh: THREE.Mesh | null = null;
+  private color: THREE.Color;
+  private opacity: number;
+  private material: THREE.RawShaderMaterial;
+  private start: Vector;
+  private end: Vector;
+  private lineWidth: number;
+  private scene: THREE.Object3D | null = null;
+
+  constructor(
+    start: Vector,
+    end: Vector,
+    lineWidth: number,
+    args: LineSpriteArgs = {}
+  ) {
     this.args = args;
     this.mesh = null;
 
@@ -37,13 +72,12 @@ class LineSprite {
         map: {
           value: getTexture(args.type),
         },
-        time: { type: "f", value: 0.0 },
-        zoom: { type: "f", value: 0.0 },
-        color: { type: "v3", value: this.color },
-        opacity: { type: "f", value: this.opacity },
-        textureRepeat: { type: "f", value: 1.0 },
+        time: { value: 0.0 },
+        zoom: { value: 0.0 },
+        color: { value: this.color },
+        opacity: { value: this.opacity },
+        textureRepeat: { value: 1.0 },
         pulse: {
-          type: "v2",
           value: [args.pulseAmount || 0, args.pulseSpeed || 1],
         },
       },
@@ -73,10 +107,18 @@ class LineSprite {
     requestAnimationFrame(this.animate.bind(this));
   }
 
-  async addTo(scene) {
+  getMesh() {
+    if (!this.mesh) {
+      throw new Error("Mesh not created");
+    }
+
+    return this.mesh;
+  }
+
+  async addTo(scene: THREE.Object3D) {
     this.scene = scene;
     await GEOMETRY;
-    scene.add(this.mesh);
+    scene.add(this.getMesh());
   }
 
   async create() {
@@ -89,12 +131,12 @@ class LineSprite {
     const geometry = await GEOMETRY;
 
     this.mesh = new THREE.Mesh(
-      geometry.scene.children[0].geometry,
+      (geometry.object.children[0] as THREE.Mesh).geometry,
       this.material
     );
   }
 
-  async updateTextureSize(size) {
+  async updateTextureSize(size: number) {
     this.args.textureSize = size;
     const distance = this.start.distanceTo(this.end);
     let textureRepeat = this.args.textureSize
@@ -108,25 +150,30 @@ class LineSprite {
     this.material.uniforms.textureRepeat.value = textureRepeat;
   }
 
-  async update(start, end, lineWidth = 1, force) {
+  async update(
+    start: Vector,
+    end: Vector,
+    lineWidth: number = 1,
+    force: boolean = false
+  ) {
     await GEOMETRY;
 
     if (lineWidth !== this.lineWidth || force) {
-      this.mesh.scale.setY(this.lineWidth);
+      this.getMesh().scale.setY(this.lineWidth);
     }
 
     if (!start.equals(this.start) || !end.equals(this.end) || force) {
       const direction = end.sub(start);
 
-      this.mesh.quaternion.setFromUnitVectors(
+      this.getMesh().quaternion.setFromUnitVectors(
         new THREE.Vector3(1, 0, 0).normalize(),
         direction.normalize()
       );
 
       const distance = start.distanceTo(end);
-      this.mesh.scale.setX(distance);
+      this.getMesh().scale.setX(distance);
       const position = start.add(direction.multiplyScalar(0.5));
-      this.mesh.position.set(position.x, position.y, position.z);
+      this.getMesh().position.set(position.x, position.y, position.z);
       let testureRepeat = this.args.textureSize
         ? distance / this.args.textureSize
         : 1;
@@ -145,7 +192,7 @@ class LineSprite {
     return this;
   }
 
-  render(zoom) {
+  render() {
     /*
     if (zoom > 1) {
       this.material.uniforms.opacity.value =
@@ -164,22 +211,23 @@ class LineSprite {
 
   async hide() {
     await GEOMETRY;
-    this.mesh.visible = false;
+    this.getMesh().visible = false;
     return this;
   }
 
   async show() {
     await GEOMETRY;
-    this.mesh.visible = true;
+    this.getMesh().visible = true;
     return this;
   }
 
   async destroy() {
     await GEOMETRY;
 
-    this.scene.remove(this.mesh);
-    this.mesh.material.dispose();
-    this.mesh.geometry.dispose();
+    this.scene!.remove(this.getMesh());
+
+    //this.getMesh().material.dispose();
+    this.getMesh().geometry.dispose();
   }
 }
 

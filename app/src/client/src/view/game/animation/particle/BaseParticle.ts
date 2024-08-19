@@ -3,6 +3,12 @@ import ParticleEmitter from "./ParticleEmitter";
 import { IVector } from "@fieryvoid3/model/src/utils/Vector";
 import { degreeToRadian } from "@fieryvoid3/model/src/utils/math";
 
+export type SerializedParticle = {
+  index: number;
+  emitter: ParticleEmitter;
+  opacity: number;
+};
+
 export const changeAttribute = (
   geometry: THREE.BufferGeometry,
   index: number,
@@ -86,10 +92,10 @@ class BaseParticle {
     return this;
   }
 
-  serialize() {
+  serialize(): SerializedParticle {
     return {
       index: this.index,
-      emitter: this.emitter,
+      emitter: this.emitter!,
       opacity: this.geometry.attributes["opacity"].array[this.index],
     };
   }
