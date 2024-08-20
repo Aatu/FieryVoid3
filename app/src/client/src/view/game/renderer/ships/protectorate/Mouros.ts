@@ -1,9 +1,10 @@
+import Ship from "@fieryvoid3/model/src/unit/Ship";
+import { loadObject3d } from "../../gameObject/GameObject3D";
 import ShipObject from "../ShipObject";
-import { loadObject3d } from "../../object3d/Object3d";
 import * as THREE from "three";
 
 class Mouros extends ShipObject {
-  constructor(ship, scene) {
+  constructor(ship: Ship, scene: THREE.Object3D) {
     super(ship, scene);
     this.defaultHeight = 10;
     this.sideSpriteSize = 30;
@@ -17,11 +18,7 @@ class Mouros extends ShipObject {
       "/img/3d/ships/protectorate/Mouros/scene.gltf"
     );
 
-    //this.startRotation = { x: 90, y: 90, z: 0 };
-
-    this.setRotation(this.rotation.x, this.rotation.y, this.rotation.z);
-
-    object.object.position.set(0, 0, this.defaultHeight);
+    object.getObject().position.set(0, 0, this.defaultHeight);
 
     super.replaceSocketByName(
       [
@@ -49,7 +46,6 @@ class Mouros extends ShipObject {
     super.replaceSocketByName(
       [
         { name: "railgun_turret_mount_right", id: 123 },
-        ,
         { name: "railgun_turret_mount_left", id: 123 },
       ],
       await loadObject3d(

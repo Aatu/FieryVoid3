@@ -1,12 +1,13 @@
 import ShipObject from "../ShipObject";
-import { loadObject3d } from "../../object3d/Object3d";
 import * as THREE from "three";
-import Vector from "../../../../../../model/utils/Vector";
+import Ship from "@fieryvoid3/model/src/unit/Ship";
+import Vector from "@fieryvoid3/model/src/utils/Vector";
+import { loadObject3d } from "../../gameObject/GameObject3D";
 
 const textureLoader = new THREE.TextureLoader();
 
 class Haka extends ShipObject {
-  constructor(ship, scene) {
+  constructor(ship: Ship, scene: THREE.Object3D) {
     super(ship, scene);
     this.defaultHeight = 80;
     this.sideSpriteSize = 30;
@@ -22,9 +23,7 @@ class Haka extends ShipObject {
     super.create();
     const object = await loadObject3d("/img/3d/ships/uc/haka/scene.gltf");
 
-    this.bumpMap = await textureLoader.load(
-      "/img/3d/ships/uc/haka/heightMap.png"
-    );
+    this.bumpMap = textureLoader.load("/img/3d/ships/uc/haka/heightMap.png");
 
     super.replaceSocketByName(
       [

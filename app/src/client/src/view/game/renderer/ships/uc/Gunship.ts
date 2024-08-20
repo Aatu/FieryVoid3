@@ -1,8 +1,9 @@
+import Ship from "@fieryvoid3/model/src/unit/Ship";
 import ShipObject from "../ShipObject";
-//import * as THREE from "three";
+import * as THREE from "three";
 
 class Gunship extends ShipObject {
-  constructor(ship, scene) {
+  constructor(ship: Ship, scene: THREE.Object3D) {
     super(ship, scene);
     this.defaultHeight = 30;
     this.sideSpriteSize = 50;
@@ -12,7 +13,8 @@ class Gunship extends ShipObject {
   create() {
     super.create();
 
-    window.Loader.loadObject("img/3d/gunship/gunship.obj", object => {
+    /*
+    window.Loader.loadObject("img/3d/gunship/gunship.obj", (object) => {
       window.Loader.loadTexturesAndAssign(
         object.children[0],
         {},
@@ -70,6 +72,7 @@ class Gunship extends ShipObject {
       this.mesh.add(this.shipObject);
       object.position.set(0, 0, this.shipZ);
     });
+     */
   }
 }
 

@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import * as shipObjects from ".";
+import * as shipObjects from "./index";
 
 import { ShipEWSprite, DottedCircleSprite, HexagonSprite } from "../sprite";
 
@@ -24,15 +24,15 @@ import ShipSystem from "@fieryvoid3/model/src/unit/system/ShipSystem";
 import coordinateConverter from "@fieryvoid3/model/src/utils/CoordinateConverter";
 
 class ShipObject {
-  protected shipId: string;
-  protected ship: Ship;
+  public shipId: string;
+  public ship: Ship;
   protected systemLocations: Record<string, THREE.Vector3>;
   protected bumpMap: THREE.Texture | null;
   protected scene: THREE.Object3D;
   protected mesh: THREE.Object3D;
   protected shipObject: GameObject3D | null;
   protected systemObjects: GameObject3D[];
-  protected isShipObjectLoaded: ReadyPromise<boolean>;
+  public isLoaded: ReadyPromise<boolean>;
   protected mapIcon: ShipMapIcon | null;
   protected hexSprites: HexagonSprite[];
   protected hexSpriteContainer: THREE.Object3D;
@@ -75,7 +75,7 @@ class ShipObject {
     this.shipObject = null;
     this.systemObjects = [];
 
-    this.isShipObjectLoaded = getPromise<boolean>();
+    this.isLoaded = getPromise<boolean>();
 
     this.mapIcon = null;
     this.hexSprites = [];
@@ -111,7 +111,7 @@ class ShipObject {
   }
 
   async getShipObject() {
-    await this.isShipObjectLoaded.promise;
+    await this.isLoaded.promise;
 
     if (!this.shipObject) {
       throw new Error("Ship object not loaded, but promise is resolved");
@@ -140,11 +140,12 @@ class ShipObject {
     });
 
     object.addTo(this.mesh);
-    this.isShipObjectLoaded.resolve(true);
+    this.isLoaded.resolve(true);
   }
 
   clone() {
-    return new shipObjects[this.ship.shipModel](this.ship, this.scene);
+    // @ts-expect-error dynamic class creation
+    return new shipObjects[this.ship.getShipModel()](this.ship, this.scene);
   }
 
   consumeShipdata(ship: Ship) {
@@ -187,6 +188,7 @@ class ShipObject {
     this.mapIcon.addTo(this.mesh);
 
     this.mesh.add(this.hexSpriteContainer);
+
     /*
     this.shipSelectedSprite.setOverlayColor(COLOR_MINE);
     this.shipSelectedSprite.setOverlayColorAlpha(1);
@@ -246,7 +248,7 @@ class ShipObject {
   }
 
   async showEwSprite(dew: number, ccew: number, evasion: number) {
-    await this.isShipObjectLoaded;
+    await this.isLoaded;
 
     if (!this.shipEWSprite) {
       const dimensions = this.ewSpriteDimensions || this.dimensions;
@@ -267,7 +269,7 @@ class ShipObject {
   }
 
   async hideEwSprite() {
-    await this.isShipObjectLoaded.promise;
+    await this.isLoaded.promise;
     this.shipEWSprite?.hide();
   }
 
@@ -290,7 +292,7 @@ class ShipObject {
       this.mesh.position.set(x, y, 0);
     }
 
-    await this.isShipObjectLoaded.promise;
+    await this.isLoaded.promise;
     this.shipObject?.getObject().position.set(0, 0, this.shipZ);
   }
 
@@ -304,8 +306,13 @@ class ShipObject {
     return new Vector(this.position);
   }
 
-  async setRotation() {
-    await this.isShipObjectLoaded.promise;
+  setRotation(rotation: number) {
+    this.rotation = rotation;
+    this.applyRotation();
+  }
+
+  async applyRotation() {
+    await this.isLoaded.promise;
 
     this.shipObject
       ?.getObject()
@@ -333,7 +340,7 @@ class ShipObject {
     }
 
     this.rotation = rotation;
-    this.setRotation();
+    this.applyRotation();
   }
 
   getFacing() {
@@ -346,7 +353,7 @@ class ShipObject {
     }
 
     this.roll = roll;
-    this.setRotation();
+    this.applyRotation();
   }
 
   getRoll() {
@@ -354,7 +361,7 @@ class ShipObject {
   }
 
   async setOpacity(opacity: number) {
-    await this.isShipObjectLoaded;
+    await this.isLoaded;
     this.opacity = opacity;
     this.replaceOpacity(opacity);
   }
@@ -447,7 +454,7 @@ class ShipObject {
 */
   async replaceSocketByName(
     names: { name: string; id: number } | { name: string; id: number }[],
-    entity: GameObject3D
+    entity: GameObject3D | null
   ) {
     names = ([] as { name: string; id: number }[]).concat(names);
 
@@ -574,7 +581,7 @@ class ShipObject {
   }
 
   async setGhostShipEmissive(color: THREE.Color) {
-    await this.isShipObjectLoaded.promise;
+    await this.isLoaded.promise;
 
     this.forceEmissive(color);
     this.hexSprites.forEach((hexSprite) =>

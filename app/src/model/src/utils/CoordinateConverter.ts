@@ -27,7 +27,7 @@ type Scene = {
   children: THREE.Object3D[];
 };
 
-class CoordinateConverter {
+export class CoordinateConverter {
   private hexlenght: number;
   private width: number;
   private height: number;

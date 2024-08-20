@@ -6,18 +6,21 @@ import GameUiComponent from "./GameUiComponent";
 import { StateStore } from "../../../state/StoreProvider";
 import GameStoreProvider from "../GameStoreProvider";
 import LoginFloater from "../../login/LoginFloater";
+import { useUser } from "../../../state/userHooks";
+import { useParams } from "react-router-dom";
 
-const GameComponent = ({ match }) => {
-  const { currentUser } = useContext(StateStore);
-  const [uiState, setUiState] = useState(null);
-  const [game, setGame] = useState(null);
+const GameComponent: React.FC = () => {
+  const { data: currentUser } = useUser();
+  const { gameid } = useParams();
+  const [uiState, setUiState] = useState<UIState | null>(null);
+  const [game, setGame] = useState<Game | null>(null);
 
   useEffect(() => {
     const newUiState = new UIState();
-    const newGame = new Game(match.params.gameid, currentUser, newUiState);
+    const newGame = new Game(gameid, currentUser, newUiState);
     setUiState(newUiState);
     setGame(newGame);
-  }, [currentUser, setUiState, setGame]);
+  }, [currentUser, setUiState, setGame, gameid]);
 
   if (!uiState || !game || currentUser === undefined) {
     return null;

@@ -1,9 +1,10 @@
+import Ship from "@fieryvoid3/model/src/unit/Ship";
+import { loadObject3d } from "../../gameObject/GameObject3D";
 import ShipObject from "../ShipObject";
-import { loadObject3d } from "../../object3d/Object3d";
 import * as THREE from "three";
 
 class Impetous extends ShipObject {
-  constructor(ship, scene) {
+  constructor(ship: Ship, scene: THREE.Object3D) {
     super(ship, scene);
     this.defaultHeight = 15;
     this.sideSpriteSize = 30;
@@ -17,12 +18,7 @@ class Impetous extends ShipObject {
       "/img/3d/ships/federation/Impetous/scene.gltf"
     );
 
-    //object.scale.set(2, 2, 2);
-    this.startRotation = { x: 90, y: 90, z: 0 };
-
-    this.setRotation(this.rotation.x, this.rotation.y, this.rotation.z);
-
-    object.object.position.set(0, 0, this.defaultHeight);
+    object.getObject().position.set(0, 0, this.defaultHeight);
     /*
     super.replaceSocketByName(
       [
@@ -56,7 +52,7 @@ class Impetous extends ShipObject {
         { name: "engine_mount_2", id: 123 },
         { name: "engine_mount_3", id: 123 },
         { name: "engine_mount_4", id: 123 },
-        { name: "engine_mount_5", id: 123 }
+        { name: "engine_mount_5", id: 123 },
       ],
       await loadObject3d("/img/3d/systems/thrusters/10mThruster/scene.gltf")
     );
@@ -68,7 +64,7 @@ class Impetous extends ShipObject {
         { name: "front-wing-left-mount3", id: 503 },
         { name: "front-wing-right-mount1", id: 101 },
         { name: "front-wing-right-mount2", id: 102 },
-        { name: "front-wing-right-mount3", id: 103 }
+        { name: "front-wing-right-mount3", id: 103 },
       ],
       await loadObject3d(
         "/img/3d/systems/weapons/conventional/2x30mmPDC/scene.gltf"
@@ -87,7 +83,7 @@ class Impetous extends ShipObject {
         { name: "front-wing-left-top-mount1", id: 623 },
         { name: "front-wing-left-bottom-mount1", id: 623 },
         { name: "aft-wing-left-top-mount1", id: 623 },
-        { name: "aft-wing-left-bottom-mount1", id: 623 }
+        { name: "aft-wing-left-bottom-mount1", id: 623 },
       ],
       await loadObject3d(
         "/img/3d/systems/weapons/conventional/2x140mmCannonTurret/scene.gltf"
@@ -97,7 +93,7 @@ class Impetous extends ShipObject {
     super.replaceSocketByName(
       [
         { name: "front-wing-left-top-mount2", id: 623 },
-        { name: "front-wing-left-bottom-mount2", id: 623 }
+        { name: "front-wing-left-bottom-mount2", id: 623 },
       ],
       await loadObject3d(
         "/img/3d/systems/weapons/conventional/85mmAutoCannon/scene.gltf"

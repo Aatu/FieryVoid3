@@ -1,27 +1,23 @@
-import MovementService from "../../../../model/movement/MovementService";
-import WeaponFireService from "../../../../model/weapon/WeaponFireService";
-import PhaseState from "./PhaseState";
+import { User } from "@fieryvoid3/model";
+import UIState from "../ui/UIState";
+import { CoordinateConverter } from "@fieryvoid3/model/src/utils/CoordinateConverter";
+import GameConnector from "../GameConnector";
 import ShipIconContainer from "../renderer/icon/ShipIconContainer";
-import ElectronicWarfareIndicatorService from "../renderer/electronicWarfare/ElectronicWarfareIndicatorService";
-import TerrainRenderer from "../renderer/TerrainRenderer";
-import ShipWindowManager from "../ui/shipWindow/ShipWindowManager";
-import MovementPathService from "../movement/MovementPathService";
-import * as gameStatus from "../../../../model/game/gameStatuses";
-import * as gamePhase from "../../../../model/game/gamePhases";
-
-import LobbyPhaseStrategy from "./phaseStrategy/LobbyPhaseStrategy";
-import DeploymentPhaseStrategy from "./phaseStrategy/DeploymentPhaseStrategy";
-import ReplayPhaseStrategy from "./phaseStrategy/ReplayPhaseStrategy";
-import WaitingPhaseStrategy from "./phaseStrategy/WaitingPhaseStrategy";
-import GamePhaseStrategy from "./phaseStrategy/GamePhaseStrategy";
-import AutomaticReplayPhaseStrategy from "./phaseStrategy/AutomaticReplayPhaseStrategy/index.js";
-import GameDataCache from "./GameDataCache";
-import GameData from "../../../../model/game/GameData";
-import TorpedoIconContainer from "../renderer/icon/TorpedoIconContainer";
-import TorpedoAttackService from "../../../../model/weapon/TorpedoAttackService";
 
 class PhaseDirector {
-  constructor(uiState, currentUser, coordinateConverter, gameConnector) {
+  private uiState: UIState;
+  private currentUser: User;
+  private shipIconContainer: ShipIconContainer;
+  private torpedoIconContainer: TorpedoIconContainer;
+  private electronicWarfareIndicatorService: ElectronicWarfareIndicatorService;
+  private coordinateConverter: CoordinateConverter;
+
+  constructor(
+    uiState: UIState,
+    currentUser: User,
+    coordinateConverter: CoordinateConverter,
+    gameConnector: GameConnector
+  ) {
     this.uiState = uiState;
     this.currentUser = currentUser;
     this.shipIconContainer = null;
@@ -52,7 +48,11 @@ class PhaseDirector {
     this.emitterContainer = emitterContainer;
     this.camera = camera;
 
-    this.shipIconContainer = new ShipIconContainer(scene, this.currentUser);
+    this.shipIconContainer = new ShipIconContainer(
+      scene,
+      this.currentUser,
+      this.coordinateConverter
+    );
     this.torpedoIconContainer = new TorpedoIconContainer(scene);
     this.electronicWarfareIndicatorService =
       new ElectronicWarfareIndicatorService(

@@ -1,10 +1,20 @@
+import { ZOOM_PERSPECTIVE_MIN } from "@fieryvoid3/model/src/config/gameConfig";
+import { degreeToRadian } from "@fieryvoid3/model/src/utils/math";
+import Vector, { IVector } from "@fieryvoid3/model/src/utils/Vector";
 import * as THREE from "three";
-import Vector from "../../../model/utils/Vector";
-import { degreeToRadian } from "../../../model/utils/math";
-import { ZOOM_PERSPECTIVE_MIN } from "../../../model/gameConfig";
 
 class GameCamera {
-  constructor(zoom, width, height, z) {
+  private ortho: THREE.OrthographicCamera;
+  private z: number;
+  private orthoCameraAngle: number;
+  private perspectiveRatio: number;
+  private perspectiveFieldOfView: number;
+  private perspective: THREE.PerspectiveCamera;
+  private perspectiveCameraDistance: number;
+  private closeAngle: number;
+  private current: THREE.Camera;
+
+  constructor(zoom: number, width: number, height: number, z: number) {
     this.ortho = new THREE.OrthographicCamera(
       (zoom * width) / -2,
       (zoom * width) / 2,
@@ -36,7 +46,6 @@ class GameCamera {
     this.setCameraAngle(this.closeAngle);
 
     this.current = this.perspective;
-    window.gameCamera = this;
   }
 
   changeToMapView() {
@@ -71,7 +80,7 @@ class GameCamera {
     }
   }
 
-  zoomPerspective(zoom, width, height) {
+  zoomPerspective(zoom: number, width: number, height: number) {
     const current = this.solvePerspectiveSize();
     const perspectiveZoom = current.height / (height * zoom);
     this.perspectiveCameraDistance /= perspectiveZoom;
@@ -83,7 +92,7 @@ class GameCamera {
     this.setPerspectiveCameraPositionByLookat(this.getLookAtPosition());
   }
 
-  zoomCamera(zoom, width, height) {
+  zoomCamera(zoom: number, width: number, height: number) {
     this.ortho.left = (zoom * width) / -2;
     this.ortho.right = (zoom * width) / 2;
     this.ortho.top = (zoom * height) / 2;
@@ -110,20 +119,20 @@ class GameCamera {
     );
   }
 
-  setByLookAtPosition(position) {
+  setByLookAtPosition(position: { x: number; y: number }) {
     this.ortho.position.x = position.x;
     this.ortho.position.y = position.y + this.orthoCameraAngle;
     this.setPerspectiveCameraPositionByLookat(this.getLookAtPosition());
   }
 
-  addPosition(position) {
+  addPosition(position: { x: number; y: number }) {
     this.ortho.position.x += position.x;
     this.ortho.position.y += position.y;
     this.perspective.position.x += position.x;
     this.perspective.position.y += position.y;
   }
 
-  setPosition(position) {
+  setPosition(position: { x: number; y: number }) {
     this.ortho.position.x = position.x;
     this.ortho.position.y = position.y;
     this.perspective.position.x += position.x;
@@ -134,7 +143,7 @@ class GameCamera {
     return this.current;
   }
 
-  setPerspectiveCameraPositionByLookat(lookAt) {
+  setPerspectiveCameraPositionByLookat(lookAt: IVector) {
     const perspectivePositionVector = new Vector(
       0,
       this.orthoCameraAngle / this.perspectiveRatio,
@@ -154,7 +163,7 @@ class GameCamera {
     this.perspective.lookAt(new Vector(lookAt).toThree());
   }
 
-  setCameraAngle(newAngle) {
+  setCameraAngle(newAngle: number) {
     if (newAngle > 0) {
       newAngle = 0;
     }

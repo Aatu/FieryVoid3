@@ -37,6 +37,16 @@ export interface GameDataMessage extends GameMessage {
   payload: SerializedGameData;
 }
 
+export interface TurnDataMessage extends GameMessage {
+  type: GAME_MESSAGE.TURN_CHANGED;
+  payload: SerializedGameData[];
+}
+
+export interface ReplayMessage extends GameMessage {
+  type: GAME_MESSAGE.REPLAY;
+  payload: SerializedGameData[];
+}
+
 export interface RequestReplayMessage extends GameMessage {
   payload: { start: number; end: number | null };
 }

@@ -11,7 +11,7 @@ class ShipPlayer {
     return this.user && this.user.isAi();
   }
 
-  is(user: User) {
+  is(user: User | null) {
     return user && this.user?.id === user.id;
   }
 

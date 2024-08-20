@@ -1,9 +1,13 @@
-import React, { useReducer } from "react";
+import React, { ReactNode, useReducer } from "react";
+import UIState from "./ui/UIState";
 
 export const GameStateStore = React.createContext({});
 export const GameDispatchStore = React.createContext({});
 
-const GameStoreProvider = ({ uiState, children }) => {
+const GameStoreProvider: React.FC<{
+  uiState: UIState;
+  children: ReactNode;
+}> = ({ uiState, children }) => {
   const [state, dispatch] = useReducer(
     uiState.getReducer(),
     uiState.getInitialState()

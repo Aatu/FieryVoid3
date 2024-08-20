@@ -1,10 +1,9 @@
 import PhaseDirector from "./phase/PhaseDirector";
-import coordinateConverter from "../../../model/utils/CoordinateConverter";
 import PositionObject from "./utils/PositionObject";
 import GameSettings from "./GameSettings";
-import GameConnector from "./GameConnector";
 
 import GameScene from "./GameScene";
+import coordinateConverter from "@fieryvoid3/model/src/utils/CoordinateConverter";
 
 class Game {
   constructor(gameId, user, uiState) {
@@ -99,7 +98,7 @@ class Game {
     if (this.mouseOvered && entity && this.mouseOvered != entity) {
       this.phaseDirector.relayEvent("mouseOutShip", {
         ...payload,
-        entity: this.mouseOvered
+        entity: this.mouseOvered,
       });
 
       this.phaseDirector.relayEvent("mouseOverShip", payload);
@@ -110,7 +109,7 @@ class Game {
     } else if (this.mouseOvered && !entity) {
       this.phaseDirector.relayEvent("mouseOutShip", {
         ...payload,
-        entity: this.mouseOvered
+        entity: this.mouseOvered,
       });
       this.mouseOvered = null;
     }
@@ -147,7 +146,7 @@ class Game {
   getDimensions() {
     return {
       width: this.sceneElement.offsetWidth,
-      height: this.sceneElement.offsetHeight
+      height: this.sceneElement.offsetHeight,
     };
   }
 

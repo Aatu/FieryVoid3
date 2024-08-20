@@ -1,8 +1,9 @@
+import Ship from "@fieryvoid3/model/src/unit/Ship";
 import ShipObject from "../ShipObject";
 import * as THREE from "three";
 
 class Capital extends ShipObject {
-  constructor(ship, scene) {
+  constructor(ship: Ship, scene: THREE.Object3D) {
     super(ship, scene);
     this.defaultHeight = 50;
     this.sideSpriteSize = 50;
@@ -12,13 +13,14 @@ class Capital extends ShipObject {
   create() {
     super.create();
 
-    window.Loader.loadObject("img/3d/capital/capital.obj", object => {
+    /*
+    window.Loader.loadObject("img/3d/capital/capital.obj", (object) => {
       window.Loader.loadTexturesAndAssign(
         object.children[0],
         {
           normalScale: new THREE.Vector2(0.5, 0.5),
           shininess: 10,
-          color: new THREE.Color(1, 1, 1)
+          color: new THREE.Color(1, 1, 1),
         },
         "img/3d/capital/diffuse.png",
         "img/3d/capital/normalEdit.png"
@@ -31,6 +33,7 @@ class Capital extends ShipObject {
       this.mesh.add(this.shipObject);
       object.position.set(0, 0, this.shipZ);
     });
+    */
   }
 }
 

@@ -1,8 +1,34 @@
 import * as gameUiModes from "./gameUiModes";
-import { HEX_SIZE } from "../../../../model/gameConfig";
-import { angleToHexFacing } from "../../../../model/utils/math";
+
+type State = {
+  lobby: boolean;
+  gameData: any;
+  selectedShip: any;
+  selectedSystems: any[];
+  systemInfo: any;
+  systemInfoMenu: any;
+  shipMovement: any;
+  shipTooltip: any[];
+  turnReady: boolean;
+  shipTooltipMenuProvider: any;
+  systemMenu: {
+    systemInfoMenuProvider: any;
+    activeSystem: any;
+    activeSystemElement: any;
+  };
+  shipBadges: any[];
+  gameUiMode: any;
+  gameUiModeButtons: boolean;
+  replayUi: boolean;
+  combatLog: boolean;
+  systemList: any[];
+  ewList: any[];
+  stateVersion: number;
+};
 
 class UIState {
+  public state: State;
+
   constructor() {
     this.phaseDirector = null;
     this.services = null;
