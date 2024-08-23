@@ -1,17 +1,16 @@
-import UiStrategy from "./UiStrategy";
 import {
-  COLOR_FRIENDLY,
   COLOR_ENEMY,
-  COLOR_FRIENDLY_HIGHLIGHT,
-  COLOR_ENEMY_HIGHLIGHT,
-} from "../../../../../model/gameConfig";
+  COLOR_FRIENDLY,
+} from "@fieryvoid3/model/src/config/gameConfig";
+import ShipObject from "../../renderer/ships/ShipObject";
+import UiStrategy from "./UiStrategy";
 
 class MouseOverHighlightsShip extends UiStrategy {
-  deactivate(payload) {
+  deactivate() {
     this.hide();
   }
 
-  show(payload) {
+  show(payload: { entity: ShipObject }) {
     const { currentUser } = this.getServices();
     if (payload.entity.ship.player.isUsers(currentUser)) {
       payload.entity.replaceEmissive(COLOR_FRIENDLY);
@@ -27,11 +26,11 @@ class MouseOverHighlightsShip extends UiStrategy {
     });
   }
 
-  mouseOverShip(payload) {
+  mouseOverShip(payload: { entity: ShipObject }) {
     this.show(payload);
   }
 
-  mouseOutShip(payload) {
+  mouseOutShip() {
     this.hide();
   }
 

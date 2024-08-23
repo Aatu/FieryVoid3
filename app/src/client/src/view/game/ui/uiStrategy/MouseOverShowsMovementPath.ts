@@ -1,3 +1,4 @@
+import ShipObject from "../../renderer/ships/ShipObject";
 import UiStrategy from "./UiStrategy";
 
 class MouseOverShowsMovementPath extends UiStrategy {
@@ -6,7 +7,7 @@ class MouseOverShowsMovementPath extends UiStrategy {
     movementPathService.hideAllMovementPaths();
   }
 
-  mouseOverShip(payload) {
+  mouseOverShip(payload: { entity: ShipObject }) {
     const { movementPathService } = this.getServices();
     movementPathService.hideAllMovementPaths();
     movementPathService.showMovementPath(payload.entity.ship);

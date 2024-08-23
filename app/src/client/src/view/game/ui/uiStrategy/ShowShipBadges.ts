@@ -1,32 +1,23 @@
+import Ship from "@fieryvoid3/model/src/unit/Ship";
 import AnimationUiStrategy from "./AnimationUiStrategy";
-import {
-  COLOR_FRIENDLY,
-  COLOR_ENEMY,
-  ZOOM_FOR_MAPICONS,
-  ZOOM_FOR_SHIPBADGE,
-  ZOOM_FOR_SHIPBADGE_NAME,
-  ZOOM_MAX,
-} from "../../../../../model/gameConfig";
+import { ZOOM_FOR_SHIPBADGE } from "@fieryvoid3/model/src/config/gameConfig";
+import { RenderPayload } from "../../phase/phaseStrategy/PhaseStrategy";
 
 class ShowShipBadges extends AnimationUiStrategy {
-  constructor() {
-    super();
-
-    this.zoom = 1;
-    this.showing = false;
-    this.showingName = false;
-  }
+  private zoom: number = 1;
+  private showing: boolean = false;
+  private showingName: boolean = false;
 
   /*
   uiStateChanged() {
     this.shouldShow(this.zoom, true);
   }*/
 
-  shipStateChanged(ship) {
-    this.show(ship);
+  shipStateChanged(ship: Ship) {
+    this.updateShip(ship);
   }
 
-  updateShip(ship) {
+  updateShip(ship: Ship) {
     const { shipIconContainer, uiState } = this.getServices();
 
     if (ship.isDestroyed()) {
@@ -44,7 +35,7 @@ class ShowShipBadges extends AnimationUiStrategy {
   }
   */
 
-  show(showName) {
+  show(showName: boolean) {
     const { shipIconContainer, uiState } = this.getServices();
 
     shipIconContainer
@@ -65,7 +56,7 @@ class ShowShipBadges extends AnimationUiStrategy {
     this.showing = false;
   }
 
-  shouldShow(zoom, force = false) {
+  shouldShow(zoom: number, force: boolean = false) {
     if (!this.getServices()) {
       return;
     }
@@ -78,12 +69,12 @@ class ShowShipBadges extends AnimationUiStrategy {
       //const showName = zoom <= ZOOM_FOR_SHIPBADGE_NAME;
 
       if (/* this.showingName !== showName || */ force || !this.showing) {
-        this.show(/* showName */);
+        this.show(true);
       }
     }
   }
 
-  render({ zoom }) {
+  render({ zoom }: RenderPayload) {
     this.zoom = zoom;
 
     this.shouldShow(zoom);

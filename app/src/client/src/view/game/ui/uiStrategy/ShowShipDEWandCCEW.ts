@@ -1,28 +1,30 @@
+import GameData from "@fieryvoid3/model/src/game/GameData";
 import UiStrategy from "./UiStrategy";
+import Ship from "@fieryvoid3/model/src/unit/Ship";
 
 class ShowShipDEWandCCEW extends UiStrategy {
   constructor() {
     super();
   }
 
-  update(gamedata) {
+  update(gamedata: GameData) {
     super.update(gamedata);
     const { shipIconContainer } = this.getServices();
 
     shipIconContainer.getArray().forEach(async (icon) => {
-      await icon.isShipObjectLoaded;
+      await icon.isLoaded.promise;
       const ship = icon.ship;
       this.show(ship);
     });
   }
 
-  shipStateChanged(ship) {
+  shipStateChanged(ship: Ship) {
     this.show(ship);
   }
 
   //shipSystemStateChanged({ ship, system }) {}
 
-  show(ship) {
+  show(ship: Ship) {
     const { shipIconContainer, currentUser } = this.getServices();
     const icon = shipIconContainer.getByShip(ship);
 

@@ -10,7 +10,7 @@ import TorpedoDefense from "./TorpedoDefense";
 import ShipName from "../ShipName";
 import GameShipTooltipMenuTorpedoDefense from "./GameShipTooltipMenuTorpedoDefense";
 import { CloseButton } from "../../../../styled/Button";
-import UIState, { TooltipCcomponentProvider } from "../UIState";
+import UIState, { State } from "../UIState";
 import Ship from "@fieryvoid3/model/src/unit/Ship";
 import { useUser } from "../../../../state/userHooks";
 
@@ -53,12 +53,11 @@ export enum TOOLTIP_TAB {
 
 type Props = {
   ui: boolean;
-  shipTooltipMenuProvider: TooltipCcomponentProvider;
   ship: Ship;
   uiState: UIState;
   className?: string;
   right?: boolean;
-};
+} & State;
 
 const ShipTooltip: React.FC<Props> = ({
   ui,
@@ -124,7 +123,10 @@ const ShipTooltip: React.FC<Props> = ({
     >
       <InfoHeader>
         <div>
-          <ShipName ship={ship} />
+          <ShipName
+            shipName={ship.name}
+            isMine={ship.player.is(currentUser || null)}
+          />
         </div>{" "}
         <div>
           {getTabHeader()}{" "}
@@ -140,7 +142,7 @@ const ShipTooltip: React.FC<Props> = ({
         <Menu
           uiState={uiState}
           ship={ship}
-          selectTooltipTab={(tab: TOOLTIP_TAB) => setTooltipTab(tab)}
+          selectTooltipTab={(tab: TOOLTIP_TAB | null) => setTooltipTab(tab)}
           {...rest}
         />
       )}

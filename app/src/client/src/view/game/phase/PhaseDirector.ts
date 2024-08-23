@@ -13,11 +13,18 @@ import PhaseState from "./PhaseState";
 import GameDataCache from "./GameDataCache";
 import ShipWindowManager from "../ui/shipWindow/ShipWindowManager";
 import MovementPathService from "../movement/MovementPathService";
-import TerrainRenderer from "../renderer/TerrainRenderer";
-import PhaseStrategy from "./phaseStrategy/PhaseStrategy";
+import PhaseStrategy, {
+  PhaseEventPayload,
+} from "./phaseStrategy/PhaseStrategy";
 import { ParticleEmitterContainer } from "../animation/particle";
 import GameCamera from "../GameCamera";
 import GameData from "@fieryvoid3/model/src/game/GameData";
+import AutomaticReplayPhaseStrategy from "./phaseStrategy/AutomaticReplayPhaseStrategy/AutomaticReplayPhaseStrategy";
+import WaitingPhaseStrategy from "./phaseStrategy/WaitingPhaseStrategy";
+import { GAME_STATUS } from "@fieryvoid3/model/src/game/gameStatus";
+import { GAME_PHASE } from "@fieryvoid3/model/src/game/gamePhase";
+import LobbyPhaseStrategy from "./phaseStrategy/LobbyPhaseStrategy";
+import ReplayPhaseStrategy from "./phaseStrategy/ReplayPhaseStrategy";
 
 export type Services = {
   phaseState: PhaseState;
@@ -29,7 +36,7 @@ export type Services = {
   movementService: MovementService;
   coordinateConverter: CoordinateConverter;
   uiState: UIState;
-  currentUser: User;
+  currentUser: User | null;
   gameConnector: GameConnector;
   movementPathService: MovementPathService;
   weaponFireService: WeaponFireService;
@@ -40,7 +47,7 @@ export type Services = {
 
 class PhaseDirector {
   private uiState: UIState;
-  private currentUser: User;
+  private currentUser: User | null;
   private shipIconContainer: ShipIconContainer | null;
   private torpedoIconContainer: TorpedoIconContainer | null;
   private electronicWarfareIndicatorService: ElectronicWarfareIndicatorService | null;
@@ -50,7 +57,6 @@ class PhaseDirector {
   private weaponFireService: WeaponFireService;
   private torpedoAttackService: TorpedoAttackService;
   private movementPathService: MovementPathService | null;
-  private terrainRenderer: TerrainRenderer | null;
   private phaseStrategy: PhaseStrategy | null;
   private phaseState: PhaseState;
   private gameConnector: GameConnector;
@@ -61,7 +67,7 @@ class PhaseDirector {
 
   constructor(
     uiState: UIState,
-    currentUser: User,
+    currentUser: User | null,
     coordinateConverter: CoordinateConverter,
     gameConnector: GameConnector
   ) {
@@ -78,7 +84,6 @@ class PhaseDirector {
     this.weaponFireService = new WeaponFireService();
     this.torpedoAttackService = new TorpedoAttackService();
     this.movementPathService = null;
-    this.terrainRenderer = null;
     this.phaseState = new PhaseState();
     this.gameConnector = gameConnector;
     this.gameConnector.init(this);
@@ -120,7 +125,6 @@ class PhaseDirector {
       this.shipIconContainer,
       this.currentUser
     );
-    this.terrainRenderer = new TerrainRenderer(scene);
 
     this.uiState.setPhaseDirector(this);
   }
@@ -169,7 +173,7 @@ class PhaseDirector {
     }
   }
 
-  relayEvent(name: string, payload: unknown) {
+  relayEvent(name: string, payload?: PhaseEventPayload) {
     if (!this.phaseStrategy || this.phaseStrategy.inactive) {
       return;
     }
@@ -179,65 +183,94 @@ class PhaseDirector {
   }
 
   commitTurn() {
+    if (!this.phaseStrategy) {
+      return;
+    }
+
     this.phaseStrategy.commitTurn(this.gameConnector);
     return this.activatePhaseStrategy(WaitingPhaseStrategy);
   }
 
-  render(scene, coordinateConverter, zoom) {
+  render(
+    scene: THREE.Object3D,
+    coordinateConverter: CoordinateConverter,
+    zoom: number
+  ) {
     if (!this.phaseStrategy || this.phaseStrategy.inactive) {
       return;
     }
 
-    this.phaseStrategy.render(coordinateConverter, scene, zoom);
-    this.electronicWarfareIndicatorService.render(zoom);
+    const renderPayload = this.phaseStrategy.render(
+      coordinateConverter,
+      scene,
+      zoom
+    );
+    this.electronicWarfareIndicatorService?.render(renderPayload);
     this.uiState.render();
   }
 
   resolvePhaseStrategy() {
     const gameData = this.gameDataCache.getCurrent();
 
+    if (!gameData) {
+      return;
+    }
+
     if (this.phaseStrategy && !this.phaseStrategy.canDisturb()) {
       return;
     }
 
-    if (gameData.status === gameStatus.LOBBY) {
-      return this.activatePhaseStrategy(LobbyPhaseStrategy, gameData);
+    if (gameData.status === GAME_STATUS.LOBBY) {
+      return this.activatePhaseStrategy(LobbyPhaseStrategy);
     }
 
     if (
       !this.currentUser ||
       !gameData.isPlayerInGame(this.currentUser) ||
       this.uiState.isReplay() ||
-      gameData.status === gameStatus.FINISHED
+      gameData.status === GAME_STATUS.FINISHED
     ) {
-      return this.activatePhaseStrategy(ReplayPhaseStrategy, gameData);
+      return this.activatePhaseStrategy(ReplayPhaseStrategy);
     }
 
     if (!gameData.isPlayerActive(this.currentUser)) {
-      return this.activatePhaseStrategy(WaitingPhaseStrategy, gameData);
+      return this.activatePhaseStrategy(WaitingPhaseStrategy);
     }
 
-    if (gameData.phase === gamePhase.DEPLOYMENT) {
-      return this.activatePhaseStrategy(DeploymentPhaseStrategy, gameData);
+    if (gameData.phase === GAME_PHASE.DEPLOYMENT) {
+      return this.activatePhaseStrategy(ReplayPhaseStrategy);
     }
 
     if (!gameData.isPlayerActive(this.currentUser)) {
-      return this.activatePhaseStrategy(WaitingPhaseStrategy, gameData);
+      return this.activatePhaseStrategy(WaitingPhaseStrategy);
     }
 
-    return this.activatePhaseStrategy(GamePhaseStrategy, gameData);
+    return this.activatePhaseStrategy(PhaseStrategy);
   }
 
-  activatePhaseStrategy(phaseStrategy) {
+  activatePhaseStrategy(
+    phaseStrategy: typeof LobbyPhaseStrategy | typeof WaitingPhaseStrategy
+  ) {
     const gameData = this.gameDataCache.getCurrent();
 
-    this.uiState.update(gameData);
-    this.shipIconContainer.update(gameData);
-    this.movementService.update(gameData, this);
-    this.movementPathService.update(gameData);
-    this.terrainRenderer.update(gameData.terrain);
-    this.weaponFireService.update(gameData);
-    this.torpedoAttackService.update(gameData);
+    if (!gameData) {
+      return;
+    }
+
+    const {
+      uiState,
+      shipIconContainer,
+      movementService,
+      movementPathService,
+      weaponFireService,
+      torpedoAttackService,
+    } = this.getServices();
+    uiState.update(gameData);
+    shipIconContainer.update(gameData);
+    movementService.update(gameData, this);
+    movementPathService.update(gameData);
+    weaponFireService.update(gameData);
+    torpedoAttackService.update(gameData);
 
     if (this.phaseStrategy && this.phaseStrategy instanceof phaseStrategy) {
       this.phaseStrategy.update(gameData);

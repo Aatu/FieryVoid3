@@ -1,25 +1,23 @@
 import UiStrategy from "./UiStrategy";
 import * as THREE from "three";
 import { HexagonSprite } from "../../renderer/sprite";
+import GameSlot from "@fieryvoid3/model/src/game/GameSlot";
+import GameData from "@fieryvoid3/model/src/game/GameData";
 
 class ShowDeploymentAreas extends UiStrategy {
-  constructor() {
-    super();
-
-    this.areas = [];
-  }
+  private areas: { slot: GameSlot; sprites: HexagonSprite[] }[] = [];
 
   deactivate() {
     const { scene } = this.getServices();
     this.areas.forEach((area) => {
       area.sprites.forEach((sprite) => {
-        scene.remove(sprite.mesh);
+        scene.remove(sprite.getMesh());
         sprite.destroy();
       });
     });
   }
 
-  update(gameData) {
+  update(gameData: GameData) {
     super.update(gameData);
     const { scene, coordinateConverter, currentUser } = this.getServices();
 
@@ -44,7 +42,7 @@ class ShowDeploymentAreas extends UiStrategy {
           sprite.setOverlayColor(color);
           sprite.setOverlayColorAlpha(0.5);
 
-          scene.add(sprite.mesh);
+          scene.add(sprite.getMesh());
 
           return sprite;
         }),
@@ -52,7 +50,7 @@ class ShowDeploymentAreas extends UiStrategy {
     });
   }
 
-  selectShip(ship) {}
+  selectShip() {}
 }
 
 export default ShowDeploymentAreas;

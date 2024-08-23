@@ -3,10 +3,29 @@ import PositionObject from "./utils/PositionObject";
 import GameSettings from "./GameSettings";
 
 import GameScene from "./GameScene";
-import coordinateConverter from "@fieryvoid3/model/src/utils/CoordinateConverter";
+import coordinateConverter, {
+  CoordinateConverter,
+} from "@fieryvoid3/model/src/utils/CoordinateConverter";
+import { User } from "@fieryvoid3/model";
+import UIState from "./ui/UIState";
+import GameConnector from "./GameConnector";
+import { Offset } from "@fieryvoid3/model/src/hexagon";
 
 class Game {
-  constructor(gameId, user, uiState) {
+  public gameId: number;
+  public currentUser: User | null;
+  public uiState: UIState;
+  public coordinateConverter: CoordinateConverter;
+  public gameConnector: GameConnector;
+  public phaseDirector: PhaseDirector;
+  public gameScene: GameScene;
+  public gameSettings: GameSettings;
+  public sceneElement: HTMLElement | null;
+  public init: boolean;
+  private mouseOvered: unknown | null;
+  private mouseOveredHex: Offset | null;
+
+  constructor(gameId: number, user: User | null, uiState: UIState) {
     this.gameId = gameId;
     this.currentUser = user;
 
@@ -37,7 +56,7 @@ class Game {
     return this.uiState;
   }
 
-  initRender(element) {
+  initRender(element: HTMLElement) {
     this.sceneElement = element;
     this.init = true;
     this.gameScene.init(element, this.getDimensions(), this.gameId);
@@ -45,30 +64,43 @@ class Game {
     this.onResize();
   }
 
-  onMouseWheel(step) {
+  onMouseWheel(step: number) {
     this.gameScene.changeZoom(step);
   }
 
-  onKeyDown(event) {
+  onKeyDown(event: KeyboardEvent) {
     const action = this.gameSettings.matchEvent(event);
+
+    if (!action) {
+      return;
+    }
+
     this.uiState.customEvent(action, { up: false });
   }
 
-  onKeyUp(event) {
+  onKeyUp(event: KeyboardEvent) {
     const action = this.gameSettings.matchEvent(event);
+
+    if (!action) {
+      return;
+    }
+
     this.uiState.customEvent(action, { up: true });
   }
 
-  onMouseUp(position, button) {
+  onMouseUp(
+    position: { x: number; y: number; xR: number; yR: number },
+    button: number
+  ) {
     if (!this.init) {
       return;
     }
 
     const gamePos = this.coordinateConverter.fromViewPortToGame(position);
     const entity = this.coordinateConverter
-      .getEntitiesIntersected(position, true)
+      .getEntitiesIntersected(position)
       .shift();
-    const hexPos = this.coordinateConverter.fromGameToHex(gamePos, true);
+    const hexPos = this.coordinateConverter.fromGameToHex(gamePos);
 
     const payload = new PositionObject(position, gamePos, hexPos, entity);
     console.log(payload.hex);
@@ -82,11 +114,11 @@ class Game {
     }
   }
 
-  onDrag(position, delta) {
+  onDrag(position: unknown, delta: { x: number; y: number }) {
     this.gameScene.scroll(delta);
   }
 
-  onMouseMove(position) {
+  onMouseMove(position: { x: number; y: number; xR: number; yR: number }) {
     const gamePos = this.coordinateConverter.fromViewPortToGame(position);
     const hexPos = this.coordinateConverter.fromGameToHex(gamePos);
     const entity = this.coordinateConverter
@@ -144,6 +176,10 @@ class Game {
   }
 
   getDimensions() {
+    if (!this.sceneElement) {
+      throw new Error("Scene element not initialized");
+    }
+
     return {
       width: this.sceneElement.offsetWidth,
       height: this.sceneElement.offsetHeight,

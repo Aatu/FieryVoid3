@@ -1,8 +1,9 @@
 import UiStrategy from "./UiStrategy";
+import { Services } from "../../phase/PhaseDirector";
 import GameShipTooltipMenu from "../shipTooltip/GameShipTooltipMenu";
 
 class GameShipTooltipMenuStrategy extends UiStrategy {
-  activate(services) {
+  activate(services: Services) {
     super.activate(services);
     const { uiState } = this.getServices();
 

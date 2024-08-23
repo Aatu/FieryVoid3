@@ -1,5 +1,4 @@
 import GameData from "@fieryvoid3/model/src/game/GameData";
-import * as gameUiModes from "./gameUiModes";
 import ShipSystem from "@fieryvoid3/model/src/unit/system/ShipSystem";
 import Ship from "@fieryvoid3/model/src/unit/Ship";
 import PhaseDirector, { Services } from "../phase/PhaseDirector";
@@ -7,15 +6,19 @@ import { GameUIMode } from "./gameUiModes";
 import { GAME_PHASE } from "@fieryvoid3/model/src/game/gamePhase";
 import { MovementService } from "@fieryvoid3/model/src/movement";
 import ShipObject from "../renderer/ships/ShipObject";
+import ElectronicWarfareEntry from "@fieryvoid3/model/src/electronicWarfare/ElectronicWarfareEntry";
+import ReplayContext from "../phase/phaseStrategy/AutomaticReplayPhaseStrategy/ReplayContext";
+import CombatLogTorpedoAttack from "@fieryvoid3/model/src/combatLog/CombatLogTorpedoAttack";
+import CombatLogWeaponFire from "@fieryvoid3/model/src/combatLog/CombatLogWeaponFire";
 
-export type TooltipCcomponentProvider = () => React.FC<{
+export type TooltipComponentProvider = () => React.FC<{
   uiState: UIState;
   ship: Ship;
-  system: ShipSystem;
+  system?: ShipSystem;
 }>;
 
 export type SystemMenuUiState = {
-  systemInfoMenuProvider: TooltipCcomponentProvider | null;
+  systemInfoMenuProvider: TooltipComponentProvider | null;
   activeSystem: ShipSystem | null;
   activeSystemElement: HTMLElement | null;
 };
@@ -40,7 +43,7 @@ export type ShipBadgeUIState = {
   visible: boolean;
 };
 
-type State = {
+export type State = {
   lobby: boolean;
   gameData: GameData;
   selectedShip: Ship | null;
@@ -50,25 +53,33 @@ type State = {
   shipMovement: null | ShipMovementUIState;
   shipTooltip: ShipTooltipUIState[];
   turnReady: boolean;
-  shipTooltipMenuProvider: () => React.FC;
+  waiting: boolean;
+  shipTooltipMenuProvider: (() => React.FC) | null;
   systemMenu: SystemMenuUiState;
   shipBadges: ShipBadgeUIState[];
   gameUiMode: { [key in GameUIMode]: boolean };
   gameUiModeButtons: boolean;
-  replayUi: boolean;
-  combatLog: boolean;
+  replayUi: ReplayContext | null;
+  combatLog: {
+    gameData: GameData;
+    replayContext: ReplayContext;
+    log: (CombatLogWeaponFire | CombatLogTorpedoAttack)[];
+  } | null;
   systemList: ShipSystem[];
-  ewList: any[];
+  ewList: ElectronicWarfareEntry[];
   stateVersion: number;
 };
 
 class UIState {
   private state: Partial<State>;
-  public dispatch: any;
+  public dispatch: React.Dispatch<Partial<State>> | null = null;
   public phaseDirector: PhaseDirector | null;
   public services: Services | null;
-  public renderListeners: any[];
-  public systemChangeListeners: any[];
+  public renderListeners: (() => void)[];
+  public systemChangeListeners: ((
+    ship: Ship,
+    shipSystem: ShipSystem
+  ) => void)[];
   public gameData: GameData | null = null;
 
   constructor() {
@@ -84,8 +95,6 @@ class UIState {
       gameData: undefined,
       selectedShip: null,
       selectedSystems: [],
-      systemInfo: null,
-      systemInfoMenu: null,
       shipMovement: null,
       shipTooltip: [],
       turnReady: false,
@@ -96,19 +105,28 @@ class UIState {
         activeSystemElement: null,
       },
       shipBadges: [],
-      gameUiMode: {},
+      gameUiMode: {
+        [GameUIMode.EW]: false,
+        [GameUIMode.ENEMY_WEAPONS]: false,
+        [GameUIMode.WEAPONS]: false,
+        [GameUIMode.MOVEMENT]: false,
+      },
       gameUiModeButtons: false,
-      replayUi: false,
-      combatLog: false,
+      replayUi: null,
+      combatLog: null,
       systemList: [],
       ewList: [],
       stateVersion: 0,
+      waiting: false,
     };
+  }
 
-    this.state.gameUiMode[gameUiModes.EW] = false;
-    this.state.gameUiMode[gameUiModes.ENEMY_WEAPONS] = false;
-    this.state.gameUiMode[gameUiModes.WEAPONS] = false;
-    this.state.gameUiMode[gameUiModes.MOVEMENT] = false;
+  getPhaseDirector() {
+    if (!this.phaseDirector) {
+      throw new Error("No phase director set");
+    }
+
+    return this.phaseDirector;
   }
 
   getGameData() {
@@ -131,7 +149,7 @@ class UIState {
     return this.state as State;
   }
 
-  setDispatch(dispatch) {
+  setDispatch(dispatch: React.Dispatch<Partial<State>>) {
     this.dispatch = dispatch;
   }
 
@@ -139,16 +157,16 @@ class UIState {
     return this.reducer.bind(this);
   }
 
-  reducer(state, action) {
+  reducer(state: State, action: Partial<State>): State {
     this.state = {
       ...state,
       ...action,
     };
 
-    return this.state;
+    return this.getState();
   }
 
-  showShipBadge(icon: ShipObject, showName: boolean) {
+  showShipBadge(icon: ShipObject, showName: boolean = true) {
     const entry = this.getState().shipBadges.find(
       (badge) => badge.icon.ship.id === icon.ship.id
     );
@@ -190,7 +208,7 @@ class UIState {
     this.updateState();
   }
 
-  setEwList(entries) {
+  setEwList(entries: ElectronicWarfareEntry[]) {
     this.state.ewList = entries;
   }
 
@@ -199,29 +217,31 @@ class UIState {
     this.updateState();
   }
 
-  isSelectedSystem(system) {
-    return this.state.selectedSystems.includes(system);
+  isSelectedSystem(system: ShipSystem) {
+    return this.getState().selectedSystems.includes(system);
   }
 
-  selectSystem(ship, systems) {
+  selectSystem(ship: Ship, systems: ShipSystem | ShipSystem[]) {
     if (this.getSelectedShip() !== ship) {
       this.selectShip(ship);
     }
 
-    systems = []
-      .concat(systems)
-      .filter((system) => !this.isSelectedSystem(system))
-      .forEach((system) => this.state.selectedSystems.push(system));
+    systems = [
+      ...([] as ShipSystem[])
+        .concat(systems)
+        .filter((system) => !this.isSelectedSystem(system)),
+      ...this.getState().selectedSystems,
+    ];
 
     this.updateState();
     this.customEvent("systemSelected", { systems });
   }
 
-  deselectSystem(systems) {
-    systems = [].concat(systems);
+  deselectSystem(systems: ShipSystem | ShipSystem[]) {
+    systems = ([] as ShipSystem[]).concat(systems);
 
-    this.state.selectedSystems = this.state.selectedSystems.filter((selected) =>
-      systems.every((system) => system.id !== selected.id)
+    this.state.selectedSystems = this.getState().selectedSystems.filter(
+      (selected) => systems.every((system) => system.id !== selected.id)
     );
 
     this.updateState();
@@ -239,84 +259,89 @@ class UIState {
     return this.state.selectedSystems;
   }
 
-  hasGameUiMode(values) {
-    values = [].concat(values);
-    return values.some((value) => this.state.gameUiMode[value]);
+  hasGameUiMode(values: GameUIMode | GameUIMode[]) {
+    values = ([] as GameUIMode[]).concat(values);
+    return values.some((value) => this.getState().gameUiMode[value]);
   }
 
-  toggleGameUiMode(value) {
-    this.state.gameUiMode[value] = !this.state.gameUiMode[value];
+  toggleGameUiMode(value: GameUIMode) {
+    this.getState().gameUiMode[value] = !this.getState().gameUiMode[value];
     this.updateState();
   }
 
-  showUiModeButtons(value) {
-    this.state.gameUiModeButtons = value;
+  showUiModeButtons(value: boolean) {
+    this.getState().gameUiModeButtons = value;
     this.updateState();
   }
 
-  showReplayUi(value) {
-    this.state.replayUi = value;
+  showReplayUi(value: ReplayContext) {
+    this.getState().replayUi = value;
     this.updateState();
   }
 
-  startCombatLog(replayContext, gameData) {
-    this.state.combatLog = {
+  startCombatLog(replayContext: ReplayContext, gameData: GameData) {
+    this.getState().combatLog = {
       gameData,
       replayContext,
       log: [],
     };
   }
 
-  addToCombatLog(value) {
-    if (this.state.combatLog === false) {
+  addToCombatLog(value: CombatLogWeaponFire | CombatLogTorpedoAttack) {
+    const state = this.getState();
+
+    if (!state.combatLog) {
       throw new Error("Start combat log first");
     }
 
-    this.state.combatLog.log.push(value);
+    state.combatLog.log.push(value);
     this.updateState();
   }
 
   hideCombatLog() {
-    this.state.combatLog = false;
+    this.getState().combatLog = null;
     this.updateState();
   }
 
   startReplay() {
-    this.phaseDirector.startReplay();
+    this.getPhaseDirector().startReplay();
     this.updateState();
   }
 
   closeReplay() {
-    this.phaseDirector.closeReplay();
+    this.getPhaseDirector().closeReplay();
     this.updateState();
   }
 
-  isReplay() {
-    return this.state.replay;
+  isReplay(): boolean {
+    return Boolean(this.getState().replayUi);
   }
 
-  update(gameData) {
+  update(gameData: GameData) {
     this.gameData = gameData;
-    if (this.state.selectedShip) {
-      this.selectShip(
-        this.gameData.ships.getShipById(this.state.selectedShip.id)
-      );
+    const state = this.getState();
+    const selectedShip = state.selectedShip;
 
-      this.selectSystem(
-        this.getSelectedShip(),
-        this.state.selectedSystems.map((system) =>
-          this.getSelectedShip().systems.getSystemById(system.id)
-        )
-      );
+    if (!selectedShip) {
+      return;
     }
+
+    this.selectShip(this.gameData.ships.getShipById(selectedShip.id));
+
+    this.selectSystem(
+      selectedShip,
+      state.selectedSystems.map((system) =>
+        selectedShip.systems.getSystemById(system.id)
+      )
+    );
   }
 
-  setTurnReady(ready) {
+  setTurnReady(ready: boolean) {
     this.state.turnReady = ready;
     this.updateState();
   }
 
-  setWaiting(waiting) {
+  setWaiting(waiting: boolean) {
     this.state.waiting = waiting;
     this.updateState();
   }
@@ -342,7 +367,7 @@ class UIState {
     this.phaseDirector.commitTurn();
   }
 
-  selectShip(ship) {
+  selectShip(ship: Ship) {
     if (this.getSelectedShip() === ship) {
       return;
     }
@@ -367,43 +392,48 @@ class UIState {
     return this.state.selectedShip;
   }
 
-  isSelected(ship) {
+  isSelected(ship: Ship) {
     return this.state.selectedShip === ship;
   }
 
   updateState() {
     //this.state.stateVersion++;
+
+    if (!this.dispatch) {
+      return;
+    }
+
     this.dispatch(this.state);
     this.customEvent("uiStateChanged");
   }
 
-  setTooltipMenuProvider(callBack) {
+  setTooltipMenuProvider(callBack: null | (() => React.FC)) {
     this.state.shipTooltipMenuProvider = callBack;
     this.updateState();
   }
 
-  setSystemInfoMenuProvider(callBack) {
-    this.state.systemMenu.systemInfoMenuProvider = callBack;
+  setSystemInfoMenuProvider(callBack: null | TooltipComponentProvider) {
+    this.getState().systemMenu.systemInfoMenuProvider = callBack;
     this.updateState();
   }
 
-  setSystemMenuActiveSystem(system, element) {
-    this.state.systemMenu.activeSystem = system;
-    this.state.systemMenu.activeSystemElement = element;
+  setSystemMenuActiveSystem(system: ShipSystem, element: HTMLElement) {
+    this.getState().systemMenu.activeSystem = system;
+    this.getState().systemMenu.activeSystemElement = element;
     this.updateState();
   }
 
-  setGameData(gameData) {
-    this.state.gameData = gameData.serialize();
+  setGameData(gameData: GameData) {
+    this.state.gameData = gameData;
     this.updateState();
   }
 
-  setLobby(status) {
+  setLobby(status: boolean) {
     this.state.lobby = status;
     this.updateState();
   }
 
-  showSystemInfo(args) {
+  /*  showSystemInfo(args) {
     this.state.systemInfo = args;
     this.updateState();
   }
@@ -422,19 +452,20 @@ class UIState {
     this.state.systemInfoMenu = null;
     this.updateState();
   }
+    */
 
-  shipStateChanged(ship) {
+  shipStateChanged(ship: Ship) {
     this.customEvent("shipStateChanged", ship);
   }
 
-  shipSystemStateChanged(ship, system) {
+  shipSystemStateChanged(ship: Ship, system: ShipSystem) {
     this.customEvent("shipSystemStateChanged", { ship, system });
     this.systemChangeListeners.forEach((callBack) => callBack(ship, system));
   }
 
   showShipTooltip(ship: Ship, ui: boolean = false, right: boolean = false) {
     this.hideShipTooltip(ship);
-    this.state.shipTooltip.push({
+    this.getState().shipTooltip.push({
       ship,
       ui,
       right: !right,
@@ -442,8 +473,8 @@ class UIState {
     this.updateState();
   }
 
-  hideShipTooltip(ship) {
-    this.state.shipTooltip = this.state.shipTooltip.filter(
+  hideShipTooltip(ship: Ship) {
+    this.state.shipTooltip = this.getState().shipTooltip.filter(
       (tooltip) => tooltip.ship.id !== ship.id
     );
 
@@ -492,21 +523,25 @@ class UIState {
     this.renderListeners.forEach((listener) => listener());
   }
 
-  subscribeToRender(callBack) {
+  subscribeToRender(callBack: () => void) {
     this.renderListeners.push(callBack);
   }
 
-  unsubscribeFromRender(callBack) {
+  unsubscribeFromRender(callBack: () => void) {
     this.renderListeners = this.renderListeners.filter(
       (listener) => listener !== callBack
     );
   }
 
-  subscribeToSystemChange(callBack) {
+  subscribeToSystemChange(
+    callBack: (ship: Ship, shipSystem: ShipSystem) => void
+  ) {
     this.systemChangeListeners.push(callBack);
   }
 
-  unsubscribeFromSystemChange(callBack) {
+  unsubscribeFromSystemChange(
+    callBack: (ship: Ship, shipSystem: ShipSystem) => void
+  ) {
     this.systemChangeListeners = this.systemChangeListeners.filter(
       (listener) => listener !== callBack
     );

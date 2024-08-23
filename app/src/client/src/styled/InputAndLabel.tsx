@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { Error } from "./Error";
 
 type InputAndLabelProps = {
-  id: string;
+  id?: string;
   label: string;
   type?: string;
   value?: string;

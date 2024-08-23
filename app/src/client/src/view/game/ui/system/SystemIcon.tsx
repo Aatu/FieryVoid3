@@ -175,7 +175,7 @@ type SystemIconProps = {
   scs: boolean;
   systemMenu?: SystemMenuUiState;
   onSystemClicked?: MouseEventHandler<HTMLDivElement>;
-  selected: boolean;
+  selected?: boolean;
   text?: string;
   target?: Ship;
   inactive?: boolean;

@@ -1,13 +1,11 @@
 import UiStrategy from "./UiStrategy";
-import NavigationalMovementPath from "../../../game/movement/NavigationalMovementPath";
+import NavigationalMovementPath from "../../movement/NavigationalMovementPath";
+import Ship from "@fieryvoid3/model/src/unit/Ship";
+import GameData from "@fieryvoid3/model/src/game/GameData";
 
 class SelectedShipNavigationPath extends UiStrategy {
-  constructor() {
-    super();
-
-    this.ship = null;
-    this.path = null;
-  }
+  private ship: Ship | null = null;
+  private path: NavigationalMovementPath | null = null;
 
   deactivate() {
     if (this.path) {
@@ -15,10 +13,10 @@ class SelectedShipNavigationPath extends UiStrategy {
     }
   }
 
-  update(gameData) {
+  update(gameData: GameData) {
     const { uiState } = this.getServices();
     super.update(gameData);
-    this.show(uiState.getSelectedShip());
+    this.show(uiState.getSelectedShip() || undefined);
   }
 
   shipStateChanged() {
@@ -31,12 +29,12 @@ class SelectedShipNavigationPath extends UiStrategy {
     }
   }
 
-  shipSelected(ship) {
+  shipSelected(ship: Ship) {
     this.show(ship);
   }
 
-  show(ship) {
-    if (!this.gameData) {
+  show(ship?: Ship) {
+    if (!this.gameData || !ship) {
       return;
     }
 
@@ -59,7 +57,7 @@ class SelectedShipNavigationPath extends UiStrategy {
     );
   }
 
-  shipDeselected(ship) {
+  shipDeselected() {
     if (this.path) {
       this.path.remove();
     }

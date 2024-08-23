@@ -1,15 +1,13 @@
+import Ship from "@fieryvoid3/model/src/unit/Ship";
 import UiStrategy from "./UiStrategy";
+import ShipObject from "../../renderer/ships/ShipObject";
 
 class MouseOverShowsShipTooltip extends UiStrategy {
-  constructor() {
-    super();
+  private clickedShip: Ship | null = null;
+  private clickedEnemy: Ship | null = null;
+  private mouseOveredShip: Ship | null = null;
 
-    this.clickedShip = null;
-    this.clickedEnemy = null;
-    this.mouseOveredShip = null;
-  }
-
-  shipTooltipClosed(ship) {
+  shipTooltipClosed(ship: Ship) {
     if (this.clickedShip === ship) {
       this.clickedShip = null;
     }
@@ -19,8 +17,8 @@ class MouseOverShowsShipTooltip extends UiStrategy {
     }
   }
 
-  shipStateChanged(ship) {
-    const { uiState, shipIconContainer, currentUser } = this.getServices();
+  shipStateChanged(ship: Ship) {
+    const { uiState, currentUser } = this.getServices();
 
     const isMine = ship.player.is(currentUser);
 
@@ -43,7 +41,7 @@ class MouseOverShowsShipTooltip extends UiStrategy {
     }
   }
 
-  shipClicked(payload) {
+  shipClicked(payload: { entity: ShipObject }) {
     const { uiState, currentUser } = this.getServices();
 
     const ship = payload.entity.ship;
@@ -91,7 +89,7 @@ class MouseOverShowsShipTooltip extends UiStrategy {
   }
   */
 
-  mouseOverShip(payload) {
+  mouseOverShip(payload: { entity: ShipObject }) {
     const { uiState, currentUser } = this.getServices();
 
     const ship = payload.entity.ship;
@@ -121,8 +119,8 @@ class MouseOverShowsShipTooltip extends UiStrategy {
     this.mouseOveredShip = payload.entity.ship;
   }
 
-  mouseOutShip(payload) {
-    const { shipIconContainer, currentUser } = this.getServices();
+  mouseOutShip(payload: { entity: ShipObject }) {
+    const { currentUser } = this.getServices();
 
     const ship = payload.entity.ship;
     const isMine = ship.player.is(currentUser);

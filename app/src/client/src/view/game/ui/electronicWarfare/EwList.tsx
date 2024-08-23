@@ -8,10 +8,9 @@ type Props = {
   ship: Ship;
   uiState: UIState;
   ewList: ElectronicWarfareEntry[];
-  selectedShip: Ship;
 };
 
-const EwList: React.FC<Props> = ({ ship, uiState, ewList, selectedShip }) => {
+const EwList: React.FC<Props> = ({ ship, uiState, ewList }) => {
   const gameData = uiState.getGameData();
   if (!ship) {
     return null;
@@ -24,9 +23,9 @@ const EwList: React.FC<Props> = ({ ship, uiState, ewList, selectedShip }) => {
         name={target.name || undefined}
         uiState={uiState}
         key={`ew-list-${index}`}
-        ship={selectedShip}
+        ship={ship}
         target={target}
-        oew={selectedShip.electronicWarfare.getOffensiveEw(entry.targetShipId)}
+        oew={ship.electronicWarfare.getOffensiveEw(entry.targetShipId)}
       />
     );
   });

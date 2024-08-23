@@ -185,7 +185,7 @@ export type TooltipButtonProps = {
   img?: string;
   selected?: boolean;
   disabled?: boolean;
-};
+} & React.ButtonHTMLAttributes<HTMLButtonElement>;
 
 const TooltipButton = styled.button<TooltipButtonProps>`
   border: none;

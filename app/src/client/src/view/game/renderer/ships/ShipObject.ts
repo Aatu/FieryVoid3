@@ -520,11 +520,12 @@ class ShipObject {
 
   forceEmissive(color: THREE.Color) {
     this.forcedEmissiveColor = color;
-    this.replaceEmissive(/*color*/);
+    this.replaceEmissive(color);
     //this.emissiveReplaced = [];
   }
 
-  async replaceEmissive(/* color: THREE.Color */) {
+  async replaceEmissive(color: THREE.Color) {
+    console.log("todo, replace emissive", color);
     //TODO: fix emissive replacement, Move this to GameObject3D
     /*
     const shipObject = await this.getShipObject();

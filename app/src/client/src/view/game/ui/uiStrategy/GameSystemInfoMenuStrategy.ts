@@ -1,8 +1,9 @@
 import UiStrategy from "./UiStrategy";
 import GameSystemTooltipMenu from "../system/GameSystemTooltipMenu";
+import { Services } from "../../phase/PhaseDirector";
 
 class GameSystemInfoMenuStrategy extends UiStrategy {
-  activate(services) {
+  activate(services: Services) {
     super.activate(services);
     const { uiState } = this.getServices();
 

@@ -1,40 +1,37 @@
-import AnimationUiStrategy from "./AnimationUiStrategy";
 import {
-  COLOR_FRIENDLY,
   COLOR_ENEMY,
-  ZOOM_FOR_MAPICONS,
-  COLOR_FRIENDLY_HIGHLIGHT,
   COLOR_ENEMY_HIGHLIGHT,
-  ZOOM_MAX,
-} from "../../../../../model/gameConfig";
+  COLOR_FRIENDLY,
+  COLOR_FRIENDLY_HIGHLIGHT,
+  ZOOM_FOR_MAPICONS,
+} from "@fieryvoid3/model/src/config/gameConfig";
+import ShipObject from "../../renderer/ships/ShipObject";
+import AnimationUiStrategy from "./AnimationUiStrategy";
+import { RenderPayload } from "../../phase/phaseStrategy/PhaseStrategy";
 
 class ShowMapIcons extends AnimationUiStrategy {
-  constructor() {
-    super();
+  private zoom: number = 1;
+  private showingIcons: boolean = false;
 
-    this.zoom = 1;
-    this.showingIcons = false;
-  }
-
-  showHighligh(icon) {
+  showHighligh(icon: ShipObject) {
     const { currentUser } = this.getServices();
     const color = icon.ship.player.isUsers(currentUser)
       ? COLOR_FRIENDLY_HIGHLIGHT
       : COLOR_ENEMY_HIGHLIGHT;
 
-    icon.mapIcon.replaceColor(color);
+    icon.mapIcon?.replaceColor(color);
   }
 
   hideHighligh() {
-    const { shipIconContainer, currentUser } = this.getServices();
+    const { shipIconContainer } = this.getServices();
     shipIconContainer.getArray().forEach((icon) => {
       const ghost = shipIconContainer.getGhostShipIconByShip(icon.ship);
-      ghost.mapIcon.revertColor();
-      icon.mapIcon.revertColor();
+      ghost.mapIcon?.revertColor();
+      icon.mapIcon?.revertColor();
     });
   }
 
-  mouseOverShip(payload) {
+  mouseOverShip(payload: { entity: ShipObject }) {
     const icon = payload.entity;
     this.showHighligh(icon);
   }
@@ -85,16 +82,16 @@ class ShowMapIcons extends AnimationUiStrategy {
     gameCamera.changeToCloseView();
   }
 
-  changeScale(scale) {
+  changeScale(scale: number) {
     const { shipIconContainer } = this.getServices();
     shipIconContainer.getArray().forEach((icon) => {
-      icon.mapIcon.setScale(scale);
+      icon.mapIcon?.setScale(scale);
       const ghost = shipIconContainer.getGhostShipIconByShip(icon.ship);
-      ghost.mapIcon.setScale(scale);
+      ghost.mapIcon?.setScale(scale);
     });
   }
 
-  shouldShow(zoom, force = false) {
+  shouldShow(zoom: number, force: boolean = false) {
     if (!this.getServices()) {
       return;
     }
@@ -119,7 +116,7 @@ class ShowMapIcons extends AnimationUiStrategy {
     }
   }
 
-  render({ zoom }) {
+  render({ zoom }: RenderPayload) {
     if (zoom === this.zoom) {
       return;
     }

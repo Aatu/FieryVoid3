@@ -1,7 +1,8 @@
+import ShipObject from "../../renderer/ships/ShipObject";
 import UiStrategy from "./UiStrategy";
 
 class ShipClickSelectsShip extends UiStrategy {
-  shipClicked(payload) {
+  shipClicked(payload: { entity: ShipObject }) {
     const { uiState, currentUser } = this.getServices();
     const ship = payload.entity.ship;
 

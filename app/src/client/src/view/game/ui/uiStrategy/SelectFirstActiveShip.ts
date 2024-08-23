@@ -1,15 +1,15 @@
+import GameData from "@fieryvoid3/model/src/game/GameData";
 import UiStrategy from "./UiStrategy";
 
 class SelectFirstActiveShip extends UiStrategy {
-  async update(gameData) {
+  async update(gameData: GameData) {
     const { uiState, currentUser, gameCamera, shipIconContainer } =
       this.getServices();
 
-    if (
-      uiState.getSelectedShip() &&
-      gameData.activeShips.isActive(uiState.getSelectedShip())
-    ) {
-      const oldShip = uiState.getSelectedShip();
+    const selectedShip = uiState.getSelectedShip();
+
+    if (selectedShip && gameData.activeShips.isActive(selectedShip)) {
+      const oldShip = selectedShip;
       const newShip = gameData.ships.getShipById(oldShip.id);
       if (oldShip !== newShip) {
         uiState.selectShip(newShip);

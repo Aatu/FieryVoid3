@@ -39,7 +39,7 @@ const ContainerRight = styled.div`
   z-index: 3;
 `;
 
-class Lobby extends Component {
+const Lobby: React.FC = () => {
   constructor(props) {
     super(props);
 

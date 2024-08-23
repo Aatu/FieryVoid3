@@ -2,6 +2,7 @@ import GameData from "@fieryvoid3/model/src/game/GameData";
 import { Services } from "../PhaseDirector";
 import { CoordinateConverter } from "@fieryvoid3/model/src/utils/CoordinateConverter";
 import * as THREE from "three";
+import GameConnector from "../../GameConnector";
 
 export type RenderPayload = {
   delta: number;
@@ -29,9 +30,11 @@ const getInterestingStuffInPosition = (payload, shipIconContainer) => {
 };
 */
 
-export type PhaseEventPayload = Record<string, unknown> & { stopped?: boolean };
+export type PhaseEventPayload =
+  | (Record<string, unknown> & { stopped?: boolean })
+  | unknown;
 
-abstract class PhaseStrategy {
+class PhaseStrategy {
   services: Services;
   strategies: PhaseStrategy[];
   inactive: boolean;
@@ -62,7 +65,7 @@ abstract class PhaseStrategy {
     this.animationTurnLength = null;
   }
 
-  onEvent(name: string, payload: PhaseEventPayload) {
+  onEvent(name: string, payload?: PhaseEventPayload) {
     this.callStrategies(name, payload);
   }
 
@@ -78,7 +81,7 @@ abstract class PhaseStrategy {
     this.strategies.forEach((strategy) => {
       if (
         strategy[functionName as keyof PhaseStrategy] &&
-        (!payload || !payload.stopped)
+        (!payload || !(payload as { stopped: boolean })?.stopped)
       ) {
         // @ts-expect-error dynamic thingy
         strategy[functionName as keyof PhaseStrategy](payload);
@@ -218,7 +221,8 @@ abstract class PhaseStrategy {
     return true;
   }
 
-  abstract commitTurn(): void;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  commitTurn(gameConnector: GameConnector) {}
 }
 
 export default PhaseStrategy;

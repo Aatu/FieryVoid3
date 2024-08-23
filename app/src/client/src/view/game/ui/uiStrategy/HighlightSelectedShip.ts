@@ -1,32 +1,25 @@
+import Ship from "@fieryvoid3/model/src/unit/Ship";
+import ShipObject from "../../renderer/ships/ShipObject";
 import UiStrategy from "./UiStrategy";
 import * as THREE from "three";
-import {
-  COLOR_FRIENDLY,
-  COLOR_ENEMY,
-  COLOR_FRIENDLY_HIGHLIGHT,
-  COLOR_ENEMY_HIGHLIGHT,
-} from "../../../../../model/gameConfig";
+import { RenderPayload } from "../../phase/phaseStrategy/PhaseStrategy";
+import { COLOR_FRIENDLY_HIGHLIGHT } from "@fieryvoid3/model/src/config/gameConfig";
 
 class HighlightSelectedShip extends UiStrategy {
-  constructor() {
-    super();
-
-    this.active = false;
-    this.activeTime = 0;
-    this.icon = null;
-    //currentOpacity = opacity + (sineAmplitude * 0.5 * sin(gameTime/sineFrequency) + sineAmplitude)
-  }
+  private active: boolean = false;
+  private activeTime: number = 0;
+  private icon: ShipObject | null = null;
 
   hide() {
     const { shipIconContainer } = this.getServices();
     if (this.icon) {
       this.icon.revertEmissive();
-      this.icon.mapIcon.revertColor();
+      this.icon.mapIcon?.revertColor();
       this.icon.hexSprites.forEach((sprite) => sprite.revertColor());
       const ghost = shipIconContainer.getGhostShipIconByShip(this.icon.ship);
       //ghost.revertOpacity();
-      ghost.mapIcon.setMovementTarget();
-      ghost.mapIcon.revertColor();
+      ghost.mapIcon?.setMovementTarget();
+      ghost.mapIcon?.revertColor();
     }
 
     this.icon = null;
@@ -36,25 +29,24 @@ class HighlightSelectedShip extends UiStrategy {
     this.hide();
   }
 
-  shipSelected(ship) {
+  shipSelected(ship: Ship) {
     const { shipIconContainer } = this.getServices();
     this.active = true;
     this.activeTime = 0;
     this.icon = shipIconContainer.getByShip(ship);
   }
 
-  shipDeselected(ship) {
-    const { shipIconContainer } = this.getServices();
+  shipDeselected() {
     this.active = true;
     this.activeTime = 0;
 
     this.hide();
   }
 
-  render({ delta }) {
+  render({ delta }: RenderPayload) {
     const { shipIconContainer } = this.getServices();
 
-    if (!this.active) {
+    if (!this.active || !this.icon) {
       return;
     }
 
@@ -79,13 +71,13 @@ class HighlightSelectedShip extends UiStrategy {
     ghost.setGhostShipEmissive(ghostColor);
     //ghost.replaceOpacity(opacity);
     ghost.mapIcon
-      .setMovementTarget()
+      ?.setMovementTarget()
       .replaceColor(color)
       .setOverlayColorAlpha(1);
     this.icon.hexSprites.forEach((sprite) =>
       sprite.replaceColor(color.clone())
     );
-    this.icon.mapIcon.replaceColor(color);
+    this.icon.mapIcon?.replaceColor(color);
     this.activeTime += delta;
   }
 }

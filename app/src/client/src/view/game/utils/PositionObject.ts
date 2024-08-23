@@ -1,15 +1,16 @@
+import { Offset } from "@fieryvoid3/model/src/hexagon";
 import { IVector } from "@fieryvoid3/model/src/utils/Vector";
 
 class PositionObject {
-  public view: IVector;
+  public view: { x: number; y: number; xR: number; yR: number };
   public game: IVector;
-  public hex: IVector;
+  public hex: Offset;
   public entity: unknown | null;
 
   constructor(
-    view: IVector,
+    view: { x: number; y: number; xR: number; yR: number },
     game: IVector,
-    hex: IVector,
+    hex: Offset,
     entity: unknown | null = null
   ) {
     this.view = view;

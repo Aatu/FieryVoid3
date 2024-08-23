@@ -13,7 +13,7 @@ import {
 import SystemStrategyUi from "./SystemStrategyUi";
 import SystemStrategyUiComponent from "./SystemStrategyUi/SystemStrategyUiComponent";
 import ShipSystem from "@fieryvoid3/model/src/unit/system/ShipSystem";
-import UIState, { TooltipCcomponentProvider } from "../UIState";
+import UIState, { TooltipComponentProvider } from "../UIState";
 import Ship from "@fieryvoid3/model/src/unit/Ship";
 import { useForceRerender } from "../../../../util/useForceRerender";
 import { TooltipComponentRenderer } from "../../../../styled/Tooltip";
@@ -145,7 +145,7 @@ const getWarnings = (system: ShipSystem) => {
 type DefaultTabProps = {
   ship: Ship;
   system: ShipSystem;
-  systemInfoMenuProvider?: TooltipCcomponentProvider;
+  systemInfoMenuProvider?: TooltipComponentProvider;
   uiState: UIState;
   weaponTargeting?: {
     target: Ship;
@@ -195,7 +195,7 @@ type SystemInfoProps = {
   right?: boolean;
   uiState: UIState;
   ship: Ship;
-  systemInfoMenuProvider?: TooltipCcomponentProvider;
+  systemInfoMenuProvider?: TooltipComponentProvider;
   target?: Ship;
 };
 
