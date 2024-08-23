@@ -71,8 +71,8 @@ class GameSlots {
     return slot.team === userSlot.team;
   }
 
-  getUsersSlots(user: User) {
-    return this.slots.filter((slot) => slot.isUsers(user));
+  getUsersSlots(user: User | null) {
+    return this.slots.filter((slot) => slot.isUsers(user || null));
   }
 
   getSlotByShip(ship: Ship): GameSlot {

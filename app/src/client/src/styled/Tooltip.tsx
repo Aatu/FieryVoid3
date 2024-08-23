@@ -181,7 +181,7 @@ const hoverTooltipButton = css`
   filter: brightness(5) grayscale(100%);
 `;
 
-type TooltipButtonProps = {
+export type TooltipButtonProps = {
   img?: string;
   selected?: boolean;
   disabled?: boolean;

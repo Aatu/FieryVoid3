@@ -1,5 +1,6 @@
 import Ship from "../unit/Ship";
 import DamageEntry from "../unit/system/DamageEntry";
+import ShipSystem from "../unit/system/ShipSystem";
 import Ammo from "../unit/system/weapon/ammunition/Ammo";
 import { ICombatLogEntry } from "./combatLogClasses";
 import CombatLogDamageEntry, {
@@ -72,6 +73,14 @@ class CombatLogWeaponFire implements ICombatLogEntry {
     this.hitResult = hitResult;
   }
 
+  getHitResult(): CombatLogWeaponFireHitResult {
+    if (!this.hitResult) {
+      throw new Error("No hit result found");
+    }
+
+    return this.hitResult;
+  }
+
   setShots(shotsHit: number, totalShots: number) {
     this.shotsHit = shotsHit;
     this.totalShots = totalShots;
@@ -104,10 +113,10 @@ class CombatLogWeaponFire implements ICombatLogEntry {
     }, [] as DamageEntry[]);
   }
 
-  getDestroyedSystems(target: Ship) {
+  getDestroyedSystems(target: Ship): ShipSystem[] {
     return this.getDamages(target)
       .filter((damage) => damage.destroyedSystem)
-      .map((damage) => damage.system);
+      .map((damage) => damage.system) as ShipSystem[];
   }
 
   serialize(): SerializedCombatLogWeaponFire {

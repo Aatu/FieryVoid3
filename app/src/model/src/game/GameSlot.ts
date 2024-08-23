@@ -53,7 +53,11 @@ class GameSlot {
     return this.shipIds.includes(ship.getId());
   }
 
-  isUsers(user: User) {
+  isUsers(user: User | null) {
+    if (!user) {
+      return false;
+    }
+
     return this.userId === user.id;
   }
 

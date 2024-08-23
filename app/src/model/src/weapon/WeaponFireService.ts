@@ -31,8 +31,13 @@ class WeaponFireService {
       );
   }
 
-  getFireOrderById(id: string) {
-    return this.getAllFireOrders().find((order) => order.id === id);
+  getFireOrderById(id: string): FireOrder {
+    const fo = this.getAllFireOrders().find((order) => order.id === id);
+
+    if (!fo) {
+      throw new Error(`No fire order with id ${id}`);
+    }
+    return fo;
   }
 
   getAllFireOrdersForShip(shooter: Ship) {

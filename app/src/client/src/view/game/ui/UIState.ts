@@ -3,6 +3,10 @@ import * as gameUiModes from "./gameUiModes";
 import ShipSystem from "@fieryvoid3/model/src/unit/system/ShipSystem";
 import Ship from "@fieryvoid3/model/src/unit/Ship";
 import PhaseDirector, { Services } from "../phase/PhaseDirector";
+import { GameUIMode } from "./gameUiModes";
+import { GAME_PHASE } from "@fieryvoid3/model/src/game/gamePhase";
+import { MovementService } from "@fieryvoid3/model/src/movement";
+import ShipObject from "../renderer/ships/ShipObject";
 
 export type TooltipCcomponentProvider = () => React.FC<{
   uiState: UIState;
@@ -16,24 +20,44 @@ export type SystemMenuUiState = {
   activeSystemElement: HTMLElement | null;
 };
 
+export type ShipMovementUIState = {
+  ship: Ship;
+  type: GAME_PHASE;
+  movementService: MovementService;
+  getPosition: () => { x: number; y: number };
+};
+
+export type ShipTooltipUIState = {
+  ship: Ship;
+  ui: boolean;
+  right: boolean;
+};
+
+export type ShipBadgeUIState = {
+  icon: ShipObject;
+  version: number;
+  showName: boolean;
+  visible: boolean;
+};
+
 type State = {
   lobby: boolean;
   gameData: GameData;
   selectedShip: Ship | null;
   selectedSystems: ShipSystem[];
-  systemInfo: any;
-  systemInfoMenu: any;
-  shipMovement: any;
-  shipTooltip: any[];
+  //systemInfo: any;
+  //systemInfoMenu: any;
+  shipMovement: null | ShipMovementUIState;
+  shipTooltip: ShipTooltipUIState[];
   turnReady: boolean;
-  shipTooltipMenuProvider: any;
+  shipTooltipMenuProvider: () => React.FC;
   systemMenu: SystemMenuUiState;
-  shipBadges: any[];
-  gameUiMode: any;
+  shipBadges: ShipBadgeUIState[];
+  gameUiMode: { [key in GameUIMode]: boolean };
   gameUiModeButtons: boolean;
   replayUi: boolean;
   combatLog: boolean;
-  systemList: any[];
+  systemList: ShipSystem[];
   ewList: any[];
   stateVersion: number;
 };
@@ -124,8 +148,8 @@ class UIState {
     return this.state;
   }
 
-  showShipBadge(icon, showName) {
-    const entry = this.state.shipBadges.find(
+  showShipBadge(icon: ShipObject, showName: boolean) {
+    const entry = this.getState().shipBadges.find(
       (badge) => badge.icon.ship.id === icon.ship.id
     );
 
@@ -135,7 +159,7 @@ class UIState {
       entry.showName = showName;
       entry.visible = true;
     } else {
-      this.state.shipBadges.push({
+      this.getState().shipBadges.push({
         icon,
         version: 0,
         showName,
@@ -146,8 +170,8 @@ class UIState {
     this.updateState();
   }
 
-  hideShipBadge(icon) {
-    const entry = this.state.shipBadges.find(
+  hideShipBadge(icon: ShipObject) {
+    const entry = this.getState().shipBadges.find(
       (badge) => badge.icon.ship.id === icon.ship.id
     );
 
@@ -158,8 +182,8 @@ class UIState {
     }
   }
 
-  removeShipBadge(icon) {
-    this.state.shipBadges = this.state.shipBadges.filter(
+  removeShipBadge(icon: ShipObject) {
+    this.state.shipBadges = this.getState().shipBadges.filter(
       (entry) => entry.icon.ship.id !== icon.ship.id
     );
 
@@ -170,7 +194,7 @@ class UIState {
     this.state.ewList = entries;
   }
 
-  setSystemList(systems) {
+  setSystemList(systems: ShipSystem[]) {
     this.state.systemList = systems;
     this.updateState();
   }
@@ -408,7 +432,7 @@ class UIState {
     this.systemChangeListeners.forEach((callBack) => callBack(ship, system));
   }
 
-  showShipTooltip(ship, ui = false, right = false) {
+  showShipTooltip(ship: Ship, ui: boolean = false, right: boolean = false) {
     this.hideShipTooltip(ship);
     this.state.shipTooltip.push({
       ship,
@@ -427,13 +451,13 @@ class UIState {
     this.updateState();
   }
 
-  showShipDeploymentMovement(ship) {
+  showShipDeploymentMovement(ship: Ship) {
     const { shipIconContainer, coordinateConverter, movementService } =
-      this.services;
+      this.getServices();
 
     this.state.shipMovement = {
       ship,
-      type: "deploy",
+      type: GAME_PHASE.DEPLOYMENT,
       movementService,
       getPosition: () =>
         coordinateConverter.fromGameToViewPort(
@@ -443,13 +467,13 @@ class UIState {
     this.updateState();
   }
 
-  showShipMovement(ship) {
+  showShipMovement(ship: Ship) {
     const { shipIconContainer, coordinateConverter, movementService } =
-      this.services;
+      this.getServices();
 
     this.state.shipMovement = {
       ship,
-      type: "game",
+      type: GAME_PHASE.GAME,
       movementService,
       getPosition: () =>
         coordinateConverter.fromGameToViewPort(

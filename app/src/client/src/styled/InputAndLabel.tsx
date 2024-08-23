@@ -6,12 +6,12 @@ type InputAndLabelProps = {
   id: string;
   label: string;
   type?: string;
-  value: string;
+  value?: string;
   placeholder?: string;
   onKeyDown?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   error?: string;
-};
+} & React.InputHTMLAttributes<HTMLInputElement>;
 
 const InputAndLabel: React.FC<InputAndLabelProps> = ({
   id,

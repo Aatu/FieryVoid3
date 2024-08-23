@@ -1,5 +1,9 @@
 import { css } from "styled-components";
 
+export type ClickableProps = {
+  disabled?: boolean;
+};
+
 const Clickable = css<{ disabled?: boolean }>`
   ${(props) => !props.disabled && "cursor: pointer;"}
 

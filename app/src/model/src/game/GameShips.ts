@@ -50,13 +50,13 @@ class GameShips {
     return ship;
   }
 
-  getUsersShips(user: User) {
+  getUsersShips(user: User | null) {
     return this.ships.filter(
       (ship) => ship.getPlayer().isUsers(user) && !ship.isDestroyed()
     );
   }
 
-  getShipsInSameTeam(user: User) {
+  getShipsInSameTeam(user: User | null) {
     const slot = this.gameData.slots.getUsersSlots(user);
     if (!slot || slot.length === 0) {
       return [];
@@ -70,7 +70,7 @@ class GameShips {
     );
   }
 
-  getShipsEnemyTeams(user: User) {
+  getShipsEnemyTeams(user: User | null) {
     const teamShips = this.getShipsInSameTeam(user);
 
     return this.ships.filter(

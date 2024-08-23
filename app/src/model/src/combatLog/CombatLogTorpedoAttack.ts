@@ -1,5 +1,6 @@
 import Ship from "../unit/Ship";
 import DamageEntry from "../unit/system/DamageEntry";
+import ShipSystem from "../unit/system/ShipSystem";
 import { ICombatLogEntry } from "./combatLogClasses";
 import CombatLogDamageEntry, {
   SerializedCombatLogDamageEntry,
@@ -59,10 +60,10 @@ class CombatLogTorpedoAttack implements ICombatLogEntry {
     }, [] as DamageEntry[]);
   }
 
-  getDestroyedSystems(target: Ship) {
+  getDestroyedSystems(target: Ship): ShipSystem[] {
     return this.getDamages(target)
       .filter((damage) => damage.destroyedSystem)
-      .map((damage) => damage.system);
+      .map((damage) => damage.system) as ShipSystem[];
   }
 
   serialize(): SerializedCombatLogTorpedoAttack {

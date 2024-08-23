@@ -1,6 +1,6 @@
 import styled, { css } from "styled-components";
-import React from "react";
-import { TooltipButton } from "./Tooltip";
+import React, { MouseEventHandler } from "react";
+import { TooltipButton, TooltipButtonProps } from "./Tooltip";
 import { X } from "./icon";
 
 const text = css`
@@ -85,7 +85,7 @@ const IconContainer = styled.div`
   height: 25px;
 `;
 
-const ButtonContainer = styled.button<{ icon?: string; buttonStyle?: string }>`
+const ButtonContainer = styled.button<{ icon?: boolean; buttonStyle?: string }>`
   display: flex;
   cursor: pointer;
   position: relative;
@@ -106,24 +106,30 @@ const ButtonContainer = styled.button<{ icon?: string; buttonStyle?: string }>`
   }}
 `;
 
-export interface ButtonProps {
-  icon?: React.FC;
+export type ButtonProps = {
+  IconComponent?: React.FC<{ color?: string }>;
   buttonStyle?: string;
-  onClick?: () => void;
-}
+  onClick?: MouseEventHandler<HTMLButtonElement>;
+  children: React.ReactNode;
+} & React.ButtonHTMLAttributes<HTMLButtonElement>;
 
 export const Button: React.FC<ButtonProps> = ({
-  icon,
+  IconComponent,
   buttonStyle,
   onClick,
+  children,
 }) => (
-  <ButtonContainer icon={icon} buttonStyle={buttonStyle} onClick={onClick}>
-    {props.icon && (
+  <ButtonContainer
+    icon={Boolean(IconComponent)}
+    buttonStyle={buttonStyle}
+    onClick={onClick}
+  >
+    {IconComponent && (
       <IconContainer>
-        <props.icon color="#deebff" />
+        <IconComponent color="#deebff" />
       </IconContainer>
     )}
-    {props.children}
+    {children}
   </ButtonContainer>
 );
 
@@ -139,7 +145,7 @@ const CloseButtonContainer = styled(TooltipButton)`
   }
 `;
 
-export const CloseButton = (props) => {
+export const CloseButton: React.FC<TooltipButtonProps> = (props) => {
   return (
     <CloseButtonContainer {...props}>
       <X />
