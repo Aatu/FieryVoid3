@@ -2,7 +2,7 @@ import Vector, { IVector } from "@fieryvoid3/model/src/utils/Vector";
 import * as THREE from "three";
 import { ParticleEmitterContainer } from "../particle";
 import { IDuration } from "../Animation";
-type BoltArgs = {
+export type BoltArgs = {
   size?: number;
   color?: [number, number, number];
   length?: number;
@@ -45,6 +45,8 @@ class BoltEffect implements IDuration {
       getRandom,
       context
     );
+
+    return this;
   }
 
   createBolt(

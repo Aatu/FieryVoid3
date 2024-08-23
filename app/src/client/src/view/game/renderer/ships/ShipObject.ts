@@ -26,24 +26,24 @@ import coordinateConverter from "@fieryvoid3/model/src/utils/CoordinateConverter
 class ShipObject {
   public shipId: string;
   public ship: Ship;
-  protected systemLocations: Record<string, THREE.Vector3>;
+  public systemLocations: Record<string, THREE.Vector3>;
   protected bumpMap: THREE.Texture | null;
   protected scene: THREE.Object3D;
   protected mesh: THREE.Object3D;
   protected shipObject: GameObject3D | null;
   protected systemObjects: GameObject3D[];
   public isLoaded: ReadyPromise<boolean>;
-  protected mapIcon: ShipMapIcon | null;
-  protected hexSprites: HexagonSprite[];
-  protected hexSpriteContainer: THREE.Object3D;
+  public mapIcon: ShipMapIcon | null;
+  public hexSprites: HexagonSprite[];
+  public hexSpriteContainer: THREE.Object3D;
   protected ghostShipObject: unknown;
   protected shipEWSprite: ShipEWSprite | null;
   protected shipSelectedSprite: DottedCircleSprite | null;
-  protected line: Line | null;
+  public line: Line | null;
   protected defaultHeight: number;
   protected sideSpriteSize: number;
   protected position: IVector;
-  protected shipZ: number = 0;
+  public shipZ: number = 0;
   protected hidden: boolean;
   //protected emissiveReplaced: any[] = [];
   protected ghost: boolean;
@@ -54,8 +54,8 @@ class ShipObject {
   protected dimensions: IVector;
   protected center: IVector;
   protected ewSpriteDimensions: IVector | null;
-  protected shipObjectBoundingBox: ShipObjectBoundingBox;
-  protected shipObjectSectionDamageEffect: ShipObjectSectionDamageEffect;
+  public shipObjectBoundingBox: ShipObjectBoundingBox;
+  public shipObjectSectionDamageEffect: ShipObjectSectionDamageEffect;
   protected overlaySpriteSize: number = 0;
   protected overlaySpriteOpacity: number = 0;
   protected overlaySpriteColor: THREE.Color = new THREE.Color(0, 0, 0);
@@ -110,6 +110,10 @@ class ShipObject {
     this.consumeShipdata(this.ship);
   }
 
+  isHidden() {
+    return this.hidden;
+  }
+
   async getShipObject() {
     await this.isLoaded.promise;
 
@@ -160,8 +164,8 @@ class ShipObject {
     const opacity = 0.5;
 
     this.line = new Line(this.mesh, {
-      start: new THREE.Vector3(0, 0, 0),
-      end: new THREE.Vector3(0, 0, this.defaultHeight),
+      start: new Vector(0, 0, 0),
+      end: new Vector(0, 0, this.defaultHeight),
       width: 5,
       color: new THREE.Color(1, 1, 1),
       opacity: 0.1,

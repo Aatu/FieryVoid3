@@ -7,7 +7,7 @@ class ShowShipDEWandCCEW extends UiStrategy {
 
   update(gamedata) {
     super.update(gamedata);
-    const { shipIconContainer } = this.services;
+    const { shipIconContainer } = this.getServices();
 
     shipIconContainer.getArray().forEach(async (icon) => {
       await icon.isShipObjectLoaded;
@@ -23,7 +23,7 @@ class ShowShipDEWandCCEW extends UiStrategy {
   //shipSystemStateChanged({ ship, system }) {}
 
   show(ship) {
-    const { shipIconContainer, currentUser } = this.services;
+    const { shipIconContainer, currentUser } = this.getServices();
     const icon = shipIconContainer.getByShip(ship);
 
     let dew, ccew, evasion;
@@ -42,7 +42,7 @@ class ShowShipDEWandCCEW extends UiStrategy {
   }
 
   deactivate() {
-    const { shipIconContainer } = this.services;
+    const { shipIconContainer } = this.getServices();
     shipIconContainer.getArray().forEach((icon) => {
       icon.hideEwSprite();
     }, this);

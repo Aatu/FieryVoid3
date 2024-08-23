@@ -1,9 +1,15 @@
+import GameData from "@fieryvoid3/model/src/game/GameData";
+import { Services } from "../PhaseDirector";
+import { CoordinateConverter } from "@fieryvoid3/model/src/utils/CoordinateConverter";
+import * as THREE from "three";
+
 export type RenderPayload = {
   delta: number;
   total: number;
-  last: number;
+  last: number | null;
   zoom: number;
-  goingBack?: boolean;
+  reverse: boolean;
+  paused: boolean;
 };
 
 /*
@@ -23,8 +29,23 @@ const getInterestingStuffInPosition = (payload, shipIconContainer) => {
 };
 */
 
-class PhaseStrategy {
-  constructor(services) {
+export type PhaseEventPayload = Record<string, unknown> & { stopped?: boolean };
+
+abstract class PhaseStrategy {
+  services: Services;
+  strategies: PhaseStrategy[];
+  inactive: boolean;
+  gameData: GameData | null;
+  animationPaused: boolean;
+  animationReversed: boolean;
+  currentDeltaTime: number;
+  animationStartTime: number;
+  totalAnimationTime: number;
+  lastAnimationTime: number | null;
+  animationEndtime: number;
+  animationTurnLength: number | null;
+
+  constructor(services: Services) {
     this.services = services;
     this.strategies = [];
     this.inactive = true;
@@ -41,45 +62,58 @@ class PhaseStrategy {
     this.animationTurnLength = null;
   }
 
-  onEvent(name, payload) {
+  onEvent(name: string, payload: PhaseEventPayload) {
     this.callStrategies(name, payload);
   }
 
-  updateStrategies(gamedata) {
+  updateStrategies(gamedata: GameData) {
     this.strategies.forEach((strategy) => strategy.update(gamedata));
   }
 
   activateStrategies() {
-    this.strategies.forEach((strategy) => strategy.activate(this.services));
+    this.strategies.forEach((strategy) => strategy.activate());
   }
 
-  callStrategies(functionName, payload) {
+  callStrategies(functionName: string, payload: PhaseEventPayload = {}) {
     this.strategies.forEach((strategy) => {
-      if (strategy[functionName] && (!payload || !payload.stopped)) {
-        strategy[functionName](payload);
+      if (
+        strategy[functionName as keyof PhaseStrategy] &&
+        (!payload || !payload.stopped)
+      ) {
+        // @ts-expect-error dynamic thingy
+        strategy[functionName as keyof PhaseStrategy](payload);
       }
     });
   }
 
-  render(coordinateConverter, scene, zoom) {
-    this.updateDeltaTime(this.animationPaused);
-    this.updateTotalAnimationTime(this.animationPaused);
+  render(
+    coordinateConverter: CoordinateConverter,
+    scene: THREE.Object3D,
+    zoom: number
+  ): RenderPayload {
+    this.updateDeltaTime();
+    this.updateTotalAnimationTime();
 
     const { shipIconContainer, torpedoIconContainer } = this.services;
 
-    const renderPayload = {
+    const renderPayload: RenderPayload = {
       delta: this.currentDeltaTime,
       total: this.totalAnimationTime,
       last: this.lastAnimationTime,
       zoom,
+      reverse: false,
+      paused: false,
     };
+
     this.callStrategies("render", renderPayload);
-    shipIconContainer && shipIconContainer.render(renderPayload);
-    torpedoIconContainer && torpedoIconContainer.render(renderPayload);
+
+    if (shipIconContainer) shipIconContainer.render(renderPayload);
+
+    if (torpedoIconContainer) torpedoIconContainer.render(renderPayload);
     return renderPayload;
   }
 
-  animateFromTo(start, end) {
+  animateFromTo(start: number, end: number) {
     this.animationStartTime = start;
     this.totalAnimationTime = start;
     this.animationReversed = false;
@@ -103,7 +137,7 @@ class PhaseStrategy {
     this.animationPaused = false;
   }
 
-  setAnimationTime(time) {
+  setAnimationTime(time: number) {
     this.totalAnimationTime = time;
     this.lastAnimationTime = null;
     this.currentDeltaTime = 0;
@@ -145,7 +179,7 @@ class PhaseStrategy {
     this.lastAnimationTime = now;
   }
 
-  update(gamedata) {
+  update(gamedata: GameData) {
     const { uiState } = this.services;
 
     this.gameData = gamedata;
@@ -168,15 +202,15 @@ class PhaseStrategy {
     return this;
   }
 
-  triggerEvent(name, payload) {
+  triggerEvent(name: string, payload: PhaseEventPayload = {}) {
     this.callStrategies(name, payload);
   }
 
-  onScrollEvent(payload) {
+  onScrollEvent(payload: PhaseEventPayload) {
     this.callStrategies("onScroll", payload);
   }
 
-  onZoomEvent(payload) {
+  onZoomEvent(payload: PhaseEventPayload) {
     this.callStrategies("onZoom", payload);
   }
 
@@ -184,7 +218,7 @@ class PhaseStrategy {
     return true;
   }
 
-  commitTurn(gameConnector) {}
+  abstract commitTurn(): void;
 }
 
 export default PhaseStrategy;

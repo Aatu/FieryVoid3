@@ -84,7 +84,7 @@ class ShipSystem {
     this.shipSystems = shipSystems;
   }
 
-  getSystemInfo(ship: Ship): SystemMessage[] {
+  getSystemInfo(): SystemMessage[] {
     const heatMessages: SystemMessage[] = [];
 
     if (this.heat.shouldDisplayHeat()) {

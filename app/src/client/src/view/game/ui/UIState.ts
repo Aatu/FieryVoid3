@@ -1,21 +1,33 @@
+import GameData from "@fieryvoid3/model/src/game/GameData";
 import * as gameUiModes from "./gameUiModes";
+import ShipSystem from "@fieryvoid3/model/src/unit/system/ShipSystem";
+import Ship from "@fieryvoid3/model/src/unit/Ship";
+import PhaseDirector, { Services } from "../phase/PhaseDirector";
+
+export type TooltipCcomponentProvider = () => React.FC<{
+  uiState: UIState;
+  ship: Ship;
+  system: ShipSystem;
+}>;
+
+export type SystemMenuUiState = {
+  systemInfoMenuProvider: TooltipCcomponentProvider | null;
+  activeSystem: ShipSystem | null;
+  activeSystemElement: HTMLElement | null;
+};
 
 type State = {
   lobby: boolean;
-  gameData: any;
-  selectedShip: any;
-  selectedSystems: any[];
+  gameData: GameData;
+  selectedShip: Ship | null;
+  selectedSystems: ShipSystem[];
   systemInfo: any;
   systemInfoMenu: any;
   shipMovement: any;
   shipTooltip: any[];
   turnReady: boolean;
   shipTooltipMenuProvider: any;
-  systemMenu: {
-    systemInfoMenuProvider: any;
-    activeSystem: any;
-    activeSystemElement: any;
-  };
+  systemMenu: SystemMenuUiState;
   shipBadges: any[];
   gameUiMode: any;
   gameUiModeButtons: boolean;
@@ -27,7 +39,13 @@ type State = {
 };
 
 class UIState {
-  public state: State;
+  private state: Partial<State>;
+  public dispatch: any;
+  public phaseDirector: PhaseDirector | null;
+  public services: Services | null;
+  public renderListeners: any[];
+  public systemChangeListeners: any[];
+  public gameData: GameData | null = null;
 
   constructor() {
     this.phaseDirector = null;
@@ -39,7 +57,7 @@ class UIState {
 
     this.state = {
       lobby: false,
-      gameData: null,
+      gameData: undefined,
       selectedShip: null,
       selectedSystems: [],
       systemInfo: null,
@@ -69,16 +87,32 @@ class UIState {
     this.state.gameUiMode[gameUiModes.MOVEMENT] = false;
   }
 
+  getGameData() {
+    if (!this.gameData) {
+      throw new Error("No game data set");
+    }
+
+    return this.gameData;
+  }
+
+  getServices() {
+    if (!this.services) {
+      throw new Error("No services set");
+    }
+
+    return this.services;
+  }
+
+  getState(): State {
+    return this.state as State;
+  }
+
   setDispatch(dispatch) {
     this.dispatch = dispatch;
   }
 
   getReducer() {
     return this.reducer.bind(this);
-  }
-
-  getInitialState() {
-    return this.state;
   }
 
   reducer(state, action) {
@@ -263,12 +297,12 @@ class UIState {
     this.updateState();
   }
 
-  setPhaseDirector(phaseDirector) {
+  setPhaseDirector(phaseDirector: PhaseDirector) {
     this.phaseDirector = phaseDirector;
     this.services = phaseDirector.getServices();
   }
 
-  customEvent(name, payload) {
+  customEvent(name: string, payload?: unknown) {
     if (!this.phaseDirector) {
       return;
     }
@@ -277,6 +311,10 @@ class UIState {
   }
 
   commitTurn() {
+    if (!this.phaseDirector) {
+      return;
+    }
+
     this.phaseDirector.commitTurn();
   }
 
@@ -339,10 +377,6 @@ class UIState {
   setLobby(status) {
     this.state.lobby = status;
     this.updateState();
-  }
-
-  getState() {
-    return this.state;
   }
 
   showSystemInfo(args) {

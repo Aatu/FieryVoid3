@@ -28,7 +28,7 @@ class WeaponArcsOnSystemMouseOver extends UiStrategy {
   }
 
   torpedoMouseOver({ ship, torpedo }) {
-    const { coordinateConverter, shipIconContainer } = this.services;
+    const { coordinateConverter, shipIconContainer } = this.getServices();
     const icon = shipIconContainer.getByShip(ship);
 
     const maxRange = torpedo.maxRange;
@@ -85,7 +85,7 @@ class WeaponArcsOnSystemMouseOver extends UiStrategy {
   }
 
   hide() {
-    const { scene } = this.services;
+    const { scene } = this.getServices();
     this.weaponArcs = this.weaponArcs.filter(({ mesh, circle, texture }) => {
       mesh.remove(circle);
       circle.material.dispose();
@@ -95,7 +95,7 @@ class WeaponArcsOnSystemMouseOver extends UiStrategy {
   }
 
   getFacing(icon) {
-    const { uiState, movementService } = this.services;
+    const { uiState, movementService } = this.getServices();
     if (uiState.hasGameUiMode(MOVEMENT)) {
       const endMove = movementService.getNewEndMove(icon.ship);
       return hexFacingToAngle(endMove.facing);
@@ -105,7 +105,7 @@ class WeaponArcsOnSystemMouseOver extends UiStrategy {
   }
 
   getMesh(icon) {
-    const { uiState, shipIconContainer } = this.services;
+    const { uiState, shipIconContainer } = this.getServices();
     if (uiState.hasGameUiMode(MOVEMENT)) {
       return shipIconContainer.getGhostShipIconByShip(icon.ship).mesh;
     }
@@ -114,7 +114,7 @@ class WeaponArcsOnSystemMouseOver extends UiStrategy {
   }
 
   show(ship, system) {
-    const { coordinateConverter, shipIconContainer } = this.services;
+    const { coordinateConverter, shipIconContainer } = this.getServices();
     const icon = shipIconContainer.getByShip(ship);
 
     const maxRange = system.callHandler("getMaxRange");

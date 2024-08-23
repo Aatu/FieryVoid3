@@ -20,7 +20,7 @@ class MouseOverShowsShipTooltip extends UiStrategy {
   }
 
   shipStateChanged(ship) {
-    const { uiState, shipIconContainer, currentUser } = this.services;
+    const { uiState, shipIconContainer, currentUser } = this.getServices();
 
     const isMine = ship.player.is(currentUser);
 
@@ -33,7 +33,7 @@ class MouseOverShowsShipTooltip extends UiStrategy {
   }
 
   deactivate() {
-    const { uiState } = this.services;
+    const { uiState } = this.getServices();
     if (this.clickedShip) {
       uiState.hideShipTooltip(this.clickedShip);
     }
@@ -44,7 +44,7 @@ class MouseOverShowsShipTooltip extends UiStrategy {
   }
 
   shipClicked(payload) {
-    const { uiState, currentUser } = this.services;
+    const { uiState, currentUser } = this.getServices();
 
     const ship = payload.entity.ship;
     const isMine = ship.player.is(currentUser);
@@ -73,7 +73,7 @@ class MouseOverShowsShipTooltip extends UiStrategy {
   }
   /*
   hexClicked() {
-    const { uiState } = this.services;
+    const { uiState } = this.getServices();
 
     if (uiState.state.systemMenu.activeSystem) {
       return;
@@ -92,7 +92,7 @@ class MouseOverShowsShipTooltip extends UiStrategy {
   */
 
   mouseOverShip(payload) {
-    const { uiState, currentUser } = this.services;
+    const { uiState, currentUser } = this.getServices();
 
     const ship = payload.entity.ship;
     const isMine = ship.player.is(currentUser);
@@ -122,7 +122,7 @@ class MouseOverShowsShipTooltip extends UiStrategy {
   }
 
   mouseOutShip(payload) {
-    const { shipIconContainer, currentUser } = this.services;
+    const { shipIconContainer, currentUser } = this.getServices();
 
     const ship = payload.entity.ship;
     const isMine = ship.player.is(currentUser);
@@ -135,7 +135,7 @@ class MouseOverShowsShipTooltip extends UiStrategy {
       return;
     }
 
-    const { uiState } = this.services;
+    const { uiState } = this.getServices();
     uiState.hideShipTooltip(payload.entity.ship);
     this.mouseOveredShip = null;
 

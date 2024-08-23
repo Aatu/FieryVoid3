@@ -12,7 +12,7 @@ class MouseOverHighlightsShip extends UiStrategy {
   }
 
   show(payload) {
-    const { currentUser } = this.services;
+    const { currentUser } = this.getServices();
     if (payload.entity.ship.player.isUsers(currentUser)) {
       payload.entity.replaceEmissive(COLOR_FRIENDLY);
     } else {
@@ -21,7 +21,7 @@ class MouseOverHighlightsShip extends UiStrategy {
   }
 
   hide() {
-    const { shipIconContainer } = this.services;
+    const { shipIconContainer } = this.getServices();
     shipIconContainer.getArray().forEach((icon) => {
       icon.revertEmissive();
     });

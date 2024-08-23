@@ -14,7 +14,7 @@ import { RenderPayload } from "../../phase/phaseStrategy/PhaseStrategy";
 const torpedoMesh = loadObject("/img/3d/torpedo/scene.gltf");
 
 class TorpedoObject {
-  private torpedoFlight: TorpedoFlight;
+  public torpedoFlight: TorpedoFlight;
   private scene: THREE.Object3D;
   private object: THREE.Object3D;
   private particleEmitter: ParticleEmitter;

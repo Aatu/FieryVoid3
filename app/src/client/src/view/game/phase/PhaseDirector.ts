@@ -1,16 +1,63 @@
+import * as THREE from "three";
 import { User } from "@fieryvoid3/model";
 import UIState from "../ui/UIState";
 import { CoordinateConverter } from "@fieryvoid3/model/src/utils/CoordinateConverter";
 import GameConnector from "../GameConnector";
 import ShipIconContainer from "../renderer/icon/ShipIconContainer";
+import TorpedoIconContainer from "../renderer/icon/TorpedoIconContainer";
+import ElectronicWarfareIndicatorService from "../renderer/electronicWarfare/ElectronicWarfareIndicatorService";
+import { MovementService } from "@fieryvoid3/model/src/movement";
+import WeaponFireService from "@fieryvoid3/model/src/weapon/WeaponFireService";
+import TorpedoAttackService from "@fieryvoid3/model/src/weapon/TorpedoAttackService";
+import PhaseState from "./PhaseState";
+import GameDataCache from "./GameDataCache";
+import ShipWindowManager from "../ui/shipWindow/ShipWindowManager";
+import MovementPathService from "../movement/MovementPathService";
+import TerrainRenderer from "../renderer/TerrainRenderer";
+import PhaseStrategy from "./phaseStrategy/PhaseStrategy";
+import { ParticleEmitterContainer } from "../animation/particle";
+import GameCamera from "../GameCamera";
+import GameData from "@fieryvoid3/model/src/game/GameData";
+
+export type Services = {
+  phaseState: PhaseState;
+  shipIconContainer: ShipIconContainer;
+  torpedoIconContainer: TorpedoIconContainer;
+  electronicWarfareIndicatorService: ElectronicWarfareIndicatorService;
+  scene: THREE.Object3D;
+  shipWindowManager: ShipWindowManager;
+  movementService: MovementService;
+  coordinateConverter: CoordinateConverter;
+  uiState: UIState;
+  currentUser: User;
+  gameConnector: GameConnector;
+  movementPathService: MovementPathService;
+  weaponFireService: WeaponFireService;
+  particleEmitterContainer: ParticleEmitterContainer;
+  gameCamera: GameCamera;
+  torpedoAttackService: TorpedoAttackService;
+};
 
 class PhaseDirector {
   private uiState: UIState;
   private currentUser: User;
-  private shipIconContainer: ShipIconContainer;
-  private torpedoIconContainer: TorpedoIconContainer;
-  private electronicWarfareIndicatorService: ElectronicWarfareIndicatorService;
+  private shipIconContainer: ShipIconContainer | null;
+  private torpedoIconContainer: TorpedoIconContainer | null;
+  private electronicWarfareIndicatorService: ElectronicWarfareIndicatorService | null;
   private coordinateConverter: CoordinateConverter;
+  private shipWindowManager: ShipWindowManager | null;
+  private movementService: MovementService;
+  private weaponFireService: WeaponFireService;
+  private torpedoAttackService: TorpedoAttackService;
+  private movementPathService: MovementPathService | null;
+  private terrainRenderer: TerrainRenderer | null;
+  private phaseStrategy: PhaseStrategy | null;
+  private phaseState: PhaseState;
+  private gameConnector: GameConnector;
+  private scene: THREE.Object3D | null;
+  private emitterContainer: ParticleEmitterContainer | null;
+  private camera: GameCamera | null;
+  private gameDataCache: GameDataCache;
 
   constructor(
     uiState: UIState,
@@ -23,7 +70,6 @@ class PhaseDirector {
     this.shipIconContainer = null;
     this.torpedoIconContainer = null;
     this.electronicWarfareIndicatorService = null;
-    this.timeline = [];
 
     this.phaseStrategy = null;
     this.coordinateConverter = coordinateConverter;
@@ -43,7 +89,11 @@ class PhaseDirector {
     this.gameDataCache = new GameDataCache();
   }
 
-  init(scene, emitterContainer, camera) {
+  init(
+    scene: THREE.Object3D,
+    emitterContainer: ParticleEmitterContainer,
+    camera: GameCamera
+  ) {
     this.scene = scene;
     this.emitterContainer = emitterContainer;
     this.camera = camera;
@@ -76,7 +126,7 @@ class PhaseDirector {
   }
 
   closeReplay() {
-    this.phaseStrategy.deactivate();
+    this.phaseStrategy?.deactivate();
     this.phaseStrategy = null;
 
     this.resolvePhaseStrategy();
@@ -93,19 +143,18 @@ class PhaseDirector {
     this.relayEvent("newTurn", gameDatas);
   }
 
-  receiveGameData(gameData) {
-    window.gameData = this.gameDataCache;
+  receiveGameData(gameData: GameData) {
     this.gameDataCache.setCurrent(gameData);
     this.resolvePhaseStrategy();
 
     console.log(gameData);
   }
 
-  receiveReplay(gameDatas) {
+  receiveReplay(gameDatas: GameData[]) {
     this.receiveTurnChange(gameDatas);
   }
 
-  receiveTurnChange(gameDatas) {
+  receiveTurnChange(gameDatas: GameData[]) {
     this.gameDataCache.setCurrent(gameDatas[gameDatas.length - 1]);
     const replays = [...gameDatas];
     replays.splice(-1, 1);
@@ -120,13 +169,13 @@ class PhaseDirector {
     }
   }
 
-  relayEvent(name, payload) {
+  relayEvent(name: string, payload: unknown) {
     if (!this.phaseStrategy || this.phaseStrategy.inactive) {
       return;
     }
 
     this.phaseStrategy.onEvent(name, payload);
-    this.shipIconContainer.onEvent(name, payload);
+    this.shipIconContainer?.onEvent(name, payload);
   }
 
   commitTurn() {
@@ -203,23 +252,24 @@ class PhaseDirector {
     this.phaseStrategy.activate().update(gameData);
   }
 
-  getServices() {
+  getServices(): Services {
     return {
       phaseState: this.phaseState,
-      shipIconContainer: this.shipIconContainer,
-      torpedoIconContainer: this.torpedoIconContainer,
-      electronicWarfareIndicatorService: this.electronicWarfareIndicatorService,
-      scene: this.scene,
-      shipWindowManager: this.shipWindowManager,
+      shipIconContainer: this.shipIconContainer!,
+      torpedoIconContainer: this.torpedoIconContainer!,
+      electronicWarfareIndicatorService:
+        this.electronicWarfareIndicatorService!,
+      scene: this.scene!,
+      shipWindowManager: this.shipWindowManager!,
       movementService: this.movementService,
       coordinateConverter: this.coordinateConverter,
       uiState: this.uiState,
       currentUser: this.currentUser,
       gameConnector: this.gameConnector,
-      movementPathService: this.movementPathService,
+      movementPathService: this.movementPathService!,
       weaponFireService: this.weaponFireService,
-      particleEmitterContainer: this.emitterContainer,
-      gameCamera: this.camera,
+      particleEmitterContainer: this.emitterContainer!,
+      gameCamera: this.camera!,
       torpedoAttackService: this.torpedoAttackService,
     };
   }

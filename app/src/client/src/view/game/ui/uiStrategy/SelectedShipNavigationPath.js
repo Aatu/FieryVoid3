@@ -16,7 +16,7 @@ class SelectedShipNavigationPath extends UiStrategy {
   }
 
   update(gameData) {
-    const { uiState } = this.services;
+    const { uiState } = this.getServices();
     super.update(gameData);
     this.show(uiState.getSelectedShip());
   }
@@ -40,7 +40,7 @@ class SelectedShipNavigationPath extends UiStrategy {
       return;
     }
 
-    const { coordinateConverter, scene } = this.services;
+    const { coordinateConverter, scene } = this.getServices();
 
     if (!ship) {
       return;

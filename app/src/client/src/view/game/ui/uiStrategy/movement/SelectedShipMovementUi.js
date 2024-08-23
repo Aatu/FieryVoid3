@@ -2,7 +2,7 @@ import UiStrategy from "../UiStrategy";
 
 class SelectedShipMovementUi extends UiStrategy {
   deactivate() {
-    const { uiState } = this.services;
+    const { uiState } = this.getServices();
     uiState.hideShipMovement();
   }
 
@@ -12,7 +12,7 @@ class SelectedShipMovementUi extends UiStrategy {
   }
 
   shipStateChanged() {
-    const { uiState } = this.services;
+    const { uiState } = this.getServices();
     const ship = uiState.getSelectedShip();
 
     if (ship) {
@@ -21,12 +21,12 @@ class SelectedShipMovementUi extends UiStrategy {
   }
 
   shipSelected(ship) {
-    const { uiState } = this.services;
+    const { uiState } = this.getServices();
     uiState.showShipMovement(ship, true);
   }
 
   shipDeselected() {
-    const { uiState } = this.services;
+    const { uiState } = this.getServices();
     uiState.hideShipMovement();
   }
 }

@@ -159,7 +159,7 @@ class TorpedoLauncherStrategy extends ShipSystemStrategy {
     return true;
   }
 
-  setLaunchTarget(shipId: string) {
+  setLaunchTarget(shipId: string | null) {
     if (this.turnsLoaded < this.loadingTime || !this.loadedTorpedo) {
       return;
     }

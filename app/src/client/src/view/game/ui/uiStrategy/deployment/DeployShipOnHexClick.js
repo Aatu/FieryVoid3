@@ -2,7 +2,7 @@ import UiStrategy from "../UiStrategy";
 
 class DeployShipOnHexClick extends UiStrategy {
   hexClicked({ hex }) {
-    const { uiState, movementService } = this.services;
+    const { uiState, movementService } = this.getServices();
     const ship = uiState.getSelectedShip();
 
     if (!ship || !this.gameData) {
@@ -19,7 +19,7 @@ class DeployShipOnHexClick extends UiStrategy {
       this.gameData.ships
         .getShips()
         .find(
-          otherShip =>
+          (otherShip) =>
             otherShip !== ship && otherShip.getHexPosition().equals(hex)
         )
     ) {

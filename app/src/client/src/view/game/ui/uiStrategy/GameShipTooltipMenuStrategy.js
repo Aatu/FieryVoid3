@@ -4,14 +4,14 @@ import GameShipTooltipMenu from "../shipTooltip/GameShipTooltipMenu";
 class GameShipTooltipMenuStrategy extends UiStrategy {
   activate(services) {
     super.activate(services);
-    const { uiState } = this.services;
+    const { uiState } = this.getServices();
 
     uiState.setTooltipMenuProvider(this.getTooltipComponent);
   }
 
   deactivate() {
     super.deactivate();
-    const { uiState } = this.services;
+    const { uiState } = this.getServices();
 
     uiState.setTooltipMenuProvider(null);
   }

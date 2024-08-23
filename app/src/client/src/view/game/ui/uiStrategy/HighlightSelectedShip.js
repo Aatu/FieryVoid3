@@ -18,7 +18,7 @@ class HighlightSelectedShip extends UiStrategy {
   }
 
   hide() {
-    const { shipIconContainer } = this.services;
+    const { shipIconContainer } = this.getServices();
     if (this.icon) {
       this.icon.revertEmissive();
       this.icon.mapIcon.revertColor();
@@ -37,14 +37,14 @@ class HighlightSelectedShip extends UiStrategy {
   }
 
   shipSelected(ship) {
-    const { shipIconContainer } = this.services;
+    const { shipIconContainer } = this.getServices();
     this.active = true;
     this.activeTime = 0;
     this.icon = shipIconContainer.getByShip(ship);
   }
 
   shipDeselected(ship) {
-    const { shipIconContainer } = this.services;
+    const { shipIconContainer } = this.getServices();
     this.active = true;
     this.activeTime = 0;
 
@@ -52,7 +52,7 @@ class HighlightSelectedShip extends UiStrategy {
   }
 
   render({ delta }) {
-    const { shipIconContainer } = this.services;
+    const { shipIconContainer } = this.getServices();
 
     if (!this.active) {
       return;

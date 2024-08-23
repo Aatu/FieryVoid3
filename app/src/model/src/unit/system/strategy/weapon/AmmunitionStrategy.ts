@@ -5,6 +5,7 @@ import { AmmunitionType, createAmmoInstance } from "../../weapon/ammunition";
 import { SYSTEM_HANDLERS } from "../types/SystemHandlersTypes";
 import Ship from "../../../Ship";
 import ShipSystem from "../../ShipSystem";
+import { SystemTooltipMenuButton } from "../../../ShipSystemHandlers";
 
 export type SerializedAmmunitionStrategy = {
   ammunitionStrategy: {
@@ -121,8 +122,11 @@ class AmmunitionStrategy extends ShipSystemStrategy {
     ];
   }
 
-  getTooltipMenuButton({ myShip }: { myShip: boolean }, previousResponse = []) {
-    if (!myShip) {
+  getTooltipMenuButton(
+    payload?: { myShip?: boolean },
+    previousResponse = []
+  ): SystemTooltipMenuButton[] {
+    if (!payload?.myShip) {
       return previousResponse;
     }
 
@@ -133,11 +137,11 @@ class AmmunitionStrategy extends ShipSystemStrategy {
     return [
       ...previousResponse,
       {
+        sort: 0,
         img: this.getSelectedAmmo().getBackgroundImage(),
-        onClickHandler: () => {
+        clickHandler: () => {
           this.toggleSelectedAmmo();
         },
-        onDisabledHandler: () => false,
       },
     ];
   }

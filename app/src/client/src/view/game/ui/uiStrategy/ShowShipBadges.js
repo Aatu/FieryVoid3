@@ -27,7 +27,7 @@ class ShowShipBadges extends AnimationUiStrategy {
   }
 
   updateShip(ship) {
-    const { shipIconContainer, uiState } = this.services;
+    const { shipIconContainer, uiState } = this.getServices();
 
     if (ship.isDestroyed()) {
       return;
@@ -45,7 +45,7 @@ class ShowShipBadges extends AnimationUiStrategy {
   */
 
   show(showName) {
-    const { shipIconContainer, uiState } = this.services;
+    const { shipIconContainer, uiState } = this.getServices();
 
     shipIconContainer
       .getArray()
@@ -58,7 +58,7 @@ class ShowShipBadges extends AnimationUiStrategy {
   }
 
   hide() {
-    const { shipIconContainer, uiState } = this.services;
+    const { shipIconContainer, uiState } = this.getServices();
     shipIconContainer.getArray().forEach((icon) => {
       uiState.hideShipBadge(icon);
     });
@@ -66,7 +66,7 @@ class ShowShipBadges extends AnimationUiStrategy {
   }
 
   shouldShow(zoom, force = false) {
-    if (!this.services) {
+    if (!this.getServices()) {
       return;
     }
 
@@ -90,7 +90,7 @@ class ShowShipBadges extends AnimationUiStrategy {
   }
 
   deactivate() {
-    const { shipIconContainer, uiState } = this.services;
+    const { shipIconContainer, uiState } = this.getServices();
     shipIconContainer.getArray().forEach((icon) => {
       uiState.removeShipBadge(icon);
     });

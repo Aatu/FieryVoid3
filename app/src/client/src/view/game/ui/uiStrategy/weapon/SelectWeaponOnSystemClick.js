@@ -3,13 +3,13 @@ import UiStrategy from "../UiStrategy";
 import {
   degreeToRadian,
   addToDirection,
-  getArcLength
+  getArcLength,
 } from "../../../../../../model/utils/math";
 
 const material = new THREE.MeshBasicMaterial({
   color: new THREE.Color("rgb(20,80,128)"),
   opacity: 0.5,
-  transparent: true
+  transparent: true,
 });
 
 class SelectWeaponOnSystemClick extends UiStrategy {
@@ -19,13 +19,13 @@ class SelectWeaponOnSystemClick extends UiStrategy {
   }
 
   deactivate() {
-    const { uiState } = this.services;
+    const { uiState } = this.getServices();
 
     uiState.deselectAllSystems();
   }
 
   systemClicked({ ship, system, scs }) {
-    const { uiState, currentUser } = this.services;
+    const { uiState, currentUser } = this.getServices();
 
     if (scs || !system.isWeapon() || !ship.player.is(currentUser)) {
       return;

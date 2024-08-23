@@ -18,26 +18,26 @@ class ShipSystemStrategy implements IShipSystemStrategy {
     this.system = system;
   }
 
-  protected getSystem() {
+  public getSystem() {
     if (!this.system) {
       throw new Error("System not initialized");
     }
     return this.system;
   }
 
-  protected getShip(): Ship {
+  public getShip(): Ship {
     return this.getSystem().getShipSystems().ship;
   }
 
-  protected getShipSystems(): ShipSystems {
+  public getShipSystems(): ShipSystems {
     return this.getSystem().getShipSystems();
   }
 
-  protected getSystems(): ShipSystem[] {
+  public getSystems(): ShipSystem[] {
     return this.getShipSystems().getSystems();
   }
 
-  protected getSystemById(id: number): ShipSystem {
+  public getSystemById(id: number): ShipSystem {
     return this.getShipSystems().getSystemById(id);
   }
 

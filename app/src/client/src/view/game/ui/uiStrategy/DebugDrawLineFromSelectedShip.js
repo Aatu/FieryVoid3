@@ -10,7 +10,7 @@ class DebugDrawLineFromSelectedShip extends UiStrategy {
   }
 
   mouseOverHex(hex) {
-    const { uiState, coordinateConverter, scene } = this.services;
+    const { uiState, coordinateConverter, scene } = this.getServices();
     const ship = uiState.getSelectedShip();
     if (!ship) {
       return;
@@ -18,7 +18,7 @@ class DebugDrawLineFromSelectedShip extends UiStrategy {
 
     const positions = hex.drawLine(ship.getHexPosition(), 5);
 
-    this.sprites = positions.map(position => {
+    this.sprites = positions.map((position) => {
       const sprite = new HexagonSprite(
         coordinateConverter.fromHexToGame(position)
       );
@@ -28,8 +28,8 @@ class DebugDrawLineFromSelectedShip extends UiStrategy {
   }
 
   mouseOutHex(hex) {
-    const { scene } = this.services;
-    this.sprites.forEach(sprite => {
+    const { scene } = this.getServices();
+    this.sprites.forEach((sprite) => {
       scene.remove(sprite.mesh);
       sprite.destroy();
     });

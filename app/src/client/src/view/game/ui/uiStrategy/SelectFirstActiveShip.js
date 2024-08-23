@@ -2,12 +2,8 @@ import UiStrategy from "./UiStrategy";
 
 class SelectFirstActiveShip extends UiStrategy {
   async update(gameData) {
-    const {
-      uiState,
-      currentUser,
-      gameCamera,
-      shipIconContainer
-    } = this.services;
+    const { uiState, currentUser, gameCamera, shipIconContainer } =
+      this.getServices();
 
     if (
       uiState.getSelectedShip() &&

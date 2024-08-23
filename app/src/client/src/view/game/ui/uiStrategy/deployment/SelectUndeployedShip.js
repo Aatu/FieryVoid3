@@ -2,14 +2,14 @@ import UiStrategy from "../UiStrategy";
 
 class SelectUndeployedShip extends UiStrategy {
   update(gameData) {
-    const { uiState, currentUser } = this.services;
+    const { uiState, currentUser } = this.getServices();
 
     if (uiState.getSelectedShip()) {
       return;
     }
 
     const ships = gameData.getShipsForUser(currentUser);
-    let ship = ships.find(s => s.movement.getDeployMove());
+    let ship = ships.find((s) => s.movement.getDeployMove());
 
     if (!ship) {
       ship = ships[0];

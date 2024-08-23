@@ -3,7 +3,7 @@ import * as gameUiModes from "../../gameUiModes";
 
 class OwnedShipEw extends UiStrategy {
   deactivate() {
-    const { electronicWarfareIndicatorService } = this.services;
+    const { electronicWarfareIndicatorService } = this.getServices();
     electronicWarfareIndicatorService.hideAll();
   }
 
@@ -21,7 +21,7 @@ class OwnedShipEw extends UiStrategy {
   }
 
   shipStateChanged(ship) {
-    const { electronicWarfareIndicatorService, uiState } = this.services;
+    const { electronicWarfareIndicatorService, uiState } = this.getServices();
     if (!this.gameData) {
       return;
     }
@@ -41,18 +41,15 @@ class OwnedShipEw extends UiStrategy {
   }
 
   show() {
-    const {
-      electronicWarfareIndicatorService,
-      uiState,
-      currentUser
-    } = this.services;
+    const { electronicWarfareIndicatorService, uiState, currentUser } =
+      this.getServices();
 
     electronicWarfareIndicatorService.hideAll();
 
     if (uiState.hasGameUiMode(gameUiModes.EW)) {
       this.gameData.ships
         .getUsersShips(currentUser)
-        .forEach(ship => electronicWarfareIndicatorService.showForShip(ship));
+        .forEach((ship) => electronicWarfareIndicatorService.showForShip(ship));
     }
 
     if (

@@ -115,10 +115,17 @@ export enum SYSTEM_HANDLERS {
   setFuel = "setFuel",
 
   changeMode = "changeMode",
+
+  getWeaponFireAnimationName = "getWeaponFireAnimationName",
+  getWeaponFireAnimationArguments = "getWeaponFireAnimationArguments",
+  getTotalBurstSize = "getTotalBurstSize",
+  getTooltipMenuButton = "getTooltipMenuButton",
 }
 
+export type SystemMessageValue = string | number | SystemMessage[];
+
 export type SystemMessage = {
-  value?: string | number | SystemMessage[];
+  value?: SystemMessageValue;
   header?: string;
   sort?: string;
   component?: string;

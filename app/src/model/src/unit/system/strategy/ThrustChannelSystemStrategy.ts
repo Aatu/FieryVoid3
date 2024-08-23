@@ -2,6 +2,7 @@ import ShipSystemStrategy from "./ShipSystemStrategy";
 import ThrustChannelHeatIncreased from "../criticals/ThrustChannelHeatIncreased";
 import { OutputReduced } from "../criticals/index";
 import { SYSTEM_HANDLERS, SystemMessage } from "./types/SystemHandlersTypes";
+import { SystemTooltipMenuButton } from "../../ShipSystemHandlers";
 
 export type SerializedThrustChannelSystemStrategy = {
   thrustChannelSystemStrategy?: {
@@ -317,8 +318,11 @@ class ThrustChannelSystemStrategy extends ShipSystemStrategy {
     }
   }
 
-  getTooltipMenuButton({ myShip }: { myShip: boolean }, previousResponse = []) {
-    if (!myShip) {
+  getTooltipMenuButton(
+    payload?: { myShip?: boolean },
+    previousResponse = []
+  ): SystemTooltipMenuButton[] {
+    if (!payload?.myShip) {
       return previousResponse;
     }
 
@@ -338,8 +342,7 @@ class ThrustChannelSystemStrategy extends ShipSystemStrategy {
           this.mode === THRUSTER_MODE.FUSION
             ? "/img/system/thrusterC1.png"
             : "/img/system/thruster1.png",
-        onClickHandler: this.changeMode.bind(this),
-        onDisabledHandler: () => false,
+        clickHandler: this.changeMode.bind(this),
       },
     ];
   }

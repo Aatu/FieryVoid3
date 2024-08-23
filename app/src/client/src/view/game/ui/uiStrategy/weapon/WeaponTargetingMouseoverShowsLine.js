@@ -26,7 +26,7 @@ class WeaponTargetingMouseoverShowsLine extends UiStrategy {
   }
 
   hide() {
-    this.lines.forEach(line => line.destroy());
+    this.lines.forEach((line) => line.destroy());
     this.lines = [];
   }
 
@@ -35,7 +35,7 @@ class WeaponTargetingMouseoverShowsLine extends UiStrategy {
       return;
     }
 
-    const { scene, shipIconContainer } = this.services;
+    const { scene, shipIconContainer } = this.getServices();
 
     const shooterIcon = shipIconContainer.getByShip(shooter);
     const targetIcon = shipIconContainer.getByShip(target);
@@ -47,13 +47,13 @@ class WeaponTargetingMouseoverShowsLine extends UiStrategy {
       color: new THREE.Color(196 / 255, 196 / 255, 39 / 255),
       opacity: 0.1,
       pulseAmount: 1,
-      dashSize: 0
+      dashSize: 0,
     });
 
     this.lines.push(line);
   }
   deactivate() {
-    const { uiState } = this.services;
+    const { uiState } = this.getServices();
     if (this.clickedShip) {
       uiState.hideShipTooltip(this.clickedShip);
     }

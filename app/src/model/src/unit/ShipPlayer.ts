@@ -11,8 +11,8 @@ class ShipPlayer {
     return this.user && this.user.isAi();
   }
 
-  is(user: User | null) {
-    return user && this.user?.id === user.id;
+  is(user: User | null): boolean {
+    return Boolean(user && this.user?.id === user.id);
   }
 
   getUser(): User {
@@ -27,8 +27,8 @@ class ShipPlayer {
     this.user = user;
   }
 
-  isUsers(user: User) {
-    return user && this.user && this.user.id === user.id;
+  isUsers(user: User | null): boolean {
+    return Boolean(user && this.user && this.user.id === user.id);
   }
 
   deserialize(user: IUser) {

@@ -10,7 +10,7 @@ const GameStoreProvider: React.FC<{
 }> = ({ uiState, children }) => {
   const [state, dispatch] = useReducer(
     uiState.getReducer(),
-    uiState.getInitialState()
+    uiState.getState()
   );
 
   uiState.setDispatch(dispatch);

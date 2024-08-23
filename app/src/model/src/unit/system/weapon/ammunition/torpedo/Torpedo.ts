@@ -9,6 +9,17 @@ export type TorpedoDamageStrategy = StandardDamageStrategy & {
     target: Ship;
     torpedoFlight: TorpedoFlight;
   }) => number;
+  getAttackRunMessages: (payload: {
+    shooter: Ship;
+    target: Ship;
+    torpedoFlight: TorpedoFlight;
+  }) => SystemMessage[];
+};
+
+type TorpedoVisuals = {
+  engineColor: [number, number, number];
+  explosionType: string;
+  explosionSize: number;
 };
 
 class Torpedo extends CargoEntity {
@@ -17,7 +28,7 @@ class Torpedo extends CargoEntity {
   public hitSize: number;
   public evasion: number;
   public damageStrategy: TorpedoDamageStrategy | null = null;
-  public visuals: Record<string, unknown>;
+  public visuals: TorpedoVisuals;
 
   constructor({ minRange = 100, maxRange = 300, hitSize = 0, evasion = 30 }) {
     super();

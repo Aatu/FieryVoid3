@@ -2,7 +2,7 @@ import UiStrategy from "./UiStrategy";
 
 class ShipClickSelectsShip extends UiStrategy {
   shipClicked(payload) {
-    const { uiState, currentUser } = this.services;
+    const { uiState, currentUser } = this.getServices();
     const ship = payload.entity.ship;
 
     if (ship.player.isUsers(currentUser) && !uiState.isSelected(ship)) {

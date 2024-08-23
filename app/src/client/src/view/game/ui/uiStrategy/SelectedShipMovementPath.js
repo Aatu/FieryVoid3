@@ -1,19 +1,19 @@
 import UiStrategy from "./UiStrategy";
 
-const hideAllMovementPaths = shipIconContainer => {
-  shipIconContainer.getArray().forEach(function(icon) {
+const hideAllMovementPaths = (shipIconContainer) => {
+  shipIconContainer.getArray().forEach(function (icon) {
     icon.hideMovementPath();
   });
 };
 
 class SelectedShipMovementPath extends UiStrategy {
   deactivate() {
-    const { shipIconContainer } = this.services;
+    const { shipIconContainer } = this.getServices();
     hideAllMovementPaths(shipIconContainer);
   }
 
   update(gameData) {
-    const { uiState } = this.services;
+    const { uiState } = this.getServices();
     super.update(gameData);
 
     const ship = uiState.getSelectedShip();
@@ -23,7 +23,7 @@ class SelectedShipMovementPath extends UiStrategy {
   }
 
   shipStateChanged(ship) {
-    const { shipIconContainer, uiState } = this.services;
+    const { shipIconContainer, uiState } = this.getServices();
 
     if (uiState.getSelectedShip() !== ship || !this.gameData) {
       return;
@@ -34,7 +34,7 @@ class SelectedShipMovementPath extends UiStrategy {
   }
 
   shipSelected(ship) {
-    const { shipIconContainer } = this.services;
+    const { shipIconContainer } = this.getServices();
     if (!this.gameData) {
       return;
     }
@@ -44,7 +44,7 @@ class SelectedShipMovementPath extends UiStrategy {
   }
 
   mouseOutShip(payload) {
-    const { uiState } = this.services;
+    const { uiState } = this.getServices();
     const ship = uiState.getSelectedShip();
     if (ship) {
       this.shipStateChanged(ship);
@@ -52,7 +52,7 @@ class SelectedShipMovementPath extends UiStrategy {
   }
 
   shipDeselected() {
-    const { shipIconContainer } = this.services;
+    const { shipIconContainer } = this.getServices();
     hideAllMovementPaths(shipIconContainer);
   }
 }

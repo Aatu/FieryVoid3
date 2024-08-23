@@ -1,8 +1,15 @@
 import ShipSystemStrategy from "./ShipSystemStrategy";
 import { ForcedOffline } from "../criticals/index";
 import { SYSTEM_HANDLERS, SystemMessage } from "./types/SystemHandlersTypes";
+import {
+  IShipSystemStrategy,
+  SystemTooltipMenuButton,
+} from "../../ShipSystemHandlers";
 
-class RequiresPowerSystemStrategy extends ShipSystemStrategy {
+class RequiresPowerSystemStrategy
+  extends ShipSystemStrategy
+  implements IShipSystemStrategy
+{
   private power: number;
   private getsCriticals: boolean;
 
@@ -53,8 +60,11 @@ class RequiresPowerSystemStrategy extends ShipSystemStrategy {
     return this.getSystem().hasCritical(ForcedOffline);
   }
 
-  getTooltipMenuButton({ myShip }: { myShip: boolean }, previousResponse = []) {
-    if (!myShip) {
+  getTooltipMenuButton(
+    payload?: { myShip?: boolean },
+    previousResponse = []
+  ): SystemTooltipMenuButton[] {
+    if (!payload?.myShip) {
       return previousResponse;
     }
 
@@ -66,7 +76,7 @@ class RequiresPowerSystemStrategy extends ShipSystemStrategy {
         {
           sort: 0,
           img: "/img/goOnline.png",
-          onClickHandler: () => system.power.setOnline(),
+          clickHandler: () => system.power.setOnline(),
         },
       ];
     } else if (system.getShipSystems().power.canSetOffline(system)) {
@@ -75,7 +85,7 @@ class RequiresPowerSystemStrategy extends ShipSystemStrategy {
         {
           sort: 0,
           img: "/img/goOffline.png",
-          onClickHandler: () => system.power.setOffline(),
+          clickHandler: () => system.power.setOffline(),
         },
       ];
     }

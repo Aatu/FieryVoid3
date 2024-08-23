@@ -3,7 +3,7 @@ import * as gameUiModes from "../../gameUiModes";
 
 class CurrentEW extends UiStrategy {
   deactivate() {
-    const { electronicWarfareIndicatorService } = this.services;
+    const { electronicWarfareIndicatorService } = this.getServices();
     electronicWarfareIndicatorService.hideAllCurrent();
   }
 
@@ -25,18 +25,15 @@ class CurrentEW extends UiStrategy {
   }
 
   show() {
-    const {
-      electronicWarfareIndicatorService,
-      uiState,
-      currentUser
-    } = this.services;
+    const { electronicWarfareIndicatorService, uiState, currentUser } =
+      this.getServices();
 
     electronicWarfareIndicatorService.hideAllCurrent();
 
     if (uiState.hasGameUiMode(gameUiModes.ENEMY_WEAPONS)) {
       this.gameData.ships
         .getShipsEnemyTeams(currentUser)
-        .forEach(ship =>
+        .forEach((ship) =>
           electronicWarfareIndicatorService.showCurrentForShip(ship)
         );
     }
@@ -44,7 +41,7 @@ class CurrentEW extends UiStrategy {
     if (uiState.hasGameUiMode(gameUiModes.WEAPONS)) {
       this.gameData.ships
         .getShipsInSameTeam(currentUser)
-        .forEach(ship =>
+        .forEach((ship) =>
           electronicWarfareIndicatorService.showCurrentForShip(ship)
         );
     }

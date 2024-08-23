@@ -10,9 +10,9 @@ class ShowDeploymentAreas extends UiStrategy {
   }
 
   deactivate() {
-    const { scene } = this.services;
-    this.areas.forEach(area => {
-      area.sprites.forEach(sprite => {
+    const { scene } = this.getServices();
+    this.areas.forEach((area) => {
+      area.sprites.forEach((sprite) => {
         scene.remove(sprite.mesh);
         sprite.destroy();
       });
@@ -21,9 +21,9 @@ class ShowDeploymentAreas extends UiStrategy {
 
   update(gameData) {
     super.update(gameData);
-    const { scene, coordinateConverter, currentUser } = this.services;
+    const { scene, coordinateConverter, currentUser } = this.getServices();
 
-    this.areas = gameData.slots.getSlots().map(slot => {
+    this.areas = gameData.slots.getSlots().map((slot) => {
       const hexagons = slot.deploymentLocation.spiral(slot.deploymentRadius);
 
       let color = new THREE.Color(1, 1, 1);
@@ -35,7 +35,7 @@ class ShowDeploymentAreas extends UiStrategy {
 
       return {
         slot,
-        sprites: hexagons.map(hex => {
+        sprites: hexagons.map((hex) => {
           const sprite = new HexagonSprite(
             coordinateConverter.fromHexToGame(hex)
           );
@@ -47,7 +47,7 @@ class ShowDeploymentAreas extends UiStrategy {
           scene.add(sprite.mesh);
 
           return sprite;
-        })
+        }),
       };
     });
   }

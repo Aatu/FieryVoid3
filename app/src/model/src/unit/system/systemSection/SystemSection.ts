@@ -12,6 +12,10 @@ class SystemSection {
     this.systems = [];
   }
 
+  getLocation() {
+    return this.location;
+  }
+
   getOffsetHex() {
     switch (this.location) {
       case SYSTEM_LOCATION.PRIMARY:

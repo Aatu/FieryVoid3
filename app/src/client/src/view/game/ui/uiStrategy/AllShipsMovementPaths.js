@@ -3,7 +3,7 @@ import * as gameUiModes from "../gameUiModes";
 
 class AllShipsMovementPaths extends UiStrategy {
   deactivate() {
-    const { movementPathService } = this.services;
+    const { movementPathService } = this.getServices();
     movementPathService.hideAllMovementPaths();
   }
 
@@ -21,7 +21,7 @@ class AllShipsMovementPaths extends UiStrategy {
   }
 
   shipStateChanged(ship) {
-    const { movementPathService, uiState } = this.services;
+    const { movementPathService, uiState } = this.getServices();
     if (!this.gameData) {
       return;
     }
@@ -41,7 +41,7 @@ class AllShipsMovementPaths extends UiStrategy {
   }
 
   show() {
-    const { movementPathService, uiState } = this.services;
+    const { movementPathService, uiState } = this.getServices();
 
     if (uiState.hasGameUiMode(gameUiModes.MOVEMENT)) {
       const ships = this.gameData.ships.getAliveShips();

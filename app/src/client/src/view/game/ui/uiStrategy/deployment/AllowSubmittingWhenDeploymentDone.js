@@ -2,7 +2,7 @@ import UiStrategy from "../UiStrategy";
 
 class AllowSubmittingWhenDeploymentDone extends UiStrategy {
   deactivate() {
-    const { uiState } = this.services;
+    const { uiState } = this.getServices();
     uiState.setTurnReady(false);
   }
 
@@ -16,8 +16,8 @@ class AllowSubmittingWhenDeploymentDone extends UiStrategy {
   }
 
   checkDeployment() {
-    const { currentUser, uiState } = this.services;
-    const result = this.gameData.ships.getShips().every(ship => {
+    const { currentUser, uiState } = this.getServices();
+    const result = this.gameData.ships.getShips().every((ship) => {
       if (!ship.player.isUsers(currentUser)) {
         return true;
       }

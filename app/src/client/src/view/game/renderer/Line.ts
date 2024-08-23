@@ -7,6 +7,7 @@ import {
   ReadyPromise,
 } from "@fieryvoid3/model/src/utils/ReadyPromise";
 import { degreeToRadian } from "@fieryvoid3/model/src/utils/math";
+import Vector from "@fieryvoid3/model/src/utils/Vector";
 
 let hexagonMesh: THREE.Mesh | null = null;
 
@@ -41,8 +42,8 @@ const animate = () => {
 animate();
 
 type LineArgs = {
-  start?: THREE.Vector3;
-  end?: THREE.Vector3;
+  start?: Vector;
+  end?: Vector;
   width?: number;
   pulseAmount?: number;
   pulseSpeed?: number;
@@ -55,8 +56,8 @@ type LineArgs = {
 class Line {
   private scene: THREE.Object3D;
   private mesh: THREE.Mesh | null;
-  private start: THREE.Vector3;
-  private end: THREE.Vector3;
+  private start: Vector;
+  private end: Vector;
   private width: number;
   private pulseAmount: number;
   private pulseSpeed: number;
@@ -79,8 +80,8 @@ class Line {
 
     this.scene = scene;
     this.mesh = null;
-    this.start = args.start || new THREE.Vector3(0, 0, 0);
-    this.end = args.end || new THREE.Vector3(0, 0, 0);
+    this.start = args.start || new Vector(0, 0, 0);
+    this.end = args.end || new Vector(0, 0, 0);
     this.width = args.width || 10;
     this.pulseAmount = args.pulseAmount || 0;
     this.pulseSpeed = args.pulseSpeed || 1;
@@ -242,9 +243,13 @@ class Line {
     this.opacityAttribute.needsUpdate = true;
   }
 
-  getOrientation(pointX: THREE.Vector3, pointY: THREE.Vector3) {
+  getOrientation(pointX: Vector, pointY: Vector) {
     const orientation = new THREE.Matrix4();
-    orientation.lookAt(pointX, pointY, new THREE.Object3D().up);
+    orientation.lookAt(
+      pointX.toThree(),
+      pointY.toThree(),
+      new THREE.Object3D().up
+    );
     orientation.multiply(
       new THREE.Matrix4().set(1, 0, 0, 0, 0, 0, 1, 0, 0, -1, 0, 0, 0, 0, 0, 1)
     );
@@ -252,11 +257,7 @@ class Line {
     return orientation;
   }
 
-  async create(
-    pointX: THREE.Vector3,
-    pointY: THREE.Vector3,
-    lineWidth: number
-  ) {
+  async create(pointX: Vector, pointY: Vector, lineWidth: number) {
     const mesh = await this.createMesh(lineWidth, this.length);
     const orientation = this.getOrientation(pointX, pointY);
 
@@ -297,7 +298,7 @@ class Line {
     this.getMesh().position.z = (this.end.z + this.start.z) / 2;
   }
 
-  async update(start: THREE.Vector3, end: THREE.Vector3, lineWidth: number) {
+  async update(start: Vector, end: Vector, lineWidth: number) {
     await this.ready.promise;
     this.width = lineWidth;
     this.start = start;
@@ -306,7 +307,7 @@ class Line {
     this.updateMesh();
   }
 
-  setEnd(end: THREE.Vector3) {
+  setEnd(end: Vector) {
     this.update(this.start, end, this.width);
   }
 

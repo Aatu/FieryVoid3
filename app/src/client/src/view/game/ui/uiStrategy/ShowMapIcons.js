@@ -17,7 +17,7 @@ class ShowMapIcons extends AnimationUiStrategy {
   }
 
   showHighligh(icon) {
-    const { currentUser } = this.services;
+    const { currentUser } = this.getServices();
     const color = icon.ship.player.isUsers(currentUser)
       ? COLOR_FRIENDLY_HIGHLIGHT
       : COLOR_ENEMY_HIGHLIGHT;
@@ -26,7 +26,7 @@ class ShowMapIcons extends AnimationUiStrategy {
   }
 
   hideHighligh() {
-    const { shipIconContainer, currentUser } = this.services;
+    const { shipIconContainer, currentUser } = this.getServices();
     shipIconContainer.getArray().forEach((icon) => {
       const ghost = shipIconContainer.getGhostShipIconByShip(icon.ship);
       ghost.mapIcon.revertColor();
@@ -58,7 +58,7 @@ class ShowMapIcons extends AnimationUiStrategy {
 
   showIcons() {
     this.changeScale(1);
-    const { shipIconContainer, currentUser, gameCamera } = this.services;
+    const { shipIconContainer, currentUser, gameCamera } = this.getServices();
     shipIconContainer.getArray().forEach((icon) => {
       const color = icon.ship.player.isUsers(currentUser)
         ? COLOR_FRIENDLY
@@ -74,7 +74,7 @@ class ShowMapIcons extends AnimationUiStrategy {
 
   hideIcons() {
     this.changeScale(1);
-    const { shipIconContainer, gameCamera } = this.services;
+    const { shipIconContainer, gameCamera } = this.getServices();
     shipIconContainer.getArray().forEach((icon) => {
       icon.hideMapIcon();
       const ghost = shipIconContainer.getGhostShipIconByShip(icon.ship);
@@ -86,7 +86,7 @@ class ShowMapIcons extends AnimationUiStrategy {
   }
 
   changeScale(scale) {
-    const { shipIconContainer } = this.services;
+    const { shipIconContainer } = this.getServices();
     shipIconContainer.getArray().forEach((icon) => {
       icon.mapIcon.setScale(scale);
       const ghost = shipIconContainer.getGhostShipIconByShip(icon.ship);
@@ -95,7 +95,7 @@ class ShowMapIcons extends AnimationUiStrategy {
   }
 
   shouldShow(zoom, force = false) {
-    if (!this.services) {
+    if (!this.getServices()) {
       return;
     }
 

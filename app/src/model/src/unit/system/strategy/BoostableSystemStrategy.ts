@@ -1,5 +1,8 @@
 import { GAME_PHASE } from "../../../game/gamePhase";
-import { IShipSystemStrategy } from "../../ShipSystemHandlers";
+import {
+  IShipSystemStrategy,
+  SystemTooltipMenuButton,
+} from "../../ShipSystemHandlers";
 import ShipSystem from "../ShipSystem";
 import ShipSystemStrategy from "./ShipSystemStrategy";
 import { SYSTEM_HANDLERS } from "./types/SystemHandlersTypes";
@@ -171,8 +174,11 @@ class BoostableSystemStrategy
     }
   }
 
-  getTooltipMenuButton({ myShip }: { myShip: boolean }, previousResponse = []) {
-    if (!myShip) {
+  getTooltipMenuButton(
+    payload?: { myShip?: boolean },
+    previousResponse = []
+  ): SystemTooltipMenuButton[] {
+    if (!payload?.myShip) {
       return previousResponse;
     }
 
@@ -188,13 +194,13 @@ class BoostableSystemStrategy
       {
         sort: 100,
         img: "/img/plus.png",
-        onClickHandler: () => this.getSystem().handlers.boost(),
+        clickHandler: () => this.getSystem().handlers.boost(),
         disabledHandler: () => !this.getSystem().handlers.canBoost(),
       },
       {
         sort: 100,
         img: "/img/minus.png",
-        onClickHandler: () => this.getSystem().handlers.deBoost(),
+        clickHandler: () => this.getSystem().handlers.deBoost(),
         disabledHandler: () => !this.getSystem().handlers.canDeBoost(),
       },
     ];

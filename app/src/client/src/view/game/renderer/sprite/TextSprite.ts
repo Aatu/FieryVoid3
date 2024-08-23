@@ -68,6 +68,14 @@ class TextSprite {
     this.mesh = new THREE.Mesh(geometry, this.material);
   }
 
+  getMesh() {
+    if (!this.mesh) {
+      throw new Error("Mesh not created");
+    }
+
+    return this.mesh;
+  }
+
   setScale(width: number, height: number) {
     this.mesh.scale.set(width, height, 1);
   }

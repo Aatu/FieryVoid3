@@ -8,7 +8,7 @@ class AutomaticReplay extends UiStrategy {
   }
 
   async newTurn(gameDatas) {
-    const { shipIconContainer } = this.services;
+    const { shipIconContainer } = this.getServices();
 
     await shipIconContainer.shipsLoaded();
 
@@ -19,7 +19,7 @@ class AutomaticReplay extends UiStrategy {
 
   render({ delta, total }) {
     if (total >= this.replayContext.getTurnLength() + 2000) {
-      const { uiState } = this.services;
+      const { uiState } = this.getServices();
       uiState.closeReplay();
     }
   }
