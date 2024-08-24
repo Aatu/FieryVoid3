@@ -1,3 +1,4 @@
+import GameData from "@fieryvoid3/model/src/game/GameData";
 import UiStrategy from "../UiStrategy";
 
 class AllowSubmittingWhenDeploymentDone extends UiStrategy {
@@ -6,7 +7,7 @@ class AllowSubmittingWhenDeploymentDone extends UiStrategy {
     uiState.setTurnReady(false);
   }
 
-  update(gameData) {
+  update(gameData: GameData) {
     super.update(gameData);
     this.checkDeployment();
   }
@@ -17,19 +18,21 @@ class AllowSubmittingWhenDeploymentDone extends UiStrategy {
 
   checkDeployment() {
     const { currentUser, uiState } = this.getServices();
-    const result = this.gameData.ships.getShips().every((ship) => {
-      if (!ship.player.isUsers(currentUser)) {
-        return true;
-      }
+    const result = this.getGameData()
+      .ships.getShips()
+      .every((ship) => {
+        if (!ship.player.isUsers(currentUser)) {
+          return true;
+        }
 
-      const slot = this.gameData.slots.getSlotByShip(ship);
+        const slot = this.getGameData().slots.getSlotByShip(ship);
 
-      if (slot.isValidShipDeployment(ship, ship.getHexPosition())) {
-        return true;
-      }
+        if (slot.isValidShipDeployment(ship, ship.getHexPosition())) {
+          return true;
+        }
 
-      return false;
-    });
+        return false;
+      });
 
     uiState.setTurnReady(result);
   }

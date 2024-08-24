@@ -120,6 +120,10 @@ export enum SYSTEM_HANDLERS {
   getWeaponFireAnimationArguments = "getWeaponFireAnimationArguments",
   getTotalBurstSize = "getTotalBurstSize",
   getTooltipMenuButton = "getTooltipMenuButton",
+  hasArcs = "hasArcs",
+  getArcs = "getArcs",
+
+  getMaxRange = "getMaxRange",
 }
 
 export type SystemMessageValue = string | number | SystemMessage[];

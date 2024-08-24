@@ -1,30 +1,23 @@
-import * as THREE from "three";
 import UiStrategy from "../UiStrategy";
-import {
-  degreeToRadian,
-  addToDirection,
-  getArcLength,
-} from "../../../../../../model/utils/math";
-
-const material = new THREE.MeshBasicMaterial({
-  color: new THREE.Color("rgb(20,80,128)"),
-  opacity: 0.5,
-  transparent: true,
-});
+import ShipSystem from "@fieryvoid3/model/src/unit/system/ShipSystem";
+import Ship from "@fieryvoid3/model/src/unit/Ship";
 
 class SelectWeaponOnSystemClick extends UiStrategy {
-  constructor() {
-    super();
-    this.weaponArcs = [];
-  }
-
   deactivate() {
     const { uiState } = this.getServices();
 
     uiState.deselectAllSystems();
   }
 
-  systemClicked({ ship, system, scs }) {
+  systemClicked({
+    ship,
+    system,
+    scs,
+  }: {
+    ship: Ship;
+    system: ShipSystem;
+    scs: boolean;
+  }) {
     const { uiState, currentUser } = this.getServices();
 
     if (scs || !system.isWeapon() || !ship.player.is(currentUser)) {

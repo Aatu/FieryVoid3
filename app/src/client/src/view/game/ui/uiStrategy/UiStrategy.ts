@@ -38,7 +38,7 @@ class UiStrategy {
   }
 
   stopEvent(payload: PhaseEventPayload) {
-    payload.stopped = true;
+    (payload as { stopped: boolean }).stopped = true;
   }
 }
 

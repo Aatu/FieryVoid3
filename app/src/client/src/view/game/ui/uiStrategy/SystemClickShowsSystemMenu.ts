@@ -9,7 +9,7 @@ class SystemClickShowsSystemMenu extends UiStrategy {
 
   shipStateChanged() {
     const { uiState } = this.getServices();
-    if (this.clickedSystem) {
+    if (this.clickedSystem && this.element) {
       uiState.setSystemMenuActiveSystem(this.clickedSystem, this.element);
     }
   }

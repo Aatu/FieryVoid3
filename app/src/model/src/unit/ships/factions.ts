@@ -8,7 +8,7 @@ class Faction {
   }
 }
 
-export default [
+export const FACTIONS = [
   new Faction("United Colonies", ["UcRhino", "Haka"]),
   new Faction("The Expanse Protecorate", ["Caliope", "Fulcrum", "Mouros"]),
   new Faction("Federation Navy", ["Impetous"]),

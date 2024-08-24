@@ -1,3 +1,4 @@
+import GameData from "@fieryvoid3/model/src/game/GameData";
 import UiStrategy from "./UiStrategy";
 
 class AllowSubmittingOnValidGameState extends UiStrategy {
@@ -6,7 +7,7 @@ class AllowSubmittingOnValidGameState extends UiStrategy {
     uiState.setTurnReady(false);
   }
 
-  update(gameData) {
+  update(gameData: GameData) {
     super.update(gameData);
 
     const { uiState } = this.getServices();

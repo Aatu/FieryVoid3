@@ -1,5 +1,7 @@
 import UiStrategy from "./UiStrategy";
-import * as gameUiModes from "../gameUiModes";
+import GameData from "@fieryvoid3/model/src/game/GameData";
+import Ship from "@fieryvoid3/model/src/unit/Ship";
+import { GameUIMode } from "../gameUiModes";
 
 class AllShipsMovementPaths extends UiStrategy {
   deactivate() {
@@ -7,7 +9,7 @@ class AllShipsMovementPaths extends UiStrategy {
     movementPathService.hideAllMovementPaths();
   }
 
-  update(gameData) {
+  update(gameData: GameData) {
     super.update(gameData);
     this.show();
   }
@@ -20,14 +22,14 @@ class AllShipsMovementPaths extends UiStrategy {
     this.show();
   }
 
-  shipStateChanged(ship) {
+  shipStateChanged(ship: Ship) {
     const { movementPathService, uiState } = this.getServices();
     if (!this.gameData) {
       return;
     }
 
     if (
-      !uiState.hasGameUiMode(gameUiModes.MOVEMENT) ||
+      !uiState.hasGameUiMode(GameUIMode.MOVEMENT) ||
       uiState.getSelectedShip() !== ship
     ) {
       return;
@@ -43,8 +45,8 @@ class AllShipsMovementPaths extends UiStrategy {
   show() {
     const { movementPathService, uiState } = this.getServices();
 
-    if (uiState.hasGameUiMode(gameUiModes.MOVEMENT)) {
-      const ships = this.gameData.ships.getAliveShips();
+    if (uiState.hasGameUiMode(GameUIMode.MOVEMENT)) {
+      const ships = this.getGameData().ships.getAliveShips();
       ships.forEach((ship) => movementPathService.showMovementPath(ship));
     } else {
       movementPathService.hideAllMovementPaths();

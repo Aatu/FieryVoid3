@@ -1,5 +1,7 @@
 import UiStrategy from "../UiStrategy";
-import * as gameUiModes from "../../gameUiModes";
+import GameData from "@fieryvoid3/model/src/game/GameData";
+import Ship from "@fieryvoid3/model/src/unit/Ship";
+import { GameUIMode } from "../../gameUiModes";
 
 class OwnedShipEw extends UiStrategy {
   deactivate() {
@@ -7,7 +9,7 @@ class OwnedShipEw extends UiStrategy {
     electronicWarfareIndicatorService.hideAll();
   }
 
-  update(gameData) {
+  update(gameData: GameData) {
     super.update(gameData);
     this.show();
   }
@@ -20,14 +22,14 @@ class OwnedShipEw extends UiStrategy {
     this.show();
   }
 
-  shipStateChanged(ship) {
+  shipStateChanged(ship: Ship) {
     const { electronicWarfareIndicatorService, uiState } = this.getServices();
     if (!this.gameData) {
       return;
     }
 
     if (
-      !uiState.hasGameUiMode(gameUiModes.EW) &&
+      !uiState.hasGameUiMode(GameUIMode.EW) &&
       uiState.getSelectedShip() !== ship
     ) {
       return;
@@ -46,14 +48,14 @@ class OwnedShipEw extends UiStrategy {
 
     electronicWarfareIndicatorService.hideAll();
 
-    if (uiState.hasGameUiMode(gameUiModes.EW)) {
-      this.gameData.ships
-        .getUsersShips(currentUser)
+    if (uiState.hasGameUiMode(GameUIMode.EW)) {
+      this.getGameData()
+        .ships.getUsersShips(currentUser)
         .forEach((ship) => electronicWarfareIndicatorService.showForShip(ship));
     }
 
     if (
-      !uiState.hasGameUiMode([gameUiModes.ENEMY_WEAPONS, gameUiModes.WEAPONS])
+      !uiState.hasGameUiMode([GameUIMode.ENEMY_WEAPONS, GameUIMode.WEAPONS])
     ) {
       const ship = uiState.getSelectedShip();
       if (ship) {

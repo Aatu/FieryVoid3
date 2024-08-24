@@ -110,6 +110,10 @@ class ShipObject {
     this.consumeShipdata(this.ship);
   }
 
+  getMesh() {
+    return this.mesh;
+  }
+
   isHidden() {
     return this.hidden;
   }

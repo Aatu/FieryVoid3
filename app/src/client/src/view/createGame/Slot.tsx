@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import styled, { css } from "styled-components";
 
 import {
@@ -11,7 +11,7 @@ import {
   SectionRight,
   Button,
   icons,
-  colors
+  colors,
 } from "../../styled";
 
 const selected = css`
@@ -22,7 +22,7 @@ const selected = css`
 `;
 
 const SlotContainer = styled(Container)`
-  ${props => (props.selected ? selected : "")}
+  ${(props) => (props.selected ? selected : "")}
 `;
 
 class Slot extends Component {
@@ -31,7 +31,7 @@ class Slot extends Component {
   getPlayerName(slot) {
     const { gameData } = this.props;
 
-    const user = gameData.players.find(user => user.id === slot.userId);
+    const user = gameData.players.find((user) => user.id === slot.userId);
     return user.username;
   }
 
@@ -50,14 +50,8 @@ class Slot extends Component {
   }
 
   render() {
-    const {
-      slot,
-      edit,
-      take,
-      currentUser,
-      selectedSlot,
-      children
-    } = this.props;
+    const { slot, edit, take, currentUser, selectedSlot, children } =
+      this.props;
 
     return (
       <SlotContainer selected={selectedSlot && selectedSlot.id === slot.id}>
@@ -126,9 +120,7 @@ class Slot extends Component {
                 label="Deployment position (X,Y):"
                 id={`deploymentPosition-${slot.name}`}
                 placeholder="0"
-                value={`${slot.deploymentLocation.q},${
-                  slot.deploymentLocation.r
-                }`}
+                value={`${slot.deploymentLocation.q},${slot.deploymentLocation.r}`}
                 onChange={this.handleChange}
               />
 
@@ -144,15 +136,11 @@ class Slot extends Component {
             <>
               <Label>
                 Deployment position:
-                <Value>{` ${slot.deploymentLocation.q},${
-                  slot.deploymentLocation.r
-                }`}</Value>
+                <Value>{` ${slot.deploymentLocation.q},${slot.deploymentLocation.r}`}</Value>
               </Label>
               <Label>
                 Deployment vector:
-                <Value>{`${slot.deploymentVector.q},${
-                  slot.deploymentVector.r
-                }`}</Value>
+                <Value>{`${slot.deploymentVector.q},${slot.deploymentVector.r}`}</Value>
               </Label>
               <Label>
                 Deployment radius: <Value> {slot.deploymentRadius}</Value>

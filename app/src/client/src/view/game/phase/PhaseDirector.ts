@@ -15,6 +15,7 @@ import ShipWindowManager from "../ui/shipWindow/ShipWindowManager";
 import MovementPathService from "../movement/MovementPathService";
 import PhaseStrategy, {
   PhaseEventPayload,
+  PhaseStrategies,
 } from "./phaseStrategy/PhaseStrategy";
 import { ParticleEmitterContainer } from "../animation/particle";
 import GameCamera from "../GameCamera";
@@ -25,6 +26,7 @@ import { GAME_STATUS } from "@fieryvoid3/model/src/game/gameStatus";
 import { GAME_PHASE } from "@fieryvoid3/model/src/game/gamePhase";
 import LobbyPhaseStrategy from "./phaseStrategy/LobbyPhaseStrategy";
 import ReplayPhaseStrategy from "./phaseStrategy/ReplayPhaseStrategy";
+import DeploymentPhaseStrategy from "./phaseStrategy/DeploymentPhaseStrategy";
 
 export type Services = {
   phaseState: PhaseState;
@@ -144,7 +146,7 @@ class PhaseDirector {
     }
 
     this.activatePhaseStrategy(AutomaticReplayPhaseStrategy);
-    this.relayEvent("newTurn", gameDatas);
+    this.relayEvent("newTurn", { gameDatas });
   }
 
   receiveGameData(gameData: GameData) {
@@ -169,7 +171,7 @@ class PhaseDirector {
     }
 
     if (this.phaseStrategy) {
-      this.relayEvent("newTurn", gameDatas);
+      this.relayEvent("newTurn", { gameDatas });
     }
   }
 
@@ -238,7 +240,7 @@ class PhaseDirector {
     }
 
     if (gameData.phase === GAME_PHASE.DEPLOYMENT) {
-      return this.activatePhaseStrategy(ReplayPhaseStrategy);
+      return this.activatePhaseStrategy(DeploymentPhaseStrategy);
     }
 
     if (!gameData.isPlayerActive(this.currentUser)) {
@@ -248,9 +250,7 @@ class PhaseDirector {
     return this.activatePhaseStrategy(PhaseStrategy);
   }
 
-  activatePhaseStrategy(
-    phaseStrategy: typeof LobbyPhaseStrategy | typeof WaitingPhaseStrategy
-  ) {
+  activatePhaseStrategy(phaseStrategy: PhaseStrategies) {
     const gameData = this.gameDataCache.getCurrent();
 
     if (!gameData) {

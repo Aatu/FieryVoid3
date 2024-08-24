@@ -1,5 +1,6 @@
+import { GameUIMode } from "../../gameUiModes";
 import UiStrategy from "../UiStrategy";
-import * as gameUiModes from "../../gameUiModes";
+import GameData from "@fieryvoid3/model/src/game/GameData";
 
 class CurrentEW extends UiStrategy {
   deactivate() {
@@ -7,7 +8,7 @@ class CurrentEW extends UiStrategy {
     electronicWarfareIndicatorService.hideAllCurrent();
   }
 
-  update(gameData) {
+  update(gameData: GameData) {
     super.update(gameData);
     this.show();
   }
@@ -30,17 +31,17 @@ class CurrentEW extends UiStrategy {
 
     electronicWarfareIndicatorService.hideAllCurrent();
 
-    if (uiState.hasGameUiMode(gameUiModes.ENEMY_WEAPONS)) {
-      this.gameData.ships
-        .getShipsEnemyTeams(currentUser)
+    if (uiState.hasGameUiMode(GameUIMode.ENEMY_WEAPONS)) {
+      this.getGameData()
+        .ships.getShipsEnemyTeams(currentUser)
         .forEach((ship) =>
           electronicWarfareIndicatorService.showCurrentForShip(ship)
         );
     }
 
-    if (uiState.hasGameUiMode(gameUiModes.WEAPONS)) {
-      this.gameData.ships
-        .getShipsInSameTeam(currentUser)
+    if (uiState.hasGameUiMode(GameUIMode.WEAPONS)) {
+      this.getGameData()
+        .ships.getShipsInSameTeam(currentUser)
         .forEach((ship) =>
           electronicWarfareIndicatorService.showCurrentForShip(ship)
         );

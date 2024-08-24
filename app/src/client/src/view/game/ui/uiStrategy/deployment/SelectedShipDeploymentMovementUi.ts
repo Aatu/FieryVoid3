@@ -1,14 +1,10 @@
+import Ship from "@fieryvoid3/model/src/unit/Ship";
 import UiStrategy from "../UiStrategy";
 
-class SelectedShipMovementUi extends UiStrategy {
+class SelectedShipDeploymentMovementUi extends UiStrategy {
   deactivate() {
     const { uiState } = this.getServices();
     uiState.hideShipMovement();
-  }
-
-  update(gameData) {
-    super.update(gameData);
-    this.shipStateChanged();
   }
 
   shipStateChanged() {
@@ -16,13 +12,13 @@ class SelectedShipMovementUi extends UiStrategy {
     const ship = uiState.getSelectedShip();
 
     if (ship) {
-      uiState.showShipMovement(ship, true);
+      uiState.showShipDeploymentMovement(ship);
     }
   }
 
-  shipSelected(ship) {
+  shipSelected(ship: Ship) {
     const { uiState } = this.getServices();
-    uiState.showShipMovement(ship, true);
+    uiState.showShipDeploymentMovement(ship);
   }
 
   shipDeselected() {
@@ -31,4 +27,4 @@ class SelectedShipMovementUi extends UiStrategy {
   }
 }
 
-export default SelectedShipMovementUi;
+export default SelectedShipDeploymentMovementUi;

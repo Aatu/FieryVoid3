@@ -71,7 +71,7 @@ class ReplayTurnActions extends AnimationUiStrategy {
     this.ready = false;
   }
 
-  async newTurn(gameDatas: GameData[]) {
+  async newTurn({ gameDatas }: { gameDatas: GameData[] }) {
     const { shipIconContainer, particleEmitterContainer, uiState, scene } =
       this.getServices();
 
@@ -241,6 +241,7 @@ class ReplayTurnActions extends AnimationUiStrategy {
         return;
       }
 
+      // @ts-expect-error dynamic thingy
       const animation = new ShipWeaponAnimations[
         `ShipWeapon${
           animationName.charAt(0).toUpperCase() + animationName.slice(1)
@@ -378,7 +379,9 @@ class ReplayTurnActions extends AnimationUiStrategy {
       if (systemsDestroyed.length > 0) {
         this.systemDestroyedTextAnimation!.add(
           new Vector(targetPosition.x, targetPosition.y, targetPosition.z),
-          systemsDestroyed.map((system) => system.getDisplayName()),
+          systemsDestroyed
+            .map((system) => system.getDisplayName())
+            .filter(Boolean) as string[],
           endTime
         );
       }
@@ -397,8 +400,8 @@ class ReplayTurnActions extends AnimationUiStrategy {
         gameData,
         targetIcon,
         intercepts,
-        interceptTime,
-        interceptPosition,
+        interceptTime as number,
+        interceptPosition as Vector,
         gameDatas
       );
 
@@ -536,6 +539,7 @@ class ReplayTurnActions extends AnimationUiStrategy {
         return;
       }
 
+      // @ts-expect-error dynamic thingy
       const animation = new ShipWeaponAnimations[
         `ShipWeapon${
           animationName.charAt(0).toUpperCase() + animationName.slice(1)
@@ -547,7 +551,7 @@ class ReplayTurnActions extends AnimationUiStrategy {
         getPosition: (ship: Ship) =>
           getShipStartPositionAndFacingForShip(gameDatas, ship),
         args: weapon.callHandler(
-          "getWeaponFireAnimationArguments",
+          SYSTEM_HANDLERS.getWeaponFireAnimationArguments,
           undefined,
           undefined as unknown
         ),
@@ -578,7 +582,9 @@ class ReplayTurnActions extends AnimationUiStrategy {
         );
         this.getSystemDestroyedTextAnimation().add(
           new Vector(position.x, position.y, position.z + targetIcon.shipZ),
-          systemsDestroyed.map((system) => system.getDisplayName()),
+          systemsDestroyed
+            .map((system) => system.getDisplayName())
+            .filter(Boolean) as string[],
           systemDestroyedTime
         );
       }

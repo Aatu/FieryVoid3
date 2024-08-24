@@ -3,6 +3,20 @@ import { Services } from "../PhaseDirector";
 import { CoordinateConverter } from "@fieryvoid3/model/src/utils/CoordinateConverter";
 import * as THREE from "three";
 import GameConnector from "../../GameConnector";
+import LobbyPhaseStrategy from "./LobbyPhaseStrategy";
+import WaitingPhaseStrategy from "./WaitingPhaseStrategy";
+import AutomaticReplayPhaseStrategy from "./AutomaticReplayPhaseStrategy/AutomaticReplayPhaseStrategy";
+import ReplayPhaseStrategy from "./ReplayPhaseStrategy";
+import DeploymentPhaseStrategy from "./DeploymentPhaseStrategy";
+import UiStrategy from "../../ui/uiStrategy/UiStrategy";
+
+export type PhaseStrategies =
+  | typeof LobbyPhaseStrategy
+  | typeof WaitingPhaseStrategy
+  | typeof PhaseStrategy
+  | typeof AutomaticReplayPhaseStrategy
+  | typeof ReplayPhaseStrategy
+  | typeof DeploymentPhaseStrategy;
 
 export type RenderPayload = {
   delta: number;
@@ -30,13 +44,11 @@ const getInterestingStuffInPosition = (payload, shipIconContainer) => {
 };
 */
 
-export type PhaseEventPayload =
-  | (Record<string, unknown> & { stopped?: boolean })
-  | unknown;
+export type PhaseEventPayload = Record<string, unknown> & { stopped?: boolean };
 
 class PhaseStrategy {
   services: Services;
-  strategies: PhaseStrategy[];
+  strategies: UiStrategy[];
   inactive: boolean;
   gameData: GameData | null;
   animationPaused: boolean;
@@ -74,13 +86,14 @@ class PhaseStrategy {
   }
 
   activateStrategies() {
-    this.strategies.forEach((strategy) => strategy.activate());
+    this.strategies.forEach((strategy) => strategy.activate(this.services));
   }
 
   callStrategies(functionName: string, payload: PhaseEventPayload = {}) {
     this.strategies.forEach((strategy) => {
       if (
-        strategy[functionName as keyof PhaseStrategy] &&
+        strategy[functionName as keyof UiStrategy] &&
+        typeof strategy[functionName as keyof UiStrategy] === "function" &&
         (!payload || !(payload as { stopped: boolean })?.stopped)
       ) {
         // @ts-expect-error dynamic thingy

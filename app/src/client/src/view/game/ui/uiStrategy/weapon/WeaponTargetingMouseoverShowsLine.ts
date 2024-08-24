@@ -1,19 +1,17 @@
 import * as THREE from "three";
 import UiStrategy from "../UiStrategy";
 import Line from "../../../renderer/Line";
+import Ship from "@fieryvoid3/model/src/unit/Ship";
+import Vector from "@fieryvoid3/model/src/utils/Vector";
 
 class WeaponTargetingMouseoverShowsLine extends UiStrategy {
-  constructor() {
-    super();
+  private lines: Line[] = [];
 
-    this.lines = [];
-  }
-
-  systemMouseOver({ ship, target }) {
+  systemMouseOver({ ship, target }: { ship: Ship; target: Ship }) {
     this.show(ship, target);
   }
 
-  torpedoMouseOver({ ship, target }) {
+  torpedoMouseOver({ ship, target }: { ship: Ship; target: Ship }) {
     this.show(ship, target);
   }
 
@@ -30,7 +28,7 @@ class WeaponTargetingMouseoverShowsLine extends UiStrategy {
     this.lines = [];
   }
 
-  show(shooter, target) {
+  show(shooter: Ship, target: Ship) {
     if (!target) {
       return;
     }
@@ -41,8 +39,8 @@ class WeaponTargetingMouseoverShowsLine extends UiStrategy {
     const targetIcon = shipIconContainer.getByShip(target);
 
     const line = new Line(scene, {
-      start: { ...shooterIcon.getPosition(), z: shooterIcon.shipZ },
-      end: { ...targetIcon.getPosition(), z: targetIcon.shipZ },
+      start: new Vector({ ...shooterIcon.getPosition(), z: shooterIcon.shipZ }),
+      end: new Vector({ ...targetIcon.getPosition(), z: targetIcon.shipZ }),
       width: 20,
       color: new THREE.Color(196 / 255, 196 / 255, 39 / 255),
       opacity: 0.1,
@@ -52,15 +50,10 @@ class WeaponTargetingMouseoverShowsLine extends UiStrategy {
 
     this.lines.push(line);
   }
-  deactivate() {
-    const { uiState } = this.getServices();
-    if (this.clickedShip) {
-      uiState.hideShipTooltip(this.clickedShip);
-    }
 
-    if (this.clickedEnemy) {
-      uiState.hideShipTooltip(this.clickedEnemy);
-    }
+  deactivate() {
+    this.lines.forEach((line) => line.destroy());
+    this.lines = [];
   }
 }
 

@@ -1,15 +1,11 @@
 import UiStrategy from "./UiStrategy";
-import * as THREE from "three";
 import { HexagonSprite } from "../../renderer/sprite";
+import { Offset } from "@fieryvoid3/model/src/hexagon";
 
 class DebugDrawLineFromSelectedShip extends UiStrategy {
-  constructor() {
-    super();
+  private sprites: HexagonSprite[] = [];
 
-    this.sprites = [];
-  }
-
-  mouseOverHex(hex) {
+  mouseOverHex(hex: Offset) {
     const { uiState, coordinateConverter, scene } = this.getServices();
     const ship = uiState.getSelectedShip();
     if (!ship) {
@@ -22,15 +18,15 @@ class DebugDrawLineFromSelectedShip extends UiStrategy {
       const sprite = new HexagonSprite(
         coordinateConverter.fromHexToGame(position)
       );
-      scene.add(sprite.mesh);
+      scene.add(sprite.getMesh());
       return sprite;
     });
   }
 
-  mouseOutHex(hex) {
+  mouseOutHex() {
     const { scene } = this.getServices();
     this.sprites.forEach((sprite) => {
-      scene.remove(sprite.mesh);
+      scene.remove(sprite.getMesh());
       sprite.destroy();
     });
     this.sprites = [];

@@ -1,3 +1,4 @@
+import ShipObject from "../../../renderer/ships/ShipObject";
 import UiStrategy from "../UiStrategy";
 
 class MouseOverShowsElectronicWarfare extends UiStrategy {
@@ -6,7 +7,7 @@ class MouseOverShowsElectronicWarfare extends UiStrategy {
     electronicWarfareIndicatorService.hideAll();
   }
 
-  mouseOverShip(payload) {
+  mouseOverShip(payload: { entity: ShipObject }) {
     const { electronicWarfareIndicatorService } = this.getServices();
     electronicWarfareIndicatorService.hideAll();
     electronicWarfareIndicatorService.showForShip(payload.entity.ship);

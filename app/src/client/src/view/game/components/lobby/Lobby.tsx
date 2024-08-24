@@ -1,18 +1,15 @@
-import React, { Component } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import styled from "styled-components";
-import GameData from "../../../../../model/game/GameData";
-import LobbySlots from "./LobbySlots";
-import FleetStore from "./FleetStore";
-import shipClasses from "../../../../../model/unit/ships";
 
-import {
-  Title,
-  PanelContainer,
-  Section,
-  TooltipContainer,
-  TooltipHeader,
-} from "../../../../styled";
-import { SuperContainer } from "../../../baseView";
+import { useUser } from "../../../../state/userHooks";
+import GameData from "@fieryvoid3/model/src/game/GameData";
+import Ship from "@fieryvoid3/model/src/unit/Ship";
+import { createShipInstance } from "@fieryvoid3/model/src/unit/createShipObject";
+import GameSlot from "@fieryvoid3/model/src/game/GameSlot";
+import UIState from "../../ui/UIState";
+import { TooltipContainer, TooltipHeader } from "../../../../styled";
+import Game from "../../Game";
+import FleetStore from "./FleetStore";
 
 const LobbyContainer = styled.div`
   display: flex;
@@ -39,134 +36,92 @@ const ContainerRight = styled.div`
   z-index: 3;
 `;
 
-const Lobby: React.FC = () => {
-  constructor(props) {
-    super(props);
+const Lobby: React.FC<{
+  game: Game;
+  gameData: GameData;
+  uiState: UIState;
+}> = ({ gameData, uiState, game }) => {
+  const { data: currentUser } = useUser();
+  const [shipsToBuy, setShipsToBuy] = useState<Ship[]>([]);
 
-    this.state = {
-      selectedSlot: null,
-      ships: [],
+  const { selectedSlot, ships } = useMemo((): {
+    selectedSlot: GameSlot | null;
+    ships: Ship[];
+  } => {
+    if (!gameData || !currentUser) {
+      return { selectedSlot: null, ships: [] };
+    }
+
+    const selectedSlot =
+      gameData.slots
+        .getSlots()
+        .find((slot) => slot.isOccupiedBy(currentUser)) || null;
+
+    const ships = selectedSlot ? selectedSlot.getShips() : [];
+    return {
+      selectedSlot,
+      ships,
     };
+  }, [currentUser, gameData]);
+
+  const buyShip = useCallback(
+    (shipClass: string) => {
+      const ship = createShipInstance(shipClass);
+
+      if (!selectedSlot) {
+        return;
+      }
+
+      const totalCost = [...ships, ship].reduce(
+        (acc, ship) => acc + ship.getPointCost(),
+        0
+      );
+
+      if (totalCost > selectedSlot.points) {
+        alert("Too costly");
+        return;
+      }
+
+      setShipsToBuy([...shipsToBuy, ship]);
+    },
+    [selectedSlot, ships, shipsToBuy]
+  );
+
+  const onReady = useCallback(() => {
+    uiState.customEvent("buyShips", { slot: selectedSlot, shipsToBuy });
+  }, [selectedSlot, shipsToBuy, uiState]);
+
+  if (!gameData) {
+    return null;
   }
 
-  static getDerivedStateFromProps(nextProps, prevState) {
-    let { gameData, currentUser } = nextProps;
-    if (!gameData) {
-      return prevState;
-    }
+  return (
+    <LobbyContainer>
+      <ContainerLeft>
+        <TooltipContainer>
+          <TooltipHeader>GAME: {gameData.name}</TooltipHeader>
+          <LobbySlots
+            gameData={gameData}
+            edit={false}
+            currentUser={currentUser}
+            take={true}
+            select={true}
+            selectedSlot={selectedSlot}
+            game={game}
+            ships={ships}
+            uiState={uiState}
+            onReady={onReady}
+          />
+        </TooltipContainer>
+      </ContainerLeft>
+      <ContainerRight>
+        <TooltipContainer>
+          <TooltipHeader>Buy your fleet</TooltipHeader>
+          <FleetStore uiState={uiState} buyShip={buyShip} />
+        </TooltipContainer>
+      </ContainerRight>
+    </LobbyContainer>
+  );
+};
 
-    gameData = new GameData(gameData);
-
-    if (!prevState.selectedSlot) {
-      const selectedSlot =
-        gameData.slots
-          .getSlots()
-          .find((slot) => slot.isOccupiedBy(currentUser)) || null;
-
-      const ships = selectedSlot ? selectedSlot.getShips() : [];
-      return {
-        ...prevState,
-        selectedSlot,
-        ships,
-      };
-    }
-
-    return prevState;
-  }
-
-  selectSlot() {}
-
-  buyShip(shipClass) {
-    const ship = new shipClasses[shipClass]();
-    const { selectedSlot, ships } = this.state;
-
-    if (!selectedSlot) {
-      return;
-    }
-
-    const totalCost = [...ships, ship].reduce(
-      (acc, ship) => acc + ship.getPointCost(),
-      0
-    );
-
-    if (totalCost > selectedSlot.points) {
-      alert("Too costly");
-      return;
-    }
-
-    this.setState({ ships: [...ships, ship] });
-  }
-
-  onReady() {
-    const { uiState } = this.props;
-    const { selectedSlot, ships } = this.state;
-    uiState.customEvent("buyShips", { slot: selectedSlot, ships });
-  }
-
-  render() {
-    let { uiState, gameData, currentUser, game } = this.props;
-
-    const { selectedSlot, ships } = this.state;
-
-    if (!gameData) {
-      return null;
-    }
-
-    gameData = new GameData(gameData);
-
-    return (
-      <LobbyContainer>
-        <ContainerLeft>
-          <TooltipContainer>
-            <TooltipHeader>GAME: {gameData.name}</TooltipHeader>
-            <LobbySlots
-              gameData={gameData}
-              edit={false}
-              currentUser={currentUser}
-              take={true}
-              select={true}
-              selectedSlot={selectedSlot}
-              game={game}
-              ships={ships}
-              uiState={uiState}
-              onReady={this.onReady.bind(this)}
-            />
-          </TooltipContainer>
-        </ContainerLeft>
-        <ContainerRight>
-          <TooltipContainer>
-            <TooltipHeader>Buy your fleet</TooltipHeader>
-            <FleetStore uiState={uiState} buyShip={this.buyShip.bind(this)} />
-          </TooltipContainer>
-        </ContainerRight>
-      </LobbyContainer>
-    );
-  }
-}
-
-/*
-
-      <LobbyContainer>
-        <Section>
-          <div>
-            <Title>GAME: '{gameData.name}'</Title>
-            <Title>Take a slot and buy ships</Title>
-            <LobbySlots
-              gameData={gameData}
-              edit={false}
-              currentUser={currentUser}
-              take={true}
-              select={true}
-              selectedSlot={selectedSlot}
-              game={game}
-              ships={ships}
-              uiState={uiState}
-              onReady={this.onReady.bind(this)}
-            />
-          </div>
-          <FleetStore uiState={uiState} buyShip={this.buyShip.bind(this)} />
-        </Section>
-      </LobbyContainer>
-
-      */
 export default Lobby;

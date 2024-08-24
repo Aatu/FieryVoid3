@@ -10,10 +10,8 @@ import {
   HighlightSelectedShip,
   DeployShipOnHexClick,
   AllowSubmittingWhenDeploymentDone,
-  DebugDrawLineFromSelectedShip,
-  SelectedShipNavigationPath,
   SelectedShipDeploymentMovementUi,
-  ShipClickSelectsShip
+  ShipClickSelectsShip,
 } from "../../ui/uiStrategy";
 
 class DeploymentPhaseStrategy extends PhaseStrategy {
@@ -33,7 +31,7 @@ class DeploymentPhaseStrategy extends PhaseStrategy {
       new DeployShipOnHexClick(),
       new AllowSubmittingWhenDeploymentDone(),
       //new SelectedShipNavigationPath(),
-      new SelectedShipDeploymentMovementUi()
+      new SelectedShipDeploymentMovementUi(),
     ];
   }
 

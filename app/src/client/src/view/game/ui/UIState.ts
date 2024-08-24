@@ -417,7 +417,10 @@ class UIState {
     this.updateState();
   }
 
-  setSystemMenuActiveSystem(system: ShipSystem, element: HTMLElement) {
+  setSystemMenuActiveSystem(
+    system: ShipSystem | null,
+    element: HTMLElement | null
+  ) {
     this.getState().systemMenu.activeSystem = system;
     this.getState().systemMenu.activeSystemElement = element;
     this.updateState();

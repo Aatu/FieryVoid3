@@ -1,4 +1,6 @@
+import GameData from "@fieryvoid3/model/src/game/GameData";
 import UiStrategy from "../UiStrategy";
+import Ship from "@fieryvoid3/model/src/unit/Ship";
 
 class SelectedShipSystemList extends UiStrategy {
   deactivate() {
@@ -6,7 +8,7 @@ class SelectedShipSystemList extends UiStrategy {
     uiState.setSystemList([]);
   }
 
-  update(gameData) {
+  update(gameData: GameData) {
     const { uiState } = this.getServices();
     super.update(gameData);
 
@@ -18,7 +20,7 @@ class SelectedShipSystemList extends UiStrategy {
     }
   }
 
-  shipSelected(ship) {
+  shipSelected(ship: Ship) {
     const { uiState } = this.getServices();
     if (!this.gameData) {
       return;

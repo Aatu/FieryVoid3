@@ -1,10 +1,11 @@
+import GameData from "@fieryvoid3/model/src/game/GameData";
 import UiStrategy from "../UiStrategy";
 
 class SelectUndeployedShip extends UiStrategy {
-  update(gameData) {
+  update(gameData: GameData) {
     const { uiState, currentUser } = this.getServices();
 
-    if (uiState.getSelectedShip()) {
+    if (uiState.getSelectedShip() || !currentUser) {
       return;
     }
 

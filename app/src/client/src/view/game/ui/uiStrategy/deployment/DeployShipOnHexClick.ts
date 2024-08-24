@@ -1,7 +1,8 @@
+import { Offset } from "@fieryvoid3/model/src/hexagon";
 import UiStrategy from "../UiStrategy";
 
 class DeployShipOnHexClick extends UiStrategy {
-  hexClicked({ hex }) {
+  hexClicked({ hex }: { hex: Offset }) {
     const { uiState, movementService } = this.getServices();
     const ship = uiState.getSelectedShip();
 

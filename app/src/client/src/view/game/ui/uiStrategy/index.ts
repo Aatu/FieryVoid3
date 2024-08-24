@@ -77,5 +77,5 @@ export {
   ShipClickSelectsShip,
   ShowReplayUi,
   UnderHexForShips,
-  ShowMapIcons
+  ShowMapIcons,
 };

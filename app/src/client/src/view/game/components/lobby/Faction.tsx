@@ -27,7 +27,6 @@ const Faction: React.FC<Props> = ({ uiState, buyShip, faction }) => {
     <div>
       <SubTitle>{faction.name}</SubTitle>
       {faction.ships
-        // @ts-expect-error dynamic class creation
         .map((ship) => new ships[ship]())
         .map((ship) => (
           <Section key={`fleetStoreEntry-${ship.shipClass}`}>

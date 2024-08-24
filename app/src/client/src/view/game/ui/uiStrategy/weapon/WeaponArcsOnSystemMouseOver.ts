@@ -1,33 +1,42 @@
 import * as THREE from "three";
 import UiStrategy from "../UiStrategy";
-import {
-  degreeToRadian,
-  addToDirection,
-  getArcLength,
-} from "../../../../../../model/utils/math";
 import abstractCanvas from "../../../utils/abstractCanvas";
-import { MOVEMENT } from "../../gameUiModes";
-import { hexFacingToAngle } from "../../../../../../model/utils/math";
+import Ship from "@fieryvoid3/model/src/unit/Ship";
+import ShipSystem from "@fieryvoid3/model/src/unit/system/ShipSystem";
+import { SYSTEM_HANDLERS } from "@fieryvoid3/model/src/unit/system/strategy/types/SystemHandlersTypes";
+import Torpedo from "@fieryvoid3/model/src/unit/system/weapon/ammunition/torpedo/Torpedo";
+import {
+  addToDirection,
+  degreeToRadian,
+  getArcLength,
+  hexFacingToAngle,
+} from "@fieryvoid3/model/src/utils/math";
+import ShipObject from "../../../renderer/ships/ShipObject";
+import { GameUIMode } from "../../gameUiModes";
+import { WeaponArc } from "@fieryvoid3/model/src/unit/system/strategy/weapon/WeaponArcStrategy";
 
 class WeaponArcsOnSystemMouseOver extends UiStrategy {
-  constructor() {
-    super();
-    this.weaponArcs = [];
-  }
+  private weaponArcs: {
+    mesh: THREE.Object3D;
+    circle: THREE.Mesh;
+    texture: THREE.CanvasTexture;
+  }[] = [];
 
   deactivate() {
     this.hide();
   }
 
-  systemMouseOver({ ship, system }) {
-    if (!system.callHandler("hasArcs")) {
+  systemMouseOver({ ship, system }: { ship: Ship; system: ShipSystem }) {
+    if (
+      !system.callHandler(SYSTEM_HANDLERS.hasArcs, undefined, false as boolean)
+    ) {
       return;
     }
 
     this.show(ship, system);
   }
 
-  torpedoMouseOver({ ship, torpedo }) {
+  torpedoMouseOver({ ship, torpedo }: { ship: Ship; torpedo: Torpedo }) {
     const { coordinateConverter, shipIconContainer } = this.getServices();
     const icon = shipIconContainer.getByShip(ship);
 
@@ -35,7 +44,7 @@ class WeaponArcsOnSystemMouseOver extends UiStrategy {
     const distance = maxRange * coordinateConverter.getHexDistance();
 
     const canvas = abstractCanvas.create(maxRange + 1, 1);
-    const context = canvas.getContext("2d");
+    const context = canvas.getContext("2d") as CanvasRenderingContext2D;
 
     for (let range = 0; range <= maxRange; range++) {
       const opacity = range < torpedo.minRange ? 0 : 0.5;
@@ -61,6 +70,7 @@ class WeaponArcsOnSystemMouseOver extends UiStrategy {
       degreeToRadian(360)
     );
 
+    /*
     geometry.faceVertexUvs = [
       geometry.faceVertexUvs[0].map((_) => [
         new THREE.Vector2(1, 0),
@@ -70,10 +80,11 @@ class WeaponArcsOnSystemMouseOver extends UiStrategy {
     ];
 
     geometry.uvsNeedUpdate = true;
+    */
     const circle = new THREE.Mesh(geometry, material);
     circle.position.z = -1;
-    icon.mesh.add(circle);
-    this.weaponArcs.push({ mesh: icon.mesh, circle, texture });
+    icon.getMesh().add(circle);
+    this.weaponArcs.push({ mesh: icon.getMesh(), circle, texture });
   }
 
   torpedoMouseOut() {
@@ -85,18 +96,20 @@ class WeaponArcsOnSystemMouseOver extends UiStrategy {
   }
 
   hide() {
-    const { scene } = this.getServices();
     this.weaponArcs = this.weaponArcs.filter(({ mesh, circle, texture }) => {
       mesh.remove(circle);
-      circle.material.dispose();
+      ([] as THREE.Material[]).concat(circle.material).forEach((material) => {
+        material.dispose();
+      });
+
       circle.geometry.dispose();
       texture.dispose();
     });
   }
 
-  getFacing(icon) {
+  getFacing(icon: ShipObject) {
     const { uiState, movementService } = this.getServices();
-    if (uiState.hasGameUiMode(MOVEMENT)) {
+    if (uiState.hasGameUiMode(GameUIMode.MOVEMENT)) {
       const endMove = movementService.getNewEndMove(icon.ship);
       return hexFacingToAngle(endMove.facing);
     }
@@ -104,35 +117,47 @@ class WeaponArcsOnSystemMouseOver extends UiStrategy {
     return icon.getFacing();
   }
 
-  getMesh(icon) {
+  getMesh(icon: ShipObject) {
     const { uiState, shipIconContainer } = this.getServices();
-    if (uiState.hasGameUiMode(MOVEMENT)) {
-      return shipIconContainer.getGhostShipIconByShip(icon.ship).mesh;
+    if (uiState.hasGameUiMode(GameUIMode.MOVEMENT)) {
+      return shipIconContainer.getGhostShipIconByShip(icon.ship).getMesh();
     }
 
-    return icon.mesh;
+    return icon.getMesh();
   }
 
-  show(ship, system) {
+  show(ship: Ship, system: ShipSystem) {
     const { coordinateConverter, shipIconContainer } = this.getServices();
     const icon = shipIconContainer.getByShip(ship);
 
-    const maxRange = system.callHandler("getMaxRange");
+    const maxRange = system.callHandler(
+      SYSTEM_HANDLERS.getMaxRange,
+      undefined,
+      0
+    );
     const distance = maxRange * coordinateConverter.getHexDistance();
 
-    const arcsList = system.callHandler("getArcs", {
-      facing: this.getFacing(icon),
-    });
+    const arcsList = system.callHandler(
+      SYSTEM_HANDLERS.getArcs,
+      {
+        facing: this.getFacing(icon),
+      },
+      [] as WeaponArc[]
+    );
 
     const canvas = abstractCanvas.create(maxRange + 1, 1);
-    const context = canvas.getContext("2d");
+    const context = canvas.getContext("2d") as CanvasRenderingContext2D;
 
     for (let range = 0; range <= maxRange; range++) {
-      const rangePenalty = system.callHandler("getRangeModifier", {
-        distance: range,
-      });
+      const rangePenalty = system.callHandler(
+        SYSTEM_HANDLERS.getRangeModifier,
+        {
+          distance: range,
+        },
+        0
+      );
 
-      const opacity = (100 + rangePenalty) / 100;
+      let opacity = (100 + rangePenalty) / 100;
 
       if (opacity < 0) {
         opacity = 0;
@@ -163,6 +188,7 @@ class WeaponArcsOnSystemMouseOver extends UiStrategy {
         degreeToRadian(arcLenght)
       );
 
+      /*
       geometry.faceVertexUvs = [
         geometry.faceVertexUvs[0].map((intial) => [
           new THREE.Vector2(1, 0),
@@ -172,6 +198,7 @@ class WeaponArcsOnSystemMouseOver extends UiStrategy {
       ];
 
       geometry.uvsNeedUpdate = true;
+      */
       const circle = new THREE.Mesh(geometry, material);
       circle.position.z = -1;
 
