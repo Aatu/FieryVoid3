@@ -126,7 +126,7 @@ class MovementService {
     const newfacing = addToHexFacing(deployMove.facing, step);
     deployMove.facing = newfacing;
     ship.movement.replaceDeployMove(deployMove);
-    this.shipStateChanged(ship);
+    this.shipStateChanged({ ship });
   }
 
   /*
@@ -148,7 +148,7 @@ class MovementService {
   }
     */
 
-  shipStateChanged(ship: Ship) {
+  shipStateChanged({ ship }: { ship: Ship }) {
     this.getPhaseDirector().relayEvent("shipStateChanged", ship);
   }
 

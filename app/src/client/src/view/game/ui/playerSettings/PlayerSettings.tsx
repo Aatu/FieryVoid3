@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import PlayerSettingsForm from "./PlayerSettingsForm";
+//import PlayerSettingsForm from "./PlayerSettingsForm";
 import { Clickable, ContainerRoundedRightBottom } from "../../../../styled";
 import { ClickableProps } from "../../../../styled/Clickable";
 
@@ -22,14 +22,16 @@ const MainButton = styled(ContainerRoundedRightBottom)<ClickableProps>`
   ${Clickable}
 `;
 
-const PlayerSettings: React.FC = (props) => {
+const PlayerSettings: React.FC = () => {
   const [open, setOpen] = useState<boolean>(false);
 
   if (open) {
     return <MainButton onClick={() => setOpen(true)}>⚙</MainButton>;
   }
 
-  return <PlayerSettingsForm close={() => setOpen(false)} {...props} />;
+  return null;
+
+  //return <PlayerSettingsForm close={() => setOpen(false)} {...props} />;
 };
 
 export default PlayerSettings;

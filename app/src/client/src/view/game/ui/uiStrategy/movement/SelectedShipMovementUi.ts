@@ -22,7 +22,7 @@ class SelectedShipMovementUi extends UiStrategy {
     }
   }
 
-  shipSelected(ship: Ship) {
+  shipSelected({ ship }: { ship: Ship }) {
     const { uiState } = this.getServices();
     uiState.showShipMovement(ship);
   }

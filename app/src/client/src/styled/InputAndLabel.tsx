@@ -6,7 +6,7 @@ type InputAndLabelProps = {
   id?: string;
   label: string;
   type?: string;
-  value?: string;
+  value?: string | number;
   placeholder?: string;
   onKeyDown?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;

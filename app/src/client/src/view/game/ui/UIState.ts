@@ -10,6 +10,7 @@ import ElectronicWarfareEntry from "@fieryvoid3/model/src/electronicWarfare/Elec
 import ReplayContext from "../phase/phaseStrategy/AutomaticReplayPhaseStrategy/ReplayContext";
 import CombatLogTorpedoAttack from "@fieryvoid3/model/src/combatLog/CombatLogTorpedoAttack";
 import CombatLogWeaponFire from "@fieryvoid3/model/src/combatLog/CombatLogWeaponFire";
+import { PhaseEventPayload } from "../phase/phaseStrategy/PhaseStrategy";
 
 export type TooltipComponentProvider = () => React.FC<{
   uiState: UIState;
@@ -351,7 +352,7 @@ class UIState {
     this.services = phaseDirector.getServices();
   }
 
-  customEvent(name: string, payload?: unknown) {
+  customEvent(name: string, payload?: PhaseEventPayload) {
     if (!this.phaseDirector) {
       return;
     }
@@ -375,7 +376,7 @@ class UIState {
     this.deselectShip();
     this.state.selectedShip = ship;
     this.updateState();
-    this.customEvent("shipSelected", ship);
+    this.customEvent("shipSelected", { ship });
   }
 
   deselectShip() {
@@ -384,7 +385,7 @@ class UIState {
     this.updateState();
     this.deselectAllSystems();
     if (ship) {
-      this.customEvent("shipDeselected", ship);
+      this.customEvent("shipDeselected", { ship });
     }
   }
 
@@ -458,7 +459,7 @@ class UIState {
     */
 
   shipStateChanged(ship: Ship) {
-    this.customEvent("shipStateChanged", ship);
+    this.customEvent("shipStateChanged", { ship });
   }
 
   shipSystemStateChanged(ship: Ship, system: ShipSystem) {
@@ -481,7 +482,7 @@ class UIState {
       (tooltip) => tooltip.ship.id !== ship.id
     );
 
-    this.customEvent("shipTooltipHidden", ship);
+    this.customEvent("shipTooltipHidden", { ship: Ship });
     this.updateState();
   }
 

@@ -9,7 +9,6 @@ import StandardLoadingStrategy from "../../strategy/weapon/StandardLoadingStrate
 import WeaponAnimationStrategy from "../../strategy/weapon/WeaponAnimationStrategy";
 import RequiresPowerSystemStrategy from "../../strategy/RequiresPowerSystemStrategy";
 import BoostableSystemStrategy from "../../strategy/BoostableSystemStrategy";
-import { Ammo120mmHE, Ammo120mmAP } from "../ammunition/conventional/index";
 import AmmunitionStrategy from "../../strategy/weapon/AmmunitionStrategy";
 import OutputHeatOnlineStrategy from "../../strategy/OutputHeatOnlineStrategy";
 import BurstDamageStrategy from "../../strategy/weapon/BurstDamageStrategy";

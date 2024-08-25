@@ -5,7 +5,6 @@ import CombatLogDamageEntry from "../../../../../../combatLog/CombatLogDamageEnt
 import { SystemMessage } from "../../../../strategy/types/SystemHandlersTypes";
 import TorpedoFlight from "../../../../../TorpedoFlight";
 import Ship from "../../../../../Ship";
-import CombatLogWeaponFire from "../../../../../../combatLog/CombatLogWeaponFire";
 import CombatLogTorpedoAttack from "../../../../../../combatLog/CombatLogTorpedoAttack";
 
 export type MSVTorpedoDamageStrategyDamagePayload = DamagePayload & {

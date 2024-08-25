@@ -1,5 +1,5 @@
 import ShipSystemStrategy from "./ShipSystemStrategy";
-import { cargoClasses, CargoType, createCargoInstance } from "../cargo/cargo";
+import { CargoType, createCargoInstance } from "../cargo/cargo";
 import CargoEntity from "../cargo/CargoEntity";
 
 export type SerializedCargoBaySystemStrategy = {

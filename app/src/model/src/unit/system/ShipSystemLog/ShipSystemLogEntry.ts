@@ -1,5 +1,4 @@
 import ShipSystem from "../ShipSystem";
-import { systemLogEntryClasses } from "./systemLogEntryClasses";
 
 export type SerializedSystemLogEntry = {
   className?: string;

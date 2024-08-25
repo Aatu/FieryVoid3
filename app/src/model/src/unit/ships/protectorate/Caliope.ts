@@ -12,7 +12,6 @@ import CargoService from "../../../cargo/CargoService";
 import Ammo30mm from "../../system/weapon/ammunition/conventional/Ammo30mm";
 import Torpedo72HE from "../../system/weapon/ammunition/torpedo/Torpedo72HE";
 import { SYSTEM_HANDLERS } from "../../system/strategy/types/SystemHandlersTypes";
-import { THRUSTER_DIRECTION } from "../../system/strategy/ThrustChannelSystemStrategy";
 
 class Caliope extends Ship {
   setShipProperties() {

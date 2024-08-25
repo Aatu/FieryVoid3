@@ -18,7 +18,7 @@ class ShowShipDEWandCCEW extends UiStrategy {
     });
   }
 
-  shipStateChanged(ship: Ship) {
+  shipStateChanged({ ship }: { ship: Ship }) {
     this.show(ship);
   }
 

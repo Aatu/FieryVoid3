@@ -1,5 +1,5 @@
 import { IHexPosition } from "../hexagon";
-import { isIVector, IVector } from "./Vector";
+import { IVector } from "./Vector";
 
 const distance = (a: IVector, b: IVector) => {
   return Math.sqrt(Math.pow(b.x - a.x, 2) + Math.pow(b.y - a.x, 2));

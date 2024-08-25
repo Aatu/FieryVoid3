@@ -3,7 +3,6 @@ import Vector from "../../../../utils/Vector";
 import { SystemMessage } from "../types/SystemHandlersTypes";
 import StandardDamageStrategy, {
   DamagePayload,
-  StandardDamagePayload,
 } from "./StandardDamageStrategy";
 
 class ExplosiveDamageStrategy extends StandardDamageStrategy {

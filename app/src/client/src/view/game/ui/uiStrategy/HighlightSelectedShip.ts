@@ -29,7 +29,7 @@ class HighlightSelectedShip extends UiStrategy {
     this.hide();
   }
 
-  shipSelected(ship: Ship) {
+  shipSelected({ ship }: { ship: Ship }) {
     const { shipIconContainer } = this.getServices();
     this.active = true;
     this.activeTime = 0;

@@ -13,7 +13,7 @@ class ShowShipBadges extends AnimationUiStrategy {
     this.shouldShow(this.zoom, true);
   }*/
 
-  shipStateChanged(ship: Ship) {
+  shipStateChanged({ ship }: { ship: Ship }) {
     this.updateShip(ship);
   }
 

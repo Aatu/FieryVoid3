@@ -1,5 +1,4 @@
 import Weapon, { WeaponArgs } from "../Weapon";
-import RequiresPowerSystemStrategy from "../../strategy/RequiresPowerSystemStrategy";
 import Torpedo158 from "../ammunition/torpedo/Torpedo158";
 import TorpedoLauncherStrategy from "../../strategy/weapon/TorpedoLauncherStrategy";
 

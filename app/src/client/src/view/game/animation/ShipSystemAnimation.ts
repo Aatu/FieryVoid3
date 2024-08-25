@@ -7,10 +7,10 @@ class ShipSystemAnimation extends Animation {
   private icon: ShipObject;
   private ship: Ship;
 
-  constructor(icon: ShipObject, ship: Ship) {
+  constructor(icon: ShipObject) {
     super();
     this.icon = icon;
-    this.ship = ship || icon.ship;
+    this.ship = icon.ship;
 
     this.updateAll();
   }

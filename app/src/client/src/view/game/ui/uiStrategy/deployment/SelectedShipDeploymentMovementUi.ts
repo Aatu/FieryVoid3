@@ -16,7 +16,7 @@ class SelectedShipDeploymentMovementUi extends UiStrategy {
     }
   }
 
-  shipSelected(ship: Ship) {
+  shipSelected({ ship }: { ship: Ship }) {
     const { uiState } = this.getServices();
     uiState.showShipDeploymentMovement(ship);
   }

@@ -22,7 +22,7 @@ class OwnedShipEw extends UiStrategy {
     this.show();
   }
 
-  shipStateChanged(ship: Ship) {
+  shipStateChanged({ ship }: { ship: Ship }) {
     const { electronicWarfareIndicatorService, uiState } = this.getServices();
     if (!this.gameData) {
       return;

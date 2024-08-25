@@ -1,16 +1,9 @@
 import * as React from "react";
-import styled from "styled-components";
-import {
-  Container,
-  Title,
-  SubTitle,
-  Backdrop,
-  ContainerRoundedRightBottom,
-  Clickable
-} from "../styled";
-import { InputAndLabel } from "../common";
 
-const PlayerSettingsForm = () => {
+const PlayerSettingsForm: React.FC = () => {
+  return null;
+
+  /*
   const getOnChange = (key) => {
     return e => {
       this.props.set(key, e.target.value);
@@ -94,10 +87,12 @@ const PlayerSettingsForm = () => {
       </Backdrop>
     );
   }
-}
+    */
+};
 
-const keyToString = key => {
-  let value = keyCodes[key.keyCode];
+/*
+const keyToString = (key: KeyboardEvent): string => {
+  let value = keyCodes[parseInt(key.code, 10) as keyof typeof keyCodes];
 
   value = value.toUpperCase();
 
@@ -187,6 +182,8 @@ const keyCodes = {
   87: "w",
   88: "x",
   89: "y",
-  90: "z"
+  90: "z",
 };
+
+*/
 export default PlayerSettingsForm;

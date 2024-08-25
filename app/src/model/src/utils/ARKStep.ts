@@ -1,3 +1,4 @@
+/*
 import Vector from "./Vector";
 import THREE from "three";
 
@@ -186,3 +187,4 @@ class ARKStep {
 }
 
 export default ARKStep;
+*/

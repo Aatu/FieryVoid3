@@ -4,7 +4,6 @@ import {
   COLOR_ENEMY,
   COLOR_FRIENDLY,
 } from "@fieryvoid3/model/src/config/gameConfig";
-import { MovementService } from "@fieryvoid3/model/src/movement";
 import HexagonMath from "@fieryvoid3/model/src/utils/HexagonMath";
 import {
   getCompassHeadingOfPoint,
@@ -23,7 +22,6 @@ import { RenderPayload } from "../../phase/phaseStrategy/PhaseStrategy";
 const TEXTURE = new THREE.TextureLoader().load("/img/torpedoMarker.png");
 
 class ShowTorpedoObjects extends AnimationUiStrategy {
-  private movementService: MovementService = new MovementService();
   private lines: { targetId: string; flightId: string; line: Line }[] = [];
   private hexes: HexagonSprite[] = [];
   private zoom: number = 1;
@@ -59,9 +57,10 @@ class ShowTorpedoObjects extends AnimationUiStrategy {
 
     hexPositions.forEach(({ position, target, facing }) => {
       const pos = position.toVector();
-      const color = gameData.slots.isShipInUsersTeam(currentUser, target)
-        ? COLOR_ENEMY
-        : COLOR_FRIENDLY;
+      const color =
+        currentUser && gameData.slots.isShipInUsersTeam(currentUser, target)
+          ? COLOR_FRIENDLY
+          : COLOR_ENEMY;
 
       if (
         !this.hexes.find(
@@ -112,7 +111,7 @@ class ShowTorpedoObjects extends AnimationUiStrategy {
     this.markHexes(gameData);
   }
 
-  shipStateChanged(ship: Ship) {
+  shipStateChanged({ ship }: { ship: Ship }) {
     if (!this.gameData) {
       return;
     }

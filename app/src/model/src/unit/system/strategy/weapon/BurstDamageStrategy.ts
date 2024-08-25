@@ -3,10 +3,7 @@ import StandardDamageStrategy, {
   isStandardDamagePayload,
 } from "./StandardDamageStrategy";
 import CombatLogDamageEntry from "../../../../combatLog/CombatLogDamageEntry";
-import CombatLogWeaponFire from "../../../../combatLog/CombatLogWeaponFire";
-import FireOrder from "../../../../weapon/FireOrder";
 import { SystemMessage } from "../types/SystemHandlersTypes";
-import { HitResolution } from "./StandardHitStrategy";
 import CombatLogWeaponFireHitResult from "../../../../combatLog/CombatLogWeaponFireHitResult";
 
 class BurstDamageStrategy extends StandardDamageStrategy {

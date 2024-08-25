@@ -20,7 +20,7 @@ class SelectedShipSystemList extends UiStrategy {
     }
   }
 
-  shipSelected(ship: Ship) {
+  shipSelected({ ship }: { ship: Ship }) {
     const { uiState } = this.getServices();
     if (!this.gameData) {
       return;

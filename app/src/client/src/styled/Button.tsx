@@ -110,7 +110,7 @@ export type ButtonProps = {
   IconComponent?: React.FC<{ color?: string }>;
   buttonStyle?: string;
   onClick?: MouseEventHandler<HTMLButtonElement>;
-  children: React.ReactNode;
+  children?: React.ReactNode;
 } & React.ButtonHTMLAttributes<HTMLButtonElement>;
 
 export const Button: React.FC<ButtonProps> = ({

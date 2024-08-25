@@ -1,11 +1,9 @@
 import StandardDamageStrategy, {
-  DamagePayload,
   ChooseHitSystemFunction,
   StandardDamagePayload,
 } from "./StandardDamageStrategy";
 import Structure from "../../structure/Structure";
 import { SystemMessage } from "../types/SystemHandlersTypes";
-import Ship from "../../../Ship";
 import Vector from "../../../../utils/Vector";
 import ShipSystem from "../../ShipSystem";
 import SystemSection from "../../systemSection/SystemSection";

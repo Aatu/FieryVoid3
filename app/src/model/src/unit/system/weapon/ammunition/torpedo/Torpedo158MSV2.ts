@@ -12,6 +12,7 @@ class Torpedo158MSV2 extends Torpedo158 {
     this.visuals = {
       engineColor: [255 / 255, 222 / 255, 120 / 255],
       explosionType: "MSV",
+      explosionSize: 0.5,
     };
   }
 

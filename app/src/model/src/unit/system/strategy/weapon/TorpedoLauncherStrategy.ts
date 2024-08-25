@@ -1,5 +1,4 @@
 import ShipSystemStrategy from "../ShipSystemStrategy";
-import { cargoClasses } from "../../cargo/cargo";
 import Torpedo from "../../weapon/ammunition/torpedo/Torpedo";
 import {
   createTorpedoInstance,

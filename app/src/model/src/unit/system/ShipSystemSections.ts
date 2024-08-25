@@ -11,7 +11,6 @@ import { getCompassHeadingOfPoint, addToDirection } from "../../utils/math";
 import SystemSection from "./systemSection/SystemSection";
 import Ship from "../Ship";
 import { IVector } from "../../utils/Vector";
-import { SYSTEM_LOCATION } from "./systemSection/systemLocation";
 import ShipSystem from "./ShipSystem";
 
 class ShipSystemSections {

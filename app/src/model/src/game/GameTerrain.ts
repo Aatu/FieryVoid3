@@ -7,11 +7,9 @@ import Vector from "../utils/Vector";
 export type SerializedGameTerrain = SerializedGameTerrainEntity[];
 
 class GameTerrain {
-  private gameData: GameData;
   private entities: GameTerrainEntity[];
 
   constructor(gameData: GameData) {
-    this.gameData = gameData;
     this.entities = [];
   }
 

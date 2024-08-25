@@ -7,7 +7,6 @@ import {
   SystemMessage,
 } from "./strategy/types/SystemHandlersTypes";
 import ShipSystems from "../ShipSystems";
-import Ship from "../Ship";
 import DamageEntry from "./DamageEntry";
 import Critical from "./criticals/Critical";
 import ShipSystemLog, {

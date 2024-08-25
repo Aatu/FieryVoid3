@@ -1,11 +1,5 @@
 import ShipSystemStrategy from "./ShipSystemStrategy";
-import {
-  CriticalTableEntry,
-  OutputReduced2,
-  OutputReduced4,
-  OutputReduced6,
-  OutputReduced8,
-} from "../criticals/index";
+import { CriticalTableEntry } from "../criticals/index";
 import OutputReduced from "../criticals/OutputReduced";
 import { SYSTEM_HANDLERS } from "./types/SystemHandlersTypes";
 

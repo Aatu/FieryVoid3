@@ -1,3 +1,4 @@
+/*
 import GameTerrain from "../game/GameTerrain";
 import ARKStep from "./ARKStep";
 import Vector from "./Vector";
@@ -23,14 +24,7 @@ class ARK {
     let currentTime = 0;
 
     let positions = [position.clone()];
-    /*
-    console.log(
-      "startPosition",
-      position.toString(),
-      "startVelocity",
-      velocity.toString()
-    );
-*/
+  
 
     const parent = this.gameTerrain.getParentEntity(position, turn);
 
@@ -93,16 +87,7 @@ class ARK {
     position = position.add(fDPosition);
     velocity = velocity.add(fDVelocity);
     positions.push(position.clone());
-    /*
-    console.log(currentTime);
 
-    console.log(
-      "endPosition",
-      position.toString(),
-      "endVelocity",
-      velocity.toString()
-    );
-    */
     return {
       position,
       velocity,
@@ -113,3 +98,4 @@ class ARK {
 }
 
 export default ARK;
+*/

@@ -24,7 +24,7 @@ class MovementResolver {
 
       if (commit) {
         this.ship.movement.replaceMovement(newMovement);
-        this.movementService.shipStateChanged(this.ship);
+        this.movementService.shipStateChanged({ ship: this.ship });
       }
 
       return true;
@@ -231,7 +231,7 @@ class MovementResolver {
       .filter((move) => move.isCancellable())
       .forEach((move) => this.ship.movement.removeMovement(move));
 
-    this.movementService.shipStateChanged(this.ship);
+    this.movementService.shipStateChanged({ ship: this.ship });
   }
 }
 

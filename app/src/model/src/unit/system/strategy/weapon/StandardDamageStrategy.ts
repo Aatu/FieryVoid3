@@ -12,7 +12,6 @@ import FireOrder from "../../../../weapon/FireOrder";
 import CombatLogWeaponFire from "../../../../combatLog/CombatLogWeaponFire";
 import ShipSystem from "../../ShipSystem";
 import TorpedoFlight from "../../../TorpedoFlight";
-import GameData from "../../../../game/GameData";
 import CombatLogTorpedoAttack from "../../../../combatLog/CombatLogTorpedoAttack";
 
 export type DamagePayload = {

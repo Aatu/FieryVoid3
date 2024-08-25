@@ -2,11 +2,9 @@ import Ship from "../unit/Ship";
 import GameData from "./GameData";
 
 class GameActiveShips {
-  private gameData: GameData;
   public shipIds: string[];
 
   constructor(gameData: GameData) {
-    this.gameData = gameData;
     this.shipIds = [];
   }
 

@@ -29,7 +29,7 @@ class SelectedShipNavigationPath extends UiStrategy {
     }
   }
 
-  shipSelected(ship: Ship) {
+  shipSelected({ ship }: { ship: Ship }) {
     this.show(ship);
   }
 

@@ -6,12 +6,9 @@ import WeaponArcStrategy, {
 import StandardHitStrategy from "../../strategy/weapon/StandardHitStrategy";
 import StandardRangeStrategy from "../../strategy/weapon/StandardRangeStrategy";
 import StandardLoadingStrategy from "../../strategy/weapon/StandardLoadingStrategy";
-import StandardDamageStrategy from "../../strategy/weapon/StandardDamageStrategy";
 import WeaponAnimationStrategy from "../../strategy/weapon/WeaponAnimationStrategy";
 import RequiresPowerSystemStrategy from "../../strategy/RequiresPowerSystemStrategy";
 import BoostableSystemStrategy from "../../strategy/BoostableSystemStrategy";
-import Ammo140mmAP from "../ammunition/conventional/Ammo140mmAP";
-import Ammo140mmHE from "../ammunition/conventional/Ammo140mmHE";
 import AmmunitionStrategy from "../../strategy/weapon/AmmunitionStrategy";
 import OutputHeatOnlineStrategy from "../../strategy/OutputHeatOnlineStrategy";
 import BurstDamageStrategy from "../../strategy/weapon/BurstDamageStrategy";
