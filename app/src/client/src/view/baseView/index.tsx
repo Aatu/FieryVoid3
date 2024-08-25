@@ -1,11 +1,11 @@
 import React from "react";
 import styled from "styled-components";
 import HomeSceneComponent from "./HomeSceneComponent";
-import { Route } from "../../Router";
-import CreateGame from "../createGame";
-import Home from "../home";
+import { Route } from "../../Route";
 import Login from "../login/Login";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import CreateGame from "../createGame/CreateGame";
+import Home from "../home/Home";
 
 const Logo = styled.div`
   height: 58px;

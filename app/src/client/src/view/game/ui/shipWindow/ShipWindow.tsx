@@ -1,7 +1,9 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback } from "react";
 import styled from "styled-components";
 
 import ShipSection from "./ShipSection";
+import Ship from "@fieryvoid3/model/src/unit/Ship";
+import { useUiStateHandler } from "../../../../state/useUIStateHandler";
 
 const ShipWindowContainer = styled.div`
   display: flex;
@@ -35,10 +37,16 @@ const ColumnMiddle = styled(Column)`
   width: 50%;
 `;
 
-const ShipWindow = ({ ship, uiState, ...rest }) => {
+type Props = {
+  ship: Ship;
+};
+
+const ShipWindow: React.FC<Props> = ({ ship, ...rest }) => {
+  const uiState = useUiStateHandler();
+
   const shipWindowClicked = useCallback(() => {
     uiState.customEvent("closeSystemInfo");
-  }, []);
+  }, [uiState]);
 
   return (
     <ShipWindowContainer
@@ -47,7 +55,6 @@ const ShipWindow = ({ ship, uiState, ...rest }) => {
         e.preventDefault();
         e.stopPropagation();
       }}
-      team={ship.team}
     >
       <Column>
         <ShipSection

@@ -33,11 +33,15 @@ const ShipSectionContainer = styled.div<ShipSectionContainerProps>`
 
 type Props = {
   ship: Ship;
-  section: SystemSection;
+  section?: SystemSection;
   uiState: UIState;
 };
 
 const ShipSection: React.FC<Props> = ({ ship, section, uiState, ...rest }) => {
+  if (!section) {
+    return null;
+  }
+
   const location = section.getLocation();
   const structure = section.getStructure();
 

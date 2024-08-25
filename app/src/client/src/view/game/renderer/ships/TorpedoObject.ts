@@ -244,6 +244,8 @@ class TorpedoObject {
       total: this.totalAnimationTime,
       last: 0,
       zoom: zoom,
+      paused: false,
+      reverse: false,
     });
 
     this.lastAnimationTime = Date.now();

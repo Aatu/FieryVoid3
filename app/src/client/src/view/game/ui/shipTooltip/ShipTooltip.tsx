@@ -133,7 +133,7 @@ const ShipTooltip: React.FC<Props> = ({
           <CloseButton
             onClick={() => {
               uiState.hideShipTooltip(ship);
-              uiState.customEvent("shipTooltipClosed", ship);
+              uiState.customEvent("shipTooltipClosed", { ship });
             }}
           />
         </div>
@@ -152,7 +152,7 @@ const ShipTooltip: React.FC<Props> = ({
             <WeaponTargetingList uiState={uiState} ship={ship} {...rest} />
           )}
           <ShipTooltipDetails ship={ship} />
-          <ShipWindow ship={ship} uiState={uiState} {...rest} />
+          <ShipWindow ship={ship} {...rest} />
         </>
       )}
 

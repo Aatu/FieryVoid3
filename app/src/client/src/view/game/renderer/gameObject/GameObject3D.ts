@@ -12,7 +12,6 @@ class GameObject3D implements IClonable {
   private object: THREE.Object3D;
   public scene: THREE.Object3D;
   public animations: THREE.AnimationClip[];
-  private actions: THREE.AnimationAction[];
   private animationMixer: THREE.AnimationMixer;
 
   constructor(scene: THREE.Object3D, animations: THREE.AnimationClip[]) {
@@ -21,7 +20,6 @@ class GameObject3D implements IClonable {
     this.object = new THREE.Object3D();
     this.scene = scene;
     this.animations = animations;
-    this.actions = [];
 
     this.object.add(this.scene);
 

@@ -9,7 +9,6 @@ import { IVector } from "@fieryvoid3/model/src/utils/Vector";
 import { degreeToRadian } from "@fieryvoid3/model/src/utils/math";
 
 class StarParticle {
-  private material: THREE.Material;
   private geometry: THREE.BufferGeometry;
   public index: number;
   private emitter: ParticleEmitter | null;
@@ -22,7 +21,6 @@ class StarParticle {
   };
 
   constructor(material: THREE.Material, geometry: THREE.BufferGeometry) {
-    this.material = material;
     this.geometry = geometry;
     this.index = 0;
     this.emitter = null;

@@ -51,7 +51,7 @@ const drawCone = (
   canvas.arc(
     start.x,
     start.y,
-    mathlib.distance({ ...start, z: 0 }, { ...p1, z: 0 }),
+    mathlib.distance(start, p1),
     mathlib.degreeToRadian(arcs.start),
     mathlib.degreeToRadian(arcs.end),
     false

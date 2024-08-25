@@ -6,16 +6,17 @@ import Weapon from "@fieryvoid3/model/src/unit/system/weapon/Weapon";
 import ShipObject from "../../renderer/ships/ShipObject";
 import { ParticleEmitterContainer } from "../particle";
 import ShipWeaponAnimationService from "../../ui/uiStrategy/replay/ShipWeaponAnimationService";
+import BoltEffect, { BoltArgs } from "../effect/BoltEffect";
+import Vector from "@fieryvoid3/model/src/utils/Vector";
 
 type ShipWeaponBoltAnimationArgs = {
   speed: number;
   explosionSize: number;
-};
+} & BoltArgs;
 
 class ShipWeaponBoltAnimation extends ShipWeaponAnimation {
   private extraWait: number;
-  private animations: Animation[];
-  private explosion: Animation | null;
+  private animations: BoltEffect[];
 
   constructor(
     time: number,
@@ -71,8 +72,8 @@ class ShipWeaponBoltAnimation extends ShipWeaponAnimation {
     this.animations.push(
       weaponAnimationService.getBoltEffect(
         startTime,
-        startPosition,
-        endPosition.clone(),
+        new Vector(startPosition),
+        new Vector(endPosition),
         speed,
         fade,
         this.duration,
@@ -81,8 +82,6 @@ class ShipWeaponBoltAnimation extends ShipWeaponAnimation {
       )
     );
 
-    this.explosion = null;
-
     if (!combatLogEntry.causedDamage()) {
       return;
     }
@@ -90,7 +89,7 @@ class ShipWeaponBoltAnimation extends ShipWeaponAnimation {
     if (hit) {
       weaponAnimationService.getDamageExplosion(
         args.explosionSize,
-        endPosition,
+        new Vector(endPosition),
         startTime + this.duration,
         this
       );

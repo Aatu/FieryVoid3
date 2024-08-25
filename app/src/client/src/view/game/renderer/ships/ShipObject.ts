@@ -51,7 +51,7 @@ class ShipObject {
   protected opacity: number;
   protected rotation: number;
   protected roll: number;
-  protected dimensions: IVector;
+  public dimensions: IVector;
   protected center: IVector;
   protected ewSpriteDimensions: IVector | null;
   public shipObjectBoundingBox: ShipObjectBoundingBox;

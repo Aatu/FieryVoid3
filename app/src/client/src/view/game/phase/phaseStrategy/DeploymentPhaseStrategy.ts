@@ -13,9 +13,11 @@ import {
   SelectedShipDeploymentMovementUi,
   ShipClickSelectsShip,
 } from "../../ui/uiStrategy";
+import { Services } from "../PhaseDirector";
+import GameConnector from "../../GameConnector";
 
 class DeploymentPhaseStrategy extends PhaseStrategy {
-  constructor(services) {
+  constructor(services: Services) {
     super(services);
 
     this.strategies = [
@@ -35,8 +37,8 @@ class DeploymentPhaseStrategy extends PhaseStrategy {
     ];
   }
 
-  commitTurn(gameConnector) {
-    gameConnector.commitDeployment(this.gameData);
+  commitTurn(gameConnector: GameConnector) {
+    gameConnector.commitDeployment(this.getGameData());
   }
 }
 

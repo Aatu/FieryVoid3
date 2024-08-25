@@ -2,21 +2,29 @@ import ShipWeaponAnimation from "./ShipWeaponAnimation/ShipWeaponAnimation";
 import ExplosionEffect from "./effect/ExplosionEffect";
 import * as THREE from "three";
 
-import BoltEffect from "./effect/BoltEffect";
-
-const boltEffect = new BoltEffect();
+import ShipObject from "../renderer/ships/ShipObject";
+import Vector from "@fieryvoid3/model/src/utils/Vector";
+import { ParticleEmitterContainer } from "./particle";
+import { RenderPayload } from "../phase/phaseStrategy/PhaseStrategy";
+import EffecSprite from "../renderer/sprite/EffectSprite";
+import { PARTICLE_TEXTURE } from "./particle/BaseParticle";
 
 class ShipDestroyedAnimation extends ShipWeaponAnimation {
+  private icon: ShipObject;
+  private startTime: number;
+  private hideTime: number;
+  private animations: EffecSprite[];
+
   constructor(
-    icon,
-    facing,
-    position,
-    start,
-    getRandom,
-    particleEmitterContainer,
-    scene
+    icon: ShipObject,
+    facing: number,
+    position: Vector,
+    startTime: number,
+    getRandom: () => number,
+    particleEmitterContainer: ParticleEmitterContainer,
+    scene: THREE.Object3D
   ) {
-    super({ getRandom, particleEmitterContainer });
+    super(getRandom, particleEmitterContainer);
 
     this.animations = [];
     const size =
@@ -27,7 +35,7 @@ class ShipDestroyedAnimation extends ShipWeaponAnimation {
     this.hideTime = 2500;
 
     this.icon = icon;
-    this.start = start;
+    this.startTime = startTime;
 
     let explosionCount =
       Math.ceil(
@@ -48,7 +56,7 @@ class ShipDestroyedAnimation extends ShipWeaponAnimation {
         this.getRandom,
         {
           position: explosionPosition,
-          time: start + this.getRandom() * 3000,
+          time: startTime + this.getRandom() * 3000,
           duration: 250 + getRandom() * 250,
           type: "gas",
           size: getRandom() * 30 + 10,
@@ -62,11 +70,11 @@ class ShipDestroyedAnimation extends ShipWeaponAnimation {
       position: position.setZ(icon.shipZ),
       scale: { width: size * 4, height: size * 4 },
       color: new THREE.Color(51 / 255, 163 / 255, 255 / 255),
-      texture: TEXTURE_GLOW,
+      texture: PARTICLE_TEXTURE.GLOW,
       fadeInDuration: 500,
       fadeOutTime: 1000,
       fadeOutDuration: 1000,
-      activationTime: start + 2000,
+      activationTime: startTime + 2000,
       scaleChange: 0.001,
       blending: THREE.NormalBlending,
       opacity: 1.0,
@@ -77,11 +85,11 @@ class ShipDestroyedAnimation extends ShipWeaponAnimation {
       position: position.setZ(icon.shipZ),
       scale: { width: size * 3, height: size * 3 },
       color: new THREE.Color(1, 1, 1),
-      texture: TEXTURE_GLOW,
+      texture: PARTICLE_TEXTURE.GLOW,
       fadeInDuration: 500,
       fadeOutTime: 1000,
       fadeOutDuration: 1000,
-      activationTime: start + 2000,
+      activationTime: startTime + 2000,
       scaleChange: 0.001,
       blending: THREE.AdditiveBlending,
       opacity: 1.0,
@@ -92,11 +100,11 @@ class ShipDestroyedAnimation extends ShipWeaponAnimation {
       position: position.setZ(icon.shipZ),
       scale: { width: size * 0.8, height: size * 0.8 },
       color: new THREE.Color(51 / 255, 163 / 255, 255 / 255),
-      texture: TEXTURE_FILLED_RING,
+      texture: PARTICLE_TEXTURE.RING,
       fadeInDuration: 0,
       fadeOutTime: 200,
       fadeOutDuration: 300,
-      activationTime: start + 3000,
+      activationTime: startTime + 3000,
       scaleChange: 0.03,
       opacity: 0.5,
     });
@@ -128,8 +136,8 @@ class ShipDestroyedAnimation extends ShipWeaponAnimation {
     */
   }
 
-  render(payload) {
-    if (payload.total > this.start + this.hideTime) {
+  render(payload: RenderPayload) {
+    if (payload.total > this.startTime + this.hideTime) {
       this.icon.hide();
     } else {
       this.icon.show();

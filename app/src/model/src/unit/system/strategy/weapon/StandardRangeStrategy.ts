@@ -14,7 +14,19 @@ class StandardRangeStrategy extends ShipSystemStrategy {
     this.rangesAndPenalties = rangesAndPenalties || [];
   }
 
-  getUiComponents(payload: unknown, previousResponse = []) {
+  getRangesAndPenalties() {
+    return this.rangesAndPenalties;
+  }
+
+  getUiComponents(
+    payload: unknown,
+    previousResponse = []
+  ): {
+    name: string;
+    props: {
+      rangeStrategy: StandardRangeStrategy;
+    };
+  }[] {
     return [
       ...previousResponse,
       {

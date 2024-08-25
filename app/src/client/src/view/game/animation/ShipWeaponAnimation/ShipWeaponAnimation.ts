@@ -8,6 +8,7 @@ import {
   hexFacingToAngle,
 } from "@fieryvoid3/model/src/utils/math";
 import ShipSystem from "@fieryvoid3/model/src/unit/system/ShipSystem";
+import { RenderPayload } from "../../phase/phaseStrategy/PhaseStrategy";
 
 class ShipWeaponAnimation extends Animation {
   protected particleEmitterContainer: ParticleEmitterContainer;
@@ -112,7 +113,8 @@ class ShipWeaponAnimation extends Animation {
 
   update(): void {}
 
-  render(): void {}
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  public render(payload: RenderPayload) {}
 }
 
 export default ShipWeaponAnimation;

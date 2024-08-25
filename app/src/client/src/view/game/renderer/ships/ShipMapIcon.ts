@@ -3,7 +3,6 @@ import ShipObject from "./ShipObject";
 import * as THREE from "three";
 
 class ShipMapIcon {
-  private shipObject: ShipObject;
   private size: { width: number; height: number };
   private normalSprite: ShipMapSprite;
   private movementTargetSprite: ShipMapSprite;
@@ -11,8 +10,6 @@ class ShipMapIcon {
   private scene: THREE.Object3D | null;
 
   constructor(shipObject: ShipObject) {
-    this.shipObject = shipObject;
-
     this.size = { width: 25, height: 25 };
 
     this.normalSprite = new ShipMapSprite(

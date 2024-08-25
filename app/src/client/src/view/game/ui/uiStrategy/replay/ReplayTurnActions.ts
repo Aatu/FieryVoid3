@@ -60,7 +60,6 @@ const getShipStartPositionAndFacingForShip = (
 class ReplayTurnActions extends AnimationUiStrategy {
   private replayContext: ReplayContext;
   private systemDestroyedTextAnimation: SystemDestroyedTextAnimation | null;
-  private ready: boolean;
   private getRandom: () => number = Math.random;
 
   constructor(replayContext: ReplayContext) {
@@ -68,7 +67,6 @@ class ReplayTurnActions extends AnimationUiStrategy {
     this.replayContext = replayContext;
 
     this.systemDestroyedTextAnimation = null;
-    this.ready = false;
   }
 
   async newTurn({ gameDatas }: { gameDatas: GameData[] }) {
@@ -631,12 +629,7 @@ class ReplayTurnActions extends AnimationUiStrategy {
 
     this.animations.push(animation);
 
-    this.animations.push(
-      new ShipSystemAnimation(
-        icon,
-        gameDatas[0].ships.getShipById(icon.ship.id)
-      )
-    );
+    this.animations.push(new ShipSystemAnimation(icon));
   }
 
   deactivate() {

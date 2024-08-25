@@ -78,10 +78,10 @@ class ShipWeaponUniversalBoltAnimation extends ShipWeaponAnimation {
         this.animations.push(
           weaponAnimationService.getDamageExplosion(
             props.args.explosionSize,
-            props.args.explosionType,
             this.endPosition.add(shot.offset),
             this.startTime + shot.startExtra + duration,
-            this
+            this,
+            props.args.explosionType
           )
         );
       }

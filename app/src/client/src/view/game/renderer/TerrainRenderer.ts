@@ -1,15 +1,5 @@
-import * as THREE from "three";
-
 class TerrainRenderer {
-  private scene: THREE.Object3D;
-  private terrain: unknown;
-  private terrainObjects: unknown[];
-
-  constructor(scene: THREE.Object3D) {
-    this.scene = scene;
-    this.terrain = null;
-    this.terrainObjects = [];
-  }
+  constructor() {}
 
   init() {}
 

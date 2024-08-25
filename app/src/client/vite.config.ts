@@ -8,8 +8,12 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      // @ts-expect-error not now
-      "@model": path.resolve(__dirname, "../model/src"),
+      "@fieryvoid3/model": path.resolve(
+        // @ts-expect-error not now
+        __dirname,
+        "node_modules/@fieryvoid3/model"
+      ),
     },
   },
+  optimizeDeps: { include: ["@fieryvoid3/model"] },
 });

@@ -11,25 +11,16 @@ import CombatLog from "../ui/combatLog/CombatLog";
 import ShipBadge from "../ui/shipBadge/ShipBadge";
 import ShipList from "../ui/shipList/ShipList";
 import Game from "../Game";
-import { useUser } from "../../../state/userHooks";
 import { GAME_PHASE } from "@fieryvoid3/model/src/game/gamePhase";
 import { GameUIMode } from "../ui/gameUiModes";
 
 const GameUiComponent: React.FC<{ game: Game }> = ({ game }) => {
-  const { data: currentUser } = useUser();
   const uiState = game.getUiState();
   const state = uiState.getState();
 
   return (
     <>
-      {state.lobby && (
-        <Lobby
-          uiState={uiState}
-          gameData={state.gameData}
-          game={game}
-          currentUser={currentUser}
-        />
-      )}
+      {state.lobby && <Lobby uiState={uiState} gameData={state.gameData} />}
 
       <>
         {

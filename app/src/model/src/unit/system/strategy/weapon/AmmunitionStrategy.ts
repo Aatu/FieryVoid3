@@ -102,7 +102,13 @@ class AmmunitionStrategy extends ShipSystemStrategy {
     return this.getSelectedAmmo().getIconText();
   }
 
-  getUiComponents({ myShip }: { myShip: boolean }, previousResponse = []) {
+  getUiComponents(
+    { myShip }: { myShip: boolean },
+    previousResponse = []
+  ): {
+    name: string;
+    props: { ammoStrategy: AmmunitionStrategy };
+  }[] {
     if (!myShip) {
       return previousResponse;
     }

@@ -1,18 +1,40 @@
 import * as THREE from "three";
 import Animation from "../Animation";
 import PivotSteps from "./PivotSteps";
+import ShipObject from "../../renderer/ships/ShipObject";
+import Ship from "@fieryvoid3/model/src/unit/Ship";
+import { MovementOrder } from "@fieryvoid3/model/src/movement";
+import Vector from "@fieryvoid3/model/src/utils/Vector";
+import { RenderPayload } from "../../phase/phaseStrategy/PhaseStrategy";
+import {
+  addToDirection,
+  getAngleBetween,
+} from "@fieryvoid3/model/src/utils/math";
 
 class ShipMovementAnimation extends Animation {
-  constructor(shipIcon, ship, moves, start, end) {
+  private shipIcon: ShipObject;
+  private ship: Ship;
+  private startTime: number;
+  private end: number;
+  private positionCurves: THREE.CubicBezierCurve3[];
+  private pivotSteps: PivotSteps;
+  private startRoll: number;
+  private endRoll: number;
+  private easeInOut: THREE.CubicBezierCurve;
+
+  constructor(
+    shipIcon: ShipObject,
+    ship: Ship,
+    moves: MovementOrder[],
+    start: number,
+    end: number
+  ) {
     super();
 
     this.shipIcon = shipIcon;
     this.ship = ship;
-    this.moves = moves;
 
-    this.doneCallback = null;
-
-    this.start = start;
+    this.startTime = start;
     this.end = end;
 
     this.duration = end - start;
@@ -51,8 +73,6 @@ class ShipMovementAnimation extends Animation {
     );
 
     */
-
-    Animation.call(this);
   }
 
   doesMove() {
@@ -63,7 +83,7 @@ class ShipMovementAnimation extends Animation {
 
   deactivate() {}
 
-  update(gameData) {}
+  update() {}
 
   cleanUp() {}
 
@@ -71,8 +91,8 @@ class ShipMovementAnimation extends Animation {
     return this.getPositionAndFacing(1, 1);
   }
 
-  getPositionAt(time) {
-    const turnDone = this.getMovementTurnDone({ total: time });
+  getPositionAt(time: number) {
+    const turnDone = this.getMovementTurnDone(time);
 
     const turn = Math.floor(turnDone);
     const percentDone = turnDone < 1 ? turnDone % 1 : 1;
@@ -80,8 +100,8 @@ class ShipMovementAnimation extends Animation {
     return this.getPositionAndFacing(turn, percentDone);
   }
 
-  getMovementTurnDone({ total }) {
-    if (total < this.start) {
+  getMovementTurnDone(total: number) {
+    if (total < this.startTime) {
       return 0;
     }
 
@@ -89,12 +109,12 @@ class ShipMovementAnimation extends Animation {
       return 1;
     }
 
-    const time = total - this.start;
+    const time = total - this.startTime;
     return time / this.duration;
   }
 
-  getCurrentRoll(turnDone) {
-    const between = -getAngleBetween(this.startRoll, this.endRoll);
+  getCurrentRoll(turnDone: number) {
+    const between = -getAngleBetween(this.startRoll, this.endRoll, false);
     if (between === 0) {
       return this.endRoll;
     }
@@ -105,13 +125,13 @@ class ShipMovementAnimation extends Animation {
     );
   }
 
-  render(payload) {
+  render(payload: RenderPayload) {
     if (this.ship.isDestroyed() && !this.ship.isDestroyedThisTurn()) {
       this.shipIcon.hide();
       return;
     }
 
-    const turnDone = this.getMovementTurnDone(payload);
+    const turnDone = this.getMovementTurnDone(payload.total);
 
     const turn = Math.floor(turnDone);
     const percentDone = turnDone < 1 ? turnDone % 1 : 1;
@@ -124,7 +144,7 @@ class ShipMovementAnimation extends Animation {
     this.shipIcon.setRoll(roll);
   }
 
-  getPositionAndFacing(turn, percentDone) {
+  getPositionAndFacing(turn: number, percentDone: number) {
     const position = this.positionCurves[turn]
       ? this.positionCurves[turn].getPoint(percentDone)
       : this.positionCurves[this.positionCurves.length - 1].getPoint(1);
@@ -134,9 +154,9 @@ class ShipMovementAnimation extends Animation {
     return { position, facing };
   }
 
-  movesToCurves(moves) {
-    const startsAndEnds = [];
-    let start = null;
+  movesToCurves(moves: MovementOrder[]) {
+    const startsAndEnds: { start: MovementOrder; end: MovementOrder }[] = [];
+    let start: MovementOrder | null = null;
 
     moves.forEach((move) => {
       if (move.isDeploy()) {
@@ -145,7 +165,7 @@ class ShipMovementAnimation extends Animation {
         start = move;
       } else if (move.isEnd()) {
         startsAndEnds.push({
-          start: start,
+          start: start!,
           end: move,
         });
 
@@ -160,7 +180,7 @@ class ShipMovementAnimation extends Animation {
     return curves;
   }
 
-  buildPositionCurve(start, end) {
+  buildPositionCurve(start: MovementOrder, end: MovementOrder) {
     const startPosition = start.position;
 
     const point1 = startPosition.roundToHexCenter();

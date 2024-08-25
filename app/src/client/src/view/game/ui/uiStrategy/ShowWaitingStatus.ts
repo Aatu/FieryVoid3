@@ -4,12 +4,12 @@ import UiStrategy from "./UiStrategy";
 class ShowWaitingStatus extends UiStrategy {
   activate(services: Services) {
     super.activate(services);
-    const { uiState } = this.this.getServices();
+    const { uiState } = this.getServices();
     uiState.setWaiting(true);
   }
 
   deactivate() {
-    const { uiState } = this.this.getServices();
+    const { uiState } = this.getServices();
     uiState.setWaiting(false);
   }
 }

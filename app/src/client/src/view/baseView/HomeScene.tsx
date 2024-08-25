@@ -4,22 +4,18 @@ import StarField from "../game/terrain/StarField";
 //window.THREE = THREE;
 
 class HomeScene {
-  constructor() {
-    this.starFieldScene = null;
-    this.starFieldCamera = null;
-    this.starField = null;
-    this.width = null;
-    this.height = null;
-    this.element = null;
-    this.initialized = false;
+  private renderer: THREE.WebGLRenderer;
+  private width: number;
+  private height: number;
+  private starField: StarField;
+  private starFieldScene: THREE.Scene;
+  private starFieldCamera: THREE.OrthographicCamera;
+  private zoom: number = 1;
 
-    this.zoom = 1;
-  }
-
-  init(element, { width, height }) {
-    this.element = element;
-    this.scene = new THREE.Scene();
-
+  constructor(
+    element: HTMLElement,
+    { width, height }: { width: number; height: number }
+  ) {
     this.width = width;
     this.height = height;
 
@@ -40,13 +36,17 @@ class HomeScene {
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setSize(this.width, this.height);
     this.renderer.autoClear = false;
-    this.renderer.context.getExtension("OES_standard_derivatives");
-    this.renderer.gammaOutput = true;
-    this.renderer.gammaFactor = 2.2;
+    const gl = (this.renderer.domElement.getContext("webgl") ||
+      this.renderer.domElement.getContext(
+        "experimental-webgl"
+      )) as WebGLRenderingContext;
+
+    gl.getExtension("OES_standard_derivatives");
+    gl.getExtension("GL_OES_standard_derivatives");
+
     element.appendChild(this.renderer.domElement);
 
-    this.initialized = true;
-    this.starField = new StarField(this.starFieldScene, "home");
+    this.starField = new StarField(this.starFieldScene, -1);
 
     this.render();
   }
@@ -59,7 +59,7 @@ class HomeScene {
     requestAnimationFrame(this.render.bind(this));
   }
 
-  onResize({ width, height }) {
+  onResize({ width, height }: { width: number; height: number }) {
     this.width = width;
     this.height = height;
     this.renderer.setSize(window.innerWidth, window.innerHeight);

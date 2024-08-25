@@ -18,7 +18,7 @@ class GameSystemInfoMenuStrategy extends UiStrategy {
   }
 
   getTooltipComponent() {
-    return GameSystemTooltipMenu;
+    return GameSystemTooltipMenu as React.FC<unknown>;
   }
 }
 

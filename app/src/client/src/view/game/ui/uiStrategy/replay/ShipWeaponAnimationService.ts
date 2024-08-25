@@ -43,10 +43,10 @@ class ShipWeaponAnimationService {
 
   getDamageExplosion(
     size: number,
-    type = "glow",
     endPosition: Vector,
     startTime: number,
-    context: unknown
+    context: unknown,
+    type: string = "glow"
   ) {
     return new ExplosionEffect(
       this.particleEmitterContainer,

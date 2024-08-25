@@ -53,7 +53,21 @@ class TorpedoLauncherStrategy extends ShipSystemStrategy {
     this.launchTarget = null;
   }
 
-  getUiComponents(payload: unknown, previousResponse = []) {
+  getUiComponents(
+    payload: unknown,
+    previousResponse = []
+  ): {
+    name: string;
+    props: {
+      launcherIndex: number;
+      loadedTorpedo: Torpedo | null;
+      loadingTime: number;
+      turnsLoaded: number;
+      torpedoClass: typeof Torpedo;
+      launchTarget: string | null;
+      launcher: TorpedoLauncherStrategy;
+    };
+  }[] {
     return [
       ...previousResponse,
       {

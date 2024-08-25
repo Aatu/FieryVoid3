@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 
 import {
   InputAndLabel,
@@ -11,12 +11,12 @@ import { LinkInline } from "../../styled/Link";
 import GameData from "@fieryvoid3/model/src/game/GameData";
 import GameSlot from "@fieryvoid3/model/src/game/GameSlot";
 import { Offset } from "@fieryvoid3/model/src/hexagon";
-import { User } from "@fieryvoid3/model";
 import Slots from "./Slots";
 import { redirect } from "react-router-dom";
 import { createGame } from "../../api/game";
+import { useUser } from "../../state/userHooks";
 
-const createGameData = (user: User) => {
+const createGameData = () => {
   const gameData = new GameData();
 
   gameData.slots.addSlot(
@@ -25,7 +25,7 @@ const createGameData = (user: User) => {
         name: "Blue",
         team: 1,
         points: 3000,
-        userId: user.id,
+        userId: null,
         deploymentLocation: new Offset(-150, 0),
         deploymentVector: new Offset(10, 0),
       },
@@ -47,13 +47,24 @@ const createGameData = (user: User) => {
     )
   );
 
-  gameData.addPlayer(user);
   gameData.name = "Test game";
 
   return gameData;
 };
-const CreateGame: React.FC<{ user: User }> = ({ user }) => {
-  const [gameData, setGameData] = useState<GameData>(createGameData(user));
+const CreateGame: React.FC = () => {
+  const { data: user } = useUser();
+
+  const [gameData, setGameData] = useState<GameData>(createGameData());
+
+  useEffect(() => {
+    if (!user) {
+      return;
+    }
+
+    gameData.addPlayer(user);
+    const slot = gameData.slots.getSlots()[0];
+    slot.takeSlot(user);
+  }, [gameData, user]);
 
   const changeGameName = useCallback(
     async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -77,6 +88,10 @@ const CreateGame: React.FC<{ user: User }> = ({ user }) => {
 
   if (gameData.id) {
     redirect(`/game/${gameData.id}`);
+  }
+
+  if (!user) {
+    return null;
   }
 
   return (

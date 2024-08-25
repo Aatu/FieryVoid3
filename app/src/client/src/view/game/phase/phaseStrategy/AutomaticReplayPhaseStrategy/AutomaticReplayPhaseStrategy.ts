@@ -6,6 +6,14 @@ import { Services } from "../../PhaseDirector";
 import { ParticleEmitterContainer } from "../../../animation/particle";
 import { CoordinateConverter } from "@fieryvoid3/model/src/utils/CoordinateConverter";
 import GameData from "@fieryvoid3/model/src/game/GameData";
+import ReplayTurnActions from "../../../ui/uiStrategy/replay/ReplayTurnActions";
+import {
+  AutomaticReplay,
+  MouseOverShowsShipTooltip,
+  ShowMapIcons,
+  ShowReplayUi,
+  UnderHexForShips,
+} from "../../../ui/uiStrategy";
 
 class AutomaticReplayPhaseStrategy extends PhaseStrategy {
   private emitterContainer: ParticleEmitterContainer;

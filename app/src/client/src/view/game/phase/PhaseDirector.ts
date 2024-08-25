@@ -11,7 +11,6 @@ import WeaponFireService from "@fieryvoid3/model/src/weapon/WeaponFireService";
 import TorpedoAttackService from "@fieryvoid3/model/src/weapon/TorpedoAttackService";
 import PhaseState from "./PhaseState";
 import GameDataCache from "./GameDataCache";
-import ShipWindowManager from "../ui/shipWindow/ShipWindowManager";
 import MovementPathService from "../movement/MovementPathService";
 import PhaseStrategy, {
   PhaseEventPayload,
@@ -34,7 +33,6 @@ export type Services = {
   torpedoIconContainer: TorpedoIconContainer;
   electronicWarfareIndicatorService: ElectronicWarfareIndicatorService;
   scene: THREE.Object3D;
-  shipWindowManager: ShipWindowManager;
   movementService: MovementService;
   coordinateConverter: CoordinateConverter;
   uiState: UIState;
@@ -54,7 +52,6 @@ class PhaseDirector {
   private torpedoIconContainer: TorpedoIconContainer | null;
   private electronicWarfareIndicatorService: ElectronicWarfareIndicatorService | null;
   private coordinateConverter: CoordinateConverter;
-  private shipWindowManager: ShipWindowManager | null;
   private movementService: MovementService;
   private weaponFireService: WeaponFireService;
   private torpedoAttackService: TorpedoAttackService;
@@ -81,7 +78,6 @@ class PhaseDirector {
 
     this.phaseStrategy = null;
     this.coordinateConverter = coordinateConverter;
-    this.shipWindowManager = null;
     this.movementService = new MovementService();
     this.weaponFireService = new WeaponFireService();
     this.torpedoAttackService = new TorpedoAttackService();
@@ -117,10 +113,6 @@ class PhaseDirector {
         this.shipIconContainer,
         this.currentUser
       );
-    this.shipWindowManager = new ShipWindowManager(
-      this.uiState,
-      this.movementService
-    );
 
     this.movementPathService = new MovementPathService(
       scene,
@@ -293,7 +285,6 @@ class PhaseDirector {
       electronicWarfareIndicatorService:
         this.electronicWarfareIndicatorService!,
       scene: this.scene!,
-      shipWindowManager: this.shipWindowManager!,
       movementService: this.movementService,
       coordinateConverter: this.coordinateConverter,
       uiState: this.uiState,

@@ -276,7 +276,7 @@ class UIState {
     this.updateState();
   }
 
-  showReplayUi(value: ReplayContext) {
+  showReplayUi(value: ReplayContext | null) {
     this.getState().replayUi = value;
     this.updateState();
   }
@@ -409,7 +409,7 @@ class UIState {
     this.customEvent("uiStateChanged");
   }
 
-  setTooltipMenuProvider(callBack: null | (() => React.FC)) {
+  setTooltipMenuProvider(callBack: null | (() => React.FC<unknown>)) {
     this.state.shipTooltipMenuProvider = callBack;
     this.updateState();
   }

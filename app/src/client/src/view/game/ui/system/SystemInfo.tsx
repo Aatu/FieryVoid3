@@ -81,20 +81,15 @@ const LogContainer = styled.div`
 `;
 
 const componentRenderer =
-  (
-    ship: Ship,
-    system: ShipSystem,
-    uiState: UIState
-  ): TooltipComponentRenderer =>
+  (ship: Ship, system: ShipSystem): TooltipComponentRenderer =>
   (component, props, key) =>
     (
       <SystemStrategyUiComponentContainer key={key}>
         <SystemStrategyUiComponent
           name={component}
           system={system}
-          uiState={uiState}
           ship={ship}
-          {...props}
+          componentProps={props}
         />
       </SystemStrategyUiComponentContainer>
     );
@@ -175,9 +170,9 @@ const DefaultTab: React.FC<DefaultTabProps> = ({
       )}
       <TooltipBuilder
         entries={system.getSystemInfo()}
-        componentRenderer={componentRenderer(ship, system, uiState)}
+        componentRenderer={componentRenderer(ship, system)}
       />
-      <SystemStrategyUi ship={ship} system={system} uiState={uiState} />
+      <SystemStrategyUi ship={ship} system={system} />
       {weaponTargeting && (
         <SystemInfoWeaponTargeting
           target={weaponTargeting.target}

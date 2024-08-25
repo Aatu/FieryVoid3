@@ -8,8 +8,8 @@ import { createShipInstance } from "@fieryvoid3/model/src/unit/createShipObject"
 import GameSlot from "@fieryvoid3/model/src/game/GameSlot";
 import UIState from "../../ui/UIState";
 import { TooltipContainer, TooltipHeader } from "../../../../styled";
-import Game from "../../Game";
 import FleetStore from "./FleetStore";
+import LobbySlots from "./LobbySlots";
 
 const LobbyContainer = styled.div`
   display: flex;
@@ -37,10 +37,9 @@ const ContainerRight = styled.div`
 `;
 
 const Lobby: React.FC<{
-  game: Game;
   gameData: GameData;
   uiState: UIState;
-}> = ({ gameData, uiState, game }) => {
+}> = ({ gameData, uiState }) => {
   const { data: currentUser } = useUser();
   const [shipsToBuy, setShipsToBuy] = useState<Ship[]>([]);
 
@@ -102,12 +101,7 @@ const Lobby: React.FC<{
           <TooltipHeader>GAME: {gameData.name}</TooltipHeader>
           <LobbySlots
             gameData={gameData}
-            edit={false}
-            currentUser={currentUser}
-            take={true}
-            select={true}
             selectedSlot={selectedSlot}
-            game={game}
             ships={ships}
             uiState={uiState}
             onReady={onReady}

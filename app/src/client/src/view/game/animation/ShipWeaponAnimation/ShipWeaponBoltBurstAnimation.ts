@@ -104,7 +104,6 @@ class ShipWeaponBoltBurstAnimation extends ShipWeaponAnimation {
 
         weaponAnimationService.getDamageExplosion(
           args.explosionSize,
-          "glow",
           endPosition,
           this.startExtra + startTime + this.duration,
           this

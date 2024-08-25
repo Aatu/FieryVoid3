@@ -6,6 +6,10 @@ class SelectFirstActiveShip extends UiStrategy {
     const { uiState, currentUser, gameCamera, shipIconContainer } =
       this.getServices();
 
+    if (!currentUser) {
+      return;
+    }
+
     const selectedShip = uiState.getSelectedShip();
 
     if (selectedShip && gameData.activeShips.isActive(selectedShip)) {

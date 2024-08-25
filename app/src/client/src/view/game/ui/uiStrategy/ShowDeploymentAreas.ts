@@ -27,7 +27,10 @@ class ShowDeploymentAreas extends UiStrategy {
       let color = new THREE.Color(1, 1, 1);
       if (slot.isUsers(currentUser)) {
         color = new THREE.Color(39 / 255, 196 / 255, 39 / 255);
-      } else if (!gameData.slots.isUsersTeamSlot(slot, currentUser)) {
+      } else if (
+        currentUser &&
+        !gameData.slots.isUsersTeamSlot(slot, currentUser)
+      ) {
         color = new THREE.Color(196 / 255, 39 / 255, 39 / 255);
       }
 

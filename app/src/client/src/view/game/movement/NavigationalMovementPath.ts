@@ -2,14 +2,11 @@ import * as THREE from "three";
 import { LineSprite } from "../renderer/sprite";
 import GameTerrain from "@fieryvoid3/model/src/game/GameTerrain";
 import Vector from "@fieryvoid3/model/src/utils/Vector";
-import { CoordinateConverter } from "@fieryvoid3/model/src/utils/CoordinateConverter";
 
 class NavigationalMovementPath {
   private terrain: GameTerrain;
   private position: Vector;
   private velocity: Vector;
-  private turns: number;
-  private coordinateConverter: CoordinateConverter;
   private scene: THREE.Object3D;
   private objects: LineSprite[];
 
@@ -17,15 +14,11 @@ class NavigationalMovementPath {
     terrain: GameTerrain,
     position: Vector,
     velocity: Vector,
-    turns: number,
-    coordinateConverter: CoordinateConverter,
     scene: THREE.Object3D
   ) {
     this.terrain = terrain;
     this.position = position;
     this.velocity = velocity;
-    this.turns = turns;
-    this.coordinateConverter = coordinateConverter;
     this.scene = scene;
 
     this.objects = [];

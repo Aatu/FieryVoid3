@@ -17,7 +17,6 @@ class BoltInstanceFactory {
   private scene: THREE.Object3D;
   private ready: ReadyPromise<boolean>;
   private material: THREE.RawShaderMaterial;
-  private start: number;
 
   constructor(scene: THREE.Object3D) {
     this.scene = scene;
@@ -61,8 +60,6 @@ THREE.LinearMipMapLinearFilter
       fragmentShader: boltFragmentShader,
       //wireframe: true
     });
-
-    this.start = Date.now() / 3000;
   }
 
   isReady(): boolean {

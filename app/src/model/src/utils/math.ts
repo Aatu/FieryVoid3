@@ -1,7 +1,7 @@
 import { IHexPosition } from "../hexagon";
 import { IVector } from "./Vector";
 
-const distance = (a: IVector, b: IVector) => {
+const distance = (a: { x: number; y: number }, b: { x: number; y: number }) => {
   return Math.sqrt(Math.pow(b.x - a.x, 2) + Math.pow(b.y - a.x, 2));
 };
 
@@ -143,7 +143,11 @@ const getDistanceBetweenShipsInHex = (s1: IHexPosition, s2: IHexPosition) => {
   return start.distanceTo(end);
 };
 
-const getAngleBetween = (angle1: number, angle2: number, right: boolean) => {
+const getAngleBetween = (
+  angle1: number,
+  angle2: number,
+  right: boolean = false
+) => {
   let difference;
   if (right) {
     if (angle1 > angle2) {

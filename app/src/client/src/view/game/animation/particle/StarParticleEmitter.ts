@@ -13,7 +13,6 @@ const texture = new THREE.TextureLoader().load(
 class StarParticleEmitter extends Animation {
   private scene: THREE.Object3D;
   private free: number[];
-  private effects: number;
   private particleGeometry: THREE.BufferGeometry;
   private particleMaterial: THREE.ShaderMaterial;
   private flyParticle: StarParticle;
@@ -39,8 +38,6 @@ class StarParticleEmitter extends Animation {
     for (let i = 0; i < particleCount; i++) {
       this.free.push(i);
     }
-
-    this.effects = 0;
 
     const uniforms = {
       gameTime: { value: 0.0 },

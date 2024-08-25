@@ -31,7 +31,6 @@ class ExplosionEffect extends Animation {
   private type: string;
   private size: number;
   private speed: number;
-  private ring: boolean;
   public duration: number;
   private color: THREE.Color;
   private opacity: number;
@@ -53,7 +52,6 @@ class ExplosionEffect extends Animation {
     this.type = args.type || "gas";
     this.size = args.size || 16;
     this.speed = args.speed || 1;
-    this.ring = args.ring || false;
     this.duration = args.duration || 0;
     this.color = args.color || new THREE.Color();
     this.opacity = args.opacity || 1;

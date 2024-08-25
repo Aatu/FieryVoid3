@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import styled from "styled-components";
 import HomeScene from "./HomeScene";
 
@@ -15,51 +15,53 @@ const WebglCanvas = styled.div`
   z-index: -2;
 `;
 
-class HomeSceneComponent extends React.Component {
-  private canvasRef: React.RefObject<HTMLDivElement>;
-  private scene: HomeScene;
+const HomeSceneComponent: React.FC = () => {
+  const canvasRef = useRef<HTMLDivElement>(null);
 
-  constructor() {
-    super({});
-    this.canvasRef = React.createRef();
-    this.scene = new HomeScene();
-  }
+  const getDimensions = useCallback(() => {
+    if (!canvasRef.current) {
+      return null;
+    }
 
-  componentDidMount() {
-    window.addEventListener("resize", this.onResize.bind(this));
-
-    const sceneElement = this.canvasRef.current;
-
-    this.scene.init(sceneElement, this.getDimensions());
-  }
-
-  getDimensions() {
     return {
-      width: this.canvasRef.current?.offsetWidth,
-      height: this.canvasRef.current?.offsetHeight,
+      width: canvasRef.current?.offsetWidth,
+      height: canvasRef.current?.offsetHeight,
     };
-  }
+  }, []);
 
-  componentWillUnmount() {
-    window.removeEventListener("resize", this.onResize.bind(this));
-  }
-
-  onResize() {
-    if (!this.canvasRef.current) {
+  useEffect(() => {
+    if (!canvasRef.current) {
       return;
     }
 
-    const dimensions = this.getDimensions();
-    this.scene.onResize(dimensions);
-  }
+    const onResize = () => {
+      if (!canvasRef.current) {
+        return;
+      }
 
-  shouldComponentUpdate() {
-    return false;
-  }
+      const dimensions = getDimensions();
+      if (!dimensions) {
+        return;
+      }
 
-  render() {
-    return <WebglCanvas ref={this.canvasRef} />;
-  }
-}
+      scene.onResize(dimensions);
+    };
+
+    const dimensions = getDimensions();
+    if (!dimensions) {
+      return;
+    }
+
+    const scene = new HomeScene(canvasRef.current, dimensions);
+
+    window.addEventListener("resize", onResize);
+
+    return () => {
+      window.removeEventListener("resize", onResize);
+    };
+  }, [getDimensions]);
+
+  return useMemo(() => <WebglCanvas ref={canvasRef} />, []);
+};
 
 export default HomeSceneComponent;

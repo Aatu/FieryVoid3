@@ -4,9 +4,7 @@ import { ZOOM_FOR_SHIPBADGE } from "@fieryvoid3/model/src/config/gameConfig";
 import { RenderPayload } from "../../phase/phaseStrategy/PhaseStrategy";
 
 class ShowShipBadges extends AnimationUiStrategy {
-  private zoom: number = 1;
   private showing: boolean = false;
-  private showingName: boolean = false;
 
   /*
   uiStateChanged() {
@@ -45,7 +43,6 @@ class ShowShipBadges extends AnimationUiStrategy {
         uiState.showShipBadge(icon, showName);
       });
     this.showing = true;
-    this.showingName = showName;
   }
 
   hide() {
@@ -75,8 +72,6 @@ class ShowShipBadges extends AnimationUiStrategy {
   }
 
   render({ zoom }: RenderPayload) {
-    this.zoom = zoom;
-
     this.shouldShow(zoom);
   }
 

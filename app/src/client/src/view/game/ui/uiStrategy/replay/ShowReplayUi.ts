@@ -1,12 +1,16 @@
+import { Services } from "../../../phase/PhaseDirector";
+import ReplayContext from "../../../phase/phaseStrategy/AutomaticReplayPhaseStrategy/ReplayContext";
 import UiStrategy from "../UiStrategy";
 
 class ShowReplayUi extends UiStrategy {
+  private replayContext: ReplayContext;
+
   constructor(replayContext: ReplayContext) {
     super();
     this.replayContext = replayContext;
   }
 
-  activate(services) {
+  activate(services: Services) {
     super.activate(services);
     const { uiState } = this.getServices();
     uiState.showReplayUi(this.replayContext);
@@ -14,7 +18,7 @@ class ShowReplayUi extends UiStrategy {
 
   deactivate() {
     const { uiState } = this.getServices();
-    uiState.showReplayUi(false);
+    uiState.showReplayUi(null);
   }
 }
 

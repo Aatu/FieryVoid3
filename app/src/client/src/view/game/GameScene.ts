@@ -26,7 +26,6 @@ class GameScene {
   private initialized: boolean;
   private zoom: number;
   private zoomTarget: number;
-  private cameraAngle: number;
   private deactivated: boolean;
   private renderer: THREE.WebGLRenderer | null = null;
   private light: THREE.PointLight | null = null;
@@ -52,8 +51,6 @@ class GameScene {
 
     this.zoom = 1;
     this.zoomTarget = this.zoom;
-
-    this.cameraAngle = 0; //-500;
 
     this.deactivated = false;
   }
@@ -176,7 +173,7 @@ class GameScene {
     element.appendChild(this.renderer.domElement);
 
     this.initialized = true;
-    this.hexGridRenderer.renderHexGrid(this.scene, ZOOM_MIN, ZOOM_MAX);
+    this.hexGridRenderer.renderHexGrid(this.scene);
     this.starField = new StarField(this.starFieldScene, gameId);
 
     this.stats = new Stats();

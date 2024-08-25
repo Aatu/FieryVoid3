@@ -17,8 +17,8 @@ class GameShipTooltipMenuStrategy extends UiStrategy {
     uiState.setTooltipMenuProvider(null);
   }
 
-  getTooltipComponent() {
-    return GameShipTooltipMenu;
+  getTooltipComponent(): React.FC<unknown> {
+    return GameShipTooltipMenu as React.FC<unknown>;
   }
 }
 

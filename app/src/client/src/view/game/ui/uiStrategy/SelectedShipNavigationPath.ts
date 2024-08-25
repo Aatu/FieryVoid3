@@ -38,7 +38,7 @@ class SelectedShipNavigationPath extends UiStrategy {
       return;
     }
 
-    const { coordinateConverter, scene } = this.getServices();
+    const { scene } = this.getServices();
 
     if (!ship) {
       return;
@@ -51,8 +51,6 @@ class SelectedShipNavigationPath extends UiStrategy {
       this.gameData.terrain,
       move.position,
       move.velocity,
-      100,
-      coordinateConverter,
       scene
     );
   }

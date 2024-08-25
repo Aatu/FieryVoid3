@@ -18,22 +18,13 @@ const getGeometryHeight = () => HexagonMath.getGridHeight(HEX_COUNT_HEIGHT);
 class HexGridRenderer {
   private material: THREE.MeshBasicMaterial | null;
   private mesh: THREE.Mesh | null;
-  private minZoom: number;
-  private maxZoom: number;
-  private hexSize: number;
 
   constructor() {
     this.material = null;
     this.mesh = null;
-    this.minZoom = 0;
-    this.maxZoom = 0;
-    this.hexSize = 128;
   }
 
-  renderHexGrid(scene: THREE.Object3D, minZoom: number, maxZoom: number) {
-    this.minZoom = minZoom;
-    this.maxZoom = maxZoom;
-
+  renderHexGrid(scene: THREE.Object3D) {
     const width = getGeometryWidth();
     const height = getGeometryHeight();
 

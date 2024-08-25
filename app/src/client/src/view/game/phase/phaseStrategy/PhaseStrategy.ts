@@ -77,6 +77,14 @@ class PhaseStrategy {
     this.animationTurnLength = null;
   }
 
+  getGameData() {
+    if (!this.gameData) {
+      throw new Error("No game data available");
+    }
+
+    return this.gameData;
+  }
+
   onEvent(name: string, payload?: PhaseEventPayload) {
     this.callStrategies(name, payload);
   }

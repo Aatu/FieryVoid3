@@ -7,7 +7,7 @@ class MouseOverShowsShipTooltip extends UiStrategy {
   private clickedEnemy: Ship | null = null;
   private mouseOveredShip: Ship | null = null;
 
-  shipTooltipClosed(ship: Ship) {
+  shipTooltipClosed({ ship }: { ship: Ship }) {
     if (this.clickedShip === ship) {
       this.clickedShip = null;
     }

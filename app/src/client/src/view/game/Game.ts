@@ -106,11 +106,11 @@ class Game {
     console.log(payload.hex);
 
     if (button && button === 2 && entity) {
-      this.phaseDirector.relayEvent("shipRightClicked", payload);
+      this.phaseDirector.relayEvent("shipRightClicked", { position: payload });
     } else if (entity) {
-      this.phaseDirector.relayEvent("shipClicked", payload);
+      this.phaseDirector.relayEvent("shipClicked", { entity: payload.entity });
     } else {
-      this.phaseDirector.relayEvent("hexClicked", payload);
+      this.phaseDirector.relayEvent("hexClicked", { entity: payload.entity });
     }
   }
 
@@ -133,10 +133,14 @@ class Game {
         entity: this.mouseOvered,
       });
 
-      this.phaseDirector.relayEvent("mouseOverShip", payload);
+      this.phaseDirector.relayEvent("mouseOverShip", {
+        entity: payload.entity,
+      });
       this.mouseOvered = entity;
     } else if (this.mouseOvered == null && entity) {
-      this.phaseDirector.relayEvent("mouseOverShip", payload);
+      this.phaseDirector.relayEvent("mouseOverShip", {
+        entity: payload.entity,
+      });
       this.mouseOvered = entity;
     } else if (this.mouseOvered && !entity) {
       this.phaseDirector.relayEvent("mouseOutShip", {
@@ -148,15 +152,19 @@ class Game {
 
     if (!entity) {
       if (this.mouseOveredHex && !this.mouseOveredHex.equals(payload.hex)) {
-        this.phaseDirector.relayEvent("mouseOutHex", this.mouseOveredHex);
-        this.phaseDirector.relayEvent("mouseOverHex", payload.hex);
+        this.phaseDirector.relayEvent("mouseOutHex", {
+          hex: this.mouseOveredHex,
+        });
+        this.phaseDirector.relayEvent("mouseOverHex", { hex: payload.hex });
         this.mouseOveredHex = payload.hex;
       } else if (!this.mouseOveredHex) {
-        this.phaseDirector.relayEvent("mouseOverHex", payload.hex);
+        this.phaseDirector.relayEvent("mouseOverHex", { hex: payload.hex });
         this.mouseOveredHex = payload.hex;
       }
     } else if (entity && this.mouseOveredHex) {
-      this.phaseDirector.relayEvent("mouseOutHex", this.mouseOveredHex);
+      this.phaseDirector.relayEvent("mouseOutHex", {
+        hex: this.mouseOveredHex,
+      });
       this.mouseOveredHex = null;
     }
   }
