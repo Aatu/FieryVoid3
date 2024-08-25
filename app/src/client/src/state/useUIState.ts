@@ -1,13 +1,9 @@
-import { useContext } from "react";
 import { UIStateContext } from "../view/game/GameStoreProvider";
-import UIState from "../view/game/ui/UIState";
+import { State } from "../view/game/ui/UIState";
+import { useContextSelector } from "use-context-selector";
 
-export const useUiState = (): UIState => {
-  const uiState = useContext(UIStateContext);
+export const useUIState = (): State => {
+  const state = useContextSelector(UIStateContext, (state) => state);
 
-  if (!uiState) {
-    throw new Error("UIState not found");
-  }
-
-  return uiState;
+  return state;
 };

@@ -14,7 +14,7 @@ const Container = styled.div`
 type Props = {
   cargo: CargoEntity;
   amount?: number;
-  handleOnClick?: () => void;
+  handleOnClick?: MouseEventHandler<HTMLDivElement>;
   handleMouseOver?: () => void;
   handleMouseOut?: () => void;
   tooltipAdditionalContent?: React.ReactNode;

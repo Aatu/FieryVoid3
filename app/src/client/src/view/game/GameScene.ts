@@ -2,14 +2,40 @@ import * as THREE from "three";
 import Stats from "stats.js";
 import HexGridRenderer from "./renderer/hexgrid/HexGridRender";
 import StarField from "./terrain/StarField";
-import { ZOOM_MAX, ZOOM_MIN } from "../../../model/gameConfig";
 import { ParticleEmitterContainer } from "./animation/particle";
 import GameCamera from "./GameCamera";
+import PhaseDirector from "./phase/PhaseDirector";
+import { CoordinateConverter } from "@fieryvoid3/model/src/utils/CoordinateConverter";
+import { ZOOM_MAX, ZOOM_MIN } from "@fieryvoid3/model/src/config/gameConfig";
 
 //window.THREE = THREE;
 
 class GameScene {
-  constructor(phaseDirector, coordinateConverter) {
+  private phaseDirector: PhaseDirector;
+  private coordinateConverter: CoordinateConverter;
+  private hexGridRenderer: HexGridRenderer;
+  private particleEmitterContainer: ParticleEmitterContainer | null;
+  private scene: THREE.Scene | null;
+  private camera: GameCamera | null;
+  private starFieldScene: THREE.Scene | null;
+  private starFieldCamera: THREE.OrthographicCamera | null;
+  private starField: StarField | null;
+  private width: number = 0;
+  private height: number = 0;
+  private element: HTMLElement | null;
+  private initialized: boolean;
+  private zoom: number;
+  private zoomTarget: number;
+  private cameraAngle: number;
+  private deactivated: boolean;
+  private renderer: THREE.WebGLRenderer | null = null;
+  private light: THREE.PointLight | null = null;
+  private stats: Stats | null = null;
+
+  constructor(
+    phaseDirector: PhaseDirector,
+    coordinateConverter: CoordinateConverter
+  ) {
     this.phaseDirector = phaseDirector;
     this.coordinateConverter = coordinateConverter;
     this.hexGridRenderer = new HexGridRenderer();
@@ -19,8 +45,6 @@ class GameScene {
     this.starFieldScene = null;
     this.starFieldCamera = null;
     this.starField = null;
-    this.width = null;
-    this.height = null;
 
     this.element = null;
 
@@ -34,7 +58,11 @@ class GameScene {
     this.deactivated = false;
   }
 
-  init(element, { width, height }, gameId) {
+  init(
+    element: HTMLElement,
+    { width, height }: { width: number; height: number },
+    gameId: number
+  ) {
     console.log("gamescene init");
     this.element = element;
 
@@ -129,18 +157,21 @@ class GameScene {
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setSize(this.width, this.height);
     this.renderer.autoClear = false;
-    this.renderer.context.getExtension("OES_standard_derivatives");
-    this.renderer.context.getExtension("GL_OES_standard_derivatives");
+    //this.renderer.context.getExtension("OES_standard_derivatives");
+    //this.renderer.context.getExtension("GL_OES_standard_derivatives");
 
-    const gl =
-      this.renderer.domElement.getContext("webgl") ||
-      this.renderer.domElement.getContext("experimental-webgl");
+    const gl = (this.renderer.domElement.getContext("webgl") ||
+      this.renderer.domElement.getContext(
+        "experimental-webgl"
+      )) as WebGLRenderingContext;
+
     gl.getExtension("OES_standard_derivatives");
+    gl.getExtension("GL_OES_standard_derivatives");
 
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFShadowMap;
-    this.renderer.gammaOutput = true;
-    this.renderer.gammaFactor = 2.2;
+    //this.renderer.gammaOutput = true;
+    //this.renderer.gammaFactor = 2.2;
 
     element.appendChild(this.renderer.domElement);
 
@@ -155,15 +186,19 @@ class GameScene {
     this.render();
   }
 
-  scroll(delta) {
+  scroll(delta: { x: number; y: number }) {
     this.moveCamera({
       x: delta.x * (1 / this.zoom),
       y: delta.y * (1 / this.zoom),
     });
   }
 
-  moveCamera(position) {
+  moveCamera(position: { x: number; y: number }) {
     if (!this.initialized) {
+      return;
+    }
+
+    if (!this.camera || !this.starFieldCamera) {
       return;
     }
 
@@ -178,11 +213,17 @@ class GameScene {
     this.starFieldCamera.position.y +=
       position.y * this.zoom * this.zoom * 0.05;
 
-    this.phaseDirector.relayEvent("ScrollEvent", this.camera.getPosition());
+    this.phaseDirector.relayEvent("ScrollEvent", {
+      position: this.camera.getPosition(),
+    });
   }
 
-  moveCameraTo(position) {
+  moveCameraTo(position: { x: number; y: number }) {
     if (!this.initialized) {
+      return;
+    }
+
+    if (!this.camera || !this.starFieldCamera) {
       return;
     }
 
@@ -193,13 +234,19 @@ class GameScene {
     this.starFieldCamera.position.x = position.x * 0.1;
     this.starFieldCamera.position.y = position.y * 0.1;
 
-    this.phaseDirector.relayEvent("ScrollEvent", this.camera.getPosition());
+    this.phaseDirector.relayEvent("ScrollEvent", {
+      position: this.camera.getPosition(),
+    });
   }
 
-  zoomCamera(zoom, animationReady) {
+  zoomCamera(zoom: number, animationReady: boolean = false) {
     this.zoom = zoom;
 
     if (!this.initialized) {
+      return;
+    }
+
+    if (!this.camera || !this.starFieldCamera) {
       return;
     }
 
@@ -218,17 +265,17 @@ class GameScene {
       return;
     }
 
-    this.stats.begin();
+    this.stats!.begin();
 
-    this.phaseDirector.render(this.scene, this.coordinateConverter, this.zoom);
+    this.phaseDirector.render(this.scene!, this.coordinateConverter, this.zoom);
 
-    this.renderer.clear();
-    this.renderer.render(this.starFieldScene, this.starFieldCamera);
-    this.renderer.clearDepth();
-    this.renderer.render(this.scene, this.camera.getCamera());
+    this.renderer!.clear();
+    this.renderer!.render(this.starFieldScene!, this.starFieldCamera!);
+    this.renderer!.clearDepth();
+    this.renderer!.render(this.scene!, this.camera!.getCamera());
 
     this.animateZoom();
-    this.starField.render();
+    this.starField!.render();
 
     /*
     console.log(
@@ -241,13 +288,13 @@ class GameScene {
     );
     */
 
-    this.stats.end();
+    this.stats!.end();
     requestAnimationFrame(this.render.bind(this));
   }
 
   animateZoom() {
     if (this.zoomTarget && this.zoomTarget !== this.zoom) {
-      var change = (this.zoomTarget - this.zoom) * 0.1;
+      const change = (this.zoomTarget - this.zoom) * 0.1;
       if (
         Math.abs(change) < 0.00001 ||
         (this.zoomTarget === 1 && Math.abs(change) < 0.00001)
@@ -259,22 +306,22 @@ class GameScene {
     }
   }
 
-  onResize({ width, height }) {
+  onResize({ width, height }: { width: number; height: number }) {
     this.width = width;
     this.height = height;
 
     this.zoomCamera(this.zoom);
 
-    this.renderer.setSize(window.innerWidth, window.innerHeight);
-    this.starField.resize();
+    this.renderer!.setSize(window.innerWidth, window.innerHeight);
+    this.starField!.resize();
   }
 
-  changeZoom(zoom) {
+  changeZoom(zoom: number) {
     zoom *= 0.5;
     if (zoom < -0.5) zoom = -0.5;
 
-    this.zoominprogress = false;
-    var newzoom = this.zoom + this.zoom * zoom;
+    //this.zoominprogress = false;
+    let newzoom = this.zoom + this.zoom * zoom;
 
     if (newzoom < ZOOM_MIN) newzoom = ZOOM_MIN;
 
@@ -289,11 +336,10 @@ class GameScene {
     }
 
     this.deactivated = true;
-    this.element.removeChild(this.renderer.domElement);
-    this.renderer.clear();
-    this.renderer.forceContextLoss();
-    this.renderer.domElement = null;
-    this.renderer.dispose();
+    this.element!.removeChild(this.renderer!.domElement);
+    this.renderer!.clear();
+    this.renderer!.forceContextLoss();
+    this.renderer!.dispose();
     this.renderer = null;
   }
 }

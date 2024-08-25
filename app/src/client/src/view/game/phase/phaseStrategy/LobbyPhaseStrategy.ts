@@ -1,6 +1,7 @@
 import GameData from "@fieryvoid3/model/src/game/GameData";
 import PhaseStrategy, { PhaseEventPayload } from "./PhaseStrategy";
 import Ship from "@fieryvoid3/model/src/unit/Ship";
+import GameSlot from "@fieryvoid3/model/src/game/GameSlot";
 
 class LobbyPhaseStrategy extends PhaseStrategy {
   update(gamedata: GameData) {
@@ -15,15 +16,15 @@ class LobbyPhaseStrategy extends PhaseStrategy {
     switch (name) {
       case "takeSlot":
         return this.services.gameConnector.takeSlot(
-          (payload as { id: string }).id
+          (payload as { slot: GameSlot }).slot.id
         );
       case "leaveSlot":
         return this.services.gameConnector.leaveSlot(
-          (payload as { id: string }).id
+          (payload as { slot: GameSlot }).slot.id
         );
       case "buyShips":
         return this.services.gameConnector.buyShips(
-          (payload as { slot: { id: string } }).slot.id,
+          (payload as { slot: GameSlot }).slot.id,
           (payload as { ships: Ship[] }).ships
         );
       default:

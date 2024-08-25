@@ -10,7 +10,12 @@ const axiosConfig = {
 
 const post = async <T>(url: string, payload: unknown): Promise<T> => {
   try {
-    return await axios.post(`${SERVER_URL}${url}`, payload, axiosConfig);
+    const response = await axios.post<T>(
+      `${SERVER_URL}${url}`,
+      payload,
+      axiosConfig
+    );
+    return response.data;
   } catch (error) {
     if (isAxiosError(error)) {
       throw error.response;
@@ -22,7 +27,8 @@ const post = async <T>(url: string, payload: unknown): Promise<T> => {
 
 const get = async <T>(url: string): Promise<T> => {
   try {
-    return await axios.get(`${SERVER_URL}${url}`, axiosConfig);
+    const response = await axios.get<T>(`${SERVER_URL}${url}`, axiosConfig);
+    return response.data;
   } catch (error) {
     if (isAxiosError(error)) {
       throw error.response;

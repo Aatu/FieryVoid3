@@ -27,10 +27,12 @@ const FuelBarContainer = styled.div`
   flex-grow: 1;
 `;
 
-const SystemFuelBar: React.FC<{ space: number; fuel: number }> = ({
-  space,
-  fuel,
-}) => {
+export type SystemFuelBarProps = {
+  space: number;
+  fuel: number;
+};
+
+const SystemFuelBar: React.FC<SystemFuelBarProps> = ({ space, fuel }) => {
   const percent = fuel / space;
 
   return (

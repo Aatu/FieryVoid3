@@ -13,10 +13,10 @@ import {
   icons,
   colors,
 } from "../../styled";
-import GameData from "@fieryvoid3/model/src/game/GameData";
 import GameSlot from "@fieryvoid3/model/src/game/GameSlot";
-import UIState from "../game/ui/UIState";
 import { useUser } from "../../state/userHooks";
+import { useGameData } from "../../state/useGameData";
+import { useUiStateHandler } from "../../state/useUIStateHandler";
 
 const selected = css`
   box-shadow: 0px 0px 3px 3px rgba(222, 235, 255, 0.5);
@@ -35,24 +35,22 @@ const SlotContainer = styled(Container)<SlotContainerProps>`
 
 type Props = {
   slot: GameSlot;
-  edit: boolean;
-  take: boolean;
-  selectedSlot: GameSlot | null;
-  gameData: GameData;
-  uiState: UIState;
+  edit?: boolean;
+  take?: boolean;
+  selectedSlot?: GameSlot;
   children?: React.ReactNode;
 };
 
 const Slot: React.FC<Props> = ({
-  gameData,
-  uiState,
   slot,
-  edit,
-  take,
+  edit = false,
+  take = false,
   selectedSlot,
   children,
 }) => {
   const { data: currentUser } = useUser();
+  const gameData = useGameData();
+  const uiState = useUiStateHandler();
 
   const getPlayerName = (slot: GameSlot) => {
     const user = gameData.players.find((user) => user.id === slot.userId);
@@ -61,13 +59,13 @@ const Slot: React.FC<Props> = ({
 
   const leaveSlot = (slot: GameSlot) => {
     return () => {
-      uiState.customEvent("leaveSlot", slot);
+      uiState.customEvent("leaveSlot", { slot });
     };
   };
 
   const takeSlot = (slot: GameSlot) => {
     return () => {
-      uiState.customEvent("takeSlot", slot);
+      uiState.customEvent("takeSlot", { slot });
     };
   };
 

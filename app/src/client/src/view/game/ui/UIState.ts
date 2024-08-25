@@ -11,6 +11,7 @@ import ReplayContext from "../phase/phaseStrategy/AutomaticReplayPhaseStrategy/R
 import CombatLogTorpedoAttack from "@fieryvoid3/model/src/combatLog/CombatLogTorpedoAttack";
 import CombatLogWeaponFire from "@fieryvoid3/model/src/combatLog/CombatLogWeaponFire";
 import { PhaseEventPayload } from "../phase/phaseStrategy/PhaseStrategy";
+import { Dispatch, SetStateAction } from "react";
 
 export type TooltipComponentProvider = () => React.FC<{
   uiState: UIState;
@@ -73,7 +74,7 @@ export type State = {
 
 class UIState {
   private state: Partial<State>;
-  public dispatch: React.Dispatch<Partial<State>> | null = null;
+  public dispatch: Dispatch<SetStateAction<State>> | null = null;
   public phaseDirector: PhaseDirector | null;
   public services: Services | null;
   public renderListeners: (() => void)[];
@@ -150,7 +151,7 @@ class UIState {
     return this.state as State;
   }
 
-  setDispatch(dispatch: React.Dispatch<Partial<State>>) {
+  setDispatch(dispatch: Dispatch<SetStateAction<State>>) {
     this.dispatch = dispatch;
   }
 
@@ -404,7 +405,7 @@ class UIState {
       return;
     }
 
-    this.dispatch(this.state);
+    this.dispatch(this.getState());
     this.customEvent("uiStateChanged");
   }
 

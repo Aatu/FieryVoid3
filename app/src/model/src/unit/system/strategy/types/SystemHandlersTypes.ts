@@ -124,6 +124,7 @@ export enum SYSTEM_HANDLERS {
   getArcs = "getArcs",
 
   getMaxRange = "getMaxRange",
+  getUiComponents = "getUiComponents",
 }
 
 export type SystemMessageValue = string | number | SystemMessage[];

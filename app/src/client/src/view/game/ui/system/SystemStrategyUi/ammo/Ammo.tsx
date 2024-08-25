@@ -15,9 +15,9 @@ import { useForceRerender } from "../../../../../../util/useForceRerender";
 import ShipSystem from "@fieryvoid3/model/src/unit/system/ShipSystem";
 import Ship from "@fieryvoid3/model/src/unit/Ship";
 import AmmunitionStrategy from "@fieryvoid3/model/src/unit/system/strategy/weapon/AmmunitionStrategy";
-import UIState from "../../../UIState";
 import { createAmmoInstance } from "@fieryvoid3/model/src/unit/system/weapon/ammunition";
 import { SYSTEM_HANDLERS } from "@fieryvoid3/model/src/unit/system/strategy/types/SystemHandlersTypes";
+import { useUiStateHandler } from "../../../../../../state/useUIStateHandler";
 
 const LoadingList = styled.div`
   display: flex;
@@ -108,13 +108,13 @@ const LoadoutButtons: React.FC<LoadoutButtonsProps> = ({ ammoStrategy }) => {
   );
 };
 
-type Props = {
+export type AmmoProps = {
   ammoStrategy: AmmunitionStrategy;
-  uiState: UIState;
   ship: Ship;
 };
 
-const Ammo: React.FC<Props> = ({ ship, ammoStrategy, uiState }) => {
+const Ammo: React.FC<AmmoProps> = ({ ship, ammoStrategy }) => {
+  const uiState = useUiStateHandler();
   const [loadingOpen, setLoadingOpen] = React.useState<boolean>(false);
   const rerender = useForceRerender();
 

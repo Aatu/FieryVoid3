@@ -1,48 +1,37 @@
-import React, { useCallback, useContext, useState } from "react";
+import React, { useCallback, useState } from "react";
 import {
   Button,
-  Link,
   TooltipContainer,
   TooltipHeader,
-  Section,
   Label,
   Value,
-  TooltipValue,
 } from "../../styled";
-import { createTestGameGame } from "../../src/api/game";
-import { StateStore } from "../../state/StoreProvider";
 import { LinkInline } from "../../styled/Link";
 import styled from "styled-components";
 import { ChangeLog } from "../game/components/ChangeLog";
+import { useUser } from "../../state/userHooks";
+import { createTestGame } from "../../api/game";
 
 const GameIdContainer = styled.div`
   margin: 8px;
   text-transform: uppercase;
 `;
 
-const Home = () => {
-  const { currentUser } = useContext(StateStore);
-  const [gameId, setGameId] = useState(null);
+const Home: React.FC = () => {
+  const { data: currentUser } = useUser();
+  const [gameId, setGameId] = useState<number | null>(null);
 
-  const createGame = useCallback(() => {
-    const callApi = async () => {
-      const response = await createTestGame();
-      console.log(response);
-      setGameId(response.data.gameId);
-    };
+  const createGame = useCallback(async () => {
+    const response = await createTestGame();
+    console.log(response);
+    setGameId(response.gameId);
+  }, []);
 
-    callApi();
-  }, [setGameId, createTestGameGame]);
-
-  const createGameAi = useCallback(() => {
-    const callApi = async () => {
-      const response = await createTestGame({ useAI: true });
-      console.log(response);
-      setGameId(response.data.gameId);
-    };
-
-    callApi();
-  }, [setGameId, createTestGameGame]);
+  const createGameAi = useCallback(async () => {
+    const response = await createTestGame({ useAI: true });
+    console.log(response);
+    setGameId(response.gameId);
+  }, []);
 
   return (
     <TooltipContainer>

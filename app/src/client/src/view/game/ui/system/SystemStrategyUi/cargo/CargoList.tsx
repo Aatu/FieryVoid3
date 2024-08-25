@@ -9,11 +9,11 @@ const CargoListContainer = styled.div`
   flex-wrap: wrap;
 `;
 
-type Props = {
+export type CargoListProps = {
   list: CargoEntry[];
 };
 
-const CargoList: React.FC<Props> = ({ list }) => {
+const CargoList: React.FC<CargoListProps> = ({ list }) => {
   return (
     <>
       <TooltipSubHeader>Current cargo</TooltipSubHeader>

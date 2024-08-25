@@ -1,20 +1,12 @@
 import React from "react";
 
 import {
-  IconAndLabel,
-  TooltipHeader,
-  TooltipSubHeader,
   TooltipEntry,
   TooltipValueHeader,
   TooltipValue,
-  InlineTooltipEntry,
-  CenteredTooltipEntry,
-  TooltipButton,
-  colors,
 } from "../../../../../../styled";
 import styled from "styled-components";
-import CargoItem from "../cargo/CargoItem";
-import NoAmmunitionLoaded from "../../../../../../../model/unit/system/weapon/ammunition/NoAmmunitionLoaded";
+import { StandardRangeStrategy } from "@fieryvoid3/model/src/unit/system/strategy";
 
 const RangeContainer = styled.div`
   display: flex;
@@ -31,7 +23,11 @@ const RangeNumbersContainer = styled.div`
   justify-content: space-between;
 `;
 
-const RangeStep = styled.div`
+type RangeStepProps = {
+  height: number;
+};
+
+const RangeStep = styled.div<RangeStepProps>`
   width: 1%;
   height: 100%;
   background-image: url("/img/lightBluePixel.png");
@@ -45,8 +41,13 @@ const RangeStep = styled.div`
     opacity: 0.5;
   }
 `;
+export type RangePenaltyProps = {
+  rangeStrategy: StandardRangeStrategy;
+};
 
-class RangePenalty extends React.Component {
+const RangePenalty: React.FC<{ rangeStrategy: StandardRangeStrategy }> = ({
+  rangeStrategy,
+}) => {
   /*
   constructor(props) {
     super(props);
@@ -73,45 +74,42 @@ class RangePenalty extends React.Component {
     uiState.unsubscribeFromSystemChange(this.systemChangedCallbackInstance);
   }
 */
-  render() {
-    const { rangeStrategy } = this.props;
 
-    const step = getMaxRange(rangeStrategy) / 100;
-    const steps = [];
-    for (let i = 0; i < 100; i++) {
-      const rangePenalty = rangeStrategy.getRangeModifier({
-        distance: i * step,
-      });
+  const step = getMaxRange(rangeStrategy) / 100;
+  const steps = [];
+  for (let i = 0; i < 100; i++) {
+    const rangePenalty = rangeStrategy.getRangeModifier({
+      distance: i * step,
+    });
 
-      steps.push({
-        range: i,
-        rangePenalty,
-        height: Math.abs(rangePenalty / 200) * 100,
-      });
-    }
-
-    return (
-      <>
-        <TooltipEntry>
-          <TooltipValueHeader>Range penalty:</TooltipValueHeader>
-        </TooltipEntry>
-        <RangeContainer>
-          {steps.map((entry, i) => (
-            <RangeStep key={`rangestep-${i}`} height={entry.height} />
-          ))}
-        </RangeContainer>
-        <RangeNumbersContainer>
-          <TooltipValue>0</TooltipValue>
-          <TooltipValue>distance</TooltipValue>
-          <TooltipValue>{getMaxRange(rangeStrategy)}</TooltipValue>
-        </RangeNumbersContainer>
-      </>
-    );
+    steps.push({
+      range: i,
+      rangePenalty,
+      height: Math.abs(rangePenalty / 200) * 100,
+    });
   }
-}
 
-const getMaxRange = (rangeStrategy) => {
-  const ranges = rangeStrategy.rangesAndPenalties;
+  return (
+    <>
+      <TooltipEntry>
+        <TooltipValueHeader>Range penalty:</TooltipValueHeader>
+      </TooltipEntry>
+      <RangeContainer>
+        {steps.map((entry, i) => (
+          <RangeStep key={`rangestep-${i}`} height={entry.height} />
+        ))}
+      </RangeContainer>
+      <RangeNumbersContainer>
+        <TooltipValue>0</TooltipValue>
+        <TooltipValue>distance</TooltipValue>
+        <TooltipValue>{getMaxRange(rangeStrategy)}</TooltipValue>
+      </RangeNumbersContainer>
+    </>
+  );
+};
+
+const getMaxRange = (rangeStrategy: StandardRangeStrategy) => {
+  const ranges = rangeStrategy.getRangesAndPenalties();
   return ranges[ranges.length - 1].range;
 };
 

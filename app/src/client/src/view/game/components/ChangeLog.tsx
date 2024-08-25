@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import data from "../../../changeLog.json";
+import data from "../../../../changeLog.json";
 import {
   TooltipHeader,
   TooltipEntry,
@@ -29,7 +29,7 @@ const List = styled.ul`
   }
 `;
 
-export const ChangeLog = ({ full = false }) => {
+export const ChangeLog: React.FC<{ full?: boolean }> = ({ full = false }) => {
   return (
     <>
       <TooltipHeader>{full ? "Change Log" : "Latest changes"} </TooltipHeader>

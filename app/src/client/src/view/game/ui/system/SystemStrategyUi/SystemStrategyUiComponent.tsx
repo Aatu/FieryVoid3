@@ -1,25 +1,45 @@
 import React from "react";
-import CargoList from "./cargo/CargoList";
-import TorpedoLauncher from "./torpedo/TorpedoLauncher";
-import Ammo from "./ammo/Ammo";
-import RangePenalty from "./range/RangePenalty";
-import SystemHeatBar from "../../HeatBar/SystemHeatBar";
-import SystemFuelBar from "../../HeatBar/SystemFuelBar";
+import CargoList, { CargoListProps } from "./cargo/CargoList";
+import TorpedoLauncher, {
+  TorpedoLauncherProps,
+} from "./torpedo/TorpedoLauncher";
+import Ammo, { AmmoProps } from "./ammo/Ammo";
+import RangePenalty, { RangePenaltyProps } from "./range/RangePenalty";
+import SystemHeatBar, { SystemHeatBarProps } from "../../HeatBar/SystemHeatBar";
+import SystemFuelBar, { SystemFuelBarProps } from "../../HeatBar/SystemFuelBar";
+import ShipSystem from "@fieryvoid3/model/src/unit/system/ShipSystem";
+import Ship from "@fieryvoid3/model/src/unit/Ship";
 
-const SystemStrategyUiComponent = ({ name, ...props }) => {
+type Props = {
+  ship: Ship;
+  system: ShipSystem;
+  name: string;
+  componentProps: unknown;
+};
+
+const SystemStrategyUiComponent: React.FC<Props> = ({
+  name,
+  ship,
+  componentProps,
+}) => {
   switch (name) {
     case "RangePenalty":
-      return <RangePenalty {...props} />;
+      return <RangePenalty {...(componentProps as RangePenaltyProps)} />;
     case "Ammo":
-      return <Ammo {...props} />;
+      return <Ammo {...(componentProps as AmmoProps)} ship={ship} />;
     case "CargoList":
-      return <CargoList {...props} />;
+      return <CargoList {...(componentProps as CargoListProps)} />;
     case "TorpedoLauncher":
-      return <TorpedoLauncher {...props} />;
+      return (
+        <TorpedoLauncher
+          {...(componentProps as TorpedoLauncherProps)}
+          ship={ship}
+        />
+      );
     case "SystemHeatBar":
-      return <SystemHeatBar {...props} />;
+      return <SystemHeatBar {...(componentProps as SystemHeatBarProps)} />;
     case "SystemFuelBar":
-      return <SystemFuelBar {...props} />;
+      return <SystemFuelBar {...(componentProps as SystemFuelBarProps)} />;
     default:
       throw Error(`SystemUiComponent "${name}" not found`);
   }

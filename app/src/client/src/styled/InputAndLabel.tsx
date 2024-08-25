@@ -4,7 +4,7 @@ import { Error } from "./Error";
 
 type InputAndLabelProps = {
   id?: string;
-  label: string;
+  label?: string;
   type?: string;
   value?: string | number;
   placeholder?: string;

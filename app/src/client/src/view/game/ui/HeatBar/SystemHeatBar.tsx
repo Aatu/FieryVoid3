@@ -22,12 +22,19 @@ const Container = styled.div`
 
 const HeatBarContainer = styled.div``;
 
-const SystemHeatBar: React.FC<{
+export type SystemHeatBarProps = {
   className?: string;
   system: ShipSystem;
   currentOverheat: number;
   prediction: HeatChangePrediction;
-}> = ({ className, system, currentOverheat, prediction }) => {
+};
+
+const SystemHeatBar: React.FC<SystemHeatBarProps> = ({
+  className,
+  system,
+  currentOverheat,
+  prediction,
+}) => {
   const [details, setDetails] = useState(false);
 
   const {

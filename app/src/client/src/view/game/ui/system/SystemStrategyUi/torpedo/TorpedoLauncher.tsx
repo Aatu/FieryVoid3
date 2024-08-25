@@ -1,9 +1,8 @@
-import React from "react";
+import React, { MouseEventHandler, useEffect } from "react";
 
 import {
   IconAndLabel,
   TooltipHeader,
-  TooltipSubHeader,
   TooltipEntry,
   TooltipValueHeader,
   TooltipValue,
@@ -11,14 +10,24 @@ import {
 } from "../../../../../../styled";
 import styled from "styled-components";
 import CargoItem from "../cargo/CargoItem";
-import NoAmmunitionLoaded from "../../../../../../../model/unit/system/weapon/ammunition/NoAmmunitionLoaded";
+import Ship from "@fieryvoid3/model/src/unit/Ship";
+import TorpedoLauncherStrategy from "@fieryvoid3/model/src/unit/system/strategy/weapon/TorpedoLauncherStrategy";
+import ShipSystem from "@fieryvoid3/model/src/unit/system/ShipSystem";
+import { useForceRerender } from "../../../../../../util/useForceRerender";
+import { useUiStateHandler } from "../../../../../../state/useUIStateHandler";
+import Torpedo from "@fieryvoid3/model/src/unit/system/weapon/ammunition/torpedo/Torpedo";
+import NoAmmunitionLoaded from "@fieryvoid3/model/src/unit/system/weapon/ammunition/NoAmmunitionLoaded";
 
 const TorpedoList = styled.div`
   display: flex;
   flex-wrap: wrap;
 `;
 
-const TorpedoCargoItem = styled(CargoItem)`
+type TorpedoCargoItemProps = {
+  target: unknown;
+};
+
+const TorpedoCargoItem = styled(CargoItem)<TorpedoCargoItemProps>`
   ${IconAndLabel} {
     ${(props) => {
       const { target } = props;
@@ -30,75 +39,74 @@ const TorpedoCargoItem = styled(CargoItem)`
   }
 `;
 
-class TorpedoLauncher extends React.PureComponent {
-  systemChangedCallback(ship, system) {
-    if (
-      ship.id === this.props.ship.id &&
-      system.id === this.props.launcher.system.id
-    ) {
-      this.forceUpdate();
-    }
-  }
+export type TorpedoLauncherProps = {
+  ship: Ship;
+  launcher: TorpedoLauncherStrategy;
+  loadedTorpedo: Torpedo;
+  launcherIndex: number;
+  loadingTime: number;
+  turnsLoaded: number;
+};
 
-  componentDidMount() {
-    const { uiState } = this.props;
-    this.systemChangedCallbackInstance = this.systemChangedCallback.bind(this);
-    uiState.subscribeToSystemChange(this.systemChangedCallbackInstance);
-  }
+const TorpedoLauncher: React.FC<TorpedoLauncherProps> = ({
+  ship,
+  launcher,
+  loadedTorpedo,
+  launcherIndex,
+  loadingTime,
+  turnsLoaded,
+}) => {
+  const rerender = useForceRerender();
+  const uiState = useUiStateHandler();
 
-  componentWillUnmount() {
-    const { uiState } = this.props;
-    uiState.unsubscribeFromSystemChange(this.systemChangedCallbackInstance);
-  }
-
-  unloadAmmo() {
-    return (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      const { ship, launcher, uiState, launcherIndex } = this.props;
-
-      launcher.unloadAmmo({ launcherIndex });
-      uiState.shipSystemStateChanged(ship, launcher.system);
+  useEffect(() => {
+    const systemChangedCallback = (newShip: Ship, newSystem: ShipSystem) => {
+      if (ship.id === newShip.id && launcher.getSystem().id === newSystem.id) {
+        rerender();
+      }
     };
-  }
 
-  loadTorpedo(torpedo) {
-    return (e) => {
+    uiState.subscribeToSystemChange(systemChangedCallback);
+
+    return () => {
+      uiState.unsubscribeFromSystemChange(systemChangedCallback);
+    };
+  }, [launcher, rerender, ship.id, uiState]);
+
+  const unloadAmmo: MouseEventHandler<HTMLDivElement> = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    launcher.unloadAmmo({ launcherIndex });
+    uiState.shipSystemStateChanged(ship, launcher.getSystem());
+  };
+
+  const loadTorpedo =
+    (torpedo: Torpedo): MouseEventHandler<HTMLDivElement> =>
+    (e) => {
       e.preventDefault();
       e.stopPropagation();
-      const { ship, launcher, uiState, launcherIndex } = this.props;
 
       launcher.loadAmmo({ ammo: torpedo, launcherIndex });
-      uiState.shipSystemStateChanged(ship, launcher.system);
+      uiState.shipSystemStateChanged(ship, launcher.getSystem());
     };
-  }
 
-  torpedoMouseOut(ship, torpedo) {
-    return () => {
-      const { uiState } = this.props;
+  const torpedoMouseOut = (ship: Ship, torpedo: Torpedo) => () => {
+    uiState.customEvent("torpedoMouseOut", {
+      ship,
+      torpedo,
+    });
+  };
 
-      uiState.customEvent("torpedoMouseOut", {
-        ship,
-        torpedo,
-      });
-    };
-  }
+  const torpedoMouseOver = (ship: Ship, torpedo: Torpedo) => () => {
+    uiState.customEvent("torpedoMouseOver", {
+      ship,
+      torpedo,
+      target: getLoadedTorpedoTarget(),
+    });
+  };
 
-  torpedoMouseOver(ship, torpedo) {
-    return () => {
-      const { uiState } = this.props;
-
-      uiState.customEvent("torpedoMouseOver", {
-        ship,
-        torpedo,
-        target: this.getLoadedTorpedoTarget(),
-      });
-    };
-  }
-
-  getLoadedTorpedoTarget() {
-    const { loadedTorpedo, launcher, uiState } = this.props;
-
+  const getLoadedTorpedoTarget = () => {
     if (!loadedTorpedo) {
       return null;
     }
@@ -109,75 +117,54 @@ class TorpedoLauncher extends React.PureComponent {
       return null;
     }
 
-    const { gameData } = uiState;
+    return uiState.getGameData().ships.getShipById(targetId);
+  };
 
-    return gameData.ships.getShipById(targetId);
-  }
-
-  render() {
-    const { launcherIndex, loadedTorpedo, loadingTime, turnsLoaded, launcher } =
-      this.props;
-
-    return (
-      <>
-        <TooltipHeader>Torpedo tube {launcherIndex}</TooltipHeader>
-        <InlineTooltipEntry>
-          <TooltipEntry>
-            <TooltipValueHeader>Loading: </TooltipValueHeader>
-            <TooltipValue>{`${turnsLoaded}/${loadingTime}`}</TooltipValue>
-          </TooltipEntry>
-
-          <InlineTooltipEntry>
-            <TooltipValueHeader>Loaded torpedo:</TooltipValueHeader>
-            <TorpedoCargoItem
-              cargo={loadedTorpedo ? loadedTorpedo : new NoAmmunitionLoaded()}
-              amount={null}
-              target={this.getLoadedTorpedoTarget()}
-              handleMouseOver={this.torpedoMouseOver(
-                launcher.system.shipSystems.ship,
-                loadedTorpedo
-              ).bind(this)}
-              handleMouseOut={this.torpedoMouseOut(
-                launcher.system.shipSystems.ship,
-                loadedTorpedo
-              ).bind(this)}
-            />
-          </InlineTooltipEntry>
-        </InlineTooltipEntry>
-
+  return (
+    <>
+      <TooltipHeader>Torpedo tube {launcherIndex}</TooltipHeader>
+      <InlineTooltipEntry>
         <TooltipEntry>
-          <TooltipValueHeader>Select torpedo to load: </TooltipValueHeader>
+          <TooltipValueHeader>Loading: </TooltipValueHeader>
+          <TooltipValue>{`${turnsLoaded}/${loadingTime}`}</TooltipValue>
         </TooltipEntry>
 
-        <TorpedoList>
-          {launcher.getPossibleTorpedosToLoad().map(({ object, amount }, i) => (
-            <CargoItem
-              handleOnClick={this.loadTorpedo(object).bind(this)}
-              key={`torpedo-launcer-${i}-possible-torpedo-${object.constructor.name}`}
-              cargo={object}
-              amount={amount}
-              handleMouseOver={this.torpedoMouseOver(
-                launcher.system.shipSystems.ship,
-                object
-              ).bind(this)}
-              handleMouseOut={this.torpedoMouseOut(
-                launcher.system.shipSystems.ship,
-                object
-              ).bind(this)}
-            />
-          ))}
-          {loadedTorpedo && (
-            <CargoItem
-              handleOnClick={this.unloadAmmo().bind(this)}
-              key={`torpedo-launcer-unload`}
-              cargo={new NoAmmunitionLoaded()}
-              amount={null}
-            />
-          )}
-        </TorpedoList>
-      </>
-    );
-  }
-}
+        <InlineTooltipEntry>
+          <TooltipValueHeader>Loaded torpedo:</TooltipValueHeader>
+          <TorpedoCargoItem
+            cargo={loadedTorpedo ? loadedTorpedo : new NoAmmunitionLoaded()}
+            target={getLoadedTorpedoTarget()}
+            handleMouseOver={torpedoMouseOver(ship, loadedTorpedo).bind(this)}
+            handleMouseOut={torpedoMouseOut(ship, loadedTorpedo).bind(this)}
+          />
+        </InlineTooltipEntry>
+      </InlineTooltipEntry>
+
+      <TooltipEntry>
+        <TooltipValueHeader>Select torpedo to load: </TooltipValueHeader>
+      </TooltipEntry>
+
+      <TorpedoList>
+        {launcher.getPossibleTorpedosToLoad().map(({ object, amount }, i) => (
+          <CargoItem
+            handleOnClick={loadTorpedo(object)}
+            key={`torpedo-launcer-${i}-possible-torpedo-${object.constructor.name}`}
+            cargo={object}
+            amount={amount}
+            handleMouseOver={torpedoMouseOver(launcher.getShip(), object)}
+            handleMouseOut={torpedoMouseOut(launcher.getShip(), object)}
+          />
+        ))}
+        {loadedTorpedo && (
+          <CargoItem
+            handleOnClick={unloadAmmo}
+            key={`torpedo-launcer-unload`}
+            cargo={new NoAmmunitionLoaded()}
+          />
+        )}
+      </TorpedoList>
+    </>
+  );
+};
 
 export default TorpedoLauncher;
