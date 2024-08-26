@@ -3,12 +3,7 @@ import { RenderPayload } from "../../phase/phaseStrategy/PhaseStrategy";
 import UiStrategy from "./UiStrategy";
 
 class AnimationUiStrategy extends UiStrategy {
-  protected animations: Animation[];
-
-  constructor() {
-    super();
-    this.animations = [];
-  }
+  protected animations: Animation[] = [];
 
   deactivate() {
     this.removeAllAnimations();

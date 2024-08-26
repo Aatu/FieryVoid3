@@ -183,10 +183,12 @@ class Caliope extends Ship {
       }),
       new systems.Radiator10x40({ id: 412, hitpoints: 10, armor: 3 }),
       new systems.Reactor({ id: 407, hitpoints: 10, armor: 3 }, 30),
+      /*
       new systems.AutoCannon85mm(
         { id: 421, hitpoints: 6, armor: 3 },
         { start: 0, end: 0 }
       ),
+      */
     ]);
 
     this.systems.addPortAftSystem([
@@ -194,10 +196,12 @@ class Caliope extends Ship {
       new systems.CargoBay({ id: 502, hitpoints: 20, armor: 4 }, 150),
       new systems.TorpedoLauncher158({ id: 503, hitpoints: 10, armor: 4 }),
       new systems.TorpedoLauncherDual72({ id: 504, hitpoints: 10, armor: 4 }),
+      /*
       new systems.AutoCannon85mm(
         { id: 521, hitpoints: 6, armor: 3 },
         { start: 160, end: 30 }
       ),
+      */
     ]);
 
     this.systems.addStarboardAftSystem([
@@ -205,10 +209,12 @@ class Caliope extends Ship {
       new systems.CargoBay({ id: 302, hitpoints: 20, armor: 4 }, 150),
       new systems.TorpedoLauncher158({ id: 303, hitpoints: 10, armor: 4 }),
       new systems.TorpedoLauncherDual72({ id: 304, hitpoints: 10, armor: 4 }),
+      /*
       new systems.AutoCannon85mm(
         { id: 321, hitpoints: 6, armor: 3 },
         { start: 330, end: 200 }
       ),
+      */
     ]);
   }
 

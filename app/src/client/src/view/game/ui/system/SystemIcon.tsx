@@ -9,9 +9,9 @@ import Ship from "@fieryvoid3/model/src/unit/Ship";
 import { SYSTEM_HANDLERS } from "@fieryvoid3/model/src/unit/system/strategy/types/SystemHandlersTypes";
 
 type HealthBarProps = {
-  destroyed: boolean;
-  health: number;
-  criticals: boolean;
+  destroyed?: boolean;
+  $health: number;
+  criticals?: boolean;
 };
 
 const HealthBar = styled.div<HealthBarProps>`
@@ -29,7 +29,7 @@ const HealthBar = styled.div<HealthBarProps>`
   :before {
     content: "";
     position: absolute;
-    width: ${(props) => `${props.health}%`};
+    width: ${(props) => `${props.$health}%`};
     height: 100%;
     left: 0;
     bottom: 0;
@@ -59,15 +59,15 @@ const SystemText = styled.div<SystemTextProps>`
 
 type SystemProps = {
   background: string;
-  offline: boolean;
-  loading: boolean;
-  selected: boolean;
-  firing: boolean;
-  targeting: boolean;
-  reserved: boolean;
-  destroyed: boolean;
-  inactive: boolean;
-  boosted: boolean;
+  offline?: boolean;
+  loading?: boolean;
+  selected?: boolean;
+  firing?: boolean;
+  targeting?: boolean;
+  reserved?: boolean;
+  destroyed?: boolean;
+  inactive?: boolean;
+  boosted?: boolean;
 };
 
 const System = styled.div<SystemProps>`
@@ -328,19 +328,18 @@ const SystemIcon: React.FC<SystemIconProps> = ({
         <System
           ref={ref as LegacyRef<HTMLDivElement>}
           background={system.getBackgroundImage()}
-          offline={isOffline(system)}
-          loading={isLoading()}
-          selected={selected}
-          firing={firing}
-          targeting={targeting}
-          reserved={reserved}
-          destroyed={system.isDestroyed()}
-          boosted={system.callHandler(
-            SYSTEM_HANDLERS.getBoost,
-            0,
-            false as boolean
-          )}
-          inactive={inactive}
+          offline={isOffline(system) || undefined}
+          loading={isLoading() || undefined}
+          selected={selected || undefined}
+          firing={firing || undefined}
+          targeting={targeting || undefined}
+          reserved={reserved || undefined}
+          destroyed={system.isDestroyed() || undefined}
+          boosted={
+            system.callHandler(SYSTEM_HANDLERS.getBoost, 0, false as boolean) ||
+            undefined
+          }
+          inactive={inactive || undefined}
         >
           {overheat > 0.25 && Boolean(!disabled) && (
             <Overheat overheat={overheat} />
@@ -349,9 +348,9 @@ const SystemIcon: React.FC<SystemIconProps> = ({
 
         <SystemText destroyed={system.isDestroyed()}>{text}</SystemText>
         <HealthBar
-          destroyed={system.isDestroyed()}
-          criticals={system.hasAnyCritical()}
-          health={getStructureLeft(system)}
+          destroyed={system.isDestroyed() || undefined}
+          criticals={system.hasAnyCritical() || undefined}
+          $health={getStructureLeft(system)}
         />
       </Container>
     </>

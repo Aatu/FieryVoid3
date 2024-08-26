@@ -45,7 +45,6 @@ class ShipObject {
   protected position: IVector;
   public shipZ: number = 0;
   protected hidden: boolean;
-  //protected emissiveReplaced: any[] = [];
   protected ghost: boolean;
   protected forcedEmissiveColor: THREE.Color | null;
   protected opacity: number;
@@ -131,17 +130,20 @@ class ShipObject {
   setShipObject(object: GameObject3D) {
     this.shipObject = object;
 
+    /*
     if (this.bumpMap) {
       object.getObject().children.forEach((child) => {
         const mesh = child as THREE.Mesh;
         const material = mesh.material as THREE.MeshStandardMaterial;
 
+        console.log("material", material);
         material.bumpMap = this.bumpMap;
         material.bumpScale = 0.5;
         material.bumpMap!.flipY = false;
         material.needsUpdate = true;
       });
     }
+      */
 
     this.shipObject.traverse((child) => {
       child.userData = { icon: this };
@@ -161,7 +163,7 @@ class ShipObject {
   }
 
   createMesh() {
-    if (this.shipZ === null) {
+    if (this.shipZ === 0) {
       this.shipZ = this.defaultHeight;
     }
 
@@ -460,119 +462,25 @@ class ShipObject {
   }
 
 */
-  async replaceSocketByName(
-    names: { name: string; id: number } | { name: string; id: number }[],
-    entity: GameObject3D | null
-  ) {
-    names = ([] as { name: string; id: number }[]).concat(names);
-
-    const shipObject = await this.getShipObject();
-
-    names.forEach(({ name, id }) => {
-      const slot = shipObject.scene.children.find((child) => {
-        if (!child.name) {
-          return false;
-        }
-
-        if (child.name === name) {
-          return true;
-        }
-      });
-
-      if (!slot) {
-        return;
-      }
-
-      if (!entity) {
-        shipObject.scene.remove(slot);
-        return;
-      }
-
-      const newEntity = entity.clone().setId(id);
-
-      newEntity.getObject().position.copy(slot.position);
-      newEntity.getObject().rotation.copy(slot.rotation);
-      newEntity.getObject().quaternion.copy(slot.quaternion);
-      shipObject.scene.remove(slot);
-      newEntity.addTo(shipObject.getObject());
-
-      this.systemObjects.push(newEntity);
-      this.systemLocations[id] = slot.position;
-    });
-  }
 
   async replaceOpacity(opacity: number) {
-    const shipObject = await this.getShipObject();
-
-    shipObject.traverseMaterials((material) => {
-      material.depthWrite = false;
-      material.depthTest = false;
-      material.transparent = true;
-      material.opacity = opacity;
-      material.needsUpdate = true;
-    });
+    (await this.getShipObject()).replaceOpacity(opacity);
   }
 
   async revertOpacity() {
-    const shipObject = await this.getShipObject();
-
-    shipObject.traverseMaterials((material) => {
-      material.opacity = this.opacity;
-      material.needsUpdate = true;
-    });
+    (await this.getShipObject()).revertOpacity();
   }
 
-  forceEmissive(color: THREE.Color) {
-    this.forcedEmissiveColor = color;
-    this.replaceEmissive(color);
-    //this.emissiveReplaced = [];
+  async forceEmissive(color: THREE.Color) {
+    (await this.getShipObject()).replaceEmissive(color, true);
   }
 
   async replaceEmissive(color: THREE.Color) {
-    console.log("todo, replace emissive", color);
-    //TODO: fix emissive replacement, Move this to GameObject3D
-    /*
-    const shipObject = await this.getShipObject();
-
-    shipObject.traverse((child) => {
-      const replacement = this.emissiveReplaced.find(
-        (replacement) => replacement.object === child
-      );
-
-      if (!replacement) {
-        this.emissiveReplaced.push({
-          object: child,
-          color: child.material.emissive,
-          map: child.material.emissiveMap,
-        });
-      }
-
-      child.material.emissiveMap = null;
-      child.material.emissive = color;
-      child.material.needsUpdate = true;
-    });
-    */
+    (await this.getShipObject()).replaceEmissive(color);
   }
 
   async revertEmissive() {
-    /*
-    await this.isShipObjectLoaded;
-    this.shipObject.traverse((child) => {
-      const replacement = this.emissiveReplaced.find(
-        (replacement) => replacement.object === child
-      );
-
-      if (this.forcedEmissiveColor) {
-        child.material.emissiveMap = null;
-        child.material.emissive = this.forcedEmissiveColor;
-        child.material.needsUpdate = true;
-      } else if (replacement) {
-        child.material.emissiveMap = replacement.map;
-        child.material.emissive = replacement.color;
-        child.material.needsUpdate = true;
-      }
-    });
-    */
+    (await this.getShipObject()).revertEmissive();
   }
 
   setGhostShip() {
@@ -580,13 +488,11 @@ class ShipObject {
   }
 
   async replaceColor(color: THREE.Color) {
-    const shipObject = await this.getShipObject();
+    (await this.getShipObject()).replaceColor(color);
+  }
 
-    shipObject.traverseMaterials((material) => {
-      material.map = null;
-      material.color = color;
-      material.needsUpdate = true;
-    });
+  async revertColor() {
+    (await this.getShipObject()).revertColor();
   }
 
   async setGhostShipEmissive(color: THREE.Color) {
@@ -613,47 +519,23 @@ class ShipObject {
   }
 
   render(renderPayload: RenderPayload) {
-    this.systemObjects.forEach((object) => object.render(renderPayload));
+    if (this.shipObject) {
+      this.shipObject.render(renderPayload);
+    }
+
     this.shipObjectSectionDamageEffect.render(renderPayload);
   }
 
-  playSystemAnimation(system: ShipSystem, name: string) {
-    const object = this.systemObjects.find(
-      (object) => object.getId() === system.id
-    );
-
-    if (!object) {
-      return;
-    }
-
-    //console.log("animate", name, system);
-    object.playAnimation(name);
+  async playSystemAnimation(system: ShipSystem, name: string) {
+    (await this.getShipObject()).playAnimation(name, system);
   }
 
-  setSystemAnimation(system: ShipSystem, name: string, time: number) {
-    const object = this.systemObjects.find(
-      (object) => object.getId() === system.id
-    );
-
-    if (!object) {
-      return;
-    }
-
-    //console.log("set animation", name, system);
-    object.setAnimation(name, time);
+  async setSystemAnimation(system: ShipSystem, name: string, time: number) {
+    (await this.getShipObject()).setAnimation(name, time, system);
   }
 
-  disableSystemAnimation(system: ShipSystem, name: string) {
-    const object = this.systemObjects.find(
-      (object) => object.getId() === system.id
-    );
-
-    if (!object) {
-      return;
-    }
-
-    //console.log("disable", name, system);
-    object.disableAnimation(name);
+  async disableSystemAnimation(system: ShipSystem, name: string) {
+    (await this.getShipObject()).disableAnimation(name, system);
   }
 
   getShipHexas() {

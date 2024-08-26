@@ -1,5 +1,5 @@
 const spriteFragmentShader = `
-    uniform sampler2D texture;
+    uniform sampler2D uTexture;
     uniform float overlayAlpha;
     uniform vec3 overlayColor;
     uniform float opacity;
@@ -7,7 +7,7 @@ const spriteFragmentShader = `
     varying vec2 vUv;
 
     void main() {
-        vec4 textureColor = texture2D(texture, vUv);
+        vec4 textureColor = texture2D(uTexture, vUv);
         vec4 finalColor = textureColor;
 
         if (overlayAlpha > 0.0 && textureColor.a > 0.0){

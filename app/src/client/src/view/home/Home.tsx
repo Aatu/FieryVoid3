@@ -40,12 +40,12 @@ const Home: React.FC = () => {
       {currentUser && (currentUser.id === 1 || currentUser.id === 2) && (
         <>
           <ChangeLog />
-          <Button type="button" buttonStyle="button-grey" onClick={createGame}>
+          <Button type="button" buttonstyle="button-grey" onClick={createGame}>
             Create test game
           </Button>
           <Button
             type="button"
-            buttonStyle="button-grey"
+            buttonstyle="button-grey"
             onClick={createGameAi}
           >
             Create test game AGAINST AI (Note, the AI can only pass turns for

@@ -58,7 +58,6 @@ class ParticleEmitterContainer {
 
     this.readyPromise = getPromise<boolean>(async () => {
       await this.boltInstanceFactory.getReady();
-
       return true;
     });
 

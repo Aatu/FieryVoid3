@@ -1,86 +1,129 @@
-import React from "react";
+import React, { memo, useEffect, useState } from "react";
 import styled from "styled-components";
 import ShipFleetBadge from "./ShipFleetBadge";
-import UIState from "../UIState";
 import { useUser } from "../../../../state/userHooks";
-import Ship from "@fieryvoid3/model/src/unit/Ship";
+import { User } from "@fieryvoid3/model";
+import GameData from "@fieryvoid3/model/src/game/GameData";
+import { useGameData } from "../../../../state/useGameData";
 
 type ContainerProps = {
-  right: boolean;
+  $isRight: boolean;
 };
 
 const Container = styled.div<ContainerProps>`
   position: absolute;
   top: 50px;
-  ${(props) => (props.right ? "right: 10px;" : "left: 10px;")}
+  ${(props) => (props.$isRight ? "right: 10px;" : "left: 10px;")}
 
   z-index: 3;
 `;
 
 type ShipListActualProps = {
-  uiState: UIState;
-  primary: Ship[];
-  secondary?: Ship[];
-  right?: boolean;
+  primary: string[];
+  secondary?: string[];
+  isRight?: boolean;
 };
 
 const ShipListActual: React.FC<ShipListActualProps> = ({
-  uiState,
   primary = [],
-  right = false,
+  isRight = false,
 }) => {
   return (
-    <Container right={right}>
-      {primary.map((ship) => (
-        <ShipFleetBadge
-          key={`ship-fleet-list-${ship.id}`}
-          ship={ship}
-          uiState={uiState}
-        />
+    <Container $isRight={isRight}>
+      {primary.map((shipId) => (
+        <ShipFleetBadge key={`ship-fleet-list-${shipId}`} shipId={shipId} />
       ))}
     </Container>
   );
 };
 
-const ShipList: React.FC<{ uiState: UIState }> = ({ uiState }) => {
-  const { data: currentUser } = useUser();
+type ShipListData = {
+  myShips: string[];
+  alliedShips: string[];
+  enemyShips: string[];
+};
 
-  const gameData = uiState.getState().gameData;
-
+const selector = (
+  user: User | null | undefined,
+  gameData: GameData | null
+): ShipListData => {
   if (!gameData) {
-    return null;
+    return {
+      myShips: [],
+      alliedShips: [],
+      enemyShips: [],
+    };
   }
 
-  // TODO: WTF, why was gamedata cloned???
-  //gameData = new GameData(gameData);
-
   const myShips = gameData.ships
-    .getUsersShips(currentUser || null)
+    .getUsersShips(user || null)
     .filter((ship) => !ship.isDestroyed());
 
   const alliedShips = gameData.ships
-    .getShipsInSameTeam(currentUser || null)
+    .getShipsInSameTeam(user || null)
     .filter((ship) => !ship.isDestroyed())
     .filter((ship) => !myShips.includes(ship));
 
   const enemyShips = gameData.ships
-    .getShipsEnemyTeams(currentUser || null)
+    .getShipsEnemyTeams(user || null)
     .filter((ship) => !ship.isDestroyed());
+
+  return {
+    myShips: myShips.map((ship) => ship.id),
+    alliedShips: alliedShips.map((ship) => ship.id),
+    enemyShips: enemyShips.map((ship) => ship.id),
+  };
+};
+
+const compareFunction = (a: ShipListData, b: ShipListData): boolean => {
+  if (a.myShips.join() !== b.myShips.join()) {
+    return false;
+  }
+
+  if (a.alliedShips.join() !== b.alliedShips.join()) {
+    return false;
+  }
+
+  if (a.enemyShips.join() !== b.enemyShips.join()) {
+    return false;
+  }
+
+  return true;
+};
+
+const useShipListData = (user: User | undefined | null, gameData: GameData) => {
+  const data = selector(user, gameData);
+  const [finalData, setFinalData] = useState<ShipListData>(data);
+
+  useEffect(() => {
+    if (!compareFunction(finalData, data)) {
+      setFinalData(data);
+    }
+  }, [data, finalData]);
+
+  return finalData;
+};
+
+const ShipList: React.FC = memo(() => {
+  const { data: currentUser } = useUser();
+  const gameData = useGameData();
+  const { myShips, alliedShips, enemyShips } = useShipListData(
+    currentUser,
+    gameData
+  );
+
+  if (!myShips.length && !alliedShips.length && !enemyShips.length) {
+    return null;
+  }
 
   return (
     <>
       {myShips.length > 0 && (
-        <ShipListActual
-          uiState={uiState}
-          primary={[...myShips]}
-          secondary={alliedShips}
-        />
+        <ShipListActual primary={myShips} secondary={alliedShips} />
       )}
-      {myShips.length > 0 && (
-        <ShipListActual uiState={uiState} primary={[...enemyShips]} right />
-      )}
+      {myShips.length > 0 && <ShipListActual primary={enemyShips} isRight />}
     </>
   );
-};
+});
 
 export default ShipList;

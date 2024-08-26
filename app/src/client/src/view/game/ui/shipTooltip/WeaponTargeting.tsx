@@ -52,7 +52,7 @@ const WeaponTargeting: React.FC<Props> = ({
         selected={false}
         target={target}
         text={hitChance.result + "%"}
-        inactive={hitChance.result <= 0}
+        inactive={hitChance.result <= 0 || undefined}
         {...rest}
       />
     </Container>

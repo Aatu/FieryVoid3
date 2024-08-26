@@ -108,8 +108,8 @@ class GameConnector {
     this.connection.resolve(this.webSocket!);
   }
 
-  onError() {
-    console.log("error");
+  onError(error: unknown) {
+    console.log("error", error);
   }
 
   onClose() {

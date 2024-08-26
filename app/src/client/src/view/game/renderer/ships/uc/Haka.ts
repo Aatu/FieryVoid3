@@ -25,7 +25,7 @@ class Haka extends ShipObject {
 
     this.bumpMap = textureLoader.load("/img/3d/ships/uc/haka/heightMap.png");
 
-    super.replaceSocketByName(
+    object.replaceSocketByName(
       [
         { name: "socket_middle_pylon_top", id: 602 },
         { name: "socket_front_top_1", id: 606 },
@@ -35,14 +35,14 @@ class Haka extends ShipObject {
       )
     );
 
-    super.replaceSocketByName(
+    object.replaceSocketByName(
       [{ name: "socket_middle_pylon_bottom", id: 202 }],
       await loadObject3d(
         "/img/3d/systems/weapons/railgun/2x140mmRailgunTurret/scene.gltf"
       )
     );
 
-    super.replaceSocketByName(
+    object.replaceSocketByName(
       [
         { name: "socket_main_pylon_left", id: 118 },
         { name: "socket_main_pylon_right", id: 119 },
@@ -54,7 +54,7 @@ class Haka extends ShipObject {
       )
     );
 
-    super.replaceSocketByName(
+    object.replaceSocketByName(
       [
         { name: "socket_engine_1", id: 123 },
         { name: "socket_engine_2", id: 123 },
@@ -64,7 +64,7 @@ class Haka extends ShipObject {
       await loadObject3d("/img/3d/systems/thrusters/10mThruster/scene.gltf")
     );
 
-    super.replaceSocketByName(
+    object.replaceSocketByName(
       [
         { name: "socket_engine_pylon_1", id: 550 },
         { name: "socket_engine_pylon_2", id: 551 },
@@ -92,7 +92,7 @@ class Haka extends ShipObject {
       )
     );
 
-    super.replaceSocketByName(
+    object.replaceSocketByName(
       [
         { name: "socket_radiator_5", id: 301 },
         { name: "socket_radiator_6", id: 302 },
@@ -102,7 +102,7 @@ class Haka extends ShipObject {
       await loadObject3d("/img/3d/systems/radiators/10x40/scene.gltf")
     );
 
-    super.replaceSocketByName(
+    object.replaceSocketByName(
       [
         { name: "socket_radiator_1", id: 416 },
         { name: "socket_radiator_2", id: 216 },

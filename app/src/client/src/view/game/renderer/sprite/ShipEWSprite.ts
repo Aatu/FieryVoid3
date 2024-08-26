@@ -205,7 +205,7 @@ class ShipEWSprite extends Sprite {
 
     const texture = new THREE.Texture(canvas);
     texture.needsUpdate = true;
-    this.uniforms.texture.value = texture;
+    this.uniforms.uTexture.value = texture;
   }
 }
 

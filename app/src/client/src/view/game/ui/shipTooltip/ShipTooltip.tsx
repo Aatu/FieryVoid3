@@ -10,9 +10,10 @@ import TorpedoDefense from "./TorpedoDefense";
 import ShipName from "../ShipName";
 import GameShipTooltipMenuTorpedoDefense from "./GameShipTooltipMenuTorpedoDefense";
 import { CloseButton } from "../../../../styled/Button";
-import UIState, { State } from "../UIState";
 import Ship from "@fieryvoid3/model/src/unit/Ship";
 import { useUser } from "../../../../state/userHooks";
+import { useGameStore } from "../../GameStoreProvider";
+import { useUiStateHandler } from "../../../../state/useUIStateHandler";
 
 const InfoHeader = styled(TooltipHeader)`
   display: flex;
@@ -20,7 +21,7 @@ const InfoHeader = styled(TooltipHeader)`
 `;
 
 type ShipTooltipContainerProps = {
-  right?: boolean;
+  $isRight?: boolean;
   interactable?: boolean;
 };
 
@@ -30,7 +31,7 @@ const ShipTooltipContainer = styled(Tooltip)<ShipTooltipContainerProps>`
   opacity: 0.95;
   position: absolute;
   top: 50px;
-  ${(props) => (props.right ? "right: 220px;" : "left: 220px;")}
+  ${(props) => (props.$isRight ? "right: 220px;" : "left: 220px;")}
 
   ${(props) => (props.interactable ? "z-index: 4;" : "z-index: 1;")}
 `;
@@ -54,21 +55,17 @@ export enum TOOLTIP_TAB {
 type Props = {
   ui: boolean;
   ship: Ship;
-  uiState: UIState;
   className?: string;
   right?: boolean;
-} & State;
+};
 
-const ShipTooltip: React.FC<Props> = ({
-  ui,
-  shipTooltipMenuProvider,
-  ship,
-  uiState,
-  className,
-  ...rest
-}) => {
+const ShipTooltip: React.FC<Props> = ({ ui, ship, className, ...rest }) => {
   const [tooltipTab, setTooltipTab] = React.useState<TOOLTIP_TAB | null>(null);
   const { data: currentUser } = useUser();
+  const { shipTooltipMenuProvider } = useGameStore(({ gameState }) => ({
+    shipTooltipMenuProvider: gameState.shipTooltipMenuProvider,
+  }));
+  const uiState = useUiStateHandler();
 
   const getMenu = () => {
     const newTooltipTab = getTooltipTab();
@@ -117,9 +114,9 @@ const ShipTooltip: React.FC<Props> = ({
 
   return (
     <ShipTooltipContainer
-      right={rest.right}
+      $isRight={rest.right || undefined}
       className={className}
-      interactable={interactable}
+      interactable={interactable || undefined}
     >
       <InfoHeader>
         <div>

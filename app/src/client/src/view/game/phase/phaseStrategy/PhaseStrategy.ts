@@ -9,6 +9,7 @@ import AutomaticReplayPhaseStrategy from "./AutomaticReplayPhaseStrategy/Automat
 import ReplayPhaseStrategy from "./ReplayPhaseStrategy";
 import DeploymentPhaseStrategy from "./DeploymentPhaseStrategy";
 import UiStrategy from "../../ui/uiStrategy/UiStrategy";
+import GamePhaseStrategy from "./GamePhaseStrategy";
 
 export type PhaseStrategies =
   | typeof LobbyPhaseStrategy
@@ -16,7 +17,8 @@ export type PhaseStrategies =
   | typeof PhaseStrategy
   | typeof AutomaticReplayPhaseStrategy
   | typeof ReplayPhaseStrategy
-  | typeof DeploymentPhaseStrategy;
+  | typeof DeploymentPhaseStrategy
+  | typeof GamePhaseStrategy;
 
 export type RenderPayload = {
   delta: number;
@@ -207,13 +209,13 @@ class PhaseStrategy {
     const { uiState } = this.services;
 
     this.gameData = gamedata;
-    uiState.setGameData(gamedata);
     this.updateStrategies(gamedata);
-
+    uiState.gameDataUpdated();
     return this;
   }
 
   activate() {
+    console.log("PhaseStrategy activate", this.constructor.name);
     this.inactive = false;
     this.activateStrategies();
     return this;

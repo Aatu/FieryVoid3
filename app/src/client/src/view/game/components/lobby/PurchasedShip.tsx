@@ -24,7 +24,7 @@ export const PurchasedShip: React.FC<{ ship: Ship; uiState: UIState }> = ({
 
   return (
     <Container>
-      <Button buttonStyle="text" onClick={openShipWindow}>
+      <Button buttonstyle="text" onClick={openShipWindow}>
         {ship.shipTypeName} <Value>{ship.pointCost}</Value> points
       </Button>
       <InputAndLabel

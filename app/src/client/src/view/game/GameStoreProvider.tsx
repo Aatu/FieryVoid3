@@ -1,27 +1,38 @@
-import React, { createContext, ReactNode, useState } from "react";
-import UIState, { State } from "./ui/UIState";
-import { createContext as createSelectableContext } from "use-context-selector";
+import React, { createContext, ReactNode, useEffect } from "react";
+import UIState, { defaultState, State } from "./ui/UIState";
+import { createWithEqualityFn } from "zustand/traditional";
+import { shallow } from "zustand/shallow";
+
+type GameStoreState = {
+  gameState: State;
+  setState: (gameState: State) => void;
+};
+
+export const useGameStore = createWithEqualityFn<GameStoreState>(
+  (set) => ({
+    gameState: defaultState,
+    setState: (gameState) => set({ gameState }),
+  }),
+  shallow
+);
 
 export const UIStateHandlerContext = createContext<UIState>(
   null as unknown as UIState
-);
-export const UIStateContext = createSelectableContext<State>(
-  null as unknown as State
 );
 
 const GameStoreProvider: React.FC<{
   uiState: UIState;
   children: ReactNode;
 }> = ({ uiState, children }) => {
-  const [state, setState] = useState<State>(uiState.getState());
+  const setState = useGameStore((state) => state.setState);
 
-  uiState.setDispatch(setState);
+  useEffect(() => {
+    uiState.setDispatch(setState);
+  }, [setState, uiState]);
 
   return (
     <UIStateHandlerContext.Provider value={uiState}>
-      <UIStateContext.Provider value={state}>
-        {children}
-      </UIStateContext.Provider>
+      {children}
     </UIStateHandlerContext.Provider>
   );
 };

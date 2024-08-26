@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import Lobby from "./lobby";
 import ShipTooltip from "../ui/shipTooltip";
 import TurnHeader from "../ui/TurnHeader";
@@ -8,19 +8,23 @@ import GameUiModeButtons from "../ui/GameUiModeButtons";
 import LeftPanel from "../ui/leftPanel/LeftPanel";
 import ReplayUI from "../ui/replay/ReplayUI";
 import CombatLog from "../ui/combatLog/CombatLog";
-import ShipBadge from "../ui/shipBadge/ShipBadge";
+import { ShipBadges } from "../ui/shipBadge/ShipBadge";
 import ShipList from "../ui/shipList/ShipList";
-import Game from "../Game";
 import { GAME_PHASE } from "@fieryvoid3/model/src/game/gamePhase";
 import { GameUIMode } from "../ui/gameUiModes";
+import { useUiStateHandler } from "../../../state/useUIStateHandler";
+import { useGameStore } from "../GameStoreProvider";
+import { useGameData } from "../../../state/useGameData";
 
-const GameUiComponent: React.FC<{ game: Game }> = ({ game }) => {
-  const uiState = game.getUiState();
-  const state = uiState.getState();
+const GameUiComponent: React.FC = memo(() => {
+  const uiState = useUiStateHandler();
+  const state = useGameStore(({ gameState }) => gameState);
+
+  const gameData = useGameData();
 
   return (
     <>
-      {state.lobby && <Lobby uiState={uiState} gameData={state.gameData} />}
+      {state.lobby && <Lobby uiState={uiState} gameData={gameData} />}
 
       <>
         {
@@ -28,8 +32,6 @@ const GameUiComponent: React.FC<{ game: Game }> = ({ game }) => {
             .map((tooltip) => (
               <ShipTooltip
                 key={`tooltip-ship-${tooltip.ship.id}`}
-                uiState={uiState}
-                {...state}
                 {...tooltip}
               />
             ))
@@ -37,9 +39,9 @@ const GameUiComponent: React.FC<{ game: Game }> = ({ game }) => {
         }
       </>
 
-      {state.gameData &&
-        (state.gameData.phase === GAME_PHASE.GAME ||
-          state.gameData.phase === GAME_PHASE.DEPLOYMENT) && (
+      {gameData &&
+        (gameData.phase === GAME_PHASE.GAME ||
+          gameData.phase === GAME_PHASE.DEPLOYMENT) && (
           <TurnHeader
             uiState={uiState}
             ready={state.turnReady}
@@ -76,19 +78,11 @@ const GameUiComponent: React.FC<{ game: Game }> = ({ game }) => {
         />
       )}
 
-      {state.shipBadges.map(({ icon, visible, showName }) => (
-        <ShipBadge
-          key={`ship-badge-${icon.ship.id}`}
-          shipObject={icon}
-          visible={visible}
-          uiState={uiState}
-          showName={showName}
-        />
-      ))}
+      <ShipBadges />
 
-      <ShipList uiState={uiState} />
+      <ShipList />
     </>
   );
-};
+});
 
 export default GameUiComponent;

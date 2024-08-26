@@ -20,7 +20,7 @@ class Mouros extends ShipObject {
 
     object.getObject().position.set(0, 0, this.defaultHeight);
 
-    super.replaceSocketByName(
+    object.replaceSocketByName(
       [
         { name: "Middle_hull_depress_top", id: 123 },
         { name: "Middle_hull_depress_left", id: 123 },
@@ -32,7 +32,7 @@ class Mouros extends ShipObject {
       )
     );
 
-    super.replaceSocketByName(
+    object.replaceSocketByName(
       [
         { name: "Middle_hull_frame_top", id: 123 },
         { name: "Middle_hull_frame_left", id: 123 },
@@ -43,7 +43,7 @@ class Mouros extends ShipObject {
       )
     );
 
-    super.replaceSocketByName(
+    object.replaceSocketByName(
       [
         { name: "railgun_turret_mount_right", id: 123 },
         { name: "railgun_turret_mount_left", id: 123 },
@@ -53,7 +53,7 @@ class Mouros extends ShipObject {
       )
     );
 
-    super.replaceSocketByName(
+    object.replaceSocketByName(
       [
         { name: "thruster_1", id: 123 },
         { name: "thruster_6", id: 123 },

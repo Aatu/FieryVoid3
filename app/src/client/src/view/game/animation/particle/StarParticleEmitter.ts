@@ -41,7 +41,7 @@ class StarParticleEmitter extends Animation {
 
     const uniforms = {
       gameTime: { value: 0.0 },
-      texture: { value: texture },
+      uTexture: { value: texture },
     };
 
     this.particleGeometry = new THREE.BufferGeometry();

@@ -1,5 +1,6 @@
-import { AnimationClip, Object3D } from "three";
+import { AnimationClip, Mesh, Object3D } from "three";
 import { GLTF, GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+import * as SkeletonUtils from "three/addons/utils/SkeletonUtils.js";
 
 const loader = new GLTFLoader();
 export type LoadedObject = {
@@ -12,9 +13,7 @@ const entities: {
   value: Promise<GLTF>;
 }[] = [];
 export interface IClonable {
-  scene: {
-    clone: () => Object3D;
-  };
+  scene: Object3D;
   animations: AnimationClip[];
 }
 
@@ -24,8 +23,17 @@ export const cloneObject = (
   //const sourceLookup = new Map();
   //const cloneLookup = new Map();
 
-  const clone = source.scene.clone();
+  //const clone = source.scene.clone();
 
+  const clone = SkeletonUtils.clone(source.scene);
+
+  /*
+  const clone = new Object3D();
+
+  source.scene.children.forEach((child) => {
+    clone.add(child.clone());
+  });
+*/
   const animations = source.animations;
   /*
   parallelTraverse(source.scene, clone, function (sourceNode, clonedNode) {
@@ -72,11 +80,18 @@ const parallelTraverse = (a, b, callback) => {
 };
 */
 
-export const loadObject = async (url: string): Promise<LoadedObject> => {
+export const loadObject = async (
+  url: string,
+  debug: boolean = false
+): Promise<LoadedObject> => {
   const cached = entities.find((entity) => entity.url === url);
 
   if (cached) {
     const object = await cached.value;
+
+    if (debug) {
+      console.log("cached object", object);
+    }
     return cloneObject(object);
   }
 
@@ -84,10 +99,18 @@ export const loadObject = async (url: string): Promise<LoadedObject> => {
     url: url,
     value: new Promise<GLTF>((resolve, reject) => {
       try {
-        loader.load(url, (object) => {
-          resolve(object);
-        });
-      } catch {
+        loader.load(
+          url,
+          (object) => {
+            resolve(object);
+          },
+          () => {},
+          (error) => {
+            console.log("error loading asset", url, error);
+          }
+        );
+      } catch (e) {
+        console.log("error loading asset", e);
         reject(new Error(`Unable to load asset ${url}`));
       }
     }),
@@ -96,5 +119,13 @@ export const loadObject = async (url: string): Promise<LoadedObject> => {
   entities.push(entity);
 
   const object = await entity.value;
+
+  if (debug) {
+    console.log("loaded object", object);
+  }
   return cloneObject(object);
+};
+
+export const isMesh = (object: Object3D): object is Mesh => {
+  return (object as Mesh).isMesh;
 };

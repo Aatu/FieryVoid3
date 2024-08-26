@@ -1,5 +1,5 @@
 const starFragmentShader = `
-    uniform sampler2D texture;
+    uniform sampler2D uTexture;
     varying vec4 vColor;
     varying float vAngle;
     varying float textureN;
@@ -30,7 +30,7 @@ const starFragmentShader = `
             1.0 - (rPos.y / textureAmount + tPos.y)
         );
 
-        vec4 rotatedTexture = texture2D(texture, finalPos);
+        vec4 rotatedTexture = texture2D(uTexture, finalPos);
         gl_FragColor = gl_FragColor * rotatedTexture;
     }
 `;

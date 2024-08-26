@@ -56,7 +56,7 @@ const Login: React.FC<{ className?: string }> = ({ className }) => {
         </TooltipHeader>
 
         <Link to="/logout">
-          <Button buttonStyle="button-grey">Log out</Button>
+          <Button buttonstyle="button-grey">Log out</Button>
         </Link>
       </TooltipContainer>
     );
@@ -96,7 +96,7 @@ const Login: React.FC<{ className?: string }> = ({ className }) => {
       )}
       <Section>
         <Button
-          buttonStyle="button-grey"
+          buttonstyle="button-grey"
           type="submit"
           disabled={
             isSubmitting || isPending || Object.entries(errors).length !== 0
@@ -105,7 +105,7 @@ const Login: React.FC<{ className?: string }> = ({ className }) => {
           Login
         </Button>
         <Button
-          buttonStyle="button-grey"
+          buttonstyle="button-grey"
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();

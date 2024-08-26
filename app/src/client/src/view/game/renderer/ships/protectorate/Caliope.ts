@@ -21,34 +21,39 @@ class Caliope extends ShipObject {
   async create() {
     super.create();
     const gameObject = await loadObject3d("/img/3d/caliope/scene.gltf");
-    this.bumpMap = textureLoader.load("/img/3d/caliope/heightMap.png");
+    gameObject.setShipObjectNames("ship");
+    gameObject.setBumpMap(textureLoader.load("/img/3d/caliope/heightMap.png"));
+    gameObject.setEmissiveMap(
+      textureLoader.load("/img/3d/caliope/emissiveMap.png")
+    );
 
     gameObject.getObject().position.set(0, 0, this.defaultHeight);
 
     const radiator = await loadObject3d("/img/3d/radiator/scene.gltf");
+
     const autoCannon = await loadObject3d(
       "/img/3d/systems/weapons/conventional/85mmAutoCannon/scene.gltf"
     );
 
-    super.replaceSocketByName(
+    gameObject.replaceSocketByName(
       [
-        { name: "engine_pylon_top_front", id: 412 },
-        { name: "engine_pylon_left_front", id: 501 },
-        { name: "engine_pylon_right_front", id: 301 },
+        { name: "engine_pylon_top_front", id: 421 },
+        { name: "engine_pylon_left_front", id: 521 },
+        { name: "engine_pylon_right_front", id: 321 },
+      ],
+      null // autoCannon
+    );
+
+    gameObject.replaceSocketByName(
+      [
+        { name: "engine_pylon_top", id: 412 },
+        { name: "engine_pylon_left", id: 501 },
+        { name: "engine_pylon_right", id: 301 },
       ],
       radiator
     );
 
-    super.replaceSocketByName(
-      [
-        { name: "engine_pylon_top", id: 421 },
-        { name: "engine_pylon_left", id: 521 },
-        { name: "engine_pylon_right", id: 321 },
-      ],
-      autoCannon
-    );
-
-    super.replaceSocketByName(
+    gameObject.replaceSocketByName(
       [
         { name: "main_hull_front_left_bottom", id: 603 },
         { name: "main_hull_front_left_top", id: 604 },
@@ -58,7 +63,7 @@ class Caliope extends ShipObject {
       autoCannon
     );
 
-    super.replaceSocketByName(
+    gameObject.replaceSocketByName(
       [
         { name: "front_hull_right_side", id: 213 },
         { name: "front_hull_left_side", id: 612 },
@@ -68,7 +73,7 @@ class Caliope extends ShipObject {
       )
     );
 
-    super.replaceSocketByName(
+    gameObject.replaceSocketByName(
       [
         { name: "font_hull_bottom", id: 115 },
         { name: "font_hull_top", id: 114 },
@@ -80,13 +85,18 @@ class Caliope extends ShipObject {
       )
     );
 
-    super.replaceSocketByName(
+    const thruster = await loadObject3d(
+      "/img/3d/systems/thrusters/5mThruster/scene.gltf"
+    );
+
+    gameObject.replaceSocketByName(
       [
         { name: "thruster_top", id: 123 },
         { name: "thruster_right", id: 123 },
         { name: "thruster_left", id: 123 },
       ],
-      await loadObject3d("/img/3d/systems/thrusters/5mThruster/scene.gltf")
+      thruster,
+      "thruster"
     );
 
     this.setShipObject(gameObject);

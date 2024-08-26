@@ -3,13 +3,8 @@ import { Services } from "../../phase/PhaseDirector";
 import { PhaseEventPayload } from "../../phase/phaseStrategy/PhaseStrategy";
 
 class UiStrategy {
-  protected services: Services | null;
-  protected gameData: GameData | null;
-
-  constructor() {
-    this.services = null;
-    this.gameData = null;
-  }
+  protected services: Services | null = null;
+  protected gameData: GameData | null = null;
 
   deactivate() {}
 

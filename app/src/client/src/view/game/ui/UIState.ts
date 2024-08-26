@@ -11,7 +11,6 @@ import ReplayContext from "../phase/phaseStrategy/AutomaticReplayPhaseStrategy/R
 import CombatLogTorpedoAttack from "@fieryvoid3/model/src/combatLog/CombatLogTorpedoAttack";
 import CombatLogWeaponFire from "@fieryvoid3/model/src/combatLog/CombatLogWeaponFire";
 import { PhaseEventPayload } from "../phase/phaseStrategy/PhaseStrategy";
-import { Dispatch, SetStateAction } from "react";
 
 export type TooltipComponentProvider = () => React.FC<{
   uiState: UIState;
@@ -45,11 +44,46 @@ export type ShipBadgeUIState = {
   visible: boolean;
 };
 
+type Subscriptions = {
+  render: (() => void)[];
+  system: ((ship: Ship, shipSystem: ShipSystem) => void)[];
+  ship: ((ship: Ship) => void)[];
+  gamedataInstance: ((gameData: GameData) => void)[];
+};
+
+export const defaultState: State = {
+  lobby: false,
+  selectedShipId: null,
+  selectedSystemIds: [],
+  shipMovement: null,
+  shipTooltip: [],
+  turnReady: false,
+  shipTooltipMenuProvider: null,
+  systemMenu: {
+    systemInfoMenuProvider: null,
+    activeSystem: null,
+    activeSystemElement: null,
+  },
+  shipBadges: [],
+  gameUiMode: {
+    [GameUIMode.EW]: false,
+    [GameUIMode.ENEMY_WEAPONS]: false,
+    [GameUIMode.WEAPONS]: false,
+    [GameUIMode.MOVEMENT]: false,
+  },
+  gameUiModeButtons: false,
+  replayUi: null,
+  combatLog: null,
+  systemList: [],
+  ewList: [],
+  stateVersion: 0,
+  waiting: false,
+};
+
 export type State = {
   lobby: boolean;
-  gameData: GameData;
-  selectedShip: Ship | null;
-  selectedSystems: ShipSystem[];
+  selectedShipId: string | null;
+  selectedSystemIds: number[];
   //systemInfo: any;
   //systemInfoMenu: any;
   shipMovement: null | ShipMovementUIState;
@@ -73,54 +107,25 @@ export type State = {
 };
 
 class UIState {
-  private state: Partial<State>;
-  public dispatch: Dispatch<SetStateAction<State>> | null = null;
+  private state: State;
+  public dispatch: ((state: State) => void) | null = null;
   public phaseDirector: PhaseDirector | null;
   public services: Services | null;
-  public renderListeners: (() => void)[];
-  public systemChangeListeners: ((
-    ship: Ship,
-    shipSystem: ShipSystem
-  ) => void)[];
-  public gameData: GameData | null = null;
+  private subscriptions: Subscriptions = {
+    render: [],
+    system: [],
+    ship: [],
+    gamedataInstance: [],
+  };
 
-  constructor() {
+  public gameData: GameData;
+
+  constructor(gameId: number) {
+    this.gameData = new GameData({ id: gameId, players: [], ships: [] });
     this.phaseDirector = null;
     this.services = null;
 
-    this.renderListeners = [];
-
-    this.systemChangeListeners = [];
-
-    this.state = {
-      lobby: false,
-      gameData: undefined,
-      selectedShip: null,
-      selectedSystems: [],
-      shipMovement: null,
-      shipTooltip: [],
-      turnReady: false,
-      shipTooltipMenuProvider: null,
-      systemMenu: {
-        systemInfoMenuProvider: null,
-        activeSystem: null,
-        activeSystemElement: null,
-      },
-      shipBadges: [],
-      gameUiMode: {
-        [GameUIMode.EW]: false,
-        [GameUIMode.ENEMY_WEAPONS]: false,
-        [GameUIMode.WEAPONS]: false,
-        [GameUIMode.MOVEMENT]: false,
-      },
-      gameUiModeButtons: false,
-      replayUi: null,
-      combatLog: null,
-      systemList: [],
-      ewList: [],
-      stateVersion: 0,
-      waiting: false,
-    };
+    this.state = defaultState;
   }
 
   getPhaseDirector() {
@@ -151,21 +156,8 @@ class UIState {
     return this.state as State;
   }
 
-  setDispatch(dispatch: Dispatch<SetStateAction<State>>) {
+  setDispatch(dispatch: (state: State) => void) {
     this.dispatch = dispatch;
-  }
-
-  getReducer() {
-    return this.reducer.bind(this);
-  }
-
-  reducer(state: State, action: Partial<State>): State {
-    this.state = {
-      ...state,
-      ...action,
-    };
-
-    return this.getState();
   }
 
   showShipBadge(icon: ShipObject, showName: boolean = true) {
@@ -220,7 +212,7 @@ class UIState {
   }
 
   isSelectedSystem(system: ShipSystem) {
-    return this.getState().selectedSystems.includes(system);
+    return this.getState().selectedSystemIds.includes(system.id);
   }
 
   selectSystem(ship: Ship, systems: ShipSystem | ShipSystem[]) {
@@ -228,12 +220,15 @@ class UIState {
       this.selectShip(ship);
     }
 
-    systems = [
-      ...([] as ShipSystem[])
-        .concat(systems)
-        .filter((system) => !this.isSelectedSystem(system)),
-      ...this.getState().selectedSystems,
-    ];
+    const systemIds = this.getState().selectedSystemIds;
+
+    ([] as ShipSystem[]).concat(systems).forEach((system) => {
+      if (!systemIds.includes(system.id)) {
+        systemIds.push(system.id);
+      }
+    });
+
+    this.state.selectedSystemIds = systemIds;
 
     this.updateState();
     this.customEvent("systemSelected", { systems });
@@ -242,23 +237,29 @@ class UIState {
   deselectSystem(systems: ShipSystem | ShipSystem[]) {
     systems = ([] as ShipSystem[]).concat(systems);
 
-    this.state.selectedSystems = this.getState().selectedSystems.filter(
-      (selected) => systems.every((system) => system.id !== selected.id)
+    this.state.selectedSystemIds = this.getState().selectedSystemIds.filter(
+      (id) => systems.every((system) => system.id !== id)
     );
-
     this.updateState();
     this.customEvent("systemDeselected", { systems });
   }
 
   deselectAllSystems() {
-    const systems = this.state.selectedSystems;
-    this.state.selectedSystems = [];
+    const systems = this.getSelectedSystems();
+    this.state.selectedSystemIds = [];
     this.updateState();
     this.customEvent("systemDeselected", { systems });
   }
 
   getSelectedSystems() {
-    return this.state.selectedSystems;
+    const ship = this.getSelectedShip();
+    if (!ship) {
+      return [];
+    }
+
+    return this.state.selectedSystemIds.map((id) =>
+      ship.systems.getSystemById(id)
+    );
   }
 
   hasGameUiMode(values: GameUIMode | GameUIMode[]) {
@@ -319,25 +320,6 @@ class UIState {
     return Boolean(this.getState().replayUi);
   }
 
-  update(gameData: GameData) {
-    this.gameData = gameData;
-    const state = this.getState();
-    const selectedShip = state.selectedShip;
-
-    if (!selectedShip) {
-      return;
-    }
-
-    this.selectShip(this.gameData.ships.getShipById(selectedShip.id));
-
-    this.selectSystem(
-      selectedShip,
-      state.selectedSystems.map((system) =>
-        selectedShip.systems.getSystemById(system.id)
-      )
-    );
-  }
-
   setTurnReady(ready: boolean) {
     this.state.turnReady = ready;
     this.updateState();
@@ -375,14 +357,14 @@ class UIState {
     }
 
     this.deselectShip();
-    this.state.selectedShip = ship;
+    this.state.selectedShipId = ship.id;
     this.updateState();
     this.customEvent("shipSelected", { ship });
   }
 
   deselectShip() {
-    const ship = this.state.selectedShip;
-    this.state.selectedShip = null;
+    const ship = this.getSelectedShip();
+    this.state.selectedShipId = null;
     this.updateState();
     this.deselectAllSystems();
     if (ship) {
@@ -391,11 +373,15 @@ class UIState {
   }
 
   getSelectedShip() {
-    return this.state.selectedShip;
+    if (!this.state.selectedShipId) {
+      return null;
+    }
+
+    return this.gameData.ships.getShipById(this.state.selectedShipId);
   }
 
   isSelected(ship: Ship) {
-    return this.state.selectedShip === ship;
+    return this.state.selectedShipId === ship.id;
   }
 
   updateState() {
@@ -405,7 +391,7 @@ class UIState {
       return;
     }
 
-    this.dispatch(this.getState());
+    this.dispatch(cloneState(this.getState()));
     this.customEvent("uiStateChanged");
   }
 
@@ -428,9 +414,14 @@ class UIState {
     this.updateState();
   }
 
-  setGameData(gameData: GameData) {
-    this.state.gameData = gameData;
-    this.updateState();
+  update(gameData: GameData) {
+    this.gameData = gameData;
+  }
+
+  gameDataUpdated() {
+    this.subscriptions.gamedataInstance.forEach((callBack) =>
+      callBack(this.getGameData())
+    );
   }
 
   setLobby(status: boolean) {
@@ -465,7 +456,7 @@ class UIState {
 
   shipSystemStateChanged(ship: Ship, system: ShipSystem) {
     this.customEvent("shipSystemStateChanged", { ship, system });
-    this.systemChangeListeners.forEach((callBack) => callBack(ship, system));
+    this.subscriptions.system.forEach((callBack) => callBack(ship, system));
   }
 
   showShipTooltip(ship: Ship, ui: boolean = false, right: boolean = false) {
@@ -525,15 +516,15 @@ class UIState {
   }
 
   render() {
-    this.renderListeners.forEach((listener) => listener());
+    this.subscriptions.render.forEach((listener) => listener());
   }
 
   subscribeToRender(callBack: () => void) {
-    this.renderListeners.push(callBack);
+    this.subscriptions.render.push(callBack);
   }
 
   unsubscribeFromRender(callBack: () => void) {
-    this.renderListeners = this.renderListeners.filter(
+    this.subscriptions.render = this.subscriptions.render.filter(
       (listener) => listener !== callBack
     );
   }
@@ -541,16 +532,38 @@ class UIState {
   subscribeToSystemChange(
     callBack: (ship: Ship, shipSystem: ShipSystem) => void
   ) {
-    this.systemChangeListeners.push(callBack);
+    this.subscriptions.system.push(callBack);
   }
 
   unsubscribeFromSystemChange(
     callBack: (ship: Ship, shipSystem: ShipSystem) => void
   ) {
-    this.systemChangeListeners = this.systemChangeListeners.filter(
+    this.subscriptions.system = this.subscriptions.system.filter(
       (listener) => listener !== callBack
     );
+  }
+
+  subscribeToGameDataInstance(callBack: (gameData: GameData) => void) {
+    this.subscriptions.gamedataInstance.push(callBack);
+  }
+
+  unsubscribeFromGameDataInstance(callBack: (gameData: GameData) => void) {
+    this.subscriptions.gamedataInstance =
+      this.subscriptions.gamedataInstance.filter(
+        (listener) => listener !== callBack
+      );
   }
 }
 
 export default UIState;
+
+const cloneState = (state: State): State => {
+  return {
+    ...state,
+    selectedSystemIds: [...state.selectedSystemIds],
+    shipTooltip: [...state.shipTooltip],
+    shipBadges: [...state.shipBadges],
+    ewList: [...state.ewList],
+    systemList: [...state.systemList],
+  };
+};

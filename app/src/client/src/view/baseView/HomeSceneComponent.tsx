@@ -17,6 +17,7 @@ const WebglCanvas = styled.div`
 
 const HomeSceneComponent: React.FC = () => {
   const canvasRef = useRef<HTMLDivElement>(null);
+  const scene = useMemo(() => new HomeScene(), []);
 
   const getDimensions = useCallback(() => {
     if (!canvasRef.current) {
@@ -30,38 +31,41 @@ const HomeSceneComponent: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (!canvasRef.current) {
-      return;
-    }
-
     const onResize = () => {
-      if (!canvasRef.current) {
-        return;
-      }
-
       const dimensions = getDimensions();
-      if (!dimensions) {
+      if (!dimensions || !scene.isInitialized()) {
         return;
       }
 
       scene.onResize(dimensions);
     };
 
-    const dimensions = getDimensions();
-    if (!dimensions) {
-      return;
-    }
-
-    const scene = new HomeScene(canvasRef.current, dimensions);
-
     window.addEventListener("resize", onResize);
 
     return () => {
       window.removeEventListener("resize", onResize);
     };
-  }, [getDimensions]);
+  }, [getDimensions, scene]);
 
-  return useMemo(() => <WebglCanvas ref={canvasRef} />, []);
+  useEffect(() => {
+    if (!canvasRef.current || scene.isInitialized()) {
+      return;
+    }
+
+    const dimensions = getDimensions();
+    if (!dimensions) {
+      return;
+    }
+
+    console.log("INIT HOME SCENE");
+    scene.init(canvasRef.current, dimensions);
+  }, [getDimensions, scene]);
+
+  return useMemo(() => {
+    console.log("rendering home scene");
+
+    return <WebglCanvas ref={canvasRef} />;
+  }, []);
 };
 
 export default HomeSceneComponent;

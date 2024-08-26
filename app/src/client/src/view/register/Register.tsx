@@ -59,7 +59,7 @@ const Register: React.FC = () => {
       />
 
       <Button
-        buttonStyle="button-grey"
+        buttonstyle="button-grey"
         type="submit"
         disabled={/*isSubmitting || */ Object.entries(errors).length !== 0}
       >

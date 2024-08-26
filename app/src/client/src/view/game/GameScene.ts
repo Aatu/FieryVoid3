@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import Stats from "stats.js";
+//import Stats from "stats.js";
 import HexGridRenderer from "./renderer/hexgrid/HexGridRender";
 import StarField from "./terrain/StarField";
 import { ParticleEmitterContainer } from "./animation/particle";
@@ -29,7 +29,7 @@ class GameScene {
   private deactivated: boolean;
   private renderer: THREE.WebGLRenderer | null = null;
   private light: THREE.PointLight | null = null;
-  private stats: Stats | null = null;
+  //  private stats: Stats | null = null;
 
   constructor(
     phaseDirector: PhaseDirector,
@@ -60,7 +60,7 @@ class GameScene {
     { width, height }: { width: number; height: number },
     gameId: number
   ) {
-    console.log("gamescene init");
+    this.deactivated = false;
     this.element = element;
 
     this.scene = new THREE.Scene();
@@ -95,26 +95,24 @@ class GameScene {
     this.starFieldCamera.position.set(0, 0, 500);
     this.starFieldCamera.lookAt(0, 0, 100);
 
-    this.light = new THREE.PointLight(0xffffff, 1.0, 0);
+    this.light = new THREE.PointLight(0xffffff, 1000.0, 0);
     this.light.position.set(0, 0, 100000);
     this.scene.add(this.light);
 
-    const directionalLight = new THREE.DirectionalLight(0x35527a, 0.005);
+    const directionalLight = new THREE.DirectionalLight(0x35527a, 1);
     directionalLight.position.set(0, 0, 1).normalize();
     this.scene.add(directionalLight);
 
-    /*
-    const directionalLight3 = new THREE.DirectionalLight(0xffffff, 0.8);
+    const directionalLight3 = new THREE.DirectionalLight(0xffffff, 3);
     directionalLight3.position.set(0, 1, 1).normalize();
     directionalLight3.castShadow = true;
-    //this.scene.add(directionalLight3);
-    this.directionalLight3 = directionalLight3;
+    this.scene.add(directionalLight3);
 
     //const directionalLight4 = new THREE.DirectionalLight(0x609dc1, 0.5);
-    const directionalLight4 = new THREE.DirectionalLight(0xfff3a6, 0.02);
+    const directionalLight4 = new THREE.DirectionalLight(0xfff3a6, 0.2);
     directionalLight4.position.set(0, -1, 1);
-    //this.scene.add(directionalLight4);
-*/
+    this.scene.add(directionalLight4);
+
     /*
     const line = new Line(
       this.scene,
@@ -144,7 +142,7 @@ class GameScene {
     */
 
     /*
-    const helper = new THREE.DirectionalLightHelper(directionalLight4, 5);
+    const helper = new THREE.DirectionalLightHelper(directionalLight, 5);
 
     this.scene.add(helper);
     */
@@ -154,16 +152,9 @@ class GameScene {
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setSize(this.width, this.height);
     this.renderer.autoClear = false;
-    //this.renderer.context.getExtension("OES_standard_derivatives");
-    //this.renderer.context.getExtension("GL_OES_standard_derivatives");
 
-    const gl = (this.renderer.domElement.getContext("webgl") ||
-      this.renderer.domElement.getContext(
-        "experimental-webgl"
-      )) as WebGLRenderingContext;
-
-    gl.getExtension("OES_standard_derivatives");
-    gl.getExtension("GL_OES_standard_derivatives");
+    this.renderer.getContext().getExtension("OES_standard_derivatives");
+    this.renderer.getContext().getExtension("GL_OES_standard_derivatives");
 
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFShadowMap;
@@ -176,9 +167,17 @@ class GameScene {
     this.hexGridRenderer.renderHexGrid(this.scene);
     this.starField = new StarField(this.starFieldScene, gameId);
 
-    this.stats = new Stats();
-    this.stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
-    document.body.appendChild(this.stats.dom);
+    //this.stats = new Stats();
+    //this.stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
+    //document.body.appendChild(this.stats.dom);
+
+    /*
+    const geometry = new THREE.BoxGeometry(100, 100, 100);
+    const material = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
+    const cube = new THREE.Mesh(geometry, material);
+    cube.position.set(100, 0, 0);
+    this.scene.add(cube);
+    */
 
     this.render();
   }
@@ -262,7 +261,7 @@ class GameScene {
       return;
     }
 
-    this.stats!.begin();
+    //this.stats!.begin();
 
     this.phaseDirector.render(this.scene!, this.coordinateConverter, this.zoom);
 
@@ -285,7 +284,7 @@ class GameScene {
     );
     */
 
-    this.stats!.end();
+    //this.stats!.end();
     requestAnimationFrame(this.render.bind(this));
   }
 
@@ -328,11 +327,13 @@ class GameScene {
   }
 
   deactivate() {
-    if (this.deactivated) {
+    if (this.deactivated || !this.initialized) {
       return;
     }
 
+    console.log("deactivating game scene");
     this.deactivated = true;
+    this.initialized = false;
     this.element!.removeChild(this.renderer!.domElement);
     this.renderer!.clear();
     this.renderer!.forceContextLoss();

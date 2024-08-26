@@ -26,6 +26,8 @@ import { GAME_PHASE } from "@fieryvoid3/model/src/game/gamePhase";
 import LobbyPhaseStrategy from "./phaseStrategy/LobbyPhaseStrategy";
 import ReplayPhaseStrategy from "./phaseStrategy/ReplayPhaseStrategy";
 import DeploymentPhaseStrategy from "./phaseStrategy/DeploymentPhaseStrategy";
+import GamePhaseStrategy from "./phaseStrategy/GamePhaseStrategy";
+import { PhaseEvents } from "./PhaseEvents";
 
 export type Services = {
   phaseState: PhaseState;
@@ -63,6 +65,7 @@ class PhaseDirector {
   private emitterContainer: ParticleEmitterContainer | null;
   private camera: GameCamera | null;
   private gameDataCache: GameDataCache;
+  private phaseEvents: PhaseEvents = new PhaseEvents(this);
 
   constructor(
     uiState: UIState,
@@ -123,6 +126,14 @@ class PhaseDirector {
     this.uiState.setPhaseDirector(this);
   }
 
+  getShipIconContainer() {
+    return this.shipIconContainer;
+  }
+
+  getPhaseStrategy() {
+    return this.phaseStrategy;
+  }
+
   closeReplay() {
     this.phaseStrategy?.deactivate();
     this.phaseStrategy = null;
@@ -168,12 +179,7 @@ class PhaseDirector {
   }
 
   relayEvent(name: string, payload?: PhaseEventPayload) {
-    if (!this.phaseStrategy || this.phaseStrategy.inactive) {
-      return;
-    }
-
-    this.phaseStrategy.onEvent(name, payload);
-    this.shipIconContainer?.onEvent(name, payload);
+    this.phaseEvents.push({ name, payload });
   }
 
   commitTurn() {
@@ -190,6 +196,8 @@ class PhaseDirector {
     coordinateConverter: CoordinateConverter,
     zoom: number
   ) {
+    this.phaseEvents.sendEvents();
+
     if (!this.phaseStrategy || this.phaseStrategy.inactive) {
       return;
     }
@@ -239,7 +247,7 @@ class PhaseDirector {
       return this.activatePhaseStrategy(WaitingPhaseStrategy);
     }
 
-    return this.activatePhaseStrategy(PhaseStrategy);
+    return this.activatePhaseStrategy(GamePhaseStrategy);
   }
 
   activatePhaseStrategy(phaseStrategy: PhaseStrategies) {
@@ -270,6 +278,7 @@ class PhaseDirector {
     }
 
     if (this.phaseStrategy) {
+      this.phaseEvents.clear();
       this.phaseStrategy.deactivate();
     }
 

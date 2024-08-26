@@ -10,16 +10,56 @@ import React, {
 import styled from "styled-components";
 import Game from "../Game";
 import { distance } from "@fieryvoid3/model/src/utils/math";
+import { useForceRerender } from "../../../util/useForceRerender";
 
 const WebglCanvas = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  z-index: 1;
   display: flex;
   width: 100%;
   height: 100%;
   background-size: cover;
-  background-color: #030910;
+  background-color: transparent;
   box-shadow: inset 0px 0px 200px rgba(0, 0, 0, 1);
 `;
 //background-color: #0b121a;
+
+type BackgroundContainerProps = {
+  $bgNumber: number;
+};
+
+const BackgroundContainer = styled.div<BackgroundContainerProps>`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-image: ${(props) => `url(/img/background/${props.$bgNumber}.jpg)`};
+  opacity: 0.05;
+`;
+
+const BackgroundColorContainer = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  background-color: #000;
+`;
 
 const ClickCatcher = styled.div`
   position: fixed;
@@ -86,6 +126,7 @@ const GameSceneComponent: React.FC<{ game: Game }> = ({ game }) => {
     lastDraggingPosition: null,
     draggingThreshold: 5,
   });
+  useForceRerender();
 
   const hasCanvasRef = Boolean(canvasRef.current);
   const hasClickCatcherRef = Boolean(clickCatcherRef.current);
@@ -110,15 +151,14 @@ const GameSceneComponent: React.FC<{ game: Game }> = ({ game }) => {
     game.onResize();
   }, [game]);
 
-  const onMouseDown: MouseEventHandler = useCallback(
-    (event) => {
-      event.stopPropagation();
-      event.preventDefault();
-      mouseDataRef.current.mouseDownPosition =
-        getMousePositionInObservedElement(event, clickCatcherRef.current);
-    },
-    [game]
-  );
+  const onMouseDown: MouseEventHandler = useCallback((event) => {
+    event.stopPropagation();
+    event.preventDefault();
+    mouseDataRef.current.mouseDownPosition = getMousePositionInObservedElement(
+      event,
+      clickCatcherRef.current
+    );
+  }, []);
 
   const onMouseUp: MouseEventHandler = useCallback(
     (event) => {
@@ -205,7 +245,12 @@ const GameSceneComponent: React.FC<{ game: Game }> = ({ game }) => {
   );
 
   useEffect(() => {
-    if (!canvasRef.current) {
+    if (
+      !canvasRef.current ||
+      game.init ||
+      canvasRef.current?.offsetHeight === 0 ||
+      canvasRef.current?.offsetWidth === 0
+    ) {
       return;
     }
 
@@ -239,9 +284,11 @@ const GameSceneComponent: React.FC<{ game: Game }> = ({ game }) => {
     };
   }, [onKeyDown, onKeyUp, onResize, onTouchStart]);
 
-  return useMemo(
-    () => (
+  const bgNumber = useMemo(() => Math.floor(Math.random() * 8) + 1, []);
+  return useMemo(() => {
+    return (
       <>
+        <BackgroundColorContainer />
         <ClickCatcher
           ref={clickCatcherRef}
           onMouseOut={onMouseOut}
@@ -254,11 +301,21 @@ const GameSceneComponent: React.FC<{ game: Game }> = ({ game }) => {
             e.stopPropagation();
           }}
         />
-        <WebglCanvas ref={canvasRef as LegacyRef<HTMLDivElement>} />
+        <BackgroundContainer $bgNumber={bgNumber} />
+        <WebglCanvas
+          id="game-canvas-container"
+          ref={canvasRef as LegacyRef<HTMLDivElement>}
+        />
       </>
-    ),
-    [onKeyUpDivHandler, onMouseDown, onMouseMove, onMouseOut, onMouseUp]
-  );
+    );
+  }, [
+    onKeyUpDivHandler,
+    onMouseDown,
+    onMouseMove,
+    onMouseOut,
+    onMouseUp,
+    bgNumber,
+  ]);
 };
 
 export default GameSceneComponent;

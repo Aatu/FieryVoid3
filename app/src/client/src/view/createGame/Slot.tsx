@@ -114,7 +114,7 @@ const Slot: React.FC<Props> = ({
                 <Button
                   onClick={takeSlot(slot)}
                   type="button"
-                  buttonStyle="button-grey"
+                  buttonstyle="button-grey"
                 >
                   Take slot
                 </Button>

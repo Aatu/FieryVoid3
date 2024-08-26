@@ -47,7 +47,7 @@ class Impetous extends ShipObject {
 
     */
 
-    super.replaceSocketByName(
+    object.replaceSocketByName(
       [
         { name: "engine_mount_2", id: 123 },
         { name: "engine_mount_3", id: 123 },
@@ -57,7 +57,7 @@ class Impetous extends ShipObject {
       await loadObject3d("/img/3d/systems/thrusters/10mThruster/scene.gltf")
     );
 
-    super.replaceSocketByName(
+    object.replaceSocketByName(
       [
         { name: "front-wing-left-mount1", id: 501 },
         { name: "front-wing-left-mount2", id: 502 },
@@ -71,14 +71,14 @@ class Impetous extends ShipObject {
       )
     );
 
-    super.replaceSocketByName(
+    object.replaceSocketByName(
       [{ name: "middle-top-mount1", id: 623 }],
       await loadObject3d(
         "/img/3d/systems/weapons/coilgun/turreted64GwRailgun/scene.gltf"
       )
     );
 
-    super.replaceSocketByName(
+    object.replaceSocketByName(
       [
         { name: "front-wing-left-top-mount1", id: 623 },
         { name: "front-wing-left-bottom-mount1", id: 623 },
@@ -90,7 +90,7 @@ class Impetous extends ShipObject {
       )
     );
 
-    super.replaceSocketByName(
+    object.replaceSocketByName(
       [
         { name: "front-wing-left-top-mount2", id: 623 },
         { name: "front-wing-left-bottom-mount2", id: 623 },

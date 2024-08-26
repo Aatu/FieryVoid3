@@ -11,8 +11,8 @@ const StructureText = styled.div`
 `;
 
 type StructureContainerProps = {
-  health: number;
-  criticals: boolean;
+  $health: number;
+  criticals?: boolean;
 };
 
 const StructureContainer = styled.div<StructureContainerProps>`
@@ -24,19 +24,19 @@ const StructureContainer = styled.div<StructureContainerProps>`
   width: calc(100% - 4px);
   height: 16px;
   background-color: #081313;
-  color: ${(props) => (props.health === 0 ? "transparent" : "white")};
+  color: ${(props) => (props.$health === 0 ? "transparent" : "white")};
   font-family: arial;
   font-size: 11px;
   text-shadow: black 0 0 6px, black 0 0 6px;
   margin: 1px;
-  filter: ${(props) => (props.health === 0 ? "blur(1px)" : "none")};
+  filter: ${(props) => (props.$health === 0 ? "blur(1px)" : "none")};
   border: 1px solid black;
 
   :before {
     box-sizing: border-box;
     content: "";
     position: absolute;
-    width: ${(props) => `${props.health}%`};
+    width: ${(props) => `${props.$health}%`};
     height: 100%;
     left: 0;
     bottom: 0;
@@ -145,8 +145,8 @@ const StructureIcon: React.FC<StructureIconProps> = ({
         onMouseOver={onSystemMouseOver}
         onMouseOut={onSystemMouseOut}
         onContextMenu={onContextMenu}
-        health={getStructureLeft(system)}
-        criticals={system.hasAnyCritical()}
+        $health={getStructureLeft(system)}
+        criticals={system.hasAnyCritical() || undefined}
       >
         <StructureText>
           {system.getRemainingHitpoints()} / {system.hitpoints} A{" "}

@@ -21,7 +21,7 @@ class Sprite {
   protected z: number;
   protected opacity: number;
   protected uniforms: {
-    texture: { value: THREE.Texture };
+    uTexture: { value: THREE.Texture };
     overlayAlpha: { value: number };
     overlayColor: { value: THREE.Color };
     opacity: { value: number };
@@ -38,7 +38,7 @@ class Sprite {
     this.mesh = null;
     this.opacity = 1;
     this.uniforms = {
-      texture: { value: new THREE.DataTexture(null, 0, 0) },
+      uTexture: { value: new THREE.DataTexture(null, 0, 0) },
       overlayAlpha: { value: 0.0 },
       overlayColor: { value: new THREE.Color(0, 0, 0) },
       opacity: { value: 1.0 },
@@ -174,7 +174,7 @@ class Sprite {
     }
 
     if (image) {
-      this.uniforms.texture.value = image;
+      this.uniforms.uTexture.value = image;
     }
 
     this.material = material.clone();

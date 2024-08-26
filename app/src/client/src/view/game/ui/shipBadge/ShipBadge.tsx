@@ -1,12 +1,11 @@
-import React, { useMemo, useCallback } from "react";
+import React, { useMemo, memo } from "react";
 import styled from "styled-components";
 import GamePositionComponent from "../GamePositionComponent";
-import UIState from "../UIState";
-import ShipObject from "../../renderer/ships/ShipObject";
-import { useUser } from "../../../../state/userHooks";
-import Ship from "@fieryvoid3/model/src/unit/Ship";
-import GameData from "@fieryvoid3/model/src/game/GameData";
-import coordinateConverter from "@fieryvoid3/model/src/utils/CoordinateConverter";
+import { ShipBadgeUIState } from "../UIState";
+import { useGameStore } from "../../GameStoreProvider";
+import { useUiStateHandler } from "../../../../state/useUIStateHandler";
+import { useShipsBasicState } from "../../../../state/useShipBasicState";
+import { useGetShipPosition } from "../../../../state/useGetShipPosition";
 
 const ShipBadgeContainer = styled.div`
   text-align: left;
@@ -92,46 +91,23 @@ const WarningBadge = styled(BadgeIcon)`
   }
 `;
 
-const getNumberOfMissilesImpacting = (ship: Ship, gameData: GameData) => {
-  const gameDataObject = new GameData(gameData.serialize());
-
-  return gameDataObject.torpedos
-    .getTorpedoFlights()
-    .filter((flight) => flight.targetId === ship.id).length;
-};
-
 type Props = {
-  shipObject: ShipObject;
-  uiState: UIState;
+  shipId: string;
   showName: boolean;
   visible: boolean;
 };
 
-const ShipBadge: React.FC<Props> = ({
-  shipObject,
-  uiState,
-  showName,
-  visible,
-}) => {
-  const { data: currentUser } = useUser();
-  const isMine = shipObject.ship.player.is(currentUser || null);
+const ShipBadge: React.FC<Props> = ({ shipId, showName, visible }) => {
+  const uiState = useUiStateHandler();
 
-  const getPosition = useCallback(
-    () => coordinateConverter.fromGameToViewPort(shipObject.getPosition()),
-    [shipObject]
-  );
+  const { isMine, incomingTorpedos, validPower, shipName } =
+    useShipsBasicState(shipId);
 
-  const missiles = getNumberOfMissilesImpacting(
-    shipObject.ship,
-    uiState.getGameData()
-  );
-
-  const shipName = shipObject.ship.name;
-  const validPower = shipObject.ship.systems.power.isValidPower();
-
-  if (!isMine || (missiles === 0 && validPower)) {
+  if (!isMine || (incomingTorpedos === 0 && validPower)) {
     visible = false;
   }
+
+  const getPosition = useGetShipPosition(shipId);
 
   const memoizedComponent = useMemo(
     () =>
@@ -141,10 +117,10 @@ const ShipBadge: React.FC<Props> = ({
             {showName && <ShipName>{shipName}</ShipName>}
 
             <Badges>
-              {isMine && missiles > 0 && (
+              {isMine && incomingTorpedos > 0 && (
                 <WarningBadge>
                   <Icon background="/img/system/missile1.png" />
-                  {missiles}
+                  {incomingTorpedos}
                 </WarningBadge>
               )}
 
@@ -157,7 +133,7 @@ const ShipBadge: React.FC<Props> = ({
           </BackgroundContainer>
         </ShipBadgeContainer>
       ),
-    [visible, showName, shipName, isMine, missiles, validPower]
+    [visible, showName, shipName, isMine, incomingTorpedos, validPower]
   );
 
   return (
@@ -171,5 +147,52 @@ const ShipBadge: React.FC<Props> = ({
     </GamePositionComponent>
   );
 };
+
+const compareFunction = (
+  listA: ShipBadgeUIState[],
+  listB: ShipBadgeUIState[]
+): boolean => {
+  if (listA.length !== listB.length) {
+    return false;
+  }
+
+  return listA.every((a) => {
+    const b = listB.find((b) => b.icon.ship.id === a.icon.ship.id);
+    if (!b) {
+      return false;
+    }
+
+    if (a.visible !== b.visible) {
+      return false;
+    }
+
+    if (a.showName !== b.showName) {
+      return false;
+    }
+
+    return true;
+  });
+};
+export const ShipBadges: React.FC = memo(() => {
+  const badges = useGameStore((state) => {
+    return [...state.gameState.shipBadges];
+  }, compareFunction);
+
+  return useMemo(
+    () => (
+      <>
+        {badges.map(({ icon, visible, showName }) => (
+          <ShipBadge
+            key={`ship-badge-${icon.ship.id}`}
+            shipId={icon.ship.id}
+            visible={visible}
+            showName={showName}
+          />
+        ))}
+      </>
+    ),
+    [badges]
+  );
+});
 
 export default ShipBadge;

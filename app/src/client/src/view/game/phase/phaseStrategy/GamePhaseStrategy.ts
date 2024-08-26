@@ -26,9 +26,11 @@ import {
   WeaponTargetingMouseoverShowsLine,
   ShowShipDEWandCCEW,
 } from "../../ui/uiStrategy";
+import GameConnector from "../../GameConnector";
+import { Services } from "../PhaseDirector";
 
 class GamePhaseStrategy extends PhaseStrategy {
-  constructor(services) {
+  constructor(services: Services) {
     super(services);
 
     this.strategies = [
@@ -60,8 +62,8 @@ class GamePhaseStrategy extends PhaseStrategy {
     ];
   }
 
-  commitTurn(gameConnector) {
-    gameConnector.commitTurn(this.gameData);
+  commitTurn(gameConnector: GameConnector) {
+    gameConnector.commitTurn(this.getGameData());
   }
 }
 

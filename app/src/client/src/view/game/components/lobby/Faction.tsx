@@ -30,11 +30,11 @@ const Faction: React.FC<Props> = ({ uiState, buyShip, faction }) => {
         .map((ship) => new ships[ship]())
         .map((ship) => (
           <Section key={`fleetStoreEntry-${ship.shipClass}`}>
-            <Button buttonStyle="text" onClick={openShipWindow(ship)}>
+            <Button buttonstyle="text" onClick={openShipWindow(ship)}>
               {ship.shipTypeName} <Value>{ship.pointCost}</Value> points
             </Button>
 
-            <Button buttonStyle="button" onClick={getBuyShip(ship.shipClass)}>
+            <Button buttonstyle="button" onClick={getBuyShip(ship.shipClass)}>
               Add to fleet
             </Button>
           </Section>

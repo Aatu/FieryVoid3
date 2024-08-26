@@ -7,13 +7,13 @@ import {
   TooltipValueHeader,
   colors,
 } from "../../../../styled";
-import UIState from "../UIState";
-import Ship from "@fieryvoid3/model/src/unit/Ship";
-import { useUser } from "../../../../state/userHooks";
+import { useShipsBasicState } from "../../../../state/useShipBasicState";
+import { useShip } from "../../../../state/useShip";
+import { useUiStateHandler } from "../../../../state/useUIStateHandler";
 
 type ContainerProps = {
-  isMine: boolean;
-  isSelected: boolean;
+  $isMine: boolean;
+  $isSelected: boolean;
 };
 
 const Container = styled(TooltipContainer)<ContainerProps>`
@@ -26,9 +26,9 @@ const Container = styled(TooltipContainer)<ContainerProps>`
   margin-top: 5px;
   cursor: pointer;
 
-  :hover {
+  &:hover {
     border: 1px solid
-      ${(props) => (props.isMine ? colors.lightBlue : colors.textDanger)};
+      ${(props) => (props.$isMine ? colors.lightBlue : colors.textDanger)};
   }
 
   &:first-child {
@@ -36,7 +36,7 @@ const Container = styled(TooltipContainer)<ContainerProps>`
   }
 
   ${(props) =>
-    props.isSelected &&
+    props.$isSelected &&
     `background-color: ${colors.mediumBlue}; border: 1px solid ${colors.lightBlue};`}
 `;
 
@@ -48,16 +48,10 @@ const Fleet = styled(TooltipValueHeader)`
   padding-left: 8px;
 `;
 
-const ShipFleetBadge: React.FC<{ ship: Ship; uiState: UIState }> = ({
-  ship,
-  uiState,
-}) => {
-  const { data: currentUser } = useUser();
-
-  const isMine = ship.player.isUsers(currentUser || null);
-
-  const selectedShip = uiState.getSelectedShip();
-  const isSelected = selectedShip && selectedShip.id === ship.id;
+const ShipFleetBadge: React.FC<{ shipId: string }> = ({ shipId }) => {
+  const data = useShipsBasicState(shipId);
+  const uiState = useUiStateHandler();
+  const ship = useShip(shipId);
 
   const scrollToShip = useCallback(() => {
     const { gameCamera, shipIconContainer } = uiState.getServices();
@@ -78,24 +72,29 @@ const ShipFleetBadge: React.FC<{ ship: Ship; uiState: UIState }> = ({
     uiState.customEvent("mouseOutShip", { entity: icon });
   }, [ship, uiState]);
 
-  const shipName = ship.name;
-
   const Component = useMemo(() => {
     return (
       <Container
-        isMine={isMine}
+        $isMine={data.isMine}
         onClick={scrollToShip}
         onMouseOver={mouseOver}
         onMouseOut={mouseOut}
-        isSelected={Boolean(isSelected)}
+        $isSelected={data.isSelected}
       >
         <Header>
-          <ShipName shipName={shipName} isMine={isMine} />
+          <ShipName shipName={data.shipName} isMine={data.isMine} />
         </Header>
         <Fleet>Second fleet</Fleet>
       </Container>
     );
-  }, [isMine, isSelected, mouseOut, mouseOver, scrollToShip, shipName]);
+  }, [
+    data.isMine,
+    data.isSelected,
+    data.shipName,
+    mouseOut,
+    mouseOver,
+    scrollToShip,
+  ]);
 
   return Component;
 };

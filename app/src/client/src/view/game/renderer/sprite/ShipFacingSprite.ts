@@ -40,7 +40,7 @@ class ShipFacingSprite extends Sprite {
     this.setOpacity(opacity);
 
     createTexture();
-    this.uniforms.texture.value = texture!;
+    this.uniforms.uTexture.value = texture!;
   }
 }
 

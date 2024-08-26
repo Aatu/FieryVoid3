@@ -181,6 +181,8 @@ class GameDataRepository {
     conn: Connection | null,
     data: SerializedGameData
   ): Promise<number> {
+    console.log("inserting game data", data.phase);
+
     const insertId = await this.db.insert(
       conn,
       `INSERT INTO game (

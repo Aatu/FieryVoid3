@@ -264,6 +264,10 @@ class ShipObjectSectionDamageEffect {
   }
 
   render(payload: RenderPayload) {
+    if (!this.particleContainer || !this.particleContainer.isReady()) {
+      return;
+    }
+
     this.animationTime += payload.delta;
     this.getParticleContainer().render({
       ...payload,

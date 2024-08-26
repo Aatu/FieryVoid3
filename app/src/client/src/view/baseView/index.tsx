@@ -1,11 +1,7 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import styled from "styled-components";
 import HomeSceneComponent from "./HomeSceneComponent";
-import { Route } from "../../Route";
 import Login from "../login/Login";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import CreateGame from "../createGame/CreateGame";
-import Home from "../home/Home";
 
 const Logo = styled.div`
   height: 58px;
@@ -37,34 +33,13 @@ export const ContainerRight = styled.div`
   margin: 5px;
 `;
 
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: (
-      <Route isPrivate>
-        <Home />
-      </Route>
-    ),
-  },
-  {
-    path: "/createGame",
-    element: (
-      <Route isPrivate>
-        <CreateGame />
-      </Route>
-    ),
-  },
-]);
-
-export const BaseView: React.FC = () => {
+export const BaseView: React.FC<{ children: ReactNode }> = ({ children }) => {
   return (
     <>
       <Logo />
       <HomeSceneComponent />
       <SuperContainer>
-        <ContainerLeft>
-          <RouterProvider router={router} />
-        </ContainerLeft>
+        <ContainerLeft>{children}</ContainerLeft>
         <ContainerRight>
           <Login />
         </ContainerRight>

@@ -43,7 +43,7 @@ class HexagonSprite extends Sprite {
       createTexture();
     }
 
-    this.uniforms.texture.value = TEXTURE!;
+    this.uniforms.uTexture.value = TEXTURE!;
 
     this.setPosition(position);
   }

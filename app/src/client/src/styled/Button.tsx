@@ -85,7 +85,12 @@ const IconContainer = styled.div`
   height: 25px;
 `;
 
-const ButtonContainer = styled.button<{ icon?: boolean; buttonStyle?: string }>`
+type ButtonContainerProps = {
+  icon?: unknown;
+  $buttonstyle?: string;
+};
+
+const ButtonContainer = styled.button<ButtonContainerProps>`
   display: flex;
   cursor: pointer;
   position: relative;
@@ -95,7 +100,7 @@ const ButtonContainer = styled.button<{ icon?: boolean; buttonStyle?: string }>`
     if (props.icon) {
       return iconStyle;
     }
-    switch (props.buttonStyle) {
+    switch (props.$buttonstyle) {
       case "text":
         return text;
       case "button-grey":
@@ -108,20 +113,20 @@ const ButtonContainer = styled.button<{ icon?: boolean; buttonStyle?: string }>`
 
 export type ButtonProps = {
   IconComponent?: React.FC<{ color?: string }>;
-  buttonStyle?: string;
+  buttonstyle?: string;
   onClick?: MouseEventHandler<HTMLButtonElement>;
   children?: React.ReactNode;
 } & React.ButtonHTMLAttributes<HTMLButtonElement>;
 
 export const Button: React.FC<ButtonProps> = ({
   IconComponent,
-  buttonStyle,
+  buttonstyle,
   onClick,
   children,
 }) => (
   <ButtonContainer
-    icon={Boolean(IconComponent)}
-    buttonStyle={buttonStyle}
+    icon={IconComponent || undefined}
+    $buttonstyle={buttonstyle}
     onClick={onClick}
   >
     {IconComponent && (

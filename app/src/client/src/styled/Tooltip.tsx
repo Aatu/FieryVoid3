@@ -182,7 +182,7 @@ const hoverTooltipButton = css`
 `;
 
 export type TooltipButtonProps = {
-  img?: string;
+  $img?: string;
   selected?: boolean;
   disabled?: boolean;
 } & React.ButtonHTMLAttributes<HTMLButtonElement>;
@@ -194,7 +194,7 @@ const TooltipButton = styled.button<TooltipButtonProps>`
   background-color: transparent;
   margin: 0;
   cursor: pointer;
-  ${(props) => props.img && `background-image: url(${props.img});`}
+  ${(props) => props.$img && `background-image: url(${props.$img});`}
   background-size: cover;
   opacity: 0.5;
   filter: brightness(3) grayscale(100%);

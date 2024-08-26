@@ -18,6 +18,7 @@ import Ship from "@fieryvoid3/model/src/unit/Ship";
 import { useForceRerender } from "../../../../util/useForceRerender";
 import { TooltipComponentRenderer } from "../../../../styled/Tooltip";
 import WeaponHitChance from "@fieryvoid3/model/src/weapon/WeaponHitChance";
+import { useUiStateHandler } from "../../../../state/useUIStateHandler";
 
 type TooltipContainerProps = {
   onClick: MouseEventHandler<HTMLDivElement>;
@@ -141,7 +142,6 @@ type DefaultTabProps = {
   ship: Ship;
   system: ShipSystem;
   systemInfoMenuProvider?: TooltipComponentProvider;
-  uiState: UIState;
   weaponTargeting?: {
     target: Ship;
     hitChance: WeaponHitChance;
@@ -152,9 +152,9 @@ const DefaultTab: React.FC<DefaultTabProps> = ({
   ship,
   system,
   systemInfoMenuProvider,
-  uiState,
   weaponTargeting,
 }) => {
+  const uiState = useUiStateHandler();
   const Menu = systemInfoMenuProvider ? systemInfoMenuProvider() : undefined;
 
   const warnings = getWarnings(system);
@@ -271,7 +271,6 @@ const SystemInfo: React.FC<SystemInfoProps> = ({
           ship={ship}
           system={system}
           systemInfoMenuProvider={systemInfoMenuProvider}
-          uiState={new UIState()}
         />
       )}
       {tab === "log" && <LogTab system={system} />}

@@ -29,9 +29,9 @@ class ShipMapSprite extends Sprite {
     this.setOpacity(opacity);
 
     if (movementTarget) {
-      this.uniforms.texture.value = textureMovementTarget;
+      this.uniforms.uTexture.value = textureMovementTarget;
     } else {
-      this.uniforms.texture.value = texture;
+      this.uniforms.uTexture.value = texture;
     }
     this.setPosition(position);
   }

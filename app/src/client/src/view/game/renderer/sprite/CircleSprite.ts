@@ -44,7 +44,7 @@ class CircleSprite extends Sprite {
 
     createTexture();
 
-    this.uniforms.texture.value = texture!;
+    this.uniforms.uTexture.value = texture!;
     this.setPosition(position);
   }
 }

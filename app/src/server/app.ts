@@ -25,6 +25,7 @@ app.use(
       "http://95.217.10.191",
       "http://coldvoidgame.com",
       "https://coldvoidgame.com",
+      "http://localhost:5173",
     ],
     methods: ["GET", "POST"],
     credentials: true,

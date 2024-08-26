@@ -112,7 +112,7 @@ const CreateGame: React.FC = () => {
         />
 
         <Slots />
-        <Button buttonStyle="button-grey" onClick={createGameCallBack}>
+        <Button buttonstyle="button-grey" onClick={createGameCallBack}>
           Create game
         </Button>
       </TooltipContainer>

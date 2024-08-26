@@ -23,13 +23,16 @@ class Fulcrum extends ShipObject {
     const object = await loadObject3d(
       "/img/3d/ships/protectorate/fulcrum/scene.gltf"
     );
-    this.bumpMap = await textureLoader.load(
-      "/img/3d/ships/protectorate/fulcrum/heightMap.png"
+    object.setShipObjectNames(["Rear", "Front", "Frame"]);
+
+    object.setBumpMap(
+      textureLoader.load("/img/3d/ships/protectorate/fulcrum/heightMap.png"),
+      7
     );
 
     object.getObject().position.set(0, 0, this.defaultHeight);
 
-    super.replaceSocketByName(
+    object.replaceSocketByName(
       [
         { name: "rear_hull_radiator_left", id: 416 },
         { name: "rear_hull_radiator_right", id: 216 },
@@ -38,14 +41,14 @@ class Fulcrum extends ShipObject {
       await loadObject3d("/img/3d/systems/radiators/5x40mSail/scene.gltf")
     );
 
-    super.replaceSocketByName(
+    object.replaceSocketByName(
       [{ name: "front_plate_center", id: 102 }],
       await loadObject3d(
         "/img/3d/systems/weapons/coilgun/fixed22GwCoilgun/scene.gltf"
       )
     );
 
-    super.replaceSocketByName(
+    object.replaceSocketByName(
       [
         { name: "front_hull_pdc_bottom", id: 14 },
         { name: "front_hull_pdc_left", id: 13 },
@@ -59,7 +62,7 @@ class Fulcrum extends ShipObject {
       )
     );
 
-    super.replaceSocketByName(
+    object.replaceSocketByName(
       [{ name: "thruster", id: 123 }],
       await loadObject3d("/img/3d/systems/thrusters/5mThruster/scene.gltf")
     );

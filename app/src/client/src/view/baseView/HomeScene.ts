@@ -4,15 +4,15 @@ import StarField from "../game/terrain/StarField";
 //window.THREE = THREE;
 
 class HomeScene {
-  private renderer: THREE.WebGLRenderer;
-  private width: number;
-  private height: number;
-  private starField: StarField;
-  private starFieldScene: THREE.Scene;
-  private starFieldCamera: THREE.OrthographicCamera;
+  private renderer: THREE.WebGLRenderer | null = null;
+  private width: number = 0;
+  private height: number = 0;
+  private starField: StarField | null = null;
+  private starFieldScene: THREE.Scene | null = null;
+  private starFieldCamera: THREE.OrthographicCamera | null = null;
   private zoom: number = 1;
 
-  constructor(
+  init(
     element: HTMLElement,
     { width, height }: { width: number; height: number }
   ) {
@@ -36,25 +36,25 @@ class HomeScene {
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setSize(this.width, this.height);
     this.renderer.autoClear = false;
-    const gl = (this.renderer.domElement.getContext("webgl") ||
-      this.renderer.domElement.getContext(
-        "experimental-webgl"
-      )) as WebGLRenderingContext;
-
-    gl.getExtension("OES_standard_derivatives");
-    gl.getExtension("GL_OES_standard_derivatives");
 
     element.appendChild(this.renderer.domElement);
+
+    this.renderer.getContext().getExtension("OES_standard_derivatives");
+    this.renderer.getContext().getExtension("GL_OES_standard_derivatives");
 
     this.starField = new StarField(this.starFieldScene, -1);
 
     this.render();
   }
 
+  isInitialized() {
+    return Boolean(this.renderer);
+  }
+
   render() {
-    this.renderer.clear();
-    this.renderer.render(this.starFieldScene, this.starFieldCamera);
-    this.starField.render();
+    this.renderer!.clear();
+    this.renderer!.render(this.starFieldScene!, this.starFieldCamera!);
+    this.starField!.render();
 
     requestAnimationFrame(this.render.bind(this));
   }
@@ -62,8 +62,8 @@ class HomeScene {
   onResize({ width, height }: { width: number; height: number }) {
     this.width = width;
     this.height = height;
-    this.renderer.setSize(window.innerWidth, window.innerHeight);
-    this.starField.resize();
+    this.renderer!.setSize(window.innerWidth, window.innerHeight);
+    this.starField!.resize();
   }
 }
 

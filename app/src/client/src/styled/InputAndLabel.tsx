@@ -13,36 +13,42 @@ type InputAndLabelProps = {
   error?: string;
 } & React.InputHTMLAttributes<HTMLInputElement>;
 
-const InputAndLabel: React.FC<InputAndLabelProps> = ({
-  id,
-  label,
-  type,
-  value,
-  placeholder,
-  onKeyDown,
-  onChange,
-  error,
-  ...rest
-}) => {
-  return (
-    <Container>
-      <SubContainer>
-        {label && <Label htmlFor={id}>{label}</Label>}
-        <Input
-          id={id}
-          type={type || "text"}
-          value={value}
-          placeholder={placeholder}
-          onKeyDown={onKeyDown}
-          onChange={onChange}
-          tabIndex={0}
-          {...rest}
-        />
-      </SubContainer>
-      <Error>{error}</Error>
-    </Container>
-  );
-};
+const InputAndLabel: React.FC<InputAndLabelProps> = React.forwardRef(
+  (
+    {
+      id,
+      label,
+      type,
+      value,
+      placeholder,
+      onKeyDown,
+      onChange,
+      error,
+      ...rest
+    },
+    ref
+  ) => {
+    return (
+      <Container>
+        <SubContainer>
+          {label && <Label htmlFor={id}>{label}</Label>}
+          <Input
+            ref={ref as React.LegacyRef<HTMLInputElement>}
+            id={id}
+            type={type || "text"}
+            value={value}
+            placeholder={placeholder}
+            onKeyDown={onKeyDown}
+            onChange={onChange}
+            tabIndex={0}
+            {...rest}
+          />
+        </SubContainer>
+        <Error>{error}</Error>
+      </Container>
+    );
+  }
+);
 
 const Container = styled.div`
   display: flex;

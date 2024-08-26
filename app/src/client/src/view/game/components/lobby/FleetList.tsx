@@ -34,7 +34,7 @@ const FleetList: React.FC<Props> = ({ ships, onReady, bought, uiState }) => {
         <SubTitle>Current fleet for slot</SubTitle>
         <SectionRight>
           {!bought && ships.length > 0 && (
-            <Button buttonStyle="button" onClick={onReady}>
+            <Button buttonstyle="button" onClick={onReady}>
               Ready
             </Button>
           )}

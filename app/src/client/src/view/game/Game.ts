@@ -57,9 +57,15 @@ class Game {
   }
 
   initRender(element: HTMLElement) {
+    if (this.init) {
+      return;
+    }
+
     this.sceneElement = element;
+    const dimensions = this.getDimensions();
+
     this.init = true;
-    this.gameScene.init(element, this.getDimensions(), this.gameId);
+    this.gameScene.init(element, dimensions, this.gameId);
     this.gameConnector.connect();
     this.onResize();
   }
@@ -195,6 +201,12 @@ class Game {
   }
 
   deactivate() {
+    if (!this.init) {
+      return;
+    }
+
+    this.init = false;
+
     this.gameConnector.deactivate();
     this.phaseDirector.deactivate();
     this.gameScene.deactivate();

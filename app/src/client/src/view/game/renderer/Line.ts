@@ -200,8 +200,10 @@ class Line {
     this.colorAttribute.needsUpdate = true;
   }
 
-  setColor(color: THREE.Color) {
+  async setColor(color: THREE.Color) {
     this.color = color;
+
+    await this.ready.promise;
 
     if (!this.colorAttribute) {
       const colors = [];
