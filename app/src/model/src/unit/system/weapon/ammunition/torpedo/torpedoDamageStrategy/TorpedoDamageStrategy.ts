@@ -8,7 +8,10 @@ import {
 } from "../../../../strategy/weapon/UnifiedDamageStrategy";
 import HitSystemRandomizer from "../../../../strategy/weapon/utils/HitSystemRandomizer";
 import TorpedoFlight from "../../../../../TorpedoFlight";
-import { DiceRoller } from "../../../../../../utils/DiceRoller";
+import {
+  DiceRoller,
+  DiceRollFormula,
+} from "../../../../../../utils/DiceRoller";
 import CombatLogDamageEntry from "../../../../../../combatLog/CombatLogDamageEntry";
 
 export type TorpedoDamagePayload = {
@@ -20,18 +23,22 @@ export type TorpedoDamagePayload = {
 };
 
 type TorpedoDamageStrategyMsVArgs = {
-  msvAmount: number;
+  msvAmount: DiceRollFormula;
   msvRangePenalty: number;
   msvStrikeHitChanceTarget: number;
   msvMinStrikeDistance: number;
+  msvHitBonus: number;
+  msvEvasionModifier: number;
 };
 
 class TorpedoDamageStrategy {
   protected damageStrategy: UnifiedDamageStrategy;
-  protected msvAmount: number = 0;
+  protected msvAmount: DiceRollFormula = 0;
   protected msvRangePenalty: number = 0;
   protected msvStrikeHitChanceTarget: number = 20;
   protected msvMinStrikeDistance: number = 0;
+  protected hitBonus: number = 0;
+  protected evasionModifier: number = 0;
 
   constructor(
     args: Partial<UnifiedDamageStrategyArgs>,
@@ -43,6 +50,8 @@ class TorpedoDamageStrategy {
     this.msvRangePenalty = msvArgs?.msvRangePenalty || 0;
     this.msvStrikeHitChanceTarget = msvArgs?.msvStrikeHitChanceTarget || 0;
     this.msvMinStrikeDistance = msvArgs?.msvMinStrikeDistance || 0;
+    this.hitBonus = msvArgs?.msvHitBonus || 0;
+    this.evasionModifier = msvArgs?.msvEvasionModifier || 0;
   }
 
   public getAttackRunMessages(
@@ -59,10 +68,10 @@ class TorpedoDamageStrategy {
   }
 
   public getMessages(payload: unknown, previousResponse: SystemMessage[] = []) {
-    if (this.msvAmount > 0) {
+    if (this.msvAmount) {
       previousResponse.push({
         header: "Number of SVs",
-        value: this.msvAmount,
+        value: this.msvAmount.toString(),
       });
 
       /*
@@ -96,7 +105,7 @@ class TorpedoDamageStrategy {
     torpedoFlight: TorpedoFlight;
   }) {
     if (this.msvAmount === 0) {
-      return 1;
+      return 0;
     }
 
     let distance = 11;
@@ -126,9 +135,12 @@ class TorpedoDamageStrategy {
     torpedoFlight: TorpedoFlight;
     distance: number;
   }) {
-    const hitProfile = target.getHitProfile(torpedoFlight.strikePosition);
+    const hitProfile =
+      target.getHitProfile(torpedoFlight.strikePosition) + this.hitBonus;
     const rangeModifier =
-      this.msvRangePenalty * (1 + target.movement.getEvasion() / 10) * distance;
+      this.msvRangePenalty *
+      (1 + (target.movement.getEvasion() * this.evasionModifier) / 10) *
+      distance;
 
     return hitProfile - rangeModifier;
   }
@@ -141,7 +153,7 @@ class TorpedoDamageStrategy {
       attackPosition,
     };
 
-    if (this.msvAmount > 0) {
+    if (this.msvAmount) {
       this.applyDamageFromMSVTorpedo(damagePayload);
     } else {
       this.applyDamageFromNormalTorpedo(damagePayload);
@@ -153,10 +165,12 @@ class TorpedoDamageStrategy {
   ) {
     const { combatLogEntry } = payload;
 
+    const diceRoller = payload.diceRoller || new DiceRoller();
+
     const distance = this.getStrikeDistance(payload);
     const hitChance = this.getHitChance({ ...payload, distance });
 
-    let shots = this.msvAmount;
+    let shots = diceRoller.roll(this.msvAmount);
 
     combatLogEntry.addNote(
       `MSV with ${shots} projectiles at distance ${distance} with hit chance of ${hitChance}% each.`

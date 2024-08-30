@@ -383,10 +383,12 @@ class AmmunitionStrategy extends ShipSystemStrategy {
     );
 
     if (!entry) {
+      console.log("can not fire, out of ammo");
       return false;
     }
 
     if (entry.amount < this.ammoPerFireOrder) {
+      console.log("can not fire, out of ammo");
       return false;
     }
 

@@ -7,6 +7,7 @@ import { HitResolution } from "./system/strategy/weapon/StandardHitStrategy";
 import { UnifiedDamagePayload } from "./system/strategy/weapon/UnifiedDamageStrategy";
 import Ammo from "./system/weapon/ammunition/Ammo";
 import TorpedoFlight from "./TorpedoFlight";
+import { TorpedoFlightForIntercept } from "./TorpedoFlightForIntercept";
 
 interface IBaseShipSystemStrategy {
   init: (system: ShipSystem) => void;
@@ -51,6 +52,7 @@ export interface IShipSystemHandlers {
   isAlwaysTargetable: () => boolean;
   getSelectedAmmo: () => Ammo | null;
   applyDamageFromWeaponFire: (payload: UnifiedDamagePayload) => void;
+  loadTargetInstant: () => void;
 }
 
 export type IShipSystemStrategy = IBaseShipSystemStrategy &
@@ -63,6 +65,10 @@ export class SystemHandlers {
 
   constructor(system: ShipSystem) {
     this.system = system;
+  }
+
+  loadTargetInstant(): void {
+    this.callHandler("loadTargetInstant");
   }
 
   applyDamageFromWeaponFire(payload: UnifiedDamagePayload) {
@@ -124,7 +130,7 @@ export class SystemHandlers {
 
   getInterceptChance(
     target: Ship,
-    torpedoFlight: TorpedoFlight
+    torpedoFlight: TorpedoFlight | TorpedoFlightForIntercept
   ): WeaponHitChance {
     if (!this.canIntercept()) {
       throw new Error("Cannot intercept");

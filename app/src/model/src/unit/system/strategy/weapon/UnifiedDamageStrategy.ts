@@ -257,6 +257,13 @@ export class UnifiedDamageStrategy {
       armorPiercingLeft = 0;
     }
 
+    console.log(
+      "Doing damage, hit system: ",
+      hitSystem?.getDisplayName(),
+      damage,
+      armorPiercing
+    );
+
     if (damage <= 0) {
       return armorPiercingLeft;
     }

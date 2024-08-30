@@ -62,13 +62,15 @@ export class InterceptorCandidate {
 
     const targetsThisShip = flight.targetId === this.interceptor.getShip().id;
 
-    return this.interceptor
+    const torpedoDefenseOpinion = this.interceptor
       .getShip()
       .torpedoDefense.canIntercept(
         flight.interceptionPriority,
         targetsThisShip,
         entry.hitChance.result
       );
+
+    return torpedoDefenseOpinion;
   }
 
   getEntry(flight: TorpedoFlightForIntercept): InterceptionEntry {

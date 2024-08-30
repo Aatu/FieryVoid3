@@ -86,27 +86,16 @@ class ShipSystems {
     lastSection: SystemSection | null,
     excludeAlwaysTargetable: boolean = false
   ) {
-    console.log(
-      "get systems for outer hit, lastSection",
-      lastSection?.getLocation(),
-      "exclude always targetable: ",
-      excludeAlwaysTargetable
-    );
     const isValidSystemForHit = (system: ShipSystem) => {
-      console.log("evaluating system", system.id, system.getDisplayName());
-
       if (system.isDestroyed()) {
-        console.log("is destroyed");
         return false;
       }
 
       if (system.getSystemType() === ShipSystemType.EXTERNAL) {
-        console.log("is external");
         return true;
       }
 
       if (system.getSystemType() === ShipSystemType.STRUCTURE) {
-        console.log("is structure");
         return true;
       }
 
@@ -116,11 +105,9 @@ class ShipSystems {
         system.getSystemType() === ShipSystemType.INTERNAL &&
         (!structure || structure.isDestroyed())
       ) {
-        console.log("is internal without structure");
         return true;
       }
 
-      console.log("false");
       return false;
     };
 
@@ -129,11 +116,6 @@ class ShipSystems {
         return [...all, ...section.getSystems().filter(isValidSystemForHit)];
       },
       [] as ShipSystem[]
-    );
-
-    console.log(
-      "systems",
-      systems.map((s) => s.id)
     );
 
     const alwaysTargetable = !excludeAlwaysTargetable

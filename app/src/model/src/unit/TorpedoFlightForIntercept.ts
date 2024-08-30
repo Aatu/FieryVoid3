@@ -74,6 +74,7 @@ export class TorpedoFlightForIntercept extends TorpedoFlight {
   }
 
   public getClosestDistanceTo(ship: Ship) {
+    //TODO: Torpedo might strike before reaching this distance
     return this.path.reduce((closest, hex) => {
       const distance = hex.distanceTo(ship.getHexPosition());
       return distance < closest ? distance : closest;
@@ -82,6 +83,10 @@ export class TorpedoFlightForIntercept extends TorpedoFlight {
 
   public advance() {
     this.pathIndex++;
+
+    if (this.pathIndex >= this.path.length) {
+      throw new Error("Torpedo flight has reached the end of its path");
+    }
   }
 
   public getMaxIntercepts() {
@@ -98,9 +103,10 @@ export class TorpedoFlightForIntercept extends TorpedoFlight {
   }
 
   public isStricking(target: Ship) {
-    if ((this.pathIndex = this.path.length - 1)) {
+    if (this.pathIndex === this.path.length - 1) {
       return true;
     }
+
     const strikeDistance = this.torpedo
       .getDamageStrategy()
       .getStrikeDistance({ target, torpedoFlight: this });

@@ -13,7 +13,10 @@ class Torpedo158MSV extends Torpedo158 {
       },
       {
         msvAmount: 32,
-        msvRangePenalty: 15,
+        msvRangePenalty: 10,
+        msvHitBonus: 20,
+        msvEvasionModifier: 0.5,
+        msvStrikeHitChanceTarget: 20,
       }
     );
 

@@ -2,7 +2,13 @@ import Ammo from "../Ammo";
 
 class Ammo140mmHE extends Ammo {
   constructor() {
-    super("2d5 + 10", 0);
+    super({
+      damageFormula: "2d5",
+      armorPiercingFormula: 0,
+      iterations: 1,
+      overPenetrationDamageMultiplier: 0.5,
+      damageArmorModifier: 1.5,
+    });
   }
 
   getDisplayName() {

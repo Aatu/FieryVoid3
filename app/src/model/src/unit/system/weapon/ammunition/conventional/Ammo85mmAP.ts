@@ -2,7 +2,13 @@ import Ammo from "../Ammo";
 
 class Ammo85mmAP extends Ammo {
   constructor() {
-    super("d3", "2d3+2");
+    super({
+      damageFormula: "d3",
+      armorPiercingFormula: "2d3+2",
+      iterations: 1,
+      overPenetrationDamageMultiplier: 0.5,
+      damageArmorModifier: 2,
+    });
   }
 
   getSpaceRequired() {

@@ -3,7 +3,6 @@ import FireOrder, { SerializedFireOrder } from "../../../../weapon/FireOrder";
 import CombatLogWeaponFire from "../../../../combatLog/CombatLogWeaponFire";
 import GameData from "../../../../game/GameData";
 import { SYSTEM_HANDLERS } from "../types/SystemHandlersTypes";
-import Ammo from "../../weapon/ammunition/Ammo";
 import Ship from "../../../Ship";
 
 export type SerializedFireOrderStrategy = {
@@ -67,13 +66,10 @@ class FireOrderStrategy extends ShipSystemStrategy {
 
         while (shotsHit--) {
           weapon.handlers.applyDamageFromWeaponFire({
-            shooter,
             target,
-            weaponSettings,
-            gameData,
-            fireOrder,
             combatLogEntry,
-            hitResolution,
+            attackPosition: shooter.getPosition(),
+            argsOverrider: weapon.handlers.getSelectedAmmo() || undefined,
           });
         }
 

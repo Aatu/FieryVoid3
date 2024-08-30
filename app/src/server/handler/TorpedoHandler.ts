@@ -33,12 +33,16 @@ export class TorpedoHandler {
       )
       .sort(sortByPriority);
 
-    do {
-      this.torpedoFlights.filter((flight) => {
-        if (flight.isIntercepted()) {
-          return false;
-        }
+    let iterations = 0;
+    while (
+      this.torpedoFlights.some(
+        (flight) => !flight.isDone() && !flight.isIntercepted()
+      ) &&
+      iterations < 20
+    ) {
+      iterations++;
 
+      this.torpedoFlights = this.torpedoFlights.filter((flight) => {
         flight.advance();
 
         if (
@@ -58,10 +62,26 @@ export class TorpedoHandler {
         this.getGameData()
       );
 
-      do {
+      while (
+        this.torpedoFlights.every(
+          (flight) =>
+            !flight.getHasNoInterceptionCandidates() &&
+            !flight.isFullyIntercepted()
+        )
+      ) {
         this.torpedoFlights.forEach((flight) => {
           const candidate = candidates
-            .filter((candidate) => candidate.wantToIntercept(flight))
+            .filter(
+              (candidate) =>
+                candidate.wantToIntercept(flight) &&
+                flight
+                  .getInterceptors()
+                  .every(
+                    (entry) =>
+                      entry.candidate.getInterceptor().id !==
+                      candidate.getInterceptor().id
+                  )
+            )
             .map((candidate) => candidate.getEntry(flight))
             .sort(sortInterceptCandidates)
             .pop();
@@ -72,20 +92,10 @@ export class TorpedoHandler {
             flight.setNoInterceptionCandidates();
           }
         });
-      } while (
-        this.torpedoFlights.every(
-          (flight) =>
-            flight.getHasNoInterceptionCandidates() ||
-            flight.isFullyIntercepted()
-        )
-      );
+      }
 
       this.executeInterceptions();
-    } while (
-      this.torpedoFlights.some(
-        (flight) => !flight.isDone() && !flight.isIntercepted()
-      )
-    );
+    }
   }
 
   private executeInterceptions() {
@@ -131,6 +141,7 @@ export class TorpedoHandler {
           success: hit,
         });
 
+        this.getGameData().combatLog.addEntry(logEntry);
         entry.candidate.getInterceptor().handlers.onWeaponFired();
       });
       flight.resetInterceptors();
@@ -139,7 +150,6 @@ export class TorpedoHandler {
 
   private executeTorpedoStrike(flight: TorpedoFlightForIntercept) {
     const target = this.getGameData().ships.getShipById(flight.targetId);
-    const shooter = this.getGameData().ships.getShipById(flight.shooterId);
 
     const torpedoAttack = new CombatLogTorpedoAttack(flight.id, target.id);
     this.getGameData().combatLog.addEntry(torpedoAttack);
@@ -152,7 +162,6 @@ export class TorpedoHandler {
 
     flight.torpedo.getDamageStrategy().applyDamageFromWeaponFire({
       target,
-      shooter,
       torpedoFlight: flight,
       combatLogEntry: torpedoAttack,
     });
