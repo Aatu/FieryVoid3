@@ -2,20 +2,13 @@ import * as React from "react";
 import SystemIcon from "./SystemIcon";
 import ShipSystem from "@fieryvoid3/model/src/unit/system/ShipSystem";
 import Ship from "@fieryvoid3/model/src/unit/Ship";
-import UIState from "../UIState";
 
 type SystemListProps = {
   ship: Ship;
-  uiState: UIState;
   systems: ShipSystem[];
 };
 
-const SystemList: React.FC<SystemListProps> = ({
-  ship,
-  uiState,
-  systems,
-  ...rest
-}) => {
+const SystemList: React.FC<SystemListProps> = ({ ship, systems }) => {
   if (!ship) {
     return null;
   }
@@ -23,11 +16,9 @@ const SystemList: React.FC<SystemListProps> = ({
   return systems.map((system) => (
     <SystemIcon
       scs
-      uiState={uiState}
       key={`system-list-${system.id}`}
-      system={system}
+      systemId={system.id}
       ship={ship}
-      {...rest}
     />
   ));
 };

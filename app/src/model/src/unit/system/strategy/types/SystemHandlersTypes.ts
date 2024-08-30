@@ -1,6 +1,5 @@
 export enum SYSTEM_HANDLERS {
   getMaxEvasion = "getMaxEvasion",
-  canBeTargeted = "canBeTargeted",
   getMessages = "getMessages",
   serialize = "serialize",
   getArmorModifier = "getArmorModifier",
@@ -81,7 +80,6 @@ export enum SYSTEM_HANDLERS {
   getRadiatedHeat = "getRadiatedHeat",
 
   canIntercept = "canIntercept",
-  getNumberOfIntercepts = "getNumberOfIntercepts",
   getInterceptChance = "getInterceptChance",
   addTimesIntercepted = "addTimesIntercepted",
   onIntercept = "onIntercept",

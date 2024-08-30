@@ -24,6 +24,15 @@ type ExplosionEffectArgs = {
   fadeOutSpeed?: number;
 };
 
+export enum ExplosionType {
+  GAS = "gas",
+  GLOW = "glow",
+  EMP = "emp",
+  PILLAR = "pillar",
+  GAS_NEW = "gas_new",
+  GLOW_NEW = "glow_new",
+}
+
 class ExplosionEffect extends Animation {
   private emitterContainer: ParticleEmitterContainer;
   private position: IVector;
@@ -65,20 +74,27 @@ class ExplosionEffect extends Animation {
 
   create() {
     switch (this.type) {
-      case "gas":
+      case ExplosionType.GAS:
         this.createGas();
         break;
 
-      case "glow":
+      case ExplosionType.GLOW:
         this.createGlow();
         break;
 
-      case "emp":
+      case ExplosionType.EMP:
         this.createEMP();
         break;
 
-      case "pillar":
+      case ExplosionType.PILLAR:
         this.createPillar();
+        break;
+
+      case ExplosionType.GAS_NEW:
+        this.createGasNew();
+        break;
+      case ExplosionType.GLOW_NEW:
+        this.createGlowNew();
         break;
       default:
         this.createGas();
@@ -86,12 +102,31 @@ class ExplosionEffect extends Animation {
     }
   }
 
-  createGlow() {
-    const amount = 3;
+  createGasNew() {
+    const amount = 1;
+    this.createWhiteCenter(this.size * 2, 1);
+    this.createMain(amount, this.size);
+    this.createRing(this.size, 1);
+  }
 
-    this.createMainGlow(amount, this.size);
+  createGlowNew() {
+    const amount = 3;
+    this.createWhiteCenter(this.size * 2, 1);
+    this.createMain(amount, this.size);
+    //this.createRing(this.size, 1);
+  }
+
+  createGlow() {
+    const amount = 1;
+
+    const shootoffs = Math.ceil(Math.random() * 20 + 10);
+
+    this.createShootOffs(shootoffs, this.size * 2);
+
+    this.createMainGlow(amount, this.size, 0.2);
     this.createCore(this.size, PARTICLE_TEXTURE.GLOW);
     this.createWhiteCenter(this.size * 2, 0.8);
+    this.createWhiteCenter(this.size, 0.8);
   }
 
   createGas() {
@@ -138,24 +173,85 @@ class ExplosionEffect extends Animation {
     this.createEmpCore(this.size, PARTICLE_TEXTURE.GAS);
   }
 
+  createRing(size: number, opacity: number) {
+    const activation = this.time;
+    const fadeInSpeed = 50;
+    const fadeOutAt = activation + fadeInSpeed;
+    //amount = 1;
+
+    this.emitterContainer
+      .getEffectParticle(this.context)
+      .setSize(size / 16)
+      .setSizeChange(0.2)
+      .setOpacity(opacity)
+      .setFadeIn(activation, fadeInSpeed)
+      .setFadeOut(fadeOutAt, 100)
+      .setColor({ r: 1, g: 1, b: 1 })
+      .setPosition({
+        x: this.position.x,
+        y: this.position.y,
+        z: this.position.z,
+      })
+      .setTexture(PARTICLE_TEXTURE.RING)
+      .setActivationTime(activation)
+      .setRepeat(this.repeat)
+      .setVelocity(this.movement);
+
+    this.emitterContainer
+      .getEffectParticle(this.context)
+      .setSize(size / 8)
+      .setSizeChange(0.2)
+      .setOpacity(opacity * 0.5)
+      .setFadeIn(activation, fadeInSpeed)
+      .setFadeOut(fadeOutAt, 500)
+      .setColor(this.color)
+      .setPosition({
+        x: this.position.x,
+        y: this.position.y,
+        z: this.position.z,
+      })
+      .setTexture(PARTICLE_TEXTURE.RING_FILLED)
+      .setActivationTime(activation)
+      .setRepeat(this.repeat)
+      .setVelocity(this.movement);
+  }
+
   createWhiteCenter(size: number, opacity: number) {
     if (!opacity) {
       opacity = 1.0;
     }
 
     const activation = this.time;
-    const fadeInSpeed = 100;
+    const fadeInSpeed = 50;
     const fadeOutAt = activation + fadeInSpeed;
     //amount = 1;
 
     this.emitterContainer
       .getEffectParticle(this.context)
-      .setSize(size / 4)
-      //.setSizeChange(128)
+      .setSize(size * 0.5)
+      .setSizeChange(0.5)
       .setOpacity(opacity * this.opacity)
       .setFadeIn(activation, fadeInSpeed)
-      .setFadeOut(fadeOutAt, 500)
+      .setFadeOut(fadeOutAt, 50)
       .setColor({ r: 1, g: 1, b: 1 })
+      .setPosition({
+        x: this.position.x,
+        y: this.position.y,
+        z: this.position.z,
+      })
+      .setTexture(PARTICLE_TEXTURE.GLOW)
+      .setActivationTime(activation)
+      .setRepeat(this.repeat)
+      .setVelocity(this.movement);
+
+    this.emitterContainer
+      .getEffectParticle(this.context)
+      .setSize(size * 0.5)
+      .setSizeChange(0.1)
+      .setOpacity(opacity * this.opacity * 0.5)
+      .setFadeIn(activation, fadeInSpeed)
+      .setFadeOut(fadeOutAt, 100)
+      .setColor(this.color)
       .setPosition({
         x: this.position.x,
         y: this.position.y,
@@ -353,33 +449,32 @@ class ExplosionEffect extends Animation {
   createMain(amount: number, radius: number) {
     const size = radius;
 
-    this.emitterContainer
-      .getNormalParticle(this.context)
-      .setSize(this.size)
-      .setOpacity(1)
-      .setFadeOut(this.time + 500)
-      .setColor(getCoreColor())
-      .setPosition({
-        x: this.position.x + (Math.floor(Math.random() * radius) - radius) / 8,
-        y: this.position.y + (Math.floor(Math.random() * radius) - radius) / 8,
-        z: this.position.z + (Math.floor(Math.random() * radius) - radius) / 8,
-      })
-      .setTexture(PARTICLE_TEXTURE.GLOW)
-      .setActivationTime(this.time);
+    const fadeOut = this.time + this.getRandom() * 200 + 300;
+    const fadeOutSpeed = this.getRandom() * 200 + 100;
 
     this.emitterContainer
       .getNormalParticle(this.context)
-      .setSize(this.size * 2)
+      .setSize(this.size)
       .setOpacity(0.5)
-      .setFadeOut(this.time + 500)
-      .setColor(getYellowColor())
-      .setPosition({
-        x: this.position.x + (Math.floor(Math.random() * radius) - radius) / 8,
-        y: this.position.y + (Math.floor(Math.random() * radius) - radius) / 8,
-        z: this.position.z + (Math.floor(Math.random() * radius) - radius) / 8,
-      })
+      .setFadeOut(fadeOut, fadeOutSpeed)
+      .setColor(this.color)
+      .setPosition(this.position)
+      .setVelocity(this.movement)
       .setTexture(PARTICLE_TEXTURE.GLOW)
       .setActivationTime(this.time);
+
+    /*
+    this.emitterContainer
+      .getNormalParticle(this.context)
+      .setSize(this.size * 2)
+      .setOpacity(0.8)
+      .setFadeOut(fadeOut, fadeOutSpeed)
+      .setColor(new THREE.Color(1, 1, 1))
+      .setPosition(this.position)
+      .setVelocity(this.movement)
+      .setTexture(PARTICLE_TEXTURE.GLOW)
+      .setActivationTime(this.time);
+*/
 
     while (amount--) {
       const particle = this.emitterContainer.getEffectParticle(this.context);
@@ -398,14 +493,19 @@ class ExplosionEffect extends Animation {
           (Math.random() * 500) / this.speed + 500 / this.speed
         )
         .setColor(this.getRandomColor())
-        .setPosition({
-          x:
-            this.position.x + (Math.floor(Math.random() * radius) - radius) / 8,
-          y:
-            this.position.y + (Math.floor(Math.random() * radius) - radius) / 8,
-          z:
-            this.position.z + (Math.floor(Math.random() * radius) - radius) / 8,
-        })
+        .setPosition(
+          this.calculatePosition(activationTime, {
+            x:
+              this.position.x +
+              (Math.floor(Math.random() * radius) - radius) / 8,
+            y:
+              this.position.y +
+              (Math.floor(Math.random() * radius) - radius) / 8,
+            z:
+              this.position.z +
+              (Math.floor(Math.random() * radius) - radius) / 8,
+          })
+        )
         .setVelocity(this.movement)
         .setAngle(Math.floor(Math.random() * 360))
         .setActivationTime(activationTime)
@@ -414,7 +514,7 @@ class ExplosionEffect extends Animation {
     }
   }
 
-  createMainGlow(amount: number, radius: number) {
+  createMainGlow(amount: number, radius: number, opacity: number = 0.5) {
     const size = radius * 2;
 
     while (amount--) {
@@ -427,7 +527,7 @@ class ExplosionEffect extends Animation {
 
       particle
         .setSize(Math.floor((Math.random() * size) / 2) + size)
-        .setOpacity(Math.random() * 0.1 + 0.4)
+        .setOpacity(Math.random() * opacity * 0.5 + opacity)
         .setFadeIn(activationTime, Math.random() * 0.005 + 0.0025)
         .setFadeOut(fadeOutAt, (Math.random() * 200 + 800) / this.speed)
         .setColor(this.getRandomColor())
@@ -442,6 +542,11 @@ class ExplosionEffect extends Animation {
         .setActivationTime(activationTime)
         .setRepeat(this.repeat);
     }
+  }
+  private calculatePosition(activationTime: number, position: IVector) {
+    return new Vector(position).add(
+      new Vector(this.movement).multiplyScalar(activationTime - this.time)
+    );
   }
 
   getRandomColor() {

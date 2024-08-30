@@ -8,7 +8,7 @@ import { Clickable } from "../../../../styled";
 import { ClickableProps } from "../../../../styled/Clickable";
 
 type ButtonContainerProps = {
-  pivotDirection: number;
+  $pivotDirection: number;
 };
 
 const ButtonContainer = styled(Container)<
@@ -18,7 +18,7 @@ const ButtonContainer = styled(Container)<
   top: -16px;
 
   ${(props) =>
-    props.pivotDirection === 1
+    props.$pivotDirection === 1
       ? "left: -57px;"
       : "transform: rotate(-180deg) scaleY(-1);"};
 
@@ -52,7 +52,7 @@ const PivotButton: React.FC<Props> = ({
 
   return (
     <ButtonContainer
-      pivotDirection={pivotDirection}
+      $pivotDirection={pivotDirection}
       onClick={pivot}
       disabled={!can}
     >

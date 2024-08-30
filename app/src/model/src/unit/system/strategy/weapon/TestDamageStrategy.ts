@@ -1,36 +1,8 @@
-import StandardDamageStrategy, {
-  ChooseHitSystemFunction,
-} from "./StandardDamageStrategy";
-import Reactor from "../../reactor/Reactor";
-import Ship from "../../../Ship";
-import Vector from "../../../../utils/Vector";
+import { UnifiedDamageSystemStrategy } from "./UnifiedDamageStrategy";
 
-class TestDamageStrategy extends StandardDamageStrategy {
-  public damage: number;
-
+class TestDamageStrategy extends UnifiedDamageSystemStrategy {
   constructor(damage: number) {
-    super();
-
-    this.damage = damage;
-  }
-
-  getDamageForWeaponHit(payload: unknown) {
-    return this.damage;
-  }
-
-  chooseHitSystem: ChooseHitSystemFunction<undefined> = ({
-    target,
-    shooterPosition,
-  }: {
-    target: Ship;
-    shooterPosition: Vector;
-  }) => {
-    const systems = target.systems.getSystemsForHit(shooterPosition, null);
-    return systems.find((system) => system instanceof Reactor) || null;
-  };
-
-  getArmorPiercing() {
-    return 1000;
+    super({ damageFormula: damage, armorPiercingFormula: 1000 });
   }
 }
 

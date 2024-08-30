@@ -1,4 +1,4 @@
-import ShipSystem, { SystemArgs } from "../ShipSystem";
+import ShipSystem, { ShipSystemType, SystemArgs } from "../ShipSystem";
 import RequiresPowerSystemStrategy from "../strategy/RequiresPowerSystemStrategy";
 import BoostableSystemStrategy from "../strategy/BoostableSystemStrategy";
 import ThrustChannelSystemStrategy, {
@@ -46,6 +46,10 @@ class Thruster extends ShipSystem {
 
       this.addStrategy(new BoostableSystemStrategy(boostPower, maxBoost || 0));
     }
+  }
+
+  getSystemType(): ShipSystemType {
+    return this.handlers.getShipSystemType(ShipSystemType.EXTERNAL);
   }
 
   getDisplayName() {

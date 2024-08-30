@@ -98,7 +98,7 @@ class ShipWeaponAnimation extends Animation {
     facing: number,
     roll: number = 0
   ) {
-    const location = icon.systemLocations[system.id];
+    const location = icon.getSystemLocation(system);
 
     if (roll !== 0) {
       throw new Error("Roll is not yet implemented");

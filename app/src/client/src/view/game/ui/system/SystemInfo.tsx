@@ -49,7 +49,7 @@ const HeaderMenu = styled.div`
 `;
 
 type HeaderMenuItemProps = {
-  active: boolean;
+  $active: boolean;
 };
 
 export const HeaderMenuItem = styled.div<HeaderMenuItemProps>`
@@ -58,7 +58,7 @@ export const HeaderMenuItem = styled.div<HeaderMenuItemProps>`
   margin-right: 4px;
   font-size: 12px;
 
-  ${(props) => props.active && `color: white;`}
+  ${(props) => props.$active && `color: white;`}
   &:last-child {
     margin: 0;
   }
@@ -233,7 +233,7 @@ const SystemInfo: React.FC<SystemInfoProps> = ({
         {system.getDisplayName()}
         <HeaderMenu>
           <HeaderMenuItem
-            active={tab === "log"}
+            $active={tab === "log"}
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
@@ -243,7 +243,7 @@ const SystemInfo: React.FC<SystemInfoProps> = ({
             L
           </HeaderMenuItem>
           <HeaderMenuItem
-            active={tab === "info"}
+            $active={tab === "info"}
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
@@ -254,7 +254,7 @@ const SystemInfo: React.FC<SystemInfoProps> = ({
           </HeaderMenuItem>
 
           <HeaderMenuItem
-            active={!tab}
+            $active={!tab}
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();

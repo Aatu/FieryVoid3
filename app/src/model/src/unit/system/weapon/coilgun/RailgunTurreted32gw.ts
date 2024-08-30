@@ -7,7 +7,7 @@ import StandardHitStrategy from "../../strategy/weapon/StandardHitStrategy";
 import StandardRangeStrategy from "../../strategy/weapon/StandardRangeStrategy";
 import StandardLoadingStrategy from "../../strategy/weapon/StandardLoadingStrategy";
 import WeaponAnimationStrategy from "../../strategy/weapon/WeaponAnimationStrategy";
-import PiercingDamageStrategy from "../../strategy/weapon/PiercingDamageStrategy";
+import { UnifiedDamageSystemStrategy } from "../../strategy/weapon/UnifiedDamageStrategy";
 
 class RailgunTurreted32gw extends Weapon {
   constructor(args: WeaponArgs, arcs: WeaponArcs) {
@@ -21,7 +21,12 @@ class RailgunTurreted32gw extends Weapon {
         { range: 220, modifier: -200 },
       ]),
       new StandardLoadingStrategy(3),
-      new PiercingDamageStrategy("4d3", "3d3 + 4"),
+      new UnifiedDamageSystemStrategy({
+        damageFormula: "4d3",
+        armorPiercingFormula: "3d3 + 4",
+        overPenetrationDamageMultiplier: { min: 0.5, max: 0.8 },
+        damageArmorModifier: { min: 1.2, max: 1.4 },
+      }),
       new WeaponAnimationStrategy("Bolt", {
         size: 15,
         length: 2000,

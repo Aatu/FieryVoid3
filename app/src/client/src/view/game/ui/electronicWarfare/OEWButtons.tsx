@@ -53,7 +53,7 @@ const OEWButtons: React.FC<OEWButtonsProps> = ({
     <Container>
       {name && <ShipName>{name}</ShipName>}
       <TooltipButton
-        img="/img/removeOEW.png"
+        $img="/img/removeOEW.png"
         onClick={() => {
           if (ship.electronicWarfare.canAssignOffensiveEw(target, -1)) {
             ship.electronicWarfare.assignOffensiveEw(target, -1);
@@ -63,7 +63,7 @@ const OEWButtons: React.FC<OEWButtonsProps> = ({
       />
       <Amount>{oew}</Amount>
       <TooltipButton
-        img="/img/addOEW.png"
+        $img="/img/addOEW.png"
         onClick={() => {
           if (ship.electronicWarfare.canAssignOffensiveEw(target, 1)) {
             ship.electronicWarfare.assignOffensiveEw(target, 1);

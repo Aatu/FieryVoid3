@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 type IconAndLabelProps = {
-  background: string;
+  $background: string;
 };
 
 const IconAndLabel = styled.div<IconAndLabelProps>`
@@ -11,7 +11,7 @@ const IconAndLabel = styled.div<IconAndLabelProps>`
   height: 30px;
 
   background-color: "transparent";
-  background-image: ${(props) => `url(${props.background})`};
+  background-image: ${(props) => `url(${props.$background})`};
   background-size: cover;
   display: flex;
   align-items: flex-end;

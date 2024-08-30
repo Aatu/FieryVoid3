@@ -81,6 +81,7 @@ class WeaponArcsOnSystemMouseOver extends UiStrategy {
 
     geometry.uvsNeedUpdate = true;
     */
+
     const circle = new THREE.Mesh(geometry, material);
     circle.position.z = -1;
     icon.getMesh().add(circle);
@@ -175,6 +176,7 @@ class WeaponArcsOnSystemMouseOver extends UiStrategy {
       opacity: 1,
       transparent: true,
       map: texture,
+      //wireframe: true,
     });
 
     arcsList.forEach((arcs) => {
@@ -188,17 +190,8 @@ class WeaponArcsOnSystemMouseOver extends UiStrategy {
         degreeToRadian(arcLenght)
       );
 
-      /*
-      geometry.faceVertexUvs = [
-        geometry.faceVertexUvs[0].map((intial) => [
-          new THREE.Vector2(1, 0),
-          new THREE.Vector2(1, 0),
-          new THREE.Vector2(0, 0),
-        ]),
-      ];
+      modifyCircleUvs(geometry);
 
-      geometry.uvsNeedUpdate = true;
-      */
       const circle = new THREE.Mesh(geometry, material);
       circle.position.z = -1;
 
@@ -208,5 +201,25 @@ class WeaponArcsOnSystemMouseOver extends UiStrategy {
     });
   }
 }
+
+const modifyCircleUvs = (geometry: THREE.CircleGeometry) => {
+  const uvAttribute = geometry.getAttribute("uv");
+  const positionAttribute = geometry.getAttribute("position");
+
+  for (let i = 0; i < uvAttribute.count; i++) {
+    const index = i;
+
+    if (
+      positionAttribute.getX(index) !== 0 ||
+      positionAttribute.getY(index) !== 0
+    ) {
+      uvAttribute.setXY(index, 1, 0);
+    } else {
+      uvAttribute.setXY(index, 0, 0);
+    }
+  }
+
+  uvAttribute.needsUpdate = true;
+};
 
 export default WeaponArcsOnSystemMouseOver;

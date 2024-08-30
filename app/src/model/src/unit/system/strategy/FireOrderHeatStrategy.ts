@@ -3,11 +3,11 @@ import ShipSystemStrategy from "./ShipSystemStrategy";
 import { SYSTEM_HANDLERS } from "./types/SystemHandlersTypes";
 
 class FireOrderHeatStrategy extends ShipSystemStrategy {
-  private heatPerFireOrder: number;
+  private heatPerShot: number;
 
-  constructor(heatPerFireOrder: number) {
+  constructor(heatPerShot: number) {
     super();
-    this.heatPerFireOrder = heatPerFireOrder;
+    this.heatPerShot = heatPerShot;
   }
 
   generatesHeat() {
@@ -25,11 +25,15 @@ class FireOrderHeatStrategy extends ShipSystemStrategy {
       [] as FireOrder[]
     );
 
-    if (fireOrders.length === 0) {
-      return previousResponse;
+    if (fireOrders.length > 0) {
+      return previousResponse + fireOrders.length * this.heatPerShot;
     }
 
-    return previousResponse + fireOrders.length * this.heatPerFireOrder;
+    const intercepts = this.getSystem().handlers.getUsedIntercepts();
+
+    if (intercepts > 0) {
+      return previousResponse + intercepts * this.heatPerShot;
+    }
   }
 }
 

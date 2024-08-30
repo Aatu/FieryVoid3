@@ -1,11 +1,14 @@
-import HETorpedoDamageStrategy from "./torpedoDamageStrategy/HETorpedoDamageStrategy";
 import Torpedo158 from "./Torpedo158";
+import TorpedoDamageStrategy from "./torpedoDamageStrategy/TorpedoDamageStrategy";
 
 class Torpedo158HE extends Torpedo158 {
   constructor() {
     super({});
 
-    this.damageStrategy = new HETorpedoDamageStrategy("d10+4", 0, "d8+6");
+    this.damageStrategy = new TorpedoDamageStrategy({
+      damageFormula: "d10+8",
+      iterations: "d8+6",
+    });
   }
 
   getCargoInfo() {

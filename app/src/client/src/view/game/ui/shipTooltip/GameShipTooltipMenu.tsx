@@ -120,7 +120,7 @@ const GameShipTooltipMenu: React.FC<Props> = ({
       {ship.player.isUsers(currentUser || null) &&
         !uiState.isSelected(ship) && (
           <TooltipButton
-            img="/img/selectShip.png"
+            $img="/img/selectShip.png"
             onClick={() => uiState.selectShip(ship)}
           />
         )}
@@ -144,7 +144,7 @@ const GameShipTooltipMenu: React.FC<Props> = ({
 
       {ship.player.isUsers(currentUser || null) && hasRadiators(ship) && (
         <TooltipButton
-          img="/img/system/radiator.png"
+          $img="/img/system/radiator.png"
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
@@ -162,7 +162,7 @@ const GameShipTooltipMenu: React.FC<Props> = ({
 
       {ship.player.isUsers(currentUser || null) && hasInterceptors(ship) && (
         <TooltipButton
-          img="/img/system/gatlingPulseCannon.png"
+          $img="/img/system/gatlingPulseCannon.png"
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
@@ -180,14 +180,14 @@ const GameShipTooltipMenu: React.FC<Props> = ({
 
       {!ship.player.isUsers(currentUser || null) && (
         <TooltipButton
-          img="/img/system/missile1.png"
+          $img="/img/system/missile1.png"
           onClick={() => selectTooltipTab(TOOLTIP_TAB.TORPEDO_ATTACK)}
         />
       )}
 
       {ship.player.isUsers(currentUser || null) && (
         <TooltipButton
-          img="/img/torpedoDefense.png"
+          $img="/img/torpedoDefense.png"
           onClick={() => selectTooltipTab(TOOLTIP_TAB.TORPEDO_DEFENSE)}
         />
       )}

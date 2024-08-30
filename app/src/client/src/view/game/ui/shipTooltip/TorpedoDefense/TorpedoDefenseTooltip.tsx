@@ -90,11 +90,11 @@ const getInterceptors = (
     }
 
     if (intercept.interceptChance.result < entry.min || entry.min === null) {
-      entry.min = intercept.interceptChance.result;
+      entry.min = Math.round(intercept.interceptChance.result);
     }
 
     if (intercept.interceptChance.result > entry.max || entry.max === null) {
-      entry.max = intercept.interceptChance.result;
+      entry.max = Math.round(intercept.interceptChance.result);
     }
 
     entry.amount++;

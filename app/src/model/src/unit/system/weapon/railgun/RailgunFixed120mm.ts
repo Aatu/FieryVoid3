@@ -11,15 +11,15 @@ import RequiresPowerSystemStrategy from "../../strategy/RequiresPowerSystemStrat
 import BoostableSystemStrategy from "../../strategy/BoostableSystemStrategy";
 import AmmunitionStrategy from "../../strategy/weapon/AmmunitionStrategy";
 import OutputHeatOnlineStrategy from "../../strategy/OutputHeatOnlineStrategy";
-import BurstDamageStrategy from "../../strategy/weapon/BurstDamageStrategy";
 import { MEDIUM_WEAPON_RANGE } from "../../../../config/gameConfig";
+import { UnifiedDamageSystemStrategy } from "../../strategy/weapon/UnifiedDamageStrategy";
 
 class RailgunFixed120mm extends Weapon {
   constructor({ id }: WeaponArgs, arcs: WeaponArcs) {
     super({ id, hitpoints: 8, armor: 4 }, [
       new FireOrderStrategy(1),
       new WeaponArcStrategy(arcs),
-      new StandardHitStrategy(18),
+      new StandardHitStrategy(18, 1, 2, 20),
       new StandardRangeStrategy([
         { range: 0, modifier: -100 },
         { range: Math.round(MEDIUM_WEAPON_RANGE * 0.5), modifier: -20 },
@@ -29,7 +29,7 @@ class RailgunFixed120mm extends Weapon {
       new StandardLoadingStrategy(3),
       new RequiresPowerSystemStrategy(4),
       new BoostableSystemStrategy(3, 1),
-      new BurstDamageStrategy(null, null, 0, 2, 20),
+      new UnifiedDamageSystemStrategy(),
       new AmmunitionStrategy(["Ammo120mmAP", "Ammo120mmHE"], 1, 12, 4),
       new WeaponAnimationStrategy("UniversalBolt", {
         size: 13,

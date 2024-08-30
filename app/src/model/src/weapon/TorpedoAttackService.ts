@@ -25,13 +25,7 @@ class TorpedoAttackService {
     return ship.systems
       .getSystems()
       .filter((system) => !system.isDisabled())
-      .filter((system) =>
-        system.callHandler(
-          SYSTEM_HANDLERS.canIntercept,
-          undefined,
-          false as boolean
-        )
-      )
+      .filter((system) => system.handlers.canIntercept())
       .filter((weapon) => {
         // only weapons that have arcs facing to the correct direction
         return weapon.callHandler(

@@ -10,14 +10,12 @@ export type SerializedFireOrderStrategy = {
   fireOrderStrategy?: SerializedFireOrder[];
 };
 class FireOrderStrategy extends ShipSystemStrategy {
-  private numberOfShots: number;
   private resolutionPriority: number;
   private fireOrders: FireOrder[];
 
-  constructor(numberOfShots = 1, resolutionPriority = 10) {
+  constructor(resolutionPriority: number = 10) {
     super();
 
-    this.numberOfShots = numberOfShots;
     this.resolutionPriority = resolutionPriority;
 
     this.fireOrders = [];
@@ -26,6 +24,7 @@ class FireOrderStrategy extends ShipSystemStrategy {
   executeFireOrders({ gameData }: { gameData: GameData }) {
     this.fireOrders.forEach((fireOrder) => {
       const weapon = this.getSystem();
+
       const shooter = gameData.ships.getShipById(fireOrder.shooterId);
       const target = gameData.ships.getShipById(fireOrder.targetId);
       const weaponSettings = fireOrder.weaponSettings;
@@ -47,56 +46,46 @@ class FireOrderStrategy extends ShipSystemStrategy {
         return false;
       }
 
-      const combatLogEntry = new CombatLogWeaponFire(
-        fireOrder.getId(),
-        fireOrder.targetId,
-        fireOrder.shooterId,
-        weapon.callHandler(
-          SYSTEM_HANDLERS.getSelectedAmmo,
-          null,
-          null as Ammo | null
-        )
-      );
+      let shots = this.getSystem().handlers.getNumberOfShots();
 
-      const hitResolution = weapon.callHandler(
-        SYSTEM_HANDLERS.checkFireOrderHits,
-        {
+      while (shots--) {
+        const combatLogEntry = new CombatLogWeaponFire(
+          fireOrder.getId(),
+          fireOrder.targetId,
+          fireOrder.shooterId,
+          weapon.handlers.getSelectedAmmo()
+        );
+
+        const hitResolution = weapon.handlers.checkFireOrderHits({
           shooter,
           target,
           weaponSettings,
-          gameData,
-          fireOrder,
           combatLogEntry,
-        },
-        undefined
-      );
+        });
 
-      weapon.callHandler(
-        SYSTEM_HANDLERS.applyDamageFromWeaponFire,
-        {
-          shooter,
-          target,
-          weaponSettings,
-          gameData,
-          fireOrder,
-          combatLogEntry,
-          hitResolution,
-        },
-        undefined
-      );
+        let shotsHit = hitResolution.shotsHit;
 
-      weapon.callHandler(SYSTEM_HANDLERS.onWeaponFired, undefined, undefined);
-      fireOrder.setResolved();
-      gameData.combatLog.addEntry(combatLogEntry);
+        while (shotsHit--) {
+          weapon.handlers.applyDamageFromWeaponFire({
+            shooter,
+            target,
+            weaponSettings,
+            gameData,
+            fireOrder,
+            combatLogEntry,
+            hitResolution,
+          });
+        }
+
+        weapon.callHandler(SYSTEM_HANDLERS.onWeaponFired, undefined, undefined);
+        fireOrder.setResolved();
+        gameData.combatLog.addEntry(combatLogEntry);
+      }
     });
   }
 
   usesFireOrders() {
     return true;
-  }
-
-  getNumberOfShots() {
-    return this.numberOfShots;
   }
 
   getFireOrderResolutionPriority() {
@@ -126,17 +115,14 @@ class FireOrderStrategy extends ShipSystemStrategy {
   }) {
     this.fireOrders = [];
 
-    let shots = this.numberOfShots;
-    while (shots--) {
-      const order = new FireOrder(
-        null,
-        shooter,
-        target,
-        this.getSystem(),
-        weaponSettings
-      );
-      this.fireOrders.push(order);
-    }
+    const order = new FireOrder(
+      null,
+      shooter,
+      target,
+      this.getSystem(),
+      weaponSettings
+    );
+    this.fireOrders.push(order);
 
     return this.fireOrders;
   }

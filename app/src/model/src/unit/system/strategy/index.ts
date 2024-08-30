@@ -8,7 +8,7 @@ import ElectronicWarfareProvider from "./ElectronicWarfareProvider";
 import LargerHitProfileOnlineSystemStrategy from "./LargerHitProfileOnlineSystemStrategy";
 import CargoBaySystemStrategy from "./CargoBaySystemStrategy";
 import BoostablePlusOneOutputSystemStrategy from "./BoostablePlusOneOutputSystemStrategy";
-import ArmorBoostOfflineSystemStrategy from "./ArmorBoostOfflineSystemStrategy";
+import InternalSystemWhenOfflineSystemStrategy from "./InternalSystemWhenOfflineSystemStrategy";
 import OutputHeatOnlineStrategy from "./OutputHeatOnlineStrategy";
 import FireOrderHeatStrategy from "./FireOrderHeatStrategy";
 import AlwaysTargetableSystemStrategy from "./AlwaysTargetableSystemStrategy";
@@ -16,15 +16,11 @@ import FuelTankSystemStrategy from "./FuelTankSystemStrategy";
 
 import {
   TestDamageStrategy,
-  StandardDamageStrategy,
   StandardHitStrategy,
   StandardRangeStrategy,
   FireOrderStrategy,
   StandardLoadingStrategy,
   WeaponArcStrategy,
-  BurstDamageStrategy,
-  PiercingDamageStrategy,
-  ExplosiveDamageStrategy,
   InterceptorStrategy,
 } from "./weapon/index";
 
@@ -33,15 +29,12 @@ export {
   AlwaysTargetableSystemStrategy,
   FireOrderHeatStrategy,
   OutputHeatOnlineStrategy,
-  ArmorBoostOfflineSystemStrategy,
+  InternalSystemWhenOfflineSystemStrategy as ArmorBoostOfflineSystemStrategy,
   LargerHitProfileOnlineSystemStrategy,
   BoostablePlusOneOutputSystemStrategy,
   InterceptorStrategy,
   CargoBaySystemStrategy,
-  ExplosiveDamageStrategy,
-  PiercingDamageStrategy,
   TestDamageStrategy,
-  StandardDamageStrategy,
   StandardHitStrategy,
   StandardRangeStrategy,
   FireOrderStrategy,
@@ -54,5 +47,4 @@ export {
   ThrustChannelSystemStrategy,
   AllowsEvasionSystemStrategy,
   ElectronicWarfareProvider,
-  BurstDamageStrategy,
 };

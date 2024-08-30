@@ -7,11 +7,11 @@ import StandardHitStrategy from "../../strategy/weapon/StandardHitStrategy";
 import StandardRangeStrategy from "../../strategy/weapon/StandardRangeStrategy";
 import StandardLoadingStrategy from "../../strategy/weapon/StandardLoadingStrategy";
 import WeaponAnimationStrategy from "../../strategy/weapon/WeaponAnimationStrategy";
-import PiercingDamageStrategy from "../../strategy/weapon/PiercingDamageStrategy";
 import BoostableSystemStrategy from "../../strategy/BoostableSystemStrategy";
 import RequiresPowerSystemStrategy from "../../strategy/RequiresPowerSystemStrategy";
 import OutputHeatOnlineStrategy from "../../strategy/OutputHeatOnlineStrategy";
 import { MEDIUM_WEAPON_RANGE } from "../../../../config/gameConfig";
+import { UnifiedDamageSystemStrategy } from "../../strategy/weapon/UnifiedDamageStrategy";
 
 class MediumCoilgunTurretedUC extends Weapon {
   constructor({ id }: WeaponArgs, arcs: WeaponArcs) {
@@ -29,7 +29,12 @@ class MediumCoilgunTurretedUC extends Weapon {
       new StandardLoadingStrategy(4),
       new RequiresPowerSystemStrategy(10),
       new BoostableSystemStrategy(8, 2),
-      new PiercingDamageStrategy("d7+1", "d9+25"),
+      new UnifiedDamageSystemStrategy({
+        damageFormula: "d7+1",
+        armorPiercingFormula: "d9+25",
+        overPenetrationDamageMultiplier: { min: 0.2, max: 0.4 },
+        damageArmorModifier: { min: 1.2, max: 1.4 },
+      }),
       new WeaponAnimationStrategy("UniversalBolt", {
         size: 12,
         length: 2000,

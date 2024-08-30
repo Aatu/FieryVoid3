@@ -393,10 +393,6 @@ class AmmunitionStrategy extends ShipSystemStrategy {
     return previousResponse;
   }
 
-  onIntercept() {
-    this.onWeaponFired();
-  }
-
   onWeaponFired() {
     const entry = this.loaded.find(
       (load) => load.object.constructor === this.selectedAmmo.constructor

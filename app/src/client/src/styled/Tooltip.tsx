@@ -29,15 +29,15 @@ const Tooltip = styled(TooltipContainer)`
 `;
 
 type RelativeTooltipContainerProps = {
-  position: Record<string, string | number>;
+  $position: Record<string, string | number>;
 };
 
 const RelativeTooltipContainer = styled(Tooltip)<RelativeTooltipContainerProps>`
   position: absolute;
   z-index: 20000;
   ${(props) =>
-    Object.keys(props.position).reduce((style, key) => {
-      return style + "\n" + key + ":" + props.position[key] + "px;";
+    Object.keys(props.$position).reduce((style, key) => {
+      return style + "\n" + key + ":" + props.$position[key] + "px;";
     }, "")}
   text-align: left;
   filter: brightness(1);
@@ -78,7 +78,7 @@ export const RelativeTooltip: React.FC<RelativeTooltipProps> = ({
   };
 
   return (
-    <RelativeTooltipContainer position={getPosition(element)} {...rest}>
+    <RelativeTooltipContainer $position={getPosition(element)} {...rest}>
       {children}
     </RelativeTooltipContainer>
   );
@@ -111,10 +111,10 @@ const TooltipValueHeader = styled.div`
 `;
 
 type TooltipEntryProps = {
-  noMargin?: boolean;
-  important?: boolean;
-  space?: boolean;
-  clickable?: boolean;
+  $noMargin?: boolean;
+  $important?: boolean;
+  $space?: boolean;
+  $clickable?: boolean;
 };
 
 const TooltipEntry = styled.div<TooltipEntryProps>`
@@ -122,16 +122,16 @@ const TooltipEntry = styled.div<TooltipEntryProps>`
   box-sizing: border-box;
   margin: 2px 8px;
 
-  ${(props) => props.noMargin && "margin: 0;"}
-  font-weight: ${(props) => (props.important ? "bold" : "inherit")};
-  font-size: ${(props) => (props.important ? "14px" : "11px")};
-  ${(props) => props.space && "margin-top: 14px"};
+  ${(props) => props.$noMargin && "margin: 0;"}
+  font-weight: ${(props) => (props.$important ? "bold" : "inherit")};
+  font-size: ${(props) => (props.$important ? "14px" : "11px")};
+  ${(props) => props.$space && "margin-top: 14px"};
   text-align: left;
   color: #5e85bc;
   font-family: arial;
 
   ${(props) =>
-    props.clickable &&
+    props.$clickable &&
     css`
       cursor: pointer;
       color: white;
@@ -141,7 +141,7 @@ const TooltipEntry = styled.div<TooltipEntryProps>`
 
   &:hover {
     ${(props) =>
-      props.clickable &&
+      props.$clickable &&
       css`
         border: 1px solid white;
       `}
@@ -284,7 +284,7 @@ const TooltipBuilderEntry: React.FC<TooltipBuilderEntryProps> = ({
   }
 
   return (
-    <TooltipEntry noMargin={subKey !== "" || noMargin}>
+    <TooltipEntry $noMargin={subKey !== "" || noMargin}>
       {header && <TooltipValueHeader>{header}: </TooltipValueHeader>}
       {isValue(value) && Array.isArray(value) && (
         <InlineTooltipEntry>
@@ -436,7 +436,7 @@ const RelativeOrStaticTooltip: React.FC<{
   relative?: boolean;
   children?: ReactNode;
   element?: HTMLElement;
-  right?: boolean;
+  $isRight?: boolean;
 }> = ({ relative, children, element, ...rest }) => {
   if (relative && element) {
     return (

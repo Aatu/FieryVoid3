@@ -16,7 +16,10 @@ class AlwaysTargetableSystemStrategy extends ShipSystemStrategy {
     this.turnsOffline = 0;
   }
 
-  public canBeTargeted = (_: unknown, previousResponse = false): boolean => {
+  public isAlwaysTargetable = (
+    _: unknown,
+    previousResponse = false
+  ): boolean => {
     if (this.getSystem().isDestroyed()) {
       return previousResponse;
     }

@@ -2,7 +2,7 @@ import ElectronicWarfareHandler from "./ElectronicWarfareHandler";
 import PowerHandler from "./PowerHandler";
 import { UnauthorizedError, InvalidGameDataError } from "../errors/index";
 import SystemDataHandler from "./SystemDataHandler";
-import TorpedoHandler from "./TorpedoHandler";
+import { TorpedoHandler } from "./TorpedoHandler";
 import LaunchHandler from "./LaunchHandler";
 import CriticalHandler from "./CriticalHandler";
 import HeatHandler from "./HeatHandler";
@@ -58,8 +58,7 @@ class GameHandler {
     this.systemDataHandler.receiveSystemData(
       serverGameData,
       clientGameData,
-      activeShips,
-      user
+      activeShips
     );
 
     this.powerHandler.forceValidPower(activeShips);

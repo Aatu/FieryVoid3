@@ -2,9 +2,11 @@ import React, { LegacyRef, useRef, useState } from "react";
 import styled from "styled-components";
 import SystemInfo from "./SystemInfo";
 
-import UIState, { SystemMenuUiState } from "../UIState";
+import { SystemMenuUiState } from "../UIState";
 import Ship from "@fieryvoid3/model/src/unit/Ship";
 import ShipSystem from "@fieryvoid3/model/src/unit/system/ShipSystem";
+import { useSystemMenu } from "../../../../state/useSystemMenu";
+import { useUiStateHandler } from "../../../../state/useUIStateHandler";
 
 const StructureText = styled.div`
   z-index: 1;
@@ -46,7 +48,6 @@ const StructureContainer = styled.div<StructureContainerProps>`
 `;
 
 type StructureIconProps = {
-  uiState: UIState;
   system: ShipSystem;
   ship: Ship;
   systemMenu?: SystemMenuUiState;
@@ -57,18 +58,16 @@ type StructureIconProps = {
 };
 
 const StructureIcon: React.FC<StructureIconProps> = ({
-  uiState,
   system,
   ship,
-  systemMenu: { systemInfoMenuProvider, activeSystem, activeSystemElement } = {
-    systemInfoMenuProvider: null,
-    activeSystem: null,
-    activeSystemElement: null,
-  },
   onSystemClicked,
   target = null,
   ...rest
 }) => {
+  const { activeSystemId, activeSystemElement, systemInfoMenuProvider } =
+    useSystemMenu();
+
+  const uiState = useUiStateHandler();
   const element = useRef<HTMLElement>(null);
   const [mouseOveredSystem, setMouseOveredSystem] =
     useState<HTMLElement | null>(null);
@@ -116,12 +115,12 @@ const StructureIcon: React.FC<StructureIconProps> = ({
     uiState.customEvent("systemRightClicked", { system, ship });
   };
 
-  const menu = activeSystem ? systemInfoMenuProvider : null;
+  const menu = activeSystemId ? systemInfoMenuProvider : null;
 
   const displayMenu = Boolean(
-    (!activeSystem && mouseOveredSystem) ||
-      (activeSystem &&
-        activeSystem === system &&
+    (!activeSystemId && mouseOveredSystem) ||
+      (activeSystemId &&
+        activeSystemId === system.id &&
         activeSystemElement === element.current)
   );
 

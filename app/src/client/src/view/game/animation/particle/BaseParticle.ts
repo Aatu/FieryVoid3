@@ -1,7 +1,11 @@
 import * as THREE from "three";
 import ParticleEmitter from "./ParticleEmitter";
 import { IVector } from "@fieryvoid3/model/src/utils/Vector";
-import { degreeToRadian } from "@fieryvoid3/model/src/utils/math";
+import {
+  retrieveOpacityAndFade,
+  storeAngleAndChange,
+  storeOpacityAndFade,
+} from "@fieryvoid3/model/src/utils/bitmasked";
 
 export type SerializedParticle = {
   index: number;
@@ -32,6 +36,7 @@ export enum PARTICLE_TEXTURE {
   GLOW = 2,
   RING = 3,
   STARLINE = 4,
+  RING_FILLED = 5,
 }
 
 export type ParticleTexture = {
@@ -141,19 +146,19 @@ class BaseParticle {
   }
 
   setOpacity(opacity: number) {
-    changeAttribute(this.geometry, this.index, "opacity", opacity);
+    this.changeOpacity(opacity);
     return this;
   }
 
   setFadeIn(time: number, speed: number = 1000) {
     changeAttribute(this.geometry, this.index, "fadeInTime", time);
-    changeAttribute(this.geometry, this.index, "fadeInSpeed", speed);
+    this.changeFadeInSpeed(speed);
     return this;
   }
 
   setFadeOut(time: number, speed: number = 1000) {
     changeAttribute(this.geometry, this.index, "fadeOutTime", time);
-    changeAttribute(this.geometry, this.index, "fadeOutSpeed", speed);
+    this.changeFadeOutSpeed(speed);
     return this;
   }
 
@@ -167,10 +172,13 @@ class BaseParticle {
   }
 
   setAngle(angle: number, change: number = 0) {
+    /*
     const value =
       Math.floor(degreeToRadian(angle) * 1000) +
       Math.floor(degreeToRadian(change) * 1000) * 10000;
+      */
 
+    const value = storeAngleAndChange(angle, change);
     changeAttribute(this.geometry, this.index, "angle", value);
     return this;
   }
@@ -201,6 +209,45 @@ class BaseParticle {
   setActivationTime(gameTime: number) {
     changeAttribute(this.geometry, this.index, "activationGameTime", gameTime);
     return this;
+  }
+
+  private changeOpacity(newOpacity: number) {
+    const target = this.geometry.attributes["opacityAndFadeSpeeds"].array;
+    const value = target[this.index];
+
+    const { fadeInSpeed, fadeOutSpeed } = retrieveOpacityAndFade(value);
+
+    const newValue = storeOpacityAndFade(newOpacity, fadeInSpeed, fadeOutSpeed);
+
+    target[this.index] = newValue;
+
+    this.geometry.attributes["opacityAndFadeSpeeds"].needsUpdate = true;
+  }
+
+  private changeFadeOutSpeed(newFadeOutSpeed: number) {
+    const target = this.geometry.attributes["opacityAndFadeSpeeds"].array;
+    const value = target[this.index];
+
+    const { opacity, fadeInSpeed } = retrieveOpacityAndFade(value);
+
+    const newValue = storeOpacityAndFade(opacity, fadeInSpeed, newFadeOutSpeed);
+
+    target[this.index] = newValue;
+
+    this.geometry.attributes["opacityAndFadeSpeeds"].needsUpdate = true;
+  }
+
+  private changeFadeInSpeed(newFadeInSpeed: number) {
+    const target = this.geometry.attributes["opacityAndFadeSpeeds"].array;
+    const value = target[this.index];
+
+    const { opacity, fadeOutSpeed } = retrieveOpacityAndFade(value);
+
+    const newValue = storeOpacityAndFade(opacity, newFadeInSpeed, fadeOutSpeed);
+
+    target[this.index] = newValue;
+
+    this.geometry.attributes["opacityAndFadeSpeeds"].needsUpdate = true;
   }
 }
 

@@ -40,7 +40,7 @@ const GameSystemTooltipMenu: React.FC<Props> = ({ ship, system, uiState }) => {
         .map(({ img, disabledHandler, clickHandler }, i) => (
           <TooltipButton
             key={`custom-system-tooltip-button-${i}`}
-            img={img}
+            $img={img}
             disabled={disabledHandler ? disabledHandler() : false}
             onClick={(e) => {
               e.preventDefault();

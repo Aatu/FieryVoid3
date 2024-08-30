@@ -3,7 +3,8 @@ import styled from "styled-components";
 import { TooltipButton } from "../../../styled";
 import { Replay } from "../../../styled/icon";
 import { GameUIMode } from "./gameUiModes";
-import UIState from "./UIState";
+import { useGameStore } from "../GameStoreProvider";
+import { useUiStateHandler } from "../../../state/useUIStateHandler";
 
 const Container = styled.div`
   position: absolute;
@@ -17,37 +18,33 @@ const ReplayButton = styled(TooltipButton)`
   margin-left: 32px;
 `;
 
-type Props = {
-  uiState: UIState;
-} & { [key in GameUIMode]: boolean };
+const GameUiModeButtons: React.FC = () => {
+  const { enemy_weapons, weapons, ew, movement } = useGameStore(
+    ({ gameState }) => gameState.gameUiMode
+  );
 
-const GameUiModeButtons: React.FC<Props> = ({
-  ew,
-  movement,
-  weapons,
-  enemy_weapons,
-  uiState,
-}) => {
+  const uiState = useUiStateHandler();
+
   return (
     <Container>
       <TooltipButton
         selected={enemy_weapons}
-        img="/img/targetShip.png"
+        $img="/img/targetShip.png"
         onClick={() => uiState.toggleGameUiMode(GameUIMode.ENEMY_WEAPONS)}
       />
       <TooltipButton
         selected={weapons}
-        img="/img/firing.png"
+        $img="/img/firing.png"
         onClick={() => uiState.toggleGameUiMode(GameUIMode.WEAPONS)}
       />
       <TooltipButton
         selected={ew}
-        img="/img/addOEW.png"
+        $img="/img/addOEW.png"
         onClick={() => uiState.toggleGameUiMode(GameUIMode.EW)}
       />
       <TooltipButton
         selected={movement}
-        img="/img/selectShip.png"
+        $img="/img/selectShip.png"
         onClick={() => uiState.toggleGameUiMode(GameUIMode.MOVEMENT)}
       />
       <ReplayButton onClick={() => uiState.startReplay()}>

@@ -2,7 +2,7 @@ import Ammo from "../Ammo";
 
 class Ammo120mmAP extends Ammo {
   constructor() {
-    super("2d3+5", 10);
+    super({ damageFormula: "2d3+5", armorPiercingFormula: 10 });
   }
 
   getDisplayName() {

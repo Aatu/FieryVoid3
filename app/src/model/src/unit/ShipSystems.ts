@@ -2,13 +2,17 @@ import ShipPower from "./ShipPower";
 import ShipSystemSections from "./system/ShipSystemSections";
 import { hexFacingToAngle } from "../utils/math";
 import Ship from "./Ship";
-import ShipSystem, { SerializedShipSystem } from "./system/ShipSystem";
+import ShipSystem, {
+  SerializedShipSystem,
+  ShipSystemType,
+} from "./system/ShipSystem";
 import { IVector } from "../utils/Vector";
 import SystemSection from "./system/systemSection/SystemSection";
 import { SYSTEM_HANDLERS } from "./system/strategy/types/SystemHandlersTypes";
 import GameData from "../game/GameData";
 import { GAME_PHASE } from "../game/gamePhase";
 import { User } from "../User/User";
+import { Structure } from "./system/structure";
 
 export type SerializedShipSystems = {
   systemId: number;
@@ -77,21 +81,91 @@ class ShipSystems {
     );
   }
 
-  getSystemsForHit(attackPosition: IVector, lastSection: SystemSection | null) {
+  getSystemsForOuterHit(
+    attackPosition: IVector,
+    lastSection: SystemSection | null,
+    excludeAlwaysTargetable: boolean = false
+  ) {
+    console.log(
+      "get systems for outer hit, lastSection",
+      lastSection?.getLocation(),
+      "exclude always targetable: ",
+      excludeAlwaysTargetable
+    );
+    const isValidSystemForHit = (system: ShipSystem) => {
+      console.log("evaluating system", system.id, system.getDisplayName());
+
+      if (system.isDestroyed()) {
+        console.log("is destroyed");
+        return false;
+      }
+
+      if (system.getSystemType() === ShipSystemType.EXTERNAL) {
+        console.log("is external");
+        return true;
+      }
+
+      if (system.getSystemType() === ShipSystemType.STRUCTURE) {
+        console.log("is structure");
+        return true;
+      }
+
+      const structure = system.getStructure();
+
+      if (
+        system.getSystemType() === ShipSystemType.INTERNAL &&
+        (!structure || structure.isDestroyed())
+      ) {
+        console.log("is internal without structure");
+        return true;
+      }
+
+      console.log("false");
+      return false;
+    };
+
     const systems = this.getSectionsForHit(attackPosition, lastSection).reduce(
       (all, section) => {
-        return [
-          ...all,
-          ...section.getSystems().filter((system) => !system.isDestroyed()),
-        ];
+        return [...all, ...section.getSystems().filter(isValidSystemForHit)];
       },
       [] as ShipSystem[]
     );
 
+    console.log(
+      "systems",
+      systems.map((s) => s.id)
+    );
+
+    const alwaysTargetable = !excludeAlwaysTargetable
+      ? this.getSystems().filter(
+          (system) =>
+            system.handlers.isAlwaysTargetable() &&
+            systems.every((s) => s.id !== system.id)
+        )
+      : [];
+
+    return [...systems, ...alwaysTargetable];
+  }
+
+  getSystemsForInnerHit(section: SystemSection) {
+    const isValidSystemForHit = (system: ShipSystem) => {
+      if (system.isDestroyed()) {
+        return false;
+      }
+
+      if (system.getSystemType() === ShipSystemType.INTERNAL) {
+        return true;
+      }
+
+      return false;
+    };
+
+    const systems = section.getSystems().filter(isValidSystemForHit);
+
     return [
       ...systems,
       ...this.getSystems().filter((system) =>
-        system.callHandler(SYSTEM_HANDLERS.canBeTargeted, null, false)
+        system.handlers.isAlwaysTargetable()
       ),
     ];
   }
@@ -201,6 +275,15 @@ class ShipSystems {
     systems.forEach((system) => this.addSystem(system, section));
 
     return this;
+  }
+
+  getSectionForSystem(system: ShipSystem) {
+    return this.sections.getSectionForSystem(system);
+  }
+
+  getStructureForSystem(system: ShipSystem): Structure | null {
+    const section = this.getSectionForSystem(system);
+    return section?.getStructure() || null;
   }
 
   getSystemById(id: number): ShipSystem {

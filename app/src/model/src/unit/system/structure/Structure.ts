@@ -1,4 +1,4 @@
-import ShipSystem, { SystemArgs } from "../ShipSystem";
+import ShipSystem, { ShipSystemType, SystemArgs } from "../ShipSystem";
 import CargoBaySystemStrategy from "../strategy/CargoBaySystemStrategy";
 import StoreHeatStrategy from "../strategy/StoreHeatStrategy";
 import RadiateHeatStrategy from "../strategy/RadiateHeatStrategy";
@@ -40,6 +40,10 @@ class Structure extends ShipSystem {
 
   getDisplayName(): string {
     return "Structure";
+  }
+
+  getSystemType() {
+    return ShipSystemType.STRUCTURE;
   }
 }
 

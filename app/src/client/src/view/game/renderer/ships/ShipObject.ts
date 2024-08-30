@@ -26,12 +26,10 @@ import coordinateConverter from "@fieryvoid3/model/src/utils/CoordinateConverter
 class ShipObject {
   public shipId: string;
   public ship: Ship;
-  public systemLocations: Record<string, THREE.Vector3>;
   protected bumpMap: THREE.Texture | null;
   protected scene: THREE.Object3D;
   protected mesh: THREE.Object3D;
   protected shipObject: GameObject3D | null;
-  protected systemObjects: GameObject3D[];
   public isLoaded: ReadyPromise<boolean>;
   public mapIcon: ShipMapIcon | null;
   public hexSprites: HexagonSprite[];
@@ -63,7 +61,6 @@ class ShipObject {
   constructor(ship: Ship, scene: THREE.Object3D) {
     this.shipId = ship.id;
     this.ship = ship;
-    this.systemLocations = {};
 
     this.bumpMap = null;
 
@@ -72,7 +69,6 @@ class ShipObject {
     //this.mesh.castShadow = true;
     //this.mesh.receiveShadow = true;
     this.shipObject = null;
-    this.systemObjects = [];
 
     this.isLoaded = getPromise<boolean>();
 
@@ -115,6 +111,10 @@ class ShipObject {
 
   isHidden() {
     return this.hidden;
+  }
+
+  getSystemLocation(system: ShipSystem) {
+    return this.shipObject?.getSystemLocation(system) || null;
   }
 
   async getShipObject() {

@@ -14,6 +14,8 @@ import ShipSystemLog, {
 } from "./ShipSystemLog/ShipSystemLog";
 import ShipSystemLogEntryDamage from "./ShipSystemLog/ShipSystemLogEntryDamage";
 import { SystemHandlers } from "../ShipSystemHandlers";
+import { Structure } from "./structure";
+import SystemSection from "./systemSection/SystemSection";
 
 export type SerializedShipSystem = {
   power?: SerializedSystemPower;
@@ -28,6 +30,11 @@ export type SystemArgs = {
   armor?: number;
 };
 
+export enum ShipSystemType {
+  INTERNAL = "internal",
+  EXTERNAL = "external",
+  STRUCTURE = "structure",
+}
 class ShipSystem {
   public id: number;
   public hitpoints: number;
@@ -60,6 +67,30 @@ class ShipSystem {
 
     this.heat = new SystemHeat(this);
     this.log = new ShipSystemLog(this);
+  }
+
+  getShip() {
+    return this.getShipSystems().ship;
+  }
+
+  getStructure(): Structure | null {
+    return this.getShipSystems().getStructureForSystem(this);
+  }
+
+  getSection(): SystemSection {
+    const section = this.getShipSystems().getSectionForSystem(this);
+
+    if (!section) {
+      throw new Error("Every system must be in a section");
+    }
+
+    return section;
+  }
+
+  getSystemType(): ShipSystemType {
+    const value = ShipSystemType.INTERNAL;
+
+    return this.handlers.getShipSystemType(value);
   }
 
   getShipSystems(): ShipSystems {
@@ -109,6 +140,10 @@ class ShipSystem {
           },
           { header: "Armor", value: `${this.getArmor()}` },
         ],
+      },
+      {
+        header: "ID",
+        value: this.id,
       },
       ...heatMessages,
       ...this.callHandler(SYSTEM_HANDLERS.getMessages, null, []),

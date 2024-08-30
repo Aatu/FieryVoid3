@@ -17,7 +17,7 @@ class MouseOverShowsShipTooltip extends UiStrategy {
     }
   }
 
-  shipStateChanged(ship: Ship) {
+  shipStateChanged({ ship }: { ship: Ship }) {
     const { uiState, currentUser } = this.getServices();
 
     const isMine = ship.player.is(currentUser);

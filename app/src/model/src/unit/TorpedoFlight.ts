@@ -6,6 +6,7 @@ import {
   createTorpedoInstance,
   TropedoType,
 } from "./system/weapon/ammunition/torpedo";
+import coordinateConverter from "../utils/CoordinateConverter";
 
 export type SerializedTorpedoFlight = {
   id: string;
@@ -19,6 +20,12 @@ export type SerializedTorpedoFlight = {
   launchPosition: Vector;
 };
 
+export enum InterceptionPriority {
+  HIGH = 1,
+  MEDIUM = 2,
+  LOW = 3,
+}
+
 class TorpedoFlight {
   public id: string;
   public torpedo: Torpedo;
@@ -30,6 +37,9 @@ class TorpedoFlight {
   public strikePosition: Vector;
   public intercepted: boolean;
   public done: boolean;
+  public interceptionPriority: InterceptionPriority =
+    InterceptionPriority.MEDIUM;
+  public pathStartIndex: number = 0;
 
   constructor(
     torpedo: Torpedo,
@@ -50,6 +60,10 @@ class TorpedoFlight {
     this.done = false;
   }
 
+  public randomizeStartIndex() {
+    this.pathStartIndex = Math.floor(Math.random() * 3);
+  }
+
   getTargetId() {
     return this.targetId;
   }
@@ -60,6 +74,10 @@ class TorpedoFlight {
 
   isDone() {
     return this.done;
+  }
+
+  isIntercepted() {
+    return this.intercepted;
   }
 
   setIntercepted() {
@@ -73,6 +91,10 @@ class TorpedoFlight {
   setStrikePosition(position: Vector) {
     this.strikePosition = position;
     return this;
+  }
+
+  getStrikePositionHex() {
+    return coordinateConverter.fromGameToHex(this.strikePosition);
   }
 
   setLaunchPosition(position: Vector) {

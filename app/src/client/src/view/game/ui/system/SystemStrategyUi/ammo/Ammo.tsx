@@ -78,7 +78,7 @@ const LoadoutButtons: React.FC<LoadoutButtonsProps> = ({ ammoStrategy }) => {
       {loadingTarget.map(({ object, amount }, i) => (
         <NewTargetContainer key={`new-loading-${i}`}>
           <LoadingButton
-            img="/img/minus.png"
+            $img="/img/minus.png"
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
@@ -93,7 +93,7 @@ const LoadoutButtons: React.FC<LoadoutButtonsProps> = ({ ammoStrategy }) => {
             amount={amount}
           />
           <LoadingButton
-            img="/img/plus.png"
+            $img="/img/plus.png"
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
@@ -172,7 +172,7 @@ const Ammo: React.FC<AmmoProps> = ({ ship, ammoStrategy }) => {
           </TooltipEntry>
 
           <CenteredTooltipEntry
-            clickable
+            $clickable
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
@@ -215,7 +215,7 @@ const Ammo: React.FC<AmmoProps> = ({ ship, ammoStrategy }) => {
 
           <LoadoutButtons ammoStrategy={ammoStrategy} />
           <CenteredTooltipEntry
-            clickable
+            $clickable
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
@@ -225,7 +225,7 @@ const Ammo: React.FC<AmmoProps> = ({ ship, ammoStrategy }) => {
             <TooltipValueHeader>CLOSE</TooltipValueHeader>
           </CenteredTooltipEntry>
           <CenteredTooltipEntry
-            clickable
+            $clickable
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();

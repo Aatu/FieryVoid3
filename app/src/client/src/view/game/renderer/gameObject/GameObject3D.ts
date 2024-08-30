@@ -106,6 +106,16 @@ class GameObject3D implements IClonable {
     return systemObject;
   }
 
+  getSystemLocation(system: ShipSystem) {
+    const object = this.getSystemObject(system);
+
+    if (!object) {
+      return null;
+    }
+
+    return object.getObject().position;
+  }
+
   disableAnimation(name: string, system?: ShipSystem) {
     if (system) {
       const systemObject = this.getSystemObject(system);

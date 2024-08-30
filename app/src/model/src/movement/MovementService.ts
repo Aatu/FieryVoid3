@@ -149,7 +149,7 @@ class MovementService {
     */
 
   shipStateChanged({ ship }: { ship: Ship }) {
-    this.getPhaseDirector().relayEvent("shipStateChanged", ship);
+    this.getPhaseDirector().relayEvent("shipStateChanged", { ship });
   }
 
   canThrust(ship: Ship, direction: THRUSTER_DIRECTION) {

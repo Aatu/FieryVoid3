@@ -149,7 +149,7 @@ class Offset {
     return coordinateConverter.fromHexToGame(this);
   }
 
-  drawLine(target: Offset, distance: number) {
+  drawLine(target: Offset, distance?: number) {
     return this.toCube()
       .drawLine(target.toCube(), distance)
       .map((cube) => cube.toOffset());

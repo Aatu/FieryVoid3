@@ -6,14 +6,14 @@ import WeaponArcStrategy, {
 import StandardHitStrategy from "../../strategy/weapon/StandardHitStrategy";
 import StandardRangeStrategy from "../../strategy/weapon/StandardRangeStrategy";
 import StandardLoadingStrategy from "../../strategy/weapon/StandardLoadingStrategy";
-import BurstDamageStrategy from "../../strategy/weapon/BurstDamageStrategy";
 import RequiresPowerSystemStrategy from "../../strategy/RequiresPowerSystemStrategy";
 import WeaponAnimationStrategy from "../../strategy/weapon/WeaponAnimationStrategy";
 import InterceptorStrategy from "../../strategy/weapon/InterceptorStrategy";
 import AmmunitionStrategy from "../../strategy/weapon/AmmunitionStrategy";
-import ArmorBoostOfflineSystemStrategy from "../../strategy/ArmorBoostOfflineSystemStrategy";
+import InternalSystemWhenOfflineSystemStrategy from "../../strategy/InternalSystemWhenOfflineSystemStrategy";
 import FireOrderHeatStrategy from "../../strategy/FireOrderHeatStrategy";
 import { MEDIUM_WEAPON_RANGE } from "../../../../config/gameConfig";
+import { UnifiedDamageSystemStrategy } from "../../strategy/weapon/UnifiedDamageStrategy";
 
 class AutoCannon85mm extends Weapon {
   constructor({ id }: WeaponArgs, arcs: WeaponArcs) {
@@ -21,7 +21,7 @@ class AutoCannon85mm extends Weapon {
       new RequiresPowerSystemStrategy(2),
       new FireOrderStrategy(1),
       new WeaponArcStrategy(arcs),
-      new StandardHitStrategy(20),
+      new StandardHitStrategy(20, 3, 2, 15),
       new StandardRangeStrategy([
         { range: 0, modifier: 0 },
         { range: Math.round(MEDIUM_WEAPON_RANGE * 0.5), modifier: -20 },
@@ -29,7 +29,7 @@ class AutoCannon85mm extends Weapon {
         { range: Math.round(MEDIUM_WEAPON_RANGE * 1.5), modifier: -200 },
       ]),
       new StandardLoadingStrategy(1),
-      new BurstDamageStrategy(null, null, 0, 3, 10),
+      new UnifiedDamageSystemStrategy(),
       new InterceptorStrategy(),
       new AmmunitionStrategy(["Ammo85mmAP", "Ammo85mmHE"], 3, 15, 6),
       new WeaponAnimationStrategy("UniversalBolt", {
@@ -38,7 +38,7 @@ class AutoCannon85mm extends Weapon {
         color: [1.0, 0.7, 0.7],
         explosionSize: 5,
       }),
-      new ArmorBoostOfflineSystemStrategy(3),
+      new InternalSystemWhenOfflineSystemStrategy(3),
       new FireOrderHeatStrategy(8),
     ]);
   }

@@ -17,6 +17,10 @@ import { SYSTEM_HANDLERS } from "./system/strategy/types/SystemHandlersTypes";
 import { SerializedMovementOrder } from "../movement/MovementOrder";
 import GameData from "../game/GameData";
 import { AiRole } from "../ai/AiRole";
+import {
+  SerializedShipTorpedoDefense,
+  ShipTorpedoDefense,
+} from "./ShipTorpedoDefense";
 
 export type ShipBase = {
   id?: string;
@@ -32,6 +36,7 @@ export type ShipData = {
   electronicWarfare?: SearializedShipCurrentElectronicWarfare;
   destroyedThisTurn?: boolean;
   aiRole?: any | null;
+  torpedoDefense?: SerializedShipTorpedoDefense;
 };
 
 export type SerializedShip = ShipBase &
@@ -61,6 +66,7 @@ class Ship implements IHexPosition {
   public aiRole: AiRole | null = null;
   public shipModel: unknown | null = null;
   public description: string = "";
+  public torpedoDefense: ShipTorpedoDefense = new ShipTorpedoDefense();
 
   constructor(data?: SerializedShip | ShipBase) {
     this.systems = new ShipSystems(this);
@@ -198,6 +204,7 @@ class Ship implements IHexPosition {
       shipData.electronicWarfare
     );
     this.destroyedThisTurn = shipData.destroyedThisTurn || false;
+    this.torpedoDefense.deserialize(shipData.torpedoDefense);
 
     this.aiRole = shipData.aiRole || null;
 
@@ -226,6 +233,7 @@ class Ship implements IHexPosition {
           this.aiRole && this.aiRole.serialize
             ? this.aiRole.serialize()
             : this.aiRole,
+        torpedoDefense: this.torpedoDefense.serialize(),
       },
     };
   }
@@ -276,6 +284,7 @@ class Ship implements IHexPosition {
 
   receivePlayerData(clientShip: Ship, gameData: GameData, phase: number) {
     this.systems.receivePlayerData(clientShip, gameData, phase);
+    this.torpedoDefense.receivePlayerData(clientShip);
   }
 
   setShipLoadout() {

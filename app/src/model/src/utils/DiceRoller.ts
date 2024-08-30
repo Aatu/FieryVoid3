@@ -3,6 +3,13 @@ import {
   DiceRoller as RpgDiceRoller,
 } from "@dice-roller/rpg-dice-roller";
 
+export type DiceRollMinMax = {
+  min: number;
+  max: number;
+};
+
+export type DiceRollFormula = number | string | DiceRollMinMax;
+
 export class DiceRoller {
   private diceRoller: RpgDiceRoller;
 
@@ -10,9 +17,26 @@ export class DiceRoller {
     this.diceRoller = new RpgDiceRoller();
   }
 
-  public roll(dice: string | number): number {
-    const result = this.diceRoller.roll(dice.toString()) as DiceRoll;
+  public roll(dice: string | number | DiceRollMinMax): number {
+    if (isDiceRollMinMax(dice)) {
+      return (dice.max - dice.min) * Math.random() + dice.min;
+    }
 
-    return result.total;
+    if (typeof dice === "number") {
+      return dice;
+    }
+
+    const result = ([] as DiceRoll[]).concat(this.diceRoller.roll(dice));
+
+    return result.reduce((acc, roll) => acc + roll.total, 0);
   }
 }
+
+const isDiceRollMinMax = (value: unknown): value is DiceRollMinMax => {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    typeof (value as DiceRollMinMax).min === "number" &&
+    typeof (value as DiceRollMinMax).max === "number"
+  );
+};

@@ -1,4 +1,4 @@
-import { expect, expectTypeOf, test } from "vitest";
+import { expect, test } from "vitest";
 import coordinateConverter from "../../../model/src/utils/CoordinateConverter";
 import { Offset } from "../../../model/src/hexagon";
 import HexagonMath from "../../../model/src/utils/HexagonMath";

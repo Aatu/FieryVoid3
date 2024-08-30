@@ -45,9 +45,8 @@ const WeaponTargeting: React.FC<Props> = ({
     <Container>
       <SystemIcon
         scs
-        uiState={uiState}
         key={`system-weaponTargeting-${ship.id}-${system.id}`}
-        system={system}
+        systemId={system.id}
         ship={ship}
         selected={false}
         target={target}

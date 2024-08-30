@@ -4,6 +4,7 @@ import * as THREE from "three";
 import { ParticleEmitter } from "../../animation/particle";
 import TorpedoFlight from "@fieryvoid3/model/src/unit/TorpedoFlight";
 import {
+  addToDirection,
   degreeToRadian,
   getSeededRandomGenerator,
 } from "@fieryvoid3/model/src/utils/math";
@@ -22,6 +23,7 @@ class TorpedoObject {
   private totalAnimationTime: number;
   private hidden: boolean;
   private torpedo: THREE.Object3D | null;
+  private facing: number = 0;
 
   constructor(torpedoFlight: TorpedoFlight, scene: THREE.Object3D) {
     this.torpedoFlight = torpedoFlight;
@@ -56,10 +58,15 @@ class TorpedoObject {
   }
 
   setFacing(facing: number) {
+    if (this.facing === facing) {
+      return;
+    }
+    this.facing = facing;
     this.object.quaternion.setFromAxisAngle(
       new THREE.Vector3(0, 0, 1),
       degreeToRadian(facing)
     );
+    this.createParticleEffect();
   }
 
   setPosition(position: IVector) {
@@ -100,6 +107,19 @@ class TorpedoObject {
 
     this.torpedo = torpedo;
 
+    const enginePosition = this.getEnginePosition();
+
+    this.particleEmitter
+      .getMesh()
+      .position.set(enginePosition.x, enginePosition.y, enginePosition.z);
+
+    this.object.add(torpedo);
+
+    this.createParticleEffect();
+  }
+
+  private createParticleEffect() {
+    this.particleEmitter.freeAllParticles();
     const visuals = this.torpedoFlight.torpedo.visuals;
     const color = new THREE.Color(
       visuals.engineColor[0],
@@ -121,15 +141,10 @@ class TorpedoObject {
     });
     */
 
-    const enginePosition = this.getEnginePosition();
-
-    this.particleEmitter
-      .getMesh()
-      .position.set(enginePosition.x, enginePosition.y, enginePosition.z);
     const getRandom = getSeededRandomGenerator(this.torpedoFlight.id);
 
     const size = 10;
-    const sineFrequency = getRandom() * 50 + 200;
+    const sineFrequency = getRandom() * 20 + 50;
 
     this.particleEmitter
       .forceGetParticle()
@@ -167,67 +182,97 @@ class TorpedoObject {
 
     this.particleEmitter
       .forceGetParticle()
-      .setSize(size * 0.3)
-      .setOpacity(0.8)
+      .setSize(size * 0.5)
+      .setOpacity(0.5)
       .setFadeIn(0, 0)
       .setFadeOut(0, 0)
       .setColor(new THREE.Color(1, 1, 1))
       //.setVelocity(this.movement)
       .setPosition({
+        x: -0.25,
+        y: 0,
+        z: 0.05,
+      })
+      .setTexture(PARTICLE_TEXTURE.BOLT)
+      .setAngle(addToDirection(this.facing, -90), 0)
+      .setActivationTime(0);
+
+    this.particleEmitter
+      .forceGetParticle()
+      .setSize(size * 1)
+      .setOpacity(0.5)
+      .setFadeIn(0, 0)
+      .setFadeOut(0, 0)
+      .setColor(new THREE.Color(1, 1, 1))
+      //.setVelocity(this.movement)
+      .setPosition({
+        x: -0.25,
+        y: 0,
+        z: 0.05,
+      })
+      .setTexture(PARTICLE_TEXTURE.BOLT)
+      .setAngle(addToDirection(this.facing, -90), 0)
+      .setActivationTime(0);
+
+    this.particleEmitter
+      .forceGetParticle()
+      .setSize(size * 2)
+      .setOpacity(0.5)
+      .setFadeIn(0, 0)
+      .setFadeOut(0, 0)
+      .setColor(color)
+      //.setVelocity(this.movement)
+      .setPosition({
+        x: -2,
+        y: 0,
+        z: 0,
+      })
+      .setTexture(PARTICLE_TEXTURE.BOLT)
+      .setSine(sineFrequency, 0.5)
+      .setAngle(addToDirection(this.facing, -90), 0)
+      .setActivationTime(0);
+
+    let angle = 90;
+    const angleChange = 0;
+    //getRandom() * 0.5 - 0.25;
+
+    angle += 90;
+
+    this.particleEmitter
+      .forceGetParticle()
+      .setActivationTime(0)
+      .setFadeIn(0, 0)
+      .setFadeOut(0, 0)
+      .setSize(getRandom() * 10 + size * 5)
+      .setOpacity(getRandom() * 0.05 + 0.2)
+      .setPosition({
         x: 0,
         y: 0,
         z: 0,
       })
-      .setTexture(PARTICLE_TEXTURE.GLOW)
-      .setActivationTime(0);
+      .setColor(new THREE.Color(51 / 255, 163 / 255, 255 / 255))
+      //.setSine(getRandom() * 200 + 100, 0.1)
+      .setAngle(angle, angleChange)
+      .setTexture(PARTICLE_TEXTURE.STARLINE)
+      .setSine(100, 0.5);
 
-    let angle = 90;
-    let shines = 2;
-    const angleChange = 0; // getRandom() * 0.05 - 0.025;
-
-    while (shines--) {
-      angle += 90;
-
-      /*
-      this.particleEmitter
-        .getParticle()
-        .setActivationTime(0)
-        .setFadeIn(0, 0)
-        .setFadeOut(0, 0)
-        .setSize(getRandom() * 10 + size * 5)
-        .setOpacity(getRandom() * 0.05 + 0.2)
-        .setPosition({
-          x: 0,
-          y: 0,
-          z: 0
-        })
-        .setColor(new THREE.Color(51 / 255, 163 / 255, 255 / 255))
-        //.setSine(getRandom() * 200 + 100, 0.1)
-        .setAngle(angle, angleChange)
-        .setTexture(TEXTURE_STARLINE);
-      //.setSine(100, 0.5);
-      */
-
-      this.particleEmitter
-        .forceGetParticle()
-        .setActivationTime(0)
-        .setFadeIn(0, 0)
-        .setFadeOut(0, 0)
-        .setSize(getRandom() * 10 + size * 3)
-        .setOpacity(0.1)
-        .setPosition({
-          x: 0,
-          y: 0,
-          z: 0,
-        })
-        .setColor(color)
-        //.setSine(getRandom() * 200 + 100, 0.1)
-        .setAngle(angle, angleChange)
-        .setTexture(PARTICLE_TEXTURE.STARLINE)
-        .setSine(sineFrequency, 0.99);
-    }
-
-    this.object.add(torpedo);
+    this.particleEmitter
+      .forceGetParticle()
+      .setActivationTime(0)
+      .setFadeIn(0, 0)
+      .setFadeOut(0, 0)
+      .setSize(getRandom() * 10 + size * 6)
+      .setOpacity(0.1)
+      .setPosition({
+        x: 0,
+        y: 0,
+        z: 0,
+      })
+      .setColor(color)
+      //.setSine(getRandom() * 200 + 100, 0.1)
+      .setAngle(angle, angleChange)
+      .setTexture(PARTICLE_TEXTURE.STARLINE)
+      .setSine(sineFrequency, 0.99);
   }
 
   render({ zoom }: RenderPayload) {

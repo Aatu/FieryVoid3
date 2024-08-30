@@ -3,6 +3,7 @@ import ThrustChannelHeatIncreased from "../criticals/ThrustChannelHeatIncreased"
 import { OutputReduced } from "../criticals/index";
 import { SYSTEM_HANDLERS, SystemMessage } from "./types/SystemHandlersTypes";
 import { SystemTooltipMenuButton } from "../../ShipSystemHandlers";
+import { GAME_PHASE } from "../../../game/gamePhase";
 
 export type SerializedThrustChannelSystemStrategy = {
   thrustChannelSystemStrategy?: {
@@ -371,6 +372,7 @@ class ThrustChannelSystemStrategy extends ShipSystemStrategy {
 
     const boost =
       this.getSystem().callHandler(SYSTEM_HANDLERS.getBoost, null, 0) * 0.05;
+    //TODO: Should following line have a + instead of a -?
     let extraIncrement = this.thrustHeatExtra - boost * 0.01;
 
     if (extraIncrement < 0.01) {
@@ -436,13 +438,13 @@ class ThrustChannelSystemStrategy extends ShipSystemStrategy {
 
   getRequiredPhasesForReceivingPlayerData(
     payload: unknown,
-    previousResponse = 1
+    previousResponse = GAME_PHASE.GAME
   ) {
-    if (previousResponse > 3) {
+    if (previousResponse > GAME_PHASE.GAME) {
       return previousResponse;
     }
 
-    return 3;
+    return GAME_PHASE.GAME;
   }
 
   receivePlayerData({
@@ -450,9 +452,9 @@ class ThrustChannelSystemStrategy extends ShipSystemStrategy {
     phase,
   }: {
     clientSystem: any;
-    phase: number;
+    phase: GAME_PHASE;
   }) {
-    if (phase !== 3) {
+    if (phase !== GAME_PHASE.GAME) {
       return;
     }
 

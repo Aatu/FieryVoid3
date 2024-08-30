@@ -20,7 +20,9 @@ import TorpedoFlight from "@fieryvoid3/model/src/unit/TorpedoFlight";
 import { TORPEDO_Z } from "@fieryvoid3/model/src/config/gameConfig";
 import MSVTorpedoDamageStrategy from "@fieryvoid3/model/src/unit/system/weapon/ammunition/torpedo/torpedoDamageStrategy/MSVTorpedoDamageStrategy";
 import TorpedoMovementAnimation from "../../../animation/TorpedoMovementAnimation";
-import ExplosionEffect from "../../../animation/effect/ExplosionEffect";
+import ExplosionEffect, {
+  ExplosionType,
+} from "../../../animation/effect/ExplosionEffect";
 import TorpedoExplosionMSV from "../../../animation/TorpedoExplosion/TorpedoExplosionMSV";
 import TorpedoExplosionHE from "../../../animation/TorpedoExplosion/TorpedoExplosionHE";
 import WeaponFireService from "@fieryvoid3/model/src/weapon/WeaponFireService";
@@ -412,9 +414,10 @@ class ReplayTurnActions extends AnimationUiStrategy {
               position: interceptPosition!,
               time: interceptTime!,
               duration: 250 + this.getRandom() * 250,
-              type: "glow",
+              type: ExplosionType.GLOW_NEW,
               size: this.getRandom() * 5 + 5,
-              color: new THREE.Color(1.0, 0.9, 0.8),
+              //color: new THREE.Color(1.0, 0.9, 0.8),
+              color: new THREE.Color(...flight.torpedo.visuals.engineColor),
               velocity,
             },
             this

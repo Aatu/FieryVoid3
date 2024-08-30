@@ -10,7 +10,11 @@ class SystemClickShowsSystemMenu extends UiStrategy {
   shipStateChanged() {
     const { uiState } = this.getServices();
     if (this.clickedSystem && this.element) {
-      uiState.setSystemMenuActiveSystem(this.clickedSystem, this.element);
+      uiState.setSystemMenuActiveSystem(
+        this.clickedSystem.getShip(),
+        this.clickedSystem,
+        this.element
+      );
     }
   }
 
@@ -21,15 +25,17 @@ class SystemClickShowsSystemMenu extends UiStrategy {
   deactivate() {
     const { uiState } = this.getServices();
     if (this.clickedShip) {
-      uiState.setSystemMenuActiveSystem(null, null);
+      uiState.setSystemMenuActiveSystem(null, null, null);
     }
   }
 
   systemClicked({
+    ship,
     system,
     element,
     scs = false,
   }: {
+    ship: Ship;
     system: ShipSystem;
     element: HTMLElement;
     scs?: boolean;
@@ -40,9 +46,14 @@ class SystemClickShowsSystemMenu extends UiStrategy {
       return;
     }
 
+    if (this.clickedSystem === system) {
+      this.hide();
+      return;
+    }
+
     this.clickedSystem = system;
     this.element = element;
-    uiState.setSystemMenuActiveSystem(this.clickedSystem, this.element);
+    uiState.setSystemMenuActiveSystem(ship, this.clickedSystem, this.element);
   }
 
   hexClicked() {
@@ -63,7 +74,7 @@ class SystemClickShowsSystemMenu extends UiStrategy {
     }
 
     const { uiState } = this.getServices();
-    uiState.setSystemMenuActiveSystem(null, null);
+    uiState.setSystemMenuActiveSystem(null, null, null);
     this.clickedSystem = null;
     this.element = null;
   }

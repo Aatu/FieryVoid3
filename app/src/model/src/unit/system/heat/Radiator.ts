@@ -1,6 +1,6 @@
 import ShipSystem, { SystemArgs } from "../ShipSystem";
 import AlwaysTargetableSystemStrategy from "../strategy/AlwaysTargetableSystemStrategy";
-import ArmorBoostOfflineSystemStrategy from "../strategy/ArmorBoostOfflineSystemStrategy";
+import InternalSystemWhenOfflineSystemStrategy from "../strategy/InternalSystemWhenOfflineSystemStrategy";
 import LargerHitProfileOnlineSystemStrategy from "../strategy/LargerHitProfileOnlineSystemStrategy";
 import RadiateHeatStrategy from "../strategy/RadiateHeatStrategy";
 import RequiresPowerSystemStrategy from "../strategy/RequiresPowerSystemStrategy";
@@ -16,7 +16,7 @@ class Radiator extends ShipSystem {
       new RequiresPowerSystemStrategy(1, false),
       new LargerHitProfileOnlineSystemStrategy(extraProfile, extraProfile, 5),
       new RadiateHeatStrategy(radiationCapacity),
-      new ArmorBoostOfflineSystemStrategy(armorBoost),
+      new InternalSystemWhenOfflineSystemStrategy(armorBoost),
       new AlwaysTargetableSystemStrategy(2),
     ]);
   }

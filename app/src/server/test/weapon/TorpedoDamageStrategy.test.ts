@@ -83,7 +83,6 @@ test("Torpedo MSV damage strategy causes damage", (test) => {
   (torpedo.getDamageStrategy() as any).strikeHitChance = 100;
   torpedo.getDamageStrategy().applyDamageFromWeaponFire({
     target: ship,
-    shooter,
     torpedoFlight: flight,
     combatLogEntry: torpedoAttack,
   });

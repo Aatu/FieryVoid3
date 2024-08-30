@@ -6,22 +6,22 @@ import WeaponArcStrategy, {
 import StandardHitStrategy from "../../strategy/weapon/StandardHitStrategy";
 import StandardRangeStrategy from "../../strategy/weapon/StandardRangeStrategy";
 import StandardLoadingStrategy from "../../strategy/weapon/StandardLoadingStrategy";
-import BurstDamageStrategy from "../../strategy/weapon/BurstDamageStrategy";
 import RequiresPowerSystemStrategy from "../../strategy/RequiresPowerSystemStrategy";
 import WeaponAnimationStrategy from "../../strategy/weapon/WeaponAnimationStrategy";
 import InterceptorStrategy from "../../strategy/weapon/InterceptorStrategy";
 import AmmunitionStrategy from "../../strategy/weapon/AmmunitionStrategy";
-import ArmorBoostOfflineSystemStrategy from "../../strategy/ArmorBoostOfflineSystemStrategy";
+import InternalSystemWhenOfflineSystemStrategy from "../../strategy/InternalSystemWhenOfflineSystemStrategy";
 import FireOrderHeatStrategy from "../../strategy/FireOrderHeatStrategy";
 import { MEDIUM_WEAPON_RANGE } from "../../../../config/gameConfig";
+import { UnifiedDamageSystemStrategy } from "../../strategy/weapon/UnifiedDamageStrategy";
 
 class PDC30mm extends Weapon {
   constructor({ id }: WeaponArgs, arcs: WeaponArcs) {
     super({ id, armor: 1, hitpoints: 4 }, [
       new RequiresPowerSystemStrategy(1),
-      new FireOrderStrategy(1),
+      new FireOrderStrategy(),
       new WeaponArcStrategy(arcs),
-      new StandardHitStrategy(30),
+      new StandardHitStrategy(30, 6, 6, 5),
       new StandardRangeStrategy([
         { range: 0, modifier: 0 },
         { range: Math.round(MEDIUM_WEAPON_RANGE * 0.3), modifier: -20 },
@@ -30,8 +30,8 @@ class PDC30mm extends Weapon {
         { range: Math.round(MEDIUM_WEAPON_RANGE * 0.8), modifier: -200 },
       ]),
       new StandardLoadingStrategy(1),
-      new BurstDamageStrategy(null, null, 0, 6, 5),
-      new InterceptorStrategy(1, 2),
+      new UnifiedDamageSystemStrategy(),
+      new InterceptorStrategy(),
       new AmmunitionStrategy(["Ammo30mm"], 6, 24, 12),
       new WeaponAnimationStrategy("UniversalBolt", {
         size: 6,
@@ -39,7 +39,7 @@ class PDC30mm extends Weapon {
         color: [1.0, 0.9, 0.8],
         explosionSize: 3,
       }),
-      new ArmorBoostOfflineSystemStrategy(3),
+      new InternalSystemWhenOfflineSystemStrategy(3),
       new FireOrderHeatStrategy(3),
     ]);
   }

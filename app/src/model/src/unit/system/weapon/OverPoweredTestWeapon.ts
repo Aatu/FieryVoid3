@@ -6,7 +6,7 @@ import WeaponArcStrategy, {
 import StandardHitStrategy from "../strategy/weapon/StandardHitStrategy";
 import StandardRangeStrategy from "../strategy/weapon/StandardRangeStrategy";
 import StandardLoadingStrategy from "../strategy/weapon/StandardLoadingStrategy";
-import StandardDamageStrategy from "../strategy/weapon/StandardDamageStrategy";
+import { UnifiedDamageSystemStrategy } from "../strategy/weapon/UnifiedDamageStrategy";
 
 class OverPoweredTestWeapon extends Weapon {
   constructor(args: WeaponArgs, arcs: WeaponArcs) {
@@ -19,7 +19,10 @@ class OverPoweredTestWeapon extends Weapon {
         { range: 300, modifier: -200 },
       ]),
       new StandardLoadingStrategy(2),
-      new StandardDamageStrategy(10000),
+      new UnifiedDamageSystemStrategy({
+        damageFormula: 10000,
+        armorPiercingFormula: 1000,
+      }),
     ]);
   }
 }

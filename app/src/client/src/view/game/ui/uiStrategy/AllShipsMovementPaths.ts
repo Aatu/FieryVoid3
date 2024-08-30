@@ -22,7 +22,7 @@ class AllShipsMovementPaths extends UiStrategy {
     this.show();
   }
 
-  shipStateChanged(ship: Ship) {
+  shipStateChanged({ ship }: { ship: Ship }) {
     const { movementPathService, uiState } = this.getServices();
     if (!this.gameData) {
       return;

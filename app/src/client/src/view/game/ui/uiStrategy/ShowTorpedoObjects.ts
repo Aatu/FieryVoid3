@@ -145,6 +145,7 @@ class ShowTorpedoObjects extends AnimationUiStrategy {
       .add(variance);
 
     icon.setPosition(torpedoPosition);
+
     icon.setFacing(-getCompassHeadingOfPoint(torpedoPosition, targetPosition));
 
     const lineEntry = this.lines.find(

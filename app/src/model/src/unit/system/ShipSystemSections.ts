@@ -31,6 +31,12 @@ class ShipSystemSections {
     ];
   }
 
+  getSectionForSystem(system: ShipSystem) {
+    return this.sections.find((section) =>
+      section.getSystems().find((otherSystem) => system.id === otherSystem.id)
+    );
+  }
+
   getHitSectionHeading(
     shooterPosition: IVector,
     shipPosition: IVector,

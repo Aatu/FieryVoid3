@@ -1,4 +1,12 @@
-import ShipSystem from "./system/ShipSystem";
+import CombatLogWeaponFireHitResult from "../combatLog/CombatLogWeaponFireHitResult";
+import Vector, { IVector } from "../utils/Vector";
+import WeaponHitChance from "../weapon/WeaponHitChance";
+import Ship from "./Ship";
+import ShipSystem, { ShipSystemType } from "./system/ShipSystem";
+import { HitResolution } from "./system/strategy/weapon/StandardHitStrategy";
+import { UnifiedDamagePayload } from "./system/strategy/weapon/UnifiedDamageStrategy";
+import Ammo from "./system/weapon/ammunition/Ammo";
+import TorpedoFlight from "./TorpedoFlight";
 
 interface IBaseShipSystemStrategy {
   init: (system: ShipSystem) => void;
@@ -21,6 +29,28 @@ export interface IShipSystemHandlers {
   getTooltipMenuButton: (payload: {
     myShip: boolean;
   }) => SystemTooltipMenuButton[];
+  getNumberOfShots: (payload: unknown, previousResponse: number) => number;
+  getBurstSize: (payload: unknown, previousResponse: number) => number;
+  getBurstGrouping: (payload: unknown, previousResponse: number) => number;
+  getUsedIntercepts: (payload: unknown, previousResponse: number) => number;
+  canIntercept: (payload: unknown, previousResponse: boolean) => boolean;
+  getInterceptChance: (
+    payload: { target: Ship; torpedoFlight: TorpedoFlight },
+    previousResponse: unknown
+  ) => WeaponHitChance;
+  isPositionOnArc: (
+    payload: { targetPosition: IVector },
+    previousResponse: undefined
+  ) => boolean;
+  addUsedIntercept: (amount?: number) => void;
+  hasFireOrder: () => boolean;
+  canFire: () => boolean;
+  onWeaponFired: () => void;
+  checkFireOrderHits: (payload: HitResolution) => CombatLogWeaponFireHitResult;
+  getShipSystemType: (previousResponse: ShipSystemType) => ShipSystemType;
+  isAlwaysTargetable: () => boolean;
+  getSelectedAmmo: () => Ammo | null;
+  applyDamageFromWeaponFire: (payload: UnifiedDamagePayload) => void;
 }
 
 export type IShipSystemStrategy = IBaseShipSystemStrategy &
@@ -35,6 +65,53 @@ export class SystemHandlers {
     this.system = system;
   }
 
+  applyDamageFromWeaponFire(payload: UnifiedDamagePayload) {
+    this.callHandler("applyDamageFromWeaponFire", undefined, payload);
+  }
+
+  getSelectedAmmo(): Ammo | null {
+    return this.callHandler("getSelectedAmmo") || null;
+  }
+
+  isAlwaysTargetable(): boolean {
+    return Boolean(this.callHandler<boolean>("isAlwaysTargetable"));
+  }
+
+  getShipSystemType(previousResponse: ShipSystemType): ShipSystemType {
+    return this.callHandler<ShipSystemType>(
+      "getShipSystemType",
+      previousResponse
+    );
+  }
+
+  checkFireOrderHits(payload: HitResolution): CombatLogWeaponFireHitResult {
+    return this.callHandler<CombatLogWeaponFireHitResult>(
+      "checkFireOrderHits",
+      undefined,
+      payload
+    );
+  }
+
+  onWeaponFired(): void {
+    this.callHandler("onWeaponFired");
+  }
+
+  canFire(): boolean {
+    return Boolean(this.callHandler<boolean>("canFire", true));
+  }
+
+  hasFireOrder(): boolean {
+    return Boolean(this.callHandler<boolean>("hasFireOrder"));
+  }
+
+  isPositionOnArc(targetPosition: IVector): boolean {
+    return Boolean(
+      this.callHandler<boolean | undefined>("isPositionOnArc", undefined, {
+        targetPosition,
+      })
+    );
+  }
+
   getTooltipMenuButton(payload: {
     myShip: boolean;
   }): SystemTooltipMenuButton[] {
@@ -43,6 +120,44 @@ export class SystemHandlers {
       [] as SystemTooltipMenuButton[],
       payload
     );
+  }
+
+  getInterceptChance(
+    target: Ship,
+    torpedoFlight: TorpedoFlight
+  ): WeaponHitChance {
+    if (!this.canIntercept()) {
+      throw new Error("Cannot intercept");
+    }
+
+    return this.callHandler<WeaponHitChance>("getInterceptChance", undefined, {
+      target,
+      torpedoFlight,
+    });
+  }
+
+  canIntercept(): boolean {
+    return Boolean(this.callHandler<boolean>("canIntercept"));
+  }
+
+  getUsedIntercepts(): number {
+    return this.callHandler<number>("getUsedIntercepts", 0);
+  }
+
+  addUsedIntercept(amount = 1): void {
+    this.callHandler("addUsedIntercept", amount);
+  }
+
+  getNumberOfShots(): number {
+    return this.callHandler<number>("getNumberOfShots", 1);
+  }
+
+  getBurstSize(): number {
+    return this.callHandler<number>("getBurstSize", 1);
+  }
+
+  getBurstGrouping(): number {
+    return this.callHandler<number>("getBurstGrouping", 0);
   }
 
   isBoostable(): boolean {

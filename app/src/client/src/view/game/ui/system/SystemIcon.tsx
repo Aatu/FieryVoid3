@@ -3,15 +3,18 @@ import SystemInfo from "./SystemInfo";
 
 import { colors } from "../../../../styled";
 import React, { LegacyRef, MouseEventHandler, useRef, useState } from "react";
-import UIState, { SystemMenuUiState } from "../UIState";
+import { SystemMenuUiState } from "../UIState";
 import ShipSystem from "@fieryvoid3/model/src/unit/system/ShipSystem";
 import Ship from "@fieryvoid3/model/src/unit/Ship";
 import { SYSTEM_HANDLERS } from "@fieryvoid3/model/src/unit/system/strategy/types/SystemHandlersTypes";
+import { useSystemMenu } from "../../../../state/useSystemMenu";
+import { useUiStateHandler } from "../../../../state/useUIStateHandler";
+import { useSystem } from "../../../../state/useSystem";
 
 type HealthBarProps = {
-  destroyed?: boolean;
+  $destroyed?: boolean;
   $health: number;
-  criticals?: boolean;
+  $criticals?: boolean;
 };
 
 const HealthBar = styled.div<HealthBarProps>`
@@ -23,10 +26,10 @@ const HealthBar = styled.div<HealthBarProps>`
   border: 2px solid black;
   box-sizing: border-box;
 
-  ${(props) => props.destroyed && "display: none;"}
+  ${(props) => props.$destroyed && "display: none;"}
   background-color: #7a2020;
 
-  :before {
+  &:before {
     content: "";
     position: absolute;
     width: ${(props) => `${props.$health}%`};
@@ -34,12 +37,12 @@ const HealthBar = styled.div<HealthBarProps>`
     left: 0;
     bottom: 0;
     background-color: ${(props) =>
-      props.criticals ? colors.hitpointsCritical : colors.hitpoints};
+      props.$criticals ? colors.hitpointsCritical : colors.hitpoints};
   }
 `;
 
 type SystemTextProps = {
-  destroyed: boolean;
+  $destroyed?: boolean;
 };
 
 const SystemText = styled.div<SystemTextProps>`
@@ -51,23 +54,24 @@ const SystemText = styled.div<SystemTextProps>`
   font-size: 10px;
   color: white;
   display: flex;
-  ${(props) => props.destroyed && "display: none;"}
+  ${(props) => props.$destroyed && "display: none;"}
   align-items: flex-end;
   justify-content: center;
   text-shadow: black 0 0 6px, black 0 0 6px, black 0 0 6px, black 0 0 6px;
+  pointer-events: none;
 `;
 
 type SystemProps = {
-  background: string;
-  offline?: boolean;
-  loading?: boolean;
-  selected?: boolean;
-  firing?: boolean;
-  targeting?: boolean;
-  reserved?: boolean;
-  destroyed?: boolean;
-  inactive?: boolean;
-  boosted?: boolean;
+  $background: string;
+  $offline?: boolean;
+  $loading?: boolean;
+  $selected?: boolean;
+  $firing?: boolean;
+  $targeting?: boolean;
+  $reserved?: boolean;
+  $destroyed?: boolean;
+  $inactive?: boolean;
+  $boosted?: boolean;
 };
 
 const System = styled.div<SystemProps>`
@@ -77,19 +81,30 @@ const System = styled.div<SystemProps>`
   height: 30px;
 
   background-color: "transparent";
-  background-image: ${(props) => `url(${props.background})`};
+  background-image: ${(props) => `url(${props.$background})`};
   background-size: cover;
+
+  ${(props) => props.$selected && `animation: blinker 2s linear infinite;`};
+
+  @keyframes blinker {
+    50% {
+      opacity: 0.3;
+    }
+  }
+
   filter: ${(props) => {
-    if (props.targeting) {
+    if (props.$targeting) {
       return "hue-rotate(0deg) brightness(4) grayscale(0)";
-    } else if (props.reserved) {
+    } else if (props.$reserved) {
       return "hue-rotate(0deg) brightness(1) grayscale(0.7)";
-    } else if (props.firing) {
+    } else if (props.$firing) {
       return "hue-rotate(0deg) brightness(4) grayscale(0)"; //"grayscale(100%) brightness(6) drop-shadow(0px 0px 5px white)";
-    } else if (props.destroyed) {
+    } else if (props.$destroyed) {
       return "blur(1px) brightness(0.5)";
-    } else if (props.inactive) {
+    } else if (props.$inactive) {
       return "brightness(0.5)";
+    } else if (props.$offline) {
+      return "grayscale(1)";
     } else {
       return "none";
     }
@@ -97,11 +112,11 @@ const System = styled.div<SystemProps>`
   cursor: pointer;
 
   ${SystemText} {
-    display: ${(props) => (props.offline ? "none" : "flex")};
+    display: ${(props) => (props.$offline ? "none" : "flex")};
   }
 
-  ${({ boosted }) =>
-    boosted &&
+  ${({ $boosted }) =>
+    $boosted &&
     `
     :before {
       content: "";
@@ -118,7 +133,7 @@ const System = styled.div<SystemProps>`
     width: 100%;
     height: 100%;
     opacity: ${(props) => {
-      if (props.destroyed || props.offline || props.loading) {
+      if (props.$destroyed || props.$offline || props.$loading) {
         return "0.8";
       }
 
@@ -128,7 +143,7 @@ const System = styled.div<SystemProps>`
     background-color: transparent;
 
     background-image: ${(props) => {
-      if (props.offline) {
+      if (props.$offline) {
         return "url(/img/offline.png)";
       }
 
@@ -138,7 +153,7 @@ const System = styled.div<SystemProps>`
 `;
 
 type OverheatProps = {
-  overheat: number;
+  $overheat: number;
 };
 
 const Overheat = styled.div<OverheatProps>`
@@ -148,8 +163,8 @@ const Overheat = styled.div<OverheatProps>`
   opacity: 0.95;
   background-image: url(/img/overheat.png);
 
-  ${({ overheat }) =>
-    overheat >= 1 &&
+  ${({ $overheat }) =>
+    $overheat >= 1 &&
     `
     animation: blinker 1s linear infinite;
 
@@ -169,8 +184,7 @@ const Container = styled.div`
 `;
 
 type SystemIconProps = {
-  uiState: UIState;
-  system: ShipSystem;
+  systemId: number;
   ship: Ship;
   scs: boolean;
   systemMenu?: SystemMenuUiState;
@@ -182,15 +196,9 @@ type SystemIconProps = {
 };
 
 const SystemIcon: React.FC<SystemIconProps> = ({
-  uiState,
-  system,
+  systemId,
   ship,
   scs,
-  systemMenu: { systemInfoMenuProvider, activeSystem, activeSystemElement } = {
-    systemInfoMenuProvider: null,
-    activeSystem: null,
-    activeSystemElement: null,
-  },
   onSystemClicked,
   selected = false,
   text = null,
@@ -198,8 +206,12 @@ const SystemIcon: React.FC<SystemIconProps> = ({
   inactive = false,
   ...rest
 }) => {
-  const customEvent = uiState.customEvent;
+  const { activeSystemId, activeSystemElement, systemInfoMenuProvider } =
+    useSystemMenu();
 
+  const system = useSystem(ship.id, systemId);
+
+  const uiState = useUiStateHandler();
   const ref = useRef<HTMLElement>(null);
   const [mouseOveredSystem, setMouseOveredSystem] =
     useState<HTMLElement | null>(null);
@@ -236,7 +248,7 @@ const SystemIcon: React.FC<SystemIconProps> = ({
       return null;
     })();
 
-    customEvent("systemMouseOver", {
+    uiState.customEvent("systemMouseOver", {
       ship,
       system,
       element: ref.current,
@@ -250,7 +262,7 @@ const SystemIcon: React.FC<SystemIconProps> = ({
     event.stopPropagation();
     event.preventDefault();
 
-    customEvent("systemMouseOut");
+    uiState.customEvent("systemMouseOut");
 
     setMouseOveredSystem(null);
   };
@@ -259,20 +271,20 @@ const SystemIcon: React.FC<SystemIconProps> = ({
     event.stopPropagation();
     event.preventDefault();
 
-    customEvent("systemRightClicked", { system, ship });
+    uiState.customEvent("systemRightClicked", { system, ship });
   };
 
   if (!text) {
     text = system.getIconText();
   }
 
-  const menu = activeSystem ? systemInfoMenuProvider : null;
+  const menu = activeSystemId ? systemInfoMenuProvider : null;
+
+  const clicked =
+    activeSystemId === system.id && activeSystemElement === ref.current;
 
   const displayMenu = Boolean(
-    (!activeSystem && mouseOveredSystem) ||
-      (activeSystem &&
-        activeSystem === system &&
-        activeSystemElement === ref.current)
+    (!activeSystemId && mouseOveredSystem) || clicked
   );
 
   const { weaponFireService } = uiState.getServices();
@@ -327,29 +339,31 @@ const SystemIcon: React.FC<SystemIconProps> = ({
         )}
         <System
           ref={ref as LegacyRef<HTMLDivElement>}
-          background={system.getBackgroundImage()}
-          offline={isOffline(system) || undefined}
-          loading={isLoading() || undefined}
-          selected={selected || undefined}
-          firing={firing || undefined}
-          targeting={targeting || undefined}
-          reserved={reserved || undefined}
-          destroyed={system.isDestroyed() || undefined}
-          boosted={
+          $background={system.getBackgroundImage()}
+          $offline={isOffline(system) || undefined}
+          $loading={isLoading() || undefined}
+          $selected={selected || clicked || undefined}
+          $firing={firing || undefined}
+          $targeting={targeting || undefined}
+          $reserved={reserved || undefined}
+          $destroyed={system.isDestroyed() || undefined}
+          $boosted={
             system.callHandler(SYSTEM_HANDLERS.getBoost, 0, false as boolean) ||
             undefined
           }
-          inactive={inactive || undefined}
+          $inactive={inactive || undefined}
         >
           {overheat > 0.25 && Boolean(!disabled) && (
-            <Overheat overheat={overheat} />
+            <Overheat $overheat={overheat} />
           )}
         </System>
 
-        <SystemText destroyed={system.isDestroyed()}>{text}</SystemText>
+        <SystemText $destroyed={system.isDestroyed() || undefined}>
+          {text}
+        </SystemText>
         <HealthBar
-          destroyed={system.isDestroyed() || undefined}
-          criticals={system.hasAnyCritical() || undefined}
+          $destroyed={system.isDestroyed() || undefined}
+          $criticals={system.hasAnyCritical() || undefined}
           $health={getStructureLeft(system)}
         />
       </Container>

@@ -15,11 +15,20 @@ export type HitResolution = {
 class StandardHitStrategy extends ShipSystemStrategy {
   public fireControl: number;
   public numberOfShots: number;
+  public burstSize: number;
+  public burstGrouping: number;
 
-  constructor(fireControl: number = 0, numberOfShots: number = 1) {
+  constructor(
+    fireControl: number = 0,
+    numberOfShots: number = 1,
+    burstSize: number = 1,
+    burstGrouping: number = 0
+  ) {
     super();
     this.fireControl = fireControl;
     this.numberOfShots = numberOfShots;
+    this.burstSize = burstSize;
+    this.burstGrouping = burstGrouping;
   }
 
   getMessages(
@@ -52,7 +61,31 @@ class StandardHitStrategy extends ShipSystemStrategy {
     const result = new CombatLogWeaponFireHitResult(hit, toHit, roll);
     combatLogEntry.addHitResult(result);
 
+    if (hit) {
+      const burstShots = this.getNumberOfBurstShotsHit({
+        hitResolution: result,
+      });
+
+      result.shotsHit = burstShots;
+      result.shotsMissed = this.burstSize - burstShots;
+    } else {
+      result.shotsHit = 0;
+      result.shotsMissed = this.burstSize;
+    }
+
     return result;
+  }
+
+  getNumberOfShots(payload: unknown, previousResponse = 1) {
+    return this.numberOfShots;
+  }
+
+  getBurstSize(payload: unknown, previousResponse = 1) {
+    return this.burstSize;
+  }
+
+  getBurstGrouping(payload: unknown, previousResponse = 0) {
+    return this.burstGrouping;
   }
 
   getFireControl() {
@@ -142,6 +175,35 @@ class StandardHitStrategy extends ShipSystemStrategy {
       noLockPenalty,
       ownEvasionPenalty,
     });
+  }
+
+  private getNumberOfBurstShotsHit({
+    hitResolution,
+  }: {
+    hitResolution: CombatLogWeaponFireHitResult;
+  }) {
+    const requiredToHit = hitResolution.hitChance.result;
+    const rolledToHit = hitResolution.hitRoll;
+
+    if (rolledToHit > requiredToHit) {
+      return 0;
+    }
+
+    if (rolledToHit <= requiredToHit - this.burstSize * this.burstGrouping) {
+      return this.burstSize;
+    }
+
+    let shots = Math.floor((requiredToHit - rolledToHit) / this.burstGrouping);
+
+    if (shots > this.burstSize) {
+      shots = this.burstSize;
+    }
+
+    if (shots <= 0) {
+      shots = 1;
+    }
+
+    return shots;
   }
 }
 

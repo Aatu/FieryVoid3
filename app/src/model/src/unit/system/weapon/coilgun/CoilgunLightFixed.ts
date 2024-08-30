@@ -7,12 +7,12 @@ import StandardHitStrategy from "../../strategy/weapon/StandardHitStrategy";
 import StandardRangeStrategy from "../../strategy/weapon/StandardRangeStrategy";
 import StandardLoadingStrategy from "../../strategy/weapon/StandardLoadingStrategy";
 import WeaponAnimationStrategy from "../../strategy/weapon/WeaponAnimationStrategy";
-import PiercingDamageStrategy from "../../strategy/weapon/PiercingDamageStrategy";
 import BoostableSystemStrategy from "../../strategy/BoostableSystemStrategy";
 import RequiresPowerSystemStrategy from "../../strategy/RequiresPowerSystemStrategy";
 import OutputHeatOnlineStrategy from "../../strategy/OutputHeatOnlineStrategy";
 import { SystemArgs } from "../../ShipSystem";
 import { MEDIUM_WEAPON_RANGE } from "../../../../config/gameConfig";
+import { UnifiedDamageSystemStrategy } from "../../strategy/weapon/UnifiedDamageStrategy";
 
 class CoilgunLightFixed extends Weapon {
   constructor({ id }: SystemArgs, arcs: WeaponArc | WeaponArc[]) {
@@ -29,7 +29,12 @@ class CoilgunLightFixed extends Weapon {
       new StandardLoadingStrategy(4),
       new RequiresPowerSystemStrategy(6),
       new BoostableSystemStrategy(6, 2),
-      new PiercingDamageStrategy("d7+1", "d6+20"),
+      new UnifiedDamageSystemStrategy({
+        damageFormula: "d7+1",
+        armorPiercingFormula: "d6+20",
+        overPenetrationDamageMultiplier: { min: 0.2, max: 0.4 },
+        damageArmorModifier: { min: 1.2, max: 1.4 },
+      }),
       new WeaponAnimationStrategy("UniversalBolt", {
         size: 12,
         length: 2000,

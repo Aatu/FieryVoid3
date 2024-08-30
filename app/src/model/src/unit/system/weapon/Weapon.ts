@@ -1,4 +1,4 @@
-import ShipSystem, { SystemArgs } from "../ShipSystem";
+import ShipSystem, { ShipSystemType, SystemArgs } from "../ShipSystem";
 import AlwaysTargetableSystemStrategy from "../strategy/AlwaysTargetableSystemStrategy";
 import ShipSystemStrategy from "../strategy/ShipSystemStrategy";
 
@@ -11,6 +11,12 @@ class Weapon extends ShipSystem {
     if (args.alwaysTargetable) {
       this.addStrategy(new AlwaysTargetableSystemStrategy());
     }
+  }
+
+  getSystemType(): ShipSystemType {
+    const value = ShipSystemType.EXTERNAL;
+
+    return this.handlers.getShipSystemType(value);
   }
 
   isWeapon() {

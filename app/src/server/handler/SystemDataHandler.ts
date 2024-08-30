@@ -6,8 +6,7 @@ class SystemDataHandler {
   receiveSystemData(
     serverGameData: GameData,
     clientGameData: GameData,
-    activeShips: Ship[],
-    user: User
+    activeShips: Ship[]
   ) {
     activeShips.forEach((serverShip) => {
       const clientShip = clientGameData.ships.getShipById(serverShip.id);

@@ -22,7 +22,7 @@ const InfoHeader = styled(TooltipHeader)`
 
 type ShipTooltipContainerProps = {
   $isRight?: boolean;
-  interactable?: boolean;
+  $interactable?: boolean;
 };
 
 const ShipTooltipContainer = styled(Tooltip)<ShipTooltipContainerProps>`
@@ -33,7 +33,7 @@ const ShipTooltipContainer = styled(Tooltip)<ShipTooltipContainerProps>`
   top: 50px;
   ${(props) => (props.$isRight ? "right: 220px;" : "left: 220px;")}
 
-  ${(props) => (props.interactable ? "z-index: 4;" : "z-index: 1;")}
+  ${(props) => (props.$interactable ? "z-index: 4;" : "z-index: 1;")}
 `;
 
 export const Entry = styled(TooltipEntry)`
@@ -116,7 +116,7 @@ const ShipTooltip: React.FC<Props> = ({ ui, ship, className, ...rest }) => {
     <ShipTooltipContainer
       $isRight={rest.right || undefined}
       className={className}
-      interactable={interactable || undefined}
+      $interactable={interactable || undefined}
     >
       <InfoHeader>
         <div>

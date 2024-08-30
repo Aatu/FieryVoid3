@@ -20,6 +20,7 @@ type Props = {
 const SystemStrategyUiComponent: React.FC<Props> = ({
   name,
   ship,
+  system,
   componentProps,
 }) => {
   switch (name) {
@@ -37,7 +38,12 @@ const SystemStrategyUiComponent: React.FC<Props> = ({
         />
       );
     case "SystemHeatBar":
-      return <SystemHeatBar {...(componentProps as SystemHeatBarProps)} />;
+      return (
+        <SystemHeatBar
+          {...(componentProps as SystemHeatBarProps)}
+          system={system}
+        />
+      );
     case "SystemFuelBar":
       return <SystemFuelBar {...(componentProps as SystemFuelBarProps)} />;
     default:

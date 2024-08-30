@@ -3,9 +3,9 @@ import { Clickable } from "../../../../styled";
 import { ClickableProps } from "../../../../styled/Clickable";
 
 export type ContainerProps = {
-  overChannel?: boolean;
+  $overChannel?: boolean;
   disabled?: boolean;
-  active?: boolean;
+  $active?: boolean;
 };
 
 const Container = styled.div<ContainerProps & ClickableProps>`
@@ -19,13 +19,13 @@ const Container = styled.div<ContainerProps & ClickableProps>`
 
   svg #svg-path {
     fill: white;
-    ${(props) => props.overChannel && "fill:#4c7ca8;"}
+    ${(props) => props.$overChannel && "fill:#4c7ca8;"}
     ${(props) => props.disabled && "fill: #8f2626;"}
   }
   ${Clickable}
 
   ${(props) =>
-    props.active &&
+    props.$active &&
     css`
       animation: blinker 1s linear infinite;
 

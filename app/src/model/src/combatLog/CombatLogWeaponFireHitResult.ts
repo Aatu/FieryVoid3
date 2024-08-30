@@ -3,18 +3,22 @@ import WeaponHitChance, {
 } from "../weapon/WeaponHitChance";
 
 export type SerializedCombatLogWeaponFireHitResult = {
-  result?: boolean;
-  hitChance?: SerializedWeaponHitChance;
-  hitRoll?: number;
+  result: boolean;
+  hitChance: SerializedWeaponHitChance;
+  hitRoll: number;
+  shotsHit: number;
+  shotsMissed: number;
 };
 
 class CombatLogWeaponFireHitResult {
   public result: boolean;
   public hitChance: WeaponHitChance;
   public hitRoll: number;
+  public shotsHit: number;
+  public shotsMissed: number;
 
   public static fromData(
-    data: SerializedCombatLogWeaponFireHitResult = {}
+    data: Partial<SerializedCombatLogWeaponFireHitResult> = {}
   ): CombatLogWeaponFireHitResult {
     return new CombatLogWeaponFireHitResult(
       data.result || false,
@@ -23,10 +27,18 @@ class CombatLogWeaponFireHitResult {
     );
   }
 
-  constructor(result: boolean, hitChance: WeaponHitChance, hitRoll: number) {
+  constructor(
+    result: boolean,
+    hitChance: WeaponHitChance,
+    hitRoll: number,
+    shotsHit: number = result ? 1 : 0,
+    shotsMissed: number = result ? 0 : 1
+  ) {
     this.result = result;
     this.hitChance = hitChance;
     this.hitRoll = hitRoll;
+    this.shotsHit = shotsHit;
+    this.shotsMissed = shotsMissed;
   }
 
   serialize(): SerializedCombatLogWeaponFireHitResult {
@@ -34,10 +46,12 @@ class CombatLogWeaponFireHitResult {
       result: this.result,
       hitChance: this.hitChance.serialize(),
       hitRoll: this.hitRoll,
+      shotsHit: this.shotsHit,
+      shotsMissed: this.shotsMissed,
     };
   }
 
-  deserialize(data: SerializedCombatLogWeaponFireHitResult = {}) {
+  deserialize(data: Partial<SerializedCombatLogWeaponFireHitResult> = {}) {
     this.result = data.result || false;
     this.hitChance = new WeaponHitChance().deserialize(data.hitChance);
     this.hitRoll = data.hitRoll || 1;

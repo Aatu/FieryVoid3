@@ -1,35 +1,22 @@
-import { DiceRoller } from "../../../../utils/DiceRoller";
 import CargoEntity from "../../cargo/CargoEntity";
 import { SystemMessage } from "../../strategy/types/SystemHandlersTypes";
+import {
+  IDamageOverrider,
+  UnifiedDamageStrategyArgs,
+} from "../../strategy/weapon/UnifiedDamageStrategy";
 import { AmmunitionType } from "./index";
 
-class Ammo extends CargoEntity {
-  public damageFormula: string | number;
-  public armorPiercingFormula: string | number;
+class Ammo extends CargoEntity implements IDamageOverrider {
+  public damageArgs: UnifiedDamageStrategyArgs;
 
-  constructor(
-    damageFormula: string | number,
-    armorPiercingFormula: string | number
-  ) {
+  constructor(args: UnifiedDamageStrategyArgs) {
     super();
-    this.damageFormula = damageFormula;
-    this.armorPiercingFormula = armorPiercingFormula;
+    this.damageArgs = args;
   }
-
-  getDamage(diceRoller: DiceRoller): number {
-    if (Number.isInteger(this.damageFormula)) {
-      return this.damageFormula as number;
-    }
-
-    return diceRoller.roll(this.damageFormula);
-  }
-
-  getArmorPiercing(diceRoller: DiceRoller): number {
-    if (Number.isInteger(this.armorPiercingFormula)) {
-      return this.armorPiercingFormula as number;
-    }
-
-    return diceRoller.roll(this.armorPiercingFormula);
+  getDamageOverrider(
+    args: UnifiedDamageStrategyArgs
+  ): UnifiedDamageStrategyArgs {
+    return this.damageArgs;
   }
 
   getCargoInfo(): SystemMessage[] {
@@ -38,11 +25,11 @@ class Ammo extends CargoEntity {
     return [
       {
         header: "Damage",
-        value: this.damageFormula.toString(),
+        value: this.damageArgs.damageFormula.toString(),
       },
       {
         header: "Armor piercing",
-        value: this.armorPiercingFormula.toString(),
+        value: this.damageArgs.armorPiercingFormula.toString(),
       },
       ...previousResponse,
     ];

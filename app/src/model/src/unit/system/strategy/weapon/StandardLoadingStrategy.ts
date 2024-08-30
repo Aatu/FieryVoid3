@@ -22,7 +22,7 @@ class StandardLoadingStrategy extends ShipSystemStrategy {
     payload: unknown,
     previousResponse: SystemMessage[] = []
   ): SystemMessage[] {
-    const boostLoading = this._getBoostLoading();
+    const boostLoading = this.getBoostLoading();
     let loading = 1 + boostLoading;
 
     if (!Number.isInteger(loading)) {
@@ -42,7 +42,7 @@ class StandardLoadingStrategy extends ShipSystemStrategy {
     }
 
     previousResponse.push({
-      header: "Charging",
+      header: "Loading",
       value: `${turnsLoaded} / ${loadingTime} +${loading} per turn`,
     });
 
@@ -54,7 +54,7 @@ class StandardLoadingStrategy extends ShipSystemStrategy {
 
     if (boostPower) {
       previousResponse.push({
-        header: "Charging boostable",
+        header: "Loading boostable",
         value: `${boostPower} power required`,
       });
     }
@@ -62,9 +62,9 @@ class StandardLoadingStrategy extends ShipSystemStrategy {
     return previousResponse;
   }
 
-  _getTurnsUntilLoaded() {
+  private getTurnsUntilLoaded() {
     const left = this.getLoadingTime() - this.turnsLoaded;
-    const loadingPerTurn = 1 + this._getBoostLoading();
+    const loadingPerTurn = 1 + this.getBoostLoading();
 
     return Math.ceil(left / loadingPerTurn);
   }
@@ -74,7 +74,7 @@ class StandardLoadingStrategy extends ShipSystemStrategy {
       return previousResponse;
     }
 
-    const left = this._getTurnsUntilLoaded();
+    const left = this.getTurnsUntilLoaded();
     if (left <= 0) {
       return previousResponse;
     }
@@ -154,12 +154,12 @@ class StandardLoadingStrategy extends ShipSystemStrategy {
       this.firedThisTurn = false;
     }
 
-    const loadingStep = 1 + this._getBoostLoading();
+    const loadingStep = 1 + this.getBoostLoading();
     this.turnsLoaded += loadingStep;
   }
 
-  _getBoostLoading() {
-    let boost = this.getSystem().callHandler(SYSTEM_HANDLERS.getBoost, null, 0);
+  private getBoostLoading() {
+    let boost = this.getSystem().handlers.getBoost();
 
     if (!boost) {
       return 0;

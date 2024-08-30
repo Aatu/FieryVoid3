@@ -25,7 +25,7 @@ const ShipFuelBar: React.FC<{
   return (
     <Container>
       <TooltipEntry>
-        <TooltipEntry noMargin>
+        <TooltipEntry $noMargin>
           <TooltipValueHeader>Fuel: </TooltipValueHeader>
         </TooltipEntry>
         <FuelBar percent={percent} newPercent={newPercent} />

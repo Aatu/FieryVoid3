@@ -6,58 +6,63 @@ import { ICombatLogEntry } from "./combatLogClasses";
 export type SerializedCombatLogTorpedoIntercept = {
   logEntryClass: string;
   torpedoFlightId: string;
-  weaponId: number;
-  roll: number;
+  intercepts: {
+    shipId: string;
+    interceptorId: number;
+    hitChance: SerializedWeaponHitChance;
+    roll: number;
+    success: boolean;
+  }[];
+};
+
+type Intercept = {
   shipId: string;
-  interceptChange: SerializedWeaponHitChance;
+  interceptorId: number;
+  hitChance: WeaponHitChance;
+  roll: number;
+  success: boolean;
 };
 
 class CombatLogTorpedoIntercept implements ICombatLogEntry {
   public torpedoFlightId: string;
-  public shipId: string;
-  public weaponId: number;
-  public interceptChange: WeaponHitChance;
-  public roll: number;
   public replayOrder: number = 0;
+  public intercepts: Intercept[] = [];
 
-  constructor(
-    torpedoFlightId: string,
-    shipId: string,
-    weaponId: number,
-    interceptChange: WeaponHitChance,
-    roll: number
-  ) {
+  constructor(torpedoFlightId: string) {
     this.torpedoFlightId = torpedoFlightId;
-    this.shipId = shipId;
-    this.weaponId = weaponId;
-    this.interceptChange = interceptChange;
-    this.roll = roll;
+  }
+
+  addIntercept(intercept: Intercept) {
+    this.intercepts.push(intercept);
   }
 
   isSucessfull() {
-    return this.roll <= this.interceptChange.result;
+    return this.intercepts.some((i) => i.success);
   }
 
   serialize(): SerializedCombatLogTorpedoIntercept {
     return {
       logEntryClass: this.constructor.name,
       torpedoFlightId: this.torpedoFlightId,
-      weaponId: this.weaponId,
-      roll: this.roll,
-      shipId: this.shipId,
-      interceptChange: this.interceptChange.serialize(),
+      intercepts: this.intercepts.map((i) => ({
+        shipId: i.shipId,
+        interceptorId: i.interceptorId,
+        hitChance: i.hitChance.serialize(),
+        roll: i.roll,
+        success: i.success,
+      })),
     };
   }
 
   deserialize(data: SerializedCombatLogTorpedoIntercept) {
     this.torpedoFlightId = data.torpedoFlightId;
-    this.weaponId = data.weaponId;
-    this.roll = data.roll;
-    this.shipId = data.shipId;
-    this.interceptChange = new WeaponHitChance().deserialize(
-      data.interceptChange
-    );
-    return this;
+    this.intercepts = data.intercepts.map((i) => ({
+      shipId: i.shipId,
+      interceptorId: i.interceptorId,
+      hitChance: new WeaponHitChance().deserialize(i.hitChance),
+      roll: i.roll,
+      success: i.success,
+    }));
   }
 }
 

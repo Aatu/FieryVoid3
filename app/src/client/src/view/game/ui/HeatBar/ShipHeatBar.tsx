@@ -22,7 +22,7 @@ const ShipHeatBar: React.FC<{ percent: number; newPercent: number }> = ({
   return (
     <Container>
       <TooltipEntry>
-        <TooltipEntry noMargin>
+        <TooltipEntry $noMargin>
           <TooltipValueHeader>Heat: </TooltipValueHeader>
         </TooltipEntry>
         <HeatBar percent={percent} newPercent={newPercent} />

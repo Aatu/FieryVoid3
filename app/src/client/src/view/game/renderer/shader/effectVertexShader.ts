@@ -1,13 +1,11 @@
 const effectVertexShader = `
     attribute vec3 color;
-    attribute float opacity;
     attribute float fadeInTime;
-    attribute float fadeInSpeed;
     attribute float fadeOutTime;
-    attribute float fadeOutSpeed;
+    attribute uint opacityAndFadeSpeeds;
     attribute float size;
     attribute float sizeChange;
-    attribute float angle;
+    attribute uint angle;
     attribute vec3 velocity;
     attribute vec3 acceleration;
     attribute float activationGameTime;
@@ -21,10 +19,23 @@ const effectVertexShader = `
     varying float textureN;
 
 
+    float getOpacity() {
+        return float(opacityAndFadeSpeeds & uint(255)) / 255.0;
+    }
+
+    float getFadeInSpeed() {
+        return float((opacityAndFadeSpeeds & uint(1048320)) >> 8);
+    }
+
+    float getFadeOutSpeed() {
+        return float((opacityAndFadeSpeeds & uint(4293918720)) >> 20);
+    }
+
+
     //500432
     vec2 getAngleAndChange() {
-        float finalChange = floor(angle / 10000.0) / 1000.0;
-        float finalAngle = (angle - floor(angle / 10000.0) * 10000.0) / 1000.0;
+        float finalChange = float((int(angle) & int(32767)) - int(16383)) / 1000.0;
+        float finalAngle = float(((int(angle) & int(1073709056)) >> 15) - int(16383)) / 100.0;
 
         return vec2(finalAngle, finalChange);
     }
@@ -37,6 +48,9 @@ const effectVertexShader = `
         }
 
         float elapsedTime = modGameTime - activationGameTime;
+        float opacity = getOpacity();
+        float fadeInSpeed = getFadeInSpeed();
+        float fadeOutSpeed = getFadeOutSpeed();
 
         if (elapsedTime < 0.0 || (fadeOutTime > 0.0 && modGameTime - (fadeOutTime + fadeOutSpeed) > 0.0)) {
             gl_PointSize = 0.0;

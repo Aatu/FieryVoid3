@@ -76,7 +76,7 @@ const CargoItem: React.FC<Props> = ({
             additionalContent={tooltipAdditionalContent}
           />
         )}
-        <IconAndLabel ref={element} background={cargo.getBackgroundImage()}>
+        <IconAndLabel ref={element} $background={cargo.getBackgroundImage()}>
           {text ? text : amount}
         </IconAndLabel>
       </Container>

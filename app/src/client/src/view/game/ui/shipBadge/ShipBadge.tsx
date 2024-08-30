@@ -44,7 +44,7 @@ const BackgroundContainer = styled.div`
 `;
 
 type IconProps = {
-  background: string;
+  $background: string;
 };
 
 const Icon = styled.div<IconProps>`
@@ -52,7 +52,7 @@ const Icon = styled.div<IconProps>`
   height: 15px;
   background-size: cover;
   background-color: transparent;
-  background-image: ${(props) => `url(${props.background})`};
+  background-image: ${(props) => `url(${props.$background})`};
   margin: 0 3px 0 0;
 `;
 
@@ -119,14 +119,14 @@ const ShipBadge: React.FC<Props> = ({ shipId, showName, visible }) => {
             <Badges>
               {isMine && incomingTorpedos > 0 && (
                 <WarningBadge>
-                  <Icon background="/img/system/missile1.png" />
+                  <Icon $background="/img/system/missile1.png" />
                   {incomingTorpedos}
                 </WarningBadge>
               )}
 
               {isMine && !validPower && (
                 <WarningBadge>
-                  <Icon background="/img/offline.png" />
+                  <Icon $background="/img/offline.png" />
                 </WarningBadge>
               )}
             </Badges>

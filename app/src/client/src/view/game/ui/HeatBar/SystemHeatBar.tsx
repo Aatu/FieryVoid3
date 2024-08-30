@@ -85,7 +85,7 @@ const SystemHeatBar: React.FC<SystemHeatBarProps> = ({
   return (
     <Container>
       <InlineTooltipEntry>
-        <TooltipEntry noMargin>
+        <TooltipEntry $noMargin>
           <TooltipValueHeader>Overheat: </TooltipValueHeader>
           <TooltipValue>
             {`${formatNumber(system.heat.getOverheat())}/${formatNumber(
@@ -93,8 +93,11 @@ const SystemHeatBar: React.FC<SystemHeatBarProps> = ({
             )} (${Math.round(system.heat.getOverheatPercentage() * 100)}%)`}
           </TooltipValue>
         </TooltipEntry>
-        <TooltipEntry noMargin>
-          <HeaderMenuItem onClick={() => setDetails(!details)} active={details}>
+        <TooltipEntry $noMargin>
+          <HeaderMenuItem
+            onClick={() => setDetails(!details)}
+            $active={details}
+          >
             ?
           </HeaderMenuItem>
         </TooltipEntry>

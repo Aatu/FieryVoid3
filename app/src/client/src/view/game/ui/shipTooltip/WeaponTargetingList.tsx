@@ -185,7 +185,6 @@ const getSystems = (
           null as unknown as WeaponHitChance
         ).result;
 
-        console.log("sort", hitChanceA, hitChanceB);
         if (hitChanceA > hitChanceB) {
           return -1;
         }

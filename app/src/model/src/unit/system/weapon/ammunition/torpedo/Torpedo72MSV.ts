@@ -1,13 +1,24 @@
-import MSVTorpedoDamageStrategy from "./torpedoDamageStrategy/MSVTorpedoDamageStrategy";
 import Torpedo72 from "./Torpedo72";
 import TorpedoFlight from "../../../../TorpedoFlight";
 import Ship from "../../../../Ship";
+import TorpedoDamageStrategy from "./torpedoDamageStrategy/TorpedoDamageStrategy";
 
 class Torpedo72MSV extends Torpedo72 {
   constructor() {
     super({});
 
-    this.damageStrategy = new MSVTorpedoDamageStrategy("d3+3", 0, 15, 25);
+    this.damageStrategy = new TorpedoDamageStrategy(
+      {
+        armorPiercingFormula: 0,
+        damageFormula: "d3+3",
+      },
+      {
+        msvAmount: 25,
+        msvRangePenalty: 10,
+        msvStrikeHitChanceTarget: 10,
+      }
+    );
+
     this.visuals = {
       engineColor: [255 / 255, 222 / 255, 120 / 255],
       explosionType: "MSV",

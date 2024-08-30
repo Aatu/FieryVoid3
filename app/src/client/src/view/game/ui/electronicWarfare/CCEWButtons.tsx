@@ -52,7 +52,7 @@ const CCEWButtons: React.FC<CCEWButtonsProps> = ({
     <Container {...rest}>
       {name && <ShipName>{name}</ShipName>}
       <TooltipButton
-        img="/img/removeCCEW.png"
+        $img="/img/removeCCEW.png"
         onClick={() => {
           if (ship.electronicWarfare.canAssignCcEw(-1)) {
             ship.electronicWarfare.assignCcEw(-1);
@@ -62,7 +62,7 @@ const CCEWButtons: React.FC<CCEWButtonsProps> = ({
       />
       <Amount>{ccew}</Amount>
       <TooltipButton
-        img="/img/addCCEW.png"
+        $img="/img/addCCEW.png"
         onClick={() => {
           if (ship.electronicWarfare.canAssignCcEw(1)) {
             ship.electronicWarfare.assignCcEw(1);

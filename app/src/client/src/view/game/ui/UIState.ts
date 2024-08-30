@@ -19,8 +19,9 @@ export type TooltipComponentProvider = () => React.FC<{
 }>;
 
 export type SystemMenuUiState = {
+  shipId: string | null;
   systemInfoMenuProvider: TooltipComponentProvider | null;
-  activeSystem: ShipSystem | null;
+  activeSystemId: number | null;
   activeSystemElement: HTMLElement | null;
 };
 
@@ -60,8 +61,9 @@ export const defaultState: State = {
   turnReady: false,
   shipTooltipMenuProvider: null,
   systemMenu: {
+    shipId: null,
     systemInfoMenuProvider: null,
-    activeSystem: null,
+    activeSystemId: null,
     activeSystemElement: null,
   },
   shipBadges: [],
@@ -406,11 +408,13 @@ class UIState {
   }
 
   setSystemMenuActiveSystem(
+    ship: Ship | null,
     system: ShipSystem | null,
     element: HTMLElement | null
   ) {
-    this.getState().systemMenu.activeSystem = system;
-    this.getState().systemMenu.activeSystemElement = element;
+    this.state.systemMenu.shipId = ship?.id || null;
+    this.state.systemMenu.activeSystemId = system?.id || null;
+    this.state.systemMenu.activeSystemElement = element;
     this.updateState();
   }
 

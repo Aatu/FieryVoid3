@@ -8,7 +8,7 @@ import SystemSection from "@fieryvoid3/model/src/unit/system/systemSection/Syste
 import UIState from "../UIState";
 
 type ShipSectionContainerProps = {
-  location: number;
+  $location: number;
 };
 
 const ShipSectionContainer = styled.div<ShipSectionContainerProps>`
@@ -22,7 +22,7 @@ const ShipSectionContainer = styled.div<ShipSectionContainerProps>`
   flex-grow: 1;
 
   border: ${(props) => {
-    switch (props.location) {
+    switch (props.$location) {
       case 0:
         return `1px solid ${colors.systemWindowPrimaryBorder}`;
       default:
@@ -37,7 +37,7 @@ type Props = {
   uiState: UIState;
 };
 
-const ShipSection: React.FC<Props> = ({ ship, section, uiState, ...rest }) => {
+const ShipSection: React.FC<Props> = ({ ship, section, uiState }) => {
   if (!section) {
     return null;
   }
@@ -46,26 +46,22 @@ const ShipSection: React.FC<Props> = ({ ship, section, uiState, ...rest }) => {
   const structure = section.getStructure();
 
   return (
-    <ShipSectionContainer location={location}>
+    <ShipSectionContainer $location={location}>
       {section.getNonStructureSystems().map((system) => (
         <SystemIcon
           scs
-          uiState={uiState}
           key={`system-scs-${location}-${ship.id}-${system.id}`}
-          system={system}
+          systemId={system.id}
           ship={ship}
           selected={uiState.isSelectedSystem(system)}
-          {...rest}
         />
       ))}
 
       {structure && (
         <StructureIcon
-          uiState={uiState}
           system={structure}
           ship={ship}
           selected={uiState.isSelectedSystem(structure)}
-          {...rest}
         />
       )}
     </ShipSectionContainer>

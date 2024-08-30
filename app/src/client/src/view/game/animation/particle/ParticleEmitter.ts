@@ -26,6 +26,7 @@ class ParticleEmitter extends Animation {
   protected flyParticle: BaseParticle;
   protected mesh: THREE.Points;
   protected needsUpdate: boolean;
+  protected particleCount: number;
 
   constructor(
     scene: THREE.Object3D,
@@ -40,6 +41,8 @@ class ParticleEmitter extends Animation {
       particleCount = 1000;
     }
 
+    this.particleCount = particleCount;
+
     this.scene = scene;
 
     this.free = [];
@@ -50,9 +53,9 @@ class ParticleEmitter extends Animation {
     this.effects = 0;
 
     const uniforms = {
-      gameTime: { type: "f", value: 0.0 },
-      zoomLevel: { type: "f", value: 1.0 },
-      texture: { type: "t", value: texture },
+      gameTime: { value: 0.0 },
+      zoomLevel: { value: 1.0 },
+      uTexture: { value: texture },
     };
 
     this.particleGeometry = new THREE.BufferGeometry();
@@ -73,26 +76,32 @@ class ParticleEmitter extends Animation {
       "color",
       new THREE.Float32BufferAttribute(new Float32Array(particleCount * 3), 3) //.setDynamic(true)
     );
+    /*
     this.particleGeometry.setAttribute(
       "opacity",
       new THREE.Float32BufferAttribute(new Float32Array(particleCount), 1) //.setDynamic(true)
     );
+    */
     this.particleGeometry.setAttribute(
       "fadeInTime",
       new THREE.Float32BufferAttribute(new Float32Array(particleCount), 1) //.setDynamic(true)
     );
+    /*
     this.particleGeometry.setAttribute(
       "fadeInSpeed",
       new THREE.Float32BufferAttribute(new Float32Array(particleCount), 1) //.setDynamic(true)
     );
+    */
     this.particleGeometry.setAttribute(
       "fadeOutTime",
       new THREE.Float32BufferAttribute(new Float32Array(particleCount), 1) //.setDynamic(true)
     );
+    /*
     this.particleGeometry.setAttribute(
       "fadeOutSpeed",
       new THREE.Float32BufferAttribute(new Float32Array(particleCount), 1) //.setDynamic(true)
     );
+    */
     this.particleGeometry.setAttribute(
       "activationGameTime",
       new THREE.Float32BufferAttribute(new Float32Array(particleCount), 1) //.setDynamic(true)
@@ -111,16 +120,19 @@ class ParticleEmitter extends Animation {
     );
     this.particleGeometry.setAttribute(
       "angle",
-      new THREE.Float32BufferAttribute(new Float32Array(particleCount), 1) //.setDynamic(true)
+      new THREE.Uint32BufferAttribute(new Uint32Array(particleCount), 1) //.setDynamic(true)
     );
     this.particleGeometry.setAttribute(
       "sine",
       new THREE.Float32BufferAttribute(new Float32Array(particleCount), 1) //.setDynamic(true)
     );
-
     this.particleGeometry.setAttribute(
       "repeat",
       new THREE.Float32BufferAttribute(new Float32Array(particleCount), 1) //.setDynamic(true)
+    );
+    this.particleGeometry.setAttribute(
+      "opacityAndFadeSpeeds",
+      new THREE.Uint32BufferAttribute(new Uint32Array(particleCount), 1) //.setDynamic(true)
     );
 
     //this.particleGeometry.dynamic = true;
@@ -214,11 +226,19 @@ class ParticleEmitter extends Animation {
     return this.flyParticle.aquire(index, this);
   }
 
+  freeAllParticles() {
+    this.free = [];
+    for (let i = 0; i < this.particleCount; i++) {
+      this.flyParticle.create(i);
+      this.free.push(i);
+    }
+  }
+
   freeParticles(particleIndices: number | number[]) {
     particleIndices = ([] as number[]).concat(particleIndices);
 
     particleIndices.forEach((i) => {
-      this.flyParticle.create(i).setInitialValues();
+      this.flyParticle.create(i);
     });
     this.free = this.free.concat(particleIndices);
   }

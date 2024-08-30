@@ -3,42 +3,25 @@ import WeaponHitChance from "../../../../weapon/WeaponHitChance";
 import Ship from "../../../Ship";
 import TorpedoFlight from "../../../TorpedoFlight";
 import { SYSTEM_HANDLERS } from "../types/SystemHandlersTypes";
+import { TorpedoFlightForIntercept } from "../../../TorpedoFlightForIntercept";
 
 class InterceptorStrategy extends ShipSystemStrategy {
-  private numberOfIntercepts: number;
-  private heatPerIntercept: number;
-  private timesIntercepted: number;
+  private usedIntercepts: number = 0;
 
-  constructor(numberOfIntercepts: number = 1, heatPerIntercept: number = 0) {
-    super();
-
-    this.numberOfIntercepts = numberOfIntercepts;
-    this.heatPerIntercept = heatPerIntercept;
-    this.timesIntercepted = 0;
+  getUsedIntercepts() {
+    return this.usedIntercepts;
   }
 
-  getInterceptHeat() {
-    return this.timesIntercepted * this.heatPerIntercept;
-  }
-
-  getHeatPerIntercept() {
-    return this.heatPerIntercept;
-  }
-
-  addTimesIntercepted(amount = 1) {
-    this.timesIntercepted += amount;
-  }
-
-  getHeatGenerated(payload: unknown, previousResponse: number = 0): number {
-    return previousResponse + this.timesIntercepted * this.heatPerIntercept;
+  addUsedIntercept(amount = 1) {
+    this.usedIntercepts += amount;
   }
 
   canIntercept() {
     return true;
   }
 
-  getNumberOfIntercepts() {
-    return this.numberOfIntercepts;
+  onWeaponFired() {
+    this.usedIntercepts++;
   }
 
   getInterceptChance({
@@ -46,14 +29,27 @@ class InterceptorStrategy extends ShipSystemStrategy {
     torpedoFlight,
   }: {
     target: Ship;
-    torpedoFlight: TorpedoFlight;
+    torpedoFlight: TorpedoFlight | TorpedoFlightForIntercept;
   }): WeaponHitChance {
+    let distance: number = 0;
+
     const ship = this.getSystem().getShipSystems().ship;
 
-    let distance = torpedoFlight.torpedo.getDamageStrategy().getStrikeDistance({
-      target,
-      torpedoFlight,
-    });
+    if (ship.id === target.id) {
+      distance = torpedoFlight.torpedo.getDamageStrategy().getStrikeDistance({
+        target,
+        torpedoFlight,
+      });
+    } else if (torpedoFlight instanceof TorpedoFlightForIntercept) {
+      distance = torpedoFlight
+        .getCurrentHexPosition()
+        .distanceTo(ship.getHexPosition());
+    } else {
+      distance = new TorpedoFlightForIntercept(
+        torpedoFlight,
+        target
+      ).getClosestDistanceTo(ship);
+    }
 
     if (target !== ship) {
       distance = ship
@@ -105,7 +101,7 @@ class InterceptorStrategy extends ShipSystemStrategy {
   }
 
   advanceTurn() {
-    this.timesIntercepted = 0;
+    this.usedIntercepts = 0;
   }
 }
 

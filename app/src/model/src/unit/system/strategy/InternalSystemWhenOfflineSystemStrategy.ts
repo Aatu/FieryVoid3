@@ -1,13 +1,25 @@
+import { ShipSystemType } from "../ShipSystem";
 import ShipSystemStrategy from "./ShipSystemStrategy";
 import { SystemMessage } from "./types/SystemHandlersTypes";
 
-class ArmorBoostOfflineSystemStrategy extends ShipSystemStrategy {
+class InternalSystemWhenOfflineSystemStrategy extends ShipSystemStrategy {
   private armorBoost: number;
 
   constructor(armorBoost = 1) {
     super();
 
     this.armorBoost = armorBoost;
+  }
+
+  getShipSystemType(
+    payload: undefined,
+    previousResponse: ShipSystemType
+  ): ShipSystemType {
+    if (!this.getSystem().isDisabled()) {
+      return previousResponse;
+    }
+
+    return ShipSystemType.INTERNAL;
   }
 
   getArmorModifier(_: unknown, previousResponse = 0) {
@@ -31,4 +43,4 @@ class ArmorBoostOfflineSystemStrategy extends ShipSystemStrategy {
   }
 }
 
-export default ArmorBoostOfflineSystemStrategy;
+export default InternalSystemWhenOfflineSystemStrategy;

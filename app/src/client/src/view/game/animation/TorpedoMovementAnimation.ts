@@ -51,6 +51,10 @@ class TorpedoMovementAnimation extends Animation {
     this.variance = new Vector(getRandom() * 30 - 15, getRandom() * 30 - 15);
   }
 
+  getVariation() {
+    return this.variance;
+  }
+
   deactivate() {
     this.icon.hide();
   }
@@ -84,7 +88,7 @@ class TorpedoMovementAnimation extends Animation {
     const percentDone = turnDone < 1 ? turnDone % 1 : 1;
     const position = this.positionCurve.getPoint(percentDone);
 
-    return new Vector(position);
+    return new Vector(position).add(this.variance);
   }
 
   getMovementTurnDone(total: number) {
@@ -127,6 +131,7 @@ class TorpedoMovementAnimation extends Animation {
       y: position.y + this.variance.y,
       z: position.z,
     });
+
     this.icon.setFacing(
       -getCompassHeadingOfPoint(this.startPosition, this.endPosition)
     );

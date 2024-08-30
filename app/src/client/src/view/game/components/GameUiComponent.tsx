@@ -60,9 +60,7 @@ const GameUiComponent: React.FC = memo(() => {
           <GameMovement {...state.shipMovement} />
         )}
 
-      {state.gameUiModeButtons && (
-        <GameUiModeButtons uiState={uiState} {...state.gameUiMode} />
-      )}
+      {state.gameUiModeButtons && <GameUiModeButtons />}
 
       {state.replayUi && (
         <ReplayUI uiState={uiState} replayContext={state.replayUi} />

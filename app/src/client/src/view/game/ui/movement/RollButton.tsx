@@ -36,7 +36,7 @@ const RollButton: React.FC<Props> = ({ movementService, ship }) => {
 
   return (
     <RollContainer
-      active={ship.movement.isRolling()}
+      $active={ship.movement.isRolling()}
       onClick={roll}
       disabled={!canRoll()}
     >

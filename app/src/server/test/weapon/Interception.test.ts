@@ -12,12 +12,12 @@ import Vector from "../../../model/src/utils/Vector";
 import GameData from "../../../model/src/game/GameData";
 import { User } from "../../../model/src/User/User";
 import GameSlot from "../../../model/src/game/GameSlot";
-import TorpedoHandler from "../../handler/TorpedoHandler";
 import TorpedoAttackService from "../../../model/src/weapon/TorpedoAttackService";
 import ShipSystem from "../../../model/src/unit/system/ShipSystem";
 import StandardHitStrategy from "../../../model/src/unit/system/strategy/weapon/StandardHitStrategy";
 import { SYSTEM_HANDLERS } from "../../../model/src/unit/system/strategy/types/SystemHandlersTypes";
 import WeaponHitChance from "../../../model/src/weapon/WeaponHitChance";
+import { TorpedoHandler } from "../../handler/TorpedoHandler";
 
 const createShipAndTorpedo = () => {
   const ship = new Ship({

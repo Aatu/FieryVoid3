@@ -2,19 +2,7 @@ import Ship from "../../../../Ship";
 import TorpedoFlight from "../../../../TorpedoFlight";
 import CargoEntity from "../../../cargo/CargoEntity";
 import { SystemMessage } from "../../../strategy/types/SystemHandlersTypes";
-import StandardDamageStrategy from "../../../strategy/weapon/StandardDamageStrategy";
-
-export type TorpedoDamageStrategy = StandardDamageStrategy & {
-  getStrikeDistance: (payload: {
-    target: Ship;
-    torpedoFlight: TorpedoFlight;
-  }) => number;
-  getAttackRunMessages: (payload: {
-    shooter: Ship;
-    target: Ship;
-    torpedoFlight: TorpedoFlight;
-  }) => SystemMessage[];
-};
+import TorpedoDamageStrategy from "./torpedoDamageStrategy/TorpedoDamageStrategy";
 
 type TorpedoVisuals = {
   engineColor: [number, number, number];

@@ -22,15 +22,15 @@ const BarContainer = styled.div`
 `;
 
 type BarProps = {
-  percent: number;
-  color?: string;
+  $percent: number;
+  $color?: string;
 };
 
 const Bar = styled.div<BarProps>`
   height: 8px;
   margin: 1px;
-  width: ${({ percent }) => `calc(${percent * 100}% - 2px);`};
-  background-color: ${({ color }) => color || "transparent"};
+  width: ${({ $percent }) => `calc(${$percent * 100}% - 2px);`};
+  background-color: ${({ $color }) => $color || "transparent"};
   position: absolute;
   left: 0px;
   top: 0px;
@@ -39,21 +39,21 @@ const Bar = styled.div<BarProps>`
 `;
 
 type ChangeBarProps = {
-  more: boolean;
-  oldPercent: number;
-  percent: number;
-  barDecreaseColor: string;
-  barIncreaseColor: string;
+  $more: boolean;
+  $oldPercent: number;
+  $percent: number;
+  $barDecreaseColor: string;
+  $barIncreaseColor: string;
 };
 
 const ChangeBar = styled(Bar)<ChangeBarProps>`
-  background-color: ${({ more, barDecreaseColor, barIncreaseColor }) =>
-    more ? barIncreaseColor : barDecreaseColor};
-  z-index: ${({ more }) => (more ? 1 : 3)};
-  ${({ more, oldPercent, percent }) =>
-    !more &&
-    `width:calc(${(oldPercent - percent) * 100}% - 2px); left:calc(${
-      percent * 100
+  background-color: ${({ $more, $barDecreaseColor, $barIncreaseColor }) =>
+    $more ? $barIncreaseColor : $barDecreaseColor};
+  z-index: ${({ $more }) => ($more ? 1 : 3)};
+  ${({ $more, $oldPercent, $percent }) =>
+    !$more &&
+    `width:calc(${($oldPercent - $percent) * 100}% - 2px); left:calc(${
+      $percent * 100
     }% - 0px);`}
 `;
 
@@ -99,18 +99,18 @@ const HeatBar: React.FC<HeatProps> = ({
   return (
     <Container className={className}>
       <BarContainer>
-        <Bar percent={percent} color={barColor} />
+        <Bar $percent={percent} $color={barColor} />
         {newPercent !== undefined && (
           <ChangeBar
-            percent={newPercent}
-            oldPercent={percent}
-            more={newPercent > percent}
-            barDecreaseColor={barDecreaseColor}
-            barIncreaseColor={barIncreaseColor}
-            color="transparent"
+            $percent={newPercent}
+            $oldPercent={percent}
+            $more={newPercent > percent}
+            $barDecreaseColor={barDecreaseColor}
+            $barIncreaseColor={barIncreaseColor}
+            $color="transparent"
           />
         )}
-        {Boolean(divider) && <DividerBar percent={divider!} />}
+        {Boolean(divider) && <DividerBar $percent={divider!} />}
       </BarContainer>
     </Container>
   );

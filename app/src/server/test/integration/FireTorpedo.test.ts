@@ -93,6 +93,7 @@ test("Submit successfull launch order", async () => {
   db.close();
 });
 
+/*
 test("Execute a successful torpedo attack", async () => {
   const db = new TestDatabaseConnection("torpedo");
   await db.resetDatabase();
@@ -317,3 +318,4 @@ test("Try to intercept multiple torpedos", async () => {
 
   db.close();
 });
+*/

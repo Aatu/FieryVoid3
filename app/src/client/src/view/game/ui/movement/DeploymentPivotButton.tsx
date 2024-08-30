@@ -6,7 +6,7 @@ import { MovementService } from "@fieryvoid3/model/src/movement";
 import Ship from "@fieryvoid3/model/src/unit/Ship";
 
 type ButtonContainerProps = {
-  pivotDirection: number;
+  $pivotDirection: number;
 };
 
 const ButtonContainer = styled(Container)<ButtonContainerProps>`
@@ -14,7 +14,7 @@ const ButtonContainer = styled(Container)<ButtonContainerProps>`
   top: 103px;
 
   ${(props) =>
-    props.pivotDirection === 1
+    props.$pivotDirection === 1
       ? "left: -175px; transform: rotate(-90deg);"
       : "transform: rotate(-90deg) scaleY(-1);"}
 `;
@@ -35,7 +35,7 @@ const DeploymentPivotButton: React.FC<Props> = ({
   };
 
   return (
-    <ButtonContainer pivotDirection={pivotDirection} onClick={pivot}>
+    <ButtonContainer $pivotDirection={pivotDirection} onClick={pivot}>
       <Pivot />
     </ButtonContainer>
   );
