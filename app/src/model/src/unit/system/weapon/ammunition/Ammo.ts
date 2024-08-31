@@ -1,4 +1,5 @@
-import CargoEntity from "../../cargo/CargoEntity";
+import CargoEntity from "../../../../cargo/CargoEntity";
+import { createCargoInstance } from "../../cargo/cargo";
 import { SystemMessage } from "../../strategy/types/SystemHandlersTypes";
 import {
   IDamageOverrider,
@@ -13,6 +14,7 @@ class Ammo extends CargoEntity implements IDamageOverrider {
     super();
     this.damageArgs = args;
   }
+
   getDamageOverrider(
     args: UnifiedDamageStrategyArgs
   ): UnifiedDamageStrategyArgs {

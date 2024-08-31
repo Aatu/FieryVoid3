@@ -1,6 +1,6 @@
+import CargoEntity from "../../../../../cargo/CargoEntity";
 import Ship from "../../../../Ship";
 import TorpedoFlight from "../../../../TorpedoFlight";
-import CargoEntity from "../../../cargo/CargoEntity";
 import { SystemMessage } from "../../../strategy/types/SystemHandlersTypes";
 import TorpedoDamageStrategy from "./torpedoDamageStrategy/TorpedoDamageStrategy";
 

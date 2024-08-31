@@ -208,7 +208,7 @@ class BoostableSystemStrategy
 
   serialize(
     payload: unknown,
-    previousResponse = []
+    previousResponse = {}
   ): SerializedBoostableSystemStrategy {
     return {
       ...previousResponse,
@@ -218,10 +218,8 @@ class BoostableSystemStrategy
     };
   }
 
-  deserialize(data: SerializedBoostableSystemStrategy) {
-    this.boostLevel = data.boostableSystemStrategy
-      ? data.boostableSystemStrategy.boostLevel
-      : 0;
+  deserialize(data: Partial<SerializedBoostableSystemStrategy>) {
+    this.boostLevel = data.boostableSystemStrategy?.boostLevel ?? 0;
 
     return this;
   }

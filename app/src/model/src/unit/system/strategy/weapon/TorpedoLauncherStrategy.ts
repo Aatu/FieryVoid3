@@ -1,366 +1,169 @@
-import ShipSystemStrategy from "../ShipSystemStrategy";
-import Torpedo from "../../weapon/ammunition/torpedo/Torpedo";
-import {
-  createTorpedoInstance,
-  TropedoType,
-} from "../../weapon/ammunition/torpedo";
-import Ship from "../../../Ship";
-import TorpedoFlight from "../../../TorpedoFlight";
-import { SYSTEM_HANDLERS } from "../types/SystemHandlersTypes";
-import { CargoEntry } from "../../../../cargo/CargoService";
-import ShipSystem from "../../ShipSystem";
+import { CargoEntry } from "../../../../cargo/CargoEntry";
 import GameData from "../../../../game/GameData";
 import { GAME_PHASE } from "../../../../game/gamePhase";
+import Ship from "../../../Ship";
+import { IShipSystemStrategy } from "../../../ShipSystemHandlers";
+import TorpedoFlight from "../../../TorpedoFlight";
+import ShipSystem from "../../ShipSystem";
+import {
+  createTorpedoInstance,
+  TorpedoType,
+} from "../../weapon/ammunition/torpedo";
+import Torpedo from "../../weapon/ammunition/torpedo/Torpedo";
+import ShipSystemStrategy from "../ShipSystemStrategy";
 
-export type SerializedTorpedoLauncher = {
-  turnsLoaded: number;
-  loadedTorpedo: string | null;
-  changeAmmo: { ammo: TropedoType; from: number } | null;
-  launchTarget: string | null;
+type SerializedTorpedoLauncherStrategy = {
+  torpedoLauncherSystemStrategy: {
+    launchers: SerializedTorpedoLauncher[];
+  };
 };
 
-export type SerializedTorpedoLauncherStrategy = {
-  torpedoLauncherStrategy: Record<number, SerializedTorpedoLauncher>;
+export type TorpedoLaunchOptions = {
+  systemId: number;
+  numberOfReadyLaunchers: number;
+  torpedosToLaunch: CargoEntry<Torpedo>[];
 };
-class TorpedoLauncherStrategy extends ShipSystemStrategy {
-  public launcherIndex: number;
-  public loadedTorpedo: Torpedo | null;
-  public torpedoClass: typeof Torpedo;
-  public loadingTime: number;
-  public nextTorpedoClass: typeof Torpedo | null;
-  public turnsLoaded: number;
-  public changeAmmo: { ammo: TropedoType; from: number } | null;
-  public previousTorpedo: Torpedo | null;
-  public launchTarget: string | null;
-  private previousTurnsLoaded: number = 0;
+
+export class TorpedoLauncherStrategy
+  extends ShipSystemStrategy
+  implements IShipSystemStrategy
+{
+  private torpedoClasses: TorpedoType[] = [];
+  private launchers: TorpedoLauncher[] = [];
 
   constructor(
-    launcherIndex: number,
-    loadedTorpedo: Torpedo | null,
-    torpedoClass: typeof Torpedo,
-    loadingTime: number
+    torpedoClasses: TorpedoType[],
+    numberOfLaunchers: number,
+    launcherLoadingTime: number
   ) {
     super();
-    this.loadingTime = loadingTime;
-    this.launcherIndex = launcherIndex;
-    this.loadedTorpedo = loadedTorpedo;
-    this.nextTorpedoClass = null;
-    this.torpedoClass = torpedoClass;
-    this.turnsLoaded = loadingTime;
 
-    this.changeAmmo = null;
-    this.previousTorpedo = null;
-    this.launchTarget = null;
-  }
-
-  getUiComponents(
-    payload: unknown,
-    previousResponse = []
-  ): {
-    name: string;
-    props: {
-      launcherIndex: number;
-      loadedTorpedo: Torpedo | null;
-      loadingTime: number;
-      turnsLoaded: number;
-      torpedoClass: typeof Torpedo;
-      launchTarget: string | null;
-      launcher: TorpedoLauncherStrategy;
-    };
-  }[] {
-    return [
-      ...previousResponse,
-      {
-        name: "TorpedoLauncher",
-        props: {
-          launcherIndex: this.launcherIndex,
-          loadedTorpedo: this.loadedTorpedo,
-          loadingTime: this.loadingTime,
-          turnsLoaded:
-            this.turnsLoaded > this.loadingTime
-              ? this.loadingTime
-              : this.turnsLoaded,
-          torpedoClass: this.torpedoClass,
-          launchTarget: this.launchTarget,
-          launcher: this,
-        },
-      },
-    ];
-  }
-
-  serialize(
-    payload: unknown,
-    previousResponse: SerializedTorpedoLauncherStrategy = {
-      torpedoLauncherStrategy: {},
+    this.torpedoClasses = torpedoClasses;
+    while (numberOfLaunchers--) {
+      this.launchers.push(new TorpedoLauncher(launcherLoadingTime));
     }
-  ): SerializedTorpedoLauncherStrategy {
+  }
+
+  public getTorpedoLaunchOptions(payload: {
+    target: Ship;
+  }): TorpedoLaunchOptions {
+    const launchers = this.launchers.filter((l) => l.canLaunch());
+
+    const distance = this.getShip().hexDistanceTo(payload.target);
+
+    const torpedos = this.getSystem()
+      .handlers.getAllCargo()
+      .filter((c) => {
+        if (
+          !this.torpedoClasses.includes(
+            c.object.getCargoClassName() as TorpedoType
+          )
+        ) {
+          return false;
+        }
+
+        const torpedo = c.object as Torpedo;
+
+        if (torpedo.minRange > distance || torpedo.maxRange < distance) {
+          return false;
+        }
+
+        return true;
+      });
+
+    return {
+      systemId: this.getSystem().id,
+      numberOfReadyLaunchers: launchers.length,
+      torpedosToLaunch: torpedos as CargoEntry<Torpedo>[],
+    };
+  }
+
+  public setLaunchTarget({
+    target,
+    torpedo,
+  }: {
+    target: Ship;
+    torpedo: Torpedo;
+  }) {
+    const distance = this.getShip().hexDistanceTo(target);
+
+    if (torpedo.minRange > distance || torpedo.maxRange < distance) {
+      return false;
+    }
+
+    const amountOfSameTypeTorpedoBeingLaunched = this.launchers.reduce(
+      (total, launcher) =>
+        total + (launcher.getTorpedo()?.equals(torpedo) ? 1 : 0),
+      0
+    );
+
+    const freeLauncher = this.launchers.filter((l) => l.canLaunch())[0];
+
+    if (!freeLauncher) {
+      throw new Error("No free launcher");
+    }
+
+    const torpedoCargo = this.getSystem().handlers.getCargoEntry(torpedo);
+
+    if (
+      !torpedoCargo ||
+      torpedoCargo.amount < amountOfSameTypeTorpedoBeingLaunched + 1
+    ) {
+      throw new Error("Trying to launch more torpedos that the magazine has");
+    }
+
+    freeLauncher.setLaunchTarget(target, torpedo);
+  }
+
+  public launchTorpedos(): TorpedoFlight[] {
+    return this.launchers
+      .map((launcher) => {
+        const targetId = launcher.getLaunchTarget();
+        const torpedo = launcher.getTorpedo();
+
+        if (!targetId || !torpedo) {
+          return null;
+        }
+
+        const result = new TorpedoFlight(
+          torpedo,
+          targetId,
+          this.getShip().id,
+          this.getSystem().id
+        );
+
+        launcher.launchTorpedo();
+        this.getSystem().handlers.removeCargo(new CargoEntry(torpedo, 1));
+        return result;
+      })
+      .filter(Boolean) as TorpedoFlight[];
+  }
+
+  advanceTurn() {
+    if (this.getSystem().isDisabled()) {
+      return;
+    }
+
+    this.launchers.forEach((l) => l.advanceTurn());
+  }
+
+  serialize(payload: unknown, previousResponse: Record<string, unknown> = {}) {
     return {
       ...previousResponse,
-      torpedoLauncherStrategy: {
-        ...previousResponse.torpedoLauncherStrategy,
-        [this.launcherIndex]: {
-          turnsLoaded: this.turnsLoaded,
-          loadedTorpedo: this.loadedTorpedo
-            ? this.loadedTorpedo.constructor.name
-            : null,
-          changeAmmo: this.changeAmmo,
-          launchTarget: this.launchTarget,
-        },
+      torpedoLauncherSystemStrategy: {
+        launchers: this.launchers.map((l) => l.serialize()),
       },
     };
   }
 
-  deserialize(
-    data: SerializedTorpedoLauncherStrategy = { torpedoLauncherStrategy: [] }
-  ) {
-    const launcherData = data.torpedoLauncherStrategy[this.launcherIndex] || {};
-
-    this.turnsLoaded = launcherData.turnsLoaded || 0;
-    this.loadedTorpedo = launcherData.loadedTorpedo
-      ? createTorpedoInstance(launcherData.loadedTorpedo as TropedoType)
-      : null;
-
-    this.changeAmmo = launcherData.changeAmmo || null;
-    this.launchTarget = launcherData.launchTarget || null;
-
-    return this;
-  }
-
-  loadAmmoInstant({
-    ammo,
-    launcherIndex,
-  }: {
-    ammo: Torpedo;
-    launcherIndex: number;
-  }) {
-    if (
-      launcherIndex !== this.launcherIndex ||
-      (this.loadedTorpedo &&
-        this.loadedTorpedo.constructor.name === ammo.constructor.name)
-    ) {
-      return;
-    }
-
-    this.loadedTorpedo = ammo;
-    this.turnsLoaded = this.loadingTime;
-  }
-
-  unloadAmmo({ launcherIndex }: { launcherIndex: number }) {
-    if (launcherIndex !== this.launcherIndex) {
-      return;
-    }
-
-    //TODO: unload ammo
-  }
-
-  canLaunchAgainst({ target }: { target: Ship }) {
-    if (this.turnsLoaded < this.loadingTime || !this.loadedTorpedo) {
-      return false;
-    }
-
-    const distance = this.getSystem()
-      .getShipSystems()
-      .ship.hexDistanceTo(target);
-
-    if (
-      this.loadedTorpedo.minRange > distance ||
-      this.loadedTorpedo.maxRange < distance
-    ) {
-      return false;
-    }
-
-    return true;
-  }
-
-  setLaunchTarget(shipId: string | null) {
-    if (this.turnsLoaded < this.loadingTime || !this.loadedTorpedo) {
-      return;
-    }
-
-    this.launchTarget = shipId;
-  }
-
-  launchTorpedo(
-    payload: unknown,
-    previousResponse: TorpedoFlight[] = []
-  ): TorpedoFlight[] {
-    if (
-      this.turnsLoaded < this.loadingTime ||
-      !this.loadedTorpedo ||
-      !this.launchTarget
-    ) {
-      return previousResponse;
-    }
-
-    const result = new TorpedoFlight(
-      this.loadedTorpedo,
-      this.launchTarget,
-      this.getSystem().getShipSystems().ship.id,
-      this.getSystem().id,
-      this.launcherIndex
+  deserialize(data: Partial<SerializedTorpedoLauncherStrategy> = {}) {
+    data?.torpedoLauncherSystemStrategy?.launchers.forEach(
+      (launcherData, index) => this.launchers[index].deserialize(launcherData)
     );
-
-    const possibleNewTorpedos = this.getPossibleTorpedosToLoad();
-    let newAmmo: { ammo: TropedoType; from: number } | null = null;
-
-    const same = possibleNewTorpedos.find((torpedo) =>
-      torpedo.object.equals(this.loadedTorpedo)
-    );
-
-    if (same) {
-      const cargoBay = this.getSystem()
-        .getShipSystems()
-        .getSystems()
-        .find((system) =>
-          system.callHandler(
-            SYSTEM_HANDLERS.hasCargo,
-            { object: same.object },
-            false as boolean
-          )
-        );
-
-      if (!cargoBay) {
-        throw new Error(
-          `Did not find cargo bay for torpedo ${same.object.constructor.name}`
-        );
-      }
-
-      newAmmo = {
-        ammo: same.object.constructor.name as TropedoType,
-        from: cargoBay.id,
-      };
-    } else if (possibleNewTorpedos.length > 0) {
-      const newTorpedo =
-        possibleNewTorpedos[possibleNewTorpedos.length - 1].object;
-      const cargoBay = this.getSystem()
-        .getShipSystems()
-        .getSystems()
-        .find((system) =>
-          system.callHandler(
-            SYSTEM_HANDLERS.hasCargo,
-            { object: newTorpedo },
-            false
-          )
-        );
-
-      if (!cargoBay) {
-        throw new Error(`Did not find cargo bay for torpedo ${newTorpedo}`);
-      }
-
-      newAmmo = {
-        ammo: newTorpedo.constructor.name as TropedoType,
-        from: cargoBay.id,
-      };
-    }
-
-    this.loadedTorpedo = null;
-    this.turnsLoaded = 0;
-
-    if (newAmmo) {
-      this.receiveAmmoChange(newAmmo);
-    }
-
-    return [...previousResponse, result];
   }
 
-  loadAmmo({ ammo, launcherIndex }: { ammo: Torpedo; launcherIndex: number }) {
-    if (
-      launcherIndex !== this.launcherIndex ||
-      (this.loadedTorpedo &&
-        this.loadedTorpedo.constructor.name === ammo.constructor.name)
-    ) {
-      return;
-    }
-
-    const system = this.getSystems().find((system) =>
-      system.callHandler(SYSTEM_HANDLERS.hasCargo, { object: ammo }, false)
-    );
-
-    if (!system) {
-      return;
-    }
-
-    system.callHandler(
-      SYSTEM_HANDLERS.removeCargo,
-      { object: ammo },
-      undefined
-    );
-
-    if (this.loadedTorpedo) {
-      system.callHandler(
-        SYSTEM_HANDLERS.addCargo,
-        { object: this.loadedTorpedo },
-        undefined
-      );
-    }
-
-    if (
-      this.previousTorpedo &&
-      this.previousTorpedo.constructor.name === ammo.constructor.name
-    ) {
-      this.loadedTorpedo = this.previousTorpedo;
-      this.turnsLoaded = this.previousTurnsLoaded;
-      this.changeAmmo = null;
-    } else {
-      if (!this.previousTorpedo) {
-        this.previousTorpedo = this.loadedTorpedo;
-        this.previousTurnsLoaded = this.turnsLoaded;
-      }
-
-      this.turnsLoaded = 0;
-      this.changeAmmo = {
-        ammo: ammo.constructor.name as TropedoType,
-        from: system.id,
-      };
-      this.loadedTorpedo = ammo;
-    }
-
-    this.launchTarget = null;
-  }
-
-  getLoadedLaunchers(
-    payload: unknown,
-    previousResponse: TorpedoLauncherStrategy[] = []
-  ): TorpedoLauncherStrategy[] {
-    if (this.turnsLoaded >= this.loadingTime && this.loadedTorpedo) {
-      return [...previousResponse, this];
-    }
-
-    return previousResponse;
-  }
-
-  receiveAmmoChange(changeAmmo: { ammo: TropedoType; from: number }) {
-    const ammo = createTorpedoInstance(changeAmmo.ammo);
-
-    const cargoBay = this.getSystemById(changeAmmo.from);
-    if (
-      !cargoBay.callHandler(
-        SYSTEM_HANDLERS.hasCargo,
-        { object: ammo },
-        false as boolean
-      )
-    ) {
-      throw new Error(
-        `Trying to take cargo form ${cargoBay.id}, but no appropriate cargo found`
-      );
-    }
-
-    cargoBay.callHandler(
-      SYSTEM_HANDLERS.removeCargo,
-      { object: ammo },
-      undefined
-    );
-
-    if (this.loadedTorpedo) {
-      cargoBay.callHandler(
-        SYSTEM_HANDLERS.addCargo,
-        { object: this.loadedTorpedo },
-        undefined
-      );
-    }
-
-    this.loadedTorpedo = ammo;
-    this.turnsLoaded = 0;
+  getLaunchers() {
+    return this.launchers;
   }
 
   receivePlayerData({
@@ -384,99 +187,98 @@ class TorpedoLauncherStrategy extends ShipSystemStrategy {
       return;
     }
 
-    const clientStrategy = getThisStrategy(clientSystem, this.launcherIndex);
+    const clientStrategy =
+      clientSystem.getStrategiesByInstance<TorpedoLauncherStrategy>(
+        TorpedoLauncherStrategy
+      )[0];
 
     if (!clientStrategy) {
       return false;
     }
 
-    const changeAmmo = clientStrategy.changeAmmo;
+    clientStrategy.getLaunchers().forEach((launcher) => {
+      const targetId = launcher.getLaunchTarget();
+      const torpedo = launcher.getTorpedo();
 
-    if (changeAmmo) {
-      this.receiveAmmoChange(changeAmmo);
-    }
-
-    if (clientStrategy.launchTarget) {
-      const target = gameData.ships.getShipById(clientStrategy.launchTarget);
-
-      if (!target) {
-        throw new Error(
-          `Did not find launch target ship id '${clientStrategy.launchTarget}'`
-        );
+      if (!targetId || !torpedo) {
+        return;
       }
 
-      if (!this.canLaunchAgainst({ target })) {
-        throw new Error(`Can not launch torpedo`);
+      const targetShip = gameData.ships.getShipById(targetId);
+
+      if (
+        !targetShip ||
+        gameData.ships.isSameTeam(targetShip, this.getShip())
+      ) {
+        return;
       }
 
-      this.launchTarget = clientStrategy.launchTarget;
-    }
-  }
-
-  getPossibleTorpedosToLoad() {
-    const ammo: CargoEntry<Torpedo>[] = [];
-    this.getSystem()
-      .getShipSystems()
-      .getSystems()
-      .forEach((system) => {
-        const possibleAmmo = system.callHandler(
-          SYSTEM_HANDLERS.getCargoByParentClass,
-          this.torpedoClass,
-          [] as CargoEntry<Torpedo>[]
-        );
-
-        possibleAmmo.forEach((cargo) => {
-          const entry = ammo.find(
-            (ammoEntry) =>
-              ammoEntry.object.constructor.name ===
-              cargo.object.constructor.name
-          );
-
-          if (entry) {
-            entry.amount += cargo.amount;
-          } else {
-            ammo.push({
-              object: cargo.object,
-              amount: cargo.amount,
-            });
-          }
-        });
+      this.setLaunchTarget({
+        target: targetShip,
+        torpedo,
       });
-
-    return ammo;
-  }
-
-  advanceTurn() {
-    this.changeAmmo = null;
-    this.previousTorpedo = null;
-    this.launchTarget = null;
-
-    if (this.getSystem().isDisabled() || !this.loadedTorpedo) {
-      this.turnsLoaded = 0;
-      return;
-    }
-
-    this.turnsLoaded++;
+    });
   }
 }
 
-const getThisStrategy = (
-  system: ShipSystem,
-  launcherIndex: number
-): TorpedoLauncherStrategy => {
-  const strategy = system.strategies.find(
-    (strategy) =>
-      strategy instanceof TorpedoLauncherStrategy &&
-      strategy.launcherIndex === launcherIndex
-  );
-
-  if (!strategy) {
-    throw new Error(
-      `Did not find TorpedoLauncherStrategy. This should not happen`
-    );
-  }
-
-  return strategy as TorpedoLauncherStrategy;
+type SerializedTorpedoLauncher = {
+  turnsLoaded: number;
+  launchTarget: string | null;
+  torpedoToLaunch: TorpedoType;
 };
 
-export default TorpedoLauncherStrategy;
+class TorpedoLauncher {
+  private loadingTime: number = 3;
+  private turnsLoaded: number = 3;
+  private launchTarget: string | null = null;
+  private torpedoToLaunch: Torpedo | null = null;
+
+  constructor(loadingTime: number) {
+    this.loadingTime = loadingTime;
+    this.turnsLoaded = loadingTime;
+  }
+
+  public getLaunchTarget() {
+    return this.launchTarget;
+  }
+
+  public getTorpedo() {
+    return this.torpedoToLaunch;
+  }
+
+  public advanceTurn() {
+    this.turnsLoaded++;
+  }
+
+  public setLaunchTarget(target: Ship, torpedo: Torpedo) {
+    this.launchTarget = target.id;
+    this.torpedoToLaunch = torpedo;
+  }
+
+  public launchTorpedo() {
+    this.turnsLoaded = 0;
+    this.launchTarget = null;
+    this.torpedoToLaunch = null;
+  }
+
+  public canLaunch() {
+    this.turnsLoaded >= this.loadingTime && !this.launchTarget;
+  }
+
+  public serialize(): SerializedTorpedoLauncher {
+    return {
+      turnsLoaded: this.turnsLoaded,
+      launchTarget: this.launchTarget,
+      torpedoToLaunch:
+        (this.torpedoToLaunch?.getCargoClassName() as TorpedoType) || null,
+    };
+  }
+
+  public deserialize(data?: Partial<SerializedTorpedoLauncher>) {
+    this.turnsLoaded = data?.turnsLoaded ?? this.turnsLoaded;
+    this.launchTarget = data?.launchTarget || null;
+    this.torpedoToLaunch = data?.torpedoToLaunch
+      ? createTorpedoInstance(data.torpedoToLaunch)
+      : null;
+  }
+}

@@ -35,8 +35,8 @@ test("Test weapon heats up", async () => {
 
   expect(achilles.systems.getSystemById(205).log.getMessagesForTurn(1)).toEqual(
     [
-      "Added 10 units of heat. Transfered 5 units of heat to radiators.",
-      "Stored 5 units of heat.",
+      "Added 14 units of heat. Transfered 5 units of heat to radiators.",
+      "Stored 9 units of heat.",
       "Radiated 5 units of heat.",
     ]
   );

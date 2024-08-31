@@ -15,9 +15,9 @@ export const torpedoes = {
   Torpedo158HE,
 };
 
-export type TropedoType = keyof typeof torpedoes;
+export type TorpedoType = keyof typeof torpedoes;
 
-export const createTorpedoInstance = (className: TropedoType): Torpedo => {
+export const createTorpedoInstance = (className: TorpedoType): Torpedo => {
   //@ts-ignore
   return new torpedoes[className]();
 };

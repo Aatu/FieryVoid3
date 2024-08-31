@@ -249,7 +249,7 @@ class ShipSystem {
     this.power.deserialize(data.power);
     this.heat.deserialize(data.heat);
     this.log.deserialize(data.log);
-    this.callHandler(SYSTEM_HANDLERS.deserialize, data, undefined);
+    this.handlers.deserialize(data);
 
     return this;
   }
@@ -260,7 +260,7 @@ class ShipSystem {
       power: this.power.serialize(),
       heat: this.heat.serialize(),
       log: this.log.serialize(),
-      ...this.callHandler(SYSTEM_HANDLERS.serialize, null, {}),
+      ...this.handlers.serialize(),
     };
   }
 

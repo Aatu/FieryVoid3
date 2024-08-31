@@ -336,14 +336,5 @@ test("Ship loadout is set", async () => {
   const achilles = ships.find((ship) => ship.name === "UCS Achilles");
   const cargoBay = achilles!.systems.getSystemById(204);
 
-  expect(
-    cargoBay.callHandler(
-      SYSTEM_HANDLERS.hasCargo,
-      {
-        object: new Torpedo158MSV(),
-        amount: 12,
-      },
-      false
-    )
-  ).toBe(true);
+  expect(cargoBay.handlers.getAllCargo()).toEqual("lol hi");
 });

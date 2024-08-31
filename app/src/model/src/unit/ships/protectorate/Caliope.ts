@@ -1,27 +1,9 @@
 import Ship from "../../Ship";
 import systems from "../../system/index";
-import Offset from "../../../hexagon/Offset";
-import Torpedo72MSV from "../../system/weapon/ammunition/torpedo/Torpedo72MSV";
-import Torpedo158MSV from "../../system/weapon/ammunition/torpedo/Torpedo158MSV";
-import Torpedo158Nuclear from "../../system/weapon/ammunition/torpedo/Torpedo158Nuclear";
-import Ammo140mmAP from "../../system/weapon/ammunition/conventional/Ammo140mmAP";
-import Ammo140mmHE from "../../system/weapon/ammunition/conventional/Ammo140mmHE";
-import Ammo85mmAP from "../../system/weapon/ammunition/conventional/Ammo85mmAP";
-import Ammo85mmHE from "../../system/weapon/ammunition/conventional/Ammo85mmHE";
-import CargoService from "../../../cargo/CargoService";
-import Ammo30mm from "../../system/weapon/ammunition/conventional/Ammo30mm";
-import Torpedo72HE from "../../system/weapon/ammunition/torpedo/Torpedo72HE";
-import { SYSTEM_HANDLERS } from "../../system/strategy/types/SystemHandlersTypes";
 
 class Caliope extends Ship {
   setShipProperties() {
     this.shipTypeName = "OuterLight Industries Caliope OI-E1 cruiser";
-    this.hexSizes = [
-      new Offset(2, 0),
-      new Offset(1, 0),
-      new Offset(0, 0),
-      new Offset(-1, 0),
-    ];
     this.accelcost = 3;
     this.rollcost = 3;
     this.pivotcost = 3;
@@ -53,7 +35,7 @@ class Caliope extends Ship {
 
         Caliope was repurposed to a long range cruiser by removing the railgun turrets. Freed space was used for extra
         crew quarters, cargo and fuel space. The armor of the ship was reduced to gain much needed manouverability and
-        bring the spaceframe to safe structural stress levels. Abandoning the railguns left the ship with considerable
+        bring the spaceframe to safe structural stress limits. Abandoning the railguns left the ship with considerable
         surplus of energy production and heat management capacity. This allowed the upgrade of the engines to more
         powerful Silverbreak 15R model. Armament wise the new Caliope OI-B1 was equiped with four Maltech 210mm Twin kinetic
         cannon turrets and seven 20mm Maltech PDCs. The missile launchers and magazines were left untouched.
@@ -221,6 +203,8 @@ class Caliope extends Ship {
   setShipLoadout() {
     super.setShipLoadout();
 
+    /*
+
     const cargoService = new CargoService();
     cargoService.divideCargo(this, {
       object: new Torpedo72MSV(),
@@ -318,6 +302,7 @@ class Caliope extends Ship {
       },
       undefined
     );
+    */
   }
 }
 

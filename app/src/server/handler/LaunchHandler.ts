@@ -14,14 +14,7 @@ class LaunchHandler {
       const torpedoFlights = ship.systems
         .getSystems()
         .reduce(
-          (total, system) =>
-            total.concat(
-              system.callHandler(
-                SYSTEM_HANDLERS.launchTorpedo,
-                null,
-                [] as TorpedoFlight[]
-              )
-            ),
+          (total, system) => total.concat(system.handlers.launchTorpedos()),
           [] as TorpedoFlight[]
         );
 

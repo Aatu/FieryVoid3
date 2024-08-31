@@ -262,6 +262,7 @@ class ShipMovement {
       );
   }
 
+  /*
   isOverlapping(otherShip: Ship) {
     const shipPosition = this.ship.getHexPosition();
     const shipFacing = this.ship.getFacing();
@@ -276,6 +277,7 @@ class ShipMovement {
       );
     });
   }
+    */
 
   hasValidMovement() {
     const bill = new ThrustBill(this.ship, this.getMovement());

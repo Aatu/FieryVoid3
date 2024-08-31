@@ -12,11 +12,7 @@ import Vector from "../../../model/src/utils/Vector";
 import GameData from "../../../model/src/game/GameData";
 import { User } from "../../../model/src/User/User";
 import GameSlot from "../../../model/src/game/GameSlot";
-import TorpedoAttackService from "../../../model/src/weapon/TorpedoAttackService";
-import ShipSystem from "../../../model/src/unit/system/ShipSystem";
 import StandardHitStrategy from "../../../model/src/unit/system/strategy/weapon/StandardHitStrategy";
-import { SYSTEM_HANDLERS } from "../../../model/src/unit/system/strategy/types/SystemHandlersTypes";
-import WeaponHitChance from "../../../model/src/weapon/WeaponHitChance";
 import { TorpedoHandler } from "../../handler/TorpedoHandler";
 import { TorpedoFlightForIntercept } from "../../../model/src/unit/TorpedoFlightForIntercept";
 import CombatLogTorpedoIntercept from "../../../model/src/combatLog/CombatLogTorpedoIntercept";
@@ -56,6 +52,8 @@ const createShips = () => {
   );
 
   ship.electronicWarfare.activatePlannedElectronicWarfare();
+
+  ship.setShipLoadout();
 
   const shooter = new Ship({
     id: "2",
@@ -103,7 +101,7 @@ const createShips = () => {
 };
 
 const launchTorpedo = (gameData: GameData, torpedo: Torpedo) => {
-  const flight = new TorpedoFlight(torpedo, "1", "2", 3, 1);
+  const flight = new TorpedoFlight(torpedo, "1", "2", 3);
   flight.setLaunchPosition(new Vector(1000, 0));
   flight.setStrikePosition(new Vector(500, 0));
   gameData.torpedos.addTorpedoFlights(flight);
@@ -135,13 +133,12 @@ test("Torpedo flight for intercept encapsulates data", () => {
   expect(torpedoFlight.isStricking(target)).toBe(true);
 });
 
-test.only("Ship can try to intercept torpedo", () => {
+test("Ship can try to intercept torpedo", () => {
   const gameData = createShips();
   launchTorpedo(gameData, new Torpedo158MSV());
   const handler = new TorpedoHandler();
   const target = gameData.ships.getShipById("1");
   const pdc = target.systems.getSystemById(14)!;
-  pdc.handlers.loadTargetInstant();
   target.electronicWarfare.assignCcEw(8);
 
   handler.advance(gameData);
@@ -158,8 +155,23 @@ test("Torpedo can not be intercepted, if weapon is offline", (test) => {
   const handler = new TorpedoHandler();
   const target = gameData.ships.getShipById("1");
   const pdc = target.systems.getSystemById(14)!;
-  pdc.handlers.loadTargetInstant();
   pdc.power.setOffline();
+  target.electronicWarfare.assignCcEw(8);
+
+  handler.advance(gameData);
+
+  const logEntry = gameData.combatLog.entries[0] as CombatLogTorpedoAttack;
+  expect(gameData.combatLog.entries.length).toEqual(1);
+  expect(logEntry).toBeInstanceOf(CombatLogTorpedoAttack);
+});
+
+test("Torpedo can not be intercepted, if weapon is out of ammo", (test) => {
+  const gameData = createShips();
+  launchTorpedo(gameData, new Torpedo158MSV());
+  const handler = new TorpedoHandler();
+  const target = gameData.ships.getShipById("1");
+  const pdc = target.systems.getSystemById(14)!;
+  pdc.handlers.removeAllCargo();
   target.electronicWarfare.assignCcEw(8);
 
   handler.advance(gameData);
@@ -175,7 +187,6 @@ test("Torpedo can not be intercepted, if weapon is not on arc", (test) => {
   const handler = new TorpedoHandler();
   const target = gameData.ships.getShipById("1");
   const pdc = target.systems.getSystemById(14)!;
-  pdc.handlers.loadTargetInstant();
   pdc.power.setOffline();
   target.electronicWarfare.assignCcEw(8);
   target.systems.addPrimarySystem([
@@ -195,82 +206,39 @@ test("Torpedo can not be intercepted, if weapon is already used", (test) => {
   const handler = new TorpedoHandler();
   const target = gameData.ships.getShipById("1");
   const pdc = target.systems.getSystemById(14)!;
-  pdc.handlers.loadTargetInstant();
   pdc.handlers.addUsedIntercept(6);
   target.electronicWarfare.assignCcEw(8);
 
   handler.advance(gameData);
 
-  console.log(gameData.combatLog.entries);
   const logEntry = gameData.combatLog.entries[0] as CombatLogTorpedoAttack;
   expect(gameData.combatLog.entries.length).toEqual(1);
   expect(logEntry).toBeInstanceOf(CombatLogTorpedoAttack);
 });
 
-/*
 test("Better interceptor is used first", (test) => {
-  const gameData = createShipAndTorpedo();
-
-  const ship = gameData.ships.getShips()[0];
-  ship.systems.addPrimarySystem([
+  const gameData = createShips();
+  launchTorpedo(gameData, new Torpedo158MSV());
+  const handler = new TorpedoHandler();
+  const target = gameData.ships.getShipById("1");
+  target.systems.addPrimarySystem([
     new PDC30mm({ id: 15, hitpoints: 5, armor: 3 }, { start: 0, end: 0 }),
   ]);
+  const pdc = target.systems.getSystemById(14)!;
+  const pdc2 = target.systems.getSystemById(15);
 
-  const pdc = ship.systems.getSystemById(15);
-  const pdc2 = ship.systems.getSystemById(14);
-
-  const s = pdc.strategies.find(
-    (strategy) => strategy instanceof StandardHitStrategy
+  const s = pdc2.strategies.find(
+    (strategy: unknown) => strategy instanceof StandardHitStrategy
   ) as StandardHitStrategy;
 
   s.fireControl = 50;
+  pdc2.handlers.loadTargetCargoInstant();
 
-  const handler = new TorpedoHandler();
-  const torpedoFlight = gameData.torpedos.getTorpedoFlights()[0];
+  target.electronicWarfare.assignCcEw(8);
 
-  const interceptor = handler.chooseInterceptor(
-    new TorpedoAttackService().update(gameData),
-    gameData,
-    torpedoFlight,
-    []
-  );
+  handler.advance(gameData);
 
-  expect(interceptor).toBeDefined();
-  expect((interceptor as ShipSystem).id).toEqual(15);
+  const logEntry = gameData.combatLog.entries[0] as CombatLogTorpedoIntercept;
+  expect(logEntry).toBeInstanceOf(CombatLogTorpedoIntercept);
+  expect(logEntry.intercepts[0].interceptorId).toEqual(15);
 });
-
-test("Intercept hit change is calculated properly", (test) => {
-  const gameData = createShipAndTorpedo();
-  const ship = gameData.ships.getShips()[0];
-  ship.electronicWarfare.assignCcEw(8);
-  const pdc = ship.systems.getSystemById(14);
-
-  ship.movement.isRolling = () => true;
-
-  const torpedoFlight = gameData.torpedos.getTorpedoFlights()[0];
-  const result = pdc.callHandler(
-    SYSTEM_HANDLERS.getInterceptChance,
-    {
-      target: ship,
-      torpedoFlight,
-    },
-    null as unknown as WeaponHitChance
-  );
-
-  expect(result).toEqual(
-    new WeaponHitChance({
-      absoluteResult: 30,
-      baseToHit: 0,
-      dew: 0,
-      distance: 2,
-      evasion: 30,
-      fireControl: 30,
-      oew: 8,
-      outOfRange: false,
-      rangeModifier: -20,
-      rollingPenalty: -20,
-      result: 30,
-    })
-  );
-});
-*/

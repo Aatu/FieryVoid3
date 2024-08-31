@@ -152,6 +152,7 @@
   dependencies:
     "@dice-roller/rpg-dice-roller" "^5.5.0"
     bcrypt "^5.1.1"
+    dotenv "^16.4.5"
     three "^0.167.1"
     typescript "^5.5.4"
     uuid "^10.0.0"
@@ -1134,6 +1135,11 @@ dot-prop@^4.2.1:
   integrity sha512-l0p4+mIuJIua0mhxGoh4a+iNL9bmeK5DvnSVQa6T0OhrVmaEa1XScX5Etc673FePCJOArq/4Pa2cLGODUWTPOQ==
   dependencies:
     is-obj "^1.0.0"
+
+dotenv@^16.4.5:
+  version "16.4.5"
+  resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-16.4.5.tgz#cdd3b3b604cb327e286b4762e13502f717cb099f"
+  integrity sha512-ZmdL2rui+eB2YwhsWzjInR8LldtZHGDoQ1ugH85ppHKwpUHL7j7rN0Ti9NCnGiQbhaZ11FpR+7ao1dNsmduNUg==
 
 duplexer3@^0.1.4:
   version "0.1.5"

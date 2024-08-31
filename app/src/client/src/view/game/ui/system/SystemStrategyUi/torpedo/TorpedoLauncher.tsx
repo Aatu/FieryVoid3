@@ -16,7 +16,6 @@ import ShipSystem from "@fieryvoid3/model/src/unit/system/ShipSystem";
 import { useForceRerender } from "../../../../../../util/useForceRerender";
 import { useUiStateHandler } from "../../../../../../state/useUIStateHandler";
 import Torpedo from "@fieryvoid3/model/src/unit/system/weapon/ammunition/torpedo/Torpedo";
-import NoAmmunitionLoaded from "@fieryvoid3/model/src/unit/system/weapon/ammunition/NoAmmunitionLoaded";
 
 const TorpedoList = styled.div`
   display: flex;

@@ -15,6 +15,12 @@ class CombatLogData {
   }
 
   addEntry(entry: CombatLogEntry) {
+    const existing = this.entries.find((e) => e === entry);
+
+    if (existing) {
+      return;
+    }
+
     this.entries.push(entry);
   }
 

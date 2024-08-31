@@ -87,6 +87,8 @@ export class UnifiedDamageStrategy {
         armorPiercing
       );
     }
+
+    payload.combatLogEntry.addDamage(combatLogDamageEntry);
   }
 
   protected doDamage(
@@ -256,13 +258,6 @@ export class UnifiedDamageStrategy {
     if (armorPiercingLeft < 0) {
       armorPiercingLeft = 0;
     }
-
-    console.log(
-      "Doing damage, hit system: ",
-      hitSystem?.getDisplayName(),
-      damage,
-      armorPiercing
-    );
 
     if (damage <= 0) {
       return armorPiercingLeft;

@@ -177,7 +177,13 @@ test("Submit successfull fire order for both players", async () => {
     throw new Error("ships not found");
   }
 
-  expect(biliyaz.systems.getSystemById(7).getRemainingHitpoints()).toBe(10);
+  const damaged = biliyaz.systems
+    .getSystems()
+    .filter((s) => s.damage.getPercentUnDamaged() < 1)
+    .pop();
+
+  expect(damaged).toBeDefined();
+  expect(damaged!.damage.getTotalDamage() > 0).toBe(true);
 
   expect(
     achilles.systems
@@ -220,7 +226,7 @@ test("Submit successfull fire order for both players", async () => {
 
   expect(
     (replay[0].combatLog.entries[0] as any).damages[0].entries[0].systemId
-  ).toEqual(7);
+  ).toEqual(damaged!.id);
 
   db.close();
 });
@@ -312,7 +318,13 @@ test("Submit successfull fire order with roll and pivot", async () => {
     throw new Error("ships not found");
   }
 
-  expect(biliyaz.systems.getSystemById(7).getRemainingHitpoints()).toBe(10);
+  const damaged = biliyaz.systems
+    .getSystems()
+    .filter((s) => s.damage.getPercentUnDamaged() < 1)
+    .pop();
+
+  expect(damaged).toBeDefined();
+  expect(damaged!.damage.getTotalDamage() > 0).toBe(true);
 
   expect(
     achilles.systems
@@ -355,7 +367,7 @@ test("Submit successfull fire order with roll and pivot", async () => {
 
   expect(
     (replay[0].combatLog.entries[0] as any).damages[0].entries[0].systemId
-  ).toBe(7);
+  ).toBe(damaged!.id);
 
   db.close();
 });

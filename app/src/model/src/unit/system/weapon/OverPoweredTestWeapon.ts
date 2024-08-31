@@ -13,7 +13,7 @@ class OverPoweredTestWeapon extends Weapon {
     super(args, [
       new FireOrderStrategy(1),
       new WeaponArcStrategy(arcs),
-      new StandardHitStrategy(10000),
+      new StandardHitStrategy(10000, 100),
       new StandardRangeStrategy([
         { range: 0, modifier: 0 },
         { range: 300, modifier: -200 },

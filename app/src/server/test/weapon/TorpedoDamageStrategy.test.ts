@@ -76,7 +76,7 @@ test("Torpedo MSV damage strategy causes damage", (test) => {
   ship.sideHitProfile = 400;
 
   const torpedo = new Torpedo158MSV();
-  const flight = new TorpedoFlight(torpedo, ship.id, shooter.id, 1, 1);
+  const flight = new TorpedoFlight(torpedo, ship.id, shooter.id, 1);
   flight.setStrikePosition(new Offset(5, 7).toVector());
   const torpedoAttack = new CombatLogTorpedoAttack(flight.id, ship.id);
 
@@ -93,7 +93,7 @@ test("Torpedo MSV damage strategy causes damage", (test) => {
 
   expect(damagedSystems.length > 0).toBe(true);
   expect(torpedoAttack.notes).toEqual([
-    "MSV with 32 projectiles at distance 10 with hit chance of 250% each.",
+    "MSV with 32 projectiles at distance 10 with hit chance of 320% each.",
     "32 MSVs hit target.",
   ]);
 });

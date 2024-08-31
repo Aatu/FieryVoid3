@@ -12,6 +12,10 @@ import InterceptorStrategy from "../../strategy/weapon/InterceptorStrategy";
 import AmmunitionStrategy from "../../strategy/weapon/AmmunitionStrategy";
 import { MEDIUM_WEAPON_RANGE } from "../../../../config/gameConfig";
 import { UnifiedDamageSystemStrategy } from "../../strategy/weapon/UnifiedDamageStrategy";
+import { CargoBaySystemStrategy } from "../../strategy";
+import { CargoEntry } from "../../../../cargo/CargoEntry";
+import { Ammo30mm } from "../ammunition/conventional";
+import { AmmoMagazineSystemStrategy } from "../../strategy/AmmoMagazineSystemStrategy";
 
 class X2PDC30mm extends Weapon {
   constructor(args: WeaponArgs, arcs: WeaponArcs) {
@@ -30,7 +34,8 @@ class X2PDC30mm extends Weapon {
       new StandardLoadingStrategy(1),
       new UnifiedDamageSystemStrategy(),
       new InterceptorStrategy(),
-      new AmmunitionStrategy(["Ammo30mm"], 6, 36, 12),
+      new AmmunitionStrategy(["Ammo30mm"], 2),
+      new AmmoMagazineSystemStrategy({ Ammo30mm: 20 }, 3),
       new WeaponAnimationStrategy("UniversalBolt", {
         size: 6,
         speed: 0.35,

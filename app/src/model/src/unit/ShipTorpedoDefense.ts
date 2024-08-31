@@ -42,12 +42,16 @@ export class ShipTorpedoDefense {
   public receivePlayerData(clientShip: Ship) {
     const serialized = clientShip.torpedoDefense.serialize();
 
-    Yup.object().shape({
+    const schema = Yup.object().shape({
       minHitChangeLowPriority: Yup.number().positive().integer().required(),
       minHitChangeMediumPriority: Yup.number().positive().integer().required(),
       minHitChangeHighPriority: Yup.number().positive().integer().required(),
       otherShipInterceptionMod: Yup.number().integer().required(),
     });
+
+    if (!schema.isValidSync(serialized)) {
+      throw new Error("Invalid ship torpedo defense");
+    }
 
     this.deserialize(serialized);
   }

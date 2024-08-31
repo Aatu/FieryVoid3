@@ -1,3 +1,4 @@
+import CombatLogTorpedoIntercept from "../combatLog/CombatLogTorpedoIntercept";
 import { Offset } from "../hexagon";
 import coordinateConverter from "../utils/CoordinateConverter";
 import { InterceptionEntry } from "./InterceptorCandidate";
@@ -9,15 +10,10 @@ export class TorpedoFlightForIntercept extends TorpedoFlight {
   private pathIndex: number = 0;
   private interceptors: InterceptionEntry[] = [];
   private hasNoInterceptionCandidates: boolean = false;
+  private interceptionLogEntry: CombatLogTorpedoIntercept | null = null;
 
   constructor(flight: TorpedoFlight, target: Ship) {
-    super(
-      flight.torpedo,
-      flight.targetId,
-      flight.shooterId,
-      flight.weaponId,
-      flight.launcherIndex
-    );
+    super(flight.torpedo, flight.targetId, flight.shooterId, flight.weaponId);
     this.id = flight.id;
     this.launchPosition = flight.launchPosition;
     this.strikePosition = flight.strikePosition;
@@ -30,6 +26,14 @@ export class TorpedoFlightForIntercept extends TorpedoFlight {
       .getHexPosition();
 
     this.path = this.getStrikePositionHex().drawLine(targetPosition);
+  }
+
+  public getLogEntry() {
+    if (!this.interceptionLogEntry) {
+      this.interceptionLogEntry = new CombatLogTorpedoIntercept(this.id);
+    }
+
+    return this.interceptionLogEntry;
   }
 
   public setNoInterceptionCandidates() {

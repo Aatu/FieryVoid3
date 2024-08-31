@@ -9,6 +9,7 @@ import { Reactor } from "../../../model/src/unit/system/reactor";
 import ShipSystemSections from "../../../model/src/unit/system/ShipSystemSections";
 import { Structure } from "../../../model/src/unit/system/structure";
 import { Thruster } from "../../../model/src/unit/system/thruster";
+import { systemsToNameIdString } from "../helpers";
 
 const getShipWithStructures = (rolled = false) => {
   const ship = new Ship({});
@@ -149,12 +150,16 @@ test("Gets correct hit candidates", () => {
   ship.systems.addPrimarySystem(primarySystems);
   ship.systems.addFrontSystem(frontSystems);
 
-  const hitSystems = ship.systems.getSystemsForHit(
+  const hitSystems = ship.systems.getSystemsForOuterHit(
     { x: 200, y: 0, z: 0 },
     null
   );
-  expect(hitSystems.length).toBe(4);
-  expect(hitSystems).toEqual([...primarySystems, ...frontSystems]);
+
+  expect(hitSystems.length).toBe(2);
+  expect(systemsToNameIdString(hitSystems)).toEqual([
+    "Structure id: '1'",
+    "C/Fusion Hybrid Thruster id: '8'",
+  ]);
 
   return ship;
 });
@@ -179,7 +184,7 @@ test("Structure protects section behind", () => {
   ship.systems.addPrimarySystem(primarySystems);
   ship.systems.addFrontSystem(frontSystems);
 
-  const hitSystems = ship.systems.getSystemsForHit(
+  const hitSystems = ship.systems.getSystemsForOuterHit(
     { x: 200, y: 0, z: 0 },
     null
   );

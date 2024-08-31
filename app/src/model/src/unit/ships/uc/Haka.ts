@@ -1,25 +1,10 @@
 import Ship from "../../Ship";
 import systems from "../../system/index";
-import Offset from "../../../hexagon/Offset";
-import Torpedo158MSV from "../../system/weapon/ammunition/torpedo/Torpedo158MSV";
-import Torpedo158Nuclear from "../../system/weapon/ammunition/torpedo/Torpedo158Nuclear";
-import Ammo140mmAP from "../../system/weapon/ammunition/conventional/Ammo140mmAP";
-import Ammo140mmHE from "../../system/weapon/ammunition/conventional/Ammo140mmHE";
-import CargoService from "../../../cargo/CargoService";
-import Ammo30mm from "../../system/weapon/ammunition/conventional/Ammo30mm";
-import Torpedo158MSV2 from "../../system/weapon/ammunition/torpedo/Torpedo158MSV2";
-import Torpedo158HE from "../../system/weapon/ammunition/torpedo/Torpedo158HE";
-import { SYSTEM_HANDLERS } from "../../system/strategy/types/SystemHandlersTypes";
 
 class Haka extends Ship {
   setShipProperties() {
     this.shipTypeName = "Haka XCD-33 Battleship";
-    this.hexSizes = [
-      new Offset(2, 0),
-      new Offset(1, 0),
-      new Offset(0, 0),
-      new Offset(-1, 0),
-    ];
+
     this.accelcost = 5;
     this.rollcost = 12;
     this.pivotcost = 10;
@@ -256,6 +241,7 @@ class Haka extends Ship {
   setShipLoadout() {
     super.setShipLoadout();
 
+    /*
     const cargoService = new CargoService();
 
     cargoService.divideCargo(this, {
@@ -335,6 +321,8 @@ class Haka extends Ship {
         undefined
       );
     });
+
+    */
   }
 }
 

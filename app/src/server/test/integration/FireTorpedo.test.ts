@@ -10,7 +10,8 @@ import Vector from "../../../model/src/utils/Vector";
 import GameController from "../../controller/GameController";
 import { constructDeployedGame } from "../support/constructGame";
 import { SYSTEM_HANDLERS } from "../../../model/src/unit/system/strategy/types/SystemHandlersTypes";
-import TorpedoLauncherStrategy from "../../../model/src/unit/system/strategy/weapon/TorpedoLauncherStrategy";
+import { TorpedoLauncherStrategy } from "../../../model/src/unit/system/strategy/weapon/TorpedoLauncherStrategy";
+import Torpedo158HE from "../../../model/src/unit/system/weapon/ammunition/torpedo/Torpedo158HE";
 
 test("Submit successfull launch order", async () => {
   const db = new TestDatabaseConnection("torpedo");
@@ -44,17 +45,7 @@ test("Submit successfull launch order", async () => {
 
   const launchers = shooter.systems
     .getSystemById(202)
-    .callHandler(
-      SYSTEM_HANDLERS.getLoadedLaunchers,
-      null,
-      [] as TorpedoLauncherStrategy[]
-    );
-
-  if (launchers.length === 0) {
-    throw new Error("No launchers found");
-  }
-
-  launchers[0].setLaunchTarget(target.id);
+    .handlers.setLaunchTarget({ target, torpedo: new Torpedo158HE() });
 
   await controller.commitTurn(gameData.getId(), gameData.serialize(), user);
   await controller.commitTurn(gameData.getId(), gameData.serialize(), user2);
@@ -68,9 +59,6 @@ test("Submit successfull launch order", async () => {
     throw new Error("Shooter not found");
   }
 
-  const launchersTurn2 = shooterTurn2.systems.getSystemById(202);
-  expect((launchersTurn2.strategies[1] as any).launchTarget).toBe(null);
-
   const torpedos = newGameData.torpedos.getTorpedoFlights();
 
   expect(torpedos.length === 1).toBe(true);
@@ -82,8 +70,7 @@ test("Submit successfull launch order", async () => {
     new Torpedo158MSV(),
     target.id,
     shooter.id,
-    202,
-    1
+    202
   )
     .setStrikePosition(new Vector(-324.7595264191645, 37.5))
     .setLaunchPosition(new Vector(-1407.2912811497129, 112.5));

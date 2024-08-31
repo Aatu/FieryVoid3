@@ -464,7 +464,7 @@ test("Torpedo explosive damage strategy will also...  um... explode", (test) => 
     randomizeHitSystem: (systems) => systems[0],
   } as HitSystemRandomizer;
 
-  const torpedoFlight = new TorpedoFlight(new Torpedo72HE(), "1", "1", 1, 1);
+  const torpedoFlight = new TorpedoFlight(new Torpedo72HE(), "1", "1", 1);
   torpedoFlight.setLaunchPosition(new Vector(1000, 0));
 
   damageStrategy.applyDamageFromWeaponFire({

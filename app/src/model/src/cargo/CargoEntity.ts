@@ -1,5 +1,5 @@
-import { SystemMessage } from "../strategy/types/SystemHandlersTypes";
-import { CargoType } from "./cargo";
+import { CargoType, createCargoInstance } from "../unit/system/cargo/cargo";
+import { SystemMessage } from "../unit/system/strategy/types/SystemHandlersTypes";
 
 export interface ICargoEntity {
   getSpaceRequired(): number;
@@ -32,6 +32,10 @@ class CargoEntity implements ICargoEntity {
 
   getBackgroundImage() {
     return "";
+  }
+
+  clone() {
+    return createCargoInstance<typeof this>(this.getCargoClassName());
   }
 
   isInstanceOf(other: CargoEntity | null) {

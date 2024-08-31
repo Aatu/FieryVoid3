@@ -4,18 +4,17 @@ import Torpedo from "./system/weapon/ammunition/torpedo/Torpedo";
 import Ship from "./Ship";
 import {
   createTorpedoInstance,
-  TropedoType,
+  TorpedoType,
 } from "./system/weapon/ammunition/torpedo";
 import coordinateConverter from "../utils/CoordinateConverter";
 
 export type SerializedTorpedoFlight = {
   id: string;
-  torpedo: TropedoType;
+  torpedo: TorpedoType;
   targetId: string;
   strikePosition: Vector;
   shooterId: string;
   weaponId: number;
-  launcherIndex: number;
   intercepted: boolean;
   launchPosition: Vector;
 };
@@ -32,7 +31,6 @@ class TorpedoFlight {
   public targetId: string;
   public shooterId: string;
   public weaponId: number;
-  public launcherIndex: number;
   public launchPosition: Vector;
   public strikePosition: Vector;
   public intercepted: boolean;
@@ -45,15 +43,13 @@ class TorpedoFlight {
     torpedo: Torpedo,
     targetId: string,
     shooterId: string,
-    weaponId: number,
-    launcherIndex: number
+    weaponId: number
   ) {
     this.id = uuidv4();
     this.torpedo = torpedo;
     this.targetId = targetId;
     this.shooterId = shooterId;
     this.weaponId = weaponId;
-    this.launcherIndex = launcherIndex;
     this.launchPosition = new Vector();
     this.strikePosition = new Vector();
     this.intercepted = false;
@@ -105,12 +101,11 @@ class TorpedoFlight {
   serialize(): SerializedTorpedoFlight {
     return {
       id: this.id,
-      torpedo: this.torpedo.constructor.name as TropedoType,
+      torpedo: this.torpedo.constructor.name as TorpedoType,
       targetId: this.targetId,
       strikePosition: this.strikePosition,
       shooterId: this.shooterId,
       weaponId: this.weaponId,
-      launcherIndex: this.launcherIndex,
       intercepted: this.intercepted,
       launchPosition: this.launchPosition,
     };
@@ -124,7 +119,6 @@ class TorpedoFlight {
     this.launchPosition = new Vector(data.launchPosition);
     this.shooterId = data.shooterId;
     this.weaponId = data.weaponId;
-    this.launcherIndex = data.launcherIndex;
     this.intercepted = data.intercepted || false;
 
     return this;
@@ -135,8 +129,7 @@ class TorpedoFlight {
       createTorpedoInstance(data.torpedo),
       data.targetId,
       data.shooterId,
-      data.weaponId,
-      data.launcherIndex
+      data.weaponId
     ).deserialize(data);
   }
 

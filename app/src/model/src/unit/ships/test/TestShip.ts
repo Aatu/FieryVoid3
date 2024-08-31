@@ -1,9 +1,5 @@
 import Ship from "../../Ship";
 import systems from "../../system/index";
-import Torpedo158MSV from "../../system/weapon/ammunition/torpedo/Torpedo158MSV";
-import Torpedo72MSV from "../../system/weapon/ammunition/torpedo/Torpedo72MSV";
-import Torpedo72HE from "../../system/weapon/ammunition/torpedo/Torpedo72HE";
-import { SYSTEM_HANDLERS } from "../../system/strategy/types/SystemHandlersTypes";
 
 class TestShip extends Ship {
   setShipProperties() {
@@ -64,6 +60,8 @@ class TestShip extends Ship {
 
   setShipLoadout() {
     super.setShipLoadout();
+
+    /*
 
     this.systems
       .getSystemById(205)
@@ -140,6 +138,7 @@ class TestShip extends Ship {
       undefined
     );
 
+    */
     return this;
   }
 }

@@ -1,12 +1,6 @@
 import Ship from "../../Ship";
 import systems from "../../system/index";
 import Offset from "../../../hexagon/Offset";
-import Torpedo72MSV from "../../system/weapon/ammunition/torpedo/Torpedo72MSV";
-import CargoService from "../../../cargo/CargoService";
-import Ammo30mm from "../../system/weapon/ammunition/conventional/Ammo30mm";
-import Ammo120mmAP from "../../system/weapon/ammunition/conventional/Ammo120mmAP";
-import Ammo120mmHE from "../../system/weapon/ammunition/conventional/Ammo120mmHE";
-import { SYSTEM_HANDLERS } from "../../system/strategy/types/SystemHandlersTypes";
 
 class Fulcrum extends Ship {
   setShipProperties() {
@@ -15,7 +9,6 @@ class Fulcrum extends Ship {
     this.rollcost = 4;
     this.pivotcost = 2;
     this.evasioncost = 2;
-    this.hexSizes = [new Offset(1, 0), new Offset(0, 0), new Offset(-1, 0)];
 
     this.description = `
        Fulcrum was ordered to fill the role of a fleet destroyer. A ship that packs enough of a punch in 
@@ -25,7 +18,7 @@ class Fulcrum extends Ship {
 
        Arakaki Systems won the contract with the Fulcrum design. Fulcrum sacrifices endurance, 
        heat management and some speed to bring on a battlefield a destroyed armed with a spinal
-       mounted railgun, three kinetic cannons on a fixed bow mount, considerable six light PDCs 
+       mounted railgun and three kinetic cannons on a fixed bow mount, considerable six light PDCs 
        and a two missile launchers. All this in well armored spaceframe. 
 
        A squadron of Fulcrums can turn a battle if employed properly, but their role and 
@@ -41,7 +34,7 @@ class Fulcrum extends Ship {
        deck plan is not optimized for repeling boarders, nor does it have any capacity for holding prisoners.
 
        Regardless of this long list of deficiencies, a Fulcrum can employ a combination of superior
-       weaponry and manouverability to create an engagement where Fulcrum can effectively either 
+       weaponry and manouverability to create an engagement where it can effectively either 
        out range or out gun its opponent. In close quarter battle a Fulcrum can engage an opponent
        and with superior armor still disengage with neglible damage to critical systems.
     `;
@@ -161,43 +154,7 @@ class Fulcrum extends Ship {
   setShipLoadout() {
     super.setShipLoadout();
 
-    const cargoService = new CargoService();
-    cargoService.divideCargo(this, {
-      object: new Torpedo72MSV(),
-      amount: 12,
-    });
-
-    cargoService.divideCargo(this, {
-      object: new Ammo30mm(),
-      amount: 120,
-    });
-
-    cargoService.divideCargo(this, {
-      object: new Ammo120mmAP(),
-      amount: 20,
-    });
-
-    cargoService.divideCargo(this, {
-      object: new Ammo120mmHE(),
-      amount: 20,
-    });
-
-    this.systems.getSystemById(108).callHandler(
-      SYSTEM_HANDLERS.loadAmmoInstant,
-      {
-        ammo: new Torpedo72MSV(),
-        launcherIndex: 1,
-      },
-      undefined
-    );
-    this.systems.getSystemById(108).callHandler(
-      SYSTEM_HANDLERS.loadAmmoInstant,
-      {
-        ammo: new Torpedo72MSV(),
-        launcherIndex: 2,
-      },
-      undefined
-    );
+    this.shipCargo.loadAllTargetCargoInstant();
   }
 }
 

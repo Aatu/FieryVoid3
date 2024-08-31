@@ -11,24 +11,6 @@ class Mouros extends Ship {
     this.rollcost = 3;
     this.pivotcost = 3;
     this.evasioncost = 3;
-    this.hexSizes = [
-      new Offset(-2, 0),
-      new Offset(-1, 0),
-      new Offset(0, 0),
-      new Offset(1, 0),
-      new Offset(2, 0),
-      new Offset(3, 0),
-      /*
-      new Offset(1, 1),
-      new Offset(2, 1),
-      new Offset(1, -1),
-      new Offset(2, -1),
-      new Offset(-1, 1),
-      new Offset(-0, 1),
-      new Offset(-1, -1),
-      new Offset(-0, -1)
-      */
-    ];
 
     this.description = ``;
 

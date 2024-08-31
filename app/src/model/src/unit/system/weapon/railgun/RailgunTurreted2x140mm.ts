@@ -13,13 +13,14 @@ import AmmunitionStrategy from "../../strategy/weapon/AmmunitionStrategy";
 import OutputHeatOnlineStrategy from "../../strategy/OutputHeatOnlineStrategy";
 import { MEDIUM_WEAPON_RANGE } from "../../../../config/gameConfig";
 import { UnifiedDamageSystemStrategy } from "../../strategy/weapon/UnifiedDamageStrategy";
+import { AmmoMagazineSystemStrategy } from "../../strategy/AmmoMagazineSystemStrategy";
 
 class RailgunTurreted2x140mm extends Weapon {
   constructor({ id }: WeaponArgs, arcs: WeaponArcs) {
     super({ id, hitpoints: 12, armor: 3 }, [
       new FireOrderStrategy(2),
       new WeaponArcStrategy(arcs),
-      new StandardHitStrategy(25, 1, 3, 20),
+      new StandardHitStrategy(25, 2, 3, 20),
       new StandardRangeStrategy([
         { range: 0, modifier: -50 },
         { range: Math.round(MEDIUM_WEAPON_RANGE * 0.2), modifier: -20 },
@@ -30,7 +31,8 @@ class RailgunTurreted2x140mm extends Weapon {
       new RequiresPowerSystemStrategy(6),
       new BoostableSystemStrategy(6, 1),
       new UnifiedDamageSystemStrategy(),
-      new AmmunitionStrategy(["Ammo140mmAP", "Ammo140mmHE"], 1, 9, 4),
+      new AmmunitionStrategy(["Ammo140mmAP", "Ammo140mmHE"], 1),
+      new AmmoMagazineSystemStrategy({ Ammo140mmAP: 10, Ammo140mmHE: 10 }, 5),
       new WeaponAnimationStrategy("UniversalBolt", {
         size: 13,
         length: 30,

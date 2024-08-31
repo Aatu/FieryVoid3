@@ -21,6 +21,8 @@ import {
   SerializedShipTorpedoDefense,
   ShipTorpedoDefense,
 } from "./ShipTorpedoDefense";
+import { ShipCargo } from "./ShipCargo";
+import { SerializedCargoMove } from "../cargo/CargoMove";
 
 export type ShipBase = {
   id?: string;
@@ -37,6 +39,7 @@ export type ShipData = {
   destroyedThisTurn?: boolean;
   aiRole?: any | null;
   torpedoDefense?: SerializedShipTorpedoDefense;
+  cargo?: SerializedCargoMove[];
 };
 
 export type SerializedShip = ShipBase &
@@ -54,7 +57,6 @@ class Ship implements IHexPosition {
   public evasioncost: number;
   public frontHitProfile: number;
   public sideHitProfile: number;
-  public hexSizes: Offset[];
   public shipTypeName: string;
   public shipClass!: string;
   public gameId: number | null = null;
@@ -67,6 +69,7 @@ class Ship implements IHexPosition {
   public shipModel: unknown | null = null;
   public description: string = "";
   public torpedoDefense: ShipTorpedoDefense = new ShipTorpedoDefense();
+  public shipCargo: ShipCargo = new ShipCargo(this);
 
   constructor(data?: SerializedShip | ShipBase) {
     this.systems = new ShipSystems(this);
@@ -78,8 +81,6 @@ class Ship implements IHexPosition {
     this.evasioncost = 1;
     this.frontHitProfile = 30;
     this.sideHitProfile = 50;
-    this.hexSizes = [];
-
     this.shipModel = null;
     this.shipTypeName = "";
 
@@ -184,10 +185,6 @@ class Ship implements IHexPosition {
     return lastMove.getVelocity();
   }
 
-  getIconHexas(hexFacing = 0) {
-    return this.hexSizes.map((hex) => hex.rotate(hexFacing));
-  }
-
   deserialize(data?: SerializedShip | ShipBase | undefined): Ship {
     const shipData = (data as SerializedShip)?.shipData || {};
     this.id = data?.id || uuidv4();
@@ -205,6 +202,7 @@ class Ship implements IHexPosition {
     );
     this.destroyedThisTurn = shipData.destroyedThisTurn || false;
     this.torpedoDefense.deserialize(shipData.torpedoDefense);
+    this.shipCargo.deserialize(shipData?.cargo || []);
 
     this.aiRole = shipData.aiRole || null;
 
@@ -234,6 +232,7 @@ class Ship implements IHexPosition {
             ? this.aiRole.serialize()
             : this.aiRole,
         torpedoDefense: this.torpedoDefense.serialize(),
+        cargo: this.shipCargo.serialize(),
       },
     };
   }
@@ -274,6 +273,7 @@ class Ship implements IHexPosition {
     this.systems.advanceTurn(turn);
     this.electronicWarfare.activatePlannedElectronicWarfare();
     this.electronicWarfare.removeAll();
+    this.shipCargo.advanceTurn();
 
     return this;
   }
@@ -288,11 +288,9 @@ class Ship implements IHexPosition {
   }
 
   setShipLoadout() {
+    this.shipCargo.loadAllTargetCargoInstant();
+
     this.systems.callAllSystemHandlers(SYSTEM_HANDLERS.onGameStart, undefined);
-    this.systems.callAllSystemHandlers(
-      SYSTEM_HANDLERS.loadTargetInstant,
-      undefined
-    );
     this.systems.callAllSystemHandlers(SYSTEM_HANDLERS.setMaxFuel, undefined);
   }
 }

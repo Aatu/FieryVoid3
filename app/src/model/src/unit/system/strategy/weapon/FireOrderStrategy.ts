@@ -48,6 +48,10 @@ class FireOrderStrategy extends ShipSystemStrategy {
       let shots = this.getSystem().handlers.getNumberOfShots();
 
       while (shots--) {
+        if (!weapon.handlers.canFire()) {
+          continue;
+        }
+
         const combatLogEntry = new CombatLogWeaponFire(
           fireOrder.getId(),
           fireOrder.targetId,
@@ -74,9 +78,10 @@ class FireOrderStrategy extends ShipSystemStrategy {
         }
 
         weapon.callHandler(SYSTEM_HANDLERS.onWeaponFired, undefined, undefined);
-        fireOrder.setResolved();
         gameData.combatLog.addEntry(combatLogEntry);
       }
+
+      fireOrder.setResolved();
     });
   }
 

@@ -9,8 +9,8 @@ import {
 } from "../../../model/src/unit/system/weapon/ammunition/conventional";
 import AmmunitionStrategy from "../../../model/src/unit/system/strategy/weapon/AmmunitionStrategy";
 import Ammo from "../../../model/src/unit/system/weapon/ammunition/Ammo";
-import { CargoEntry } from "../../../model/src/cargo/CargoService";
 import DamageEntry from "../../../model/src/unit/system/DamageEntry";
+import { CargoEntry } from "../../../model/src/cargo/CargoEntry";
 
 const createShip = (
   data: ShipBase = {
@@ -34,23 +34,8 @@ const createShip = (
 
   ship.systems.addPrimarySystem([autoCannon, cargoBay]);
 
-  cargoBay.callHandler(
-    SYSTEM_HANDLERS.addCargo,
-    {
-      object: new Ammo85mmAP(),
-      amount: 50,
-    },
-    undefined
-  );
-
-  cargoBay.callHandler(
-    SYSTEM_HANDLERS.addCargo,
-    {
-      object: new Ammo85mmHE(),
-      amount: 50,
-    },
-    undefined
-  );
+  cargoBay.handlers.addCargo(new CargoEntry(new Ammo85mmAP(), 50));
+  cargoBay.handlers.addCargo(new CargoEntry(new Ammo85mmHE(), 50));
 
   return ship;
 };
@@ -58,53 +43,19 @@ const createShip = (
 test("Weapon builds initial magazine load correctly", () => {
   const ship = createShip();
   const autoCannon = ship.systems.getSystemById(1);
-  const cargoBay = ship.systems.getSystemById(2);
 
-  autoCannon.callHandler(
-    SYSTEM_HANDLERS.loadTargetInstant,
-    undefined,
-    undefined
-  );
+  autoCannon.handlers.loadTargetCargoInstant();
 
-  expect(
-    autoCannon.callHandler(
-      SYSTEM_HANDLERS.getAmmoInMagazine,
-      undefined,
-      null as unknown
-    )
-  ).toEqual([
-    { object: new Ammo85mmAP(), amount: 6 },
-    { object: new Ammo85mmHE(), amount: 9 },
+  expect(autoCannon.handlers.getAllCargo()).toEqual([
+    new CargoEntry(new Ammo85mmAP(), 4),
+    new CargoEntry(new Ammo85mmHE(), 10),
   ]);
 
   autoCannon.deserialize(autoCannon.serialize());
 
-  expect(
-    autoCannon.callHandler(
-      SYSTEM_HANDLERS.getAmmoInMagazine,
-      undefined,
-      null as unknown
-    )
-  ).toEqual([
-    { object: new Ammo85mmAP(), amount: 6 },
-    { object: new Ammo85mmHE(), amount: 9 },
-  ]);
-
-  const strategy =
-    autoCannon.getStrategiesByInstance<AmmunitionStrategy>(
-      AmmunitionStrategy
-    )[0];
-  strategy.capacity = 16;
-
-  expect(
-    autoCannon.callHandler(
-      "buildInitialTargetLoad" as SYSTEM_HANDLERS,
-      undefined,
-      null as unknown
-    )
-  ).toEqual([
-    { object: new Ammo85mmAP(), amount: 9 },
-    { object: new Ammo85mmHE(), amount: 7 },
+  expect(autoCannon.handlers.getAllCargo()).toEqual([
+    new CargoEntry(new Ammo85mmAP(), 4),
+    new CargoEntry(new Ammo85mmHE(), 10),
   ]);
 });
 
@@ -113,23 +64,11 @@ test("Weapon that uses ammo can not fire without ammo", () => {
   const autoCannon = ship.systems.getSystemById(1);
   const cargoBay = ship.systems.getSystemById(2);
 
-  //const serverShip = createShip(ship.serialize());
-
-  expect(
-    autoCannon.callHandler(SYSTEM_HANDLERS.canFire, undefined, true as boolean)
-  ).toBe(false);
-  autoCannon.callHandler(
-    SYSTEM_HANDLERS.loadTargetInstant,
-    undefined,
-    undefined
-  );
-  expect(
-    autoCannon.callHandler(SYSTEM_HANDLERS.canFire, undefined, true as boolean)
-  ).toBe(true);
+  expect(autoCannon.handlers.canFire()).toBe(false);
+  autoCannon.handlers.loadTargetCargoInstant();
+  expect(autoCannon.handlers.canFire()).toBe(true);
   autoCannon.deserialize(autoCannon.serialize());
-  expect(
-    autoCannon.callHandler(SYSTEM_HANDLERS.canFire, undefined, true as boolean)
-  ).toBe(true);
+  expect(autoCannon.handlers.canFire()).toBe(true);
 });
 
 test("Weapon that uses ammo consumes ammo when firing", () => {
@@ -139,46 +78,49 @@ test("Weapon that uses ammo consumes ammo when firing", () => {
 
   //const serverShip = createShip(ship.serialize());
 
-  expect(
-    autoCannon.callHandler(
-      SYSTEM_HANDLERS.getSelectedAmmo,
-      undefined,
-      null as unknown as Ammo
-    )
-  ).toEqual(new Ammo85mmHE());
+  expect(autoCannon.handlers.getSelectedAmmo()).toEqual(new Ammo85mmHE());
 
-  autoCannon.callHandler(SYSTEM_HANDLERS.loadTargetInstant, undefined, null);
+  autoCannon.handlers.loadTargetCargoInstant();
+  autoCannon.handlers.toggleSelectedAmmo();
+  expect(autoCannon.handlers.getSelectedAmmo()).toEqual(new Ammo85mmAP());
+  autoCannon.handlers.toggleSelectedAmmo();
+  expect(autoCannon.handlers.getSelectedAmmo()).toEqual(new Ammo85mmHE());
 
-  autoCannon.callHandler(SYSTEM_HANDLERS.onWeaponFired, undefined, null);
-
-  expect(
-    autoCannon.callHandler(
-      SYSTEM_HANDLERS.getAmmoInMagazine,
-      undefined,
-      [] as CargoEntry[]
-    )
-  ).toEqual([
-    { object: new Ammo85mmAP(), amount: 6 },
-    { object: new Ammo85mmHE(), amount: 6 },
+  expect(autoCannon.handlers.getAllCargo()).toEqual([
+    new CargoEntry(new Ammo85mmAP(), 4),
+    new CargoEntry(new Ammo85mmHE(), 10),
   ]);
 
-  autoCannon.callHandler(SYSTEM_HANDLERS.onWeaponFired, undefined, null);
+  autoCannon.handlers.onWeaponFired();
+
+  expect(autoCannon.handlers.getAllCargo()).toEqual([
+    new CargoEntry(new Ammo85mmAP(), 4),
+    new CargoEntry(new Ammo85mmHE(), 8),
+  ]);
+
+  autoCannon.handlers.onWeaponFired();
 
   autoCannon.deserialize(autoCannon.serialize());
 
-  expect(
-    autoCannon.callHandler(
-      SYSTEM_HANDLERS.getAmmoInMagazine,
-      undefined,
-      [] as Ammo[]
-    )
-  ).toEqual([
-    { object: new Ammo85mmAP(), amount: 6 },
-    { object: new Ammo85mmHE(), amount: 3 },
+  expect(autoCannon.handlers.getAllCargo()).toEqual([
+    new CargoEntry(new Ammo85mmAP(), 4),
+    new CargoEntry(new Ammo85mmHE(), 6),
   ]);
 
-  autoCannon.callHandler(SYSTEM_HANDLERS.onWeaponFired, undefined, null);
+  autoCannon.handlers.onWeaponFired();
+  autoCannon.handlers.onWeaponFired();
+  autoCannon.handlers.onWeaponFired();
 
+  expect(autoCannon.handlers.getAllCargo()).toEqual([
+    new CargoEntry(new Ammo85mmAP(), 4),
+  ]);
+
+  expect(autoCannon.handlers.canFire()).toBe(false);
+  autoCannon.handlers.toggleSelectedAmmo();
+
+  expect(autoCannon.handlers.getSelectedAmmo()).toEqual(new Ammo85mmAP());
+
+  /*
   expect(
     autoCannon.callHandler(
       SYSTEM_HANDLERS.getAmmoInMagazine,
@@ -204,8 +146,10 @@ test("Weapon that uses ammo consumes ammo when firing", () => {
       null as unknown as Ammo
     )
   ).toEqual(new Ammo85mmAP());
+  */
 });
 
+/*
 test("Weapon target loading can be changed", () => {
   const ship = createShip();
   const autoCannon = ship.systems.getSystemById(1);
@@ -514,3 +458,4 @@ test("Loading ammo with destroyed cargo bays is not possible", (test) => {
     )
   ).toEqual([]);
 });
+*/

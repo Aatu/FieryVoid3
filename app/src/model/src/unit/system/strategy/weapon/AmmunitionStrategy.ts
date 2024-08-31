@@ -1,90 +1,42 @@
 import ShipSystemStrategy from "../ShipSystemStrategy";
-import CargoService, { CargoEntry } from "../../../../cargo/CargoService";
 import Ammo from "../../weapon/ammunition/Ammo";
 import { AmmunitionType, createAmmoInstance } from "../../weapon/ammunition";
 import { SYSTEM_HANDLERS } from "../types/SystemHandlersTypes";
 import Ship from "../../../Ship";
 import ShipSystem from "../../ShipSystem";
-import { SystemTooltipMenuButton } from "../../../ShipSystemHandlers";
+import {
+  IShipSystemStrategy,
+  SystemTooltipMenuButton,
+} from "../../../ShipSystemHandlers";
+import { CargoEntry } from "../../../../cargo/CargoEntry";
 
 export type SerializedAmmunitionStrategy = {
   ammunitionStrategy: {
-    targetLoad: { className: AmmunitionType; amount: number }[];
-    loaded: { className: AmmunitionType; amount: number }[];
-    changeTargetLoad: { className: AmmunitionType; amount: number }[] | null;
-    turnsOffline: number;
-    selectedAmmo: AmmunitionType;
+    selectedAmmo: AmmunitionType | null;
     changeSelectedAmmo: AmmunitionType | null;
   };
 };
 
-class AmmunitionStrategy extends ShipSystemStrategy {
+class AmmunitionStrategy
+  extends ShipSystemStrategy
+  implements IShipSystemStrategy
+{
   public ammunitionClasses: AmmunitionType[];
-  public capacity: number;
-  public intakeInTurn: number;
-  public startLoadingAfter: number;
-  public ammoPerFireOrder: number;
+  public ammoPerShot: number = 1;
   public selectedAmmo: Ammo;
-  public turnsOffline: number;
-  public targetLoad: { object: Ammo; amount: number }[];
-  public changeTargetLoad: CargoEntry<Ammo>[] | null;
   public changeSelectedAmmo: Ammo | null;
-  public loaded: { object: Ammo; amount: number }[];
 
-  constructor(
-    ammunitionClasses: AmmunitionType[],
-    ammoPerFireOrder: number,
-    capacity: number,
-    intakeInTurn: number,
-    startLoadingAfter = 1
-  ) {
+  constructor(ammunitionClasses: AmmunitionType[], ammoPerShot: number) {
     super();
 
     this.ammunitionClasses = ammunitionClasses;
-    this.capacity = capacity;
-    this.startLoadingAfter = startLoadingAfter;
-    this.intakeInTurn = intakeInTurn;
-    this.ammoPerFireOrder = ammoPerFireOrder;
+    this.ammoPerShot = ammoPerShot ?? this.ammoPerShot;
 
     this.selectedAmmo = createAmmoInstance(
       this.ammunitionClasses[this.ammunitionClasses.length - 1]
     );
 
-    this.turnsOffline = 0;
-    this.targetLoad = this.buildInitialTargetLoad();
-
-    this.changeTargetLoad = null;
     this.changeSelectedAmmo = null;
-
-    this.loaded = [];
-  }
-
-  private buildInitialTargetLoad() {
-    let amountUsed = 0;
-    return this.ammunitionClasses.map((className, index) => {
-      let amount = Math.floor(this.capacity / this.ammunitionClasses.length);
-      let over = amount % this.ammoPerFireOrder;
-      let under = over === 0 ? 0 : this.ammoPerFireOrder - over;
-
-      const last = index === this.ammunitionClasses.length - 1;
-
-      if (amount > this.capacity - amountUsed) {
-        amount = this.capacity - amountUsed;
-      } else if (last) {
-        amount = this.capacity - amountUsed;
-      } else if (over !== 0 && over <= under) {
-        amount -= over;
-      } else if (under !== 0 && amountUsed + amount + under <= this.capacity) {
-        amount += under;
-      }
-
-      amountUsed += amount;
-
-      return {
-        object: createAmmoInstance(className),
-        amount,
-      };
-    });
   }
 
   getIconText(payload: unknown, previousResponse = "") {
@@ -99,7 +51,10 @@ class AmmunitionStrategy extends ShipSystemStrategy {
       return previousResponse;
     }
 
-    return this.getSelectedAmmo().getIconText();
+    if (!this.selectedAmmo) {
+      return "";
+    }
+    return this.selectedAmmo.getIconText();
   }
 
   getUiComponents(
@@ -144,7 +99,8 @@ class AmmunitionStrategy extends ShipSystemStrategy {
       ...previousResponse,
       {
         sort: 0,
-        img: this.getSelectedAmmo().getBackgroundImage(),
+        img:
+          this.selectedAmmo?.getBackgroundImage() ?? "/img/system/noAmmo.png",
         clickHandler: () => {
           this.toggleSelectedAmmo();
         },
@@ -154,27 +110,12 @@ class AmmunitionStrategy extends ShipSystemStrategy {
 
   serialize(
     payload: unknown,
-    previousResponse = []
+    previousResponse = {}
   ): SerializedAmmunitionStrategy {
     return {
       ...previousResponse,
       ammunitionStrategy: {
-        targetLoad: this.targetLoad.map((entry) => ({
-          className: entry.object.getConstructorName(),
-          amount: entry.amount,
-        })),
-        loaded: this.loaded.map((entry) => ({
-          className: entry.object.getConstructorName(),
-          amount: entry.amount,
-        })),
-        changeTargetLoad: this.changeTargetLoad
-          ? this.changeTargetLoad.map((entry) => ({
-              className: entry.object.getConstructorName(),
-              amount: entry.amount,
-            }))
-          : null,
-        turnsOffline: this.turnsOffline,
-        selectedAmmo: this.selectedAmmo.getConstructorName(),
+        selectedAmmo: this.selectedAmmo?.getConstructorName(),
         changeSelectedAmmo: this.changeSelectedAmmo
           ? this.changeSelectedAmmo.getConstructorName()
           : null,
@@ -182,119 +123,47 @@ class AmmunitionStrategy extends ShipSystemStrategy {
     };
   }
 
-  deserialize(data: SerializedAmmunitionStrategy) {
-    const ammoData = data.ammunitionStrategy || {};
-    this.targetLoad = ammoData.targetLoad
-      ? ammoData.targetLoad.map((entry) => ({
-          object: createAmmoInstance(entry.className),
-          amount: entry.amount,
-        }))
-      : [];
-
-    this.loaded = ammoData.loaded
-      ? ammoData.loaded.map((entry) => ({
-          object: createAmmoInstance(entry.className),
-          amount: entry.amount,
-        }))
-      : [];
-
-    this.changeTargetLoad = ammoData.changeTargetLoad
-      ? ammoData.changeTargetLoad.map((entry) => ({
-          object: createAmmoInstance(entry.className),
-          amount: entry.amount,
-        }))
-      : null;
-
-    this.turnsOffline = ammoData.turnsOffline || 0;
-
-    this.selectedAmmo = ammoData.selectedAmmo
-      ? createAmmoInstance(ammoData.selectedAmmo)
+  deserialize(data: Partial<SerializedAmmunitionStrategy>) {
+    this.selectedAmmo = data?.ammunitionStrategy?.selectedAmmo
+      ? createAmmoInstance(data?.ammunitionStrategy?.selectedAmmo)
       : createAmmoInstance(
           this.ammunitionClasses[this.ammunitionClasses.length - 1]
         );
 
-    this.changeSelectedAmmo = ammoData.changeSelectedAmmo
-      ? createAmmoInstance(ammoData.changeSelectedAmmo)
+    this.changeSelectedAmmo = data?.ammunitionStrategy?.changeSelectedAmmo
+      ? createAmmoInstance(data?.ammunitionStrategy?.changeSelectedAmmo)
       : null;
-
-    return this;
   }
 
   toggleSelectedAmmo() {
-    let index: number = 0;
-    this.loaded.forEach((entry, i) => {
-      if (this.getSelectedAmmo().constructor === entry.object.constructor) {
-        index = i;
-      }
-    });
+    const allCargo = this.getSystem()
+      .handlers.getAllCargo()
+      .filter((c) =>
+        this.ammunitionClasses.includes(c.object.getCargoClassName())
+      );
 
-    if (index + 1 > this.loaded.length - 1) {
-      index = 0;
-    } else {
-      index = index + 1;
+    if (allCargo.length === 0) {
+      return;
     }
 
-    this.changeSelectedAmmo = this.loaded[index].object;
+    let index = allCargo.findIndex((c) => c.object.equals(this.selectedAmmo));
+
+    if (index === -1) {
+      this.selectedAmmo = allCargo[0].object.clone() as Ammo;
+      return;
+    }
+
+    index++;
+
+    if (index >= allCargo.length) {
+      index = 0;
+    }
+
+    this.selectedAmmo = allCargo[index].object.clone() as Ammo;
   }
 
   getSelectedAmmo() {
-    return this.changeSelectedAmmo || this.selectedAmmo;
-  }
-
-  getLoadingTarget() {
-    return this.changeTargetLoad || this.targetLoad;
-  }
-
-  getAmmoInMagazine() {
-    return this.loaded;
-  }
-
-  loadTargetInstant() {
-    this.loaded = this.targetLoad;
-  }
-
-  getLoadingTargetAmount() {
-    return this.getLoadingTarget().reduce(
-      (total, { amount }) => total + amount,
-      0
-    );
-  }
-
-  addToLoading({ object, amount }: CargoEntry<Ammo>) {
-    if (!this.changeTargetLoad) {
-      this.changeTargetLoad = this.targetLoad.map((entry) => ({
-        ...entry,
-      }));
-    }
-
-    let entry = this.changeTargetLoad.find(
-      (entry) => entry.object.constructor === object.constructor
-    );
-
-    if (!entry && amount > 0) {
-      entry = {
-        object,
-        amount: 0,
-      };
-
-      this.changeTargetLoad.push(entry);
-    } else if (!entry && amount < 0) {
-      return;
-    }
-
-    if (this.getLoadingTargetAmount() + amount > this.capacity) {
-      return;
-    }
-
-    if (!entry || entry.amount + amount < 0) {
-      return;
-    }
-
-    entry.amount += amount;
-  }
-
-  setNewLoadingTarget(target: CargoEntry<Ammo>[] | null) {
-    this.changeTargetLoad = target;
+    return this.selectedAmmo;
   }
 
   setNewSelectedAmmo(ammo: Ammo | null) {
@@ -322,43 +191,11 @@ class AmmunitionStrategy extends ShipSystemStrategy {
       clientSystem.getStrategiesByInstance<AmmunitionStrategy>(
         AmmunitionStrategy
       )[0];
-    const changeTargetLoad = clientStrategy.changeTargetLoad;
-    const changeSelectedAmmo = clientStrategy.changeSelectedAmmo;
-
-    if (changeTargetLoad) {
-      changeTargetLoad.forEach((entry) => {
-        if (
-          !this.ammunitionClasses.some(
-            (className) => entry.object.getCargoClassName() === className
-          )
-        ) {
-          throw new Error(
-            `Illegal ammo: '${
-              entry.object.constructor.name
-            }', allowed '${this.ammunitionClasses.join(", ")}'`
-          );
-        }
-
-        if (!Number.isInteger(entry.amount) || entry.amount < 0) {
-          throw new Error(`Illegal ammo amount: '${entry.amount}'`);
-        }
-      });
-
-      if (
-        changeTargetLoad.reduce((total, current) => total + current.amount, 0) >
-        this.capacity
-      ) {
-        throw new Error(`Total capacity exeeded`);
-      }
-
-      this.targetLoad = changeTargetLoad;
-    }
+    const changeSelectedAmmo = clientStrategy.selectedAmmo;
 
     if (changeSelectedAmmo) {
       if (
-        !this.ammunitionClasses.some(
-          (ammoClass) => changeSelectedAmmo.getCargoClassName() === ammoClass
-        )
+        !this.ammunitionClasses.includes(changeSelectedAmmo.getCargoClassName())
       ) {
         throw new Error(
           `Illegal selected ammo: '${changeSelectedAmmo.constructor.name}'`
@@ -374,21 +211,34 @@ class AmmunitionStrategy extends ShipSystemStrategy {
       return true;
     }
 
-    return this.loaded.every(({ amount }) => amount < this.ammoPerFireOrder);
+    const allCargo = this.getSystem()
+      .handlers.getAllCargo()
+      .filter((c) =>
+        this.ammunitionClasses.includes(c.object.getCargoClassName())
+      );
+
+    if (
+      allCargo.length === 0 ||
+      allCargo.every((c) => c.amount < this.ammoPerShot)
+    ) {
+      return true;
+    }
+
+    return false;
   }
 
   canFire(payload: unknown, previousResponse = true) {
-    const entry = this.loaded.find(
-      (load) => load.object.constructor === this.selectedAmmo.constructor
-    );
-
-    if (!entry) {
-      console.log("can not fire, out of ammo");
+    if (previousResponse === false) {
       return false;
     }
 
-    if (entry.amount < this.ammoPerFireOrder) {
-      console.log("can not fire, out of ammo");
+    const entry = this.getSystem().handlers.getCargoEntry(this.selectedAmmo);
+
+    if (!entry) {
+      return false;
+    }
+
+    if (entry.amount < this.ammoPerShot) {
       return false;
     }
 
@@ -396,213 +246,45 @@ class AmmunitionStrategy extends ShipSystemStrategy {
   }
 
   onWeaponFired() {
-    const entry = this.loaded.find(
-      (load) => load.object.constructor === this.selectedAmmo.constructor
+    this.getSystem().handlers.removeCargo(
+      new CargoEntry(this.selectedAmmo, this.ammoPerShot)
     );
-
-    if (!entry) {
-      throw new Error(
-        "Seems like you fired a weapon without ammo. That is not good"
-      );
-    }
-
-    entry.amount -= this.ammoPerFireOrder;
 
     this.getSystem()
       .log.getGenericLogEntry()
       .addMessage(
         `Expended ordnance: ${
-          this.ammoPerFireOrder
+          this.ammoPerShot
         } x ${this.selectedAmmo.getDisplayName()}`
       );
-
-    this.loaded = this.loaded.filter((entry) => entry.amount > 0);
-    this.changeSelectedAmmoIfOutOfAmmo();
   }
 
   advanceTurn() {
-    if (this.getSystem().power.isOffline()) {
-      this.turnsOffline++;
-    } else if (this.getSystem().isDisabled()) {
-      return;
-    } else {
-      this.turnsOffline = 0;
-    }
-
-    if (this.turnsOffline > this.startLoadingAfter) {
-      this.load();
-    }
+    this.changeSelectedAmmoIfOutOfAmmo();
   }
 
   private changeSelectedAmmoIfOutOfAmmo() {
-    if (this.loaded.length === 0) {
+    const allCargo = this.getSystem()
+      .handlers.getAllCargo()
+      .filter(
+        (c) =>
+          this.ammunitionClasses.includes(c.object.getCargoClassName()) &&
+          c.amount >= this.ammoPerShot
+      );
+
+    const ammoForSelected = allCargo.find((c) =>
+      c.object.equals(this.selectedAmmo)
+    );
+
+    if (ammoForSelected && ammoForSelected.amount >= this.ammoPerShot) {
       return;
     }
 
-    if (
-      !this.loaded.find(
-        (load) => load.object.constructor === this.selectedAmmo.constructor
-      )
-    ) {
-      const newAmmo = this.loaded.find(
-        (entry) => entry.amount > this.ammoPerFireOrder
-      );
-
-      if (newAmmo) {
-        this.selectedAmmo = newAmmo.object;
-      }
-    }
-  }
-
-  private load() {
-    let ammoTransferredIn = 0;
-    let ammoTransferredOut = 0;
-
-    const ship = this.getSystem().getShipSystems().ship;
-    const cargoService = new CargoService();
-
-    while (true) {
-      if (ammoTransferredOut === this.intakeInTurn) {
-        break;
-      }
-
-      if (
-        this.loaded.every((loaded) => {
-          const target = this.targetLoad.find(
-            (target) => target.object.constructor === loaded.object.constructor
-          );
-
-          if (target && target.amount >= loaded.amount) {
-            return true;
-          }
-
-          let extra = target ? loaded.amount - target.amount : loaded.amount;
-          if (extra > this.intakeInTurn - ammoTransferredOut) {
-            extra = this.intakeInTurn - ammoTransferredOut;
-          }
-
-          if (extra === 0) {
-            return true;
-          }
-
-          const spaceAvailable = cargoService.hasSpaceForHowMany(ship, {
-            object: loaded.object,
-            amount: extra,
-          });
-
-          if (spaceAvailable === 0) {
-            return true;
-          } else if (spaceAvailable < extra) {
-            extra = spaceAvailable;
-          }
-
-          cargoService.divideCargo(ship, {
-            object: loaded.object,
-            amount: extra,
-          });
-
-          ammoTransferredOut += extra;
-          loaded.amount -= extra;
-
-          return false;
-        })
-      ) {
-        break;
-      }
+    if (allCargo.length === 0) {
+      return;
     }
 
-    this.loaded = this.loaded.filter((entry) => entry.amount > 0);
-
-    while (true) {
-      if (ammoTransferredIn === this.intakeInTurn) {
-        break;
-      }
-
-      if (
-        this.targetLoad.every((target) => {
-          let loaded = this.loaded.find(
-            (loaded) => target.object.constructor === loaded.object.constructor
-          );
-
-          if (!loaded && target.amount > 0) {
-            loaded = {
-              object: target.object,
-              amount: 0,
-            };
-
-            this.loaded.push(loaded);
-          } else if (!loaded && target.amount === 0) {
-            return true;
-          }
-
-          if (loaded && loaded.amount >= target.amount) {
-            return true;
-          }
-
-          const cargoSystem = this.getSystem()
-            .getShipSystems()
-            .getSystems()
-            .find((system) =>
-              system.callHandler(
-                SYSTEM_HANDLERS.getCargoEntry,
-                target.object,
-                null
-              )
-            );
-
-          if (!cargoSystem) {
-            return true;
-          }
-
-          const cargo = cargoSystem.callHandler(
-            SYSTEM_HANDLERS.getCargoEntry,
-            target.object,
-            null as CargoEntry<Ammo> | null
-          );
-
-          if (!loaded) {
-            return;
-          }
-
-          let missing = target.amount - loaded.amount;
-
-          if (missing > this.intakeInTurn - ammoTransferredIn) {
-            missing = this.intakeInTurn - ammoTransferredIn;
-          }
-
-          if (cargo && cargo.amount >= missing) {
-            loaded.amount += missing;
-            cargoSystem.callHandler(
-              SYSTEM_HANDLERS.removeCargo,
-              {
-                object: cargo.object,
-                amount: missing,
-              },
-              undefined
-            );
-            ammoTransferredIn += missing;
-          } else if (cargo && cargo.amount < missing) {
-            loaded.amount += cargo.amount;
-            cargoSystem.callHandler(
-              SYSTEM_HANDLERS.removeCargo,
-              {
-                object: cargo.object,
-                amount: cargo.amount,
-              },
-              undefined
-            );
-            ammoTransferredIn += cargo.amount;
-          }
-
-          return false;
-        })
-      ) {
-        break;
-      }
-    }
-
-    this.loaded = this.loaded.filter((entry) => entry.amount > 0);
-    this.changeSelectedAmmoIfOutOfAmmo();
+    this.selectedAmmo = allCargo[0].object.clone() as Ammo;
   }
 }
 

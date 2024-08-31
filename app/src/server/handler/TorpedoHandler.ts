@@ -33,15 +33,12 @@ export class TorpedoHandler {
       )
       .sort(sortByPriority);
 
-    let iterations = 0;
     while (
+      this.torpedoFlights.length > 0 &&
       this.torpedoFlights.some(
         (flight) => !flight.isDone() && !flight.isIntercepted()
-      ) &&
-      iterations < 20
+      )
     ) {
-      iterations++;
-
       this.torpedoFlights = this.torpedoFlights.filter((flight) => {
         flight.advance();
 
@@ -63,6 +60,7 @@ export class TorpedoHandler {
       );
 
       while (
+        this.torpedoFlights.length > 0 &&
         this.torpedoFlights.every(
           (flight) =>
             !flight.getHasNoInterceptionCandidates() &&
@@ -93,7 +91,6 @@ export class TorpedoHandler {
           }
         });
       }
-
       this.executeInterceptions();
     }
   }
@@ -109,7 +106,7 @@ export class TorpedoHandler {
 
         const hit = roll <= entry.hitChance.result;
 
-        const logEntry = new CombatLogTorpedoIntercept(flight.id);
+        const logEntry = flight.getLogEntry();
 
         if (hit) {
           flight.setIntercepted();
