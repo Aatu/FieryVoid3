@@ -153,8 +153,6 @@ class Fulcrum extends Ship {
 
   setShipLoadout() {
     super.setShipLoadout();
-
-    this.shipCargo.loadAllTargetCargoInstant();
   }
 }
 

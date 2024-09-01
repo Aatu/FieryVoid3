@@ -75,6 +75,7 @@ export interface IShipSystemHandlers {
   ) => Record<string, unknown>;
   deserialize: (payload: Record<string, unknown>) => void;
   setLaunchTarget: (payload: { target: Ship; torpedo: Torpedo }) => void;
+  canAcceptCargo: (cargo: CargoEntry | CargoEntry[]) => boolean;
 }
 
 export type IShipSystemStrategy = IBaseShipSystemStrategy &
@@ -127,6 +128,10 @@ export class SystemHandlers {
 
   getAllCargo(): CargoEntry[] {
     return this.callHandler("getAllCargo") || [];
+  }
+
+  canAcceptCargo(cargo: CargoEntry | CargoEntry[]): boolean {
+    return Boolean(this.callHandler("canAcceptCargo", undefined, cargo));
   }
 
   isAllowedCargo(cargo: CargoEntry): boolean {

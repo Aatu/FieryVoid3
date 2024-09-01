@@ -1,5 +1,16 @@
+import { CargoEntry } from "../../../cargo/CargoEntry";
 import Ship from "../../Ship";
 import systems from "../../system/index";
+import {
+  Ammo140mmAP,
+  Ammo30mm,
+} from "../../system/weapon/ammunition/conventional";
+import {
+  Torpedo158HE,
+  Torpedo158MSV,
+  Torpedo72HE,
+  Torpedo72MSV,
+} from "../../system/weapon/ammunition/torpedo";
 
 class TestShip extends Ship {
   setShipProperties() {
@@ -61,6 +72,14 @@ class TestShip extends Ship {
   setShipLoadout() {
     super.setShipLoadout();
 
+    this.shipCargo.addCargo([
+      new CargoEntry(new Torpedo158MSV(), 14),
+      new CargoEntry(new Torpedo72MSV(), 14),
+      new CargoEntry(new Torpedo158HE(), 14),
+      new CargoEntry(new Torpedo72HE(), 14),
+      new CargoEntry(new Ammo30mm(), 14),
+      new CargoEntry(new Ammo140mmAP(), 14),
+    ]);
     /*
 
     this.systems

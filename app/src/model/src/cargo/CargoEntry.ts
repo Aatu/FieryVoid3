@@ -47,6 +47,10 @@ export class CargoEntry<T extends CargoEntity = CargoEntity> {
 
     return new CargoEntry<typeof cargoObject>(cargoObject, data.amount);
   }
+
+  public toString() {
+    return `${this.object.getCargoClassName()} x ${this.amount}`;
+  }
 }
 
 const schema = Yup.object().shape({

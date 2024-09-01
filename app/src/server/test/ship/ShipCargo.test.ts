@@ -3,12 +3,67 @@ import CargoBay from "../../../model/src/unit/system/cargo/CargoBay";
 import Torpedo158HE from "../../../model/src/unit/system/weapon/ammunition/torpedo/Torpedo158HE";
 import { CargoEntry } from "../../../model/src/cargo/CargoEntry";
 import {
-  Ammo120mmAP,
   Ammo30mm,
+  Ammo85mmAP,
 } from "../../../model/src/unit/system/weapon/ammunition/conventional";
 import { BareTestShip } from "../../../model/src/unit/ships/test/TestShip";
-import { CargoMove } from "../../../model/src/cargo/CargoMove";
-import GameData from "../../../model/src/game/GameData";
+import {
+  addCargos,
+  cargoContains,
+  subtractCargos,
+} from "../../../model/src/unit/ShipCargo";
+
+test("Cargo can be compared", () => {
+  const current = [
+    new CargoEntry(new Ammo85mmAP(), 300),
+    new CargoEntry(new Ammo30mm(), 400),
+  ];
+
+  expect(
+    cargoContains(current, [
+      new CargoEntry(new Ammo85mmAP(), 200),
+      new CargoEntry(new Ammo30mm(), 200),
+    ])
+  ).toEqual(true);
+
+  expect(
+    cargoContains(current, [
+      new CargoEntry(new Ammo85mmAP(), 500),
+      new CargoEntry(new Ammo30mm(), 200),
+    ])
+  ).toEqual(false);
+
+  expect(cargoContains(current, [])).toEqual(true);
+});
+
+test("Subtracting and adding cargos", () => {
+  expect(
+    subtractCargos(
+      [new CargoEntry(new Torpedo158HE(), 10)],
+      [new CargoEntry(new Torpedo158HE(), 2)]
+    )
+  ).toEqual([new CargoEntry(new Torpedo158HE(), 8)]);
+
+  expect(
+    addCargos(
+      [new CargoEntry(new Torpedo158HE(), 10)],
+      [new CargoEntry(new Torpedo158HE(), 2)]
+    )
+  ).toEqual([new CargoEntry(new Torpedo158HE(), 12)]);
+
+  expect(
+    subtractCargos(
+      [new CargoEntry(new Torpedo158HE(), 10)],
+      [
+        new CargoEntry(new Torpedo158HE(), 2),
+        new CargoEntry(new Ammo30mm(), 10),
+      ]
+    )
+  ).toEqual([
+    new CargoEntry(new Torpedo158HE(), 8),
+    new CargoEntry(new Ammo30mm(), -10),
+  ]);
+});
 
 test("Cargo can be moved", () => {
   const ship = new BareTestShip({ id: "123" });
@@ -30,54 +85,24 @@ test("Cargo can be moved", () => {
 
   from.handlers.addCargo(initialCargo);
 
-  expect(from.handlers.getAllCargo()).toEqual(initialCargo);
-  expect(from.handlers.getAllCargo()).not.toBe(initialCargo);
-
   ship.shipCargo.moveCargo(from, to, moveCargo);
 
-  expect(ship.shipCargo["cargoMoves"].length).toEqual(1);
-
-  const move = ship.shipCargo["cargoMoves"][0] as CargoMove;
-
-  expect(move.to).toBe(to);
-  expect(move.from).toBe(from);
-  expect(move.cargoToMove).toEqual(moveCargo);
-  expect(move.timeToMove).toEqual(10);
-
-  const gameData = {
-    combatLog: {
-      addEntry: () => undefined,
-    },
-  } as unknown as GameData;
-
-  ship.advanceTurn(gameData);
-  ship.advanceTurn(gameData);
-  ship.advanceTurn(gameData);
-  ship.advanceTurn(gameData);
-  ship.advanceTurn(gameData);
-
-  ship.advanceTurn(gameData);
-  ship.advanceTurn(gameData);
-  ship.advanceTurn(gameData);
-  ship.advanceTurn(gameData);
-
-  expect(from.handlers.getAllCargo()).toEqual(initialCargo);
-  expect(to.handlers.getAllCargo()).toEqual([]);
-
-  ship.advanceTurn(gameData);
-
-  expect(from.handlers.getAllCargo()).toEqual([]);
-  console.log(
-    to.id,
+  expect(
     to.handlers
       .getAllCargo()
       .map((c) => c.toString())
       .join(", ")
-  );
-  expect(to.handlers.getAllCargo()).toEqual(moveCargo);
+  ).toEqual("Torpedo158HE x 2, Ammo30mm x 200");
+
+  expect(
+    from.handlers
+      .getAllCargo()
+      .map((c) => c.toString())
+      .join(", ")
+  ).toEqual("Torpedo158HE x 3, Ammo30mm x 200");
 });
 
-test("Cargo move to opposite direction partially cancels other move", () => {
+test("Cargo can be randomly removed", () => {
   const ship = new BareTestShip({ id: "123" });
   const from = new CargoBay({ id: 1000, hitpoints: 20, armor: 4 }, 150);
   const to = new CargoBay({ id: 2000, hitpoints: 20, armor: 4 }, 150);
@@ -85,93 +110,39 @@ test("Cargo move to opposite direction partially cancels other move", () => {
   ship.systems.addPrimarySystem(from);
   ship.systems.addPrimarySystem(to);
 
-  const initialCargo = [
-    new CargoEntry(new Torpedo158HE(), 5),
-    new CargoEntry(new Ammo30mm(), 400),
-  ];
+  from.handlers.addCargo([new CargoEntry(new Torpedo158HE(), 5)]);
+  to.handlers.addCargo([new CargoEntry(new Torpedo158HE(), 5)]);
 
-  const moveCargo = [
-    new CargoEntry(new Torpedo158HE(), 2),
-    new CargoEntry(new Ammo30mm(), 200),
-  ];
-
-  to.handlers.addCargo([
-    new CargoEntry(new Ammo120mmAP(), 100),
-    new CargoEntry(new Torpedo158HE(), 5),
-  ]);
-
-  from.handlers.addCargo(initialCargo);
-
-  expect(from.handlers.getAllCargo()).toEqual(initialCargo);
-  expect(from.handlers.getAllCargo()).not.toBe(initialCargo);
-
-  ship.shipCargo.moveCargo(from, to, moveCargo);
-
-  expect(ship.shipCargo["cargoMoves"].length).toEqual(1);
-
-  const move = ship.shipCargo["cargoMoves"][0] as CargoMove;
-
-  expect(move.to).toBe(to);
-  expect(move.from).toBe(from);
-  expect(move.cargoToMove).toEqual(moveCargo);
-  expect(move.timeToMove).toEqual(10);
-
-  const gameData = {
-    combatLog: {
-      addEntry: () => undefined,
-    },
-  } as unknown as GameData;
-
-  ship.advanceTurn(gameData);
-  ship.advanceTurn(gameData);
-
-  ship.shipCargo.moveCargo(to, from, [
-    new CargoEntry(new Ammo120mmAP(), 100),
-    new CargoEntry(new Torpedo158HE(), 4),
-  ]);
-
-  console.log(ship.shipCargo["cargoMoves"].map((m) => m.toString()));
-  expect(ship.shipCargo["cargoMoves"].length).toEqual(2);
-  expect(ship.shipCargo["cargoMoves"].map((m) => m.toString())).toEqual([
-    "cargo move from Cargo bay 150m³ (id: 1000) to Cargo bay 150m³ (id: 2000) with cargo: Ammo30mm: 200",
-    "cargo move from Cargo bay 150m³ (id: 2000) to Cargo bay 150m³ (id: 1000) with cargo: Ammo120mmAP: 100, Torpedo158HE: 2",
-  ]);
-
-  ship.advanceTurn(gameData);
-  ship.advanceTurn(gameData);
-  ship.advanceTurn(gameData);
-  ship.advanceTurn(gameData);
-  ship.advanceTurn(gameData);
-  ship.advanceTurn(gameData);
-  ship.advanceTurn(gameData);
-  ship.advanceTurn(gameData);
-
-  expect(ship.shipCargo["cargoMoves"].length).toBe(1);
-
-  ship.advanceTurn(gameData);
-  ship.advanceTurn(gameData);
-
-  expect(ship.shipCargo["cargoMoves"].length).toBe(0);
-  console.log(
-    from.id,
-    "all cargo",
-    from.handlers.getAllCargo().map((m) => m.toString())
+  expect(ship.shipCargo.hasCargo(new CargoEntry(new Torpedo158HE(), 6))).toBe(
+    true
   );
-  console.log(
-    to.id,
-    "all cargo",
-    to.handlers.getAllCargo().map((m) => m.toString())
-  );
+  ship.shipCargo.removeCargo(new CargoEntry(new Torpedo158HE(), 6));
 
-  expect(to.handlers.getAllCargo().map((m) => m.toString())).toEqual([
-    "Ammo120mmAP: 100",
-    "Torpedo158HE: 5",
-    "Ammo30mm: 200",
-  ]);
+  const allCargo = ship.shipCargo
+    .getAllCargo()
+    .map((c) => c.toString())
+    .join(", ");
 
-  expect(from.handlers.getAllCargo().map((m) => m.toString())).toEqual([
-    "Ammo120mmAP: 100",
-    "Torpedo158HE: 5",
-    "Ammo30mm: 200",
-  ]);
+  expect(allCargo).toEqual("Torpedo158HE x 4");
+});
+
+test("Cargo can be distributed to ship", () => {
+  const ship = new BareTestShip({ id: "123" });
+  const from = new CargoBay({ id: 1000, hitpoints: 20, armor: 4 }, 150);
+  const to = new CargoBay({ id: 2000, hitpoints: 20, armor: 4 }, 150);
+
+  ship.systems.addPrimarySystem(from);
+  ship.systems.addPrimarySystem(to);
+
+  from.handlers.addCargo([new CargoEntry(new Torpedo158HE(), 5)]);
+  to.handlers.addCargo([new CargoEntry(new Torpedo158HE(), 5)]);
+
+  ship.shipCargo.addCargo(new CargoEntry(new Torpedo158HE(), 6));
+
+  const allCargo = ship.shipCargo
+    .getAllCargo()
+    .map((c) => c.toString())
+    .join(", ");
+
+  expect(allCargo).toEqual("Torpedo158HE x 16");
 });

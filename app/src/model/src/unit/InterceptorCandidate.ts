@@ -36,7 +36,11 @@ export class InterceptorCandidate {
       return;
     }
 
-    this.interceptor.handlers.isPositionOnArc(flight.getCurrentPosition());
+    if (
+      !this.interceptor.handlers.isPositionOnArc(flight.getCurrentPosition())
+    ) {
+      return;
+    }
 
     const hitChance = this.interceptor.handlers.getInterceptChance(
       target,

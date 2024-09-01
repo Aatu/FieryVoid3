@@ -18,6 +18,10 @@ import { TorpedoFlightForIntercept } from "../../../model/src/unit/TorpedoFlight
 import CombatLogTorpedoIntercept from "../../../model/src/combatLog/CombatLogTorpedoIntercept";
 import Torpedo from "../../../model/src/unit/system/weapon/ammunition/torpedo/Torpedo";
 import CombatLogTorpedoAttack from "../../../model/src/combatLog/CombatLogTorpedoAttack";
+import CargoBay from "../../../model/src/unit/system/cargo/CargoBay";
+import { CargoEntry } from "../../../model/src/cargo/CargoEntry";
+import { Ammo30mm } from "../../../model/src/unit/system/weapon/ammunition/conventional";
+import AmmunitionStrategy from "../../../model/src/unit/system/strategy/weapon/AmmunitionStrategy";
 
 const createShips = () => {
   const ship = new Ship({
@@ -29,12 +33,17 @@ const createShips = () => {
   ship.frontHitProfile = 50;
   ship.sideHitProfile = 50;
 
+  const cargoBay = new CargoBay({ id: 666, hitpoints: 20, armor: 4 }, 150);
+
   ship.systems.addPrimarySystem([
     new PDC30mm({ id: 14, hitpoints: 5, armor: 3 }, { start: 0, end: 0 }),
     new Reactor({ id: 7, hitpoints: 10, armor: 3 }, 20),
     new Structure({ id: 8, hitpoints: 50, armor: 4 }),
     new EwArray({ id: 9, hitpoints: 20, armor: 5 }, 8),
+    cargoBay,
   ]);
+
+  ship.shipCargo.addCargo(new CargoEntry(new Ammo30mm(), 500));
 
   ship.movement.addMovement(
     new MovementOrder(
@@ -171,7 +180,9 @@ test("Torpedo can not be intercepted, if weapon is out of ammo", (test) => {
   const handler = new TorpedoHandler();
   const target = gameData.ships.getShipById("1");
   const pdc = target.systems.getSystemById(14)!;
-  pdc.handlers.removeAllCargo();
+  const ammoStrategy =
+    pdc.getStrategiesByInstance<AmmunitionStrategy>(AmmunitionStrategy)[0];
+  ammoStrategy.shotsInMagazine = 0;
   target.electronicWarfare.assignCcEw(8);
 
   handler.advance(gameData);

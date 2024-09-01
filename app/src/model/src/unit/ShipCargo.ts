@@ -19,22 +19,18 @@ export class ShipCargo {
     cargo: CargoEntry | CargoEntry[]
   ) {
     if (!from.handlers.isCargoBay() || !to.handlers.isCargoBay()) {
-      console.log("someone is not a cargobay");
       return false;
     }
 
     if (!this.systemhasCargoSpaceFor(to, cargo)) {
-      console.log("no space");
       return false;
     }
 
     if (from.isDestroyed() || to.isDestroyed()) {
-      console.log("someone is destroeyd");
       return false;
     }
 
     if (!from.handlers.hasCargo(cargo)) {
-      console.log("does not have cargo");
       return false;
     }
 
@@ -106,6 +102,35 @@ export class ShipCargo {
 
     to.handlers.addCargo(cargo);
     from.handlers.removeCargo(cargo);
+  }
+
+  public addCargo(cargo: CargoEntry | CargoEntry[]) {
+    cargo = ([] as CargoEntry[]).concat(cargo);
+
+    const cargoBays = this.ship.systems
+      .getSystems()
+      .filter((s) => s.handlers.isCargoBay());
+
+    let added = true;
+    while (added) {
+      added = false;
+
+      cargo.forEach((entry) => {
+        shuffleArray(cargoBays);
+
+        cargoBays.forEach((bay) => {
+          if (entry.amount === 0) {
+            return;
+          }
+
+          if (bay.handlers.canAcceptCargo(entry.clone().setAmount(1))) {
+            bay.handlers.addCargo(entry.clone().setAmount(1));
+            added = true;
+            entry.amount--;
+          }
+        });
+      });
+    }
   }
 
   private systemhasCargoSpaceFor(

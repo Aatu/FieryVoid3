@@ -9,7 +9,7 @@ import {
   hexFacingToAngle,
 } from "../utils/math";
 import coordinateConverter from "../utils/CoordinateConverter";
-import { IHexPosition, Offset } from "../hexagon/index";
+import { IHexPosition } from "../hexagon/index";
 import Vector, { IVector } from "../utils/Vector";
 import { IUser, User } from "../User/User";
 import { SearializedShipCurrentElectronicWarfare } from "./ShipCurrentElectronicWarfare";
@@ -22,7 +22,6 @@ import {
   ShipTorpedoDefense,
 } from "./ShipTorpedoDefense";
 import { ShipCargo } from "./ShipCargo";
-import { SerializedCargoMove } from "../cargo/CargoMove";
 
 export type ShipBase = {
   id?: string;
@@ -39,7 +38,6 @@ export type ShipData = {
   destroyedThisTurn?: boolean;
   aiRole?: any | null;
   torpedoDefense?: SerializedShipTorpedoDefense;
-  cargo?: SerializedCargoMove[];
 };
 
 export type SerializedShip = ShipBase &
@@ -202,7 +200,6 @@ class Ship implements IHexPosition {
     );
     this.destroyedThisTurn = shipData.destroyedThisTurn || false;
     this.torpedoDefense.deserialize(shipData.torpedoDefense);
-    this.shipCargo.deserialize(shipData?.cargo || []);
 
     this.aiRole = shipData.aiRole || null;
 
@@ -232,7 +229,6 @@ class Ship implements IHexPosition {
             ? this.aiRole.serialize()
             : this.aiRole,
         torpedoDefense: this.torpedoDefense.serialize(),
-        cargo: this.shipCargo.serialize(),
       },
     };
   }
@@ -275,7 +271,6 @@ class Ship implements IHexPosition {
     this.systems.advanceTurn(turn);
     this.electronicWarfare.activatePlannedElectronicWarfare();
     this.electronicWarfare.removeAll();
-    this.shipCargo.advanceTurn(gameData);
 
     return this;
   }
@@ -290,8 +285,6 @@ class Ship implements IHexPosition {
   }
 
   setShipLoadout() {
-    this.shipCargo.loadAllTargetCargoInstant();
-
     this.systems.callAllSystemHandlers(SYSTEM_HANDLERS.onGameStart, undefined);
     this.systems.callAllSystemHandlers(SYSTEM_HANDLERS.setMaxFuel, undefined);
   }

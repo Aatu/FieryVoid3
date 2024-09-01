@@ -63,6 +63,29 @@ class CargoBaySystemStrategy
     return this;
   }
 
+  public canAcceptCargo(cargo: CargoEntry[] | CargoEntry) {
+    cargo = ([] as CargoEntry[]).concat(cargo);
+
+    const spaceRequired = cargo.reduce(
+      (total, entry) => total + entry.object.getSpaceRequired() * entry.amount,
+      0
+    );
+    if (this.getAvailableCargoSpace() < spaceRequired) {
+      return false;
+    }
+
+    if (
+      this.allowedCargoClasses !== null &&
+      cargo.some(
+        (c) => !this.allowedCargoClasses?.includes(c.object.getCargoClassName())
+      )
+    ) {
+      return false;
+    }
+
+    return true;
+  }
+
   public getTotalCargoSpace() {
     return this.space;
   }
@@ -103,7 +126,6 @@ class CargoBaySystemStrategy
 
   public hasCargo(payload: CargoEntry[] | CargoEntry): boolean {
     payload = ([] as CargoEntry[]).concat(payload);
-
     return cargoContains(this.cargo, payload);
   }
 
@@ -113,34 +135,13 @@ class CargoBaySystemStrategy
 
   public removeCargo(cargo: CargoEntry | CargoEntry[]) {
     cargo = ([] as CargoEntry[]).concat(cargo);
-
-    console.log("REMOVING CARGO from", this.getSystem().id);
-
-    console.log(
-      "Current cargo",
-      this.cargo.map((c) => c.toString()).join(", ")
-    );
-    console.log("removing cargo", cargo.map((c) => c.toString()).join(", "));
-
     const newCargo = subtractCargos(this.cargo, cargo);
-    console.log("New cargo", newCargo.map((c) => c.toString()).join(", "));
-
-    this.cargo = newCargo.filter((c) => c.amount <= 0);
+    this.cargo = newCargo.filter((c) => c.amount > 0);
   }
 
   public addCargo(cargo: CargoEntry | CargoEntry[]) {
     cargo = ([] as CargoEntry[]).concat(cargo);
-
-    console.log("ADDING CARGO to", this.getSystem().id);
-    console.log(
-      "Current cargo",
-      this.cargo.map((c) => c.toString()).join(", ")
-    );
-    console.log("Adding cargo", cargo.map((c) => c.toString()).join(", "));
-
     const newCargo = addCargos(this.cargo, cargo);
-    console.log("New cargo", newCargo.map((c) => c.toString()).join(", "));
-
     this.cargo = newCargo;
   }
 
