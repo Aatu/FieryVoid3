@@ -16,7 +16,8 @@ class CombatLogShipVelocity implements ICombatLogEntry {
     };
   }
 
-  deserialize(data: { logEntryClass: string; shipId: string }) {
+  deserialize(unknownData: Record<string, unknown>) {
+    const data = unknownData as { logEntryClass: string; shipId: string };
     this.shipId = data.shipId;
     return this;
   }

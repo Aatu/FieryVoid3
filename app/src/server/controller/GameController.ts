@@ -8,7 +8,7 @@ import {
   RequestReplayMessage,
   TakeSlotMessage,
 } from "../../model/src/game/gameMessage";
-import Ship, { SerializedShip } from "../../model/src/unit/Ship";
+import { SerializedShip } from "../../model/src/unit/Ship";
 import { User } from "../../model/src/User/User";
 import BuyShipsHandler from "../handler/BuyShipsHandler";
 import CreateGameHandler from "../handler/CreateGameHandler";

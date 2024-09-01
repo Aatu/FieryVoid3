@@ -5,23 +5,22 @@ import Ship from "../../../Ship";
 import { IShipSystemStrategy } from "../../../ShipSystemHandlers";
 import TorpedoFlight from "../../../TorpedoFlight";
 import ShipSystem from "../../ShipSystem";
-import {
-  createTorpedoInstance,
-  TorpedoType,
-} from "../../weapon/ammunition/torpedo";
+import { createTorpedoInstance, TorpedoType } from "../../weapon/ammunition";
 import Torpedo from "../../weapon/ammunition/torpedo/Torpedo";
 import ShipSystemStrategy from "../ShipSystemStrategy";
 
 type SerializedTorpedoLauncherStrategy = {
   torpedoLauncherSystemStrategy: {
     launchers: SerializedTorpedoLauncher[];
+    shotsInMagazine: number;
+    turnsOffline: number;
   };
 };
 
 export type TorpedoLaunchOptions = {
   systemId: number;
   numberOfReadyLaunchers: number;
-  torpedosToLaunch: CargoEntry<Torpedo>[];
+  torpedosToLaunch: Torpedo[];
 };
 
 export class TorpedoLauncherStrategy
@@ -30,15 +29,25 @@ export class TorpedoLauncherStrategy
 {
   private torpedoClasses: TorpedoType[] = [];
   private launchers: TorpedoLauncher[] = [];
+  public shotsInMagazine: number;
+  public magazineSize: number;
+  public reloadingTime: number;
+  public turnsOffline: number = 0;
 
   constructor(
     torpedoClasses: TorpedoType[],
     numberOfLaunchers: number,
-    launcherLoadingTime: number
+    launcherLoadingTime: number,
+    magazineSize: number,
+    reloadingTime: number
   ) {
     super();
 
     this.torpedoClasses = torpedoClasses;
+    this.shotsInMagazine = magazineSize;
+    this.magazineSize = magazineSize;
+    this.reloadingTime = reloadingTime;
+
     while (numberOfLaunchers--) {
       this.launchers.push(new TorpedoLauncher(launcherLoadingTime));
     }
@@ -48,33 +57,19 @@ export class TorpedoLauncherStrategy
     target: Ship;
   }): TorpedoLaunchOptions {
     const launchers = this.launchers.filter((l) => l.canLaunch());
-
     const distance = this.getShip().hexDistanceTo(payload.target);
 
-    const torpedos = this.getSystem()
-      .handlers.getAllCargo()
-      .filter((c) => {
-        if (
-          !this.torpedoClasses.includes(
-            c.object.getCargoClassName() as TorpedoType
-          )
-        ) {
-          return false;
-        }
-
-        const torpedo = c.object as Torpedo;
-
-        if (torpedo.minRange > distance || torpedo.maxRange < distance) {
-          return false;
-        }
-
-        return true;
-      });
+    const torpedos = this.torpedoClasses
+      .map((c) => createTorpedoInstance(c))
+      .filter(
+        (torpedo) =>
+          torpedo.minRange >= distance && torpedo.maxRange <= distance
+      );
 
     return {
       systemId: this.getSystem().id,
       numberOfReadyLaunchers: launchers.length,
-      torpedosToLaunch: torpedos as CargoEntry<Torpedo>[],
+      torpedosToLaunch: torpedos,
     };
   }
 
@@ -85,17 +80,27 @@ export class TorpedoLauncherStrategy
     target: Ship;
     torpedo: Torpedo;
   }) {
+    const plannedLaunches = this.launchers.reduce(
+      (total, launcher) =>
+        total + (Boolean(launcher.getLaunchTarget()) ? 1 : 0),
+      1
+    );
+
+    if (this.shotsInMagazine < plannedLaunches) {
+      throw new Error("Magazine empty");
+    }
+
+    if (
+      !this.torpedoClasses.includes(torpedo.getCargoClassName() as TorpedoType)
+    ) {
+      throw new Error("Trying to launch wrong type of torpedo");
+    }
+
     const distance = this.getShip().hexDistanceTo(target);
 
     if (torpedo.minRange > distance || torpedo.maxRange < distance) {
-      return false;
+      throw new Error("Torpedo not in range");
     }
-
-    const amountOfSameTypeTorpedoBeingLaunched = this.launchers.reduce(
-      (total, launcher) =>
-        total + (launcher.getTorpedo()?.equals(torpedo) ? 1 : 0),
-      0
-    );
 
     const freeLauncher = this.launchers.filter((l) => l.canLaunch())[0];
 
@@ -103,12 +108,7 @@ export class TorpedoLauncherStrategy
       throw new Error("No free launcher");
     }
 
-    const torpedoCargo = this.getSystem().handlers.getCargoEntry(torpedo);
-
-    if (
-      !torpedoCargo ||
-      torpedoCargo.amount < amountOfSameTypeTorpedoBeingLaunched + 1
-    ) {
+    if (!this.getShip().shipCargo.hasCargo(new CargoEntry(torpedo, 1))) {
       throw new Error("Trying to launch more torpedos that the magazine has");
     }
 
@@ -125,6 +125,14 @@ export class TorpedoLauncherStrategy
           return null;
         }
 
+        if (!this.getShip().shipCargo.hasCargo(new CargoEntry(torpedo, 1))) {
+          return null;
+        }
+
+        if (this.shotsInMagazine === 0) {
+          return null;
+        }
+
         const result = new TorpedoFlight(
           torpedo,
           targetId,
@@ -132,8 +140,8 @@ export class TorpedoLauncherStrategy
           this.getSystem().id
         );
 
-        launcher.launchTorpedo();
-        this.getSystem().handlers.removeCargo(new CargoEntry(torpedo, 1));
+        this.shotsInMagazine--;
+        this.getShip().shipCargo.removeCargo(new CargoEntry(torpedo, 1));
         return result;
       })
       .filter(Boolean) as TorpedoFlight[];
@@ -141,17 +149,28 @@ export class TorpedoLauncherStrategy
 
   advanceTurn() {
     if (this.getSystem().isDisabled()) {
-      return;
+      this.turnsOffline++;
+    } else {
+      this.turnsOffline = 0;
     }
 
     this.launchers.forEach((l) => l.advanceTurn());
+
+    if (this.turnsOffline >= this.reloadingTime) {
+      this.shotsInMagazine = this.magazineSize;
+    }
   }
 
-  serialize(payload: unknown, previousResponse: Record<string, unknown> = {}) {
+  serialize(
+    payload: unknown,
+    previousResponse: Record<string, unknown> = {}
+  ): SerializedTorpedoLauncherStrategy {
     return {
       ...previousResponse,
       torpedoLauncherSystemStrategy: {
         launchers: this.launchers.map((l) => l.serialize()),
+        shotsInMagazine: this.shotsInMagazine,
+        turnsOffline: this.turnsOffline,
       },
     };
   }
@@ -160,6 +179,10 @@ export class TorpedoLauncherStrategy
     data?.torpedoLauncherSystemStrategy?.launchers.forEach(
       (launcherData, index) => this.launchers[index].deserialize(launcherData)
     );
+
+    this.shotsInMagazine =
+      data?.torpedoLauncherSystemStrategy?.shotsInMagazine ?? this.magazineSize;
+    this.turnsOffline = data?.torpedoLauncherSystemStrategy?.turnsOffline ?? 0;
   }
 
   getLaunchers() {
@@ -262,7 +285,7 @@ class TorpedoLauncher {
   }
 
   public canLaunch() {
-    this.turnsLoaded >= this.loadingTime && !this.launchTarget;
+    return this.turnsLoaded >= this.loadingTime && !this.launchTarget;
   }
 
   public serialize(): SerializedTorpedoLauncher {

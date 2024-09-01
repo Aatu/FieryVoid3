@@ -258,7 +258,7 @@ class GameData {
       .getShips()
       .filter((ship) => !ship.isDestroyed())
       .forEach((ship) => {
-        ship.advanceTurn(this.turn);
+        ship.advanceTurn(this);
         this.setActiveShip(ship);
       });
 

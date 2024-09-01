@@ -1,14 +1,10 @@
-import { AmmoMagazineSystemStrategy } from "../../strategy/AmmoMagazineSystemStrategy";
 import { TorpedoLauncherStrategy } from "../../strategy/weapon/TorpedoLauncherStrategy";
 import Weapon, { WeaponArgs } from "../Weapon";
 import { Torpedo158Names } from "./TorpedoLauncher158";
 
 class TorpedoLauncherQuadruple158 extends Weapon {
   constructor(args: WeaponArgs) {
-    super(args, [
-      new TorpedoLauncherStrategy(Torpedo158Names, 4, 5),
-      new AmmoMagazineSystemStrategy({ Torpedo158MSV: 8, Torpedo158HE: 4 }, 3),
-    ]);
+    super(args, [new TorpedoLauncherStrategy(Torpedo158Names, 4, 5, 12, 15)]);
   }
 
   getDisplayName() {

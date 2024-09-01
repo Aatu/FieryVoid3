@@ -1,7 +1,10 @@
 import { CargoBaySystemStrategy } from ".";
 import { CargoEntry } from "../../../cargo/CargoEntry";
-import { AmmunitionType, createAmmoInstance } from "../weapon/ammunition";
-import { TorpedoType } from "../weapon/ammunition/torpedo";
+import {
+  AmmunitionType,
+  createAmmoInstance,
+  TorpedoType,
+} from "../weapon/ammunition";
 
 type AmmoAndAmount = Partial<Record<AmmunitionType | TorpedoType, number>>;
 

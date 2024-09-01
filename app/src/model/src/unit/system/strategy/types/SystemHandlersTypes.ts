@@ -96,7 +96,6 @@ export enum SYSTEM_HANDLERS {
   getLoadingTime = "getLoadingTime",
 
   loadAmmo = "loadAmmo",
-  getAmmoInMagazine = "getAmmoInMagazine",
   setNewLoadingTarget = "setNewLoadingTarget",
   getLoadingTarget = "getLoadingTarget",
   setNewSelectedAmmo = "setNewSelectedAmmo",

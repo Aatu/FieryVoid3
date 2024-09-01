@@ -12,7 +12,7 @@ class Ammo85mmAP extends Ammo {
   }
 
   getSpaceRequired() {
-    return 0.02;
+    return 0.2;
   }
 
   getDisplayName() {

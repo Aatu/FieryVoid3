@@ -15,7 +15,8 @@ class CombatLogWeaponOutOfArc implements ICombatLogEntry {
     };
   }
 
-  deserialize(data: { logEntryClass: string; fireOrderId: string }) {
+  deserialize(unknownData: Record<string, unknown>) {
+    const data = unknownData as { logEntryClass: string; fireOrderId: string };
     this.fireOrderId = data.fireOrderId;
     return this;
   }

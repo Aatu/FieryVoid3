@@ -5,7 +5,9 @@ import CombatLogTorpedoAttack from "./CombatLogTorpedoAttack";
 import CombatLogGroupedTorpedoAttack from "./CombatLogGroupedTorpedoAttack";
 import CombatLogTorpedoIntercept from "./CombatLogTorpedoIntercept";
 
-export type SerializedCombatLogData = { logEntryClass: string }[];
+export type SerializedCombatLogData = (Record<string, unknown> & {
+  logEntryClass: string;
+})[];
 
 class CombatLogData {
   public entries: CombatLogEntry[];

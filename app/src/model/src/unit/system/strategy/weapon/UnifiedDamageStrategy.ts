@@ -295,6 +295,10 @@ export class UnifiedDamageSystemStrategy extends ShipSystemStrategy {
   }
 
   public applyDamageFromWeaponFire(payload: UnifiedDamagePayload) {
-    this.strategy.applyDamageFromWeaponFire(payload);
+    const ammo = this.getSystem().handlers.getSelectedAmmo();
+    this.strategy.applyDamageFromWeaponFire({
+      ...payload,
+      argsOverrider: ammo || undefined,
+    });
   }
 }

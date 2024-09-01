@@ -1,11 +1,13 @@
 import { CargoEntry } from "../cargo/CargoEntry";
-import { CargoMove, SerializedCargoMove } from "../cargo/CargoMove";
+import { CombatLogCargoTransfer } from "../combatLog/CombatLogCargoTransfer";
+import GameData from "../game/GameData";
+import { shuffleArray } from "../utils/math";
 import Ship from "./Ship";
+import { CargoType } from "./system/cargo/cargo";
 import ShipSystem from "./system/ShipSystem";
 
 export class ShipCargo {
   private ship: Ship;
-  private cargoMoves: CargoMove[] = [];
 
   constructor(ship: Ship) {
     this.ship = ship;
@@ -14,26 +16,81 @@ export class ShipCargo {
   public canMove(
     from: ShipSystem,
     to: ShipSystem,
-    cargo: CargoEntry | CargoEntry[],
-    cargoMove?: CargoMove
+    cargo: CargoEntry | CargoEntry[]
   ) {
     if (!from.handlers.isCargoBay() || !to.handlers.isCargoBay()) {
+      console.log("someone is not a cargobay");
       return false;
     }
 
-    if (!this.systemhasCargoSpaceFor(to, cargo, cargoMove)) {
+    if (!this.systemhasCargoSpaceFor(to, cargo)) {
+      console.log("no space");
       return false;
     }
 
     if (from.isDestroyed() || to.isDestroyed()) {
+      console.log("someone is destroeyd");
       return false;
     }
 
     if (!from.handlers.hasCargo(cargo)) {
+      console.log("does not have cargo");
       return false;
     }
 
     return true;
+  }
+
+  public hasCargo(cargo: CargoEntry[] | CargoEntry) {
+    cargo = ([] as CargoEntry[]).concat(cargo);
+
+    const allCargo = this.getAllCargo();
+
+    return cargoContains(allCargo, cargo);
+  }
+
+  public getAllCargo() {
+    return combineCargoEntrys(
+      this.ship.systems
+        .getSystems()
+        .reduce(
+          (total, s) => [...total, ...s.handlers.getAllCargo()],
+          [] as CargoEntry[]
+        )
+    );
+  }
+
+  public removeCargo(cargo: CargoEntry[] | CargoEntry) {
+    cargo = ([] as CargoEntry[]).concat(cargo);
+
+    const cargoBays = this.ship.systems
+      .getSystems()
+      .filter((s) => s.handlers.isCargoBay());
+
+    let removed = true;
+    while (removed) {
+      removed = false;
+
+      cargo.forEach((entry) => {
+        shuffleArray(cargoBays);
+
+        cargoBays.forEach((bay) => {
+          if (entry.amount === 0) {
+            return;
+          }
+
+          if (bay.handlers.hasCargo(entry.clone().setAmount(1))) {
+            bay.handlers.removeCargo(entry.clone().setAmount(1));
+            removed = true;
+            entry.amount--;
+          }
+        });
+      });
+    }
+
+    if (cargo.some((c) => c.amount !== 0)) {
+      throw new Error("Failed to remove all cargo, check has cargo first");
+    }
   }
 
   public moveCargo(
@@ -41,51 +98,19 @@ export class ShipCargo {
     to: ShipSystem,
     cargo: CargoEntry | CargoEntry[]
   ) {
+    cargo = ([] as CargoEntry[]).concat(cargo);
+
     if (!this.canMove(from, to, cargo)) {
       throw new Error("Invalid cargo move");
     }
 
-    const time = to.handlers.getTimeToMoveCargoTo();
-
-    cargo = ([] as CargoEntry[]).concat(cargo);
-    this.cargoMoves.push(new CargoMove(from, to, cargo, time));
-  }
-
-  public advanceTurn() {
-    this.cargoMoves.forEach((m) => m.advanceTurn());
-
-    this.cargoMoves.filter((move) => {
-      if (move.isReady()) {
-        this.executeMove(move);
-        return false;
-      }
-
-      if (!this.canMove(move.from, move.to, move.cargoToMove, move)) {
-        this.cancelMove(move);
-      }
-    });
-  }
-
-  public serialize() {
-    return this.cargoMoves.map((m) => m.serialize());
-  }
-
-  public deserialize(data: SerializedCargoMove[]) {
-    this.cargoMoves = data.map((m) => CargoMove.deserialize(m, this.ship));
-  }
-
-  private executeMove(move: CargoMove) {}
-
-  private cancelMove(move: CargoMove) {}
-
-  private getTransfersTo(system: ShipSystem) {
-    return this.cargoMoves.filter((move) => move.to === system);
+    to.handlers.addCargo(cargo);
+    from.handlers.removeCargo(cargo);
   }
 
   private systemhasCargoSpaceFor(
     system: ShipSystem,
-    entry: CargoEntry[] | CargoEntry,
-    cargoMove?: CargoMove
+    entry: CargoEntry[] | CargoEntry
   ) {
     if (system.isDestroyed()) {
       return false;
@@ -99,18 +124,87 @@ export class ShipCargo {
         0
       );
 
-    const spaceReserved = this.getTransfersTo(system)
-      .filter((move) => !cargoMove || move.id !== cargoMove.id)
-      .reduce((total, move) => total + move.getTotalSpaceRequired(), 0);
-
-    return (
-      system.handlers.getAvailableCargoSpace() - spaceReserved >= spaceRequired
-    );
-  }
-
-  public loadAllTargetCargoInstant() {
-    this.ship.systems.getSystems().forEach((system) => {
-      system.handlers.loadTargetCargoInstant();
-    });
+    return system.handlers.getAvailableCargoSpace() >= spaceRequired;
   }
 }
+
+type systemCargo = {
+  system: ShipSystem;
+  cargo: CargoEntry[];
+};
+
+const takeCargoOnShip = (cargoOnShip: systemCargo[], toTake: CargoEntry) => {
+  let found: ShipSystem | null = null;
+  cargoOnShip.forEach((shipCargo) => {
+    if (found) {
+      return;
+    }
+
+    const entry = shipCargo.cargo.find((c) => c.object.equals(toTake.object));
+
+    if (entry) {
+      entry.amount--;
+      found = shipCargo.system;
+    }
+  });
+
+  return found;
+};
+
+const getAllMatchingCargoInShip = (
+  ship: Ship,
+  desiredCargo: systemCargo[]
+): systemCargo[] => {
+  const cargoClasses: CargoType[] = [];
+
+  desiredCargo.forEach(({ cargo }) =>
+    cargo.forEach((entry: CargoEntry) => {
+      if (cargoClasses.includes(entry.object.getCargoClassName())) {
+        return false;
+      } else {
+        cargoClasses.push(entry.object.getCargoClassName());
+      }
+    })
+  );
+
+  const shipCargo: systemCargo[] = ship.systems
+    .getSystems()
+    .filter((s) => s.handlers.isCargoBay())
+    .map((system) => {
+      const systemCargo = system.handlers
+        .getAllCargo()
+        .filter((e) => cargoClasses.includes(e.object.getCargoClassName()));
+
+      return {
+        system,
+        cargo: systemCargo,
+      };
+    });
+
+  return shipCargo;
+};
+
+export const subtractCargos = (current: CargoEntry[], sub: CargoEntry[]) =>
+  combineCargoEntrys([...current, ...sub.map((s) => s.clone().flipAmount())]);
+
+export const addCargos = (current: CargoEntry[], add: CargoEntry[]) =>
+  combineCargoEntrys([...current, ...add]);
+
+export const cargoContains = (current: CargoEntry[], other: CargoEntry[]) =>
+  subtractCargos(current, other).every((c) => c.amount >= 0);
+
+export const combineCargoEntrys = (entries: CargoEntry[]): CargoEntry[] => {
+  const newEntries: CargoEntry[] = [];
+
+  entries.forEach((entry) => {
+    const newEntry = newEntries.find((e) => e.object.equals(entry.object));
+
+    if (!newEntry) {
+      newEntries.push(entry.clone());
+    } else {
+      newEntry.amount += entry.amount;
+    }
+  });
+
+  return newEntries;
+};

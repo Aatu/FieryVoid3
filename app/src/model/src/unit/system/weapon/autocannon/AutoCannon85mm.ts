@@ -14,7 +14,6 @@ import InternalSystemWhenOfflineSystemStrategy from "../../strategy/InternalSyst
 import FireOrderHeatStrategy from "../../strategy/FireOrderHeatStrategy";
 import { MEDIUM_WEAPON_RANGE } from "../../../../config/gameConfig";
 import { UnifiedDamageSystemStrategy } from "../../strategy/weapon/UnifiedDamageStrategy";
-import { AmmoMagazineSystemStrategy } from "../../strategy/AmmoMagazineSystemStrategy";
 
 class AutoCannon85mm extends Weapon {
   constructor({ id }: WeaponArgs, arcs: WeaponArcs) {
@@ -32,8 +31,7 @@ class AutoCannon85mm extends Weapon {
       new StandardLoadingStrategy(1),
       new UnifiedDamageSystemStrategy(),
       new InterceptorStrategy(),
-      new AmmunitionStrategy(["Ammo85mmAP", "Ammo85mmHE"], 2),
-      new AmmoMagazineSystemStrategy({ Ammo85mmAP: 4, Ammo85mmHE: 10 }, 3),
+      new AmmunitionStrategy(["Ammo85mmAP", "Ammo85mmHE"], 2, 14, 3),
       new WeaponAnimationStrategy("UniversalBolt", {
         size: 8,
         speed: 0.5,

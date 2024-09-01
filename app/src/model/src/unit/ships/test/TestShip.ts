@@ -143,4 +143,31 @@ class TestShip extends Ship {
   }
 }
 
+export class BareTestShip extends Ship {
+  setShipProperties() {
+    this.accelcost = 3;
+    this.rollcost = 3;
+    this.pivotcost = 3;
+    this.evasioncost = 3;
+
+    this.frontHitProfile = 100;
+    this.sideHitProfile = 100;
+
+    this.pointCost = 500;
+
+    this.systems.addPrimarySystem([
+      new systems.Reactor({ id: 7, hitpoints: 20, armor: 3 }, 35),
+      new systems.EwArray({ id: 11, hitpoints: 10, armor: 3 }, 10),
+      new systems.Structure({
+        id: 205,
+        hitpoints: 40,
+        armor: 5,
+        heatStorage: 200,
+        radiator: 5,
+        fuel: 4000,
+      }),
+    ]);
+  }
+}
+
 export default TestShip;

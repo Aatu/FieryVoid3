@@ -32,7 +32,9 @@ class CombatLogGroupedWeaponFire implements ICombatLogEntry {
     };
   }
 
-  deserialize(data: SerializedCombatLogGroupedWeaponFire) {
+  deserialize(unknownData: Record<string, unknown>) {
+    const data = unknownData as SerializedCombatLogGroupedWeaponFire;
+
     this.targetId = data.targetId;
     this.entries = data.entries
       ? data.entries.map((entry) => CombatLogWeaponFire.fromData(entry))

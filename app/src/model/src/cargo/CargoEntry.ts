@@ -1,6 +1,6 @@
-import { CargoType, createCargoInstance } from "../unit/system/cargo/cargo";
+import { CargoType } from "../unit/system/cargo/cargo";
+import { createCargoInstance } from "../unit/system/cargo/createCargoInstance";
 import CargoEntity from "./CargoEntity";
-import { CargoBaySystemStrategy } from "../unit/system/strategy";
 import * as Yup from "yup";
 
 export type SerializedCargoEntry = {
@@ -17,10 +17,18 @@ export class CargoEntry<T extends CargoEntity = CargoEntity> {
     this.amount = amount;
   }
 
-  fitsInto(cargoBay: CargoBaySystemStrategy) {}
-
   clone() {
     return CargoEntry.deserialize(this.serialize());
+  }
+
+  public setAmount(amount: number) {
+    this.amount = amount;
+    return this;
+  }
+
+  public flipAmount() {
+    this.amount = this.amount * -1;
+    return this;
   }
 
   public serialize() {
@@ -43,5 +51,5 @@ export class CargoEntry<T extends CargoEntity = CargoEntity> {
 
 const schema = Yup.object().shape({
   className: Yup.string().required(),
-  amount: Yup.number().required().integer().positive(),
+  amount: Yup.number().required().integer(),
 });

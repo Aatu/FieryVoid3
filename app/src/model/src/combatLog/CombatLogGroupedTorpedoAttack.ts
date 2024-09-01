@@ -32,7 +32,8 @@ class CombatLogGroupedTorpedoAttack implements ICombatLogEntry {
     };
   }
 
-  deserialize(data: SerializedCombatLogGroupedTorpedoAttack) {
+  deserialize(unknownData: Record<string, unknown>) {
+    const data = unknownData as SerializedCombatLogGroupedTorpedoAttack;
     this.targetId = data.targetId;
     this.entries = data.entries
       ? data.entries.map((entry) => CombatLogTorpedoAttack.fromData(entry))

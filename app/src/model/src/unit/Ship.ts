@@ -268,12 +268,14 @@ class Ship implements IHexPosition {
     this.systems.endTurn(turn);
   }
 
-  advanceTurn(turn: number) {
+  advanceTurn(gameData: GameData) {
+    const turn = gameData.turn;
+
     this.movement.removeMovementForOtherTurns(turn);
     this.systems.advanceTurn(turn);
     this.electronicWarfare.activatePlannedElectronicWarfare();
     this.electronicWarfare.removeAll();
-    this.shipCargo.advanceTurn();
+    this.shipCargo.advanceTurn(gameData);
 
     return this;
   }

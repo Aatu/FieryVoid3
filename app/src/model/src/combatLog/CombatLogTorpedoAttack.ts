@@ -76,7 +76,9 @@ class CombatLogTorpedoAttack implements ICombatLogEntry {
     };
   }
 
-  deserialize(data: SerializedCombatLogTorpedoAttack) {
+  deserialize(unknownData: Record<string, unknown>) {
+    const data = unknownData as SerializedCombatLogTorpedoAttack;
+
     this.torpedoFlightId = data.torpedoFlightId;
     this.targetId = data.targetId;
     this.damages = data.damages.map((damage) =>

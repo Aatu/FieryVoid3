@@ -5,11 +5,11 @@ import CargoEntity from "../../../cargo/CargoEntity";
 import Ship from "../../Ship";
 import ShipSystem from "../ShipSystem";
 import { IShipSystemStrategy } from "../../ShipSystemHandlers";
+import { addCargos, cargoContains, subtractCargos } from "../../ShipCargo";
 
 export type SerializedCargoBaySystemStrategy = {
   cargoBaySystemStrategy?: {
     cargo: SerializedCargoEntry[];
-    targetCargo: SerializedCargoEntry[] | null;
   };
 };
 
@@ -19,26 +19,13 @@ class CargoBaySystemStrategy
 {
   protected space: number;
   protected cargo: CargoEntry[];
-  protected timeToMoveTo: number = 10;
   protected allowedCargoClasses: CargoType[] | null = null;
-  protected targetCargo: CargoEntry[] | null = null;
-  protected supply: boolean = true;
-  protected allowCargoTransferOnline: boolean = true;
 
-  constructor(
-    space: number,
-    timeToMoveTo?: number,
-    allowedCargoClasses?: CargoType[],
-    supply?: boolean,
-    allowCargoTransferOnline?: boolean
-  ) {
+  constructor(space: number, allowedCargoClasses?: CargoType[]) {
     super();
     this.space = space;
     this.cargo = [];
-    this.timeToMoveTo = timeToMoveTo ?? this.timeToMoveTo;
     this.allowedCargoClasses = allowedCargoClasses || null;
-    this.supply = supply ?? true;
-    this.allowCargoTransferOnline = allowCargoTransferOnline ?? true;
   }
 
   getUiComponents(payload: unknown, previousResponse = []) {
@@ -64,9 +51,6 @@ class CargoBaySystemStrategy
       ...previousResponse,
       cargoBaySystemStrategy: {
         cargo: this.cargo.map((cargo) => cargo.serialize()),
-        targetCargo: this.targetCargo
-          ? this.targetCargo.map((c) => c.serialize())
-          : null,
       },
     };
   }
@@ -75,14 +59,8 @@ class CargoBaySystemStrategy
     const systemData = data?.cargoBaySystemStrategy;
 
     this.cargo = systemData?.cargo.map((c) => CargoEntry.deserialize(c)) ?? [];
-    this.targetCargo =
-      systemData?.targetCargo?.map((c) => CargoEntry.deserialize(c)) ?? null;
 
     return this;
-  }
-
-  public getTimeToMoveCargoTo() {
-    return this.timeToMoveTo;
   }
 
   public getTotalCargoSpace() {
@@ -91,15 +69,6 @@ class CargoBaySystemStrategy
 
   public getAvailableCargoSpace() {
     return this.space - this.getCargoSpaceUsed();
-  }
-
-  public getTargetCargo() {
-    return this.targetCargo;
-  }
-
-  public setTargetCargo(cargo: CargoEntry[] | null) {
-    this.targetCargo = cargo ? [...cargo.map((c) => c.clone())] : null;
-    return this;
   }
 
   public getAllCargo() {
@@ -125,22 +94,6 @@ class CargoBaySystemStrategy
     );
   }
 
-  public getCargoByParentClass(parentClass: typeof CargoEntity) {
-    if (this.getSystem().isDestroyed()) {
-      return [];
-    }
-
-    return this.cargo.filter((cargo) => cargo.object instanceof parentClass);
-  }
-
-  public currentlyAcceptsCargoTransfers() {
-    if (!this.allowCargoTransferOnline && this.getSystem().power.isOnline()) {
-      return false;
-    }
-
-    return true;
-  }
-
   public isAllowedCargo(cargo: CargoEntry) {
     return (
       !this.allowedCargoClasses ||
@@ -148,36 +101,47 @@ class CargoBaySystemStrategy
     );
   }
 
-  public useCargoForSupply() {
-    return this.supply;
+  public hasCargo(payload: CargoEntry[] | CargoEntry): boolean {
+    payload = ([] as CargoEntry[]).concat(payload);
+
+    return cargoContains(this.cargo, payload);
   }
 
   public removeAllCargo() {
     this.cargo = [];
   }
 
-  public removeCargo(cargo: CargoEntry) {
-    const entry = this.getCargoEntry(cargo.object);
+  public removeCargo(cargo: CargoEntry | CargoEntry[]) {
+    cargo = ([] as CargoEntry[]).concat(cargo);
 
-    if (!entry || entry.amount < cargo.amount) {
-      throw new Error("Check hasCargo first!");
-    }
+    console.log("REMOVING CARGO from", this.getSystem().id);
 
-    entry.amount -= cargo.amount;
+    console.log(
+      "Current cargo",
+      this.cargo.map((c) => c.toString()).join(", ")
+    );
+    console.log("removing cargo", cargo.map((c) => c.toString()).join(", "));
 
-    this.cargo = this.cargo.filter((entry) => entry.amount > 0);
+    const newCargo = subtractCargos(this.cargo, cargo);
+    console.log("New cargo", newCargo.map((c) => c.toString()).join(", "));
+
+    this.cargo = newCargo.filter((c) => c.amount <= 0);
   }
 
   public addCargo(cargo: CargoEntry | CargoEntry[]) {
-    ([] as CargoEntry[]).concat(cargo).forEach((cargo) => {
-      let entry = this.getCargoEntry(cargo.object);
+    cargo = ([] as CargoEntry[]).concat(cargo);
 
-      if (entry) {
-        entry.amount += cargo.amount;
-      } else {
-        this.cargo.push(cargo.clone());
-      }
-    });
+    console.log("ADDING CARGO to", this.getSystem().id);
+    console.log(
+      "Current cargo",
+      this.cargo.map((c) => c.toString()).join(", ")
+    );
+    console.log("Adding cargo", cargo.map((c) => c.toString()).join(", "));
+
+    const newCargo = addCargos(this.cargo, cargo);
+    console.log("New cargo", newCargo.map((c) => c.toString()).join(", "));
+
+    this.cargo = newCargo;
   }
 
   public isCargoBay() {
@@ -201,29 +165,7 @@ class CargoBaySystemStrategy
       return;
     }
 
-    const clientStrategy =
-      clientSystem.getStrategiesByInstance<CargoBaySystemStrategy>(
-        CargoBaySystemStrategy
-      )[0];
-
-    const changeTargetCargo = clientStrategy.targetCargo;
-    if (changeTargetCargo === null && this.targetCargo !== null) {
-      return;
-    }
-
-    if (changeTargetCargo?.some((c) => !this.isAllowedCargo(c))) {
-      return;
-    }
-
-    this.targetCargo = changeTargetCargo;
-  }
-
-  public loadTargetCargoInstant() {
-    if (!this.targetCargo) {
-      return;
-    }
-
-    this.cargo = this.targetCargo.map((c) => c.clone());
+    //TODO: system to allow player to move cargo
   }
 }
 

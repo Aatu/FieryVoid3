@@ -211,13 +211,9 @@ test("Test unloading of a weapon", async () => {
 
   railgun = achilles.systems.getSystemById(101);
 
-  expect(
-    railgun.callHandler(
-      SYSTEM_HANDLERS.getAmmoInMagazine,
-      undefined,
-      [] as Ammo[]
-    )
-  ).toEqual([{ object: new Ammo140mmHE(), amount: 5 }]);
+  expect(railgun.handlers.getAllCargo()).toEqual([
+    { object: new Ammo140mmHE(), amount: 5 },
+  ]);
 
   count = 10;
   while (count--) {
@@ -245,13 +241,9 @@ test("Test unloading of a weapon", async () => {
 
   railgun = achilles.systems.getSystemById(101);
 
-  expect(
-    railgun.callHandler(
-      SYSTEM_HANDLERS.getAmmoInMagazine,
-      undefined,
-      [] as Ammo[]
-    )
-  ).toEqual([{ object: new Ammo140mmHE(), amount: 1 }]);
+  expect(railgun.handlers.getAllCargo()).toEqual([
+    { object: new Ammo140mmHE(), amount: 1 },
+  ]);
 
   db.close();
 });

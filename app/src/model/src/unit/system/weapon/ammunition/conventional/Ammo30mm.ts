@@ -12,7 +12,7 @@ class Ammo30mm extends Ammo {
   }
 
   getSpaceRequired() {
-    return 0.01;
+    return 0.1;
   }
 
   getDisplayName() {

@@ -60,14 +60,11 @@ export interface IShipSystemHandlers {
   getTimeToMoveCargoTo: () => number;
   hasCargo: (payload: CargoEntry[] | CargoEntry) => boolean;
   getAvailableCargoSpace: () => number;
-  useCargoForSupply: () => boolean;
   isAllowedCargo: (cargo: CargoEntry) => boolean;
   getAllCargo: () => CargoEntry[];
   getCargoEntry: (cargo: CargoEntity) => CargoEntry<typeof cargo> | null;
-  removeCargo: (cargo: CargoEntry) => void;
+  removeCargo: (cargo: CargoEntry | CargoEntry[]) => void;
   removeAllCargo: () => void;
-  getTargetCargo: () => CargoEntry[] | null;
-  setTargetCargo: (cargo: CargoEntry[] | null) => void;
   addCargo: (cargo: CargoEntry | CargoEntry[]) => void;
   loadTargetCargoInstant: () => void;
   toggleSelectedAmmo: () => void;
@@ -112,14 +109,6 @@ export class SystemHandlers {
     this.callHandler("loadTargetCargoInstant");
   }
 
-  getTargetCargo(): CargoEntry[] | null {
-    return this.callHandler("getTargetCargo") || null;
-  }
-
-  setTargetCargo(cargo: CargoEntry[] | null) {
-    this.callHandler("setTargetCargo", undefined, cargo);
-  }
-
   addCargo(cargo: CargoEntry | CargoEntry[]) {
     this.callHandler("addCargo", undefined, cargo);
   }
@@ -128,7 +117,7 @@ export class SystemHandlers {
     this.callHandler("removeAllCargo");
   }
 
-  removeCargo(cargo: CargoEntry): void {
+  removeCargo(cargo: CargoEntry | CargoEntry[]): void {
     return this.callHandler("removeCargo", undefined, cargo);
   }
 
@@ -142,10 +131,6 @@ export class SystemHandlers {
 
   isAllowedCargo(cargo: CargoEntry): boolean {
     return Boolean(this.callHandler("isAllowedCargo", undefined, cargo));
-  }
-
-  useCargoForSupply(): boolean {
-    return Boolean(this.callHandler("useCargoForSupply"));
   }
 
   getAvailableCargoSpace(): number {

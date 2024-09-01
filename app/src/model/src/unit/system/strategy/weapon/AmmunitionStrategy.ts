@@ -12,8 +12,9 @@ import { CargoEntry } from "../../../../cargo/CargoEntry";
 
 export type SerializedAmmunitionStrategy = {
   ammunitionStrategy: {
-    selectedAmmo: AmmunitionType | null;
-    changeSelectedAmmo: AmmunitionType | null;
+    selectedAmmo: AmmunitionType;
+    shotsInMagazine: number;
+    turnsOffline: number;
   };
 };
 
@@ -24,19 +25,28 @@ class AmmunitionStrategy
   public ammunitionClasses: AmmunitionType[];
   public ammoPerShot: number = 1;
   public selectedAmmo: Ammo;
-  public changeSelectedAmmo: Ammo | null;
+  public shotsInMagazine: number;
+  public magazineSize: number;
+  public reloadingTime: number;
+  public turnsOffline: number = 0;
 
-  constructor(ammunitionClasses: AmmunitionType[], ammoPerShot: number) {
+  constructor(
+    ammunitionClasses: AmmunitionType[],
+    ammoPerShot: number,
+    magazineSize: number,
+    reloadingTime: number
+  ) {
     super();
 
     this.ammunitionClasses = ammunitionClasses;
-    this.ammoPerShot = ammoPerShot ?? this.ammoPerShot;
+    this.ammoPerShot = ammoPerShot;
+    this.shotsInMagazine = magazineSize;
+    this.magazineSize = magazineSize;
+    this.reloadingTime = reloadingTime;
 
     this.selectedAmmo = createAmmoInstance(
       this.ammunitionClasses[this.ammunitionClasses.length - 1]
     );
-
-    this.changeSelectedAmmo = null;
   }
 
   getIconText(payload: unknown, previousResponse = "") {
@@ -115,10 +125,9 @@ class AmmunitionStrategy
     return {
       ...previousResponse,
       ammunitionStrategy: {
-        selectedAmmo: this.selectedAmmo?.getConstructorName(),
-        changeSelectedAmmo: this.changeSelectedAmmo
-          ? this.changeSelectedAmmo.getConstructorName()
-          : null,
+        selectedAmmo: this.selectedAmmo.getConstructorName(),
+        shotsInMagazine: this.shotsInMagazine,
+        turnsOffline: this.turnsOffline,
       },
     };
   }
@@ -130,44 +139,27 @@ class AmmunitionStrategy
           this.ammunitionClasses[this.ammunitionClasses.length - 1]
         );
 
-    this.changeSelectedAmmo = data?.ammunitionStrategy?.changeSelectedAmmo
-      ? createAmmoInstance(data?.ammunitionStrategy?.changeSelectedAmmo)
-      : null;
+    this.shotsInMagazine =
+      data?.ammunitionStrategy?.shotsInMagazine ?? this.magazineSize;
+    this.turnsOffline = data?.ammunitionStrategy?.turnsOffline ?? 0;
   }
 
   toggleSelectedAmmo() {
-    const allCargo = this.getSystem()
-      .handlers.getAllCargo()
-      .filter((c) =>
-        this.ammunitionClasses.includes(c.object.getCargoClassName())
-      );
+    const currentAmmoClass = this.selectedAmmo.getCargoClassName();
+    let index =
+      this.ammunitionClasses.findIndex(
+        (className) => className === currentAmmoClass
+      ) + 1;
 
-    if (allCargo.length === 0) {
-      return;
-    }
-
-    let index = allCargo.findIndex((c) => c.object.equals(this.selectedAmmo));
-
-    if (index === -1) {
-      this.selectedAmmo = allCargo[0].object.clone() as Ammo;
-      return;
-    }
-
-    index++;
-
-    if (index >= allCargo.length) {
+    if (index >= this.ammunitionClasses.length) {
       index = 0;
     }
 
-    this.selectedAmmo = allCargo[index].object.clone() as Ammo;
+    this.selectedAmmo = createAmmoInstance(this.ammunitionClasses[index]);
   }
 
   getSelectedAmmo() {
     return this.selectedAmmo;
-  }
-
-  setNewSelectedAmmo(ammo: Ammo | null) {
-    this.changeSelectedAmmo = ammo;
   }
 
   receivePlayerData({
@@ -202,7 +194,9 @@ class AmmunitionStrategy
         );
       }
 
-      this.selectedAmmo = changeSelectedAmmo;
+      this.selectedAmmo = createAmmoInstance(
+        changeSelectedAmmo.getCargoClassName()
+      );
     }
   }
 
@@ -211,16 +205,7 @@ class AmmunitionStrategy
       return true;
     }
 
-    const allCargo = this.getSystem()
-      .handlers.getAllCargo()
-      .filter((c) =>
-        this.ammunitionClasses.includes(c.object.getCargoClassName())
-      );
-
-    if (
-      allCargo.length === 0 ||
-      allCargo.every((c) => c.amount < this.ammoPerShot)
-    ) {
+    if (this.shotsInMagazine < this.ammoPerShot) {
       return true;
     }
 
@@ -232,13 +217,15 @@ class AmmunitionStrategy
       return false;
     }
 
-    const entry = this.getSystem().handlers.getCargoEntry(this.selectedAmmo);
-
-    if (!entry) {
+    if (this.shotsInMagazine < this.ammoPerShot) {
       return false;
     }
 
-    if (entry.amount < this.ammoPerShot) {
+    if (
+      !this.getShip().shipCargo.hasCargo(
+        new CargoEntry(this.selectedAmmo, this.ammoPerShot)
+      )
+    ) {
       return false;
     }
 
@@ -246,9 +233,11 @@ class AmmunitionStrategy
   }
 
   onWeaponFired() {
-    this.getSystem().handlers.removeCargo(
+    this.getShip().shipCargo.removeCargo(
       new CargoEntry(this.selectedAmmo, this.ammoPerShot)
     );
+
+    this.shotsInMagazine = this.shotsInMagazine - this.ammoPerShot;
 
     this.getSystem()
       .log.getGenericLogEntry()
@@ -260,31 +249,15 @@ class AmmunitionStrategy
   }
 
   advanceTurn() {
-    this.changeSelectedAmmoIfOutOfAmmo();
-  }
-
-  private changeSelectedAmmoIfOutOfAmmo() {
-    const allCargo = this.getSystem()
-      .handlers.getAllCargo()
-      .filter(
-        (c) =>
-          this.ammunitionClasses.includes(c.object.getCargoClassName()) &&
-          c.amount >= this.ammoPerShot
-      );
-
-    const ammoForSelected = allCargo.find((c) =>
-      c.object.equals(this.selectedAmmo)
-    );
-
-    if (ammoForSelected && ammoForSelected.amount >= this.ammoPerShot) {
-      return;
+    if (this.getSystem().isDisabled()) {
+      this.turnsOffline++;
+    } else {
+      this.turnsOffline = 0;
     }
 
-    if (allCargo.length === 0) {
-      return;
+    if (this.turnsOffline >= this.reloadingTime) {
+      this.shotsInMagazine = this.magazineSize;
     }
-
-    this.selectedAmmo = allCargo[0].object.clone() as Ammo;
   }
 }
 

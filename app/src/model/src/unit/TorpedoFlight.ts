@@ -2,11 +2,9 @@ import Vector from "../utils/Vector";
 import { v4 as uuidv4 } from "uuid";
 import Torpedo from "./system/weapon/ammunition/torpedo/Torpedo";
 import Ship from "./Ship";
-import {
-  createTorpedoInstance,
-  TorpedoType,
-} from "./system/weapon/ammunition/torpedo";
+
 import coordinateConverter from "../utils/CoordinateConverter";
+import { createTorpedoInstance, TorpedoType } from "./system/weapon/ammunition";
 
 export type SerializedTorpedoFlight = {
   id: string;

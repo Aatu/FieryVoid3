@@ -16,7 +16,12 @@ class CombatLogTorpedoLaunch implements ICombatLogEntry {
     };
   }
 
-  deserialize(data: { logEntryClass: string; torpedoFlightId: string }) {
+  deserialize(unknownData: Record<string, unknown>) {
+    const data = unknownData as {
+      logEntryClass: string;
+      torpedoFlightId: string;
+    };
+
     this.torpedoFlightId = data.torpedoFlightId;
     return this;
   }

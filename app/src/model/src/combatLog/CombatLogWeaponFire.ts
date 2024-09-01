@@ -134,7 +134,9 @@ class CombatLogWeaponFire implements ICombatLogEntry {
     };
   }
 
-  deserialize(data: SerializedCombatLogWeaponFire) {
+  deserialize(unknownData: Record<string, unknown>) {
+    const data = unknownData as SerializedCombatLogWeaponFire;
+
     this.fireOrderId = data.fireOrderId;
     this.targetId = data.targetId;
     this.shooterId = data.shooterId;

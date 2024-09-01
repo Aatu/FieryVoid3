@@ -40,7 +40,8 @@ class CombatLogTorpedoMove implements ICombatLogEntry {
     };
   }
 
-  deserialize(data: SerializedCombatLogTorpedoMove) {
+  deserialize(unknownData: Record<string, unknown>) {
+    const data = unknownData as SerializedCombatLogTorpedoMove;
     this.torpedoFlightId = data.torpedoFlightId;
     this.startPosition = new Vector(data.startPosition);
     this.endPosition = new Vector(data.endPosition);

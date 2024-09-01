@@ -31,7 +31,8 @@ class CombatLogDamageEntry implements ICombatLogEntry {
     };
   }
 
-  deserialize(data: SerializedCombatLogDamageEntry) {
+  deserialize(unknownData: Record<string, unknown>) {
+    const data = unknownData as SerializedCombatLogDamageEntry;
     this.entries = data.entries || [];
     this.notes = data.notes || [];
     return this;

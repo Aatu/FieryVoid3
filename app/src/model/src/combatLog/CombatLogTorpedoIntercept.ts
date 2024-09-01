@@ -54,7 +54,9 @@ class CombatLogTorpedoIntercept implements ICombatLogEntry {
     };
   }
 
-  deserialize(data: SerializedCombatLogTorpedoIntercept) {
+  deserialize(unknownData: Record<string, unknown>) {
+    const data = unknownData as SerializedCombatLogTorpedoIntercept;
+
     this.torpedoFlightId = data.torpedoFlightId;
     this.intercepts = data.intercepts.map((i) => ({
       shipId: i.shipId,
@@ -63,6 +65,8 @@ class CombatLogTorpedoIntercept implements ICombatLogEntry {
       roll: i.roll,
       success: i.success,
     }));
+
+    return this;
   }
 }
 

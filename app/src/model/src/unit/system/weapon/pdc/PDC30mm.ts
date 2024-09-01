@@ -14,7 +14,6 @@ import InternalSystemWhenOfflineSystemStrategy from "../../strategy/InternalSyst
 import FireOrderHeatStrategy from "../../strategy/FireOrderHeatStrategy";
 import { MEDIUM_WEAPON_RANGE } from "../../../../config/gameConfig";
 import { UnifiedDamageSystemStrategy } from "../../strategy/weapon/UnifiedDamageStrategy";
-import { AmmoMagazineSystemStrategy } from "../../strategy/AmmoMagazineSystemStrategy";
 
 class PDC30mm extends Weapon {
   constructor({ id }: WeaponArgs, arcs: WeaponArcs) {
@@ -33,8 +32,7 @@ class PDC30mm extends Weapon {
       new StandardLoadingStrategy(1),
       new UnifiedDamageSystemStrategy(),
       new InterceptorStrategy(),
-      new AmmunitionStrategy(["Ammo30mm"], 1),
-      new AmmoMagazineSystemStrategy({ Ammo30mm: 9 }, 3),
+      new AmmunitionStrategy(["Ammo30mm"], 1, 9, 3),
       new WeaponAnimationStrategy("UniversalBolt", {
         size: 6,
         speed: 0.35,
