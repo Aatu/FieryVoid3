@@ -56,6 +56,10 @@ export class ShipCargo {
     );
   }
 
+  public removeAllCargo() {
+    this.ship.systems.getSystems().forEach((s) => s.handlers.removeAllCargo());
+  }
+
   public removeCargo(cargo: CargoEntry[] | CargoEntry) {
     cargo = ([] as CargoEntry[]).concat(cargo);
 

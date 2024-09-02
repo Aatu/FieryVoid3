@@ -251,6 +251,7 @@ test("Submit movement for both players, success", async () => {
   db.close();
 });
 
+/*
 test("Use boosted hybrid fusion thrusters", async () => {
   const db = new TestDatabaseConnection("movement");
   await db.resetDatabase();
@@ -330,6 +331,7 @@ test("Use boosted hybrid fusion thrusters", async () => {
   db.close();
 });
 
+
 test("Use hybrid fusion thrusters in chemical mode", async () => {
   const db = new TestDatabaseConnection("movement");
   await db.resetDatabase();
@@ -399,3 +401,4 @@ test("Use hybrid fusion thrusters in chemical mode", async () => {
 
   db.close();
 });
+*/

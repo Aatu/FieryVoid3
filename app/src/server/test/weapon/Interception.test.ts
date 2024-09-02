@@ -243,7 +243,6 @@ test("Better interceptor is used first", (test) => {
   ) as StandardHitStrategy;
 
   s.fireControl = 50;
-  pdc2.handlers.loadTargetCargoInstant();
 
   target.electronicWarfare.assignCcEw(8);
 

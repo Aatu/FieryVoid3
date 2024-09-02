@@ -57,13 +57,7 @@ class RequiredThrustValidator {
           );
         }
 
-        if (
-          !thruster.callHandler(
-            SYSTEM_HANDLERS.isDirection,
-            direction,
-            false as boolean
-          )
-        ) {
+        if (!thruster.handlers.isThrustDirection(direction)) {
           throw new InvalidGameDataError(
             `Thruster id ${thrusterId} is not direction ${direction}.`
           );

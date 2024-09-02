@@ -1,6 +1,5 @@
 import Ship from "../../Ship";
 import systems from "../../system/index";
-import Offset from "../../../hexagon/Offset";
 import { RailgunTurreted32gw } from "../../system/weapon/coilgun/index";
 
 class Mouros extends Ship {

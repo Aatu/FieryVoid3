@@ -158,7 +158,7 @@ test("Gets correct hit candidates", () => {
   expect(hitSystems.length).toBe(2);
   expect(systemsToNameIdString(hitSystems)).toEqual([
     "Structure id: '1'",
-    "C/Fusion Hybrid Thruster id: '8'",
+    "Thruster id: '8'",
   ]);
 
   return ship;

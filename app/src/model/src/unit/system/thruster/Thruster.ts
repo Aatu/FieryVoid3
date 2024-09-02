@@ -1,17 +1,15 @@
 import ShipSystem, { ShipSystemType, SystemArgs } from "../ShipSystem";
 import RequiresPowerSystemStrategy from "../strategy/RequiresPowerSystemStrategy";
-import BoostableSystemStrategy from "../strategy/BoostableSystemStrategy";
 import ThrustChannelSystemStrategy, {
   THRUSTER_DIRECTION,
-  THRUSTER_MODE,
 } from "../strategy/ThrustChannelSystemStrategy";
 import { SYSTEM_HANDLERS } from "../strategy/types/SystemHandlersTypes";
+import { ChemicalThrustChannelStrategy } from "../strategy/ChemicalThrustChannelStrategy";
 
 export type ThrusterArgs = {
   power?: number;
-  boostPower?: number;
-  maxBoost?: number | null;
-  thrustHeatExtra?: number;
+  fuelPerThrust?: number;
+  heatPerThrust?: number;
 };
 
 class Thruster extends ShipSystem {
@@ -19,33 +17,24 @@ class Thruster extends ShipSystem {
     args: SystemArgs,
     output: number,
     direction: THRUSTER_DIRECTION | THRUSTER_DIRECTION[],
-    {
-      power = 1,
-      boostPower = 1,
-      maxBoost = null,
-      thrustHeatExtra = 0,
-    }: ThrusterArgs = {}
+    thrusterArgs?: ThrusterArgs
   ) {
+    const {
+      power = 1,
+      fuelPerThrust = 1,
+      heatPerThrust = 1,
+    } = thrusterArgs || {};
+
     super(args, [
-      new ThrustChannelSystemStrategy(
-        output,
-        direction,
-        {
-          thrustHeatExtra,
-        },
-        THRUSTER_MODE.FUSION,
-        [THRUSTER_MODE.CHEMICAL]
-      ),
+      new ThrustChannelSystemStrategy(output, direction, [
+        new ChemicalThrustChannelStrategy({
+          output,
+          fuelPerThrust,
+          heatPerThrust,
+        }),
+      ]),
       new RequiresPowerSystemStrategy(power),
     ]);
-
-    if (maxBoost !== 0 && boostPower !== 0) {
-      if (maxBoost === null) {
-        maxBoost = Math.round(output / 2);
-      }
-
-      this.addStrategy(new BoostableSystemStrategy(boostPower, maxBoost || 0));
-    }
   }
 
   getSystemType(): ShipSystemType {
@@ -53,7 +42,7 @@ class Thruster extends ShipSystem {
   }
 
   getDisplayName() {
-    return "C/Fusion Hybrid Thruster";
+    return "Thruster";
   }
 
   getBackgroundImage() {

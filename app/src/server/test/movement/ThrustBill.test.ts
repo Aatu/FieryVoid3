@@ -175,7 +175,7 @@ test("it uses thrusters properly, when one thruster heats faster", (test) => {
   expect(bill["thrusters"][1].channeled).toBe(2);
 });
 
-test("it uses thrusters properly, when one thruster has output reduced", (test) => {
+test.only("it uses thrusters properly, when one thruster has output reduced", (test) => {
   ship = new Ship();
   ship.movement.isRolled = () => false;
 

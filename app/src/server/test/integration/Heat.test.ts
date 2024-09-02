@@ -84,8 +84,8 @@ test("Test manouvering thruster heats up", async () => {
   let manouveringThruster = achilles.systems.getSystemById(10);
 
   expect(manouveringThruster.log.getMessagesForTurn(1)).toEqual([
-    "Added 7.88 and cooled 5 units of heat.",
-    "Current system heat was 2.88. Overheating 29%.",
+    "Added 6 and cooled 5 units of heat.",
+    "Current system heat was 1. Overheating 10%.",
   ]);
 
   db.close();

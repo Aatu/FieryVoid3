@@ -36,7 +36,6 @@ export enum SYSTEM_HANDLERS {
   censorForUser = "censorForUser",
   getHitProfile = "getHitProfile",
   resetBoost = "resetBoost",
-  isDirection = "isDirection",
   getThrustDirection = "getThrustDirection",
   getThrustOutput = "getThrustOutput",
   getChanneledThrust = "getChanneledThrust",

@@ -109,7 +109,7 @@ class ThrustBill {
         const capacity = thruster.getThrustCapacity();
 
         return (
-          thruster.isDirection(direction) &&
+          thruster.isThrustDirection(direction) &&
           capacity > 0 &&
           this.fuel >= thruster.getNextThrustFuelCost()
         );
@@ -223,7 +223,7 @@ class ThrustBill {
   getMoves() {
     [0, 1, 2, 3, 4, 5, 6, 7, 8].forEach((direction) => {
       this.thrusters.forEach((thruster) => {
-        if (!thruster.isDirection(direction)) {
+        if (!thruster.isThrustDirection(direction)) {
           return;
         }
 

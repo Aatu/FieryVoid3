@@ -121,6 +121,8 @@ export class TorpedoLauncherStrategy
         const targetId = launcher.getLaunchTarget();
         const torpedo = launcher.getTorpedo();
 
+        launcher.launchTorpedo();
+
         if (!targetId || !torpedo) {
           return null;
         }

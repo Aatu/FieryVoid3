@@ -80,7 +80,7 @@ class ThrustAssignment {
     );
   }
 
-  isDirection(direction: THRUSTER_DIRECTION) {
+  isThrustDirection(direction: THRUSTER_DIRECTION) {
     return this.directions.includes(direction);
   }
 

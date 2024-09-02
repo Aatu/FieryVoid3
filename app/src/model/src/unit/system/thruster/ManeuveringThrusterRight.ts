@@ -1,8 +1,8 @@
 import ShipSystem, { SystemArgs } from "../ShipSystem";
 import AllowsEvasionSystemStrategy from "../strategy/AllowsEvasionSystemStrategy";
+import { ChemicalThrustChannelStrategy } from "../strategy/ChemicalThrustChannelStrategy";
 import ThrustChannelSystemStrategy, {
   THRUSTER_DIRECTION,
-  THRUSTER_MODE,
 } from "../strategy/ThrustChannelSystemStrategy";
 
 class ManeuveringThrusterRight extends ShipSystem {
@@ -11,8 +11,13 @@ class ManeuveringThrusterRight extends ShipSystem {
       new ThrustChannelSystemStrategy(
         channel,
         [THRUSTER_DIRECTION.PIVOT_LEFT, THRUSTER_DIRECTION.MANOUVER],
-        {},
-        THRUSTER_MODE.MANEUVER
+        [
+          new ChemicalThrustChannelStrategy({
+            output: channel,
+            fuelPerThrust: 1,
+            heatPerThrust: 1,
+          }),
+        ]
       ),
       new AllowsEvasionSystemStrategy(evasion),
     ]);

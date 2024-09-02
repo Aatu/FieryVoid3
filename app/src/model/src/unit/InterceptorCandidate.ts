@@ -1,3 +1,4 @@
+import { CargoEntry } from "../cargo/CargoEntry";
 import GameData from "../game/GameData";
 import WeaponHitChance from "../weapon/WeaponHitChance";
 import Ship from "./Ship";

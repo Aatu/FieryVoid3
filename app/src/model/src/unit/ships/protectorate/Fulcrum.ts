@@ -1,6 +1,5 @@
 import Ship from "../../Ship";
 import systems from "../../system/index";
-import Offset from "../../../hexagon/Offset";
 
 class Fulcrum extends Ship {
   setShipProperties() {
@@ -56,8 +55,8 @@ class Fulcrum extends Ship {
       new systems.RailgunFixed120mm({ id: 104 }, { start: 330, end: 30 }),
       new systems.RailgunFixed120mm({ id: 105 }, { start: 330, end: 30 }),
 
-      new systems.ChemicalThruster({ id: 106, hitpoints: 10, armor: 3 }, 10, 0),
-      new systems.ChemicalThruster({ id: 107, hitpoints: 10, armor: 3 }, 10, 0),
+      new systems.Thruster({ id: 106, hitpoints: 10, armor: 3 }, 10, 0),
+      new systems.Thruster({ id: 107, hitpoints: 10, armor: 3 }, 10, 0),
       new systems.ManeuveringThruster(
         { id: 101, hitpoints: 10, armor: 3 },
         10,
@@ -105,8 +104,6 @@ class Fulcrum extends Ship {
       ),
       new systems.Thruster({ id: 203, hitpoints: 20, armor: 3 }, 15, 3, {
         power: 2,
-        boostPower: 1,
-        maxBoost: 10,
       }),
 
       new systems.PDC30mm(

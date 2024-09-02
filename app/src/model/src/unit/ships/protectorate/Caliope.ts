@@ -53,7 +53,7 @@ class Caliope extends Ship {
     this.pointCost = 500;
 
     this.systems.addFrontSystem([
-      new systems.ChemicalThruster({ id: 103, hitpoints: 10, armor: 3 }, 15, 0),
+      new systems.Thruster({ id: 103, hitpoints: 10, armor: 3 }, 15, 0),
       new systems.PDC30mm(
         { id: 114, hitpoints: 5, armor: 3 },
         { start: 200, end: 160 }
@@ -63,7 +63,7 @@ class Caliope extends Ship {
         { id: 115, hitpoints: 5, armor: 3 },
         { start: 200, end: 160 }
       ),
-      new systems.ChemicalThruster({ id: 104, hitpoints: 10, armor: 3 }, 15, 0),
+      new systems.Thruster({ id: 104, hitpoints: 10, armor: 3 }, 15, 0),
       new systems.Structure({
         id: 111,
         hitpoints: 40,
@@ -95,11 +95,7 @@ class Caliope extends Ship {
     ]);
 
     this.systems.addStarboardFrontSystem([
-      new systems.ChemicalThruster(
-        { id: 201, hitpoints: 10, armor: 3 },
-        15,
-        [1, 2]
-      ),
+      new systems.Thruster({ id: 201, hitpoints: 10, armor: 3 }, 15, [1, 2]),
 
       new systems.RailgunTurreted2x140mm(
         { id: 213, hitpoints: 8, armor: 4 },
@@ -124,11 +120,7 @@ class Caliope extends Ship {
         { id: 612, hitpoints: 8, armor: 4 },
         { start: 270, end: 30 }
       ),
-      new systems.ChemicalThruster(
-        { id: 601, hitpoints: 10, armor: 3 },
-        15,
-        [4, 5]
-      ),
+      new systems.Thruster({ id: 601, hitpoints: 10, armor: 3 }, 15, [4, 5]),
 
       new systems.AutoCannon85mm(
         { id: 603, hitpoints: 6, armor: 3 },

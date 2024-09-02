@@ -1,15 +1,16 @@
 import ShipSystemStrategy from "./ShipSystemStrategy";
 import ThrustChannelHeatIncreased from "../criticals/ThrustChannelHeatIncreased";
 import { OutputReduced } from "../criticals/index";
-import { SYSTEM_HANDLERS, SystemMessage } from "./types/SystemHandlersTypes";
+import { SystemMessage } from "./types/SystemHandlersTypes";
 import { SystemTooltipMenuButton } from "../../ShipSystemHandlers";
 import { GAME_PHASE } from "../../../game/gamePhase";
+import ShipSystem from "../ShipSystem";
 
 export type SerializedThrustChannelSystemStrategy = {
-  thrustChannelSystemStrategy?: {
-    channeled?: number;
-    newMode?: THRUSTER_MODE | null;
-    mode?: THRUSTER_MODE;
+  thrustChannelSystemStrategy: {
+    channeled: number;
+    currentMode: string;
+    strategies: Record<string, unknown>[];
   };
 };
 
@@ -42,65 +43,46 @@ export enum THRUSTER_MODE {
   CHEMICAL = "chemical",
 }
 
+export interface IThrustChannelStrategy {
+  isBoostable: () => boolean;
+  canBoost: () => boolean;
+  getFuelRequirement: (amount: number, system: ShipSystem) => number;
+  getHeatGenerated: (amount: number, system: ShipSystem) => number;
+  getThrustOutput: (system: ShipSystem, boost: number) => number;
+  getMessages: (system: ShipSystem) => SystemMessage[];
+  getBackgroundImage: (system: ShipSystem) => string;
+  advanceTurn(isActive: boolean): void;
+  getStrategyName: () => string;
+  deserialize: (data: Record<string, unknown>) => void;
+  serialize: () => Record<string, unknown>;
+  equals: (other: IThrustChannelStrategy) => boolean;
+}
+
 class ThrustChannelSystemStrategy extends ShipSystemStrategy {
-  private output: number;
   private direction: THRUSTER_DIRECTION | THRUSTER_DIRECTION[];
   private channeled: number;
-  private thrustHeatExtra: number;
-  private fuelExtra: number;
-  private mode: THRUSTER_MODE;
-  private newMode: THRUSTER_MODE | null;
-  public targetMode: THRUSTER_MODE | null;
-  private alternateModes: THRUSTER_MODE[];
+  private strategies: IThrustChannelStrategy[] = [];
+  private currentMode: IThrustChannelStrategy;
+  private baseOutput: number;
 
   constructor(
     output: number,
     direction: THRUSTER_DIRECTION | THRUSTER_DIRECTION[],
-    {
-      thrustHeatExtra = 0.3,
-      fuelExtra = 0.1,
-    }: { thrustHeatExtra?: number; fuelExtra?: number } = {},
-    mode: THRUSTER_MODE = THRUSTER_MODE.FUSION,
-    alternateModes: THRUSTER_MODE[] = []
+    strategies: IThrustChannelStrategy[]
   ) {
     super();
 
-    this.output = output || 0;
+    this.baseOutput = output;
+
+    if (strategies.length === 0) {
+      throw new Error("Thruster needs a thrust strategy");
+    }
+
+    this.strategies = strategies;
+    this.currentMode = strategies[0];
+
     this.direction = direction || 0; // 0, 3, [4,5], [1,2], 6
     this.channeled = 0;
-    this.thrustHeatExtra = thrustHeatExtra;
-    this.fuelExtra = fuelExtra;
-    this.targetMode = null;
-
-    this.mode = mode;
-    this.newMode = null;
-    this.alternateModes = alternateModes;
-
-    if (alternateModes.length > 0 && !alternateModes.includes(mode)) {
-      alternateModes.push(mode);
-    }
-  }
-
-  getBaseHeatPerThrustChanneled() {
-    switch (this.mode) {
-      case THRUSTER_MODE.FUSION:
-        return 0.5;
-      case THRUSTER_MODE.MANEUVER:
-        return 0.75;
-      case THRUSTER_MODE.CHEMICAL:
-        return 0.1;
-    }
-  }
-
-  getFuelPerThrustChanneled() {
-    switch (this.mode) {
-      case THRUSTER_MODE.FUSION:
-        return 1;
-      case THRUSTER_MODE.MANEUVER:
-        return 10;
-      case THRUSTER_MODE.CHEMICAL:
-        return 15;
-    }
   }
 
   isBoostable(payload: unknown, previousResponse = true): boolean {
@@ -108,7 +90,7 @@ class ThrustChannelSystemStrategy extends ShipSystemStrategy {
       return false;
     }
 
-    return this.mode === THRUSTER_MODE.FUSION;
+    return this.currentMode.isBoostable();
   }
 
   canBoost(payload: unknown, previousResponse = true): boolean {
@@ -116,11 +98,11 @@ class ThrustChannelSystemStrategy extends ShipSystemStrategy {
       return false;
     }
 
-    return this.mode === THRUSTER_MODE.FUSION;
+    return this.currentMode.canBoost();
   }
 
   canChangeMode() {
-    return this.alternateModes.length > 1;
+    return this.strategies.length > 1;
   }
 
   changeMode() {
@@ -128,52 +110,24 @@ class ThrustChannelSystemStrategy extends ShipSystemStrategy {
       throw new Error("Check validity first");
     }
 
-    let index = this.alternateModes.indexOf(this.mode);
+    let index = this.strategies.indexOf(this.currentMode);
 
-    if (index === this.alternateModes.length - 1) {
+    if (index === this.strategies.length - 1) {
       index = 0;
     } else {
       index++;
     }
 
-    this.mode = this.alternateModes[index];
-    this.newMode = this.mode;
-    this.getSystem().callHandler(
-      SYSTEM_HANDLERS.resetBoost,
-      undefined,
-      undefined
-    );
-  }
-
-  getHeatTransferPerStructure(payload: unknown, previousResponse = 0): number {
-    if (this.mode === THRUSTER_MODE.FUSION) {
-      const boost = this.getSystem().callHandler(
-        SYSTEM_HANDLERS.getBoost,
-        null,
-        0
-      );
-
-      return previousResponse + boost * 0.12;
-    }
-
-    return previousResponse;
+    this.currentMode = this.strategies[index];
+    this.getSystem().handlers.resetBoost();
   }
 
   getFuelRequirement(amount: number | null = null): number {
-    let fuel = 0;
-    let extra = 1;
-
     if (amount === null) {
       amount = this.channeled;
     }
 
-    while (amount--) {
-      const increase = this.getFuelPerThrustChanneled() * extra;
-      fuel += increase;
-      extra += this.fuelExtra;
-    }
-
-    return Math.round(fuel);
+    return this.currentMode.getFuelRequirement(amount, this.getSystem());
   }
 
   resetChanneledThrust() {
@@ -193,7 +147,7 @@ class ThrustChannelSystemStrategy extends ShipSystemStrategy {
   }
 
   getIconText() {
-    return this.channeled + "/" + this.getThrustOutput(undefined, 0);
+    return this.channeled;
   }
 
   serialize(
@@ -204,17 +158,34 @@ class ThrustChannelSystemStrategy extends ShipSystemStrategy {
       ...previousResponse,
       thrustChannelSystemStrategy: {
         channeled: this.channeled,
-        newMode: this.newMode,
-        mode: this.mode,
+        currentMode: this.currentMode.getStrategyName(),
+        strategies: this.strategies.map((strategy) => strategy.serialize()),
       },
     };
   }
 
-  deserialize(data: SerializedThrustChannelSystemStrategy = {}) {
-    const thisData = data.thrustChannelSystemStrategy || {};
-    this.channeled = thisData.channeled || 0;
-    this.newMode = thisData.newMode || null;
-    this.mode = thisData.mode || this.mode;
+  deserialize(data: Partial<SerializedThrustChannelSystemStrategy> = {}) {
+    this.channeled = data?.thrustChannelSystemStrategy?.channeled ?? 0;
+
+    const currentModeName = data?.thrustChannelSystemStrategy?.currentMode;
+
+    if (currentModeName) {
+      const newMode = this.strategies.find(
+        (s) => s.getStrategyName() === currentModeName
+      );
+
+      if (!newMode) {
+        throw new Error(`Invalid thruster mode ${currentModeName}`);
+      }
+
+      this.currentMode = newMode;
+    }
+
+    data?.thrustChannelSystemStrategy?.strategies?.forEach(
+      (strategyData, i) => {
+        this.strategies[i].deserialize(strategyData);
+      }
+    );
 
     return this;
   }
@@ -233,36 +204,33 @@ class ThrustChannelSystemStrategy extends ShipSystemStrategy {
     payload: unknown,
     previousResponse: SystemMessage[] = []
   ): SystemMessage[] {
-    previousResponse.push({
-      header: "Mode",
-      value: this.mode.charAt(0).toUpperCase() + this.mode.substring(1),
-    });
-
-    previousResponse.push({
-      header: "Output",
-      value: this.getThrustOutput(undefined, 0).toString(),
-    });
-
-    previousResponse.push({
-      header: "Manouver(s)",
-      value: this.getDirectionString(),
-    });
-
-    previousResponse.push({
-      header: "Channeled",
-      value: this.channeled.toString(),
-    });
-
-    previousResponse.push({
-      header: "Fuel expended",
-      value: this.getFuelRequirement().toString(),
-    });
-
-    return previousResponse;
+    return [
+      ...previousResponse,
+      ...this.currentMode.getMessages(this.getSystem()),
+      {
+        header: "Output",
+        value: this.getThrustOutput(undefined, 0).toString(),
+      },
+      {
+        header: "Manouver(s)",
+        value: this.getDirectionString(),
+      },
+      {
+        header: "Channeled",
+        value: this.channeled.toString(),
+      },
+      {
+        header: "Fuel expended",
+        value: this.getFuelRequirement().toString(),
+      },
+    ];
   }
 
   getBackgroundImage() {
-    if (this.mode === THRUSTER_MODE.FUSION) {
+    return this.currentMode.getBackgroundImage(this.getSystem());
+
+    /*
+    if (mode === THRUSTER_MODE.FUSION) {
       if (
         this.callHandler(
           SYSTEM_HANDLERS.isDirection,
@@ -289,34 +257,8 @@ class ThrustChannelSystemStrategy extends ShipSystemStrategy {
         return "/img/system/thruster3.png";
       }
       return "/img/system/thruster1.png";
-    } else {
-      if (
-        this.callHandler(
-          SYSTEM_HANDLERS.isDirection,
-          THRUSTER_DIRECTION.AFT,
-          false
-        )
-      ) {
-        return "/img/system/thrusterC2.png";
-      } else if (
-        this.callHandler(
-          SYSTEM_HANDLERS.isDirection,
-          THRUSTER_DIRECTION.STARBOARD_AFT,
-          false
-        )
-      ) {
-        return "/img/system/thrusterC4.png";
-      } else if (
-        this.callHandler(
-          SYSTEM_HANDLERS.isDirection,
-          THRUSTER_DIRECTION.PORT_AFT,
-          false
-        )
-      ) {
-        return "/img/system/thrusterC3.png";
-      }
-      return "/img/system/thrusterC1.png";
     }
+      */
   }
 
   getTooltipMenuButton(
@@ -339,10 +281,7 @@ class ThrustChannelSystemStrategy extends ShipSystemStrategy {
       ...previousResponse,
       {
         sort: 50,
-        img:
-          this.mode === THRUSTER_MODE.FUSION
-            ? "/img/system/thrusterC1.png"
-            : "/img/system/thruster1.png",
+        img: "/img/system/thrusterC1.png",
         clickHandler: this.changeMode.bind(this),
       },
     ];
@@ -352,40 +291,11 @@ class ThrustChannelSystemStrategy extends ShipSystemStrategy {
     return true;
   }
 
-  getHeatPerThrustChanneled() {
-    let heat = this.getBaseHeatPerThrustChanneled();
-
-    heat *=
-      1 +
-      this.getSystem()
-        .damage.getCriticals()
-        .filter((critical) => critical instanceof ThrustChannelHeatIncreased)
-        .reduce((total, current) => total + current.getHeatIncrease(), 0);
-
-    return heat;
-  }
-
   getHeatGenerated(payload: unknown, previousResponse = 0) {
-    let count = this.channeled;
-    let extra = 1;
-    let heat = 0;
-
-    const boost =
-      this.getSystem().callHandler(SYSTEM_HANDLERS.getBoost, null, 0) * 0.05;
-    //TODO: Should following line have a + instead of a -?
-    let extraIncrement = this.thrustHeatExtra - boost * 0.01;
-
-    if (extraIncrement < 0.01) {
-      extraIncrement = 0.01;
-    }
-
-    while (count--) {
-      const increase = this.getHeatPerThrustChanneled() * extra;
-      heat += increase;
-      extra += extraIncrement;
-    }
-
-    return previousResponse + heat;
+    return (
+      previousResponse +
+      this.currentMode.getHeatGenerated(this.channeled, this.getSystem())
+    );
   }
 
   getThrustDirection(payload: unknown, previousResponse = null) {
@@ -397,14 +307,15 @@ class ThrustChannelSystemStrategy extends ShipSystemStrategy {
       return previousResponse;
     }
 
-    let output = this.output;
+    const boost = this.getSystem().handlers.getBoost();
+    let output = this.currentMode.getThrustOutput(this.getSystem(), boost);
 
-    output -= this.getSystem()
+    const outputReduction = this.getSystem()
       .damage.getCriticals()
       .filter((critical) => critical instanceof OutputReduced)
       .reduce((total, current) => total + current.getOutputReduction(), 0);
 
-    output += this.getSystem().callHandler(SYSTEM_HANDLERS.getBoost, null, 0);
+    output = output - outputReduction;
 
     if (output < 0) {
       output = 0;
@@ -429,7 +340,7 @@ class ThrustChannelSystemStrategy extends ShipSystemStrategy {
     return true;
   }
 
-  isDirection(direction: THRUSTER_DIRECTION) {
+  isThrustDirection(direction: THRUSTER_DIRECTION) {
     return (
       this.direction === direction ||
       (Array.isArray(this.direction) && this.direction.includes(direction))
@@ -470,28 +381,32 @@ class ThrustChannelSystemStrategy extends ShipSystemStrategy {
       ThrustChannelSystemStrategy
     )[0];
 
-    const targetMode = clientStrategy.newMode;
+    const targetMode = clientStrategy.currentMode;
 
-    if (targetMode === null) {
+    if (targetMode.equals(this.currentMode)) {
       return;
     }
 
-    if (!this.canChangeMode() || !this.alternateModes.includes(targetMode)) {
+    const newMode = this.strategies.find((strategy) =>
+      strategy.equals(targetMode)
+    );
+
+    if (!this.canChangeMode() || !newMode) {
       throw new Error(`This system can not change mode to ${targetMode}`);
     }
 
-    this.mode = targetMode;
-    this.targetMode = null;
-    this.getSystem().callHandler(
-      SYSTEM_HANDLERS.resetBoost,
-      undefined,
-      undefined
-    );
+    this.currentMode = newMode;
+
+    this.getSystem().handlers.resetBoost();
   }
 
   advanceTurn() {
     this.channeled = 0;
-    this.targetMode = null;
+    this.strategies.forEach((strategy) => {
+      const active = this.currentMode === strategy;
+
+      strategy.advanceTurn(active);
+    });
   }
 
   getPossibleCriticals(payload: unknown, previousResponse = []) {
@@ -501,13 +416,22 @@ class ThrustChannelSystemStrategy extends ShipSystemStrategy {
       { severity: 20, critical: new ThrustChannelHeatIncreased(0.5, 1) },
       {
         severity: 30,
-        critical: new OutputReduced(Math.ceil(this.output / 4), 2),
+        critical: new OutputReduced(0.25, 2),
       },
       { severity: 40, critical: new ThrustChannelHeatIncreased(0.5, 3) },
       { severity: 60, critical: new ThrustChannelHeatIncreased(0.5) },
-      { severity: 70, critical: new OutputReduced(Math.ceil(this.output / 4)) },
-      { severity: 80, critical: new OutputReduced(Math.ceil(this.output / 3)) },
-      { severity: 90, critical: new OutputReduced(Math.ceil(this.output / 2)) },
+      {
+        severity: 70,
+        critical: new OutputReduced(Math.floor(this.baseOutput / 4)),
+      },
+      {
+        severity: 80,
+        critical: new OutputReduced(Math.floor(this.baseOutput / 3)),
+      },
+      {
+        severity: 90,
+        critical: new OutputReduced(Math.floor(this.baseOutput / 2)),
+      },
     ];
   }
 

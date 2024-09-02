@@ -5,6 +5,7 @@ import { IVector } from "../utils/Vector";
 import WeaponHitChance from "../weapon/WeaponHitChance";
 import Ship from "./Ship";
 import ShipSystem, { ShipSystemType } from "./system/ShipSystem";
+import { THRUSTER_DIRECTION } from "./system/strategy/ThrustChannelSystemStrategy";
 import { HitResolution } from "./system/strategy/weapon/StandardHitStrategy";
 import { UnifiedDamagePayload } from "./system/strategy/weapon/UnifiedDamageStrategy";
 import Ammo from "./system/weapon/ammunition/Ammo";
@@ -30,6 +31,7 @@ export interface IShipSystemHandlers {
   getBoost: (payload: unknown, previousResponse: number | undefined) => number;
   boost: (payload: unknown, previousResponse: unknown) => void;
   deBoost: (payload: unknown, previousResponse: unknown) => void;
+  resetBoost: () => void;
   getTooltipMenuButton: (payload: {
     myShip: boolean;
   }) => SystemTooltipMenuButton[];
@@ -57,7 +59,6 @@ export interface IShipSystemHandlers {
   applyDamageFromWeaponFire: (payload: UnifiedDamagePayload) => void;
   isCargoBay: () => boolean;
   hasCargoSpaceFor: (payload: CargoEntry[] | CargoEntry) => boolean;
-  getTimeToMoveCargoTo: () => number;
   hasCargo: (payload: CargoEntry[] | CargoEntry) => boolean;
   getAvailableCargoSpace: () => number;
   isAllowedCargo: (cargo: CargoEntry) => boolean;
@@ -66,7 +67,6 @@ export interface IShipSystemHandlers {
   removeCargo: (cargo: CargoEntry | CargoEntry[]) => void;
   removeAllCargo: () => void;
   addCargo: (cargo: CargoEntry | CargoEntry[]) => void;
-  loadTargetCargoInstant: () => void;
   toggleSelectedAmmo: () => void;
   launchTorpedos: () => TorpedoFlight[];
   serialize: (
@@ -76,6 +76,7 @@ export interface IShipSystemHandlers {
   deserialize: (payload: Record<string, unknown>) => void;
   setLaunchTarget: (payload: { target: Ship; torpedo: Torpedo }) => void;
   canAcceptCargo: (cargo: CargoEntry | CargoEntry[]) => boolean;
+  isThrustDirection: (direction: THRUSTER_DIRECTION) => boolean;
 }
 
 export type IShipSystemStrategy = IBaseShipSystemStrategy &
@@ -88,6 +89,10 @@ export class SystemHandlers {
 
   constructor(system: ShipSystem) {
     this.system = system;
+  }
+
+  isThrustDirection(direction: THRUSTER_DIRECTION): boolean {
+    return this.callHandler<boolean>("isThrustDirection", false, direction);
   }
 
   setLaunchTarget(payload: { target: Ship; torpedo: Torpedo }): void {
@@ -104,10 +109,6 @@ export class SystemHandlers {
 
   launchTorpedos(): TorpedoFlight[] {
     return this.callHandler("launchTorpedos") || [];
-  }
-
-  loadTargetCargoInstant() {
-    this.callHandler("loadTargetCargoInstant");
   }
 
   addCargo(cargo: CargoEntry | CargoEntry[]) {
@@ -144,10 +145,6 @@ export class SystemHandlers {
 
   hasCargo(payload: CargoEntry[] | CargoEntry): boolean {
     return Boolean(this.callHandler("hasCargo", undefined, payload));
-  }
-
-  getTimeToMoveCargoTo(): number {
-    return this.callHandler("getTimeToMoveCargoTo", 10);
   }
 
   hasCargoSpaceFor(entry: CargoEntry[] | CargoEntry): boolean {
@@ -255,6 +252,10 @@ export class SystemHandlers {
 
   getBurstGrouping(): number {
     return this.callHandler<number>("getBurstGrouping", 0);
+  }
+
+  resetBoost(): void {
+    this.callHandler("resetBoost");
   }
 
   isBoostable(): boolean {

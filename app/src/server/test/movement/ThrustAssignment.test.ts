@@ -23,8 +23,8 @@ const getThruster = (
 
 test("isDirection", () => {
   const thrustAssignment = new ThrustAssignment(getThruster(0, 6));
-  expect(thrustAssignment.isDirection(0)).toBe(true);
-  expect(thrustAssignment.isDirection(3)).toBe(false);
+  expect(thrustAssignment.isThrustDirection(0)).toBe(true);
+  expect(thrustAssignment.isThrustDirection(3)).toBe(false);
 });
 
 test("getCost, no damage, no overthrust", () => {

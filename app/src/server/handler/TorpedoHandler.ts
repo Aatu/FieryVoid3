@@ -102,6 +102,10 @@ export class TorpedoHandler {
       const target = this.getGameData().ships.getShipById(flight.targetId);
 
       entries.forEach((entry) => {
+        if (!entry.candidate.getInterceptor().handlers.canFire()) {
+          return;
+        }
+
         const roll = Math.ceil(Math.random() * 100);
 
         const hit = roll <= entry.hitChance.result;

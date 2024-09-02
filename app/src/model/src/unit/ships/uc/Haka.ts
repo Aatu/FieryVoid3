@@ -19,11 +19,11 @@ class Haka extends Ship {
     this.pointCost = 500;
 
     this.systems.addFrontSystem([
-      new systems.ChemicalThruster({ id: 103, hitpoints: 10, armor: 3 }, 15, 0),
+      new systems.Thruster({ id: 103, hitpoints: 10, armor: 3 }, 15, 0),
 
       new systems.RailgunTurreted140mmUC({ id: 118 }, { start: 210, end: 150 }),
       new systems.RailgunTurreted140mmUC({ id: 119 }, { start: 210, end: 150 }),
-      new systems.ChemicalThruster({ id: 104, hitpoints: 10, armor: 3 }, 15, 0),
+      new systems.Thruster({ id: 104, hitpoints: 10, armor: 3 }, 15, 0),
 
       new systems.PDC30mm(
         { id: 114, hitpoints: 5, armor: 3 },
@@ -96,11 +96,7 @@ class Haka extends Ship {
     ]);
 
     this.systems.addStarboardFrontSystem([
-      new systems.ChemicalThruster(
-        { id: 201, hitpoints: 10, armor: 3 },
-        5,
-        [1, 2]
-      ),
+      new systems.Thruster({ id: 201, hitpoints: 10, armor: 3 }, 5, [1, 2]),
 
       new systems.ManeuveringThrusterRight(
         { id: 205, hitpoints: 10, armor: 3 },
@@ -140,11 +136,7 @@ class Haka extends Ship {
         radiator: 15,
       }),
 
-      new systems.ChemicalThruster(
-        { id: 601, hitpoints: 10, armor: 3 },
-        5,
-        [4, 5]
-      ),
+      new systems.Thruster({ id: 601, hitpoints: 10, armor: 3 }, 5, [4, 5]),
 
       new systems.MediumCoilgunTurretedUC({ id: 602 }, { start: 165, end: 0 }),
 
@@ -180,11 +172,9 @@ class Haka extends Ship {
 
       new systems.Thruster({ id: 432, hitpoints: 15, armor: 3 }, 15, 3, {
         power: 3,
-        boostPower: 2,
       }),
       new systems.Thruster({ id: 433, hitpoints: 15, armor: 3 }, 15, 3, {
         power: 3,
-        boostPower: 2,
       }),
 
       new systems.PDC30mm({ id: 451 }, { start: 40, end: 200 }),
@@ -202,7 +192,6 @@ class Haka extends Ship {
     this.systems.addPortAftSystem([
       new systems.Thruster({ id: 533, hitpoints: 15, armor: 3 }, 15, 3, {
         power: 3,
-        boostPower: 2,
       }),
       new systems.ManeuveringThrusterRight(
         { id: 501, hitpoints: 10, armor: 3 },
@@ -226,7 +215,6 @@ class Haka extends Ship {
       ),
       new systems.Thruster({ id: 333, hitpoints: 15, armor: 3 }, 15, 3, {
         power: 3,
-        boostPower: 2,
       }),
       new systems.Radiator10x50({ id: 301 }),
       new systems.Radiator10x50({ id: 302 }),
