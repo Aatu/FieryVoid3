@@ -1,9 +1,6 @@
 import React from "react";
 import CargoList, { CargoListProps } from "./cargo/CargoList";
-import TorpedoLauncher, {
-  TorpedoLauncherProps,
-} from "./torpedo/TorpedoLauncher";
-import Ammo, { AmmoProps } from "./ammo/Ammo";
+
 import RangePenalty, { RangePenaltyProps } from "./range/RangePenalty";
 import SystemHeatBar, { SystemHeatBarProps } from "../../HeatBar/SystemHeatBar";
 import SystemFuelBar, { SystemFuelBarProps } from "../../HeatBar/SystemFuelBar";
@@ -19,17 +16,19 @@ type Props = {
 
 const SystemStrategyUiComponent: React.FC<Props> = ({
   name,
-  ship,
   system,
   componentProps,
 }) => {
   switch (name) {
     case "RangePenalty":
       return <RangePenalty {...(componentProps as RangePenaltyProps)} />;
+    /*
     case "Ammo":
       return <Ammo {...(componentProps as AmmoProps)} ship={ship} />;
+      */
     case "CargoList":
       return <CargoList {...(componentProps as CargoListProps)} />;
+    /*
     case "TorpedoLauncher":
       return (
         <TorpedoLauncher
@@ -37,6 +36,7 @@ const SystemStrategyUiComponent: React.FC<Props> = ({
           ship={ship}
         />
       );
+      */
     case "SystemHeatBar":
       return (
         <SystemHeatBar

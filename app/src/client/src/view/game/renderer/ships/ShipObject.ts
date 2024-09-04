@@ -15,13 +15,9 @@ import ShipObjectBoundingBox from "./ShipObjectBoundingBox";
 import ShipObjectSectionDamageEffect from "./ShipObjectSectionDamageEffect";
 import GameObject3D from "../gameObject/GameObject3D";
 import ShipMapIcon from "./ShipMapIcon";
-import {
-  angleToHexFacing,
-  degreeToRadian,
-} from "@fieryvoid3/model/src/utils/math";
+import { degreeToRadian } from "@fieryvoid3/model/src/utils/math";
 import { RenderPayload } from "../../phase/phaseStrategy/PhaseStrategy";
 import ShipSystem from "@fieryvoid3/model/src/unit/system/ShipSystem";
-import coordinateConverter from "@fieryvoid3/model/src/utils/CoordinateConverter";
 
 class ShipObject {
   public shipId: string;
@@ -536,43 +532,6 @@ class ShipObject {
 
   async disableSystemAnimation(system: ShipSystem, name: string) {
     (await this.getShipObject()).disableAnimation(name, system);
-  }
-
-  getShipHexas() {
-    const iconPosition = this.getPosition();
-    const iconFacing = this.getFacing();
-    const hexFacing = angleToHexFacing(iconFacing);
-
-    return this.ship
-      .getIconHexas(hexFacing)
-      .map((hex) => coordinateConverter.fromHexToGame(hex).add(iconPosition));
-  }
-
-  getCenter() {
-    const hexas = this.getShipHexas();
-
-    const lowest = new Vector();
-    const highest = new Vector();
-
-    hexas.forEach((position) => {
-      if (position.x < lowest.x) {
-        lowest.x = position.x;
-      }
-
-      if (position.y < lowest.y) {
-        lowest.y = position.y;
-      }
-
-      if (position.x > highest.x) {
-        highest.x = position.x;
-      }
-
-      if (position.y < highest.y) {
-        highest.y = position.y;
-      }
-    });
-
-    return lowest.add(highest).multiplyScalar(0.5);
   }
 }
 

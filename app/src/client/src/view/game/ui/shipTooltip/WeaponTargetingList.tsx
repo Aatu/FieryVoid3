@@ -9,9 +9,6 @@ import UIState from "../UIState";
 import { SYSTEM_HANDLERS } from "@fieryvoid3/model/src/unit/system/strategy/types/SystemHandlersTypes";
 import WeaponHitChance from "@fieryvoid3/model/src/weapon/WeaponHitChance";
 import TorpedoAttackService from "@fieryvoid3/model/src/weapon/TorpedoAttackService";
-import Torpedo from "@fieryvoid3/model/src/unit/system/weapon/ammunition/torpedo/Torpedo";
-import TorpedoLauncherStrategy from "@fieryvoid3/model/src/unit/system/strategy/weapon/TorpedoLauncherStrategy";
-import TorpedoAttackEntry from "./TorpedoAttackEntry";
 
 const Container = styled.div`
   display: flex;
@@ -20,7 +17,7 @@ const Container = styled.div`
 `;
 
 type SystemIconsProps = {
-  systems: (TorpedoLauncherStrategy | ShipSystem)[];
+  systems: ShipSystem[];
   weaponFireService: WeaponFireService;
   uiState: UIState;
   shooter: Ship;
@@ -79,7 +76,8 @@ const SystemIcons: React.FC<SystemIconsProps> = ({
       }
     };
 
-  return systems.map((system, i) => {
+  return systems.map((system) => {
+    /*
     if (system instanceof TorpedoLauncherStrategy) {
       return (
         <TorpedoAttackEntry
@@ -91,6 +89,7 @@ const SystemIcons: React.FC<SystemIconsProps> = ({
         />
       );
     }
+      */
     return (
       <WeaponTargeting
         key={`weaponTargeting-${system.id}`}
@@ -111,8 +110,9 @@ const getSystems = (
   torpedoAttackService: TorpedoAttackService,
   weaponFireService: WeaponFireService,
   showZeroHitChance: boolean
-): (TorpedoLauncherStrategy | ShipSystem)[] => {
+): ShipSystem[] => {
   const systems = [
+    /*
     ...torpedoAttackService
       .getPossibleTorpedosFrom(shooter, target)
       .sort((a, b) => {
@@ -151,6 +151,7 @@ const getSystems = (
 
         return 0;
       }),
+      */
     ...shooter.systems
       .getSystems()
       .filter(

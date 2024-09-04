@@ -62,6 +62,10 @@ class TorpedoFlight {
     return this.targetId;
   }
 
+  getShooterId() {
+    return this.shooterId;
+  }
+
   setDone() {
     this.done = true;
   }

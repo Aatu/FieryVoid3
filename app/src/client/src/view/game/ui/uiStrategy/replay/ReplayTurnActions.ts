@@ -18,7 +18,6 @@ import ShipObject from "../../../renderer/ships/ShipObject";
 import Vector from "@fieryvoid3/model/src/utils/Vector";
 import TorpedoFlight from "@fieryvoid3/model/src/unit/TorpedoFlight";
 import { TORPEDO_Z } from "@fieryvoid3/model/src/config/gameConfig";
-import MSVTorpedoDamageStrategy from "@fieryvoid3/model/src/unit/system/weapon/ammunition/torpedo/torpedoDamageStrategy/MSVTorpedoDamageStrategy";
 import TorpedoMovementAnimation from "../../../animation/TorpedoMovementAnimation";
 import ExplosionEffect, {
   ExplosionType,
@@ -211,7 +210,7 @@ class ReplayTurnActions extends AnimationUiStrategy {
   buildInterceptAnimation(
     gameData: GameData,
     targetIcon: ShipObject,
-    intercepts: CombatLogTorpedoIntercept[],
+    logEntry: CombatLogTorpedoIntercept[],
     interceptTime: number,
     interceptPosition: Vector,
     gameDatas: GameData[]
@@ -223,56 +222,66 @@ class ReplayTurnActions extends AnimationUiStrategy {
       particleEmitterContainer
     );
 
-    intercepts.forEach((intercept) => {
-      const ship = gameData.ships.getShipById(intercept.shipId);
-      const weapon = ship.systems.getSystemById(intercept.weaponId);
-
-      if (!intercept.isSucessfull()) {
-        return;
-      }
-
-      const animationName = weapon.callHandler(
-        SYSTEM_HANDLERS.getWeaponFireAnimationName,
-        undefined,
-        "" as string
+    logEntry.forEach((log) => {
+      const topredoFlight = this.getGameData().torpedos.getTorpedoFlightById(
+        log.torpedoFlightId
       );
 
-      if (!animationName) {
+      if (!topredoFlight) {
         return;
       }
 
-      // @ts-expect-error dynamic thingy
-      const animation = new ShipWeaponAnimations[
-        `ShipWeapon${
-          animationName.charAt(0).toUpperCase() + animationName.slice(1)
-        }Animation`
-      ]({
-        getRandom: this.getRandom,
-        particleEmitterContainer: particleEmitterContainer,
-        weapon,
-        getPosition: (ship: Ship) =>
-          getShipStartPositionAndFacingForShip(gameDatas, ship),
-        args: weapon.callHandler(
-          SYSTEM_HANDLERS.getWeaponFireAnimationArguments,
-          undefined,
-          undefined as unknown
-        ),
-        weaponAnimationService,
-        targetIcon,
-        shooterIcon: shipIconContainer.getByShip(ship),
-        animationStartTime: 0,
-        impactPosition: interceptPosition,
-        impactTime: interceptTime,
-        totalShots: weapon.callHandler(
-          SYSTEM_HANDLERS.getTotalBurstSize,
-          null,
-          1
-        ),
-        shotsHit: intercept.isSucessfull() ? 1 : 0,
-        omitHitExplosion: true,
-      });
+      log.intercepts.forEach((intercept) => {
+        const ship = gameData.ships.getShipById(topredoFlight.getTargetId());
+        const weapon = ship.systems.getSystemById(intercept.interceptorId);
 
-      this.animations.push(animation);
+        if (!intercept.success) {
+          return;
+        }
+
+        const animationName = weapon.callHandler(
+          SYSTEM_HANDLERS.getWeaponFireAnimationName,
+          undefined,
+          "" as string
+        );
+
+        if (!animationName) {
+          return;
+        }
+
+        // @ts-expect-error dynamic thingy
+        const animation = new ShipWeaponAnimations[
+          `ShipWeapon${
+            animationName.charAt(0).toUpperCase() + animationName.slice(1)
+          }Animation`
+        ]({
+          getRandom: this.getRandom,
+          particleEmitterContainer: particleEmitterContainer,
+          weapon,
+          getPosition: (ship: Ship) =>
+            getShipStartPositionAndFacingForShip(gameDatas, ship),
+          args: weapon.callHandler(
+            SYSTEM_HANDLERS.getWeaponFireAnimationArguments,
+            undefined,
+            undefined as unknown
+          ),
+          weaponAnimationService,
+          targetIcon,
+          shooterIcon: shipIconContainer.getByShip(ship),
+          animationStartTime: 0,
+          impactPosition: interceptPosition,
+          impactTime: interceptTime,
+          totalShots: weapon.callHandler(
+            SYSTEM_HANDLERS.getTotalBurstSize,
+            null,
+            1
+          ),
+          shotsHit: intercept.success ? 1 : 0,
+          omitHitExplosion: true,
+        });
+
+        this.animations.push(animation);
+      });
     });
   }
 
@@ -343,8 +352,7 @@ class ReplayTurnActions extends AnimationUiStrategy {
 
       const msvDistance = this.getRandom() * 200 + 300;
       const msvPosition =
-        (flight.torpedo.getDamageStrategy() as MSVTorpedoDamageStrategy).msv &&
-        !intercepted
+        flight.torpedo.getDamageStrategy().isMsv() && !intercepted
           ? launchPosition
               .sub(targetPosition)
               .normalize()

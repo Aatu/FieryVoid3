@@ -7,7 +7,6 @@ import Torpedo from "@fieryvoid3/model/src/unit/system/weapon/ammunition/torpedo
 import ShipObject from "../../renderer/ships/ShipObject";
 import Ship from "@fieryvoid3/model/src/unit/Ship";
 import Vector from "@fieryvoid3/model/src/utils/Vector";
-import MSVTorpedoDamageStrategy from "@fieryvoid3/model/src/unit/system/weapon/ammunition/torpedo/torpedoDamageStrategy/MSVTorpedoDamageStrategy";
 
 class TorpedoExplosionMSV extends ShipWeaponAnimation {
   private animations: ExplosionEffect[];
@@ -90,9 +89,7 @@ class TorpedoExplosionMSV extends ShipWeaponAnimation {
       );
     });
 
-    const missAmount: number =
-      (torpedo.getDamageStrategy() as MSVTorpedoDamageStrategy).numberOfShots -
-      amount;
+    const missAmount: number = 0; //Todo: max MSVs is not saved anywhere
 
     if (amount < 0) {
       amount = 0;

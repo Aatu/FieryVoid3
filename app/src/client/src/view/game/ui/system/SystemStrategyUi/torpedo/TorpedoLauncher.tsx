@@ -1,22 +1,11 @@
-import React, { MouseEventHandler, useEffect } from "react";
+import React from "react";
 
-import {
-  IconAndLabel,
-  TooltipHeader,
-  TooltipEntry,
-  TooltipValueHeader,
-  TooltipValue,
-  InlineTooltipEntry,
-} from "../../../../../../styled";
-import styled from "styled-components";
-import CargoItem from "../cargo/CargoItem";
 import Ship from "@fieryvoid3/model/src/unit/Ship";
-import TorpedoLauncherStrategy from "@fieryvoid3/model/src/unit/system/strategy/weapon/TorpedoLauncherStrategy";
-import ShipSystem from "@fieryvoid3/model/src/unit/system/ShipSystem";
-import { useForceRerender } from "../../../../../../util/useForceRerender";
-import { useUiStateHandler } from "../../../../../../state/useUIStateHandler";
+import { TorpedoLauncherStrategy } from "@fieryvoid3/model/src/unit/system/strategy/weapon/TorpedoLauncherStrategy";
+
 import Torpedo from "@fieryvoid3/model/src/unit/system/weapon/ammunition/torpedo/Torpedo";
 
+/*
 const TorpedoList = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -37,6 +26,7 @@ const TorpedoCargoItem = styled(CargoItem)<TorpedoCargoItemProps>`
     }}
   }
 `;
+*/
 
 export type TorpedoLauncherProps = {
   ship: Ship;
@@ -47,14 +37,16 @@ export type TorpedoLauncherProps = {
   turnsLoaded: number;
 };
 
-const TorpedoLauncher: React.FC<TorpedoLauncherProps> = ({
+const TorpedoLauncher: React.FC = (/*{
   ship,
   launcher,
   loadedTorpedo,
   launcherIndex,
   loadingTime,
   turnsLoaded,
-}) => {
+}*/) => {
+  return null;
+  /*
   const rerender = useForceRerender();
   const uiState = useUiStateHandler();
 
@@ -72,6 +64,7 @@ const TorpedoLauncher: React.FC<TorpedoLauncherProps> = ({
     };
   }, [launcher, rerender, ship.id, uiState]);
 
+  
   const unloadAmmo: MouseEventHandler<HTMLDivElement> = (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -90,6 +83,7 @@ const TorpedoLauncher: React.FC<TorpedoLauncherProps> = ({
       uiState.shipSystemStateChanged(ship, launcher.getSystem());
     };
 
+    
   const torpedoMouseOut = (ship: Ship, torpedo: Torpedo) => () => {
     uiState.customEvent("torpedoMouseOut", {
       ship,
@@ -104,6 +98,7 @@ const TorpedoLauncher: React.FC<TorpedoLauncherProps> = ({
       target: getLoadedTorpedoTarget(),
     });
   };
+
 
   const getLoadedTorpedoTarget = () => {
     if (!loadedTorpedo) {
@@ -164,6 +159,7 @@ const TorpedoLauncher: React.FC<TorpedoLauncherProps> = ({
       </TorpedoList>
     </>
   );
+  */
 };
 
 export default TorpedoLauncher;

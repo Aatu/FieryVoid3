@@ -54,6 +54,14 @@ class TorpedoDamageStrategy {
     this.evasionModifier = msvArgs?.msvEvasionModifier || 0;
   }
 
+  isMsv() {
+    return Boolean(this.msvAmount);
+  }
+
+  getMsvAmount() {
+    return this.msvAmount;
+  }
+
   public getAttackRunMessages(
     payload: { target: Ship; torpedoFlight: TorpedoFlight },
     previousResponse: SystemMessage[] = []

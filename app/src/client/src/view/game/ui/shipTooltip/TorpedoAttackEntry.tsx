@@ -1,13 +1,8 @@
 import React from "react";
-import styled from "styled-components";
-import { IconAndLabel } from "../../../../styled";
-import CargoItem from "../system/SystemStrategyUi/cargo/CargoItem";
-import TorpedoAttackTooltip from "./TorpedoAttackTooltip";
-import TorpedoLauncherStrategy from "@fieryvoid3/model/src/unit/system/strategy/weapon/TorpedoLauncherStrategy";
 import Ship from "@fieryvoid3/model/src/unit/Ship";
 import UIState from "../UIState";
-import { useForceRerender } from "../../../../util/useForceRerender";
 
+/*
 type TorpedoCargoItemProps = {
   launcher: TorpedoLauncherStrategy;
   target: Ship;
@@ -29,22 +24,26 @@ const TorpedoCargoItem = styled(CargoItem)<TorpedoCargoItemProps>`
     }}
   }
 `;
+*/
 
 type Props = {
   uiState: UIState;
-  launcher: TorpedoLauncherStrategy;
+  launcher: unknown;
   target: Ship;
   absoluteTooltip?: boolean;
   onLauncherClick?: () => void;
 };
 
-const TorpedoAttackEntry: React.FC<Props> = ({
+const TorpedoAttackEntry: React.FC<Props> = (/*{
   uiState,
   launcher,
   target,
   onLauncherClick,
   absoluteTooltip = false,
-}) => {
+}*/) => {
+  return null;
+
+  /*
   const rerender = useForceRerender();
 
   const torpedoMouseOut = () =>
@@ -85,6 +84,7 @@ const TorpedoAttackEntry: React.FC<Props> = ({
       tooltipAdditionalContent={<TorpedoAttackTooltip target={target} />}
     />
   );
+  */
 };
 
 export default TorpedoAttackEntry;

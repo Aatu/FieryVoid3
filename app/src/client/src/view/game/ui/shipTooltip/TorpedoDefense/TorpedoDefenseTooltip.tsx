@@ -1,11 +1,8 @@
 import React from "react";
-import { TooltipBuilder, TooltipHeader } from "../../../../../styled";
 import Ship from "@fieryvoid3/model/src/unit/Ship";
 import TorpedoFlight from "@fieryvoid3/model/src/unit/TorpedoFlight";
 import UIState from "../../UIState";
-import { SYSTEM_HANDLERS } from "@fieryvoid3/model/src/unit/system/strategy/types/SystemHandlersTypes";
-import WeaponHitChance from "@fieryvoid3/model/src/weapon/WeaponHitChance";
-
+/*
 const getAttackRunMessages = (
   shooter: Ship,
   target: Ship,
@@ -124,6 +121,7 @@ const getInterceptors = (
   });
 };
 
+*/
 type Props = {
   shooter: Ship;
   target: Ship;
@@ -131,12 +129,13 @@ type Props = {
   uiState: UIState;
 };
 
-const TorpedoDefenseTooltip: React.FC<Props> = ({
+const TorpedoDefenseTooltip: React.FC<Props> = (/*{
   shooter,
   target,
   torpedoFlight,
   uiState,
-}) => {
+}*/) => {
+  /*
   const interceptorEntries = getInterceptors(
     shooter,
     target,
@@ -159,6 +158,9 @@ const TorpedoDefenseTooltip: React.FC<Props> = ({
       )}
     </>
   );
+  */
+
+  return null;
 };
 
 export default TorpedoDefenseTooltip;

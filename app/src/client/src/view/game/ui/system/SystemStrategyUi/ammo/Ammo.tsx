@@ -1,4 +1,5 @@
-import React, { useEffect } from "react";
+import React from "react";
+/*
 
 import {
   TooltipHeader,
@@ -253,5 +254,8 @@ const Ammo: React.FC<AmmoProps> = ({ ship, ammoStrategy }) => {
     </>
   );
 };
+*/
 
-export default Ammo;
+const Placeholder: React.FC = () => null;
+
+export default Placeholder;
