@@ -11,5 +11,5 @@ class Faction {
 export const FACTIONS = [
   new Faction("United Colonies", ["UcRhino", "Haka"]),
   new Faction("The Expanse Protecorate", ["Caliope", "Fulcrum", "Mouros"]),
-  new Faction("Federation Navy", ["Impetous"]),
+  new Faction("Federation Navy", ["Impetous", "Constantin"]),
 ];

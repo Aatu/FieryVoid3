@@ -7,6 +7,7 @@ import Ship from "./Ship";
 import ShipSystem, { ShipSystemType } from "./system/ShipSystem";
 import { THRUSTER_DIRECTION } from "./system/strategy/ThrustChannelSystemStrategy";
 import { HitResolution } from "./system/strategy/weapon/StandardHitStrategy";
+import { TorpedoLaunchOptions } from "./system/strategy/weapon/TorpedoLauncherStrategy";
 import { UnifiedDamagePayload } from "./system/strategy/weapon/UnifiedDamageStrategy";
 import Ammo from "./system/weapon/ammunition/Ammo";
 import Torpedo from "./system/weapon/ammunition/torpedo/Torpedo";
@@ -77,6 +78,9 @@ export interface IShipSystemHandlers {
   setLaunchTarget: (payload: { target: Ship; torpedo: Torpedo }) => void;
   canAcceptCargo: (cargo: CargoEntry | CargoEntry[]) => boolean;
   isThrustDirection: (direction: THRUSTER_DIRECTION) => boolean;
+  getTorpedoLaunchOptions: (payload: {
+    target: Ship;
+  }) => TorpedoLaunchOptions | null;
 }
 
 export type IShipSystemStrategy = IBaseShipSystemStrategy &
@@ -89,6 +93,10 @@ export class SystemHandlers {
 
   constructor(system: ShipSystem) {
     this.system = system;
+  }
+
+  getTorpedoLaunchOptions(target: Ship): TorpedoLaunchOptions | null {
+    return this.callHandler("getTorpedoLaunchOptions", null, { target });
   }
 
   isThrustDirection(direction: THRUSTER_DIRECTION): boolean {

@@ -1,9 +1,6 @@
 import { CargoEntry } from "../cargo/CargoEntry";
-import { CombatLogCargoTransfer } from "../combatLog/CombatLogCargoTransfer";
-import GameData from "../game/GameData";
 import { shuffleArray } from "../utils/math";
 import Ship from "./Ship";
-import { CargoType } from "./system/cargo/cargo";
 import ShipSystem from "./system/ShipSystem";
 
 export class ShipCargo {
@@ -156,11 +153,12 @@ export class ShipCargo {
     return system.handlers.getAvailableCargoSpace() >= spaceRequired;
   }
 }
-
+/*
 type systemCargo = {
   system: ShipSystem;
   cargo: CargoEntry[];
 };
+
 
 const takeCargoOnShip = (cargoOnShip: systemCargo[], toTake: CargoEntry) => {
   let found: ShipSystem | null = null;
@@ -212,6 +210,8 @@ const getAllMatchingCargoInShip = (
 
   return shipCargo;
 };
+
+*/
 
 export const subtractCargos = (current: CargoEntry[], sub: CargoEntry[]) =>
   combineCargoEntrys([...current, ...sub.map((s) => s.clone().flipAmount())]);

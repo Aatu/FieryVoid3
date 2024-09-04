@@ -1,7 +1,10 @@
 import GameData from "../game/GameData";
 import Ship from "../unit/Ship";
 import { SYSTEM_HANDLERS } from "../unit/system/strategy/types/SystemHandlersTypes";
-import TorpedoLauncherStrategy from "../unit/system/strategy/weapon/TorpedoLauncherStrategy";
+import {
+  TorpedoLauncherStrategy,
+  TorpedoLaunchOptions,
+} from "../unit/system/strategy/weapon/TorpedoLauncherStrategy";
 import TorpedoFlight from "../unit/TorpedoFlight";
 import { User } from "../User/User";
 import FireOrder from "./FireOrder";
@@ -45,26 +48,19 @@ class TorpedoAttackService {
       });
   }
 
-  getPossibleTorpedosFrom(ship: Ship, target: Ship) {
-    let allLaunchers: TorpedoLauncherStrategy[] = [];
+  getTorpedoLaunchOptions(ship: Ship, target: Ship): TorpedoLaunchOptions[] {
+    const potentialLaunches = ship.systems
+      .getSystems()
+      .reduce(
+        (all, system) => [
+          ...all,
+          system.handlers.getTorpedoLaunchOptions(target),
+        ],
+        [] as (TorpedoLaunchOptions | null)[]
+      )
+      .filter(Boolean) as TorpedoLaunchOptions[];
 
-    ship.systems.getSystems().forEach((system) => {
-      const launchers = system
-        .callHandler(
-          SYSTEM_HANDLERS.getLoadedLaunchers,
-          null,
-          [] as TorpedoLauncherStrategy[]
-        )
-        .filter((launcher) => launcher.canLaunchAgainst({ target }));
-
-      if (launchers.length === 0) {
-        return;
-      }
-
-      allLaunchers = [...allLaunchers, ...launchers];
-    });
-
-    return allLaunchers;
+    return potentialLaunches;
   }
 
   getPossibleTorpedos(currentUser: User, target: Ship) {
