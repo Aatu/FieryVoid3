@@ -47,7 +47,8 @@ const SystemStrategyUiComponent: React.FC<Props> = ({
     case "SystemFuelBar":
       return <SystemFuelBar {...(componentProps as SystemFuelBarProps)} />;
     default:
-      throw Error(`SystemUiComponent "${name}" not found`);
+      console.error(`SystemUiComponent "${name}" not found`);
+      return null;
   }
 };
 

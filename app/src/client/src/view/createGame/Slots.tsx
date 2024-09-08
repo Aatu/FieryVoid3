@@ -2,13 +2,8 @@ import React from "react";
 
 import Slot from "./Slot";
 
-import { Title, DarkContainer } from "../../styled";
-import styled from "styled-components";
+import { TooltipContainer, TooltipHeader } from "../../styled";
 import { useGameData } from "../../state/useGameData";
-
-const Container = styled.div`
-  margin: 0 8px 8px 8px;
-`;
 
 const Slots: React.FC = () => {
   const gameData = useGameData();
@@ -16,14 +11,12 @@ const Slots: React.FC = () => {
   const mapTeamsToComponents = () => {
     return gameData.slots.getSlotsByTeams().map((team) => {
       return (
-        <Container>
-          <DarkContainer key={`team-${team.team}`}>
-            <Title>TEAM: {team.team}</Title>
-            {team.slots.map((slot) => (
-              <Slot key={slot.id} slot={slot} />
-            ))}
-          </DarkContainer>
-        </Container>
+        <TooltipContainer>
+          <TooltipHeader>TEAM: {team.team}</TooltipHeader>
+          {team.slots.map((slot) => (
+            <Slot key={slot.id} slot={slot} />
+          ))}
+        </TooltipContainer>
       );
     });
   };

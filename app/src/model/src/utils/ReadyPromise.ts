@@ -9,7 +9,7 @@ export const getPromise = <T>(
 ): ReadyPromise<T> => {
   let resolve = null;
 
-  const promise = new Promise<T>(async (r) => {
+  const promise = new Promise<T>((r) => {
     resolve = r;
   });
 

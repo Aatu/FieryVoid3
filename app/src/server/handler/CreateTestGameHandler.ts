@@ -11,6 +11,7 @@ import Fulcrum from "../../model/src/unit/ships/protectorate/Fulcrum";
 import { GAME_STATUS } from "../../model/src/game/gameStatus";
 import { GAME_PHASE } from "../../model/src/game/gamePhase";
 import { USER_AI } from "../../model/src/User/AIUser";
+import { Constantin } from "../../model/src/unit/ships/federation";
 
 class CreateTestGameHandler {
   initializeShip(
@@ -102,6 +103,15 @@ class CreateTestGameHandler {
     );
 
     this.initializeShip(
+      new Constantin(),
+      "Test Constantin A1",
+      serverGameData,
+      slot1,
+      user1,
+      new Offset(60, -3)
+    );
+
+    this.initializeShip(
       new Caliope(),
       "Test Caliope B1",
       serverGameData,
@@ -126,6 +136,15 @@ class CreateTestGameHandler {
       slot2,
       user2,
       new Offset(-60, -2)
+    );
+
+    this.initializeShip(
+      new Constantin(),
+      "Test Constantin B1",
+      serverGameData,
+      slot2,
+      user2,
+      new Offset(-60, -3)
     );
 
     serverGameData.setStatus(GAME_STATUS.ACTIVE);

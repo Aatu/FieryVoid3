@@ -12,6 +12,12 @@ import {
   Button,
   icons,
   colors,
+  TooltipHeader,
+  TooltipValue,
+  TooltipEntry,
+  TooltipValueHeader,
+  TooltipContainer,
+  TooltipBuilder,
 } from "../../styled";
 import GameSlot from "@fieryvoid3/model/src/game/GameSlot";
 import { useUser } from "../../state/userHooks";
@@ -29,8 +35,11 @@ type SlotContainerProps = {
   selected: boolean;
 };
 
-const SlotContainer = styled(Container)<SlotContainerProps>`
+const SlotContainer = styled(TooltipContainer)<SlotContainerProps>`
   ${(props) => (props.selected ? selected : "")}
+
+  padding: 6px;
+  width: 100%;
 `;
 
 type Props = {
@@ -100,10 +109,8 @@ const Slot: React.FC<Props> = ({
           </>
         ) : (
           <>
-            <Title>{slot.name}</Title>
-            <Title>
-              Points: <Value>{slot.points}</Value>
-            </Title>
+            <TooltipHeader>{slot.name}</TooltipHeader>
+
             <SectionRight>
               {slot.isTaken() && (
                 <Title>
@@ -132,6 +139,10 @@ const Slot: React.FC<Props> = ({
       </Section>
 
       <Section>
+        <TooltipBuilder
+          entries={[{ value: [{ header: "Points", value: slot.points }] }]}
+        />
+
         {edit ? (
           <>
             <InputAndLabel
@@ -150,21 +161,7 @@ const Slot: React.FC<Props> = ({
               onChange={() => console.log("Not implemented")}
             />
           </>
-        ) : (
-          <>
-            <Label>
-              Deployment position:
-              <Value>{` ${slot.deploymentLocation.q},${slot.deploymentLocation.r}`}</Value>
-            </Label>
-            <Label>
-              Deployment vector:
-              <Value>{`${slot.deploymentVector.q},${slot.deploymentVector.r}`}</Value>
-            </Label>
-            <Label>
-              Deployment radius: <Value> {slot.deploymentRadius}</Value>
-            </Label>
-          </>
-        )}
+        ) : null}
       </Section>
 
       <Section>

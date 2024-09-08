@@ -24,7 +24,6 @@ export const useLoginUser = () => {
       password: string;
     }) => login(username, password),
     onSuccess: () => {
-      console.log("login success");
       queryClient.invalidateQueries({ queryKey: ["currentUser"] });
     },
   });

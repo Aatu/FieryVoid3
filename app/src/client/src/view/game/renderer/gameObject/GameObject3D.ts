@@ -405,6 +405,24 @@ class GameObject3D implements IClonable {
     });
   }
 
+  swapNormalAndBumpMap(bumpScale: number = 5) {
+    this.traverse((object) => {
+      if (object.material instanceof THREE.MeshStandardMaterial) {
+        const map = object.material.normalMap;
+
+        if (!map) {
+          return;
+        }
+
+        object.material.normalMap = null;
+        object.material.bumpMap = map;
+        object.material.bumpScale = bumpScale;
+        //object.material.bumpMap!.flipY = false;
+        object.material.needsUpdate = true;
+      }
+    });
+  }
+
   setBumpMap(map: THREE.Texture, bumpScale: number = 5) {
     if (!this.shipObjectNames.length) {
       throw new Error("No ship object names set");
@@ -434,6 +452,25 @@ class GameObject3D implements IClonable {
           object.material.emissiveMap!.flipY = false;
           object.material.needsUpdate = true;
           object.material.emissive = new THREE.Color(0xffffff);
+        }
+      }
+    });
+  }
+
+  setMap(map: THREE.Texture, materialName: string) {
+    if (!this.shipObjectNames.length) {
+      throw new Error("No ship object names set");
+    }
+
+    this.traverse((object) => {
+      if (this.shipObjectNames.includes(object.name!)) {
+        if (
+          object.material instanceof THREE.MeshStandardMaterial &&
+          object.material.name === materialName
+        ) {
+          object.material.map = map;
+          object.material.needsUpdate = true;
+          object.material.color = new THREE.Color(1, 1, 1);
         }
       }
     });

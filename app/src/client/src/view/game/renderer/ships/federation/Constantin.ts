@@ -3,10 +3,14 @@ import { loadObject3d } from "../../gameObject/GameObject3D";
 import * as THREE from "three";
 import Ship from "@fieryvoid3/model/src/unit/Ship";
 import Vector from "@fieryvoid3/model/src/utils/Vector";
+import { RenderPayload } from "../../../phase/phaseStrategy/PhaseStrategy";
+import { ShipTextureBuilder } from "../../shiptexture/ShipTextureBuilder";
 
 const textureLoader = new THREE.TextureLoader();
 
 class Constantin extends ShipObject {
+  private centrifuge: THREE.Object3D | null = null;
+
   constructor(ship: Ship, scene: THREE.Object3D) {
     super(ship, scene);
     this.defaultHeight = 80;
@@ -14,15 +18,109 @@ class Constantin extends ShipObject {
     this.overlaySpriteSize = 80;
     this.dimensions = new Vector(80, 22, 8);
     this.center = new Vector(0, 0, 0);
-    this.ewSpriteDimensions = new Vector(95, 40);
+    this.ewSpriteDimensions = new Vector(155, 50);
     this.create();
   }
 
   async create() {
     super.create();
-    const gameObject = await loadObject3d("/img/3d/caliope/scene.gltf");
-    gameObject.setShipObjectNames("ship");
-    gameObject.setBumpMap(textureLoader.load("/img/3d/caliope/heightMap.png"));
+    const gameObject = await loadObject3d("/img/3d/constantin/constantin.gltf");
+    gameObject.setShipObjectNames([
+      "main_ship_1",
+      "main_ship_2",
+      "ship_centrifuge_1",
+      "ship_centrifuge_2",
+    ]);
+
+    const texturebuilder = new ShipTextureBuilder(
+      gameObject,
+      "shipmaterial",
+      1024,
+      1024
+    );
+    texturebuilder.setBaseColor([31, 27, 27]);
+    texturebuilder.overlayImage("/img/3d/constantin/basecolor.png");
+    texturebuilder.overlayImage("/img/3d/constantin/basecolor.png");
+
+    const color = [255, 255, 255, 1];
+    texturebuilder.writeText(this.ship.getName(), color, {
+      x: 130,
+      y: 575,
+      width: 100,
+    });
+    texturebuilder.writeText(this.ship.getName(), color, {
+      x: 130,
+      y: 115,
+      width: 100,
+      flipY: true,
+    });
+
+    const registration = "EDS 452";
+    texturebuilder.writeText(registration, color, {
+      x: 858,
+      y: 130,
+      flipY: true,
+      flipX: true,
+      size: 26,
+      width: 100,
+      bold: true,
+    });
+
+    texturebuilder.writeText(registration, color, {
+      x: 858,
+      y: 270,
+      flipY: false,
+      flipX: false,
+      size: 26,
+      width: 100,
+      bold: true,
+    });
+
+    texturebuilder.writeText(registration, color, {
+      x: 858,
+      y: 485,
+      flipY: true,
+      flipX: true,
+      size: 26,
+      width: 100,
+      bold: true,
+    });
+
+    texturebuilder.writeText(registration, color, {
+      x: 858,
+      y: 625,
+      flipY: false,
+      flipX: false,
+      size: 26,
+      width: 100,
+      bold: true,
+    });
+
+    texturebuilder.drawImage("/img/logo_earthdomainnavy.png", {
+      x: 370,
+      y: 768,
+      width: 100,
+      height: 100,
+      rotation: 90,
+    });
+
+    texturebuilder.drawImage("/img/logo_earthdomainnavy.png", {
+      x: 585,
+      y: 768,
+      width: 100,
+      height: 100,
+      rotation: 90,
+    });
+
+    texturebuilder.done();
+
+    gameObject.swapNormalAndBumpMap(10);
+
+    this.centrifuge =
+      gameObject.scene.children.find((o) => o.name === "ship_centrifuge") ||
+      null;
+
+    /*
     gameObject.setEmissiveMap(
       textureLoader.load("/img/3d/caliope/emissiveMap.png")
     );
@@ -98,32 +196,18 @@ class Constantin extends ShipObject {
       thruster,
       "thruster"
     );
-
+ */
     this.setShipObject(gameObject);
+  }
 
-    /*
-    const shipMaterial = this.shipObject.children[0].material;
+  render(payload: RenderPayload) {
+    if (!this.centrifuge || !this.shipObject) {
+      return;
+    }
 
-    shipMaterial.emissive = new THREE.Color(1, 1, 1);
-    shipMaterial.emissiveMap = new THREE.TextureLoader().load(
-      "/img/3d/caliope/emissiveMap.png"
-    );
-    shipMaterial.emissiveMap.flipY = false;
-*/
-    /*
-    this.shipObject.traverse(o => {
-      if (o.isMesh) {
-        o.material.emissive = new THREE.Color(1, 1, 1);
-        o.material.emissiveMap = new THREE.TextureLoader().load(
-          "/img/3d/caliope/baseColor.png"
-        );
-        o.material.emissiveMap.flipY = false;
-
-
-      }
-    });
-
-    */
+    this.centrifuge.rotateX(0.005);
+    //this.shipObject.getObject().rotateZ(0.001);
+    //this.shipObject.getObject().rotateX(0.001);
   }
 }
 

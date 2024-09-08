@@ -79,9 +79,10 @@ const Label = styled.label`
 const Input = styled.input`
   display: flex;
   color: #0a3340;
-  background-color: white;
-  padding: 3px 6px;
-  border: 1px solid #04161c;
+  background-color: black;
+  color: white;
+  padding: 5px 6px;
+  border: 1px solid #aaaaaa;
   border-radius: 3px;
   width: calc(70% - 12px);
   height: 16px;

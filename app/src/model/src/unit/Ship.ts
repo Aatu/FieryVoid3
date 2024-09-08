@@ -288,6 +288,10 @@ class Ship implements IHexPosition {
     this.systems.callAllSystemHandlers(SYSTEM_HANDLERS.onGameStart, undefined);
     this.systems.callAllSystemHandlers(SYSTEM_HANDLERS.setMaxFuel, undefined);
   }
+
+  getName() {
+    return this.name || "";
+  }
 }
 
 export default Ship;

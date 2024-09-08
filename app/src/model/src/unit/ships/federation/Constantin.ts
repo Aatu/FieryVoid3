@@ -1,7 +1,7 @@
 import Ship from "../../Ship";
 import systems from "../../system/index";
 
-class Caliope extends Ship {
+class Constantin extends Ship {
   setShipProperties() {
     this.shipTypeName = "Constantin battle ship";
     this.accelcost = 3;
@@ -14,7 +14,7 @@ class Caliope extends Ship {
 
     this.description = ``;
 
-    this.shipModel = "Caliope";
+    this.shipModel = "Constantin";
     this.pointCost = 500;
 
     this.systems.addFrontSystem([
@@ -263,4 +263,4 @@ class Caliope extends Ship {
   }
 }
 
-export default Caliope;
+export default Constantin;

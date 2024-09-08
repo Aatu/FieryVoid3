@@ -1,5 +1,4 @@
 import React, { memo } from "react";
-import Lobby from "./lobby";
 import ShipTooltip from "../ui/shipTooltip";
 import TurnHeader from "../ui/TurnHeader";
 import GameMovement from "../ui/movement/GameMovement";
@@ -15,16 +14,21 @@ import { GameUIMode } from "../ui/gameUiModes";
 import { useUiStateHandler } from "../../../state/useUIStateHandler";
 import { useGameStore } from "../GameStoreProvider";
 import { useGameData } from "../../../state/useGameData";
+import { FleetBuilder } from "./fleetBuilder/FleetBuilder";
+import { useUser } from "../../../state/userHooks";
 
 const GameUiComponent: React.FC = memo(() => {
   const uiState = useUiStateHandler();
   const state = useGameStore(({ gameState }) => gameState);
 
   const gameData = useGameData();
+  const { data: user } = useUser();
+
+  const userSlot = user ? gameData.slots.getUsersSlots(user)[0] : null;
 
   return (
     <>
-      {state.lobby && <Lobby uiState={uiState} gameData={gameData} />}
+      {state.lobby && userSlot && <FleetBuilder slot={userSlot} />}
 
       <>
         {

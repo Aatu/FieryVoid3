@@ -8,5 +8,16 @@ import Fulcrum from "./protectorate/Fulcrum";
 import Mouros from "./protectorate/Mouros";
 
 import Impetous from "./federation/Impetous";
+import Constantin from "./federation/Constantin";
 
-export { Gunship, Rhino, Capital, Caliope, Fulcrum, Mouros, Impetous, Haka };
+export {
+  Gunship,
+  Rhino,
+  Capital,
+  Caliope,
+  Fulcrum,
+  Mouros,
+  Impetous,
+  Haka,
+  Constantin,
+};

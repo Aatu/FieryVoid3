@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect, useMemo } from "react";
 
 import {
   InputAndLabel,
@@ -12,9 +12,11 @@ import GameData from "@fieryvoid3/model/src/game/GameData";
 import GameSlot from "@fieryvoid3/model/src/game/GameSlot";
 import { Offset } from "@fieryvoid3/model/src/hexagon";
 import Slots from "./Slots";
-import { redirect } from "react-router-dom";
+import { redirect, useNavigate } from "react-router-dom";
 import { createGame } from "../../api/game";
 import { useUser } from "../../state/userHooks";
+import GameStoreProvider from "../game/GameStoreProvider";
+import UIState from "../game/ui/UIState";
 
 const createGameData = () => {
   const gameData = new GameData();
@@ -51,10 +53,14 @@ const createGameData = () => {
 
   return gameData;
 };
+
 const CreateGame: React.FC = () => {
   const { data: user } = useUser();
-
+  const navigate = useNavigate();
   const [gameData, setGameData] = useState<GameData>(createGameData());
+  const uiState = useMemo(() => new UIState(-1), []);
+
+  uiState.update(gameData);
 
   useEffect(() => {
     if (!user) {
@@ -79,6 +85,7 @@ const CreateGame: React.FC = () => {
       try {
         const response = await createGame(gameData);
         gameData.id = response.gameId;
+        console.log("create, response", response);
         setGameData(gameData.clone());
       } catch (e) {
         console.error(e);
@@ -87,7 +94,8 @@ const CreateGame: React.FC = () => {
   }, [gameData, setGameData]);
 
   if (gameData.id) {
-    redirect(`/game/${gameData.id}`);
+    console.log("Redirect?");
+    navigate(`/game/${gameData.id}`);
   }
 
   if (!user) {
@@ -96,26 +104,28 @@ const CreateGame: React.FC = () => {
 
   return (
     <>
-      <TooltipContainer>
-        <TooltipHeader>
-          Create game
-          <LinkInline to="/">
-            <CloseButton />
-          </LinkInline>
-        </TooltipHeader>
+      <GameStoreProvider uiState={uiState}>
+        <TooltipContainer>
+          <TooltipHeader>
+            Create game
+            <LinkInline to="/">
+              <CloseButton />
+            </LinkInline>
+          </TooltipHeader>
 
-        <InputAndLabel
-          placeholder="name"
-          value={gameData.name}
-          onChange={changeGameName}
-          error={!gameData.name ? "Name is required" : undefined}
-        />
+          <InputAndLabel
+            placeholder="name"
+            value={gameData.name}
+            onChange={changeGameName}
+            error={!gameData.name ? "Name is required" : undefined}
+          />
 
-        <Slots />
-        <Button buttonstyle="button-grey" onClick={createGameCallBack}>
-          Create game
-        </Button>
-      </TooltipContainer>
+          <Slots />
+          <Button buttonstyle="button-grey" onClick={createGameCallBack}>
+            Create game
+          </Button>
+        </TooltipContainer>
+      </GameStoreProvider>
     </>
   );
 };
