@@ -54,6 +54,10 @@ const ShipFleetBadge: React.FC<{ shipId: string }> = ({ shipId }) => {
   const ship = useShip(shipId);
 
   const scrollToShip = useCallback(() => {
+    if (!ship) {
+      return;
+    }
+
     const { gameCamera, shipIconContainer } = uiState.getServices();
     const icon = shipIconContainer.getByShip(ship);
     gameCamera.setByLookAtPosition(icon.getPosition());
@@ -61,18 +65,28 @@ const ShipFleetBadge: React.FC<{ shipId: string }> = ({ shipId }) => {
   }, [ship, uiState]);
 
   const mouseOver = useCallback(() => {
+    if (!ship) {
+      return;
+    }
     const { shipIconContainer } = uiState.getServices();
     const icon = shipIconContainer.getByShip(ship);
     uiState.customEvent("mouseOverShip", { entity: icon });
   }, [ship, uiState]);
 
   const mouseOut = useCallback(() => {
+    if (!ship) {
+      return;
+    }
     const { shipIconContainer } = uiState.getServices();
     const icon = shipIconContainer.getByShip(ship);
     uiState.customEvent("mouseOutShip", { entity: icon });
   }, [ship, uiState]);
 
   const Component = useMemo(() => {
+    if (data?.isMine === undefined) {
+      return null;
+    }
+
     return (
       <Container
         $isMine={data.isMine}
@@ -88,9 +102,9 @@ const ShipFleetBadge: React.FC<{ shipId: string }> = ({ shipId }) => {
       </Container>
     );
   }, [
-    data.isMine,
-    data.isSelected,
-    data.shipName,
+    data?.isMine,
+    data?.isSelected,
+    data?.shipName,
     mouseOut,
     mouseOver,
     scrollToShip,

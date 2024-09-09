@@ -71,6 +71,10 @@ class GameSlots {
     return slot.team === userSlot.team;
   }
 
+  removeSlot(slot: GameSlot) {
+    this.slots = this.slots.filter((s) => s.id !== slot.id);
+  }
+
   getUsersSlots(user: User | null) {
     return this.slots.filter((slot) => slot.isUsers(user || null));
   }

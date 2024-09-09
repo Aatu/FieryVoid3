@@ -23,7 +23,7 @@ class ShipObject {
   public shipId: string;
   public ship: Ship;
   protected bumpMap: THREE.Texture | null;
-  protected scene: THREE.Object3D;
+  protected scene?: THREE.Object3D;
   protected mesh: THREE.Object3D;
   protected shipObject: GameObject3D | null;
   public isLoaded: ReadyPromise<boolean>;
@@ -54,7 +54,7 @@ class ShipObject {
   protected overlaySpriteColor: THREE.Color = new THREE.Color(0, 0, 0);
   protected overlaySpriteColorAlpha: number = 0;
 
-  constructor(ship: Ship, scene: THREE.Object3D) {
+  constructor(ship: Ship, scene?: THREE.Object3D) {
     this.shipId = ship.id;
     this.ship = ship;
 
@@ -111,6 +111,14 @@ class ShipObject {
 
   getSystemLocation(system: ShipSystem) {
     return this.shipObject?.getSystemLocation(system) || null;
+  }
+
+  getShipObjectSync() {
+    if (!this.shipObject) {
+      throw new Error("Ship object not loaded, but promise is resolved");
+    }
+
+    return this.shipObject;
   }
 
   async getShipObject() {
@@ -249,7 +257,11 @@ class ShipObject {
       this.center,
       this.hexSpriteContainer
     );
-    this.scene.add(this.mesh);
+
+    if (this.scene) {
+      this.scene.add(this.mesh);
+    }
+
     this.hide();
   }
 
@@ -393,7 +405,10 @@ class ShipObject {
       return;
     }
 
-    this.scene.remove(this.mesh);
+    if (this.scene) {
+      this.scene.remove(this.mesh);
+    }
+
     this.hidden = true;
   }
 
@@ -402,7 +417,10 @@ class ShipObject {
       return;
     }
 
-    this.scene.add(this.mesh);
+    if (this.scene) {
+      this.scene.add(this.mesh);
+    }
+
     this.hidden = false;
   }
 

@@ -33,7 +33,7 @@ const CargoTooltip: React.FC<Props> = ({
   return (
     <CargoTooltipContainer
       relative={!absoluteTooltip}
-      $isRight={absoluteTooltip}
+      right={Boolean(absoluteTooltip)}
       element={element}
     >
       <TooltipHeader>{cargo.getDisplayName()}</TooltipHeader>

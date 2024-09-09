@@ -5,6 +5,7 @@ import { BaseView } from "./view/baseView";
 import { Route } from "./Route";
 import CreateGame from "./view/createGame/CreateGame";
 import Home from "./view/home/Home";
+import { StandaloneFleetBuilder } from "./view/game/components/fleetBuilder/FleetBuilder";
 
 export const router = createBrowserRouter([
   {
@@ -12,6 +13,16 @@ export const router = createBrowserRouter([
     element: (
       <Route isPrivate>
         <Game />
+      </Route>
+    ),
+  },
+  {
+    path: "/fleetBuilder",
+    element: (
+      <Route isPrivate>
+        <BaseView>
+          <StandaloneFleetBuilder />
+        </BaseView>
       </Route>
     ),
   },

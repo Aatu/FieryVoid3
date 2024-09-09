@@ -16,7 +16,10 @@ const buildShipArray = (iconsAsObject: IconMap) => {
   return Object.keys(iconsAsObject).map((key) => iconsAsObject[key]);
 };
 
-const createIcon = (ship: Ship, scene: THREE.Object3D): ShipObject => {
+export const createShipObject = (
+  ship: Ship,
+  scene?: THREE.Object3D
+): ShipObject => {
   // @ts-expect-error dynamic class creation
   return new shipObjects[ship.shipModel](ship, scene);
 };
@@ -75,7 +78,7 @@ class ShipIconContainer {
   update(gamedata: GameData) {
     gamedata.ships.getShips().forEach((ship) => {
       if (!this.hasIcon(ship.id)) {
-        this.iconsAsObject[ship.id] = createIcon(ship, this.scene);
+        this.iconsAsObject[ship.id] = createShipObject(ship, this.scene);
       } else {
         this.iconsAsObject[ship.id].consumeShipdata(ship);
       }

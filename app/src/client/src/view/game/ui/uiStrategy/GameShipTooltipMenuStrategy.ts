@@ -1,6 +1,7 @@
 import UiStrategy from "./UiStrategy";
 import { Services } from "../../phase/PhaseDirector";
 import GameShipTooltipMenu from "../shipTooltip/GameShipTooltipMenu";
+import { ShipTooltipMenuProviderProps } from "../UIState";
 
 class GameShipTooltipMenuStrategy extends UiStrategy {
   activate(services: Services) {
@@ -17,8 +18,8 @@ class GameShipTooltipMenuStrategy extends UiStrategy {
     uiState.setTooltipMenuProvider(null);
   }
 
-  getTooltipComponent(): React.FC<unknown> {
-    return GameShipTooltipMenu as React.FC<unknown>;
+  getTooltipComponent(): React.FC<ShipTooltipMenuProviderProps> {
+    return GameShipTooltipMenu;
   }
 }
 

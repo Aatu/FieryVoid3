@@ -1,11 +1,25 @@
 import Ship from "@fieryvoid3/model/src/unit/Ship";
-import UIState from "../view/game/ui/UIState";
+import styled from "styled-components";
+import { StaticShipViewComponent } from "./ShipView/StaticShipViewComponent";
+import { useUiStateHandler } from "../state/useUIStateHandler";
 
 type Props = {
   ship: Ship;
-  uiState: UIState;
+  size: number;
 };
 
-export const ShipCard: React.FC<Props> = ({ ship, uiState }) => {
-  return null;
+const Container = styled.div`
+  border: 1px solid #aaaaaa;
+`;
+
+export const ShipCard: React.FC<Props> = ({ ship, size }) => {
+  const uiState = useUiStateHandler();
+
+  console.log("I has uiState", uiState);
+
+  return (
+    <Container onClick={() => uiState.showShipTooltip(ship, true, false)}>
+      <StaticShipViewComponent ship={ship} size={size} />
+    </Container>
+  );
 };

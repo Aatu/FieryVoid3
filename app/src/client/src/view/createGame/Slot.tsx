@@ -4,18 +4,13 @@ import styled, { css } from "styled-components";
 import {
   Title,
   InputAndLabel,
-  Container,
   Section,
-  Label,
   Value,
   SectionRight,
   Button,
   icons,
   colors,
   TooltipHeader,
-  TooltipValue,
-  TooltipEntry,
-  TooltipValueHeader,
   TooltipContainer,
   TooltipBuilder,
 } from "../../styled";

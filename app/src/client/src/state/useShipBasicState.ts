@@ -14,7 +14,7 @@ export type ShipBasicState = {
   isSelected: boolean;
 };
 
-export const useShipsBasicState = (shipId: string): ShipBasicState => {
+export const useShipsBasicState = (shipId: string): ShipBasicState | null => {
   const gameData = useGameData();
   const { data: currentUser } = useUser();
   const uiState = useUiStateHandler();
@@ -22,7 +22,11 @@ export const useShipsBasicState = (shipId: string): ShipBasicState => {
 
   const selectedShipId = uiState.getSelectedShip()?.id;
 
-  const state: ShipBasicState = useMemo(() => {
+  const state: ShipBasicState | null = useMemo(() => {
+    if (!ship) {
+      return null;
+    }
+
     const isMine = ship.player.is(currentUser || null);
     const { shipIconContainer } = uiState.getServices();
     const icon = shipIconContainer.getByShip(ship);
@@ -46,9 +50,22 @@ export const useShipsBasicState = (shipId: string): ShipBasicState => {
     };
   }, [ship, currentUser, uiState, gameData.torpedos, selectedShipId]);
 
-  const [finalState, setFinalState] = useState<ShipBasicState>(state);
+  const [finalState, setFinalState] = useState<ShipBasicState | null>(state);
 
   useEffect(() => {
+    if (!state) {
+      if (finalState) {
+        setFinalState(null);
+      }
+
+      return;
+    }
+
+    if (!finalState) {
+      setFinalState(state);
+      return;
+    }
+
     if (
       state.incomingTorpedos !== finalState.incomingTorpedos ||
       state.validPower !== finalState.validPower ||

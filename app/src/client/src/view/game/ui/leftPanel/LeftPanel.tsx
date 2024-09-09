@@ -1,10 +1,9 @@
-import React from "react";
+import React, { useMemo } from "react";
 import styled from "styled-components";
 import EwList from "../electronicWarfare/EwList";
 import GameShipTooltipMenu from "../shipTooltip/GameShipTooltipMenu";
-import UIState from "../UIState";
-import ElectronicWarfareEntry from "@fieryvoid3/model/src/electronicWarfare/ElectronicWarfareEntry";
 import { TOOLTIP_TAB } from "../shipTooltip/ShipTooltip";
+import { useGameStore } from "../../GameStoreProvider";
 
 const Container = styled.div`
   position: absolute;
@@ -22,34 +21,30 @@ const SubContainer = styled.div`
   flex-wrap: wrap-reverse;
 `;
 
-type Props = {
-  uiState: UIState;
-  ewList: ElectronicWarfareEntry[];
-};
-
-const LeftPanel: React.FC<Props> = ({ uiState, ewList }) => {
-  const selectedShip = uiState.getSelectedShip();
-
-  if (!selectedShip) {
-    return null;
-  }
-
-  return (
-    <Container>
-      <SubContainer>
-        {ewList && (
-          <EwList ship={selectedShip} uiState={uiState} ewList={ewList} />
-        )}
-      </SubContainer>
-      <GameShipTooltipMenu
-        ship={selectedShip}
-        uiState={uiState}
-        selectTooltipTab={(tab: TOOLTIP_TAB) => {
-          console.log("should select tab", tab);
-        }}
-      />
-    </Container>
+const LeftPanel: React.FC = () => {
+  const selectedShipId = useGameStore(
+    (state) => state.gameState.selectedShipId
   );
+
+  return useMemo(() => {
+    if (!selectedShipId) {
+      return null;
+    }
+
+    return (
+      <Container>
+        <SubContainer>
+          <EwList />
+        </SubContainer>
+        <GameShipTooltipMenu
+          shipId={selectedShipId}
+          selectTooltipTab={(tab: TOOLTIP_TAB | null) => {
+            console.log("should select tab", tab);
+          }}
+        />
+      </Container>
+    );
+  }, [selectedShipId]);
 };
 
 export default LeftPanel;

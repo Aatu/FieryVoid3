@@ -39,6 +39,7 @@ const ColumnMiddle = styled(Column)`
 
 type Props = {
   ship: Ship;
+  right: boolean;
 };
 
 const ShipWindow: React.FC<Props> = ({ ship, ...rest }) => {

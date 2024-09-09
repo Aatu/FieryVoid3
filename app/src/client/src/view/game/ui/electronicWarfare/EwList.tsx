@@ -1,17 +1,15 @@
 import * as React from "react";
 import OEWButtons from "./OEWButtons";
-import ElectronicWarfareEntry from "@fieryvoid3/model/src/electronicWarfare/ElectronicWarfareEntry";
-import UIState from "../UIState";
-import Ship from "@fieryvoid3/model/src/unit/Ship";
+import { useSelectedShip } from "../../../../state/useShip";
+import { useUiStateHandler } from "../../../../state/useUIStateHandler";
+import { useGameStore } from "../../GameStoreProvider";
 
-type Props = {
-  ship: Ship;
-  uiState: UIState;
-  ewList: ElectronicWarfareEntry[];
-};
-
-const EwList: React.FC<Props> = ({ ship, uiState, ewList }) => {
+const EwList: React.FC = () => {
+  const ship = useSelectedShip();
+  const uiState = useUiStateHandler();
   const gameData = uiState.getGameData();
+  const ewList = useGameStore((state) => state.gameState.ewList);
+
   if (!ship) {
     return null;
   }

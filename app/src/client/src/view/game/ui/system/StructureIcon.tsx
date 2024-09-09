@@ -55,6 +55,7 @@ type StructureIconProps = {
   selected: boolean;
   text?: string;
   target?: Ship;
+  right: boolean;
 };
 
 const StructureIcon: React.FC<StructureIconProps> = ({

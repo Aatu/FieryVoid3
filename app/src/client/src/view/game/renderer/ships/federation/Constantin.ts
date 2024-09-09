@@ -3,10 +3,7 @@ import { loadObject3d } from "../../gameObject/GameObject3D";
 import * as THREE from "three";
 import Ship from "@fieryvoid3/model/src/unit/Ship";
 import Vector from "@fieryvoid3/model/src/utils/Vector";
-import { RenderPayload } from "../../../phase/phaseStrategy/PhaseStrategy";
 import { ShipTextureBuilder } from "../../shiptexture/ShipTextureBuilder";
-
-const textureLoader = new THREE.TextureLoader();
 
 class Constantin extends ShipObject {
   private centrifuge: THREE.Object3D | null = null;
@@ -200,7 +197,7 @@ class Constantin extends ShipObject {
     this.setShipObject(gameObject);
   }
 
-  render(payload: RenderPayload) {
+  render() {
     if (!this.centrifuge || !this.shipObject) {
       return;
     }

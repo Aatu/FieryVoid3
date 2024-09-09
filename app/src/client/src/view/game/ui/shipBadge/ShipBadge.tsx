@@ -100,14 +100,24 @@ type Props = {
 const ShipBadge: React.FC<Props> = ({ shipId, showName, visible }) => {
   const uiState = useUiStateHandler();
 
-  const { isMine, incomingTorpedos, validPower, shipName } =
-    useShipsBasicState(shipId);
+  const basicState = useShipsBasicState(shipId);
 
-  if (!isMine || (incomingTorpedos === 0 && validPower)) {
+  if (
+    !basicState ||
+    !basicState.isMine ||
+    (basicState.incomingTorpedos === 0 && basicState.validPower)
+  ) {
     visible = false;
   }
 
   const getPosition = useGetShipPosition(shipId);
+
+  const { shipName, isMine, incomingTorpedos, validPower } = basicState || {
+    shipName: "",
+    isMine: false,
+    incomingTorpedos: 0,
+    validPower: false,
+  };
 
   const memoizedComponent = useMemo(
     () =>

@@ -14,7 +14,7 @@ import { GameUIMode } from "../ui/gameUiModes";
 import { useUiStateHandler } from "../../../state/useUIStateHandler";
 import { useGameStore } from "../GameStoreProvider";
 import { useGameData } from "../../../state/useGameData";
-import { FleetBuilder } from "./fleetBuilder/FleetBuilder";
+import { InGameFleetBuider } from "./fleetBuilder/FleetBuilder";
 import { useUser } from "../../../state/userHooks";
 
 const GameUiComponent: React.FC = memo(() => {
@@ -28,7 +28,7 @@ const GameUiComponent: React.FC = memo(() => {
 
   return (
     <>
-      {state.lobby && userSlot && <FleetBuilder slot={userSlot} />}
+      {state.lobby && userSlot && <InGameFleetBuider slot={userSlot} />}
 
       <>
         {
@@ -70,7 +70,7 @@ const GameUiComponent: React.FC = memo(() => {
         <ReplayUI uiState={uiState} replayContext={state.replayUi} />
       )}
 
-      {!state.replayUi && <LeftPanel uiState={uiState} {...state} />}
+      {!state.replayUi && <LeftPanel />}
 
       {state.combatLog && (
         <CombatLog

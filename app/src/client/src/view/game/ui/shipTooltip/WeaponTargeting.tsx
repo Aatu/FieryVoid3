@@ -17,6 +17,7 @@ type Props = {
   system: ShipSystem;
   target: Ship;
   onSystemClicked: React.MouseEventHandler<HTMLDivElement>;
+  right: boolean;
 };
 
 const WeaponTargeting: React.FC<Props> = ({

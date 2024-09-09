@@ -2,7 +2,7 @@ import * as React from "react";
 import styled, { css } from "styled-components";
 import { TooltipButton } from "../../../../styled";
 import Ship from "@fieryvoid3/model/src/unit/Ship";
-import UIState from "../UIState";
+import { useUiStateHandler } from "../../../../state/useUIStateHandler";
 
 const Container = styled.div`
   display: flex;
@@ -37,17 +37,17 @@ const Amount = styled.div`
 type CCEWButtonsProps = {
   name?: string;
   ship: Ship;
-  uiState: UIState;
   ccew: number;
 };
 
 const CCEWButtons: React.FC<CCEWButtonsProps> = ({
   name,
   ship,
-  uiState,
+
   ccew,
   ...rest
 }) => {
+  const uiState = useUiStateHandler();
   return (
     <Container {...rest}>
       {name && <ShipName>{name}</ShipName>}

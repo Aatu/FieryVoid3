@@ -4,11 +4,9 @@ import styled from "styled-components";
 import { useUser } from "../../../../state/userHooks";
 import GameData from "@fieryvoid3/model/src/game/GameData";
 import Ship from "@fieryvoid3/model/src/unit/Ship";
-import { createShipInstance } from "@fieryvoid3/model/src/unit/createShipObject";
 import GameSlot from "@fieryvoid3/model/src/game/GameSlot";
 import UIState from "../../ui/UIState";
 import { TooltipContainer, TooltipHeader } from "../../../../styled";
-import FleetStore from "./FleetStore";
 import LobbySlots from "./LobbySlots";
 
 const LobbyContainer = styled.div`
@@ -41,7 +39,7 @@ const Lobby: React.FC<{
   uiState: UIState;
 }> = ({ gameData, uiState }) => {
   const { data: currentUser } = useUser();
-  const [shipsToBuy, setShipsToBuy] = useState<Ship[]>([]);
+  const [shipsToBuy] = useState<Ship[]>([]);
 
   const { selectedSlot, ships } = useMemo((): {
     selectedSlot: GameSlot | null;
@@ -63,6 +61,7 @@ const Lobby: React.FC<{
     };
   }, [currentUser, gameData]);
 
+  /*
   const buyShip = useCallback(
     (shipClass: string) => {
       const ship = createShipInstance(shipClass);
@@ -85,6 +84,8 @@ const Lobby: React.FC<{
     },
     [selectedSlot, ships, shipsToBuy]
   );
+
+  */
 
   const onReady = useCallback(() => {
     uiState.customEvent("buyShips", { slot: selectedSlot, shipsToBuy });
@@ -111,7 +112,6 @@ const Lobby: React.FC<{
       <ContainerRight>
         <TooltipContainer>
           <TooltipHeader>Buy your fleet</TooltipHeader>
-          <FleetStore uiState={uiState} buyShip={buyShip} />
         </TooltipContainer>
       </ContainerRight>
     </LobbyContainer>

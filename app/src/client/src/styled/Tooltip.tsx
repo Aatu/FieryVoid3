@@ -416,14 +416,14 @@ const buildTooltipEntries = (
 */
 
 type SystemTooltipProps = {
-  right?: boolean;
+  $isRight: boolean;
   tab?: boolean;
 };
 
 const SystemTooltip = styled(Tooltip)<SystemTooltipProps>`
   top: 0px;
 
-  ${(props) => (props.right ? "right: 340px;" : "left: 340px;")}
+  ${(props) => (props.$isRight ? "right: 340px;" : "left: 340px;")}
 
   width: 202px;
 
@@ -436,17 +436,13 @@ const RelativeOrStaticTooltip: React.FC<{
   relative?: boolean;
   children?: ReactNode;
   element?: HTMLElement;
-  $isRight?: boolean;
-}> = ({ relative, children, element, ...rest }) => {
+  right: boolean;
+}> = ({ relative, children, element, right }) => {
   if (relative && element) {
-    return (
-      <RelativeTooltip element={element} {...rest}>
-        {children}
-      </RelativeTooltip>
-    );
+    return <RelativeTooltip element={element}>{children}</RelativeTooltip>;
   }
 
-  return <SystemTooltip {...rest}>{children}</SystemTooltip>;
+  return <SystemTooltip $isRight={right}>{children}</SystemTooltip>;
 };
 
 export {

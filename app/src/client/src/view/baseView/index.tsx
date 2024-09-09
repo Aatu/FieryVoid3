@@ -14,23 +14,18 @@ const Logo = styled.div`
   z-index: -1;
 `;
 
-export const SuperContainer = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  flex-wrap: wrap-reverse;
-  margin: 5px;
-`;
-
-export const ContainerLeft = styled.div`
-  width: 40%;
+export const ContainerMain = styled.div`
+  width: 100%;
   min-width: 800px;
-  margin: 5px;
+  margin-top: 150px;
 `;
 
-export const ContainerRight = styled.div`
+export const LoginContainer = styled.div`
   width: 21%;
   min-width: 200px;
-  margin: 5px;
+  position: absolute;
+  right: 16px;
+  top: 16px;
 `;
 
 export const BaseView: React.FC<{ children: ReactNode }> = ({ children }) => {
@@ -38,12 +33,11 @@ export const BaseView: React.FC<{ children: ReactNode }> = ({ children }) => {
     <>
       <Logo />
       <HomeSceneComponent />
-      <SuperContainer>
-        <ContainerLeft>{children}</ContainerLeft>
-        <ContainerRight>
-          <Login />
-        </ContainerRight>
-      </SuperContainer>
+      <LoginContainer>
+        <Login />
+      </LoginContainer>
+
+      <ContainerMain>{children}</ContainerMain>
     </>
   );
 };

@@ -20,6 +20,7 @@ class Mouros extends ShipObject {
 
     object.getObject().position.set(0, 0, this.defaultHeight);
 
+    /*
     object.replaceSocketByName(
       [
         { name: "Middle_hull_depress_top", id: 123 },
@@ -65,6 +66,7 @@ class Mouros extends ShipObject {
       await loadObject3d("/img/3d/systems/thrusters/8mThruster/scene.gltf")
     );
 
+    */
     this.setShipObject(object);
   }
 }

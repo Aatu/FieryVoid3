@@ -19,6 +19,7 @@ const SystemList: React.FC<SystemListProps> = ({ ship, systems }) => {
       key={`system-list-${system.id}`}
       systemId={system.id}
       ship={ship}
+      right={false}
     />
   ));
 };

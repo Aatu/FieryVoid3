@@ -35,9 +35,10 @@ type Props = {
   ship: Ship;
   section?: SystemSection;
   uiState: UIState;
+  right: boolean;
 };
 
-const ShipSection: React.FC<Props> = ({ ship, section, uiState }) => {
+const ShipSection: React.FC<Props> = ({ ship, section, uiState, right }) => {
   if (!section) {
     return null;
   }
@@ -54,6 +55,7 @@ const ShipSection: React.FC<Props> = ({ ship, section, uiState }) => {
           systemId={system.id}
           ship={ship}
           selected={uiState.isSelectedSystem(system)}
+          right={right}
         />
       ))}
 
@@ -62,6 +64,7 @@ const ShipSection: React.FC<Props> = ({ ship, section, uiState }) => {
           system={structure}
           ship={ship}
           selected={uiState.isSelectedSystem(structure)}
+          right={right}
         />
       )}
     </ShipSectionContainer>

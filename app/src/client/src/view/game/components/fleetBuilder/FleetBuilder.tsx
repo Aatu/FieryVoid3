@@ -6,6 +6,8 @@ import { useMemo, useState } from "react";
 import GameData from "@fieryvoid3/model/src/game/GameData";
 import UIState from "../../ui/UIState";
 import GameSlot from "@fieryvoid3/model/src/game/GameSlot";
+import GameStoreProvider, { useGameStore } from "../../GameStoreProvider";
+import ShipTooltip from "../../ui/shipTooltip";
 
 const GameOverlayContainer = styled.div`
   position: absolute;
@@ -14,13 +16,13 @@ const GameOverlayContainer = styled.div`
   right: 0px;
   bottom: 0px;
   z-index: 3;
+  padding: 16px;
 `;
 
 const Container = styled.div`
   flex-grow: 1;
   display: grid;
   grid-template-columns: 33% 33% 33%;
-  margin: 16px;
   gap: 8px;
 `;
 
@@ -32,46 +34,74 @@ const FactionContainer = styled.div`
 `;
 
 type Props = {
-  slot: GameSlot;
+  slot?: GameSlot;
 };
 
-export const FleetBuilder: React.FC<Props> = ({ slot }) => {
+export const FleetBuilder: React.FC<Props> = () => {
   const [selectedFaction, setSelectedFaction] = useState<string | null>(null);
 
-  const [gameData, uiState] = useMemo(() => {
+  return (
+    <Container>
+      <TooltipContainer>
+        <TooltipHeader>Factions</TooltipHeader>
+        <FactionContainer>
+          {FACTIONS.map((faction) => (
+            <FactionCard
+              key={faction.name}
+              faction={faction}
+              isOpen={selectedFaction === faction.name}
+              onClick={() => setSelectedFaction(faction.name)}
+            />
+          ))}
+        </FactionContainer>
+      </TooltipContainer>
+      <TooltipContainer>
+        <TooltipHeader>Your fleet</TooltipHeader>
+      </TooltipContainer>
+      <TooltipContainer>
+        <TooltipHeader>Current ship</TooltipHeader>
+      </TooltipContainer>
+    </Container>
+  );
+};
+
+export const StandaloneFleetBuilder: React.FC<Props> = ({ slot }) => {
+  const state = useGameStore(({ gameState }) => gameState);
+  const uiState = useMemo(() => {
     const gameData = new GameData();
-    gameData.slots.addSlot(slot);
+    if (slot) {
+      gameData.slots.addSlot(slot);
+    }
 
     const uiState = new UIState(-1);
     uiState.update(gameData);
 
-    return [gameData, uiState];
+    return uiState;
   }, [slot]);
 
   return (
-    <GameOverlayContainer>
-      <Container>
-        <TooltipContainer>
-          <TooltipHeader>Factions</TooltipHeader>
-          <FactionContainer>
-            {FACTIONS.map((faction) => (
-              <FactionCard
-                key={faction.name}
-                faction={faction}
-                uiState={uiState}
-                isOpen={selectedFaction === faction.name}
-                onClick={() => setSelectedFaction(faction.name)}
+    <GameStoreProvider uiState={uiState}>
+      <FleetBuilder slot={slot} />
+      <>
+        {
+          state.shipTooltip
+            .map((tooltip) => (
+              <ShipTooltip
+                key={`tooltip-ship-${tooltip.ship.id}`}
+                {...tooltip}
               />
-            ))}
-          </FactionContainer>
-        </TooltipContainer>
-        <TooltipContainer>
-          <TooltipHeader>Your fleet</TooltipHeader>
-        </TooltipContainer>
-        <TooltipContainer>
-          <TooltipHeader>Current ship</TooltipHeader>
-        </TooltipContainer>
-      </Container>
+            ))
+            .filter(Boolean) as React.ReactNode
+        }
+      </>
+    </GameStoreProvider>
+  );
+};
+
+export const InGameFleetBuider: React.FC<Props> = ({ slot }) => {
+  return (
+    <GameOverlayContainer>
+      <FleetBuilder slot={slot} />
     </GameOverlayContainer>
   );
 };

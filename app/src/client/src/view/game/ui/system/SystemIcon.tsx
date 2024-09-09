@@ -2,7 +2,13 @@ import styled from "styled-components";
 import SystemInfo from "./SystemInfo";
 
 import { colors } from "../../../../styled";
-import React, { LegacyRef, MouseEventHandler, useRef, useState } from "react";
+import React, {
+  LegacyRef,
+  MouseEventHandler,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { SystemMenuUiState } from "../UIState";
 import ShipSystem from "@fieryvoid3/model/src/unit/system/ShipSystem";
 import Ship from "@fieryvoid3/model/src/unit/Ship";
@@ -10,6 +16,7 @@ import { SYSTEM_HANDLERS } from "@fieryvoid3/model/src/unit/system/strategy/type
 import { useSystemMenu } from "../../../../state/useSystemMenu";
 import { useUiStateHandler } from "../../../../state/useUIStateHandler";
 import { useSystem } from "../../../../state/useSystem";
+import WeaponFireService from "@fieryvoid3/model/src/weapon/WeaponFireService";
 
 type HealthBarProps = {
   $destroyed?: boolean;
@@ -193,6 +200,7 @@ type SystemIconProps = {
   text?: string;
   target?: Ship;
   inactive?: boolean;
+  right: boolean;
 };
 
 const SystemIcon: React.FC<SystemIconProps> = ({
@@ -204,6 +212,7 @@ const SystemIcon: React.FC<SystemIconProps> = ({
   text = null,
   target = null,
   inactive = false,
+  right,
   ...rest
 }) => {
   const { activeSystemId, activeSystemElement, systemInfoMenuProvider } =
@@ -232,8 +241,9 @@ const SystemIcon: React.FC<SystemIconProps> = ({
     event.stopPropagation();
     event.preventDefault();
 
-    const { weaponFireService } = uiState.getServices();
     const gameData = uiState.getGameData();
+    const weaponFireService = new WeaponFireService();
+    weaponFireService.update(gameData);
 
     const targetActual = (() => {
       if (target) {
@@ -287,7 +297,12 @@ const SystemIcon: React.FC<SystemIconProps> = ({
     (!activeSystemId && mouseOveredSystem) || clicked
   );
 
-  const { weaponFireService } = uiState.getServices();
+  const weaponFireService = useMemo(() => {
+    const gameData = uiState.getGameData();
+    const weaponFireService = new WeaponFireService();
+    weaponFireService.update(gameData);
+    return weaponFireService;
+  }, [uiState]);
 
   const firing = weaponFireService.systemHasFireOrder(system);
   const reserved = Boolean(
@@ -316,6 +331,7 @@ const SystemIcon: React.FC<SystemIconProps> = ({
           systemInfoMenuProvider={menu || undefined}
           element={mouseOveredSystem || activeSystemElement || undefined}
           target={target || undefined}
+          right={right}
           {...rest}
         />
       )}
@@ -334,6 +350,7 @@ const SystemIcon: React.FC<SystemIconProps> = ({
             systemInfoMenuProvider={menu || undefined}
             element={mouseOveredSystem || activeSystemElement || undefined}
             target={target || undefined}
+            right={right}
             {...rest}
           />
         )}

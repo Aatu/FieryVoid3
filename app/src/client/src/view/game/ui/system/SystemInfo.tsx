@@ -187,7 +187,7 @@ type SystemInfoProps = {
   system: ShipSystem;
   element?: HTMLElement;
   scs: boolean;
-  right?: boolean;
+  right: boolean;
   uiState: UIState;
   ship: Ship;
   systemInfoMenuProvider?: TooltipComponentProvider;
@@ -198,7 +198,7 @@ const SystemInfo: React.FC<SystemInfoProps> = ({
   system,
   element,
   scs,
-  right = false,
+  right,
   uiState,
   ship,
   systemInfoMenuProvider,
@@ -222,6 +222,7 @@ const SystemInfo: React.FC<SystemInfoProps> = ({
 
   return (
     <TooltipContainer
+      right={right}
       relative={!scs}
       element={element}
       onClick={(e) => {

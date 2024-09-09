@@ -28,6 +28,10 @@ class GameShips {
     return this;
   }
 
+  removeShip(ship: Ship) {
+    this.ships = this.ships.filter((s) => s.id !== ship.id);
+  }
+
   getShips() {
     return this.ships;
   }

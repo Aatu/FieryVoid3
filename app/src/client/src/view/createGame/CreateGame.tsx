@@ -12,7 +12,7 @@ import GameData from "@fieryvoid3/model/src/game/GameData";
 import GameSlot from "@fieryvoid3/model/src/game/GameSlot";
 import { Offset } from "@fieryvoid3/model/src/hexagon";
 import Slots from "./Slots";
-import { redirect, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { createGame } from "../../api/game";
 import { useUser } from "../../state/userHooks";
 import GameStoreProvider from "../game/GameStoreProvider";

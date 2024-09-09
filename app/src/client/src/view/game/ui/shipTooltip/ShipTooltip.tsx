@@ -59,7 +59,12 @@ type Props = {
   right?: boolean;
 };
 
-const ShipTooltip: React.FC<Props> = ({ ui, ship, className, ...rest }) => {
+const ShipTooltip: React.FC<Props> = ({
+  ui,
+  ship,
+  className,
+  right = false,
+}) => {
   const [tooltipTab, setTooltipTab] = React.useState<TOOLTIP_TAB | null>(null);
   const { data: currentUser } = useUser();
   const { shipTooltipMenuProvider } = useGameStore(({ gameState }) => ({
@@ -67,7 +72,10 @@ const ShipTooltip: React.FC<Props> = ({ ui, ship, className, ...rest }) => {
   }));
   const uiState = useUiStateHandler();
 
-  const getMenu = () => {
+  const getMenu = (): React.FC<{
+    shipId: string;
+    selectTooltipTab: (tab: TOOLTIP_TAB | null) => void;
+  }> | null => {
     const newTooltipTab = getTooltipTab();
 
     if (!newTooltipTab) {
@@ -112,9 +120,10 @@ const ShipTooltip: React.FC<Props> = ({ ui, ship, className, ...rest }) => {
   const Menu = getMenu();
   const interactable = Boolean(Menu || tooltipTab);
 
+  console.log("right", right || undefined);
   return (
     <ShipTooltipContainer
-      $isRight={rest.right || undefined}
+      $isRight={right || undefined}
       className={className}
       $interactable={interactable || undefined}
     >
@@ -124,9 +133,9 @@ const ShipTooltip: React.FC<Props> = ({ ui, ship, className, ...rest }) => {
             shipName={ship.name}
             isMine={ship.player.is(currentUser || null)}
           />
-        </div>{" "}
+        </div>
         <div>
-          {getTabHeader()}{" "}
+          {getTabHeader()}
           <CloseButton
             onClick={() => {
               uiState.hideShipTooltip(ship);
@@ -137,28 +146,26 @@ const ShipTooltip: React.FC<Props> = ({ ui, ship, className, ...rest }) => {
       </InfoHeader>
       {Menu && (
         <Menu
-          uiState={uiState}
-          ship={ship}
+          shipId={ship.id}
           selectTooltipTab={(tab: TOOLTIP_TAB | null) => setTooltipTab(tab)}
-          {...rest}
         />
       )}
       {!tooltipTabActual && (
         <>
           {Menu && (
-            <WeaponTargetingList uiState={uiState} ship={ship} {...rest} />
+            <WeaponTargetingList uiState={uiState} ship={ship} right={right} />
           )}
           <ShipTooltipDetails ship={ship} />
-          <ShipWindow ship={ship} {...rest} />
+          <ShipWindow ship={ship} right={right} />
         </>
       )}
 
       {tooltipTabActual === TOOLTIP_TAB.TORPEDO_ATTACK && (
-        <TorpedoAttack ship={ship} uiState={uiState} {...rest} />
+        <TorpedoAttack ship={ship} uiState={uiState} right={right} />
       )}
 
       {tooltipTabActual === TOOLTIP_TAB.TORPEDO_DEFENSE && (
-        <TorpedoDefense ship={ship} uiState={uiState} {...rest} />
+        <TorpedoDefense ship={ship} uiState={uiState} />
       )}
     </ShipTooltipContainer>
   );

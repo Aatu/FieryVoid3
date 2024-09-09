@@ -1,7 +1,7 @@
 import GameData from "@fieryvoid3/model/src/game/GameData";
 import ShipSystem from "@fieryvoid3/model/src/unit/system/ShipSystem";
 import Ship from "@fieryvoid3/model/src/unit/Ship";
-import PhaseDirector, { Services } from "../phase/PhaseDirector";
+import PhaseDirector from "../phase/PhaseDirector";
 import { GameUIMode } from "./gameUiModes";
 import { GAME_PHASE } from "@fieryvoid3/model/src/game/gamePhase";
 import { MovementService } from "@fieryvoid3/model/src/movement";
@@ -11,6 +11,7 @@ import ReplayContext from "../phase/phaseStrategy/AutomaticReplayPhaseStrategy/R
 import CombatLogTorpedoAttack from "@fieryvoid3/model/src/combatLog/CombatLogTorpedoAttack";
 import CombatLogWeaponFire from "@fieryvoid3/model/src/combatLog/CombatLogWeaponFire";
 import { PhaseEventPayload } from "../phase/phaseStrategy/PhaseStrategy";
+import { TOOLTIP_TAB } from "./shipTooltip/ShipTooltip";
 
 export type TooltipComponentProvider = () => React.FC<{
   uiState: UIState;
@@ -82,6 +83,11 @@ export const defaultState: State = {
   waiting: false,
 };
 
+export type ShipTooltipMenuProviderProps = {
+  shipId: string;
+  selectTooltipTab: (tab: TOOLTIP_TAB | null) => void;
+};
+
 export type State = {
   lobby: boolean;
   selectedShipId: string | null;
@@ -92,7 +98,9 @@ export type State = {
   shipTooltip: ShipTooltipUIState[];
   turnReady: boolean;
   waiting: boolean;
-  shipTooltipMenuProvider: (() => React.FC) | null;
+  shipTooltipMenuProvider:
+    | (() => React.FC<ShipTooltipMenuProviderProps>)
+    | null;
   systemMenu: SystemMenuUiState;
   shipBadges: ShipBadgeUIState[];
   gameUiMode: { [key in GameUIMode]: boolean };
@@ -112,7 +120,6 @@ class UIState {
   private state: State;
   public dispatch: ((state: State) => void) | null = null;
   public phaseDirector: PhaseDirector | null;
-  public services: Services | null;
   private subscriptions: Subscriptions = {
     render: [],
     system: [],
@@ -125,7 +132,6 @@ class UIState {
   constructor(gameId: number) {
     this.gameData = new GameData({ id: gameId, players: [], ships: [] });
     this.phaseDirector = null;
-    this.services = null;
 
     this.state = defaultState;
   }
@@ -147,11 +153,11 @@ class UIState {
   }
 
   getServices() {
-    if (!this.services) {
+    if (!this.phaseDirector) {
       throw new Error("No services set");
     }
 
-    return this.services;
+    return this.phaseDirector.getServices();
   }
 
   getState(): State {
@@ -334,7 +340,6 @@ class UIState {
 
   setPhaseDirector(phaseDirector: PhaseDirector) {
     this.phaseDirector = phaseDirector;
-    this.services = phaseDirector.getServices();
   }
 
   customEvent(name: string, payload?: PhaseEventPayload) {
@@ -397,7 +402,9 @@ class UIState {
     this.customEvent("uiStateChanged");
   }
 
-  setTooltipMenuProvider(callBack: null | (() => React.FC<unknown>)) {
+  setTooltipMenuProvider(
+    callBack: null | (() => React.FC<ShipTooltipMenuProviderProps>)
+  ) {
     this.state.shipTooltipMenuProvider = callBack;
     this.updateState();
   }

@@ -22,6 +22,7 @@ type SystemIconsProps = {
   uiState: UIState;
   shooter: Ship;
   ship: Ship;
+  right: boolean;
 };
 
 const SystemIcons: React.FC<SystemIconsProps> = ({
@@ -30,7 +31,7 @@ const SystemIcons: React.FC<SystemIconsProps> = ({
   uiState,
   shooter,
   ship,
-  ...rest
+  right,
 }) => {
   const targetShip = (system: ShipSystem) => {
     const hitChance = system.callHandler(
@@ -98,7 +99,7 @@ const SystemIcons: React.FC<SystemIconsProps> = ({
         target={ship}
         ship={shooter}
         onSystemClicked={getOnClick(system)}
-        {...rest}
+        right={right}
       />
     );
   });
@@ -206,12 +207,14 @@ type Props = {
   ship: Ship;
   uiState: UIState;
   showZeroHitChance?: boolean;
+  right: boolean;
 };
 
 const WeaponTargetingList: React.FC<Props> = ({
   ship,
   uiState,
   showZeroHitChance = true,
+  right,
   ...rest
 }) => {
   const { weaponFireService, torpedoAttackService } = uiState.getServices();
@@ -250,6 +253,7 @@ const WeaponTargetingList: React.FC<Props> = ({
           uiState={uiState}
           shooter={shooter}
           ship={ship}
+          right={right}
         />
       </Container>
     </>

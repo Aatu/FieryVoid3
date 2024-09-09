@@ -8,10 +8,11 @@ const Container = styled.div`
   z-index: 3;
 `;
 
-const TorpedoAttack: React.FC<{ uiState: UIState; ship: Ship }> = ({
-  uiState,
-  ship: target,
-}) => {
+const TorpedoAttack: React.FC<{
+  uiState: UIState;
+  ship: Ship;
+  right: boolean;
+}> = ({ uiState, ship: target, right }) => {
   const gameData = uiState.getGameData();
 
   const ships = gameData.ships
@@ -38,6 +39,7 @@ const TorpedoAttack: React.FC<{ uiState: UIState; ship: Ship }> = ({
           uiState={uiState}
           ship={target}
           key={`weaponTargetingList-${shooter.id}`}
+          right={right}
         />
       ))}
     </Container>

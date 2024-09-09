@@ -4,10 +4,12 @@ import OEWButtons from "../electronicWarfare/OEWButtons";
 import { TOOLTIP_TAB } from "./ShipTooltip";
 import CCEWButtons from "../electronicWarfare/CCEWButtons";
 import { useUser } from "../../../../state/userHooks";
-import UIState from "../UIState";
+import UIState, { ShipTooltipMenuProviderProps } from "../UIState";
 import Ship from "@fieryvoid3/model/src/unit/Ship";
 import { useForceRerender } from "../../../../util/useForceRerender";
 import { SYSTEM_HANDLERS } from "@fieryvoid3/model/src/unit/system/strategy/types/SystemHandlersTypes";
+import { useSelectedShip, useShip } from "../../../../state/useShip";
+import { useUiStateHandler } from "../../../../state/useUIStateHandler";
 
 const toggleRadiators = (ship: Ship, uiState: UIState, on: boolean = false) => {
   ship.systems
@@ -99,21 +101,20 @@ const hasOnlineInterceptors = (ship: Ship) =>
     .filter((system) => system.power.canSetOffline())
     .filter((system) => system.power.isOnline()).length > 0;
 
-type Props = {
-  ship: Ship;
-  uiState: UIState;
-  selectTooltipTab: (tab: TOOLTIP_TAB) => void;
-};
-
-const GameShipTooltipMenu: React.FC<Props> = ({
-  ship,
-  uiState,
+const GameShipTooltipMenu: React.FC<ShipTooltipMenuProviderProps> = ({
+  shipId,
   selectTooltipTab,
 }) => {
+  const ship = useShip(shipId);
+  const uiState = useUiStateHandler();
   const { data: currentUser } = useUser();
   const rerender = useForceRerender();
 
-  const selectedShip = uiState.getSelectedShip();
+  const selectedShip = useSelectedShip();
+
+  if (!ship) {
+    return null;
+  }
 
   return (
     <TooltipMenu>
@@ -128,7 +129,6 @@ const GameShipTooltipMenu: React.FC<Props> = ({
       {ship.player.isUsers(currentUser || null) && selectedShip && (
         <CCEWButtons
           ship={ship}
-          uiState={uiState}
           ccew={selectedShip.electronicWarfare.getCcEw()}
         />
       )}
