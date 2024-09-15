@@ -2,6 +2,7 @@ import React, { ReactNode } from "react";
 import styled from "styled-components";
 import HomeSceneComponent from "./HomeSceneComponent";
 import Login from "../login/Login";
+import { Navigation } from "./Navigation";
 
 const Logo = styled.div`
   height: 58px;
@@ -18,6 +19,8 @@ export const ContainerMain = styled.div`
   width: 100%;
   min-width: 800px;
   margin-top: 150px;
+  display: grid;
+  grid-template-columns: 250px auto;
 `;
 
 export const LoginContainer = styled.div`
@@ -37,7 +40,10 @@ export const BaseView: React.FC<{ children: ReactNode }> = ({ children }) => {
         <Login />
       </LoginContainer>
 
-      <ContainerMain>{children}</ContainerMain>
+      <ContainerMain>
+        <Navigation />
+        {children}
+      </ContainerMain>
     </>
   );
 };

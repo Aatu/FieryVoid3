@@ -62,9 +62,15 @@ type Props = {
   faction: Faction;
   isOpen?: boolean;
   onClick?: MouseEventHandler;
+  buyShip?: (ship: Ship) => void;
 };
 
-export const FactionCard: React.FC<Props> = ({ faction, isOpen, onClick }) => {
+export const FactionCard: React.FC<Props> = ({
+  faction,
+  isOpen,
+  onClick,
+  buyShip,
+}) => {
   const [ships, setShips] = useState<Ship[]>([]);
 
   const gameData = useGameData();
@@ -128,6 +134,7 @@ export const FactionCard: React.FC<Props> = ({ faction, isOpen, onClick }) => {
               key={`shipcard-${ship.shipModel}`}
               ship={ship}
               size={200}
+              buyShip={buyShip}
             />
           ))}
         </ShipList>

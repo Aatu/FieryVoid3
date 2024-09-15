@@ -10,6 +10,7 @@ export const useUser = () =>
 
       return userData ? new User(userData) : null;
     },
+    refetchOnMount: false,
   });
 
 export const useLoginUser = () => {

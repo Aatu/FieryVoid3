@@ -485,7 +485,16 @@ class UIState {
       (tooltip) => tooltip.ship.id !== ship.id
     );
 
-    this.customEvent("shipTooltipHidden", { ship: Ship });
+    this.customEvent("shipTooltipHidden", { ship });
+    this.updateState();
+  }
+
+  hideAllShipTooltips() {
+    this.getState().shipTooltip.forEach(({ ship }) => {
+      this.customEvent("shipTooltipHidden", { ship });
+    });
+
+    this.state.shipTooltip = [];
     this.updateState();
   }
 

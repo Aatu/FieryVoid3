@@ -63,6 +63,7 @@ class GameSlot {
 
   addShip(ship: Ship) {
     this.shipIds.push(ship.getId());
+    ship.slotId = this.id;
   }
 
   isTaken() {

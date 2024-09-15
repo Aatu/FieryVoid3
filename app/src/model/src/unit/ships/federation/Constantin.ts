@@ -3,7 +3,7 @@ import systems from "../../system/index";
 
 class Constantin extends Ship {
   setShipProperties() {
-    this.shipTypeName = "Constantin battle ship";
+    this.shipTypeName = "Constantin battleship";
     this.accelcost = 3;
     this.rollcost = 3;
     this.pivotcost = 3;

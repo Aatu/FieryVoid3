@@ -26,11 +26,8 @@ const greyButton = css`
   font-size: 12px;
   text-transform: uppercase;
   display: flex;
-  flex-grow: 1;
-  flex-basis: 100%;
   border: none;
   margin: 3px 8px 0px 8px;
-
   flex-grow: 1;
   flex-basis: calc(50% - 16px);
 
@@ -123,8 +120,10 @@ export const Button: React.FC<ButtonProps> = ({
   buttonstyle,
   onClick,
   children,
+  className,
 }) => (
   <ButtonContainer
+    className={className}
     icon={IconComponent || undefined}
     $buttonstyle={buttonstyle}
     onClick={onClick}

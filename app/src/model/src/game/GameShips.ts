@@ -21,7 +21,7 @@ class GameShips {
 
   addShip(ship: Ship) {
     if (ship.id && this.hasShipById(ship.id)) {
-      throw new Error("Duplicate ship is added to gamedata");
+      throw new Error(`Duplicate ship is added to gamedata id: "${ship.id}"`);
     }
 
     this.ships.push(ship);
