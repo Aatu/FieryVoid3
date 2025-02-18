@@ -12,6 +12,10 @@ class GameDataService {
     this.gameDataCache = {};
   }
 
+  getCachedOptional(id: number): CachedGameData | undefined {
+    return this.gameDataCache[id];
+  }
+
   getCached(id: number): CachedGameData {
     let cached = this.gameDataCache[id];
     if (!cached) {
@@ -63,7 +67,7 @@ class GameDataService {
 
   async releaseGame(key: string, gameId: number) {
     try {
-      await this.getCached(gameId).cancel(key);
+      await this.getCachedOptional(gameId)?.cancel(key);
     } catch (e) {
       this.clearCache(gameId);
       throw e;

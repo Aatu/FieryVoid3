@@ -26,6 +26,11 @@ class GameDataRepository {
     try {
       conn = await this.db.getConnection();
       const gameData = await this.getGame(conn, id, turn);
+
+      if (!gameData) {
+        throw new Error(`Game with id ${id} not found`);
+      }
+
       const players = await this.getPlayersInGame(conn, id);
 
       if (!turn) {
@@ -166,6 +171,10 @@ class GameDataRepository {
       )
     )[0];
 
+    if (!response) {
+      return null;
+    }
+
     if (turn === null) {
       turn = response.turn || 0;
     }
@@ -273,9 +282,9 @@ class GameDataRepository {
     }>(
       conn,
       `SELECT 
-        CAST(UuidFromBin(id) as CHAR) as id,
+         id,
         user_id as userId,
-        CAST(UuidFromBin(slot_id) as CHAR) as slotId,
+        slot_id as slotId,
         name,
         ship_class as shipClass
       FROM ship
@@ -300,11 +309,11 @@ class GameDataRepository {
         name,
         ship_class
       ) VALUES (
-        UuidToBin(?),?,?,UuidToBin(?),?,?
+        ?,?,?,?,?,?
       ) ON DUPLICATE KEY UPDATE
         game_id = ?,
         user_id = ?,
-        slot_id = UuidToBin(?),
+        slot_id = ?,
         name = ?,
         ship_class = ?`,
       [
@@ -357,7 +366,7 @@ class GameDataRepository {
     return this.db.query<{ shipId: string; data: SerializedMovementOrder }>(
       conn,
       `SELECT  
-        CAST(UuidFromBin(ship_id) as CHAR) as shipId,
+        ship_id as shipId,
         data
       FROM ship_movement
       WHERE game_id = ? and turn = ?
@@ -375,34 +384,48 @@ class GameDataRepository {
       return;
     }
 
-    return conn.batch(
-      `INSERT INTO ship_movement (
-      id,
-      game_id,
-      ship_id,
-      turn,
-      movement_index,
-      data
-    ) VALUES (
-      UuidToBin(?),?,UuidToBin(?),?,?,?
-    ) ON DUPLICATE KEY UPDATE data = ?`,
-      ship.movement.map((move) => [
-        move.id,
-        gameId,
-        ship.id,
-        move.turn,
-        move.index,
-        JSON.stringify(move),
-        JSON.stringify(move),
-      ])
-    );
+    const params = ship.movement.map((move) => [
+      move.id,
+      gameId,
+      ship.id,
+      move.turn,
+      move.index,
+      JSON.stringify(move),
+      JSON.stringify(move),
+    ]);
+
+    try {
+      const result = await conn.batch(
+        `INSERT INTO ship_movement (
+        id,
+        game_id,
+        ship_id,
+        turn,
+        movement_index,
+        data
+      ) VALUES (
+        ?,?,?,?,?,?
+      ) ON DUPLICATE KEY UPDATE data = ?`,
+        params
+      );
+
+      return result;
+    } catch (error) {
+      console.error("Error saving ship movement");
+      console.error(error);
+      // @ts-expect-error - debug shit
+      console.error("SQL", error?.sql);
+      console.error("sql params: ", params);
+
+      throw error;
+    }
   }
 
   async getShipDataForGame(conn: Connection | null, id: number, turn: number) {
     return this.db.query<{ shipId: string; data: ShipData }>(
       conn,
       `SELECT 
-        CAST(UuidFromBin(ship_id) as CHAR) as shipId,
+        ship_id as shipId,
         data
       FROM game_ship_data
       WHERE game_id = ? and turn = ?`,
@@ -425,7 +448,7 @@ class GameDataRepository {
         turn,
         data
       ) VALUES (
-          ?,UuidToBin(?),?,?
+          ?,?,?,?
       ) ON DUPLICATE KEY UPDATE
         data = ?`,
         [gameId, data.id || "", turn, data.shipData || {}, data.shipData || {}]

@@ -3,32 +3,6 @@ DROP DATABASE IF EXISTS fieryvoidtest_${dbName};
 CREATE DATABASE fieryvoidtest_${dbName};
 USE fieryvoidtest_${dbName};
 
-DROP FUNCTION IF EXISTS UuidToBin;
-CREATE FUNCTION UuidToBin(_uuid BINARY(36))
-    RETURNS BINARY(16)
-    LANGUAGE SQL  DETERMINISTIC  CONTAINS SQL  SQL SECURITY INVOKER
-RETURN
-    UNHEX(CONCAT(
-        SUBSTR(_uuid, 15, 4),
-        SUBSTR(_uuid, 10, 4),
-        SUBSTR(_uuid,  1, 8),
-        SUBSTR(_uuid, 20, 4),
-        SUBSTR(_uuid, 25) ));
-
-
-DROP FUNCTION IF EXISTS UuidFromBin;
-CREATE FUNCTION UuidFromBin(_bin BINARY(16))
-    RETURNS BINARY(36)
-    LANGUAGE SQL  DETERMINISTIC  CONTAINS SQL  SQL SECURITY INVOKER
-RETURN
-    LCASE(CONCAT_WS('-',
-        HEX(SUBSTR(_bin,  5, 4)),
-        HEX(SUBSTR(_bin,  3, 2)),
-        HEX(SUBSTR(_bin,  1, 2)),
-        HEX(SUBSTR(_bin,  9, 2)),
-        HEX(SUBSTR(_bin, 11))
-              ));
-
 DROP TABLE IF EXISTS user;
 CREATE TABLE user (
   id int(11) NOT NULL AUTO_INCREMENT,
@@ -80,10 +54,10 @@ CREATE TABLE game_player (
 
 DROP TABLE IF EXISTS ship;
 CREATE TABLE ship (
-  id BINARY(16) NOT NULL,
+  id UUID NOT NULL,
   user_id int(11) NOT NULL,
   game_id int(11) NOT NULL,
-  slot_id BINARY(16) NOT NULL,
+  slot_id UUID NOT NULL,
   name varchar(200) NOT NULL,
   ship_class varchar(45) NOT NULL,
   PRIMARY KEY (id),
@@ -92,8 +66,8 @@ CREATE TABLE ship (
 
 DROP TABLE IF EXISTS ship_movement;
 CREATE TABLE ship_movement (
-  id BINARY(16) NOT NULL,
-  ship_id BINARY(16) NOT NULL,
+  id UUID NOT NULL,
+  ship_id UUID NOT NULL,
   game_id int(11) NOT NULL,
   turn int (11) NOT NULL,
   movement_index int (11) NOT NULL,
@@ -105,7 +79,7 @@ CREATE TABLE ship_movement (
 DROP TABLE IF EXISTS game_ship_data;
 CREATE TABLE game_ship_data (
   game_id int(11) NOT NULL,
-  ship_id BINARY(16) NOT NULL,
+  ship_id UUID NOT NULL,
   turn int(11) NOT NULL,
   data JSON DEFAULT '{}',
   CHECK (JSON_VALID(data)),

@@ -14,6 +14,7 @@ class TestDbConnection extends DbConnection {
       database: `fieryvoidtest_${dbName}`,
       connectionLimit: 5,
       multipleStatements: true,
+      trace: true,
     });
 
     this.dbName = dbName;
@@ -24,6 +25,7 @@ class TestDbConnection extends DbConnection {
       password: "root",
       connectionLimit: 5,
       multipleStatements: true,
+      trace: true,
     });
   }
 
