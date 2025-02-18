@@ -17,14 +17,7 @@ export type Connection = {
 };
 */
 
-type Config = {
-  host: string;
-  user: string;
-  password: string;
-  database?: string;
-  connectionLimit: number;
-  multipleStatements?: boolean;
-};
+type Config = Record<string, unknown>;
 
 class DbConnection {
   protected pool: mariadb.Pool;
@@ -51,7 +44,8 @@ class DbConnection {
     payload: (string | number | null)[] = []
   ): Promise<T> {
     const response = await this.query(conn, query, payload);
-    return (response as unknown as { insertId: T }).insertId;
+    const insertId = (response as unknown as { insertId: T }).insertId;
+    return typeof insertId === "bigint" ? (Number(insertId) as T) : insertId;
   }
 
   async query<T>(

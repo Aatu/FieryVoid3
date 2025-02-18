@@ -86,7 +86,9 @@ class CachedGameData {
 
   async cancel(key: string) {
     if (key !== this.key) {
-      throw new Error("Wrong key for gamedata update");
+      throw new Error(
+        `Wrong key for gamedata update key: '${key}', this.key: '${this.key}'`
+      );
     }
 
     this.key = null;

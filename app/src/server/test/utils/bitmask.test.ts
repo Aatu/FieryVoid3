@@ -18,30 +18,30 @@ test("opacity and fade values are saved propely", () => {
   expect(fadeOutSpeed).toEqual(200);
 });
 
-test("opacity out of bounds will throw an error", () => {
-  expect(async () => storeOpacityAndFade(2, 100, 200)).rejects.toThrow(
+test("opacity out of bounds will throw an error", async () => {
+  await expect(async () => storeOpacityAndFade(2, 100, 200)).rejects.toThrow(
     "opacity must be in the range 0 to 1"
   );
 
-  expect(async () => storeOpacityAndFade(-1, 100, 200)).rejects.toThrow(
+  await expect(async () => storeOpacityAndFade(-1, 100, 200)).rejects.toThrow(
     "opacity must be in the range 0 to 1"
   );
 });
 
-test("fade values out of bounds will throw an error", () => {
-  expect(async () => storeOpacityAndFade(1, 41242412, 200)).rejects.toThrow(
+test("fade values out of bounds will throw an error", async () => {
+  await expect(async () =>
+    storeOpacityAndFade(1, 41242412, 200)
+  ).rejects.toThrow("fadeInSpeed must be in the range 0 to 4095");
+
+  await expect(async () => storeOpacityAndFade(1, -123, 200)).rejects.toThrow(
     "fadeInSpeed must be in the range 0 to 4095"
   );
 
-  expect(async () => storeOpacityAndFade(1, -123, 200)).rejects.toThrow(
-    "fadeInSpeed must be in the range 0 to 4095"
-  );
+  await expect(async () =>
+    storeOpacityAndFade(1, 0, 2412421412)
+  ).rejects.toThrow("fadeOutSpeed must be in the range 0 to 4095");
 
-  expect(async () => storeOpacityAndFade(1, 0, 2412421412)).rejects.toThrow(
-    "fadeOutSpeed must be in the range 0 to 4095"
-  );
-
-  expect(async () => storeOpacityAndFade(1, 2047, -2123)).rejects.toThrow(
+  await expect(async () => storeOpacityAndFade(1, 2047, -2123)).rejects.toThrow(
     "fadeOutSpeed must be in the range 0 to 4095"
   );
 });
