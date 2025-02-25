@@ -12,8 +12,6 @@ import TestDatabaseConnection from "../support/TestDatabaseConnection";
 import Offset from "../../../model/src/hexagon/Offset";
 import GameData from "../../../model/src/game/GameData";
 import { User } from "../../../model/src/User/User";
-import { a } from "vitest/dist/chunks/suite.CcK46U-P";
-import { SYSTEM_HANDLERS } from "../../../model/src/unit/system/strategy/types/SystemHandlersTypes";
 
 const startMove = new MovementOrder(
   null,
