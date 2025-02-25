@@ -4,20 +4,21 @@
   "main": "index.ts",
   "license": "MIT",
   "dependencies": {
-    "@dice-roller/rpg-dice-roller": "^5.5.0",
+    "@dice-roller/rpg-dice-roller": "^5.5.1",
     "bcrypt": "^5.1.1",
-    "dotenv": "^16.4.5",
-    "three": "^0.167.1",
-    "typescript": "^5.5.4",
-    "uuid": "^10.0.0",
-    "yup": "^1.4.0"
+    "dotenv": "^16.4.7",
+    "three": "^0.173.0",
+    "typescript": "^5.7.3",
+    "uuid": "^11.1.0",
+    "yup": "^1.6.1"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
-    "@types/three": "^0.167.1",
+    "@types/three": "^0.173.0",
     "@types/uuid": "^10.0.0"
   },
   "scripts": {
+    "preinstall": "npx only-allow pnpm",
     "typecheck": "tsc --noEmit",
     "build": "tsc"
   }
