@@ -24,7 +24,7 @@
     "scheduler": "^0.25.0",
     "stats.js": "^0.17.0",
     "styled-components": "^6.1.15",
-    "three": "^0.173.0",
+    "three": "^0.182.0",
     "use-context-selector": "^2.0.0",
     "uuid": "^11.1.0",
     "yup": "^1.6.1",

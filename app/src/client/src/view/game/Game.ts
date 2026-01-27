@@ -37,11 +37,11 @@ class Game {
       this.uiState,
       this.currentUser,
       this.coordinateConverter,
-      this.gameConnector
+      this.gameConnector,
     );
     this.gameScene = new GameScene(
       this.phaseDirector,
-      this.coordinateConverter
+      this.coordinateConverter,
     );
     this.gameSettings = new GameSettings().load();
     this.sceneElement = null;
@@ -96,7 +96,7 @@ class Game {
 
   onMouseUp(
     position: { x: number; y: number; xR: number; yR: number },
-    button: number
+    button: number,
   ) {
     if (!this.init) {
       return;
@@ -109,7 +109,7 @@ class Game {
     const hexPos = this.coordinateConverter.fromGameToHex(gamePos);
 
     const payload = new PositionObject(position, gamePos, hexPos, entity);
-    console.log(payload.hex);
+    console.log(payload.hex, payload.game);
 
     if (button && button === 2 && entity) {
       this.phaseDirector.relayEvent("shipRightClicked", { position: payload });

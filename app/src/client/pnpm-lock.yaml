@@ -45,8 +45,8 @@ importers:
         specifier: ^6.1.15
         version: 6.1.15(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       three:
-        specifier: ^0.173.0
-        version: 0.173.0
+        specifier: ^0.182.0
+        version: 0.182.0
       use-context-selector:
         specifier: ^2.0.0
         version: 2.0.0(react@19.0.0)(scheduler@0.25.0)
@@ -1183,8 +1183,8 @@ packages:
     resolution: {integrity: sha512-qpCAvRl9stuOHveKsn7HncJRvv501qIacKzQlO/+Lwxc9+0q2wLyv4Dfvt80/DPn2pqOBsJdDiogXGR9+OvwRw==}
     engines: {node: '>=8'}
 
-  three@0.173.0:
-    resolution: {integrity: sha512-AUwVmViIEUgBwxJJ7stnF0NkPpZxx1aZ6WiAbQ/Qq61h6I9UR4grXtZDmO8mnlaNORhHnIBlXJ1uBxILEKuVyw==}
+  three@0.182.0:
+    resolution: {integrity: sha512-GbHabT+Irv+ihI1/f5kIIsZ+Ef9Sl5A1Y7imvS5RQjWgtTPfPnZ43JmlYI7NtCRDK9zir20lQpfg8/9Yd02OvQ==}
 
   tiny-case@1.0.3:
     resolution: {integrity: sha512-Eet/eeMhkO6TX8mnUteS9zgPbUMQa4I6Kkp5ORiBD5476/m+PIRiumP5tmh5ioJpH7k51Kehawy2UDfsnxxY8Q==}
@@ -2309,7 +2309,7 @@ snapshots:
     dependencies:
       has-flag: 4.0.0
 
-  three@0.173.0: {}
+  three@0.182.0: {}
 
   tiny-case@1.0.3: {}
 

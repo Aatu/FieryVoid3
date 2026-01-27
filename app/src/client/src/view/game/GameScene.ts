@@ -7,6 +7,7 @@ import GameCamera from "./GameCamera";
 import PhaseDirector from "./phase/PhaseDirector";
 import { CoordinateConverter } from "@fieryvoid3/model/src/utils/CoordinateConverter";
 import { ZOOM_MAX, ZOOM_MIN } from "@fieryvoid3/model/src/config/gameConfig";
+import TerrainRenderer from "./renderer/TerrainRenderer";
 
 //window.THREE = THREE;
 
@@ -14,6 +15,7 @@ class GameScene {
   private phaseDirector: PhaseDirector;
   private coordinateConverter: CoordinateConverter;
   private hexGridRenderer: HexGridRenderer;
+  private terrainRenderer: TerrainRenderer;
   private particleEmitterContainer: ParticleEmitterContainer | null;
   private scene: THREE.Scene | null;
   private camera: GameCamera | null;
@@ -33,11 +35,12 @@ class GameScene {
 
   constructor(
     phaseDirector: PhaseDirector,
-    coordinateConverter: CoordinateConverter
+    coordinateConverter: CoordinateConverter,
   ) {
     this.phaseDirector = phaseDirector;
     this.coordinateConverter = coordinateConverter;
     this.hexGridRenderer = new HexGridRenderer();
+    this.terrainRenderer = new TerrainRenderer();
     this.particleEmitterContainer = null;
     this.scene = null;
     this.camera = null;
@@ -58,7 +61,7 @@ class GameScene {
   init(
     element: HTMLElement,
     { width, height }: { width: number; height: number },
-    gameId: number
+    gameId: number,
   ) {
     this.deactivated = false;
     this.element = element;
@@ -67,7 +70,7 @@ class GameScene {
 
     this.particleEmitterContainer = new ParticleEmitterContainer(
       this.scene,
-      2000
+      2000,
     );
 
     this.width = width;
@@ -79,7 +82,7 @@ class GameScene {
     this.phaseDirector.init(
       this.scene,
       this.particleEmitterContainer,
-      this.camera
+      this.camera,
     );
 
     this.starFieldScene = new THREE.Scene();
@@ -89,7 +92,7 @@ class GameScene {
       (this.zoom * this.height) / 2,
       (this.zoom * this.height) / -2,
       -4000,
-      30000
+      30000,
     );
 
     this.starFieldCamera.position.set(0, 0, 500);
@@ -166,6 +169,7 @@ class GameScene {
     this.initialized = true;
     this.hexGridRenderer.renderHexGrid(this.scene);
     this.starField = new StarField(this.starFieldScene, gameId);
+    this.terrainRenderer.init(this.scene);
 
     //this.stats = new Stats();
     //this.stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
@@ -272,6 +276,11 @@ class GameScene {
 
     this.animateZoom();
     this.starField!.render();
+
+    // Update terrain with camera position
+    const cameraPos = this.camera!.getPosition();
+    this.terrainRenderer!.update({ x: cameraPos.x, y: cameraPos.y });
+    this.terrainRenderer!.render();
 
     /*
     console.log(

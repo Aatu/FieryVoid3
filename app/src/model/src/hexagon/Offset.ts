@@ -91,7 +91,7 @@ class Offset {
     return this.toCube().moveToDirection(direction, steps).toOffset();
   }
 
-  equals(offset: Offset) {
+  equals(offset: Offset | { q: number; r: number }) {
     return this.q === offset.q && this.r === offset.r;
   }
 

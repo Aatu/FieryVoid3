@@ -1,39 +1,34 @@
+import * as THREE from "three";
+import TerrainGrid from "../terrain/TerrainGrid";
+
 class TerrainRenderer {
+  private terrainGrid: TerrainGrid | null = null;
+
   constructor() {}
 
-  init() {}
-
-  update() {
-    //TODO: This creates new objects every time gamedata updates.
-    return;
-
-    /*
-    this.terrain = terrain;
-
-    this.terrainObjects = this.terrain.getEntities().forEach((entity) => ({
-      entity,
-      object: this.createObject(entity),
-    }));
-
-    */
+  init(scene: THREE.Scene) {
+    // Create a 3x3 grid (numPlanes = 1)
+    this.terrainGrid = new TerrainGrid(scene, 2);
   }
 
-  /*
-  async createObject(entity) {
-    const object = await loadObject("/img/3d/sphere/scene.gltf");
+  update(cameraPosition: { x: number; y: number }) {
+    if (!this.terrainGrid) {
+      return;
+    }
 
-    const material = object.children[0].material;
-
-    material.emissive = new THREE.Color(1, 1, 1);
-
-    object.position.set(0, 0, 0);
-    const scale = HexagonMath.getHexWidth() * entity.diameter;
-    object.scale.set(scale, scale, scale);
-    this.scene.add(object);
+    this.terrainGrid.update(cameraPosition);
   }
-    */
 
-  render() {}
+  render() {
+    // Animation or updates can be added here later
+  }
+
+  dispose() {
+    if (this.terrainGrid) {
+      this.terrainGrid.dispose();
+      this.terrainGrid = null;
+    }
+  }
 }
 
 export default TerrainRenderer;
