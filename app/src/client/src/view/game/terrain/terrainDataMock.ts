@@ -30,7 +30,7 @@ export const getHeightAt = (hex: Offset): number => {
     return 1;
   }
 
-  if (hex.equals({ q: -3, r: 31 })) {
+  if (hex.equals({ q: -3, r: 31 }) || hex.equals({ q: -1, r: 39 })) {
     return 1;
   }
 

@@ -3,7 +3,7 @@ import { HEX_SIZE } from "@fieryvoid3/model/src/config/gameConfig";
 import { createTerrainShaderMaterial } from "./terrainShader";
 import { HexGeometry } from "./HexGeometry";
 
-const DEBUG = false;
+const DEBUG = true;
 
 interface TerrainPlane {
   mesh: THREE.Mesh;
@@ -28,7 +28,6 @@ class TerrainGrid {
   private pendingGeometry: Map<string, ((geometry: HexGeometry) => void)[]> =
     new Map();
   private readonly WORKER_COUNT = 4;
-  private readonly SEGMENTS = 100;
   private readonly GRID_Z = 0;
   private readonly GRID_SIZE = 64;
 
@@ -40,8 +39,8 @@ class TerrainGrid {
     const coreGridHeight = this.GRID_SIZE;
     const borderSize = 1;
 
-    const renderGridWidth = coreGridWidth + 2 * borderSize;
-    const renderGridHeight = coreGridHeight + 2 * borderSize;
+    const renderGridWidth = coreGridWidth + borderSize;
+    const renderGridHeight = coreGridHeight + borderSize;
 
     this.planeWidth = renderGridWidth * Math.sqrt(3) * HEX_SIZE;
     this.planeHeight = renderGridHeight * 1.5 * HEX_SIZE;
@@ -70,8 +69,8 @@ class TerrainGrid {
         const cacheKey = `${gridX},${gridY}`;
 
         const geometry = new HexGeometry(
-          this.GRID_SIZE + 2,
-          this.GRID_SIZE + 2,
+          this.GRID_SIZE + 1,
+          this.GRID_SIZE + 1,
           gridX * this.GRID_SIZE - 1,
           gridY * this.GRID_SIZE - 1,
         );
@@ -117,8 +116,8 @@ class TerrainGrid {
     const geometry =
       cachedGeometry ||
       new HexGeometry(
-        this.GRID_SIZE + 2,
-        this.GRID_SIZE + 2,
+        this.GRID_SIZE + 1,
+        this.GRID_SIZE + 1,
         gridX * this.GRID_SIZE - 1,
         gridY * this.GRID_SIZE - 1,
       );
@@ -128,16 +127,15 @@ class TerrainGrid {
       this.planeHeight,
       this.borderWidth,
       this.borderHeight,
+      gridX,
+      gridY,
+      DEBUG,
     );
 
     const mesh = new THREE.Mesh(geometry, material);
 
     // Position mesh at the geometry's origin
-    mesh.position.set(
-      geometry.originX,
-      geometry.originY,
-      this.GRID_Z,
-    );
+    mesh.position.set(geometry.originX, geometry.originY, this.GRID_Z);
 
     this.scene.add(mesh);
 
@@ -177,8 +175,8 @@ class TerrainGrid {
       this.workerIndex = (this.workerIndex + 1) % this.WORKER_COUNT;
 
       const tempGeometry = new HexGeometry(
-        this.GRID_SIZE + 2,
-        this.GRID_SIZE + 2,
+        this.GRID_SIZE + 1,
+        this.GRID_SIZE + 1,
         gridX * this.GRID_SIZE - 1,
         gridY * this.GRID_SIZE - 1,
       );
