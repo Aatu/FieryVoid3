@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { HEX_SIZE } from "@fieryvoid3/model/src/config/gameConfig";
 import { createTerrainShaderMaterial } from "./terrainShader";
+import { HexGeometry } from "./HexGeometry";
 
 const DEBUG = false;
 
@@ -21,16 +22,14 @@ class TerrainGrid {
   private borderHeight: number;
   private numPlanes: number;
   private terrainPlanes: TerrainPlane[] = [];
-  private geometryCache: Map<string, THREE.PlaneGeometry> = new Map();
+  private geometryCache: Map<string, HexGeometry> = new Map();
   private workers: Worker[] = [];
   private workerIndex: number = 0;
-  private pendingGeometry: Map<
-    string,
-    ((geometry: THREE.PlaneGeometry) => void)[]
-  > = new Map();
+  private pendingGeometry: Map<string, ((geometry: HexGeometry) => void)[]> =
+    new Map();
   private readonly WORKER_COUNT = 4;
   private readonly SEGMENTS = 100;
-  private readonly GRID_Z = -10;
+  private readonly GRID_Z = 0;
   private readonly GRID_SIZE = 64;
 
   constructor(scene: THREE.Scene, numPlanes: number) {
@@ -70,11 +69,11 @@ class TerrainGrid {
         const { gridX, gridY, positions } = e.data;
         const cacheKey = `${gridX},${gridY}`;
 
-        const geometry = new THREE.PlaneGeometry(
-          this.planeWidth,
-          this.planeHeight,
-          this.SEGMENTS,
-          this.SEGMENTS,
+        const geometry = new HexGeometry(
+          this.GRID_SIZE + 2,
+          this.GRID_SIZE + 2,
+          gridX * this.GRID_SIZE - 1,
+          gridY * this.GRID_SIZE - 1,
         );
 
         const positionAttr = geometry.attributes.position;
@@ -117,37 +116,26 @@ class TerrainGrid {
 
     const geometry =
       cachedGeometry ||
-      new THREE.PlaneGeometry(
-        this.planeWidth,
-        this.planeHeight,
-        this.SEGMENTS,
-        this.SEGMENTS,
+      new HexGeometry(
+        this.GRID_SIZE + 2,
+        this.GRID_SIZE + 2,
+        gridX * this.GRID_SIZE - 1,
+        gridY * this.GRID_SIZE - 1,
       );
 
-    const material = DEBUG
-      ? new THREE.MeshStandardMaterial({
-          color: new THREE.Color().setHSL(
-            (gridX +
-              this.numPlanes +
-              (gridY + this.numPlanes) * (2 * this.numPlanes + 1)) /
-              (2 * this.numPlanes + 1) ** 2,
-            0.3,
-            0.5,
-          ),
-          wireframe: true,
-        })
-      : createTerrainShaderMaterial(
-          this.planeWidth,
-          this.planeHeight,
-          this.borderWidth,
-          this.borderHeight,
-        );
+    const material = createTerrainShaderMaterial(
+      this.planeWidth,
+      this.planeHeight,
+      this.borderWidth,
+      this.borderHeight,
+    );
 
     const mesh = new THREE.Mesh(geometry, material);
 
+    // Position mesh at the geometry's origin
     mesh.position.set(
-      gridX * this.spacingWidth,
-      gridY * this.spacingHeight,
+      geometry.originX,
+      geometry.originY,
       this.GRID_Z,
     );
 
@@ -164,6 +152,8 @@ class TerrainGrid {
       this.requestGeometryDeformation(gridX, gridY, (deformedGeometry) => {
         mesh.geometry.dispose();
         mesh.geometry = deformedGeometry;
+        mesh.position.x = deformedGeometry.originX;
+        mesh.position.y = deformedGeometry.originY;
       });
     }
   }
@@ -171,7 +161,7 @@ class TerrainGrid {
   private requestGeometryDeformation(
     gridX: number,
     gridY: number,
-    callback: (geometry: THREE.PlaneGeometry) => void,
+    callback: (geometry: HexGeometry) => void,
   ) {
     const cacheKey = `${gridX},${gridY}`;
 
@@ -186,25 +176,27 @@ class TerrainGrid {
       const worker = this.workers[this.workerIndex];
       this.workerIndex = (this.workerIndex + 1) % this.WORKER_COUNT;
 
-      const tempGeometry = new THREE.PlaneGeometry(
-        this.planeWidth,
-        this.planeHeight,
-        this.SEGMENTS,
-        this.SEGMENTS,
+      const tempGeometry = new HexGeometry(
+        this.GRID_SIZE + 2,
+        this.GRID_SIZE + 2,
+        gridX * this.GRID_SIZE - 1,
+        gridY * this.GRID_SIZE - 1,
       );
       const positions = new Float32Array(
         tempGeometry.attributes.position.array,
       );
+      const originX = tempGeometry.originX;
+      const originY = tempGeometry.originY;
       tempGeometry.dispose();
 
       worker.postMessage(
         {
           gridX,
           gridY,
-          spacingWidth: this.spacingWidth,
-          spacingHeight: this.spacingHeight,
           vertexCount: positions.length / 3,
           positions,
+          originX,
+          originY,
         },
         [positions.buffer],
       );
@@ -249,15 +241,14 @@ class TerrainGrid {
           }
         }
 
-        plane.mesh.position.x = plane.gridX * this.spacingWidth;
-        plane.mesh.position.y = plane.gridY * this.spacingHeight;
-
         const cacheKey = `${plane.gridX},${plane.gridY}`;
         const cachedGeometry = this.geometryCache.get(cacheKey);
 
         if (cachedGeometry) {
           plane.mesh.geometry.dispose();
           plane.mesh.geometry = cachedGeometry;
+          plane.mesh.position.x = cachedGeometry.originX;
+          plane.mesh.position.y = cachedGeometry.originY;
         } else {
           this.requestGeometryDeformation(
             plane.gridX,
@@ -265,6 +256,8 @@ class TerrainGrid {
             (deformedGeometry) => {
               plane.mesh.geometry.dispose();
               plane.mesh.geometry = deformedGeometry;
+              plane.mesh.position.x = deformedGeometry.originX;
+              plane.mesh.position.y = deformedGeometry.originY;
             },
           );
         }

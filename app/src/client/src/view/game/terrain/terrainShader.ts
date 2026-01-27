@@ -72,6 +72,6 @@ export const createTerrainShaderMaterial = (
     vertexShader,
     fragmentShader,
     side: THREE.FrontSide,
-    wireframe: true,
+    wireframe: false,
   });
 };

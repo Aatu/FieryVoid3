@@ -1,6 +1,6 @@
 import * as THREE from "three";
 //import Stats from "stats.js";
-import HexGridRenderer from "./renderer/hexgrid/HexGridRender";
+import HexGridRenderer from "./renderer/hexgrid/HexGridRenderer";
 import StarField from "./terrain/StarField";
 import { ParticleEmitterContainer } from "./animation/particle";
 import GameCamera from "./GameCamera";

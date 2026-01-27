@@ -4,10 +4,10 @@ import { getHeightAt } from "./terrainDataMock";
 interface DeformRequest {
   gridX: number;
   gridY: number;
-  spacingWidth: number;
-  spacingHeight: number;
   vertexCount: number;
   positions: Float32Array;
+  originX: number;
+  originY: number;
 }
 
 interface DeformResponse {
@@ -17,17 +17,12 @@ interface DeformResponse {
 }
 
 self.onmessage = (e: MessageEvent<DeformRequest>) => {
-  const { gridX, gridY, spacingWidth, spacingHeight, vertexCount, positions } = e.data;
-
-  const planeWorldX = gridX * spacingWidth;
-  const planeWorldY = gridY * spacingHeight;
+  const { gridX, gridY, vertexCount, positions, originX, originY } = e.data;
 
   for (let i = 0; i < vertexCount; i++) {
-    const localX = positions[i * 3];
-    const localY = positions[i * 3 + 1];
-
-    const worldX = planeWorldX + localX;
-    const worldY = planeWorldY + localY;
+    // Convert local coordinates to world coordinates
+    const worldX = positions[i * 3] + originX;
+    const worldY = positions[i * 3 + 1] + originY;
 
     const hexOffset = coordinateConverter.fromGameToHex({
       x: worldX,
