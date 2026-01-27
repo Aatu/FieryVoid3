@@ -13,7 +13,7 @@ export const createTerrainShaderMaterial = (
   planeWidth: number,
   planeHeight: number,
   borderWidth: number,
-  borderHeight: number
+  borderHeight: number,
 ): THREE.ShaderMaterial => {
   const uniforms: TerrainShaderUniforms = {
     halfWidth: { value: planeWidth * 0.5 },
@@ -72,5 +72,6 @@ export const createTerrainShaderMaterial = (
     vertexShader,
     fragmentShader,
     side: THREE.FrontSide,
+    wireframe: true,
   });
 };

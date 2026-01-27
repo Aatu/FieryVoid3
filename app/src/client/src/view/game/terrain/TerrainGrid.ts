@@ -31,13 +31,14 @@ class TerrainGrid {
   private readonly WORKER_COUNT = 4;
   private readonly SEGMENTS = 100;
   private readonly GRID_Z = -10;
+  private readonly GRID_SIZE = 64;
 
   constructor(scene: THREE.Scene, numPlanes: number) {
     this.scene = scene;
     this.numPlanes = numPlanes;
 
-    const coreGridWidth = 64;
-    const coreGridHeight = 64;
+    const coreGridWidth = this.GRID_SIZE;
+    const coreGridHeight = this.GRID_SIZE;
     const borderSize = 1;
 
     const renderGridWidth = coreGridWidth + 2 * borderSize;
