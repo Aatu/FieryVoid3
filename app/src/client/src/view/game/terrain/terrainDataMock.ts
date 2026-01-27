@@ -1,4 +1,5 @@
 import { Offset } from "@fieryvoid3/model/src/hexagon";
+import PerlinNoise from "./perlinNoise";
 
 const WORLD_SIZE = 64 * 3;
 const TOTAL_HEXES = WORLD_SIZE * WORLD_SIZE;
@@ -34,4 +35,21 @@ export const getHeightAt = (hex: Offset): number => {
   }
 
   return 0;
+};
+
+const perlin = new PerlinNoise(12345);
+
+export const getHeightAt3 = (hex: Offset): number => {
+  const scale = 0.05;
+  const octaves = 4;
+  const persistence = 0.5;
+
+  const height = perlin.octaveNoise(
+    hex.q * scale,
+    hex.r * scale,
+    octaves,
+    persistence,
+  );
+
+  return (height + 1) * 5;
 };

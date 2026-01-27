@@ -29,7 +29,7 @@ class TerrainGrid {
     ((geometry: THREE.PlaneGeometry) => void)[]
   > = new Map();
   private readonly WORKER_COUNT = 4;
-  private readonly SEGMENTS = 200;
+  private readonly SEGMENTS = 100;
   private readonly GRID_Z = -10;
 
   constructor(scene: THREE.Scene, numPlanes: number) {
