@@ -10,6 +10,7 @@ interface TerrainPlane {
   material: THREE.ShaderMaterial | THREE.MeshStandardMaterial;
   gridX: number;
   gridY: number;
+  textureLookup: THREE.DataTexture | null;
 }
 
 class TerrainGrid {
@@ -23,11 +24,18 @@ class TerrainGrid {
   private numPlanes: number;
   private terrainPlanes: TerrainPlane[] = [];
   private geometryCache: Map<string, HexGeometry> = new Map();
+  private textureCache: Map<string, THREE.DataTexture> = new Map();
   private workers: Worker[] = [];
   private workerIndex: number = 0;
   private pendingGeometry: Map<
     string,
-    { geometry: HexGeometry; callbacks: ((geometry: HexGeometry) => void)[] }
+    {
+      geometry: HexGeometry;
+      callbacks: ((
+        geometry: HexGeometry,
+        texture: THREE.DataTexture,
+      ) => void)[];
+    }
   > = new Map();
   private readonly WORKER_COUNT = 4;
   private readonly GRID_Z = 0;
@@ -67,7 +75,7 @@ class TerrainGrid {
       );
 
       worker.onmessage = (e: MessageEvent) => {
-        const { gridX, gridY, positions } = e.data;
+        const { gridX, gridY, positions, textureData, textureSize } = e.data;
         const cacheKey = `${gridX},${gridY}`;
 
         const pending = this.pendingGeometry.get(cacheKey);
@@ -89,7 +97,21 @@ class TerrainGrid {
 
         this.geometryCache.set(cacheKey, geometry);
 
-        callbacks.forEach((callback) => callback(geometry));
+        // Create texture lookup from worker data
+        const texture = new THREE.DataTexture(
+          textureData,
+          textureSize,
+          textureSize,
+          THREE.RedFormat,
+          THREE.UnsignedByteType,
+        );
+        texture.needsUpdate = true;
+        texture.magFilter = THREE.NearestFilter;
+        texture.minFilter = THREE.NearestFilter;
+
+        this.textureCache.set(cacheKey, texture);
+
+        callbacks.forEach((callback) => callback(geometry, texture));
         this.pendingGeometry.delete(cacheKey);
       };
 
@@ -136,22 +158,33 @@ class TerrainGrid {
 
     this.scene.add(mesh);
 
-    this.terrainPlanes.push({
+    const plane: TerrainPlane = {
       mesh,
       material,
       gridX,
       gridY,
-    });
+      textureLookup: null,
+    };
+
+    this.terrainPlanes.push(plane);
 
     if (!cachedGeometry) {
       this.requestGeometryDeformation(
         gridX,
         gridY,
         geometry,
-        (deformedGeometry: HexGeometry) => {
+        (deformedGeometry: HexGeometry, texture: THREE.DataTexture) => {
           // Geometry is already updated in place, just need to update position if changed
           mesh.position.x = deformedGeometry.originX;
           mesh.position.y = deformedGeometry.originY;
+
+          // Update texture
+          if (plane.textureLookup) {
+            plane.textureLookup.dispose();
+          }
+          plane.textureLookup = texture;
+          (material as THREE.ShaderMaterial).uniforms.textureLookup.value =
+            texture;
         },
       );
     }
@@ -161,12 +194,14 @@ class TerrainGrid {
     gridX: number,
     gridY: number,
     geometry: HexGeometry,
-    callback: (geometry: HexGeometry) => void,
+    callback: (geometry: HexGeometry, texture: THREE.DataTexture) => void,
   ) {
     const cacheKey = `${gridX},${gridY}`;
 
     if (this.geometryCache.has(cacheKey)) {
-      callback(this.geometryCache.get(cacheKey)!);
+      const cachedGeometry = this.geometryCache.get(cacheKey)!;
+      const cachedTexture = this.textureCache.get(cacheKey)!;
+      callback(cachedGeometry, cachedTexture);
       return;
     }
 
@@ -188,6 +223,7 @@ class TerrainGrid {
           positions,
           originX,
           originY,
+          gridSize: this.GRID_SIZE,
         },
         [positions.buffer],
       );
@@ -234,12 +270,21 @@ class TerrainGrid {
 
         const cacheKey = `${plane.gridX},${plane.gridY}`;
         const cachedGeometry = this.geometryCache.get(cacheKey);
+        const cachedTexture = this.textureCache.get(cacheKey);
 
-        if (cachedGeometry) {
+        if (cachedGeometry && cachedTexture) {
           plane.mesh.geometry.dispose();
           plane.mesh.geometry = cachedGeometry;
           plane.mesh.position.x = cachedGeometry.originX;
           plane.mesh.position.y = cachedGeometry.originY;
+
+          // Update texture
+          if (plane.textureLookup) {
+            plane.textureLookup.dispose();
+          }
+          plane.textureLookup = cachedTexture;
+          (plane.material as THREE.ShaderMaterial).uniforms.textureLookup.value =
+            cachedTexture;
         } else {
           // Calculate world position for the new grid tile
           const positionX = plane.gridX * this.spacingWidth;
@@ -256,11 +301,19 @@ class TerrainGrid {
             plane.gridX,
             plane.gridY,
             newGeometry,
-            (deformedGeometry: HexGeometry) => {
+            (deformedGeometry: HexGeometry, texture: THREE.DataTexture) => {
               plane.mesh.geometry.dispose();
               plane.mesh.geometry = deformedGeometry;
               plane.mesh.position.x = deformedGeometry.originX;
               plane.mesh.position.y = deformedGeometry.originY;
+
+              // Update texture
+              if (plane.textureLookup) {
+                plane.textureLookup.dispose();
+              }
+              plane.textureLookup = texture;
+              (plane.material as THREE.ShaderMaterial).uniforms.textureLookup
+                .value = texture;
             },
           );
         }
@@ -273,6 +326,8 @@ class TerrainGrid {
     this.workers = [];
     this.geometryCache.forEach((geometry) => geometry.dispose());
     this.geometryCache.clear();
+    this.textureCache.forEach((texture) => texture.dispose());
+    this.textureCache.clear();
   }
 }
 

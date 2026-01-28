@@ -76,3 +76,11 @@ export const getHeightAt3 = (hex: Offset): number => {
 
   return (height + 1) * 5;
 };
+
+export const getTextureAt = (hex: Offset): number => {
+  if (hex.equals({ q: 7, r: 3 })) {
+    return 1;
+  }
+
+  return 0;
+};

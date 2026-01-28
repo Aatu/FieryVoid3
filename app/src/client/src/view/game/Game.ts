@@ -9,7 +9,7 @@ import coordinateConverter, {
 import { User } from "@fieryvoid3/model";
 import UIState from "./ui/UIState";
 import GameConnector from "./GameConnector";
-import { Cube, Offset } from "@fieryvoid3/model/src/hexagon";
+import { Offset } from "@fieryvoid3/model/src/hexagon";
 
 class Game {
   public gameId: number;

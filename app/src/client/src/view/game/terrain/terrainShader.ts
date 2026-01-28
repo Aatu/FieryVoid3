@@ -9,6 +9,7 @@ export interface TerrainShaderUniforms {
   lightDirection: { value: THREE.Vector3 };
   baseColor: { value: THREE.Color };
   showHexGrid: { value: boolean };
+  textureLookup: { value: THREE.DataTexture | null };
 }
 
 export const createTerrainShaderMaterial = (
@@ -40,6 +41,7 @@ export const createTerrainShaderMaterial = (
     lightDirection: { value: new THREE.Vector3(0.5, 0.5, 1).normalize() },
     baseColor: { value: color },
     showHexGrid: { value: true },
+    textureLookup: { value: null },
   };
 
   const vertexShader = `
@@ -70,22 +72,26 @@ export const createTerrainShaderMaterial = (
     uniform vec3 lightDirection;
     uniform vec3 baseColor;
     uniform bool showHexGrid;
+    uniform sampler2D textureLookup;
 
     varying vec3 vNormal;
     varying float vDiscardFlag;
     varying float vVertexType;
 
     void main() {
-    
+
       if (vDiscardFlag > 0.0) {
         discard;
       }
 
       vec3 normal = normalize(vNormal);
 
+      vec3 terrainColor = vec3(0.13, 0.55, 0.13); // Default green
+
+      // Apply lighting
       float diffuse = max(dot(normal, lightDirection), 0.0);
       vec3 ambient = vec3(0.25, 0.25, 0.25);
-      vec3 color = baseColor * (ambient + diffuse * 0.75);
+      vec3 color = terrainColor * (ambient + diffuse * 0.75);
 
       // Draw hex grid lines where vVertexType is low (near corners/edges)
       // vVertexType: 1.0 = center, 0.0 = corner

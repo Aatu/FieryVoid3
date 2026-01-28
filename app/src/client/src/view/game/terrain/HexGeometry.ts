@@ -41,6 +41,8 @@ export class HexGeometry extends THREE.BufferGeometry {
 
     // Map to track which corner vertex indices belong to each hexagon
     const hexCornerMap: Map<string, number[]> = new Map();
+    // Map to track which hexes share each corner vertex
+    const cornerHexMap: Map<string, { q: number; r: number }[]> = new Map();
 
     // Calculate the local offset (start 1 hex before 0 to create borders)
     const localOffsetQ = -1;
@@ -115,6 +117,15 @@ export class HexGeometry extends THREE.BufferGeometry {
             vertices.push(corners[i].x, corners[i].y, 0); // Use local coords for geometry
             vertexTypes.push(0.0); // Mark as corner vertex
             discardFlags.push(0.0); // Initially keep all corners
+
+            // Track this corner in the map
+            cornerHexMap.set(cornerKey, []);
+          }
+
+          // Add this hex to the list of hexes that share this corner
+          const hexList = cornerHexMap.get(cornerKey)!;
+          if (!hexList.some((h) => h.q === localQ && h.r === localR)) {
+            hexList.push({ q: localQ, r: localR });
           }
 
           // Track this corner as belonging to this hex
@@ -143,6 +154,15 @@ export class HexGeometry extends THREE.BufferGeometry {
             vertices.push(nextCorner.x, nextCorner.y, 0); // Use local coords for geometry
             vertexTypes.push(0.0); // Mark as corner vertex
             discardFlags.push(0.0); // Initially keep all corners
+
+            // Track this corner in the map
+            cornerHexMap.set(nextCornerKey, []);
+          }
+
+          // Add this hex to the list of hexes that share this corner
+          const nextHexList = cornerHexMap.get(nextCornerKey)!;
+          if (!nextHexList.some((h) => h.q === localQ && h.r === localR)) {
+            nextHexList.push({ q: localQ, r: localR });
           }
 
           indices.push(
@@ -214,6 +234,7 @@ export class HexGeometry extends THREE.BufferGeometry {
       "borderFlag",
       new THREE.Float32BufferAttribute(discardFlags, 1),
     );
+
     this.setIndex(indices);
     this.computeVertexNormals();
   }
