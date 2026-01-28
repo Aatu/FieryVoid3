@@ -9,7 +9,7 @@ import coordinateConverter, {
 import { User } from "@fieryvoid3/model";
 import UIState from "./ui/UIState";
 import GameConnector from "./GameConnector";
-import { Offset } from "@fieryvoid3/model/src/hexagon";
+import { Cube, Offset } from "@fieryvoid3/model/src/hexagon";
 
 class Game {
   public gameId: number;
@@ -109,7 +109,11 @@ class Game {
     const hexPos = this.coordinateConverter.fromGameToHex(gamePos);
 
     const payload = new PositionObject(position, gamePos, hexPos, entity);
-    console.log(payload.hex, payload.game);
+    console.log(
+      payload.hex,
+      new Offset(payload.hex).toCube().toString(),
+      payload.game,
+    );
 
     if (button && button === 2 && entity) {
       this.phaseDirector.relayEvent("shipRightClicked", { position: payload });

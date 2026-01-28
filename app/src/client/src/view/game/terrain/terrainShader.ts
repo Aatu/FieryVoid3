@@ -39,7 +39,7 @@ export const createTerrainShaderMaterial = (
     borderHeight: { value: borderHeight },
     lightDirection: { value: new THREE.Vector3(0.5, 0.5, 1).normalize() },
     baseColor: { value: color },
-    showHexGrid: { value: false },
+    showHexGrid: { value: true },
   };
 
   const vertexShader = `
