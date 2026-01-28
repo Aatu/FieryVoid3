@@ -31,7 +31,7 @@ class TerrainGrid {
   > = new Map();
   private readonly WORKER_COUNT = 4;
   private readonly GRID_Z = 0;
-  private readonly GRID_SIZE = 64;
+  private readonly GRID_SIZE = 32;
 
   constructor(scene: THREE.Scene, numPlanes: number) {
     this.scene = scene;
@@ -117,8 +117,7 @@ class TerrainGrid {
     const positionY = gridY * this.spacingHeight;
 
     const geometry =
-      cachedGeometry ||
-      new HexGeometry(this.GRID_SIZE, positionX, positionY);
+      cachedGeometry || new HexGeometry(this.GRID_SIZE, positionX, positionY);
 
     const material = createTerrainShaderMaterial(
       this.planeWidth,

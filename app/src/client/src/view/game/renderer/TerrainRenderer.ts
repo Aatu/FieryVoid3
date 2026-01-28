@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import TerrainGrid from "../terrain/TerrainGrid";
+import GameCamera from "../GameCamera";
 
 class TerrainRenderer {
   private terrainGrid: TerrainGrid | null = null;
@@ -8,15 +9,15 @@ class TerrainRenderer {
 
   init(scene: THREE.Scene) {
     // Create a 3x3 grid (numPlanes = 1)
-    this.terrainGrid = new TerrainGrid(scene, 2);
+    this.terrainGrid = new TerrainGrid(scene, 5);
   }
 
-  update(cameraPosition: { x: number; y: number }) {
-    if (!this.terrainGrid) {
+  update(camera: GameCamera | null) {
+    if (!this.terrainGrid || !camera) {
       return;
     }
 
-    this.terrainGrid.update(cameraPosition);
+    this.terrainGrid.update(camera.getLookAtPosition());
   }
 
   render() {

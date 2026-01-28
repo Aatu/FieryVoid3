@@ -27,7 +27,6 @@ export const getHeightAt2 = (hex: Offset): number => {
 
 export const getHeightAt = (hex: Offset): number => {
   if (
-    hex.equals({ q: 0, r: 0 }) ||
     hex.equals({ q: 63, r: 0 }) ||
     hex.equals({ q: 0, r: 63 }) ||
     hex.equals({ q: 63, r: 63 })
@@ -35,7 +34,26 @@ export const getHeightAt = (hex: Offset): number => {
     return 1;
   }
 
-  if (hex.equals({ q: -3, r: 31 }) || hex.equals({ q: -1, r: 39 })) {
+  if (
+    hex.equals({ q: 1, r: 0 }) ||
+    hex.equals({ q: 0, r: 1 }) ||
+    hex.equals({ q: -1, r: 0 }) ||
+    hex.equals({ q: 0, r: -1 }) ||
+    hex.equals({ q: -1, r: -1 }) ||
+    hex.equals({ q: 1, r: 1 })
+  ) {
+    return 1;
+  }
+
+  if (hex.equals({ q: 0, r: 0 })) {
+    return 2;
+  }
+
+  if (
+    hex.equals({ q: -3, r: 31 }) ||
+    hex.equals({ q: -1, r: 39 }) ||
+    hex.equals({ q: 108, r: 17 })
+  ) {
     return 1;
   }
 

@@ -16,24 +16,18 @@ export class HexGeometry extends THREE.BufferGeometry {
   private hexVertexMap: Map<string, HexVertex> = new Map();
   private gridWidth: number;
   private gridHeight: number;
-  private positionX: number;
-  private positionY: number;
   public readonly originX: number;
   public readonly originY: number;
 
-  constructor(size: number, positionX: number, positionY: number) {
+  constructor(size: number, originX: number, originY: number) {
     super();
 
-    this.positionX = positionX;
-    this.positionY = positionY;
+    this.originX = originX;
+    this.originY = originY;
 
     // Add 1 border on each side (left + right = 2, bottom + top = 2)
     this.gridWidth = size + 2;
     this.gridHeight = size + 2;
-
-    // Store position as origin for external mesh positioning
-    this.originX = positionX;
-    this.originY = positionY;
 
     this.buildHexMesh();
   }
@@ -64,8 +58,8 @@ export class HexGeometry extends THREE.BufferGeometry {
         const centerLocal = coordinateConverter.fromHexToGame(localHex);
 
         // Calculate world coordinates for the worker
-        const centerWorldX = centerLocal.x + this.positionX;
-        const centerWorldY = centerLocal.y + this.positionY;
+        const centerWorldX = centerLocal.x + this.originX;
+        const centerWorldY = centerLocal.y + this.originY;
 
         const hexKey = `${q}_${r}`;
         const cornerIndices: number[] = [];
@@ -105,8 +99,8 @@ export class HexGeometry extends THREE.BufferGeometry {
 
           if (!cornerVertex) {
             // First time seeing this corner, create it
-            const cornerWorldX = corners[i].x + this.positionX;
-            const cornerWorldY = corners[i].y + this.positionY;
+            const cornerWorldX = corners[i].x + this.originX;
+            const cornerWorldY = corners[i].y + this.originY;
 
             cornerVertex = {
               worldX: cornerWorldX, // World coords for worker
@@ -133,8 +127,8 @@ export class HexGeometry extends THREE.BufferGeometry {
           let nextCornerVertex = this.hexVertexMap.get(nextCornerKey);
 
           if (!nextCornerVertex) {
-            const nextCornerWorldX = nextCorner.x + this.positionX;
-            const nextCornerWorldY = nextCorner.y + this.positionY;
+            const nextCornerWorldX = nextCorner.x + this.originX;
+            const nextCornerWorldY = nextCorner.y + this.originY;
 
             nextCornerVertex = {
               worldX: nextCornerWorldX, // World coords for worker

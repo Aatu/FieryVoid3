@@ -278,8 +278,7 @@ class GameScene {
     this.starField!.render();
 
     // Update terrain with camera position
-    const cameraPos = this.camera!.getPosition();
-    this.terrainRenderer!.update({ x: cameraPos.x, y: cameraPos.y });
+    this.terrainRenderer!.update(this.camera);
     this.terrainRenderer!.render();
 
     /*
