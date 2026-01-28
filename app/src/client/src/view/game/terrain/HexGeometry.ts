@@ -57,73 +57,8 @@ export class HexGeometry extends THREE.BufferGeometry {
     const vertexTypes: number[] = []; // 1.0 for center, 0.0 for corner
     const discardFlags: number[] = []; // 1.0 for discard, 0.0 for keep
 
-    // Helper function to determine if a corner should be discarded
-    const shouldDiscardCorner = (
-      localQ: number,
-      localR: number,
-      cornerIndex: number,
-      gridWidth: number,
-      gridHeight: number,
-    ): boolean => {
-      const isLeftBorder = localQ === 0;
-      const isRightBorder = localQ === gridWidth - 1;
-      const isBottomBorder = localR === 0;
-      const isTopBorder = localR === gridHeight - 1;
-
-      if (!isLeftBorder && !isRightBorder && !isBottomBorder && !isTopBorder) {
-        return false; // Not a border hex, keep all corners
-      }
-
-      // Check adjacency to borders (for corner handling)
-      const isAdjacentToLeft = localQ === 1;
-      const isAdjacentToRight = localQ === gridWidth - 2;
-
-      // For flat-top hexagons with corners starting at 30°:
-      // Corner 0: 30° (top-right)
-      // Corner 1: 90° (top)
-      // Corner 2: 150° (top-left)
-      // Corner 3: 210° (bottom-left)
-      // Corner 4: 270° (bottom)
-      // Corner 5: 330° (bottom-right)
-
-      if (isLeftBorder) {
-        if (localR % 2 === 0) {
-          return [1, 2, 3, 4].includes(cornerIndex);
-        }
-        return [].includes(cornerIndex);
-        // Left border: keep only corners 0, 5 (shared with core hex to the right)
-      } else if (isRightBorder) {
-        // Right border: keep only corners 2, 3 (shared with core hex to the left)
-
-        if (localR % 2 === 0) {
-          return [5, 0].includes(cornerIndex);
-        } else {
-          return [5, 0].includes(cornerIndex);
-        }
-      } else if (isBottomBorder) {
-        if (isAdjacentToLeft) {
-          return [2, 3, 4, 5].includes(cornerIndex);
-        }
-
-        return [3, 4, 5].includes(cornerIndex);
-      } else if (isTopBorder) {
-        // Top border: normally keep bottom-side corners 3, 4, 5
-        let cornersToKeep = [3, 4, 5];
-
-        // If adjacent to left border, don't keep corner 3 (bottom-left)
-        if (isAdjacentToLeft) {
-          return [].includes(cornerIndex);
-        }
-        // If adjacent to right border, don't keep corner 5 (bottom-right)
-        if (isAdjacentToRight) {
-          cornersToKeep = cornersToKeep.filter((c) => c !== 5);
-        }
-
-        return [0, 1, 2].includes(cornerIndex);
-      }
-
-      return false;
-    };
+    // Map to track which corner vertex indices belong to each hexagon
+    const hexCornerMap: Map<string, number[]> = new Map();
 
     // Create vertices for each hex
     for (let q = 0; q < this.gridWidth; q++) {
@@ -136,6 +71,9 @@ export class HexGeometry extends THREE.BufferGeometry {
           x: centerWorld.x - this.originX,
           y: centerWorld.y - this.originY,
         };
+
+        const hexKey = `${q}_${r}`;
+        const cornerIndices: number[] = [];
 
         // Check if this hex is in the border
         const isLeftBorder = q === 0;
@@ -169,15 +107,6 @@ export class HexGeometry extends THREE.BufferGeometry {
           // Use world coordinates for the key so adjacent hexes share vertices
           const cornerKey = `corner_${Math.round(cornerWorldX * 1000)}_${Math.round(cornerWorldY * 1000)}`;
 
-          // Determine if THIS hex wants to discard this corner
-          const thisHexDiscardsCorner = shouldDiscardCorner(
-            q,
-            r,
-            i,
-            this.gridWidth,
-            this.gridHeight,
-          );
-
           // Check if this corner already exists (shared with adjacent hex)
           let cornerVertex = this.hexVertexMap.get(cornerKey);
 
@@ -195,15 +124,11 @@ export class HexGeometry extends THREE.BufferGeometry {
             vertexList.push(cornerVertex);
             vertices.push(corners[i].x, corners[i].y, 0); // Use local coords for geometry
             vertexTypes.push(0.0); // Mark as corner vertex
-            discardFlags.push(thisHexDiscardsCorner ? 1.0 : 0.0);
-          } else {
-            // Corner already exists (shared with another hex)
-            // If THIS hex wants to discard it, mark it for discard
-            // Never un-discard a corner that was already marked for discard
-            if (thisHexDiscardsCorner) {
-              discardFlags[cornerVertex.index] = 1.0;
-            }
+            discardFlags.push(0.0); // Initially keep all corners
           }
+
+          // Track this corner as belonging to this hex
+          cornerIndices.push(cornerVertex.index);
 
           // Create triangle: center -> corner[i] -> corner[(i+1)%6]
           const nextCorner = corners[(i + 1) % 6];
@@ -211,13 +136,6 @@ export class HexGeometry extends THREE.BufferGeometry {
           const nextCornerWorldY = nextCorner.y + this.originY;
           const nextCornerKey = `corner_${Math.round(nextCornerWorldX * 1000)}_${Math.round(nextCornerWorldY * 1000)}`;
 
-          const thisHexDiscardsNextCorner = shouldDiscardCorner(
-            q,
-            r,
-            (i + 1) % 6,
-            this.gridWidth,
-            this.gridHeight,
-          );
           let nextCornerVertex = this.hexVertexMap.get(nextCornerKey);
 
           if (!nextCornerVertex) {
@@ -233,13 +151,7 @@ export class HexGeometry extends THREE.BufferGeometry {
             vertexList.push(nextCornerVertex);
             vertices.push(nextCorner.x, nextCorner.y, 0); // Use local coords for geometry
             vertexTypes.push(0.0); // Mark as corner vertex
-            discardFlags.push(thisHexDiscardsNextCorner ? 1.0 : 0.0);
-          } else {
-            // If THIS hex wants to discard it, mark it for discard
-            // Never un-discard a corner that was already marked for discard
-            if (thisHexDiscardsNextCorner) {
-              discardFlags[nextCornerVertex.index] = 1.0;
-            }
+            discardFlags.push(0.0); // Initially keep all corners
           }
 
           indices.push(
@@ -247,6 +159,54 @@ export class HexGeometry extends THREE.BufferGeometry {
             cornerVertex.index,
             nextCornerVertex.index,
           );
+        }
+
+        // Store the corner indices for this hex
+        hexCornerMap.set(hexKey, cornerIndices);
+      }
+    }
+
+    // Two-pass algorithm for setting discard flags
+    // Pass 1: Mark all corners of border hexagons for discard
+    for (let q = 0; q < this.gridWidth; q++) {
+      for (let r = 0; r < this.gridHeight; r++) {
+        const isLeftBorder = q === 0;
+        const isRightBorder = q === this.gridWidth - 1;
+        const isBottomBorder = r === 0;
+        const isTopBorder = r === this.gridHeight - 1;
+        const isBorderHex =
+          isLeftBorder || isRightBorder || isBottomBorder || isTopBorder;
+
+        if (isBorderHex) {
+          const hexKey = `${q}_${r}`;
+          const cornerIndices = hexCornerMap.get(hexKey);
+          if (cornerIndices) {
+            cornerIndices.forEach((idx) => {
+              discardFlags[idx] = 1.0;
+            });
+          }
+        }
+      }
+    }
+
+    // Pass 2: Un-mark corners of non-border hexagons (bring them back)
+    for (let q = 0; q < this.gridWidth; q++) {
+      for (let r = 0; r < this.gridHeight; r++) {
+        const isLeftBorder = q === 0;
+        const isRightBorder = q === this.gridWidth - 1;
+        const isBottomBorder = r === 0;
+        const isTopBorder = r === this.gridHeight - 1;
+        const isBorderHex =
+          isLeftBorder || isRightBorder || isBottomBorder || isTopBorder;
+
+        if (!isBorderHex) {
+          const hexKey = `${q}_${r}`;
+          const cornerIndices = hexCornerMap.get(hexKey);
+          if (cornerIndices) {
+            cornerIndices.forEach((idx) => {
+              discardFlags[idx] = 0.0;
+            });
+          }
         }
       }
     }

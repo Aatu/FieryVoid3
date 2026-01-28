@@ -204,8 +204,6 @@ class TerrainGrid {
   }
 
   update(cameraPosition: { x: number; y: number }) {
-    return;
-
     this.terrainPlanes.forEach((plane) => {
       const distanceX = cameraPosition.x - plane.mesh.position.x;
       const distanceY = cameraPosition.y - plane.mesh.position.y;
