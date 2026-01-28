@@ -25,8 +25,10 @@ class TerrainGrid {
   private geometryCache: Map<string, HexGeometry> = new Map();
   private workers: Worker[] = [];
   private workerIndex: number = 0;
-  private pendingGeometry: Map<string, ((geometry: HexGeometry) => void)[]> =
-    new Map();
+  private pendingGeometry: Map<
+    string,
+    { geometry: HexGeometry; callbacks: ((geometry: HexGeometry) => void)[] }
+  > = new Map();
   private readonly WORKER_COUNT = 4;
   private readonly GRID_Z = 0;
   private readonly GRID_SIZE = 64;
@@ -68,12 +70,12 @@ class TerrainGrid {
         const { gridX, gridY, positions } = e.data;
         const cacheKey = `${gridX},${gridY}`;
 
-        const geometry = new HexGeometry(
-          this.GRID_SIZE,
-          this.GRID_SIZE,
-          gridX * this.GRID_SIZE,
-          gridY * this.GRID_SIZE,
-        );
+        const pending = this.pendingGeometry.get(cacheKey);
+        if (!pending) {
+          return;
+        }
+
+        const { geometry, callbacks } = pending;
 
         const positionAttr = geometry.attributes.position;
         const currentArray = positionAttr.array as Float32Array;
@@ -87,11 +89,8 @@ class TerrainGrid {
 
         this.geometryCache.set(cacheKey, geometry);
 
-        const callbacks = this.pendingGeometry.get(cacheKey);
-        if (callbacks) {
-          callbacks.forEach((callback) => callback(geometry));
-          this.pendingGeometry.delete(cacheKey);
-        }
+        callbacks.forEach((callback) => callback(geometry));
+        this.pendingGeometry.delete(cacheKey);
       };
 
       this.workers.push(worker);
@@ -113,14 +112,13 @@ class TerrainGrid {
     const cacheKey = `${gridX},${gridY}`;
     const cachedGeometry = this.geometryCache.get(cacheKey);
 
+    // Calculate world position for this grid tile
+    const positionX = gridX * this.spacingWidth;
+    const positionY = gridY * this.spacingHeight;
+
     const geometry =
       cachedGeometry ||
-      new HexGeometry(
-        this.GRID_SIZE,
-        this.GRID_SIZE,
-        gridX * this.GRID_SIZE,
-        gridY * this.GRID_SIZE,
-      );
+      new HexGeometry(this.GRID_SIZE, positionX, positionY);
 
     const material = createTerrainShaderMaterial(
       this.planeWidth,
@@ -147,18 +145,23 @@ class TerrainGrid {
     });
 
     if (!cachedGeometry) {
-      this.requestGeometryDeformation(gridX, gridY, (deformedGeometry) => {
-        mesh.geometry.dispose();
-        mesh.geometry = deformedGeometry;
-        mesh.position.x = deformedGeometry.originX;
-        mesh.position.y = deformedGeometry.originY;
-      });
+      this.requestGeometryDeformation(
+        gridX,
+        gridY,
+        geometry,
+        (deformedGeometry: HexGeometry) => {
+          // Geometry is already updated in place, just need to update position if changed
+          mesh.position.x = deformedGeometry.originX;
+          mesh.position.y = deformedGeometry.originY;
+        },
+      );
     }
   }
 
   private requestGeometryDeformation(
     gridX: number,
     gridY: number,
+    geometry: HexGeometry,
     callback: (geometry: HexGeometry) => void,
   ) {
     const cacheKey = `${gridX},${gridY}`;
@@ -169,23 +172,14 @@ class TerrainGrid {
     }
 
     if (!this.pendingGeometry.has(cacheKey)) {
-      this.pendingGeometry.set(cacheKey, []);
+      this.pendingGeometry.set(cacheKey, { geometry, callbacks: [] });
 
       const worker = this.workers[this.workerIndex];
       this.workerIndex = (this.workerIndex + 1) % this.WORKER_COUNT;
 
-      const tempGeometry = new HexGeometry(
-        this.GRID_SIZE,
-        this.GRID_SIZE,
-        gridX * this.GRID_SIZE,
-        gridY * this.GRID_SIZE,
-      );
-      const positions = new Float32Array(
-        tempGeometry.attributes.position.array,
-      );
-      const originX = tempGeometry.originX;
-      const originY = tempGeometry.originY;
-      tempGeometry.dispose();
+      const positions = new Float32Array(geometry.attributes.position.array);
+      const originX = geometry.originX;
+      const originY = geometry.originY;
 
       worker.postMessage(
         {
@@ -200,7 +194,7 @@ class TerrainGrid {
       );
     }
 
-    this.pendingGeometry.get(cacheKey)!.push(callback);
+    this.pendingGeometry.get(cacheKey)!.callbacks.push(callback);
   }
 
   update(cameraPosition: { x: number; y: number }) {
@@ -248,10 +242,22 @@ class TerrainGrid {
           plane.mesh.position.x = cachedGeometry.originX;
           plane.mesh.position.y = cachedGeometry.originY;
         } else {
+          // Calculate world position for the new grid tile
+          const positionX = plane.gridX * this.spacingWidth;
+          const positionY = plane.gridY * this.spacingHeight;
+
+          // Create new geometry for this position
+          const newGeometry = new HexGeometry(
+            this.GRID_SIZE,
+            positionX,
+            positionY,
+          );
+
           this.requestGeometryDeformation(
             plane.gridX,
             plane.gridY,
-            (deformedGeometry) => {
+            newGeometry,
+            (deformedGeometry: HexGeometry) => {
               plane.mesh.geometry.dispose();
               plane.mesh.geometry = deformedGeometry;
               plane.mesh.position.x = deformedGeometry.originX;

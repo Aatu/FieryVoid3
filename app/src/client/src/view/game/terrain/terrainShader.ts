@@ -1,6 +1,7 @@
 import * as THREE from "three";
 
 export interface TerrainShaderUniforms {
+  [uniform: string]: THREE.IUniform;
   halfWidth: { value: number };
   halfHeight: { value: number };
   borderWidth: { value: number };
