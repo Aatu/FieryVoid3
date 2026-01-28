@@ -75,6 +75,7 @@ export const createTerrainShaderMaterial = (
     varying float vVertexType;
 
     void main() {
+    
       if (vDiscardFlag > 0.0) {
         discard;
       }
@@ -105,6 +106,6 @@ export const createTerrainShaderMaterial = (
     vertexShader,
     fragmentShader,
     side: THREE.FrontSide,
-    wireframe: false,
+    wireframe: true,
   });
 };

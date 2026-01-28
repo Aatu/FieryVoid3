@@ -3,7 +3,7 @@ import { HEX_SIZE } from "@fieryvoid3/model/src/config/gameConfig";
 import { createTerrainShaderMaterial } from "./terrainShader";
 import { HexGeometry } from "./HexGeometry";
 
-const DEBUG = true;
+const DEBUG = false;
 
 interface TerrainPlane {
   mesh: THREE.Mesh;
@@ -69,10 +69,10 @@ class TerrainGrid {
         const cacheKey = `${gridX},${gridY}`;
 
         const geometry = new HexGeometry(
-          this.GRID_SIZE + 1,
-          this.GRID_SIZE + 1,
-          gridX * this.GRID_SIZE - 1,
-          gridY * this.GRID_SIZE - 1,
+          this.GRID_SIZE,
+          this.GRID_SIZE,
+          gridX * this.GRID_SIZE,
+          gridY * this.GRID_SIZE,
         );
 
         const positionAttr = geometry.attributes.position;
@@ -116,10 +116,10 @@ class TerrainGrid {
     const geometry =
       cachedGeometry ||
       new HexGeometry(
-        this.GRID_SIZE + 1,
-        this.GRID_SIZE + 1,
-        gridX * this.GRID_SIZE - 1,
-        gridY * this.GRID_SIZE - 1,
+        this.GRID_SIZE,
+        this.GRID_SIZE,
+        gridX * this.GRID_SIZE,
+        gridY * this.GRID_SIZE,
       );
 
     const material = createTerrainShaderMaterial(
@@ -175,10 +175,10 @@ class TerrainGrid {
       this.workerIndex = (this.workerIndex + 1) % this.WORKER_COUNT;
 
       const tempGeometry = new HexGeometry(
-        this.GRID_SIZE + 1,
-        this.GRID_SIZE + 1,
-        gridX * this.GRID_SIZE - 1,
-        gridY * this.GRID_SIZE - 1,
+        this.GRID_SIZE,
+        this.GRID_SIZE,
+        gridX * this.GRID_SIZE,
+        gridY * this.GRID_SIZE,
       );
       const positions = new Float32Array(
         tempGeometry.attributes.position.array,
@@ -204,6 +204,8 @@ class TerrainGrid {
   }
 
   update(cameraPosition: { x: number; y: number }) {
+    return;
+
     this.terrainPlanes.forEach((plane) => {
       const distanceX = cameraPosition.x - plane.mesh.position.x;
       const distanceY = cameraPosition.y - plane.mesh.position.y;
