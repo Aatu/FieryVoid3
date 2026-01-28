@@ -82,5 +82,13 @@ export const getTextureAt = (hex: Offset): number => {
     return 1;
   }
 
+  if (hex.equals({ q: 74, r: 3 })) {
+    return 1;
+  }
+
+  if (hex.equals({ q: 53, r: 63 })) {
+    return 1;
+  }
+
   return 0;
 };

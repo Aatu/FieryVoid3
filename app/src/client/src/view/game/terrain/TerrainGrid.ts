@@ -2,8 +2,10 @@ import * as THREE from "three";
 import { HEX_SIZE } from "@fieryvoid3/model/src/config/gameConfig";
 import { createTerrainShaderMaterial } from "./terrainShader";
 import { HexGeometry } from "./HexGeometry";
+import HexGridLookupTextureRenderer from "./HexGridLookupTextureRenderer";
 
 const DEBUG = false;
+const DEBUG_HEX_COORDS = false; // Set to true to visualize hex coordinate lookup
 
 interface TerrainPlane {
   mesh: THREE.Mesh;
@@ -40,6 +42,8 @@ class TerrainGrid {
   private readonly WORKER_COUNT = 4;
   private readonly GRID_Z = 0;
   private readonly GRID_SIZE = 32;
+  private hexLookupRenderer: HexGridLookupTextureRenderer;
+  private hexCoordLookupTexture: THREE.DataTexture;
 
   constructor(scene: THREE.Scene, numPlanes: number) {
     this.scene = scene;
@@ -60,6 +64,13 @@ class TerrainGrid {
 
     this.borderWidth = borderSize * Math.sqrt(3) * HEX_SIZE;
     this.borderHeight = borderSize * 1.5 * HEX_SIZE;
+
+    // Generate hex coordinate lookup texture
+    this.hexLookupRenderer = new HexGridLookupTextureRenderer();
+    this.hexCoordLookupTexture = this.hexLookupRenderer.generateTexture(
+      1024,
+      this.GRID_SIZE,
+    );
 
     this.initWorkers();
     this.createGrid();
@@ -150,6 +161,12 @@ class TerrainGrid {
       gridY,
       DEBUG,
     );
+
+    // Set hex coordinate lookup texture
+    (material as THREE.ShaderMaterial).uniforms.hexCoordLookup.value =
+      this.hexCoordLookupTexture;
+    (material as THREE.ShaderMaterial).uniforms.debugHexCoords.value =
+      DEBUG_HEX_COORDS;
 
     const mesh = new THREE.Mesh(geometry, material);
 
@@ -283,8 +300,9 @@ class TerrainGrid {
             plane.textureLookup.dispose();
           }
           plane.textureLookup = cachedTexture;
-          (plane.material as THREE.ShaderMaterial).uniforms.textureLookup.value =
-            cachedTexture;
+          (
+            plane.material as THREE.ShaderMaterial
+          ).uniforms.textureLookup.value = cachedTexture;
         } else {
           // Calculate world position for the new grid tile
           const positionX = plane.gridX * this.spacingWidth;
@@ -312,8 +330,9 @@ class TerrainGrid {
                 plane.textureLookup.dispose();
               }
               plane.textureLookup = texture;
-              (plane.material as THREE.ShaderMaterial).uniforms.textureLookup
-                .value = texture;
+              (
+                plane.material as THREE.ShaderMaterial
+              ).uniforms.textureLookup.value = texture;
             },
           );
         }
@@ -328,6 +347,7 @@ class TerrainGrid {
     this.geometryCache.clear();
     this.textureCache.forEach((texture) => texture.dispose());
     this.textureCache.clear();
+    this.hexLookupRenderer.dispose();
   }
 }
 

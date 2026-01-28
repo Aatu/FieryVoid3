@@ -48,6 +48,12 @@ export class HexGeometry extends THREE.BufferGeometry {
     const localOffsetQ = -1;
     const localOffsetR = -1;
 
+    // Track bounds for UV mapping
+    let minX = Infinity;
+    let maxX = -Infinity;
+    let minY = Infinity;
+    let maxY = -Infinity;
+
     // Create vertices for each hex
     for (let q = 0; q < this.gridWidth; q++) {
       for (let r = 0; r < this.gridHeight; r++) {
@@ -90,6 +96,12 @@ export class HexGeometry extends THREE.BufferGeometry {
         vertexTypes.push(1.0); // Mark as center vertex
         discardFlags.push(isBorderHex ? 1.0 : 0.0); // Discard if border hex
 
+        // Track bounds
+        minX = Math.min(minX, centerLocal.x);
+        maxX = Math.max(maxX, centerLocal.x);
+        minY = Math.min(minY, centerLocal.y);
+        maxY = Math.max(maxY, centerLocal.y);
+
         // Add corner vertices
         const corners = this.getHexCorners(centerLocal.x, centerLocal.y);
         for (let i = 0; i < 6; i++) {
@@ -117,6 +129,12 @@ export class HexGeometry extends THREE.BufferGeometry {
             vertices.push(corners[i].x, corners[i].y, 0); // Use local coords for geometry
             vertexTypes.push(0.0); // Mark as corner vertex
             discardFlags.push(0.0); // Initially keep all corners
+
+            // Track bounds
+            minX = Math.min(minX, corners[i].x);
+            maxX = Math.max(maxX, corners[i].x);
+            minY = Math.min(minY, corners[i].y);
+            maxY = Math.max(maxY, corners[i].y);
 
             // Track this corner in the map
             cornerHexMap.set(cornerKey, []);
@@ -154,6 +172,12 @@ export class HexGeometry extends THREE.BufferGeometry {
             vertices.push(nextCorner.x, nextCorner.y, 0); // Use local coords for geometry
             vertexTypes.push(0.0); // Mark as corner vertex
             discardFlags.push(0.0); // Initially keep all corners
+
+            // Track bounds
+            minX = Math.min(minX, nextCorner.x);
+            maxX = Math.max(maxX, nextCorner.x);
+            minY = Math.min(minY, nextCorner.y);
+            maxY = Math.max(maxY, nextCorner.y);
 
             // Track this corner in the map
             cornerHexMap.set(nextCornerKey, []);
@@ -222,10 +246,27 @@ export class HexGeometry extends THREE.BufferGeometry {
       }
     }
 
+    // Compute UVs based on vertex positions
+    const uvs: number[] = [];
+    const width = maxX - minX;
+    const height = maxY - minY;
+
+    for (let i = 0; i < vertices.length / 3; i++) {
+      const x = vertices[i * 3];
+      const y = vertices[i * 3 + 1];
+
+      // Map to [0, 1] range
+      const u = (x - minX) / width;
+      const v = (y - minY) / height;
+
+      uvs.push(u, v);
+    }
+
     this.setAttribute(
       "position",
       new THREE.Float32BufferAttribute(vertices, 3),
     );
+    this.setAttribute("uv", new THREE.Float32BufferAttribute(uvs, 2));
     this.setAttribute(
       "vertexType",
       new THREE.Float32BufferAttribute(vertexTypes, 1),

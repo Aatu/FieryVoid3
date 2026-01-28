@@ -78,10 +78,9 @@ self.onmessage = (e: MessageEvent<DeformRequest>) => {
       const worldR = localR + gridY * gridSize;
 
       const textureId = getTextureAt(new Offset(worldQ, worldR));
-      if (textureId === 1) {
-        console.log("texture id is 1 at ", r, q, "world:", worldQ, worldR);
-      }
-      textureData[r * textureSize + q] = textureId;
+      // Clamp texture ID to 0-255 range
+      const clampedTextureId = Math.max(0, Math.min(255, textureId));
+      textureData[r * textureSize + q] = clampedTextureId;
     }
   }
 
