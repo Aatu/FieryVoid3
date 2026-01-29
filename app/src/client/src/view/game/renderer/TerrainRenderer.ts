@@ -9,7 +9,7 @@ class TerrainRenderer {
 
   init(scene: THREE.Scene) {
     // Create a 3x3 grid (numPlanes = 1)
-    this.terrainGrid = new TerrainGrid(scene, 5);
+    this.terrainGrid = new TerrainGrid(scene, 3);
   }
 
   update(camera: GameCamera | null) {

@@ -2,6 +2,18 @@ import * as THREE from "three";
 import vertexShader from "./terrainShader.vert?raw";
 import fragmentShader from "./terrainShader.frag?raw";
 
+// Load ground texture
+const textureLoader = new THREE.TextureLoader();
+const groundTexture = textureLoader.load(
+  "/img/texture/ground/groundTexture.png",
+);
+// Use ClampToEdge for texture atlases to prevent wrapping artifacts
+groundTexture.wrapS = THREE.ClampToEdgeWrapping;
+groundTexture.wrapT = THREE.ClampToEdgeWrapping;
+// Disable mipmapping to prevent bleeding between atlas tiles
+groundTexture.minFilter = THREE.LinearFilter;
+groundTexture.magFilter = THREE.LinearFilter;
+
 export interface TerrainShaderUniforms {
   [uniform: string]: THREE.IUniform;
   halfWidth: { value: number };
@@ -14,6 +26,7 @@ export interface TerrainShaderUniforms {
   textureLookup: { value: THREE.DataTexture | null };
   hexCoordLookup: { value: THREE.DataTexture | null };
   debugHexCoords: { value: boolean };
+  groundTextureDiffuse: { value: THREE.Texture | null };
 }
 
 export const createTerrainShaderMaterial = (
@@ -48,6 +61,7 @@ export const createTerrainShaderMaterial = (
     textureLookup: { value: null },
     hexCoordLookup: { value: null },
     debugHexCoords: { value: false },
+    groundTextureDiffuse: { value: groundTexture },
   };
 
   return new THREE.ShaderMaterial({

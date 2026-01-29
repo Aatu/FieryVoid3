@@ -3,6 +3,7 @@ import { HEX_SIZE } from "@fieryvoid3/model/src/config/gameConfig";
 import { createTerrainShaderMaterial } from "./terrainShader";
 import { HexGeometry } from "./HexGeometry";
 import HexGridLookupTextureRenderer from "./HexGridLookupTextureRenderer";
+import { getHexGeometry, clearGeometryCache } from "./HexGeometryFactory";
 
 const DEBUG = false;
 const DEBUG_HEX_COORDS = false; // Set to true to visualize hex coordinate lookup
@@ -149,8 +150,7 @@ class TerrainGrid {
     const positionX = gridX * this.spacingWidth;
     const positionY = gridY * this.spacingHeight;
 
-    const geometry =
-      cachedGeometry || new HexGeometry(this.GRID_SIZE, positionX, positionY);
+    const geometry = cachedGeometry || getHexGeometry(this.GRID_SIZE);
 
     const material = createTerrainShaderMaterial(
       this.planeWidth,
@@ -170,8 +170,8 @@ class TerrainGrid {
 
     const mesh = new THREE.Mesh(geometry, material);
 
-    // Position mesh at the geometry's origin
-    mesh.position.set(geometry.originX, geometry.originY, this.GRID_Z);
+    // Position mesh at the calculated world position
+    mesh.position.set(positionX, positionY, this.GRID_Z);
 
     this.scene.add(mesh);
 
@@ -190,12 +190,11 @@ class TerrainGrid {
         gridX,
         gridY,
         geometry,
-        (deformedGeometry: HexGeometry, texture: THREE.DataTexture) => {
-          // Geometry is already updated in place, just need to update position if changed
-          mesh.position.x = deformedGeometry.originX;
-          mesh.position.y = deformedGeometry.originY;
-
-          // Update texture
+        positionX,
+        positionY,
+        (_geometry: HexGeometry, texture: THREE.DataTexture) => {
+          // Geometry is already updated in place by the worker
+          // Just need to update the texture
           if (plane.textureLookup) {
             plane.textureLookup.dispose();
           }
@@ -211,6 +210,8 @@ class TerrainGrid {
     gridX: number,
     gridY: number,
     geometry: HexGeometry,
+    originX: number,
+    originY: number,
     callback: (geometry: HexGeometry, texture: THREE.DataTexture) => void,
   ) {
     const cacheKey = `${gridX},${gridY}`;
@@ -229,8 +230,6 @@ class TerrainGrid {
       this.workerIndex = (this.workerIndex + 1) % this.WORKER_COUNT;
 
       const positions = new Float32Array(geometry.attributes.position.array);
-      const originX = geometry.originX;
-      const originY = geometry.originY;
 
       worker.postMessage(
         {
@@ -250,6 +249,8 @@ class TerrainGrid {
   }
 
   update(cameraPosition: { x: number; y: number }) {
+    return;
+
     this.terrainPlanes.forEach((plane) => {
       const distanceX = cameraPosition.x - plane.mesh.position.x;
       const distanceY = cameraPosition.y - plane.mesh.position.y;
@@ -289,11 +290,17 @@ class TerrainGrid {
         const cachedGeometry = this.geometryCache.get(cacheKey);
         const cachedTexture = this.textureCache.get(cacheKey);
 
+        // Calculate world position for the new grid tile
+        const positionX = plane.gridX * this.spacingWidth;
+        const positionY = plane.gridY * this.spacingHeight;
+
+        // Update mesh position immediately
+        plane.mesh.position.x = positionX;
+        plane.mesh.position.y = positionY;
+
         if (cachedGeometry && cachedTexture) {
           plane.mesh.geometry.dispose();
           plane.mesh.geometry = cachedGeometry;
-          plane.mesh.position.x = cachedGeometry.originX;
-          plane.mesh.position.y = cachedGeometry.originY;
 
           // Update texture
           if (plane.textureLookup) {
@@ -304,28 +311,20 @@ class TerrainGrid {
             plane.material as THREE.ShaderMaterial
           ).uniforms.textureLookup.value = cachedTexture;
         } else {
-          // Calculate world position for the new grid tile
-          const positionX = plane.gridX * this.spacingWidth;
-          const positionY = plane.gridY * this.spacingHeight;
-
           // Create new geometry for this position
-          const newGeometry = new HexGeometry(
-            this.GRID_SIZE,
-            positionX,
-            positionY,
-          );
+          const newGeometry = getHexGeometry(this.GRID_SIZE);
+          plane.mesh.geometry.dispose();
+          plane.mesh.geometry = newGeometry;
 
           this.requestGeometryDeformation(
             plane.gridX,
             plane.gridY,
             newGeometry,
-            (deformedGeometry: HexGeometry, texture: THREE.DataTexture) => {
-              plane.mesh.geometry.dispose();
-              plane.mesh.geometry = deformedGeometry;
-              plane.mesh.position.x = deformedGeometry.originX;
-              plane.mesh.position.y = deformedGeometry.originY;
-
-              // Update texture
+            positionX,
+            positionY,
+            (_geometry: HexGeometry, texture: THREE.DataTexture) => {
+              // Geometry is already updated in place by the worker
+              // Just need to update the texture
               if (plane.textureLookup) {
                 plane.textureLookup.dispose();
               }
@@ -348,6 +347,7 @@ class TerrainGrid {
     this.textureCache.forEach((texture) => texture.dispose());
     this.textureCache.clear();
     this.hexLookupRenderer.dispose();
+    clearGeometryCache();
   }
 }
 

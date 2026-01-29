@@ -4,8 +4,6 @@ import coordinateConverter from "@fieryvoid3/model/src/utils/CoordinateConverter
 import { Offset } from "@fieryvoid3/model/src/hexagon";
 
 interface HexVertex {
-  worldX: number;
-  worldY: number;
   index: number;
   hexQ: number;
   hexR: number;
@@ -16,20 +14,21 @@ export class HexGeometry extends THREE.BufferGeometry {
   private hexVertexMap: Map<string, HexVertex> = new Map();
   private gridWidth: number;
   private gridHeight: number;
-  public readonly originX: number;
-  public readonly originY: number;
 
-  constructor(size: number, originX: number, originY: number) {
+  constructor(size: number, cachedGeometry?: THREE.BufferGeometry) {
     super();
-
-    this.originX = originX;
-    this.originY = originY;
 
     // Add 1 border on each side (left + right = 2, bottom + top = 2)
     this.gridWidth = size + 2;
     this.gridHeight = size + 2;
 
-    this.buildHexMesh();
+    if (cachedGeometry) {
+      // Copy the cached geometry attributes
+      this.copy(cachedGeometry);
+    } else {
+      // Build the mesh from scratch
+      this.buildHexMesh();
+    }
   }
 
   private buildHexMesh() {
@@ -65,10 +64,6 @@ export class HexGeometry extends THREE.BufferGeometry {
         // Calculate local game coordinates
         const centerLocal = coordinateConverter.fromHexToGame(localHex);
 
-        // Calculate world coordinates for the worker
-        const centerWorldX = centerLocal.x + this.originX;
-        const centerWorldY = centerLocal.y + this.originY;
-
         const hexKey = `${q}_${r}`;
         const cornerIndices: number[] = [];
 
@@ -83,8 +78,6 @@ export class HexGeometry extends THREE.BufferGeometry {
         // Add center vertex
         const centerKey = `c_${q}_${r}`;
         const centerVertex: HexVertex = {
-          worldX: centerWorldX, // World coords for worker
-          worldY: centerWorldY,
           index: vertexList.length,
           hexQ: localQ,
           hexR: localR,
@@ -113,12 +106,7 @@ export class HexGeometry extends THREE.BufferGeometry {
 
           if (!cornerVertex) {
             // First time seeing this corner, create it
-            const cornerWorldX = corners[i].x + this.originX;
-            const cornerWorldY = corners[i].y + this.originY;
-
             cornerVertex = {
-              worldX: cornerWorldX, // World coords for worker
-              worldY: cornerWorldY,
               index: vertexList.length,
               hexQ: localQ,
               hexR: localR,
@@ -156,12 +144,7 @@ export class HexGeometry extends THREE.BufferGeometry {
           let nextCornerVertex = this.hexVertexMap.get(nextCornerKey);
 
           if (!nextCornerVertex) {
-            const nextCornerWorldX = nextCorner.x + this.originX;
-            const nextCornerWorldY = nextCorner.y + this.originY;
-
             nextCornerVertex = {
-              worldX: nextCornerWorldX, // World coords for worker
-              worldY: nextCornerWorldY,
               index: vertexList.length,
               hexQ: localQ,
               hexR: localR,
@@ -191,8 +174,8 @@ export class HexGeometry extends THREE.BufferGeometry {
 
           indices.push(
             centerVertex.index,
-            cornerVertex.index,
-            nextCornerVertex.index,
+            cornerVertex!.index,
+            nextCornerVertex!.index,
           );
         }
 

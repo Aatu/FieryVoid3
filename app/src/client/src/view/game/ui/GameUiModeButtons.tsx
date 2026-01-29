@@ -20,7 +20,7 @@ const ReplayButton = styled(TooltipButton)`
 
 const GameUiModeButtons: React.FC = () => {
   const { enemy_weapons, weapons, ew, movement } = useGameStore(
-    ({ gameState }) => gameState.gameUiMode
+    ({ gameState }) => gameState.gameUiMode,
   );
 
   const uiState = useUiStateHandler();
