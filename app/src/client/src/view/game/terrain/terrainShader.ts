@@ -14,6 +14,14 @@ groundTexture.wrapT = THREE.ClampToEdgeWrapping;
 groundTexture.minFilter = THREE.LinearFilter;
 groundTexture.magFilter = THREE.LinearFilter;
 
+const groundNormalMap = textureLoader.load(
+  "/img/texture/ground/groundNormalMap.png",
+);
+groundNormalMap.wrapS = THREE.ClampToEdgeWrapping;
+groundNormalMap.wrapT = THREE.ClampToEdgeWrapping;
+groundNormalMap.minFilter = THREE.LinearFilter;
+groundNormalMap.magFilter = THREE.LinearFilter;
+
 export interface TerrainShaderUniforms {
   [uniform: string]: THREE.IUniform;
   halfWidth: { value: number };
@@ -27,6 +35,7 @@ export interface TerrainShaderUniforms {
   hexCoordLookup: { value: THREE.DataTexture | null };
   debugHexCoords: { value: boolean };
   groundTextureDiffuse: { value: THREE.Texture | null };
+  groundTextureNormal: { value: THREE.Texture | null };
 }
 
 export const createTerrainShaderMaterial = (
@@ -62,6 +71,7 @@ export const createTerrainShaderMaterial = (
     hexCoordLookup: { value: null },
     debugHexCoords: { value: false },
     groundTextureDiffuse: { value: groundTexture },
+    groundTextureNormal: { value: groundNormalMap },
   };
 
   return new THREE.ShaderMaterial({

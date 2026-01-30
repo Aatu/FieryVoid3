@@ -5,6 +5,7 @@ uniform sampler2D textureLookup;
 uniform sampler2D hexCoordLookup;
 uniform bool debugHexCoords;
 uniform sampler2D groundTextureDiffuse;
+uniform sampler2D groundTextureNormal;
 
 varying vec3 vNormal;
 varying float vDiscardFlag;
@@ -12,16 +13,24 @@ varying float vVertexType;
 varying vec2 vUv;
 
 // Texture atlas configuration
-const float ATLAS_GRID_SIZE = 10.0; // 10x10 grid = 100 textures
+const float ATLAS_GRID_SIZE = 5.0; // 10x10 grid = 100 textures
 const float HEX_GRID_SIZE = 34.0; // Total grid size including borders
 const float BORDER_SIZE = 1.0; // 1 hex border on each edge
 const float VISIBLE_GRID_SIZE = HEX_GRID_SIZE - 2.0 * BORDER_SIZE; // 32x32 visible hexes
-const float TEXTURE_REPEAT = 8.0; // Number of times to repeat texture across hex
-const float ATLAS_TILE_INSET = 0.5; // Pixel inset to prevent bleeding (in pixels)
+const float TEXTURE_REPEAT = 4.0; // Number of times to repeat texture across hex
+const float NORMAL_MAP_STRENGTH = 0.75; // 0.0 = flat geometry, 1.0 = full normal map effect
+
+
+const float TOTAL_HEX_GRID_WIDTH = HEX_GRID_SIZE + 0.5;
+const float VISIBLE_HEXGRID_WIDTH = TOTAL_HEX_GRID_WIDTH - 2.5;
+
+const float TOTAL_HEX_GRID_HEIGHT = HEX_GRID_SIZE * 0.75 + 0.25;
+const float VISIBLE_HEXGRID_HEIGHT = TOTAL_HEX_GRID_HEIGHT - 1.75;
+
 
 // Texture tiling adjustment - tweak these to align textures across grids
-const vec2 TEXTURE_UV_OFFSET = vec2(1.0/34.5, 1.0/25.75); 
-const vec2 TEXTURE_UV_SCALE = vec2(34.5/32.0, 25.75/24.0); 
+const vec2 TEXTURE_UV_OFFSET = vec2(1.0/TOTAL_HEX_GRID_WIDTH, 1.0/TOTAL_HEX_GRID_HEIGHT); 
+const vec2 TEXTURE_UV_SCALE = vec2(TOTAL_HEX_GRID_WIDTH/VISIBLE_HEXGRID_WIDTH, TOTAL_HEX_GRID_HEIGHT/VISIBLE_HEXGRID_HEIGHT); 
 
 /**
  * Adjust UV coordinates to exclude the border hexes
@@ -85,16 +94,8 @@ float getTextureIdFromHexCoord(vec2 hexCoord) {
   return clamp(textureId, 0.0, 255.0);
 }
 
-/**
- * Sample color from texture atlas
- * The atlas contains multiple textures arranged in a grid
- * @param textureId - The texture ID (0 to ATLAS_GRID_SIZE² - 1)
- * @param uv - UV coordinates within the hex [0,1]
- * @returns RGB color from the texture atlas
- */
-vec3 getColorFromTextureAtlas(float textureId, vec2 uv) {
+vec2 getTextureAtlasUv(float textureId, vec2 uv) {
 
- 
   // Adjust UV to exclude border hexes for correct tiling across grid boundaries
   vec2 adjustedUV = adjustUVForBorder(uv);
 
@@ -109,7 +110,7 @@ vec3 getColorFromTextureAtlas(float textureId, vec2 uv) {
   float tileSize = 1.0 / ATLAS_GRID_SIZE;
 
   // Add small epsilon to prevent sampling at exact 1.0 boundary
-  const float epsilon = 0.0001;
+  const float epsilon = 0.001;
   repeatedUV = clamp(repeatedUV, epsilon, 1.0 - epsilon);
 
   // Scale UV coordinates to fit within one sub-texture
@@ -120,10 +121,19 @@ vec3 getColorFromTextureAtlas(float textureId, vec2 uv) {
   vec2 atlasOffset = vec2(col, ATLAS_GRID_SIZE - 1.0 - row) * tileSize;
 
   // Final UV coordinates in the atlas
-  vec2 finalUV = atlasOffset + scaledUV;
+  return atlasOffset + scaledUV;
+}
+/**
+ * Sample color from texture atlas
+ * The atlas contains multiple textures arranged in a grid
+ * @param textureId - The texture ID (0 to ATLAS_GRID_SIZE² - 1)
+ * @param uv - UV coordinates within the hex [0,1]
+ * @returns RGB color from the texture atlas
+ */
+vec3 getColorFromTextureAtlas(vec2 uv) {
 
   // Sample the texture atlas
-  vec4 texColor = texture2D(groundTextureDiffuse, finalUV);
+  vec4 texColor = texture2D(groundTextureDiffuse, uv);
 
   if (vDiscardFlag > 0.0) {
     return mix(texColor.rgb, vec3(0.0, 0.0, 1.0),  0.5);
@@ -133,14 +143,52 @@ vec3 getColorFromTextureAtlas(float textureId, vec2 uv) {
   return texColor.rgb;
 }
 
+vec3 getNormalFromTextureAtlas(vec2 uv) {
+
+  // Sample the texture atlas
+  vec4 texColor = texture2D(groundTextureNormal, uv);
+
+  return texColor.rgb;
+}
+
+/**
+ * Calculate world-space normal from normal map texture
+ * @param terrainNormal - Normal map color sampled from texture (in [0,1] range)
+ * @param geometryNormal - Geometry normal from vertex shader
+ * @param uv - UV coordinates for computing tangent space
+ * @returns Normal vector in world space
+ */
+vec3 calculateNormalFromMap(vec3 terrainNormal, vec3 geometryNormal, vec2 uv) {
+  // Convert normal map from [0,1] range to [-1,1] range
+  vec3 normalMapNormal = terrainNormal * 2.0 - 1.0;
+
+  // Flip Y if using DirectX-style normal map (uncomment to test)
+  //normalMapNormal.y = -normalMapNormal.y;
+
+  // Apply strength to normal map (lerp between flat and full normal map)
+  normalMapNormal.xy *= NORMAL_MAP_STRENGTH;
+
+  // Construct TBN matrix using screen-space derivatives
+  vec3 geomNormal = normalize(geometryNormal);
+  vec3 Q1 = dFdx(vec3(uv, 0.0));
+  vec3 Q2 = dFdy(vec3(uv, 0.0));
+  vec2 st1 = dFdx(uv);
+  vec2 st2 = dFdy(uv);
+
+  vec3 T = normalize(Q1 * st2.t - Q2 * st1.t);
+  vec3 B = normalize(-Q1 * st2.s + Q2 * st1.s);
+  mat3 TBN = mat3(T, B, geomNormal);
+
+  // Transform normal from tangent space to world space
+  return normalize(TBN * normalMapNormal);
+}
+
 void main() {
 
   if (vDiscardFlag > 0.0) {
     discard;
   }
 
-  vec3 normal = normalize(vNormal);
-  vec3 color;
 
   /*
   if (vUv.x < 0.001 || vUv.x > 0.999 || vUv.y < 0.001 || vUv.y > 0.999) {
@@ -150,8 +198,14 @@ void main() {
     */
 
   vec2 hexCoord = getHexCoordFromUV(vUv);
-
   float textureId = getTextureIdFromHexCoord(hexCoord);
+  vec2 textureAtlasUv = getTextureAtlasUv(textureId, vUv);
+  vec3 terrainNormal = getNormalFromTextureAtlas(textureAtlasUv);
+
+  // Calculate world-space normal from normal map
+  vec3 normal = normalize(vNormal); //calculateNormalFromMap(terrainNormal, vNormal, vUv); //normalize(vNormal);
+
+  vec3 color;
 
   // DEBUG: Visualize hex coordinate lookup texture
   if (debugHexCoords) {
@@ -169,7 +223,7 @@ void main() {
 
   } else {
     // Get terrain color from texture atlas (using texture ID 0 for now)
-    vec3 terrainColor = getColorFromTextureAtlas(1.0, vUv);
+    vec3 terrainColor = getColorFromTextureAtlas(textureAtlasUv);
 
     // Apply lighting to terrain color
     float diffuse = max(dot(normal, lightDirection), 0.0);

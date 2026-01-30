@@ -78,7 +78,7 @@ export const getHeightAt3 = (hex: Offset): number => {
 };
 
 export const getTextureAt = (hex: Offset): number => {
-  if (hex.equals({ q: 7, r: 3 })) {
+  if (hex.equals({ q: 7, r: 3 }) || hex.equals({ q: 0, r: -1 })) {
     return 1;
   }
 
