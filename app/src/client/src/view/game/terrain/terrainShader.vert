@@ -10,11 +10,16 @@ varying vec3 vNormal;
 varying float vDiscardFlag;
 varying float vVertexType;
 varying vec2 vUv;
+varying vec3 vWorldPosition;
 
 void main() {
   vNormal = normalize(normalMatrix * normal);
   vVertexType = vertexType;
   vUv = uv;
+
+  // Calculate world position
+  vec4 worldPosition = modelMatrix * vec4(position, 1.0);
+  vWorldPosition = worldPosition.xyz;
 
   // Use borderFlag to determine if this vertex is in a border hex
   vDiscardFlag = borderFlag;

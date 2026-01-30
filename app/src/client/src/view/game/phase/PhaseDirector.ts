@@ -15,6 +15,7 @@ import MovementPathService from "../movement/MovementPathService";
 import PhaseStrategy, {
   PhaseEventPayload,
   PhaseStrategies,
+  RenderPayload,
 } from "./phaseStrategy/PhaseStrategy";
 import { ParticleEmitterContainer } from "../animation/particle";
 import GameCamera from "../GameCamera";
@@ -71,7 +72,7 @@ class PhaseDirector {
     uiState: UIState,
     currentUser: User | null,
     coordinateConverter: CoordinateConverter,
-    gameConnector: GameConnector
+    gameConnector: GameConnector,
   ) {
     this.uiState = uiState;
     this.currentUser = currentUser;
@@ -98,7 +99,7 @@ class PhaseDirector {
   init(
     scene: THREE.Object3D,
     emitterContainer: ParticleEmitterContainer,
-    camera: GameCamera
+    camera: GameCamera,
   ) {
     this.scene = scene;
     this.emitterContainer = emitterContainer;
@@ -107,20 +108,20 @@ class PhaseDirector {
     this.shipIconContainer = new ShipIconContainer(
       scene,
       this.currentUser,
-      this.coordinateConverter
+      this.coordinateConverter,
     );
     this.torpedoIconContainer = new TorpedoIconContainer(scene);
     this.electronicWarfareIndicatorService =
       new ElectronicWarfareIndicatorService(
         scene,
         this.shipIconContainer,
-        this.currentUser
+        this.currentUser,
       );
 
     this.movementPathService = new MovementPathService(
       scene,
       this.shipIconContainer,
-      this.currentUser
+      this.currentUser,
     );
 
     this.uiState.setPhaseDirector(this);
@@ -194,8 +195,8 @@ class PhaseDirector {
   render(
     scene: THREE.Object3D,
     coordinateConverter: CoordinateConverter,
-    zoom: number
-  ) {
+    zoom: number,
+  ): RenderPayload | undefined {
     this.phaseEvents.sendEvents();
 
     if (!this.phaseStrategy || this.phaseStrategy.inactive) {
@@ -205,10 +206,12 @@ class PhaseDirector {
     const renderPayload = this.phaseStrategy.render(
       coordinateConverter,
       scene,
-      zoom
+      zoom,
     );
     this.electronicWarfareIndicatorService?.render(renderPayload);
     this.uiState.render();
+
+    return renderPayload;
   }
 
   resolvePhaseStrategy() {

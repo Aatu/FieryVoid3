@@ -36,6 +36,7 @@ export interface TerrainShaderUniforms {
   debugHexCoords: { value: boolean };
   groundTextureDiffuse: { value: THREE.Texture | null };
   groundTextureNormal: { value: THREE.Texture | null };
+  time: { value: number };
 }
 
 export const createTerrainShaderMaterial = (
@@ -72,6 +73,7 @@ export const createTerrainShaderMaterial = (
     debugHexCoords: { value: false },
     groundTextureDiffuse: { value: groundTexture },
     groundTextureNormal: { value: groundNormalMap },
+    time: { value: 0 },
   };
 
   return new THREE.ShaderMaterial({

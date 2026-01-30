@@ -1,7 +1,7 @@
 import * as THREE from "three";
 //import Stats from "stats.js";
 import HexGridRenderer from "./renderer/hexgrid/HexGridRenderer";
-import StarField from "./terrain/StarField";
+//import StarField from "./terrain/StarField";
 import { ParticleEmitterContainer } from "./animation/particle";
 import GameCamera from "./GameCamera";
 import PhaseDirector from "./phase/PhaseDirector";
@@ -19,9 +19,11 @@ class GameScene {
   private particleEmitterContainer: ParticleEmitterContainer | null;
   private scene: THREE.Scene | null;
   private camera: GameCamera | null;
+  /*
   private starFieldScene: THREE.Scene | null;
   private starFieldCamera: THREE.OrthographicCamera | null;
   private starField: StarField | null;
+  */
   private width: number = 0;
   private height: number = 0;
   private element: HTMLElement | null;
@@ -44,9 +46,11 @@ class GameScene {
     this.particleEmitterContainer = null;
     this.scene = null;
     this.camera = null;
+    /*
     this.starFieldScene = null;
     this.starFieldCamera = null;
     this.starField = null;
+    */
 
     this.element = null;
 
@@ -61,7 +65,6 @@ class GameScene {
   init(
     element: HTMLElement,
     { width, height }: { width: number; height: number },
-    gameId: number,
   ) {
     this.deactivated = false;
     this.element = element;
@@ -85,6 +88,7 @@ class GameScene {
       this.camera,
     );
 
+    /*
     this.starFieldScene = new THREE.Scene();
     this.starFieldCamera = new THREE.OrthographicCamera(
       (this.zoom * this.width) / -2,
@@ -97,6 +101,7 @@ class GameScene {
 
     this.starFieldCamera.position.set(0, 0, 500);
     this.starFieldCamera.lookAt(0, 0, 100);
+    */
 
     this.light = new THREE.PointLight(0xffffff, 1000.0, 0);
     this.light.position.set(0, 0, 100000);
@@ -168,7 +173,7 @@ class GameScene {
 
     this.initialized = true;
     this.hexGridRenderer.renderHexGrid(this.scene);
-    this.starField = new StarField(this.starFieldScene, gameId);
+    //this.starField = new StarField(this.starFieldScene, gameId);
     this.terrainRenderer.init(this.scene);
 
     //this.stats = new Stats();
@@ -198,7 +203,7 @@ class GameScene {
       return;
     }
 
-    if (!this.camera || !this.starFieldCamera) {
+    if (!this.camera) {
       return;
     }
 
@@ -208,10 +213,13 @@ class GameScene {
     });
     //this.camera.position.x -= position.x * this.zoom * this.zoom;
     //this.camera.position.y += position.y * this.zoom * this.zoom;
+
+    /*
     this.starFieldCamera.position.x -=
       position.x * this.zoom * this.zoom * 0.05;
     this.starFieldCamera.position.y +=
       position.y * this.zoom * this.zoom * 0.05;
+      */
 
     this.phaseDirector.relayEvent("ScrollEvent", {
       position: this.camera.getPosition(),
@@ -223,7 +231,7 @@ class GameScene {
       return;
     }
 
-    if (!this.camera || !this.starFieldCamera) {
+    if (!this.camera) {
       return;
     }
 
@@ -231,8 +239,8 @@ class GameScene {
 
     //this.camera.position.x = position.x;
     //this.camera.position.y = position.y;
-    this.starFieldCamera.position.x = position.x * 0.1;
-    this.starFieldCamera.position.y = position.y * 0.1;
+    //this.starFieldCamera.position.x = position.x * 0.1;
+    //this.starFieldCamera.position.y = position.y * 0.1;
 
     this.phaseDirector.relayEvent("ScrollEvent", {
       position: this.camera.getPosition(),
@@ -246,7 +254,7 @@ class GameScene {
       return;
     }
 
-    if (!this.camera || !this.starFieldCamera) {
+    if (!this.camera) {
       return;
     }
 
@@ -270,16 +278,15 @@ class GameScene {
     this.phaseDirector.render(this.scene!, this.coordinateConverter, this.zoom);
 
     this.renderer!.clear();
-    this.renderer!.render(this.starFieldScene!, this.starFieldCamera!);
+    //this.renderer!.render(this.starFieldScene!, this.starFieldCamera!);
     this.renderer!.clearDepth();
     this.renderer!.render(this.scene!, this.camera!.getCamera());
 
     this.animateZoom();
-    this.starField!.render();
+    //this.starField!.render();
 
-    // Update terrain with camera position
-    this.terrainRenderer!.update(this.camera);
-    this.terrainRenderer!.render();
+    // Update terrain with camera position´
+    this.terrainRenderer!.render(this.camera);
 
     /*
     console.log(
@@ -317,7 +324,7 @@ class GameScene {
     this.zoomCamera(this.zoom);
 
     this.renderer!.setSize(window.innerWidth, window.innerHeight);
-    this.starField!.resize();
+    //this.starField!.resize();
   }
 
   changeZoom(zoom: number) {

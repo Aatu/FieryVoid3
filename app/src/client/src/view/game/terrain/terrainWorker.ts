@@ -1,6 +1,7 @@
 import coordinateConverter from "@fieryvoid3/model/src/utils/CoordinateConverter";
 import { Offset } from "@fieryvoid3/model/src/hexagon";
 import { getHeightAt, getTextureAt } from "./terrainDataMock";
+import HexagonMath from "@fieryvoid3/model/src/utils/HexagonMath";
 
 interface DeformRequest {
   gridX: number;
@@ -20,6 +21,8 @@ interface DeformResponse {
   textureSize: number;
 }
 
+const terrainHeight = HexagonMath.getHexWidth();
+
 self.onmessage = (e: MessageEvent<DeformRequest>) => {
   const { gridX, gridY, vertexCount, positions, originX, originY, gridSize } =
     e.data;
@@ -33,7 +36,7 @@ self.onmessage = (e: MessageEvent<DeformRequest>) => {
     const hexOffset = coordinateConverter.fromGameToHex({
       x: worldX,
       y: worldY,
-      z: 1,
+      z: 0,
     });
 
     const neighbors = [hexOffset, ...hexOffset.getNeighbours()];
@@ -56,7 +59,7 @@ self.onmessage = (e: MessageEvent<DeformRequest>) => {
 
     const interpolatedHeight =
       totalWeight > 0 ? weightedHeight / totalWeight : 0;
-    positions[i * 3 + 2] = interpolatedHeight * 50;
+    positions[i * 3 + 2] = interpolatedHeight * terrainHeight;
   }
 
   // Generate texture lookup image

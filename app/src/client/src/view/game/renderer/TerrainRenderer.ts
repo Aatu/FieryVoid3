@@ -12,16 +12,12 @@ class TerrainRenderer {
     this.terrainGrid = new TerrainGrid(scene, 3);
   }
 
-  update(camera: GameCamera | null) {
+  render(camera: GameCamera | null) {
     if (!this.terrainGrid || !camera) {
       return;
     }
 
     this.terrainGrid.update(camera.getLookAtPosition());
-  }
-
-  render() {
-    // Animation or updates can be added here later
   }
 
   dispose() {

@@ -249,7 +249,13 @@ class TerrainGrid {
   }
 
   update(cameraPosition: { x: number; y: number }) {
-    return;
+    const gameTime = performance.now(); // Milliseconds since page load (smaller numbers)
+
+    this.terrainPlanes.forEach((plane) => {
+      const material = plane.material as THREE.ShaderMaterial;
+      material.uniforms.time.value = gameTime;
+      material.uniformsNeedUpdate = true;
+    });
 
     this.terrainPlanes.forEach((plane) => {
       const distanceX = cameraPosition.x - plane.mesh.position.x;

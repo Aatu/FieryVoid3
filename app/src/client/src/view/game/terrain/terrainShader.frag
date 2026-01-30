@@ -6,19 +6,22 @@ uniform sampler2D hexCoordLookup;
 uniform bool debugHexCoords;
 uniform sampler2D groundTextureDiffuse;
 uniform sampler2D groundTextureNormal;
+uniform float time;
 
 varying vec3 vNormal;
 varying float vDiscardFlag;
 varying float vVertexType;
 varying vec2 vUv;
+varying vec3 vWorldPosition;
 
 // Texture atlas configuration
 const float ATLAS_GRID_SIZE = 5.0; // 10x10 grid = 100 textures
 const float HEX_GRID_SIZE = 34.0; // Total grid size including borders
 const float BORDER_SIZE = 1.0; // 1 hex border on each edge
 const float VISIBLE_GRID_SIZE = HEX_GRID_SIZE - 2.0 * BORDER_SIZE; // 32x32 visible hexes
-const float TEXTURE_REPEAT = 4.0; // Number of times to repeat texture across hex
-const float NORMAL_MAP_STRENGTH = 0.75; // 0.0 = flat geometry, 1.0 = full normal map effect
+const float TEXTURE_REPEAT = 2.0; // Number of times to repeat texture across hex
+const float NORMAL_MAP_STRENGTH = 0.5; // 0.0 = flat geometry, 1.0 = full normal map effect
+const float BLEND_THRESHOLD = 0.3; // Blend textures when vVertexType < this value
 
 
 const float TOTAL_HEX_GRID_WIDTH = HEX_GRID_SIZE + 0.5;
@@ -26,6 +29,9 @@ const float VISIBLE_HEXGRID_WIDTH = TOTAL_HEX_GRID_WIDTH - 2.5;
 
 const float TOTAL_HEX_GRID_HEIGHT = HEX_GRID_SIZE * 0.75 + 0.25;
 const float VISIBLE_HEXGRID_HEIGHT = TOTAL_HEX_GRID_HEIGHT - 1.75;
+
+const vec3 DEPTH_COLOR = vec3(0.3, 0.4, 0.8);
+const vec3 FINAL_DEPTH_COLOR = mix(vec3(0.0, 0.0, 0.0), DEPTH_COLOR, 0.1);
 
 
 // Texture tiling adjustment - tweak these to align textures across grids
@@ -66,6 +72,23 @@ vec2 getHexCoordFromUV(vec2 uv) {
   float r = floor(rFloat + 0.5);
 
   return vec2(q, r);
+}
+
+/**
+ * Calculate UV coordinates local to the current hex [0,1]
+ * Uses the fractional part of hex coordinates from the lookup texture
+ */
+vec2 getLocalHexUV(vec2 uv) {
+  vec4 hexCoords = texture2D(hexCoordLookup, uv);
+
+  const float totalRange = 34.0;
+  float qFloat = hexCoords.r * totalRange - 1.0;
+  float rFloat = hexCoords.g * totalRange - 1.0;
+
+  // Get fractional part - this represents position within the hex
+  vec2 localUV = fract(vec2(qFloat, rFloat));
+
+  return localUV;
 }
 
 /**
@@ -183,10 +206,94 @@ vec3 calculateNormalFromMap(vec3 terrainNormal, vec3 geometryNormal, vec2 uv) {
   return normalize(TBN * normalMapNormal);
 }
 
+/**
+ * Apply depth-based darkening based on world Z coordinate
+ * @param color - Original color
+ * @param worldZ - World Z coordinate
+ * @returns Color blended to black based on depth (Z < 100)
+ */
+vec3 applyDepthDarkening(vec3 color, vec3 depthColor, float minDepth, float maxDepth, float noiseStrength) {
+
+  
+  float normalizedTime = time; 
+
+  const float animSpeed = 0.00001; // Adjust to control animation speed
+  
+
+  vec3 noiseColor1 = getColorFromTextureAtlas(getTextureAtlasUv(20.0, vUv + vec2(normalizedTime * animSpeed, normalizedTime * animSpeed * 0.7)));
+  vec3 noiseColor2 = getColorFromTextureAtlas(getTextureAtlasUv(20.0, vUv - vec2(normalizedTime * animSpeed, normalizedTime * animSpeed * 0.7)));
+  vec3 noiseColor = mix(noiseColor1, noiseColor2, 0.5);
+  // Use noise to modulate worldZ for non-uniform depth effect
+  float modulatedZ = vWorldPosition.z - (noiseColor.r) * noiseStrength;
+
+ 
+
+  // Calculate blend factor: 0 at minDepth (black), 1 at maxDepth (original color)
+  float depthFactor = clamp((modulatedZ - minDepth) / (maxDepth - minDepth), 0.0, 1.0);
+
+  // Blend from black to original color
+  return mix(depthColor, color, depthFactor);
+}
+
+/**
+ * Blend textures at hex borders
+ * Samples nearby positions and blends textures based on texture IDs
+ */
+vec3 getBlendedTexture(vec2 uv, vec2 currentHexCoord, float currentTextureId, float edgeFactor) {
+  // Get current hex texture
+  vec2 currentAtlasUv = getTextureAtlasUv(currentTextureId, uv);
+  vec3 currentColor = getColorFromTextureAtlas(currentAtlasUv);
+
+  // If we're not near an edge, just return the current texture
+  if (edgeFactor > BLEND_THRESHOLD) {
+    return currentColor;
+  }
+
+  // Sample nearby UV coordinates
+  const float sampleOffset = 0.005; // Offset to sample neighboring pixels
+  vec2 offsets[6];
+  offsets[0] = vec2(sampleOffset, 0.0);
+  offsets[1] = vec2(-sampleOffset, 0.0);
+  offsets[2] = vec2(0.0, sampleOffset);
+  offsets[3] = vec2(0.0, -sampleOffset);
+  offsets[4] = vec2(sampleOffset * 0.707, sampleOffset * 0.707);
+  offsets[5] = vec2(-sampleOffset * 0.707, -sampleOffset * 0.707);
+
+  // Weight for current texture: 0 at edge (edgeFactor=0), 1 at threshold
+  float currentWeight = edgeFactor / BLEND_THRESHOLD;
+  vec3 blendedColor = currentColor * currentWeight;
+  float totalWeight = currentWeight;
+
+  // Sample texture IDs at each offset position
+  for (int i = 0; i < 6; i++) {
+    vec2 sampleUv = uv + offsets[i];
+    vec2 sampleHexCoord = getHexCoordFromUV(sampleUv);
+    float sampleTextureId = getTextureIdFromHexCoord(sampleHexCoord);
+
+    // Calculate weight based on distance from edge
+    float weight = 1.0 - (edgeFactor / BLEND_THRESHOLD);
+
+      // Different texture with higher ID - blend it in
+      vec2 sampleAtlasUv = getTextureAtlasUv(sampleTextureId, uv);
+      vec3 sampleColor = getColorFromTextureAtlas(sampleAtlasUv);
+      blendedColor += sampleColor * weight;
+      totalWeight += weight;
+  
+    // Lower texture IDs are ignored
+  }
+
+  return blendedColor / totalWeight;
+}
+
 void main() {
 
   if (vDiscardFlag > 0.0) {
     discard;
+  }
+
+  if (vWorldPosition.z < 1.0) {
+    gl_FragColor = vec4(FINAL_DEPTH_COLOR, 1.0);
+    return;
   }
 
 
@@ -203,7 +310,7 @@ void main() {
   vec3 terrainNormal = getNormalFromTextureAtlas(textureAtlasUv);
 
   // Calculate world-space normal from normal map
-  vec3 normal = normalize(vNormal); //calculateNormalFromMap(terrainNormal, vNormal, vUv); //normalize(vNormal);
+  vec3 normal = calculateNormalFromMap(terrainNormal, vNormal, vUv); //normalize(vNormal);
 
   vec3 color;
 
@@ -222,8 +329,8 @@ void main() {
     color = vec3(qNormalized, rNormalized, 0.0);
 
   } else {
-    // Get terrain color from texture atlas (using texture ID 0 for now)
-    vec3 terrainColor = getColorFromTextureAtlas(textureAtlasUv);
+    // Get terrain color with blending at hex borders
+    vec3 terrainColor = getBlendedTexture(vUv, hexCoord, textureId, vVertexType);
 
     // Apply lighting to terrain color
     float diffuse = max(dot(normal, lightDirection), 0.0);
@@ -241,6 +348,10 @@ void main() {
       color = mix(lineColor, color, edgeFactor * 0.5);
     }
   }
+
+  // Apply depth-based darkening
+  color = applyDepthDarkening(color, DEPTH_COLOR, 1.0, 1000.0, 0.0);
+  color = applyDepthDarkening(color, FINAL_DEPTH_COLOR, 1.0, 500.0, 200.0);
 
   gl_FragColor = vec4(color, 1.0);
 }

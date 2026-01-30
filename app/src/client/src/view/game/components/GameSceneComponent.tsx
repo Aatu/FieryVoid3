@@ -44,7 +44,8 @@ const BackgroundContainer = styled.div<BackgroundContainerProps>`
   width: 100%;
   height: 100%;
   background-size: cover;
-  background-image: ${(props) => `url(/img/background/${props.$bgNumber}.jpg)`};
+  //background-image: ${(props) =>
+    `url(/img/background/${props.$bgNumber}.jpg)`};
   opacity: 0.05;
 `;
 
@@ -78,7 +79,7 @@ const getMousePositionInObservedElement = (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   event: any,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  element: any
+  element: any,
 ): MousePosition => {
   if (event.touches) {
     return {
@@ -144,7 +145,7 @@ const GameSceneComponent: React.FC<{ game: Game }> = ({ game }) => {
       const delta = Math.sign(event.deltaY);
       game.onMouseWheel(delta);
     },
-    [game]
+    [game],
   );
 
   const onResize = useCallback(() => {
@@ -156,7 +157,7 @@ const GameSceneComponent: React.FC<{ game: Game }> = ({ game }) => {
     event.preventDefault();
     mouseDataRef.current.mouseDownPosition = getMousePositionInObservedElement(
       event,
-      clickCatcherRef.current
+      clickCatcherRef.current,
     );
   }, []);
 
@@ -168,14 +169,14 @@ const GameSceneComponent: React.FC<{ game: Game }> = ({ game }) => {
       if (!mouseDataRef.current.lastDraggingPosition) {
         game.onMouseUp(
           getMousePositionInObservedElement(event, clickCatcherRef.current),
-          event.button
+          event.button,
         );
       }
 
       mouseDataRef.current.mouseDownPosition = null;
       mouseDataRef.current.lastDraggingPosition = null;
     },
-    [game]
+    [game],
   );
 
   const onMouseMove: MouseEventHandler = useCallback(
@@ -185,14 +186,14 @@ const GameSceneComponent: React.FC<{ game: Game }> = ({ game }) => {
 
       if (mouseDataRef.current.mouseDownPosition === null) {
         game.onMouseMove(
-          getMousePositionInObservedElement(event, canvasRef.current)
+          getMousePositionInObservedElement(event, canvasRef.current),
         );
         return;
       }
 
       const position = getMousePositionInObservedElement(
         event,
-        clickCatcherRef.current
+        clickCatcherRef.current,
       );
 
       if (
@@ -214,7 +215,7 @@ const GameSceneComponent: React.FC<{ game: Game }> = ({ game }) => {
         game.onDrag(position, delta);
       }
     },
-    [game]
+    [game],
   );
 
   const onMouseOut: MouseEventHandler = useCallback(() => {
@@ -227,21 +228,21 @@ const GameSceneComponent: React.FC<{ game: Game }> = ({ game }) => {
     (event: KeyboardEvent) => {
       game.onKeyDown(event);
     },
-    [game]
+    [game],
   );
 
   const onKeyUp = useCallback(
     (event: KeyboardEvent) => {
       game.onKeyUp(event);
     },
-    [game]
+    [game],
   );
 
   const onKeyUpDivHandler: KeyboardEventHandler<HTMLDivElement> = useCallback(
     (event) => {
       onKeyUp(event as unknown as KeyboardEvent);
     },
-    [onKeyUp]
+    [onKeyUp],
   );
 
   useEffect(() => {

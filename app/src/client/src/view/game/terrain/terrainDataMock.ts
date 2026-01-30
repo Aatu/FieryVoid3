@@ -1,5 +1,6 @@
 import { Offset } from "@fieryvoid3/model/src/hexagon";
 import PerlinNoise from "./perlinNoise";
+import { getSeededRandomGenerator } from "@fieryvoid3/model/src/utils/math";
 
 const WORLD_SIZE = 64 * 3;
 const TOTAL_HEXES = WORLD_SIZE * WORLD_SIZE;
@@ -25,7 +26,7 @@ export const getHeightAt2 = (hex: Offset): number => {
   return terrainDataMock[index];
 };
 
-export const getHeightAt = (hex: Offset): number => {
+export const getHeightAt3 = (hex: Offset): number => {
   if (
     hex.equals({ q: 63, r: 0 }) ||
     hex.equals({ q: 0, r: 63 }) ||
@@ -62,31 +63,47 @@ export const getHeightAt = (hex: Offset): number => {
 
 const perlin = new PerlinNoise(12345);
 
-export const getHeightAt3 = (hex: Offset): number => {
-  const scale = 0.05;
+export const getHeightAt = (hex: Offset): number => {
+  const scale = 0.01;
   const octaves = 4;
   const persistence = 0.5;
 
-  const height = perlin.octaveNoise(
-    hex.q * scale,
-    hex.r * scale,
-    octaves,
-    persistence,
-  );
+  const height =
+    perlin.octaveNoise(hex.q * scale, hex.r * scale, octaves, persistence) * 64;
 
-  return (height + 1) * 5;
+  if (height < 0) {
+    return 0;
+  }
+
+  return Math.floor(height);
 };
 
-export const getTextureAt = (hex: Offset): number => {
+export const getTextureAt2 = (hex: Offset): number => {
   if (hex.equals({ q: 7, r: 3 }) || hex.equals({ q: 0, r: -1 })) {
-    return 1;
+    return 5;
   }
 
   if (hex.equals({ q: 74, r: 3 })) {
-    return 1;
+    return 5;
   }
 
   if (hex.equals({ q: 53, r: 63 })) {
+    return 5;
+  }
+
+  return 0;
+};
+
+export const getTextureAt = (hex: Offset): number => {
+  const getRandom = getSeededRandomGenerator(hex.toString());
+
+  /*
+  if (getRandom() < 0.05) {
+    return 5;
+  }
+    */
+
+  if (getRandom() < 0.5) {
     return 1;
   }
 
