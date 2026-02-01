@@ -64,6 +64,8 @@ export const getHeightAt3 = (hex: Offset): number => {
 const perlin = new PerlinNoise(12345);
 
 export const getHeightAt = (hex: Offset): number => {
+  return 0;
+
   const scale = 0.01;
   const octaves = 4;
   const persistence = 0.5;

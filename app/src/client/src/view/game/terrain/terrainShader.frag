@@ -288,13 +288,17 @@ vec3 getBlendedTexture(vec2 uv, vec2 currentHexCoord, float currentTextureId, fl
 void main() {
 
   if (vDiscardFlag > 0.0) {
+    gl_FragColor = vec4(0.0, 0.0, 2.0, 1.0);
+    return;
     discard;
   }
 
+/*
   if (vWorldPosition.z < 1.0) {
     gl_FragColor = vec4(FINAL_DEPTH_COLOR, 1.0);
     return;
   }
+  */
 
 
   /*
@@ -350,8 +354,8 @@ void main() {
   }
 
   // Apply depth-based darkening
-  color = applyDepthDarkening(color, DEPTH_COLOR, 1.0, 1000.0, 0.0);
-  color = applyDepthDarkening(color, FINAL_DEPTH_COLOR, 1.0, 500.0, 200.0);
+  //color = applyDepthDarkening(color, DEPTH_COLOR, 1.0, 1000.0, 0.0);
+  //color = applyDepthDarkening(color, FINAL_DEPTH_COLOR, 1.0, 500.0, 200.0);
 
   gl_FragColor = vec4(color, 1.0);
 }
