@@ -64,8 +64,6 @@ export const getHeightAt3 = (hex: Offset): number => {
 const perlin = new PerlinNoise(12345);
 
 export const getHeightAt = (hex: Offset): number => {
-  return 0;
-
   const scale = 0.01;
   const octaves = 4;
   const persistence = 0.5;
@@ -80,7 +78,7 @@ export const getHeightAt = (hex: Offset): number => {
   return Math.floor(height);
 };
 
-export const getTextureAt = (hex: Offset): number => {
+export const getTextureAt2 = (hex: Offset): number => {
   if (hex.equals({ q: 7, r: 3 })) {
     return 21;
   }
@@ -101,10 +99,20 @@ export const getTextureAt = (hex: Offset): number => {
     return 3;
   }
 
+  const getRandom = getSeededRandomGenerator(hex.toString());
+
+  if (getRandom() < 0.05) {
+    return 5;
+  }
+
+  if (getRandom() < 0.5) {
+    return 1;
+  }
+
   return 0;
 };
 
-export const getTextureAt2 = (hex: Offset): number => {
+export const getTextureAt = (hex: Offset): number => {
   const getRandom = getSeededRandomGenerator(hex.toString());
 
   if (getRandom() < 0.05) {

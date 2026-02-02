@@ -78,7 +78,10 @@ class TerrainGrid {
 
     // Generate hex blending texture
     this.hexBlendingRenderer = new HexBlendingTextureRenderer();
-    this.hexBlendingTexture = this.hexBlendingRenderer.generateTexture(256, 0.3);
+    this.hexBlendingTexture = this.hexBlendingRenderer.generateTexture(
+      256,
+      0.3,
+    );
 
     this.initWorkers();
     this.createGrid();
@@ -259,8 +262,6 @@ class TerrainGrid {
   }
 
   update(cameraPosition: { x: number; y: number }) {
-    return;
-
     const gameTime = performance.now(); // Milliseconds since page load (smaller numbers)
 
     this.terrainPlanes.forEach((plane) => {

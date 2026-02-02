@@ -7,6 +7,7 @@ uniform sampler2D hexBlendingTexture;
 uniform bool debugHexCoords;
 uniform sampler2D groundTextureDiffuse;
 uniform sampler2D groundTextureNormal;
+uniform sampler2D hexTextureBlendBrushes;
 uniform float time;
 
 varying vec3 vNormal;
@@ -122,12 +123,13 @@ vec2 getLocalHexUV(vec3 cubeCoord, float scaling) {
   float hexLocalX = SQRT3 * offset.x + (SQRT3 / 2.0) * offset.z;
   float hexLocalY = (3.0 / 2.0) * offset.z;
 
-  // Normalize to [0, 1]
+  // Normalize to [0, 1] and apply scaling
   // For pointy-topped hex:
   // - Width (flat to flat) = sqrt(3) * size, so hexLocalX ranges from [-sqrt(3)/2, sqrt(3)/2]
   // - Height (point to point) = 2 * size, so hexLocalY ranges from [-1, 1]
-  float u = (hexLocalX / SQRT3) + 0.5; // Range: [-sqrt(3)/2, sqrt(3)/2] -> [0, 1]
-  float v = (hexLocalY / 2.0) + 0.5;   // Range: [-1, 1] -> [0, 1]
+  // Scaling > 1.0 makes UV space larger, causing texture to spill over hex boundaries
+  float u = (hexLocalX / SQRT3) / scaling + 0.5; // Range: [-sqrt(3)/2, sqrt(3)/2] -> [0, 1]
+  float v = (hexLocalY / 2.0) / scaling + 0.5;   // Range: [-1, 1] -> [0, 1]
 
   return vec2(u, v);
 }
@@ -302,45 +304,33 @@ vec3 applyDepthDarkening(vec3 color, vec3 depthColor, float minDepth, float maxD
   return mix(depthColor, color, depthFactor);
 }
 
-/**
- * Get neighbor direction in cube coordinates from neighbor index (0-5)
- * Matches the neighbor mapping in HexBlendingTextureRenderer.ts
- */
-vec3 getNeighborDirection(float neighborIndex) {
-  // Map neighbor index to cube direction
-  // 0: (+X, -Y, 0)
-  // 1: (+X, 0, -Z)
-  // 2: (0, +Y, -Z)
-  // 3: (-X, +Y, 0)
-  // 4: (-X, 0, +Z)
-  // 5: (0, -Y, +Z)
-
-  if (neighborIndex < 0.5) {
-    return vec3(1.0, -1.0, 0.0);
-  } else if (neighborIndex < 1.5) {
-    return vec3(1.0, 0.0, -1.0);
-  } else if (neighborIndex < 2.5) {
-    return vec3(0.0, 1.0, -1.0);
-  } else if (neighborIndex < 3.5) {
-    return vec3(-1.0, 1.0, 0.0);
-  } else if (neighborIndex < 4.5) {
-    return vec3(-1.0, 0.0, 1.0);
-  } else {
-    return vec3(0.0, -1.0, 1.0);
-  }
-}
+// Neighbor directions in cube coordinates for flat-sided hexagons
+// Matches the neighbor mapping in HexBlendingTextureRenderer.ts
+const vec3 NEIGHBOR_CUBE_DIRECTIONS[6] = vec3[6](
+  vec3(1.0, -1.0, 0.0),   // 0: East
+  vec3(1.0, 0.0, -1.0),   // 1: Southeast
+  vec3(0.0, 1.0, -1.0),   // 2: Southwest
+  vec3(-1.0, 1.0, 0.0),   // 3: West
+  vec3(-1.0, 0.0, 1.0),   // 4: Northwest
+  vec3(0.0, -1.0, 1.0)    // 5: Northeast
+);
 
 // Neighbor directions in UV space for flat-sided hexagons
-// Using standard 60-degree angles for uniform hex-relative scaling
-const float SQRT3_2 = 0.8660254; // sqrt(3)/2
 const vec2 NEIGHBOR_UV_DIRECTIONS[6] = vec2[6](
-  vec2(1.0, 0.0),           // 0: East (0°)
-  vec2(0.5, -SQRT3_2),      // 1: Southeast (60° clockwise)
-  vec2(-0.5, -SQRT3_2),     // 2: Southwest (120°)
-  vec2(-1.0, 0.0),          // 3: West (180°)
-  vec2(-0.5, SQRT3_2),      // 4: Northwest (240°)
-  vec2(0.5, SQRT3_2)        // 5: Northeast (300°)
+  vec2(1.0, 0.0),      // 0: East
+  vec2(0.5, -0.75),    // 1: Southeast
+  vec2(-0.5, -0.75),   // 2: Southwest
+  vec2(-1.0, 0.0),     // 3: West
+  vec2(-0.5, 0.75),    // 4: Northwest
+  vec2(0.5, 0.75)      // 5: Northeast
 );
+
+/**
+ * Get neighbor direction in cube coordinates from neighbor index (0-5)
+ */
+vec3 getNeighbor(int neighborIndex) {
+  return vCubeCoord + NEIGHBOR_CUBE_DIRECTIONS[int(neighborIndex)];
+}
 
 /**
  * Calculate UV coordinates local to a neighbor hex with scaling
@@ -359,228 +349,120 @@ vec2 getScaledNeighborHexUV(vec2 hexUv, int neighborIndex, float scaling) {
   return neighborUV;
 }
 
+
+
 /**
  * Blend textures using pre-computed hex blending texture
  * Uses the hexBlendingTexture to get weights and neighbor indices
  */
-vec3 getBlendedTexture(vec2 uv, vec2 currentHexCoord, float currentTextureId, float edgeFactor) {
+vec3 getBlendedTexture() {
   // Get local hex UV coordinates [0, 1] within the current hex
-  vec2 hexUV = getLocalHexUV(vCubeCoord, 1.0);
+  vec2 centerHexUv = getLocalHexUV(vCubeCoord, 1.0);
+  float centerTextureId = getTextureIdFromHexCoord(getHexCoordFromCube(vCubeCoord));
+  vec3 centerColor = getColorFromTextureAtlas(getTextureAtlasUv(centerTextureId, vUv, TEXTURE_REPEAT));
+  float centerWeight = texture2D(hexTextureBlendBrushes, getLocalHexUV(vCubeCoord, 1.3)).a;
 
-  // Sample the hex blending texture
-  // R: current hex weight
-  // G: first neighbor weight
-  // B: second neighbor weight
-  // A: first neighbor index (0-5 encoded as 0-255)
-  vec4 blendData = texture2D(hexBlendingTexture, hexUV);
-
-  float currentWeight = blendData.r;
-  float neighbor1Weight = blendData.g;
-  float neighbor2Weight = blendData.b;
-  float neighbor1Index = floor(blendData.a * 5.0 + 0.5); // Decode from [0,1] to [0,5]
-
-  // If we're fully in the current hex (no blending), return early
-  if (currentWeight > 0.99) {
-    vec2 currentAtlasUv = getTextureAtlasUv(currentTextureId, uv, TEXTURE_REPEAT);
-    return getColorFromTextureAtlas(currentAtlasUv);
+  if (centerWeight >= 1.0) {
+    return centerColor;
   }
 
-  // Round to find the current hex in cube coordinates
-  vec3 rounded = floor(vCubeCoord + 0.5);
-  vec3 diff = abs(rounded - vCubeCoord);
-  if (diff.x > diff.y && diff.x > diff.z) {
-    rounded.x = -rounded.y - rounded.z;
-  } else if (diff.y > diff.z) {
-    rounded.y = -rounded.x - rounded.z;
-  } else {
-    rounded.z = -rounded.x - rounded.y;
-  }
+  int neighborDataIndex = 1;
+  vec4 neighbourData[3] = vec4[3](
+    vec4(centerColor, centerWeight),
+    vec4(0.0),
+    vec4(0.0)
+  );
 
-  // Start with current hex color
-  vec2 currentAtlasUv = getTextureAtlasUv(currentTextureId, uv, TEXTURE_REPEAT);
-  vec3 blendedColor = getColorFromTextureAtlas(currentAtlasUv) * currentWeight;
+  int neighborTextureIds[3] = int[3]( int(centerTextureId), -1, -1);
 
-  // Add first neighbor if weight is significant
-  if (neighbor1Weight > 0.01) {
-    vec3 neighbor1Dir = getNeighborDirection(neighbor1Index);
-    vec3 neighbor1Cube = rounded + neighbor1Dir;
-    vec2 neighbor1Coord = toHexOffsetCoordinate(neighbor1Cube);
-    float neighbor1TextureId = getTextureIdFromHexCoord(neighbor1Coord);
+  for (int neighborIndex = 0; neighborIndex < 6; neighborIndex++) {
 
-    vec2 neighbor1AtlasUv = getTextureAtlasUv(neighbor1TextureId, uv, TEXTURE_REPEAT);
-    blendedColor += getColorFromTextureAtlas(neighbor1AtlasUv) * neighbor1Weight;
-  }
+      float neighborTextureId = getTextureIdFromHexCoord(getHexCoordFromCube(getNeighbor(neighborIndex)));
+      
+      // Get neighbor UV in scaled space
+      vec2 neighborHexUv = getScaledNeighborHexUV(centerHexUv, neighborIndex, 1.3);
 
-  // Add second neighbor if weight is significant
-  if (neighbor2Weight > 0.01) {
-    // For second neighbor, we need to determine direction based on offset
-    // This is more complex - for now, blend with the perpendicular neighbor
-    // We can determine this from the offset direction
-    vec3 offset = vCubeCoord - rounded;
-    vec3 neighbor1Dir = getNeighborDirection(neighbor1Index);
-
-    // Find which axis is next most significant after the primary neighbor
-    vec3 absOffset = abs(offset);
-    vec3 neighbor2Dir = vec3(0.0);
-
-    // Simple heuristic: try the other significant axes
-    if (neighbor1Index < 0.5 || neighbor1Index > 4.5) {
-      // X-axis neighbors, try Y or Z
-      if (absOffset.y > absOffset.z) {
-        neighbor2Dir = vec3(0.0, sign(offset.y), -sign(offset.y));
-      } else {
-        neighbor2Dir = vec3(-sign(offset.z), 0.0, sign(offset.z));
+      if (neighborHexUv.y < 0.0 || neighborHexUv.y > 1.0 || neighborHexUv.x < 0.0 || neighborHexUv.x > 1.0) {
+        continue;
       }
-    } else if (neighbor1Index < 2.5) {
-      // Y-axis neighbors, try X or Z
-      if (absOffset.x > absOffset.z) {
-        neighbor2Dir = vec3(sign(offset.x), -sign(offset.x), 0.0);
-      } else {
-        neighbor2Dir = vec3(-sign(offset.z), 0.0, sign(offset.z));
+
+      float neighborWeight = texture2D(hexTextureBlendBrushes, neighborHexUv).a;
+
+      if (neighborWeight <= 0.0) {
+        continue;
       }
-    } else {
-      // Z-axis neighbors, try X or Y
-      if (absOffset.x > absOffset.y) {
-        neighbor2Dir = vec3(sign(offset.x), -sign(offset.x), 0.0);
-      } else {
-        neighbor2Dir = vec3(0.0, sign(offset.y), -sign(offset.y));
+      
+
+      vec3 neighborColor = getColorFromTextureAtlas(getTextureAtlasUv(neighborTextureId, vUv, TEXTURE_REPEAT));
+      neighbourData[neighborDataIndex] = vec4(neighborColor, neighborWeight);
+      neighborTextureIds[neighborDataIndex] = int(neighborTextureId);
+      neighborDataIndex++;
+  }
+
+
+
+  // Sort indices by textureId (ascending order)
+  int indices[3] = int[3](0, 1, 2);
+
+  // Simple bubble sort for 3 elements
+  for (int i = 0; i < 2; i++) {
+    for (int j = i + 1; j < 3; j++) {
+      if (neighborTextureIds[indices[j]] < neighborTextureIds[indices[i]]) {
+        int temp = indices[i];
+        indices[i] = indices[j];
+        indices[j] = temp;
       }
     }
-
-    vec3 neighbor2Cube = rounded + neighbor2Dir;
-    vec2 neighbor2Coord = toHexOffsetCoordinate(neighbor2Cube);
-    float neighbor2TextureId = getTextureIdFromHexCoord(neighbor2Coord);
-
-    vec2 neighbor2AtlasUv = getTextureAtlasUv(neighbor2TextureId, uv, TEXTURE_REPEAT);
-    blendedColor += getColorFromTextureAtlas(neighbor2AtlasUv) * neighbor2Weight;
   }
 
-  return blendedColor;
+  // Blend colors using weighted average (alpha as weight)
+  // Final result is always opaque (alpha = 1.0)
+  vec4 blendedColor = vec4(0.0);
+
+  for (int i = 0; i < 3; i++) {
+    int idx = indices[i];
+    float alpha = neighbourData[idx].a;
+
+    if (alpha > 0.0) {
+      if (blendedColor.a == 0.0) {
+        blendedColor = vec4(neighbourData[idx].rgb, 1.0);
+      } else {
+        blendedColor = vec4( mix(blendedColor.rgb, neighbourData[idx].rgb, alpha), 1.0);
+      }
+    }
+  }
+
+
+  return blendedColor.rgb;
 }
 
 void main() {
 
   if (vDiscardFlag > 0.0) {
-    gl_FragColor = vec4(0.0, 0.0, 2.0, 1.0);
-    return;
     discard;
   }
 
 
- vec2 hexUv = getLocalHexUV(vCubeCoord, 1.0);
-
-
-/*
-  if (vWorldPosition.z < 1.0) {
-    gl_FragColor = vec4(FINAL_DEPTH_COLOR, 1.0);
-    return;
-  }
-  */
-
-
-
-
+  vec2 hexUv = getLocalHexUV(vCubeCoord, 1.0);
   vec2 hexCoord = getHexCoordFromCube(vCubeCoord);
-
-   if (hexCoord.x == 14.0 && hexCoord.y == 7.0) { 
-  
-  if (hexUv.x < 0.001 || hexUv.x > 0.999 ) {
-    gl_FragColor = vec4( 1.0);
-    return;
-  }
-
-  if ( hexUv.y < 0.001 || hexUv.y > 0.999) {
-    gl_FragColor = vec4(1.0);
-    return;
-  }
-  
-
-  gl_FragColor = vec4(0.0, hexUv.y, 0.0, 1.0);
-  return;
- }
-    
-
-  if (hexCoord.x == 7.0 && hexCoord.y == 7.0) { 
-    vec3 debugColor = texture2D(hexBlendingTexture, hexUv).rgb;
-    gl_FragColor = vec4(debugColor.r, 0.0, 0.0, 1.0);
-    return;
-  }
-
-
-
-
-  if (hexCoord.x == 12.0 && hexCoord.y == 7.0) { 
-    
-    vec3 debugColor = getColorFromTextureAtlas(getTextureAtlasUvWithoutAdjust(24.0, hexUv, 1.0));
-    gl_FragColor = vec4(debugColor, 1.0);
-    return;
-  }
-
   float textureId = getTextureIdFromHexCoord(hexCoord);
   vec2 textureAtlasUv = getTextureAtlasUv(textureId, vUv, TEXTURE_REPEAT);
   vec3 terrainNormal = getNormalFromTextureAtlas(textureAtlasUv);
 
-  if (hexCoord.x == 9.0 && hexCoord.y == 7.0) {
-    float centerBlendingWeight = vVertexType;
-    float noise =  1.0 + getColorFromTextureAtlas(getTextureAtlasUvWithoutAdjust(23.0, hexUv, 1.0)).r;
-
-    vec3 baseColor = getColorFromTextureAtlas(textureAtlasUv);
-    vec3 secondaryColor = vec3(1.0, 0.0, 0.0); //getColorFromTextureAtlas(getTextureAtlasUv(5.0, vUv, TEXTURE_REPEAT));
-
-    centerBlendingWeight = centerBlendingWeight * noise;
-    gl_FragColor = vec4(mix(baseColor, secondaryColor, centerBlendingWeight), 1.0);
-    return;
-  }
-
-
-  if (hexCoord.x == 7.0 && hexCoord.y == 9.0) { 
-    
-    vec2 translatedUv = getScaledNeighborHexUV(hexUv, 4, 1.5);
-
-    if (translatedUv.y < 0.0 || translatedUv.y > 1.0 || translatedUv.x < 0.0 || translatedUv.x > 1.0) {
-      gl_FragColor = vec4(0.0, 0.0, 1.0, 1.0);
-      return;
-    }
-
-    //gl_FragColor = vec4(translatedUv.r, 0.0, 0.0, 1.0);
-    //gl_FragColor = vec4(0.0, translatedUv.g, 0.0, 1.0);
-    //return;
-  
-
-    //vec3 debugColor = texture2D(hexBlendingTexture, translatedUv).rgb;
-    vec3 debugColor = getColorFromTextureAtlas(getTextureAtlasUvWithoutAdjust(24.0, translatedUv, 1.0));
-    gl_FragColor = vec4(debugColor, 1.0);
-     return;
-
-  }
   // Calculate world-space normal from normal map
   vec3 normal = calculateNormalFromMap(terrainNormal, vNormal, vUv); //normalize(vNormal);
 
   vec3 color;
 
-  // DEBUG: Visualize hex coordinate lookup texture
-  if (debugHexCoords) {
-    float q = hexCoord.x;
-    float r = hexCoord.y;
 
-    // Normalize q and r back to [0, 1] for visualization
-    // q and r range from -1 to (gridSize + 1) = -1 to 33
-    const float totalRange = 34.0;
-    float qNormalized = (q + 1.0) / totalRange;
-    float rNormalized = (r + 1.0) / totalRange;
+  // Get terrain color with blending at hex borders
+  vec3 terrainColor = getBlendedTexture();
 
-    // Display q (red) and r (green) as color
-    color = vec3(qNormalized, rNormalized, 0.0);
-
-  } else {
-    // Get terrain color with blending at hex borders
-    vec3 terrainColor = getBlendedTexture(vUv, hexCoord, textureId, vVertexType);
-
-    // Apply lighting to terrain color
-    float diffuse = max(dot(normal, lightDirection), 0.0);
-    vec3 ambient = vec3(0.25, 0.25, 0.25);
-    color = terrainColor * (ambient + diffuse * 0.75);
-  }
+  // Apply lighting to terrain color
+  float diffuse = max(dot(normal, lightDirection), 0.0);
+  vec3 ambient = vec3(0.25, 0.25, 0.25);
+  color = terrainColor * (ambient + diffuse * 0.75);
+  
 
   // Draw hex grid lines on top of base color
   if (showHexGrid) {
@@ -594,8 +476,8 @@ void main() {
   }
 
   // Apply depth-based darkening
-  //color = applyDepthDarkening(color, DEPTH_COLOR, 1.0, 1000.0, 0.0);
-  //color = applyDepthDarkening(color, FINAL_DEPTH_COLOR, 1.0, 500.0, 200.0);
+  color = applyDepthDarkening(color, DEPTH_COLOR, 1.0, 1000.0, 0.0);
+  color = applyDepthDarkening(color, FINAL_DEPTH_COLOR, 1.0, 500.0, 200.0);
 
   gl_FragColor = vec4(color, 1.0);
 }
