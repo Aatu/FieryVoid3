@@ -3,6 +3,7 @@ import { HEX_SIZE } from "@fieryvoid3/model/src/config/gameConfig";
 import { createTerrainShaderMaterial } from "./terrainShader";
 import { HexGeometry } from "./HexGeometry";
 import HexGridLookupTextureRenderer from "./HexGridLookupTextureRenderer";
+import HexBlendingTextureRenderer from "./HexBlendingTextureRenderer";
 import { getHexGeometry, clearGeometryCache } from "./HexGeometryFactory";
 
 const DEBUG = false;
@@ -45,6 +46,8 @@ class TerrainGrid {
   private readonly GRID_SIZE = 32;
   private hexLookupRenderer: HexGridLookupTextureRenderer;
   private hexCoordLookupTexture: THREE.DataTexture;
+  private hexBlendingRenderer: HexBlendingTextureRenderer;
+  private hexBlendingTexture: THREE.DataTexture;
 
   constructor(scene: THREE.Scene, numPlanes: number) {
     this.scene = scene;
@@ -72,6 +75,10 @@ class TerrainGrid {
       1024,
       this.GRID_SIZE,
     );
+
+    // Generate hex blending texture
+    this.hexBlendingRenderer = new HexBlendingTextureRenderer();
+    this.hexBlendingTexture = this.hexBlendingRenderer.generateTexture(256, 0.3);
 
     this.initWorkers();
     this.createGrid();
@@ -167,6 +174,9 @@ class TerrainGrid {
       this.hexCoordLookupTexture;
     (material as THREE.ShaderMaterial).uniforms.debugHexCoords.value =
       DEBUG_HEX_COORDS;
+    // Set hex blending texture
+    (material as THREE.ShaderMaterial).uniforms.hexBlendingTexture.value =
+      this.hexBlendingTexture;
 
     const mesh = new THREE.Mesh(geometry, material);
 
@@ -249,6 +259,8 @@ class TerrainGrid {
   }
 
   update(cameraPosition: { x: number; y: number }) {
+    return;
+
     const gameTime = performance.now(); // Milliseconds since page load (smaller numbers)
 
     this.terrainPlanes.forEach((plane) => {
@@ -353,6 +365,7 @@ class TerrainGrid {
     this.textureCache.forEach((texture) => texture.dispose());
     this.textureCache.clear();
     this.hexLookupRenderer.dispose();
+    this.hexBlendingRenderer.dispose();
     clearGeometryCache();
   }
 }

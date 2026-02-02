@@ -2,7 +2,7 @@ import * as THREE from "three";
 
 const HEX_SIZE = 25.0;
 const ZOOM_MAX = 40;
-const ZOOM_MIN = 0.5;
+const ZOOM_MIN = 0.05;
 const ZOOM_PERSPECTIVE_MIN = 100;
 const ZOOM_FOR_MAPICONS = 4;
 const ZOOM_FOR_SHIPBADGE = 2;

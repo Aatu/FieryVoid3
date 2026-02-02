@@ -3,6 +3,26 @@ import { HEX_SIZE } from "@fieryvoid3/model/src/config/gameConfig";
 import coordinateConverter from "@fieryvoid3/model/src/utils/CoordinateConverter";
 import { Offset } from "@fieryvoid3/model/src/hexagon";
 
+/**
+ * Convert game coordinates to fractional cube coordinates WITHOUT rounding
+ * Based on CoordinateConverter.fromGameToHex but keeps fractional values
+ */
+function gameToCubeFractional(
+  x: number,
+  y: number,
+  hexSize: number,
+): { x: number; y: number; z: number } {
+  const q =
+    ((1 / 3) * Math.sqrt(3) * x - (1 / 3) * y) / hexSize;
+  const r = ((2 / 3) * y) / hexSize;
+
+  const cubeX = q;
+  const cubeZ = r;
+  const cubeY = -cubeX - cubeZ;
+
+  return { x: cubeX, y: cubeY, z: cubeZ };
+}
+
 interface HexVertex {
   index: number;
   hexQ: number;
@@ -37,6 +57,7 @@ export class HexGeometry extends THREE.BufferGeometry {
     const vertexList: HexVertex[] = [];
     const vertexTypes: number[] = []; // 1.0 for center, 0.0 for corner
     const discardFlags: number[] = []; // 1.0 for discard, 0.0 for keep
+    const cubeCoords: number[] = []; // Cube coordinates (x, y, z) for each vertex
 
     // Map to track which corner vertex indices belong to each hexagon
     const hexCornerMap: Map<string, number[]> = new Map();
@@ -75,6 +96,9 @@ export class HexGeometry extends THREE.BufferGeometry {
         const isBorderHex =
           isLeftBorder || isRightBorder || isBottomBorder || isTopBorder;
 
+        // Calculate fractional cube coordinates for the center
+        const centerCube = gameToCubeFractional(centerLocal.x, centerLocal.y, HEX_SIZE);
+
         // Add center vertex
         const centerKey = `c_${q}_${r}`;
         const centerVertex: HexVertex = {
@@ -88,6 +112,7 @@ export class HexGeometry extends THREE.BufferGeometry {
         vertices.push(centerLocal.x, centerLocal.y, 0); // Use local coords for geometry
         vertexTypes.push(1.0); // Mark as center vertex
         discardFlags.push(isBorderHex ? 1.0 : 0.0); // Discard if border hex
+        cubeCoords.push(centerCube.x, centerCube.y, centerCube.z); // Fractional cube coordinates
 
         // Track bounds
         minX = Math.min(minX, centerLocal.x);
@@ -106,6 +131,9 @@ export class HexGeometry extends THREE.BufferGeometry {
 
           if (!cornerVertex) {
             // First time seeing this corner, create it
+            // Calculate fractional cube coordinates for this corner position
+            const cornerCube = gameToCubeFractional(corners[i].x, corners[i].y, HEX_SIZE);
+
             cornerVertex = {
               index: vertexList.length,
               hexQ: localQ,
@@ -117,6 +145,7 @@ export class HexGeometry extends THREE.BufferGeometry {
             vertices.push(corners[i].x, corners[i].y, 0); // Use local coords for geometry
             vertexTypes.push(0.0); // Mark as corner vertex
             discardFlags.push(0.0); // Initially keep all corners
+            cubeCoords.push(cornerCube.x, cornerCube.y, cornerCube.z); // Fractional cube coords for corner
 
             // Track bounds
             minX = Math.min(minX, corners[i].x);
@@ -144,6 +173,9 @@ export class HexGeometry extends THREE.BufferGeometry {
           let nextCornerVertex = this.hexVertexMap.get(nextCornerKey);
 
           if (!nextCornerVertex) {
+            // Calculate fractional cube coordinates for this corner position
+            const nextCornerCube = gameToCubeFractional(nextCorner.x, nextCorner.y, HEX_SIZE);
+
             nextCornerVertex = {
               index: vertexList.length,
               hexQ: localQ,
@@ -155,6 +187,7 @@ export class HexGeometry extends THREE.BufferGeometry {
             vertices.push(nextCorner.x, nextCorner.y, 0); // Use local coords for geometry
             vertexTypes.push(0.0); // Mark as corner vertex
             discardFlags.push(0.0); // Initially keep all corners
+            cubeCoords.push(nextCornerCube.x, nextCornerCube.y, nextCornerCube.z); // Fractional cube coords
 
             // Track bounds
             minX = Math.min(minX, nextCorner.x);
@@ -257,6 +290,10 @@ export class HexGeometry extends THREE.BufferGeometry {
     this.setAttribute(
       "borderFlag",
       new THREE.Float32BufferAttribute(discardFlags, 1),
+    );
+    this.setAttribute(
+      "cubeCoord",
+      new THREE.Float32BufferAttribute(cubeCoords, 3),
     );
 
     this.setIndex(indices);

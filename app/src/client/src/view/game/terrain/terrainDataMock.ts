@@ -80,30 +80,36 @@ export const getHeightAt = (hex: Offset): number => {
   return Math.floor(height);
 };
 
-export const getTextureAt2 = (hex: Offset): number => {
-  if (hex.equals({ q: 7, r: 3 }) || hex.equals({ q: 0, r: -1 })) {
+export const getTextureAt = (hex: Offset): number => {
+  if (hex.equals({ q: 7, r: 3 })) {
+    return 21;
+  }
+
+  if (hex.equals({ q: 7, r: 4 })) {
     return 5;
   }
 
-  if (hex.equals({ q: 74, r: 3 })) {
-    return 5;
+  if (hex.equals({ q: 6, r: 4 })) {
+    return 2;
   }
 
-  if (hex.equals({ q: 53, r: 63 })) {
-    return 5;
+  if (hex.equals({ q: 6, r: 3 })) {
+    return 4;
+  }
+
+  if (hex.equals({ q: 6, r: 2 })) {
+    return 3;
   }
 
   return 0;
 };
 
-export const getTextureAt = (hex: Offset): number => {
+export const getTextureAt2 = (hex: Offset): number => {
   const getRandom = getSeededRandomGenerator(hex.toString());
 
-  /*
   if (getRandom() < 0.05) {
     return 5;
   }
-    */
 
   if (getRandom() < 0.5) {
     return 1;

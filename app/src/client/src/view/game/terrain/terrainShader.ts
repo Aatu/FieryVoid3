@@ -33,6 +33,7 @@ export interface TerrainShaderUniforms {
   showHexGrid: { value: boolean };
   textureLookup: { value: THREE.DataTexture | null };
   hexCoordLookup: { value: THREE.DataTexture | null };
+  hexBlendingTexture: { value: THREE.DataTexture | null };
   debugHexCoords: { value: boolean };
   groundTextureDiffuse: { value: THREE.Texture | null };
   groundTextureNormal: { value: THREE.Texture | null };
@@ -70,6 +71,7 @@ export const createTerrainShaderMaterial = (
     showHexGrid: { value: false },
     textureLookup: { value: null },
     hexCoordLookup: { value: null },
+    hexBlendingTexture: { value: null },
     debugHexCoords: { value: false },
     groundTextureDiffuse: { value: groundTexture },
     groundTextureNormal: { value: groundNormalMap },
