@@ -40,11 +40,11 @@ class HexBlendingTextureRenderer {
   /**
    * Round cube coordinates with constraint x+y+z=0
    */
-  private roundCube(cube: {
+  private roundCube(cube: { x: number; y: number; z: number }): {
     x: number;
     y: number;
     z: number;
-  }): { x: number; y: number; z: number } {
+  } {
     let rx = Math.round(cube.x);
     let ry = Math.round(cube.y);
     let rz = Math.round(cube.z);
@@ -82,11 +82,7 @@ class HexBlendingTextureRenderer {
     // Clamp to 0.5 to ensure hex corners/edges don't exceed boundary
     const distFromCenter = Math.min(
       0.5,
-      Math.max(
-        Math.abs(offset.x),
-        Math.abs(offset.y),
-        Math.abs(offset.z),
-      ),
+      Math.max(Math.abs(offset.x), Math.abs(offset.y), Math.abs(offset.z)),
     );
 
     // Close to center - only current hex
@@ -142,9 +138,9 @@ class HexBlendingTextureRenderer {
 
     // Find the two largest axis weights for neighbor blending
     const sortedWeights = [
-      { weight: axisWeights.x, axis: 'x' },
-      { weight: axisWeights.y, axis: 'y' },
-      { weight: axisWeights.z, axis: 'z' },
+      { weight: axisWeights.x, axis: "x" },
+      { weight: axisWeights.y, axis: "y" },
+      { weight: axisWeights.z, axis: "z" },
     ].sort((a, b) => b.weight - a.weight);
 
     const neighbor1Weight = remainingWeight * sortedWeights[0].weight;
@@ -164,7 +160,10 @@ class HexBlendingTextureRenderer {
    * @param blendThreshold - Threshold for blending (0-0.5), default 0.3
    * @returns DataTexture containing blending weights
    */
-  generateTexture(resolution: number = 256, blendThreshold: number = 0.3): THREE.DataTexture {
+  generateTexture(
+    resolution: number = 256,
+    blendThreshold: number = 0.3,
+  ): THREE.DataTexture {
     const cacheKey = resolution;
 
     // Check cache

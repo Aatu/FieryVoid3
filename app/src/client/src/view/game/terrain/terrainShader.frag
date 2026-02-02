@@ -96,7 +96,7 @@ vec2 getHexCoordFromCube(vec3 cubeCoord) {
  * Converts fractional cube coordinates to hex-local UV space
  * For pointy-topped hexagons
  */
-vec2 getLocalHexUV(vec3 cubeCoord) {
+vec2 getLocalHexUV(vec3 cubeCoord, float scaling) {
   // Round to find which hex we're in
   vec3 rounded = floor(cubeCoord + 0.5);
 
@@ -330,50 +330,33 @@ vec3 getNeighborDirection(float neighborIndex) {
   }
 }
 
+// Neighbor directions in UV space for flat-sided hexagons
+// Using standard 60-degree angles for uniform hex-relative scaling
+const float SQRT3_2 = 0.8660254; // sqrt(3)/2
+const vec2 NEIGHBOR_UV_DIRECTIONS[6] = vec2[6](
+  vec2(1.0, 0.0),           // 0: East (0°)
+  vec2(0.5, -SQRT3_2),      // 1: Southeast (60° clockwise)
+  vec2(-0.5, -SQRT3_2),     // 2: Southwest (120°)
+  vec2(-1.0, 0.0),          // 3: West (180°)
+  vec2(-0.5, SQRT3_2),      // 4: Northwest (240°)
+  vec2(0.5, SQRT3_2)        // 5: Northeast (300°)
+);
+
 /**
  * Calculate UV coordinates local to a neighbor hex with scaling
- * @param cubeCoord - Current position in cube coordinates
- * @param neighborIndex - Which neighbor (0-5) to use as reference
- * @param scaling - How much the UVs extend beyond hex boundaries
- *                  scaling = 1.0: UV [0,1] covers exactly the neighbor hex
- *                  scaling = 2.0: UV [0,1] covers 2x the neighbor hex (overlap into surrounding hexes)
- * @returns UV coordinates [0,1] centered on the neighbor hex
+ * @param hexUv - Local UV in current hex [0,1]
+ * @param neighborIndex - Which neighbor (0-5) to use
+ * @param scaling - Scales the neighbor UV space. 1.0 = normal, 2.0 = 2x area (spills over)
+ * @returns UV coordinates in scaled neighbor hex space
  */
-vec2 getScaledNeighborHexUV(vec3 cubeCoord, float neighborIndex, float scaling) {
-  // Get the direction to the specified neighbor
-  vec3 neighborDir = getNeighborDirection(neighborIndex);
+vec2 getScaledNeighborHexUV(vec2 hexUv, int neighborIndex, float scaling) {
+  vec2 direction = NEIGHBOR_UV_DIRECTIONS[neighborIndex];
 
-  // Round to find which hex we're currently in
-  vec3 rounded = floor(cubeCoord + 0.5);
+  // Step 1: Translate from current hex UV to neighbor hex UV space
+  // Step 2: Scale uniformly around neighbor's center (0.5, 0.5)
+  vec2 neighborUV = (hexUv - direction - 0.5) / scaling + 0.5;
 
-  // Apply cube rounding constraint (maintain x+y+z=0)
-  vec3 diff = abs(rounded - cubeCoord);
-  if (diff.x > diff.y && diff.x > diff.z) {
-    rounded.x = -rounded.y - rounded.z;
-  } else if (diff.y > diff.z) {
-    rounded.y = -rounded.x - rounded.z;
-  } else {
-    rounded.z = -rounded.x - rounded.y;
-  }
-
-  // Calculate the neighbor hex center in cube coordinates
-  vec3 neighborCenter = rounded + neighborDir;
-
-  // Calculate offset from the neighbor hex center
-  vec3 offset = cubeCoord - neighborCenter;
-
-  // Convert from cube coordinates to 2D cartesian for flat-sided hexagons
-  // These formulas work for pointy-topped hex orientation
-  const float SQRT3 = 1.732050808;
-  float hexLocalX = SQRT3 * offset.x + (SQRT3 / 2.0) * offset.z;
-  float hexLocalY = (3.0 / 2.0) * offset.z;
-
-  // Normalize to [0, 1] with scaling factor
-  // Larger scaling values cause UVs to extend further beyond the neighbor hex boundaries
-  float u = (hexLocalX / SQRT3) / scaling + 0.5;
-  float v = (hexLocalY / 2.0) / scaling + 0.5;
-
-  return vec2(u, v);
+  return neighborUV;
 }
 
 /**
@@ -382,7 +365,7 @@ vec2 getScaledNeighborHexUV(vec3 cubeCoord, float neighborIndex, float scaling) 
  */
 vec3 getBlendedTexture(vec2 uv, vec2 currentHexCoord, float currentTextureId, float edgeFactor) {
   // Get local hex UV coordinates [0, 1] within the current hex
-  vec2 hexUV = getLocalHexUV(vCubeCoord);
+  vec2 hexUV = getLocalHexUV(vCubeCoord, 1.0);
 
   // Sample the hex blending texture
   // R: current hex weight
@@ -484,7 +467,7 @@ void main() {
   }
 
 
- vec2 hexUv = getLocalHexUV(vCubeCoord);
+ vec2 hexUv = getLocalHexUV(vCubeCoord, 1.0);
 
 
 /*
@@ -537,7 +520,7 @@ void main() {
   vec2 textureAtlasUv = getTextureAtlasUv(textureId, vUv, TEXTURE_REPEAT);
   vec3 terrainNormal = getNormalFromTextureAtlas(textureAtlasUv);
 
-    if (hexCoord.x == 9.0 && hexCoord.y == 7.0) {
+  if (hexCoord.x == 9.0 && hexCoord.y == 7.0) {
     float centerBlendingWeight = vVertexType;
     float noise =  1.0 + getColorFromTextureAtlas(getTextureAtlasUvWithoutAdjust(23.0, hexUv, 1.0)).r;
 
@@ -549,6 +532,27 @@ void main() {
     return;
   }
 
+
+  if (hexCoord.x == 7.0 && hexCoord.y == 9.0) { 
+    
+    vec2 translatedUv = getScaledNeighborHexUV(hexUv, 4, 1.5);
+
+    if (translatedUv.y < 0.0 || translatedUv.y > 1.0 || translatedUv.x < 0.0 || translatedUv.x > 1.0) {
+      gl_FragColor = vec4(0.0, 0.0, 1.0, 1.0);
+      return;
+    }
+
+    //gl_FragColor = vec4(translatedUv.r, 0.0, 0.0, 1.0);
+    //gl_FragColor = vec4(0.0, translatedUv.g, 0.0, 1.0);
+    //return;
+  
+
+    //vec3 debugColor = texture2D(hexBlendingTexture, translatedUv).rgb;
+    vec3 debugColor = getColorFromTextureAtlas(getTextureAtlasUvWithoutAdjust(24.0, translatedUv, 1.0));
+    gl_FragColor = vec4(debugColor, 1.0);
+     return;
+
+  }
   // Calculate world-space normal from normal map
   vec3 normal = calculateNormalFromMap(terrainNormal, vNormal, vUv); //normalize(vNormal);
 
