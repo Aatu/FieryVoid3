@@ -1,7 +1,7 @@
 import { expect, test } from "vitest";
-import TestShip from "../../../model/src/unit/ships/test/TestShip";
-import OutputReduced8 from "../../../model/src/unit/system/criticals/OutputReduced8";
-import OutputReduced6 from "../../../model/src/unit/system/criticals/OutputReduced6";
+import TestShip from "@fieryvoid3/model/src/unit/ships/test/TestShip";
+import OutputReduced8 from "@fieryvoid3/model/src/unit/system/criticals/OutputReduced8";
+import OutputReduced6 from "@fieryvoid3/model/src/unit/system/criticals/OutputReduced6";
 
 test("Ship resolves valid power", () => {
   let ship = new TestShip({ id: "123" });

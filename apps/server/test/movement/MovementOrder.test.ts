@@ -1,14 +1,14 @@
 import { expect, test } from "vitest";
-import MovementOrder from "../../../model/src/movement/MovementOrder";
-import { MOVEMENT_TYPE, RequiredThrust } from "../../../model/src/movement";
-import Offset from "../../../model/src/hexagon/Offset";
-import Ship from "../../../model/src/unit/Ship";
-import { Engine } from "../../../model/src/unit/system/engine";
-import { Reactor } from "../../../model/src/unit/system/reactor";
+import MovementOrder from "@fieryvoid3/model/src/movement/MovementOrder";
+import { MOVEMENT_TYPE, RequiredThrust } from "@fieryvoid3/model/src/movement";
+import Offset from "@fieryvoid3/model/src/hexagon/Offset";
+import Ship from "@fieryvoid3/model/src/unit/Ship";
+import { Engine } from "@fieryvoid3/model/src/unit/system/engine";
+import { Reactor } from "@fieryvoid3/model/src/unit/system/reactor";
 import {
   Thruster,
   ManeuveringThruster,
-} from "../../../model/src/unit/system/thruster";
+} from "@fieryvoid3/model/src/unit/system/thruster";
 
 const startMove = new MovementOrder(
   null,

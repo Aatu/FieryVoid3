@@ -1,5 +1,5 @@
-import GameData from "../../model/src/game/GameData";
-import Ship from "../../model/src/unit/Ship";
+import GameData from "@fieryvoid3/model/src/game/GameData";
+import Ship from "@fieryvoid3/model/src/unit/Ship";
 import GameHandler from "../handler/GameHandler";
 import DestroyerAIRole from "./aiRoles/DestroyerAIRole";
 

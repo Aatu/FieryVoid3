@@ -1,5 +1,5 @@
 import { InvalidRequestError } from "../errors";
-import { isUserRegisterData, User } from "../../model/src/User/User";
+import { isUserRegisterData, User } from "@fieryvoid3/model/src/User/User";
 import UserRepository from "../repository/UserRepository";
 
 class UserService {

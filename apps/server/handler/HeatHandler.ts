@@ -1,8 +1,8 @@
-import GameData from "../../model/src/game/GameData";
-import Ship from "../../model/src/unit/Ship";
-import { ForcedOfflineOverheat } from "../../model/src/unit/system/criticals";
-import ShipSystemLogEntryHeat from "../../model/src/unit/system/ShipSystemLog/ShipSystemLogEntryHeat";
-import { SYSTEM_HANDLERS } from "../../model/src/unit/system/strategy/types/SystemHandlersTypes";
+import GameData from "@fieryvoid3/model/src/game/GameData";
+import Ship from "@fieryvoid3/model/src/unit/Ship";
+import { ForcedOfflineOverheat } from "@fieryvoid3/model/src/unit/system/criticals";
+import ShipSystemLogEntryHeat from "@fieryvoid3/model/src/unit/system/ShipSystemLog/ShipSystemLogEntryHeat";
+import { SYSTEM_HANDLERS } from "@fieryvoid3/model/src/unit/system/strategy/types/SystemHandlersTypes";
 
 class HeatHandler {
   advance(gameData: GameData) {

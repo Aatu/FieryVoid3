@@ -1,9 +1,9 @@
 import { expect, test } from "vitest";
 import TestDatabaseConnection from "../support/TestDatabaseConnection";
-import { User } from "../../../model/src/User/User";
-import GameData from "../../../model/src/game/GameData";
-import GameSlot from "../../../model/src/game/GameSlot";
-import Offset from "../../../model/src/hexagon/Offset";
+import { User } from "@fieryvoid3/model/src/User/User";
+import GameData from "@fieryvoid3/model/src/game/GameData";
+import GameSlot from "@fieryvoid3/model/src/game/GameSlot";
+import Offset from "@fieryvoid3/model/src/hexagon/Offset";
 import GameController from "../../controller/GameController";
 
 test("Create game successfull", async () => {

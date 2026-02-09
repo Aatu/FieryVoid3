@@ -1,7 +1,7 @@
 import { expect, test } from "vitest";
-import coordinateConverter from "../../../model/src/utils/CoordinateConverter";
-import { Offset } from "../../../model/src/hexagon";
-import HexagonMath from "../../../model/src/utils/HexagonMath";
+import coordinateConverter from "@fieryvoid3/model/src/utils/CoordinateConverter";
+import { Offset } from "@fieryvoid3/model/src/hexagon";
+import HexagonMath from "@fieryvoid3/model/src/utils/HexagonMath";
 
 test("hex size and coordinate converter", (test) => {
   const a = coordinateConverter.fromHexToGame(new Offset(0, 0));

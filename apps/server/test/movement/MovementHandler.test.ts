@@ -1,14 +1,14 @@
 import { expect, test } from "vitest";
-import MovementOrder from "../../../model/src/movement/MovementOrder";
+import MovementOrder from "@fieryvoid3/model/src/movement/MovementOrder";
 import {
   MOVEMENT_TYPE,
   MovementService,
   RequiredThrust,
-} from "../../../model/src/movement";
-import Offset from "../../../model/src/hexagon/Offset";
-import GameData, { SerializedGameData } from "../../../model/src/game/GameData";
-import TestShip from "../../../model/src/unit/ships/test/TestShip";
-import { User } from "../../../model/src/User/User";
+} from "@fieryvoid3/model/src/movement";
+import Offset from "@fieryvoid3/model/src/hexagon/Offset";
+import GameData, { SerializedGameData } from "@fieryvoid3/model/src/game/GameData";
+import TestShip from "@fieryvoid3/model/src/unit/ships/test/TestShip";
+import { User } from "@fieryvoid3/model/src/User/User";
 import MovementHandler from "../../handler/MovementHandler";
 
 const startMove = new MovementOrder(

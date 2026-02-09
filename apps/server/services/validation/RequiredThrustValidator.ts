@@ -1,8 +1,8 @@
-import { MovementOrder, RequiredThrust } from "../../../model/src/movement";
-import Ship from "../../../model/src/unit/Ship";
-import ShipSystem from "../../../model/src/unit/system/ShipSystem";
-import { THRUSTER_DIRECTION } from "../../../model/src/unit/system/strategy/ThrustChannelSystemStrategy";
-import { SYSTEM_HANDLERS } from "../../../model/src/unit/system/strategy/types/SystemHandlersTypes";
+import { MovementOrder, RequiredThrust } from "@fieryvoid3/model/src/movement";
+import Ship from "@fieryvoid3/model/src/unit/Ship";
+import ShipSystem from "@fieryvoid3/model/src/unit/system/ShipSystem";
+import { THRUSTER_DIRECTION } from "@fieryvoid3/model/src/unit/system/strategy/ThrustChannelSystemStrategy";
+import { SYSTEM_HANDLERS } from "@fieryvoid3/model/src/unit/system/strategy/types/SystemHandlersTypes";
 import { InvalidGameDataError } from "../../errors/index";
 
 class RequiredThrustValidator {

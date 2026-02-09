@@ -1,12 +1,12 @@
 import { expect, test } from "vitest";
-import ShipSystem from "../../../model/src/unit/system/ShipSystem";
-import ShipElectronicWarfare from "../../../model/src/unit/ShipElectronicWarfare";
-import Ship from "../../../model/src/unit/Ship";
-import EwArray from "../../../model/src/unit/system/electronicWarfare/EwArray";
-import { SYSTEM_HANDLERS } from "../../../model/src/unit/system/strategy/types/SystemHandlersTypes";
-import ElectronicWarfareEntry from "../../../model/src/electronicWarfare/ElectronicWarfareEntry";
-import OutputReduced2 from "../../../model/src/unit/system/criticals/OutputReduced2";
-import TestShip from "../../../model/src/unit/ships/test/TestShip";
+import ShipSystem from "@fieryvoid3/model/src/unit/system/ShipSystem";
+import ShipElectronicWarfare from "@fieryvoid3/model/src/unit/ShipElectronicWarfare";
+import Ship from "@fieryvoid3/model/src/unit/Ship";
+import EwArray from "@fieryvoid3/model/src/unit/system/electronicWarfare/EwArray";
+import { SYSTEM_HANDLERS } from "@fieryvoid3/model/src/unit/system/strategy/types/SystemHandlersTypes";
+import ElectronicWarfareEntry from "@fieryvoid3/model/src/electronicWarfare/ElectronicWarfareEntry";
+import OutputReduced2 from "@fieryvoid3/model/src/unit/system/criticals/OutputReduced2";
+import TestShip from "@fieryvoid3/model/src/unit/ships/test/TestShip";
 
 const constructTestShipElectronicWarfare = (allSystems: ShipSystem[]) =>
   new ShipElectronicWarfare({

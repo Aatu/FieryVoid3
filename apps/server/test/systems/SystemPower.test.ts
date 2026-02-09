@@ -1,14 +1,14 @@
 import { expect, test } from "vitest";
-import Engine from "../../../model/src/unit/system/engine/Engine";
-import Reactor from "../../../model/src/unit/system/reactor/Reactor";
-import ShipSystems from "../../../model/src/unit/ShipSystems";
-import Ship from "../../../model/src/unit/Ship";
-import PDC30mm from "../../../model/src/unit/system/weapon/pdc/PDC30mm";
-import { SYSTEM_HANDLERS } from "../../../model/src/unit/system/strategy/types/SystemHandlersTypes";
-import CoilgunLightFixed from "../../../model/src/unit/system/weapon/coilgun/CoilgunLightFixed";
-import OutputReduced8 from "../../../model/src/unit/system/criticals/OutputReduced8";
-import GameData from "../../../model/src/game/GameData";
-import { GAME_PHASE } from "../../../model/src/game/gamePhase";
+import Engine from "@fieryvoid3/model/src/unit/system/engine/Engine";
+import Reactor from "@fieryvoid3/model/src/unit/system/reactor/Reactor";
+import ShipSystems from "@fieryvoid3/model/src/unit/ShipSystems";
+import Ship from "@fieryvoid3/model/src/unit/Ship";
+import PDC30mm from "@fieryvoid3/model/src/unit/system/weapon/pdc/PDC30mm";
+import { SYSTEM_HANDLERS } from "@fieryvoid3/model/src/unit/system/strategy/types/SystemHandlersTypes";
+import CoilgunLightFixed from "@fieryvoid3/model/src/unit/system/weapon/coilgun/CoilgunLightFixed";
+import OutputReduced8 from "@fieryvoid3/model/src/unit/system/criticals/OutputReduced8";
+import GameData from "@fieryvoid3/model/src/game/GameData";
+import { GAME_PHASE } from "@fieryvoid3/model/src/game/gamePhase";
 
 test("System can change its power states", () => {
   const engine = new Engine({ id: 123, hitpoints: 10, armor: 3 }, 12, 6, 2);

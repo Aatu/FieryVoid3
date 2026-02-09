@@ -1,9 +1,9 @@
 import { expect, test } from "vitest";
-import Torpedo158MSV from "../../../model/src/unit/system/weapon/ammunition/torpedo/Torpedo158MSV";
-import Torpedo158Nuclear from "../../../model/src/unit/system/weapon/ammunition/torpedo/Torpedo158Nuclear";
-import CargoBay from "../../../model/src/unit/system/cargo/CargoBay";
-import { SYSTEM_HANDLERS } from "../../../model/src/unit/system/strategy/types/SystemHandlersTypes";
-import { CargoEntry } from "../../../model/src/cargo/CargoEntry";
+import Torpedo158MSV from "@fieryvoid3/model/src/unit/system/weapon/ammunition/torpedo/Torpedo158MSV";
+import Torpedo158Nuclear from "@fieryvoid3/model/src/unit/system/weapon/ammunition/torpedo/Torpedo158Nuclear";
+import CargoBay from "@fieryvoid3/model/src/unit/system/cargo/CargoBay";
+import { SYSTEM_HANDLERS } from "@fieryvoid3/model/src/unit/system/strategy/types/SystemHandlersTypes";
+import { CargoEntry } from "@fieryvoid3/model/src/cargo/CargoEntry";
 
 test("Cargo bay can store stuff", () => {
   const torpedo1 = new Torpedo158MSV();

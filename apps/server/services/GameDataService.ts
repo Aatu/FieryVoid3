@@ -1,4 +1,4 @@
-import GameData from "../../model/src/game/GameData";
+import GameData from "@fieryvoid3/model/src/game/GameData";
 import GameDataRepository from "../repository/GameDataRepository";
 import CachedGameData, { ReservedGameDataPromise } from "./CachedGameData";
 

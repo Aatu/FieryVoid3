@@ -1,16 +1,16 @@
 import GameData, {
   SerializedGameData,
   SerializedGameDataSubData,
-} from "../../model/src/game/GameData";
-import { GAME_PHASE } from "../../model/src/game/gamePhase";
-import { GAME_STATUS } from "../../model/src/game/gameStatus";
-import { SerializedMovementOrder } from "../../model/src/movement/MovementOrder";
+} from "@fieryvoid3/model/src/game/GameData";
+import { GAME_PHASE } from "@fieryvoid3/model/src/game/gamePhase";
+import { GAME_STATUS } from "@fieryvoid3/model/src/game/gameStatus";
+import { SerializedMovementOrder } from "@fieryvoid3/model/src/movement/MovementOrder";
 import Ship, {
   SerializedShip,
   ShipBase,
   ShipData,
-} from "../../model/src/unit/Ship";
-import { IUser, User } from "../../model/src/User/User";
+} from "@fieryvoid3/model/src/unit/Ship";
+import { IUser, User } from "@fieryvoid3/model/src/User/User";
 import DbConnection from "./DbConnection";
 import { PoolConnection as Connection } from "mariadb";
 

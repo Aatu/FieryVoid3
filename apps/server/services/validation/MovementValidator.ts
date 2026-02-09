@@ -1,8 +1,8 @@
-import { MOVEMENT_TYPE } from "../../../model/src/movement";
-import MovementOrder from "../../../model/src/movement/MovementOrder";
-import Ship from "../../../model/src/unit/Ship";
-import { THRUSTER_DIRECTION } from "../../../model/src/unit/system/strategy/ThrustChannelSystemStrategy";
-import { addToHexFacing } from "../../../model/src/utils/math";
+import { MOVEMENT_TYPE } from "@fieryvoid3/model/src/movement";
+import MovementOrder from "@fieryvoid3/model/src/movement/MovementOrder";
+import Ship from "@fieryvoid3/model/src/unit/Ship";
+import { THRUSTER_DIRECTION } from "@fieryvoid3/model/src/unit/system/strategy/ThrustChannelSystemStrategy";
+import { addToHexFacing } from "@fieryvoid3/model/src/utils/math";
 import InvalidGameDataError from "../../errors/InvalidGameDataError";
 import RequiredThrustValidator from "./RequiredThrustValidator";
 

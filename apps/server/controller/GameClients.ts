@@ -1,6 +1,6 @@
-import GameData from "../../model/src/game/GameData";
-import { User } from "../../model/src/User/User";
-import { GAME_MESSAGE } from "../../model/src/game/gameMessage";
+import GameData from "@fieryvoid3/model/src/game/GameData";
+import { User } from "@fieryvoid3/model/src/User/User";
+import { GAME_MESSAGE } from "@fieryvoid3/model/src/game/gameMessage";
 
 class GameClients {
   private games: Record<string, { connection: WebSocket; user: User }[]>;

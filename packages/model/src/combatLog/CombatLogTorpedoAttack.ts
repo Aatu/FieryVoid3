@@ -50,7 +50,7 @@ class CombatLogTorpedoAttack implements ICombatLogEntry {
       return [
         ...all,
         ...(entry.damageIds
-          .map((id) => system.damage.getDamageById(id))
+          .map((id) => system?.damage.getDamageById(id))
           .filter(Boolean) as DamageEntry[]),
       ];
     };

@@ -1,10 +1,10 @@
 import { expect, test } from "vitest";
-import Ship from "../../../model/src/unit/Ship";
-import ShipSystem from "../../../model/src/unit/system/ShipSystem";
-import OutputHeatOnlineStrategy from "../../../model/src/unit/system/strategy/OutputHeatOnlineStrategy";
+import Ship from "@fieryvoid3/model/src/unit/Ship";
+import ShipSystem from "@fieryvoid3/model/src/unit/system/ShipSystem";
+import OutputHeatOnlineStrategy from "@fieryvoid3/model/src/unit/system/strategy/OutputHeatOnlineStrategy";
 import HeatHandler from "../../handler/HeatHandler";
-import GameData from "../../../model/src/game/GameData";
-import ShipSystemLogEntryHeat from "../../../model/src/unit/system/ShipSystemLog/ShipSystemLogEntryHeat";
+import GameData from "@fieryvoid3/model/src/game/GameData";
+import ShipSystemLogEntryHeat from "@fieryvoid3/model/src/unit/system/ShipSystemLog/ShipSystemLogEntryHeat";
 
 test("Heat is generated", (test) => {
   const ship = new Ship({ id: "1" });

@@ -1,5 +1,5 @@
 import { expect, test } from "vitest";
-import Offset from "../../../model/src/hexagon/Offset";
+import Offset from "@fieryvoid3/model/src/hexagon/Offset";
 
 test("Builds a neat ring", () => {
   const offset = new Offset(0, 0);

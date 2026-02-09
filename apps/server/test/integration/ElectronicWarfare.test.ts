@@ -1,6 +1,6 @@
 import { expect, test } from "vitest";
 import TestDatabaseConnection from "../support/TestDatabaseConnection";
-import { User } from "../../../model/src/User/User";
+import { User } from "@fieryvoid3/model/src/User/User";
 import GameController from "../../controller/GameController";
 import { constructDeployedGame } from "../support/constructGame";
 

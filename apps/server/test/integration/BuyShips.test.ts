@@ -1,16 +1,16 @@
 import { expect, test } from "vitest";
-import MovementOrder from "../../../model/src/movement/MovementOrder";
-import RequiredThrust from "../../../model/src/movement/RequiredThrust";
-import { User } from "../../../model/src/User/User";
+import MovementOrder from "@fieryvoid3/model/src/movement/MovementOrder";
+import RequiredThrust from "@fieryvoid3/model/src/movement/RequiredThrust";
+import { User } from "@fieryvoid3/model/src/User/User";
 import GameController from "../../controller/GameController";
-import { Impetous } from "../../../model/src/unit/ships/federation";
-import { TestShip } from "../../../model/src/unit/ships/test";
-import Torpedo158MSV from "../../../model/src/unit/system/weapon/ammunition/torpedo/Torpedo158MSV";
+import { Impetous } from "@fieryvoid3/model/src/unit/ships/federation";
+import { TestShip } from "@fieryvoid3/model/src/unit/ships/test";
+import Torpedo158MSV from "@fieryvoid3/model/src/unit/system/weapon/ammunition/torpedo/Torpedo158MSV";
 import { constructLobbyGameWithSlotsTaken } from "../support/constructGame";
 import TestDatabaseConnection from "../support/TestDatabaseConnection";
-import Offset from "../../../model/src/hexagon/Offset";
-import { MOVEMENT_TYPE } from "../../../model/src/movement";
-import { SYSTEM_HANDLERS } from "../../../model/src/unit/system/strategy/types/SystemHandlersTypes";
+import Offset from "@fieryvoid3/model/src/hexagon/Offset";
+import { MOVEMENT_TYPE } from "@fieryvoid3/model/src/movement";
+import { SYSTEM_HANDLERS } from "@fieryvoid3/model/src/unit/system/strategy/types/SystemHandlersTypes";
 
 const compareMovements = (moves1: MovementOrder[], moves2: MovementOrder[]) => {
   expect(

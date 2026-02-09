@@ -1,4 +1,4 @@
-import GameData, { SerializedGameData } from "../../model/src/game/GameData";
+import GameData, { SerializedGameData } from "@fieryvoid3/model/src/game/GameData";
 import {
   BuyShipsMessage,
   GAME_MESSAGE,
@@ -7,9 +7,9 @@ import {
   LeaveSlotMessage,
   RequestReplayMessage,
   TakeSlotMessage,
-} from "../../model/src/game/gameMessage";
-import { SerializedShip } from "../../model/src/unit/Ship";
-import { User } from "../../model/src/User/User";
+} from "@fieryvoid3/model/src/game/gameMessage";
+import { SerializedShip } from "@fieryvoid3/model/src/unit/Ship";
+import { User } from "@fieryvoid3/model/src/User/User";
 import BuyShipsHandler from "../handler/BuyShipsHandler";
 import CreateGameHandler from "../handler/CreateGameHandler";
 import CreateTestGameHandler from "../handler/CreateTestGameHandler";

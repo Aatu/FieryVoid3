@@ -1,4 +1,4 @@
-import { IUser, User } from "../../model/src/User/User";
+import { IUser, User } from "@fieryvoid3/model/src/User/User";
 import DbConnection from "./DbConnection";
 
 class UserRepository {

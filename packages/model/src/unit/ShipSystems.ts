@@ -268,11 +268,9 @@ class ShipSystems {
     return section?.getStructure() || null;
   }
 
-  getSystemById(id: number): ShipSystem {
+  getSystemById(id: number): ShipSystem | undefined{
     const system = this.systems[id];
-    if (!system) {
-      throw new Error(`System with id ${id} not found`);
-    }
+
     return system;
   }
 

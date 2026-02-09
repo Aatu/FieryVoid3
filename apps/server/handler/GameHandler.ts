@@ -9,8 +9,8 @@ import HeatHandler from "./HeatHandler";
 import MovementHandler from "./MovementHandler";
 import WeaponHandler from "./WeaponHandler";
 import AiHandler from "../ai/AiHandler";
-import GameData from "../../model/src/game/GameData";
-import { User } from "../../model/src/User/User";
+import GameData from "@fieryvoid3/model/src/game/GameData";
+import { User } from "@fieryvoid3/model/src/User/User";
 
 class GameHandler {
   private movementHandler: MovementHandler;

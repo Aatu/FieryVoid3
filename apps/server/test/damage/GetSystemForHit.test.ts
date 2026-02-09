@@ -1,14 +1,14 @@
 import { expect, test } from "vitest";
-import { Offset } from "../../../model/src/hexagon";
-import { MOVEMENT_TYPE, MovementOrder } from "../../../model/src/movement";
-import Ship from "../../../model/src/unit/Ship";
-import DamageEntry from "../../../model/src/unit/system/DamageEntry";
-import { Engine } from "../../../model/src/unit/system/engine";
-import { Reactor } from "../../../model/src/unit/system/reactor";
-import { Structure } from "../../../model/src/unit/system/structure";
-import { PDC30mm } from "../../../model/src/unit/system/weapon/pdc";
-import { ShipSystemType } from "../../../model/src/unit/system/ShipSystem";
-import { Radiator10x40 } from "../../../model/src/unit/system/heat";
+import { Offset } from "@fieryvoid3/model/src/hexagon";
+import { MOVEMENT_TYPE, MovementOrder } from "@fieryvoid3/model/src/movement";
+import Ship from "@fieryvoid3/model/src/unit/Ship";
+import DamageEntry from "@fieryvoid3/model/src/unit/system/DamageEntry";
+import { Engine } from "@fieryvoid3/model/src/unit/system/engine";
+import { Reactor } from "@fieryvoid3/model/src/unit/system/reactor";
+import { Structure } from "@fieryvoid3/model/src/unit/system/structure";
+import { PDC30mm } from "@fieryvoid3/model/src/unit/system/weapon/pdc";
+import { ShipSystemType } from "@fieryvoid3/model/src/unit/system/ShipSystem";
+import { Radiator10x40 } from "@fieryvoid3/model/src/unit/system/heat";
 
 const constructShip = (id: string = "123") => {
   let ship = new Ship({

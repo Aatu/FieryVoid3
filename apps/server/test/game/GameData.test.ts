@@ -1,10 +1,10 @@
 import { User } from "@fieryvoid3/model";
-import Offset from "../../../model/src/hexagon/Offset";
-import { MOVEMENT_TYPE } from "../../../model/src/movement";
-import MovementOrder from "../../../model/src/movement/MovementOrder";
+import Offset from "@fieryvoid3/model/src/hexagon/Offset";
+import { MOVEMENT_TYPE } from "@fieryvoid3/model/src/movement";
+import MovementOrder from "@fieryvoid3/model/src/movement/MovementOrder";
 import { expect, test } from "vitest";
-import GameData, { SerializedGameData } from "../../../model/src/game/GameData";
-import { TestShip } from "../../../model/src/unit/ships/test";
+import GameData, { SerializedGameData } from "@fieryvoid3/model/src/game/GameData";
+import { TestShip } from "@fieryvoid3/model/src/unit/ships/test";
 
 const startMove = new MovementOrder(
   null,

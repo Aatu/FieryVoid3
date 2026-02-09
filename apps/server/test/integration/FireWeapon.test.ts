@@ -1,13 +1,13 @@
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
 import TestDatabaseConnection from "../support/TestDatabaseConnection";
-import { User } from "../../../model/src/User/User";
-import { MovementService } from "../../../model/src/movement";
-import FireOrder from "../../../model/src/weapon/FireOrder";
-import WeaponFireService from "../../../model/src/weapon/WeaponFireService";
-import WeaponHitChance from "../../../model/src/weapon/WeaponHitChance";
+import { User } from "@fieryvoid3/model/src/User/User";
+import { MovementService } from "@fieryvoid3/model/src/movement";
+import FireOrder from "@fieryvoid3/model/src/weapon/FireOrder";
+import WeaponFireService from "@fieryvoid3/model/src/weapon/WeaponFireService";
+import WeaponHitChance from "@fieryvoid3/model/src/weapon/WeaponHitChance";
 import GameController from "../../controller/GameController";
 import { constructDeployedGame } from "../support/constructGame";
-import { SYSTEM_HANDLERS } from "../../../model/src/unit/system/strategy/types/SystemHandlersTypes";
+import { SYSTEM_HANDLERS } from "@fieryvoid3/model/src/unit/system/strategy/types/SystemHandlersTypes";
 
 describe("Fire tests", () => {
   let db: TestDatabaseConnection;

@@ -2,7 +2,7 @@ import { expect, test } from "vitest";
 import { constructLobbyGame } from "../support/constructGame";
 import GameController from "../../controller/GameController";
 import TestDatabaseConnection from "../support/TestDatabaseConnection";
-import { User } from "../../../model/src/User/User";
+import { User } from "@fieryvoid3/model/src/User/User";
 
 test("Take slot", async () => {
   const db = new TestDatabaseConnection("take_slot");

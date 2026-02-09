@@ -1,6 +1,6 @@
 import { expect, test } from "vitest";
-import GameData from "../../../model/src/game/GameData";
-import CombatLogTorpedoLaunch from "../../../model/src/combatLog/CombatLogTorpedoLaunch";
+import GameData from "@fieryvoid3/model/src/game/GameData";
+import CombatLogTorpedoLaunch from "@fieryvoid3/model/src/combatLog/CombatLogTorpedoLaunch";
 
 test("Combat log serializes and deserializes nicely", () => {
   const game = new GameData();

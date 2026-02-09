@@ -1,6 +1,6 @@
-import { MEDIUM_WEAPON_RANGE } from "../../../model/src/config/gameConfig";
-import GameData from "../../../model/src/game/GameData";
-import Ship from "../../../model/src/unit/Ship";
+import { MEDIUM_WEAPON_RANGE } from "@fieryvoid3/model/src/config/gameConfig";
+import GameData from "@fieryvoid3/model/src/game/GameData";
+import Ship from "@fieryvoid3/model/src/unit/Ship";
 
 export const getShipsThatShouldTargetOffensive = (
   ship: Ship,

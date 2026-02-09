@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
 import GameDataRepository from "../repository/GameDataRepository";
-import GameData from "../../model/src/game/GameData";
+import GameData from "@fieryvoid3/model/src/game/GameData";
 
 type ResolveResult = { key: string | null; gameData: GameData };
 type ReservedResolveResult = { key: string; gameData: GameData };

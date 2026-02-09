@@ -1,19 +1,19 @@
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
 import TestDatabaseConnection from "../support/TestDatabaseConnection";
-import { User } from "../../../model/src/User/User";
-import { Offset } from "../../../model/src/hexagon";
-import Torpedo158MSV from "../../../model/src/unit/system/weapon/ammunition/torpedo/Torpedo158MSV";
-import TorpedoFlight from "../../../model/src/unit/TorpedoFlight";
-import Vector from "../../../model/src/utils/Vector";
+import { User } from "@fieryvoid3/model/src/User/User";
+import { Offset } from "@fieryvoid3/model/src/hexagon";
+import Torpedo158MSV from "@fieryvoid3/model/src/unit/system/weapon/ammunition/torpedo/Torpedo158MSV";
+import TorpedoFlight from "@fieryvoid3/model/src/unit/TorpedoFlight";
+import Vector from "@fieryvoid3/model/src/utils/Vector";
 import GameController from "../../controller/GameController";
 import { constructDeployedGame } from "../support/constructGame";
-import Torpedo158HE from "../../../model/src/unit/system/weapon/ammunition/torpedo/Torpedo158HE";
-import CombatLogTorpedoAttack from "../../../model/src/combatLog/CombatLogTorpedoAttack";
+import Torpedo158HE from "@fieryvoid3/model/src/unit/system/weapon/ammunition/torpedo/Torpedo158HE";
+import CombatLogTorpedoAttack from "@fieryvoid3/model/src/combatLog/CombatLogTorpedoAttack";
 import {
   Torpedo72HE,
   Torpedo72MSV,
-} from "../../../model/src/unit/system/weapon/ammunition/torpedo";
-import CombatLogTorpedoIntercept from "../../../model/src/combatLog/CombatLogTorpedoIntercept";
+} from "@fieryvoid3/model/src/unit/system/weapon/ammunition/torpedo";
+import CombatLogTorpedoIntercept from "@fieryvoid3/model/src/combatLog/CombatLogTorpedoIntercept";
 
 describe("Torpedo tests", () => {
   let db: TestDatabaseConnection;

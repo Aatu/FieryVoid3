@@ -1,12 +1,12 @@
-import GameData from "../../model/src/game/GameData";
-import MovementService from "../../model/src/movement/MovementService";
-import Ship from "../../model/src/unit/Ship";
-import { User } from "../../model/src/User/User";
+import GameData from "@fieryvoid3/model/src/game/GameData";
+import MovementService from "@fieryvoid3/model/src/movement/MovementService";
+import Ship from "@fieryvoid3/model/src/unit/Ship";
+import { User } from "@fieryvoid3/model/src/User/User";
 import { InvalidGameDataError, UnauthorizedError } from "../errors/index";
 
 import { v4 as uuidv4 } from "uuid";
 import MovementValidator from "../services/validation/MovementValidator";
-import CombatLogShipMovement from "../../model/src/combatLog/CombatLogShipMovement";
+import CombatLogShipMovement from "@fieryvoid3/model/src/combatLog/CombatLogShipMovement";
 class MovementHandler {
   private movementService: MovementService;
 

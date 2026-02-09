@@ -1,16 +1,15 @@
 import { expect, test } from "vitest";
-import Ship, { ShipBase } from "../../../model/src/unit/Ship";
-import Structure from "../../../model/src/unit/system/structure/Structure";
-import Engine from "../../../model/src/unit/system/engine/Engine";
-import Reactor from "../../../model/src/unit/system/reactor/Reactor";
-import PDC30mm from "../../../model/src/unit/system/weapon/pdc/PDC30mm";
-import MovementOrder from "../../../model/src/movement/MovementOrder";
-import { MOVEMENT_TYPE } from "../../../model/src/movement";
-import Offset from "../../../model/src/hexagon/Offset";
-import Torpedo158MSV from "../../../model/src/unit/system/weapon/ammunition/torpedo/Torpedo158MSV";
-import TorpedoFlight from "../../../model/src/unit/TorpedoFlight";
-import CombatLogTorpedoAttack from "../../../model/src/combatLog/CombatLogTorpedoAttack";
-import GameData from "../../../model/src/game/GameData";
+import Ship, { ShipBase } from "@fieryvoid3/model/src/unit/Ship";
+import Structure from "@fieryvoid3/model/src/unit/system/structure/Structure";
+import Engine from "@fieryvoid3/model/src/unit/system/engine/Engine";
+import Reactor from "@fieryvoid3/model/src/unit/system/reactor/Reactor";
+import PDC30mm from "@fieryvoid3/model/src/unit/system/weapon/pdc/PDC30mm";
+import MovementOrder from "@fieryvoid3/model/src/movement/MovementOrder";
+import { MOVEMENT_TYPE } from "@fieryvoid3/model/src/movement";
+import Offset from "@fieryvoid3/model/src/hexagon/Offset";
+import Torpedo158MSV from "@fieryvoid3/model/src/unit/system/weapon/ammunition/torpedo/Torpedo158MSV";
+import TorpedoFlight from "@fieryvoid3/model/src/unit/TorpedoFlight";
+import CombatLogTorpedoAttack from "@fieryvoid3/model/src/combatLog/CombatLogTorpedoAttack";
 
 const constructShip = (id = 123) => {
   let ship = new Ship({

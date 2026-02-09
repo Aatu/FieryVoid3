@@ -1,14 +1,14 @@
 import { expect, test } from "vitest";
-import MovementOrder from "../../../model/src/movement/MovementOrder";
-import { MOVEMENT_TYPE, MovementService } from "../../../model/src/movement";
-import Offset from "../../../model/src/hexagon/Offset";
-import GameData from "../../../model/src/game/GameData";
-import TestShip from "../../../model/src/unit/ships/test/TestShip";
-import { User } from "../../../model/src/User/User";
+import MovementOrder from "@fieryvoid3/model/src/movement/MovementOrder";
+import { MOVEMENT_TYPE, MovementService } from "@fieryvoid3/model/src/movement";
+import Offset from "@fieryvoid3/model/src/hexagon/Offset";
+import GameData from "@fieryvoid3/model/src/game/GameData";
+import TestShip from "@fieryvoid3/model/src/unit/ships/test/TestShip";
+import { User } from "@fieryvoid3/model/src/User/User";
 import GameController from "../../controller/GameController";
 import { constructShipsBoughtGame } from "../support/constructGame";
 import TestDatabaseConnection from "../support/TestDatabaseConnection";
-import { GAME_PHASE } from "../../../model/src/game/gamePhase";
+import { GAME_PHASE } from "@fieryvoid3/model/src/game/gamePhase";
 
 const startMove = new MovementOrder(
   null,

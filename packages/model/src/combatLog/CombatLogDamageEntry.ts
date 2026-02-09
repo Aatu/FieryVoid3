@@ -50,7 +50,7 @@ class CombatLogDamageEntry implements ICombatLogEntry {
       const system = target.systems.getSystemById(systemId);
 
       const damages: DamageEntry[] = damageIds
-        .map((damageId) => system.damage.getDamageById(damageId))
+        .map((damageId) => system?.damage.getDamageById(damageId))
         .filter(Boolean) as DamageEntry[];
 
       return total.concat(damages);

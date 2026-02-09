@@ -1,4 +1,4 @@
-import GameData from "../../model/src/game/GameData";
+import GameData from "@fieryvoid3/model/src/game/GameData";
 import { InvalidGameDataError, UnauthorizedError } from "../errors/index";
 import GameDataService from "../services/GameDataService";
 

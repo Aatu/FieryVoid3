@@ -1,13 +1,13 @@
-import GameData from "../../model/src/game/GameData";
-import Ship from "../../model/src/unit/Ship";
-import Weapon from "../../model/src/unit/system/weapon/Weapon";
-import { TorpedoFlightForIntercept } from "../../model/src/unit/TorpedoFlightForIntercept";
+import GameData from "@fieryvoid3/model/src/game/GameData";
+import Ship from "@fieryvoid3/model/src/unit/Ship";
+import Weapon from "@fieryvoid3/model/src/unit/system/weapon/Weapon";
+import { TorpedoFlightForIntercept } from "@fieryvoid3/model/src/unit/TorpedoFlightForIntercept";
 import {
   InterceptionEntry,
   InterceptorCandidate,
-} from "../../model/src/unit/InterceptorCandidate";
-import CombatLogTorpedoIntercept from "../../model/src/combatLog/CombatLogTorpedoIntercept";
-import CombatLogTorpedoAttack from "../../model/src/combatLog/CombatLogTorpedoAttack";
+} from "@fieryvoid3/model/src/unit/InterceptorCandidate";
+import CombatLogTorpedoIntercept from "@fieryvoid3/model/src/combatLog/CombatLogTorpedoIntercept";
+import CombatLogTorpedoAttack from "@fieryvoid3/model/src/combatLog/CombatLogTorpedoAttack";
 
 export class TorpedoHandler {
   private gameData: GameData | null = null;

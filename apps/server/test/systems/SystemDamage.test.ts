@@ -1,7 +1,7 @@
 import { expect, test } from "vitest";
-import ShipSystem from "../../../model/src/unit/system/ShipSystem";
-import DamageEntry from "../../../model/src/unit/system/DamageEntry";
-import ForcedOffline from "../../../model/src/unit/system/criticals/ForcedOffline";
+import ShipSystem from "@fieryvoid3/model/src/unit/system/ShipSystem";
+import DamageEntry from "@fieryvoid3/model/src/unit/system/DamageEntry";
+import ForcedOffline from "@fieryvoid3/model/src/unit/system/criticals/ForcedOffline";
 
 test("System takes damage and is destroyed", (test) => {
   const system = new ShipSystem({ id: 123, hitpoints: 10, armor: 3 });

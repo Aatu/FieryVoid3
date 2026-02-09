@@ -11,7 +11,7 @@ import DbConnection from "./repository/DbConnection";
 
 import * as errors from "./errors/index";
 import passport from "passport";
-import { User } from "../model/src/User/User";
+import { User } from "@fieryvoid3/model/src/User/User";
 
 const { app } = expressWs(express());
 const port = 4000;
@@ -106,7 +106,7 @@ app.ws("/game/:gameId", (ws, req) => {
       gameController.onMessage(
         JSON.parse(message.toString()),
         req.user as User,
-        parseInt(req.params.gameId, 10)
+        parseInt(req.params.gameId as string, 10)
       );
     } catch (error) {
       console.log("Error on websocket message");
@@ -123,14 +123,14 @@ app.ws("/game/:gameId", (ws, req) => {
   ws.on("close", (msg) => {
     gameController.closeConnection(
       ws as unknown as WebSocket,
-      parseInt(req.params.gameId, 10)
+      parseInt(req.params.gameId as string, 10)
     );
   });
 
   gameController.openConnection(
     ws as unknown as WebSocket,
     req.user as User,
-    parseInt(req.params.gameId, 10)
+    parseInt(req.params.gameId as string, 10)
   );
 });
 

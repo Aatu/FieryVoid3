@@ -1,16 +1,16 @@
 import { expect, test } from "vitest";
-import Ship, { ShipBase } from "../../../model/src/unit/Ship";
-import AutoCannon85mm from "../../../model/src/unit/system/weapon/autocannon/AutoCannon85mm";
-import CargoBay from "../../../model/src/unit/system/cargo/CargoBay";
-import { SYSTEM_HANDLERS } from "../../../model/src/unit/system/strategy/types/SystemHandlersTypes";
+import Ship, { ShipBase } from "@fieryvoid3/model/src/unit/Ship";
+import AutoCannon85mm from "@fieryvoid3/model/src/unit/system/weapon/autocannon/AutoCannon85mm";
+import CargoBay from "@fieryvoid3/model/src/unit/system/cargo/CargoBay";
+import { SYSTEM_HANDLERS } from "@fieryvoid3/model/src/unit/system/strategy/types/SystemHandlersTypes";
 import {
   Ammo85mmAP,
   Ammo85mmHE,
-} from "../../../model/src/unit/system/weapon/ammunition/conventional";
-import AmmunitionStrategy from "../../../model/src/unit/system/strategy/weapon/AmmunitionStrategy";
-import Ammo from "../../../model/src/unit/system/weapon/ammunition/Ammo";
-import DamageEntry from "../../../model/src/unit/system/DamageEntry";
-import { CargoEntry } from "../../../model/src/cargo/CargoEntry";
+} from "@fieryvoid3/model/src/unit/system/weapon/ammunition/conventional";
+import AmmunitionStrategy from "@fieryvoid3/model/src/unit/system/strategy/weapon/AmmunitionStrategy";
+import Ammo from "@fieryvoid3/model/src/unit/system/weapon/ammunition/Ammo";
+import DamageEntry from "@fieryvoid3/model/src/unit/system/DamageEntry";
+import { CargoEntry } from "@fieryvoid3/model/src/cargo/CargoEntry";
 
 const createShip = (
   data: ShipBase = {

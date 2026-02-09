@@ -133,7 +133,7 @@ class ShipMovement {
         fulfilment.forEach(({ amount, thrusterId }) => {
           this.ship.systems
             .getSystemById(thrusterId)
-            .callHandler(SYSTEM_HANDLERS.addChanneledThrust, amount, undefined);
+            ?.callHandler(SYSTEM_HANDLERS.addChanneledThrust, amount, undefined);
         });
       });
     });

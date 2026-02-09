@@ -1,6 +1,6 @@
 import { expect, test } from "vitest";
-import Engine from "../../../model/src/unit/system/engine/Engine";
-import OutputReduced6 from "../../../model/src/unit/system/criticals/OutputReduced6";
+import Engine from "@fieryvoid3/model/src/unit/system/engine/Engine";
+import OutputReduced6 from "@fieryvoid3/model/src/unit/system/criticals/OutputReduced6";
 
 test("System can be assigned an critical", () => {
   const engine = new Engine({ id: 123, hitpoints: 10, armor: 3 }, 12, 6, 2);

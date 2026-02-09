@@ -1,9 +1,9 @@
-import GameData from "../../../model/src/game/GameData";
-import GameSlot from "../../../model/src/game/GameSlot";
-import Offset from "../../../model/src/hexagon/Offset";
-import MovementService from "../../../model/src/movement/MovementService";
-import TestShip from "../../../model/src/unit/ships/test/TestShip";
-import { User } from "../../../model/src/User/User";
+import GameData from "@fieryvoid3/model/src/game/GameData";
+import GameSlot from "@fieryvoid3/model/src/game/GameSlot";
+import Offset from "@fieryvoid3/model/src/hexagon/Offset";
+import MovementService from "@fieryvoid3/model/src/movement/MovementService";
+import TestShip from "@fieryvoid3/model/src/unit/ships/test/TestShip";
+import { User } from "@fieryvoid3/model/src/User/User";
 import GameController from "../../controller/GameController";
 
 export const constructLobbyGame = (user: User) => {

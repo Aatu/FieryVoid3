@@ -1,7 +1,7 @@
 import { expect, test } from "vitest";
-import Thruster from "../../../model/src/unit/system/thruster/Thruster";
-import Critical from "../../../model/src/unit/system/criticals/Critical";
-import ThrustAssignment from "../../../model/src/movement/ThrustAssignment";
+import Thruster from "@fieryvoid3/model/src/unit/system/thruster/Thruster";
+import Critical from "@fieryvoid3/model/src/unit/system/criticals/Critical";
+import ThrustAssignment from "@fieryvoid3/model/src/movement/ThrustAssignment";
 
 let id = 0;
 

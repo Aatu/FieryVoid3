@@ -1,22 +1,22 @@
 import { expect, test } from "vitest";
-import MovementOrder from "../../../model/src/movement/MovementOrder";
-import Offset from "../../../model/src/hexagon/Offset";
+import MovementOrder from "@fieryvoid3/model/src/movement/MovementOrder";
+import Offset from "@fieryvoid3/model/src/hexagon/Offset";
 import {
   MOVEMENT_TYPE,
   MovementService,
   RequiredThrust,
-} from "../../../model/src/movement";
-import GameData from "../../../model/src/game/GameData";
-import Ship from "../../../model/src/unit/Ship";
-import DamageEntry from "../../../model/src/unit/system/DamageEntry";
-import { Engine } from "../../../model/src/unit/system/engine";
-import { Reactor } from "../../../model/src/unit/system/reactor";
+} from "@fieryvoid3/model/src/movement";
+import GameData from "@fieryvoid3/model/src/game/GameData";
+import Ship from "@fieryvoid3/model/src/unit/Ship";
+import DamageEntry from "@fieryvoid3/model/src/unit/system/DamageEntry";
+import { Engine } from "@fieryvoid3/model/src/unit/system/engine";
+import { Reactor } from "@fieryvoid3/model/src/unit/system/reactor";
 import {
   Thruster,
   ManeuveringThruster,
-} from "../../../model/src/unit/system/thruster";
+} from "@fieryvoid3/model/src/unit/system/thruster";
 import RequiredThrustValidator from "../../services/validation/RequiredThrustValidator";
-import { User } from "../../../model/src/User/User";
+import { User } from "@fieryvoid3/model/src/User/User";
 
 const startMove = new MovementOrder(
   "-1",

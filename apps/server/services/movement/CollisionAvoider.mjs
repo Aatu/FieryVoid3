@@ -1,5 +1,5 @@
-import Offset from "../../../model/hexagon/Offset";
-import { shuffleArray } from "../../../model/utils/math";
+import Offset from "@fieryvoid3/model/hexagon/Offset";
+import { shuffleArray } from "@fieryvoid3/model/utils/math";
 
 class CollisionAvoider {
   avoidCollisions(gameData) {

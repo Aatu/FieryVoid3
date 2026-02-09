@@ -1,15 +1,15 @@
-import GameData from "../../model/src/game/GameData";
-import { GAME_PHASE } from "../../model/src/game/gamePhase";
-import GameSlot from "../../model/src/game/GameSlot";
-import { GAME_STATUS } from "../../model/src/game/gameStatus";
-import { MOVEMENT_TYPE } from "../../model/src/movement";
-import MovementOrder from "../../model/src/movement/MovementOrder";
+import GameData from "@fieryvoid3/model/src/game/GameData";
+import { GAME_PHASE } from "@fieryvoid3/model/src/game/gamePhase";
+import GameSlot from "@fieryvoid3/model/src/game/GameSlot";
+import { GAME_STATUS } from "@fieryvoid3/model/src/game/gameStatus";
+import { MOVEMENT_TYPE } from "@fieryvoid3/model/src/movement";
+import MovementOrder from "@fieryvoid3/model/src/movement/MovementOrder";
 import {
   createBareShipObject,
   createShipObject,
-} from "../../model/src/unit/createShipObject";
-import Ship, { SerializedShip } from "../../model/src/unit/Ship";
-import { User } from "../../model/src/User/User";
+} from "@fieryvoid3/model/src/unit/createShipObject";
+import Ship, { SerializedShip } from "@fieryvoid3/model/src/unit/Ship";
+import { User } from "@fieryvoid3/model/src/User/User";
 import { InvalidGameDataError } from "../errors/index";
 import { v4 as uuidv4 } from "uuid";
 

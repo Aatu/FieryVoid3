@@ -3,11 +3,11 @@ import TestDatabaseConnection from "../support/TestDatabaseConnection";
 
 import GameController from "../../controller/GameController";
 import { constructDeployedGame } from "../support/constructGame";
-import { User } from "../../../model/src/User/User";
-import { SYSTEM_HANDLERS } from "../../../model/src/unit/system/strategy/types/SystemHandlersTypes";
-import Ammo140mmAP from "../../../model/src/unit/system/weapon/ammunition/conventional/Ammo140mmAP";
-import Ammo140mmHE from "../../../model/src/unit/system/weapon/ammunition/conventional/Ammo140mmHE";
-import Ammo from "../../../model/src/unit/system/weapon/ammunition/Ammo";
+import { User } from "@fieryvoid3/model/src/User/User";
+import { SYSTEM_HANDLERS } from "@fieryvoid3/model/src/unit/system/strategy/types/SystemHandlersTypes";
+import Ammo140mmAP from "@fieryvoid3/model/src/unit/system/weapon/ammunition/conventional/Ammo140mmAP";
+import Ammo140mmHE from "@fieryvoid3/model/src/unit/system/weapon/ammunition/conventional/Ammo140mmHE";
+import Ammo from "@fieryvoid3/model/src/unit/system/weapon/ammunition/Ammo";
 
 describe("Power tests", () => {
   let db: TestDatabaseConnection;

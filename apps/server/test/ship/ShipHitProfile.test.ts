@@ -1,6 +1,6 @@
 import { expect, test } from "vitest";
-import Ship from "../../../model/src/unit/Ship";
-import Vector from "../../../model/src/utils/Vector";
+import Ship from "@fieryvoid3/model/src/unit/Ship";
+import Vector from "@fieryvoid3/model/src/utils/Vector";
 
 test("Gets the correct hit profile", () => {
   const ship = new Ship({});

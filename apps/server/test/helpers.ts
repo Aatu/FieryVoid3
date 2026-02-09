@@ -1,4 +1,4 @@
-import ShipSystem from "../../model/src/unit/system/ShipSystem";
+import ShipSystem from "@fieryvoid3/model/src/unit/system/ShipSystem";
 
 export const systemsToNameIdString = (
   systems: ShipSystem[] | ShipSystem

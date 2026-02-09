@@ -1,11 +1,11 @@
 import { expect, test } from "vitest";
-import TestShip from "../../../model/src/unit/ships/test/TestShip";
-import DamageEntry from "../../../model/src/unit/system/DamageEntry";
+import TestShip from "@fieryvoid3/model/src/unit/ships/test/TestShip";
+import DamageEntry from "@fieryvoid3/model/src/unit/system/DamageEntry";
 import CriticalHandler from "../../handler/CriticalHandler";
-import GameData from "../../../model/src/game/GameData";
-import ForcedOffline from "../../../model/src/unit/system/criticals/ForcedOffline";
-import ShipSystemLogEntryCriticalHit from "../../../model/src/unit/system/ShipSystemLog/ShipSystemLogEntryCriticalHit";
-import OutputReduced from "../../../model/src/unit/system/criticals/OutputReduced";
+import GameData from "@fieryvoid3/model/src/game/GameData";
+import ForcedOffline from "@fieryvoid3/model/src/unit/system/criticals/ForcedOffline";
+import ShipSystemLogEntryCriticalHit from "@fieryvoid3/model/src/unit/system/ShipSystemLog/ShipSystemLogEntryCriticalHit";
+import OutputReduced from "@fieryvoid3/model/src/unit/system/criticals/OutputReduced";
 
 test("Critical handler adds a critical", () => {
   const ship = new TestShip({ id: "1" });

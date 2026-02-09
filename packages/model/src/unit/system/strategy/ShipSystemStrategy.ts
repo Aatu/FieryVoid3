@@ -37,7 +37,7 @@ class ShipSystemStrategy implements IShipSystemStrategy {
     return this.getShipSystems().getSystems();
   }
 
-  public getSystemById(id: number): ShipSystem {
+  public getSystemById(id: number): ShipSystem | undefined {
     return this.getShipSystems().getSystemById(id);
   }
 

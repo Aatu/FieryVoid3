@@ -1,7 +1,7 @@
-import GameData from "../../model/src/game/GameData";
-import Ship from "../../model/src/unit/Ship";
-import { SYSTEM_HANDLERS } from "../../model/src/unit/system/strategy/types/SystemHandlersTypes";
-import { User } from "../../model/src/User/User";
+import GameData from "@fieryvoid3/model/src/game/GameData";
+import Ship from "@fieryvoid3/model/src/unit/Ship";
+import { SYSTEM_HANDLERS } from "@fieryvoid3/model/src/unit/system/strategy/types/SystemHandlersTypes";
+import { User } from "@fieryvoid3/model/src/User/User";
 
 class PowerHandler {
   receivePower(

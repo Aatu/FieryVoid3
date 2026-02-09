@@ -1,10 +1,10 @@
 import { expect, test } from "vitest";
-import { MovementService } from "../../../model/src/movement";
+import { MovementService } from "@fieryvoid3/model/src/movement";
 import GameController from "../../controller/GameController";
 import { constructDeployedGame } from "../support/constructGame";
 import TestDatabaseConnection from "../support/TestDatabaseConnection";
-import { User } from "../../../model/src/User/User";
-import GameData from "../../../model/src/game/GameData";
+import { User } from "@fieryvoid3/model/src/User/User";
+import GameData from "@fieryvoid3/model/src/game/GameData";
 
 test("Test weapon heats up", async () => {
   const db = new TestDatabaseConnection("heat");

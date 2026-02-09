@@ -3,10 +3,10 @@ import {
   retrieveOpacityAndFade,
   storeAngleAndChange,
   retrieveAngleAndChange,
-} from "../../../model/src/utils/bitmasked";
+} from "@fieryvoid3/model/src/utils/bitmasked";
 
 import { expect, test } from "vitest";
-import { degreeToRadian } from "../../../model/src/utils/math";
+import { degreeToRadian } from "@fieryvoid3/model/src/utils/math";
 
 test("opacity and fade values are saved propely", () => {
   const data = storeOpacityAndFade(0.5, 100, 200);

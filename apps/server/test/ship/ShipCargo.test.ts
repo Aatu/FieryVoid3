@@ -1,17 +1,17 @@
 import { expect, test } from "vitest";
-import CargoBay from "../../../model/src/unit/system/cargo/CargoBay";
-import Torpedo158HE from "../../../model/src/unit/system/weapon/ammunition/torpedo/Torpedo158HE";
-import { CargoEntry } from "../../../model/src/cargo/CargoEntry";
+import CargoBay from "@fieryvoid3/model/src/unit/system/cargo/CargoBay";
+import Torpedo158HE from "@fieryvoid3/model/src/unit/system/weapon/ammunition/torpedo/Torpedo158HE";
+import { CargoEntry } from "@fieryvoid3/model/src/cargo/CargoEntry";
 import {
   Ammo30mm,
   Ammo85mmAP,
-} from "../../../model/src/unit/system/weapon/ammunition/conventional";
-import { BareTestShip } from "../../../model/src/unit/ships/test/TestShip";
+} from "@fieryvoid3/model/src/unit/system/weapon/ammunition/conventional";
+import { BareTestShip } from "@fieryvoid3/model/src/unit/ships/test/TestShip";
 import {
   addCargos,
   cargoContains,
   subtractCargos,
-} from "../../../model/src/unit/ShipCargo";
+} from "@fieryvoid3/model/src/unit/ShipCargo";
 
 test("Cargo can be compared", () => {
   const current = [

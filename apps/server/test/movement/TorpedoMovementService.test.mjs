@@ -1,14 +1,14 @@
 import test from "ava";
-import TorpedoMovementService from "../../model/movement/TorpedoMovementService";
-import TorpedoFlight from "../../model/unit/TorpedoFlight";
-import Torpedo158 from "../../model/unit/system/weapon/ammunition/torpedo/Torpedo158";
-import Ship from "../../model/unit/Ship";
-import MovementOrder from "../../model/movement/MovementOrder";
-import Offset from "../../model/hexagon/Offset";
-import movementTypes from "../../model/movement/movementTypes";
-import coordinateConverter from "../../model/utils/CoordinateConverter";
-import Vector from "../../model/utils/Vector";
-import Torpedo158MSV from "../../model/unit/system/weapon/ammunition/torpedo/Torpedo158MSV";
+import TorpedoMovementService from "@fieryvoid3/model/movement/TorpedoMovementService";
+import TorpedoFlight from "@fieryvoid3/model/unit/TorpedoFlight";
+import Torpedo158 from "@fieryvoid3/model/unit/system/weapon/ammunition/torpedo/Torpedo158";
+import Ship from "@fieryvoid3/model/unit/Ship";
+import MovementOrder from "@fieryvoid3/model/movement/MovementOrder";
+import Offset from "@fieryvoid3/model/hexagon/Offset";
+import movementTypes from "@fieryvoid3/model/movement/movementTypes";
+import coordinateConverter from "@fieryvoid3/model/utils/CoordinateConverter";
+import Vector from "@fieryvoid3/model/utils/Vector";
+import Torpedo158MSV from "@fieryvoid3/model/unit/system/weapon/ammunition/torpedo/Torpedo158MSV";
 /*
 test("Torpedo moves properly", test => {
   const torpedoMovementService = new TorpedoMovementService();

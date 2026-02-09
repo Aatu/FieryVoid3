@@ -1,5 +1,5 @@
 import { expect, test } from "vitest";
-import StandardRangeStrategy from "../../../model/src/unit/system/strategy/weapon/StandardRangeStrategy";
+import StandardRangeStrategy from "@fieryvoid3/model/src/unit/system/strategy/weapon/StandardRangeStrategy";
 
 test("Gets the correct range penalty from range strategy", () => {
   const rangeStrategy = new StandardRangeStrategy([

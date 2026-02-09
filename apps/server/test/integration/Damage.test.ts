@@ -1,7 +1,7 @@
 import { expect, test } from "vitest";
-import { User } from "../../../model/src/User/User";
+import { User } from "@fieryvoid3/model/src/User/User";
 import GameController from "../../controller/GameController";
-import WeaponFireService from "../../../model/src/weapon/WeaponFireService";
+import WeaponFireService from "@fieryvoid3/model/src/weapon/WeaponFireService";
 import { constructDeployedGame } from "../support/constructGame";
 import TestDatabaseConnection from "../support/TestDatabaseConnection";
 

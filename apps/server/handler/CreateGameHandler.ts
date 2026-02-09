@@ -1,8 +1,8 @@
 import { InvalidGameDataError, UnauthorizedError } from "../errors/index";
 
-import GameData from "../../model/src/game/GameData";
-import { User } from "../../model/src/User/User";
-import { GAME_STATUS } from "../../model/src/game/gameStatus";
+import GameData from "@fieryvoid3/model/src/game/GameData";
+import { User } from "@fieryvoid3/model/src/User/User";
+import { GAME_STATUS } from "@fieryvoid3/model/src/game/gameStatus";
 
 class CreateGameHandler {
   createGame(clientGameData: GameData, user: User | null) {

@@ -1,24 +1,24 @@
 import { expect, test } from "vitest";
-import MovementOrder from "../../../model/src/movement/MovementOrder";
+import MovementOrder from "@fieryvoid3/model/src/movement/MovementOrder";
 import {
   MOVEMENT_TYPE,
   MovementService,
   RequiredThrust,
-} from "../../../model/src/movement";
-import Offset from "../../../model/src/hexagon/Offset";
-import GameData from "../../../model/src/game/GameData";
-import Ship from "../../../model/src/unit/Ship";
-import FuelTank from "../../../model/src/unit/system/cargo/FuelTank";
-import { OutputReduced } from "../../../model/src/unit/system/criticals";
-import DamageEntry from "../../../model/src/unit/system/DamageEntry";
-import { Engine } from "../../../model/src/unit/system/engine";
-import { Reactor } from "../../../model/src/unit/system/reactor";
+} from "@fieryvoid3/model/src/movement";
+import Offset from "@fieryvoid3/model/src/hexagon/Offset";
+import GameData from "@fieryvoid3/model/src/game/GameData";
+import Ship from "@fieryvoid3/model/src/unit/Ship";
+import FuelTank from "@fieryvoid3/model/src/unit/system/cargo/FuelTank";
+import { OutputReduced } from "@fieryvoid3/model/src/unit/system/criticals";
+import DamageEntry from "@fieryvoid3/model/src/unit/system/DamageEntry";
+import { Engine } from "@fieryvoid3/model/src/unit/system/engine";
+import { Reactor } from "@fieryvoid3/model/src/unit/system/reactor";
 import {
   Thruster,
   ManeuveringThruster,
-} from "../../../model/src/unit/system/thruster";
+} from "@fieryvoid3/model/src/unit/system/thruster";
 import MovementValidator from "../../services/validation/MovementValidator";
-import { SYSTEM_HANDLERS } from "../../../model/src/unit/system/strategy/types/SystemHandlersTypes";
+import { SYSTEM_HANDLERS } from "@fieryvoid3/model/src/unit/system/strategy/types/SystemHandlersTypes";
 
 const startMove = new MovementOrder(
   "-1",

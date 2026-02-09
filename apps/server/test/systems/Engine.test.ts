@@ -1,8 +1,8 @@
 import { expect, test } from "vitest";
-import Engine from "../../../model/src/unit/system/engine/Engine";
-import DamageEntry from "../../../model/src/unit/system/DamageEntry";
-import OutputReduced6 from "../../../model/src/unit/system/criticals/OutputReduced6";
-import { SYSTEM_HANDLERS } from "../../../model/src/unit/system/strategy/types/SystemHandlersTypes";
+import Engine from "@fieryvoid3/model/src/unit/system/engine/Engine";
+import DamageEntry from "@fieryvoid3/model/src/unit/system/DamageEntry";
+import OutputReduced6 from "@fieryvoid3/model/src/unit/system/criticals/OutputReduced6";
+import { SYSTEM_HANDLERS } from "@fieryvoid3/model/src/unit/system/strategy/types/SystemHandlersTypes";
 
 test("Engine generates thrust", () => {
   const engine = new Engine({ id: 123, hitpoints: 10, armor: 3 }, 12, 6, 2);

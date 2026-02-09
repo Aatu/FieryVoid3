@@ -1,7 +1,7 @@
 import { getShipsThatShouldTargetOffensive } from "../analyzers/AiEWAnalyzer";
-import Ship from "../../../model/src/unit/Ship";
-import GameData from "../../../model/src/game/GameData";
-import { AI_ROLE, AiRole } from "../../../model/src/ai/AiRole";
+import Ship from "@fieryvoid3/model/src/unit/Ship";
+import GameData from "@fieryvoid3/model/src/game/GameData";
+import { AI_ROLE, AiRole } from "@fieryvoid3/model/src/ai/AiRole";
 
 class DestroyerAIRole implements AiRole {
   public ship: Ship;

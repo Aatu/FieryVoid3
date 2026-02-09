@@ -1,8 +1,8 @@
 import { expect, test } from "vitest";
-import { User } from "../../../model/src/User/User";
-import { USER_AI } from "../../../model/src/User/AIUser";
+import { User } from "@fieryvoid3/model/src/User/User";
+import { USER_AI } from "@fieryvoid3/model/src/User/AIUser";
 import GameController from "../../controller/GameController";
-import { Offset } from "../../../model/src/hexagon";
+import { Offset } from "@fieryvoid3/model/src/hexagon";
 import { constructDeployedGame } from "../support/constructGame";
 import TestDatabaseConnection from "../support/TestDatabaseConnection";
 

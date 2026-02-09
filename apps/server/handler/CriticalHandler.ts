@@ -1,8 +1,8 @@
-import GameData from "../../model/src/game/GameData";
-import { CriticalTableEntry } from "../../model/src/unit/system/criticals";
-import ShipSystem from "../../model/src/unit/system/ShipSystem";
-import ShipSystemLogEntryCriticalHit from "../../model/src/unit/system/ShipSystemLog/ShipSystemLogEntryCriticalHit";
-import { SYSTEM_HANDLERS } from "../../model/src/unit/system/strategy/types/SystemHandlersTypes";
+import GameData from "@fieryvoid3/model/src/game/GameData";
+import { CriticalTableEntry } from "@fieryvoid3/model/src/unit/system/criticals";
+import ShipSystem from "@fieryvoid3/model/src/unit/system/ShipSystem";
+import ShipSystemLogEntryCriticalHit from "@fieryvoid3/model/src/unit/system/ShipSystemLog/ShipSystemLogEntryCriticalHit";
+import { SYSTEM_HANDLERS } from "@fieryvoid3/model/src/unit/system/strategy/types/SystemHandlersTypes";
 
 class CriticalHandler {
   advance(gameData: GameData) {

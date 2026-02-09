@@ -1,18 +1,18 @@
 import { expect, test } from "vitest";
-import ManeuveringThruster from "../../../model/src/unit/system/thruster/ManeuveringThruster";
-import Critical from "../../../model/src/unit/system/criticals/Critical";
-import Thruster from "../../../model/src/unit/system/thruster/Thruster";
-import Ship from "../../../model/src/unit/Ship";
+import ManeuveringThruster from "@fieryvoid3/model/src/unit/system/thruster/ManeuveringThruster";
+import Critical from "@fieryvoid3/model/src/unit/system/criticals/Critical";
+import Thruster from "@fieryvoid3/model/src/unit/system/thruster/Thruster";
+import Ship from "@fieryvoid3/model/src/unit/Ship";
 import {
   MOVEMENT_TYPE,
   MovementOrder,
   ThrustBill,
-} from "../../../model/src/movement";
-import Offset from "../../../model/src/hexagon/Offset";
-import ThrustChannelHeatIncreased from "../../../model/src/unit/system/criticals/ThrustChannelHeatIncreased";
-import OutputReduced from "../../../model/src/unit/system/criticals/OutputReduced";
-import ManeuveringThrusterLeft from "../../../model/src/unit/system/thruster/ManeuveringThrusterLeft";
-import ManeuveringThrusterRight from "../../../model/src/unit/system/thruster/ManeuveringThrusterRight";
+} from "@fieryvoid3/model/src/movement";
+import Offset from "@fieryvoid3/model/src/hexagon/Offset";
+import ThrustChannelHeatIncreased from "@fieryvoid3/model/src/unit/system/criticals/ThrustChannelHeatIncreased";
+import OutputReduced from "@fieryvoid3/model/src/unit/system/criticals/OutputReduced";
+import ManeuveringThrusterLeft from "@fieryvoid3/model/src/unit/system/thruster/ManeuveringThrusterLeft";
+import ManeuveringThrusterRight from "@fieryvoid3/model/src/unit/system/thruster/ManeuveringThrusterRight";
 
 let id = 0;
 

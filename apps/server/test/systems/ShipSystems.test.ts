@@ -1,9 +1,9 @@
 import { expect, test } from "vitest";
-import Ship from "../../../model/src/unit/Ship";
-import Thruster from "../../../model/src/unit/system/thruster/Thruster";
-import Engine from "../../../model/src/unit/system/engine/Engine";
-import Reactor from "../../../model/src/unit/system/reactor/Reactor";
-import DamageEntry from "../../../model/src/unit/system/DamageEntry";
+import Ship from "@fieryvoid3/model/src/unit/Ship";
+import Thruster from "@fieryvoid3/model/src/unit/system/thruster/Thruster";
+import Engine from "@fieryvoid3/model/src/unit/system/engine/Engine";
+import Reactor from "@fieryvoid3/model/src/unit/system/reactor/Reactor";
+import DamageEntry from "@fieryvoid3/model/src/unit/system/DamageEntry";
 
 const constructShip = (id: string = "123") => {
   let ship = new Ship({

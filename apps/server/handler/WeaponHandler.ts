@@ -1,13 +1,13 @@
-import GameData from "../../model/src/game/GameData";
-import Ship from "../../model/src/unit/Ship";
-import { User } from "../../model/src/User/User";
+import GameData from "@fieryvoid3/model/src/game/GameData";
+import Ship from "@fieryvoid3/model/src/unit/Ship";
+import { User } from "@fieryvoid3/model/src/User/User";
 import { InvalidGameDataError } from "../errors/index";
-import WeaponFireService from "../../model/src/weapon/WeaponFireService";
+import WeaponFireService from "@fieryvoid3/model/src/weapon/WeaponFireService";
 
 import { v4 as uuidv4 } from "uuid";
-import { shuffleArray } from "../../model/src/utils/math";
-import ShipSystem from "../../model/src/unit/system/ShipSystem";
-import { SYSTEM_HANDLERS } from "../../model/src/unit/system/strategy/types/SystemHandlersTypes";
+import { shuffleArray } from "@fieryvoid3/model/src/utils/math";
+import ShipSystem from "@fieryvoid3/model/src/unit/system/ShipSystem";
+import { SYSTEM_HANDLERS } from "@fieryvoid3/model/src/unit/system/strategy/types/SystemHandlersTypes";
 
 class WeaponHandler {
   receiveFireOrders(

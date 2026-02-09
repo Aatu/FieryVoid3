@@ -1,13 +1,13 @@
 /*
-import CombatLogTorpedoAttack from "../../model/src/combatLog/CombatLogTorpedoAttack";
-import CombatLogTorpedoIntercept from "../../model/src/combatLog/CombatLogTorpedoIntercept";
-import GameData from "../../model/src/game/GameData";
-import ShipSystem from "../../model/src/unit/system/ShipSystem";
-import { SYSTEM_HANDLERS } from "../../model/src/unit/system/strategy/types/SystemHandlersTypes";
-import Weapon from "../../model/src/unit/system/weapon/Weapon";
-import TorpedoFlight from "../../model/src/unit/TorpedoFlight";
-import TorpedoAttackService from "../../model/src/weapon/TorpedoAttackService";
-import WeaponHitChance from "../../model/src/weapon/WeaponHitChance";
+import CombatLogTorpedoAttack from "@fieryvoid3/model/src/combatLog/CombatLogTorpedoAttack";
+import CombatLogTorpedoIntercept from "@fieryvoid3/model/src/combatLog/CombatLogTorpedoIntercept";
+import GameData from "@fieryvoid3/model/src/game/GameData";
+import ShipSystem from "@fieryvoid3/model/src/unit/system/ShipSystem";
+import { SYSTEM_HANDLERS } from "@fieryvoid3/model/src/unit/system/strategy/types/SystemHandlersTypes";
+import Weapon from "@fieryvoid3/model/src/unit/system/weapon/Weapon";
+import TorpedoFlight from "@fieryvoid3/model/src/unit/TorpedoFlight";
+import TorpedoAttackService from "@fieryvoid3/model/src/weapon/TorpedoAttackService";
+import WeaponHitChance from "@fieryvoid3/model/src/weapon/WeaponHitChance";
 
 class TorpedoHandler {
   constructor() {}

@@ -1,25 +1,25 @@
 import { expect, expectTypeOf, test } from "vitest";
-import Ship, { ShipBase } from "../../../model/src/unit/Ship";
-import Structure from "../../../model/src/unit/system/structure/Structure";
-import Engine from "../../../model/src/unit/system/engine/Engine";
-import Reactor from "../../../model/src/unit/system/reactor/Reactor";
-import PDC30mm from "../../../model/src/unit/system/weapon/pdc/PDC30mm";
-import { MOVEMENT_TYPE, MovementOrder } from "../../../model/src/movement";
-import Offset from "../../../model/src/hexagon/Offset";
-import DamageEntry from "../../../model/src/unit/system/DamageEntry";
-import HitSystemRandomizer from "../../../model/src/unit/system/strategy/weapon/utils/HitSystemRandomizer";
-import CombatLogWeaponFire from "../../../model/src/combatLog/CombatLogWeaponFire";
-import ShipSystem from "../../../model/src/unit/system/ShipSystem";
-import TorpedoFlight from "../../../model/src/unit/TorpedoFlight";
-import Torpedo72HE from "../../../model/src/unit/system/weapon/ammunition/torpedo/Torpedo72HE";
-import Vector from "../../../model/src/utils/Vector";
-import CombatLogTorpedoAttack from "../../../model/src/combatLog/CombatLogTorpedoAttack";
+import Ship, { ShipBase } from "@fieryvoid3/model/src/unit/Ship";
+import Structure from "@fieryvoid3/model/src/unit/system/structure/Structure";
+import Engine from "@fieryvoid3/model/src/unit/system/engine/Engine";
+import Reactor from "@fieryvoid3/model/src/unit/system/reactor/Reactor";
+import PDC30mm from "@fieryvoid3/model/src/unit/system/weapon/pdc/PDC30mm";
+import { MOVEMENT_TYPE, MovementOrder } from "@fieryvoid3/model/src/movement";
+import Offset from "@fieryvoid3/model/src/hexagon/Offset";
+import DamageEntry from "@fieryvoid3/model/src/unit/system/DamageEntry";
+import HitSystemRandomizer from "@fieryvoid3/model/src/unit/system/strategy/weapon/utils/HitSystemRandomizer";
+import CombatLogWeaponFire from "@fieryvoid3/model/src/combatLog/CombatLogWeaponFire";
+import ShipSystem from "@fieryvoid3/model/src/unit/system/ShipSystem";
+import TorpedoFlight from "@fieryvoid3/model/src/unit/TorpedoFlight";
+import Torpedo72HE from "@fieryvoid3/model/src/unit/system/weapon/ammunition/torpedo/Torpedo72HE";
+import Vector from "@fieryvoid3/model/src/utils/Vector";
+import CombatLogTorpedoAttack from "@fieryvoid3/model/src/combatLog/CombatLogTorpedoAttack";
 import {
   UnifiedDamageStrategy,
   UnifiedDamageStrategyArgs,
-} from "../../../model/src/unit/system/strategy/weapon/UnifiedDamageStrategy";
+} from "@fieryvoid3/model/src/unit/system/strategy/weapon/UnifiedDamageStrategy";
 import { systemsToNameIdString } from "../helpers";
-import TorpedoDamageStrategy from "../../../model/src/unit/system/weapon/ammunition/torpedo/torpedoDamageStrategy/TorpedoDamageStrategy";
+import TorpedoDamageStrategy from "@fieryvoid3/model/src/unit/system/weapon/ammunition/torpedo/torpedoDamageStrategy/TorpedoDamageStrategy";
 
 const constructShip = (id: string = "123") => {
   let ship = new Ship({

@@ -1,10 +1,10 @@
 import { v4 as uuidv4 } from "uuid";
 import { InvalidGameDataError } from "../errors/index";
-import GameData from "../../model/src/game/GameData";
-import { User } from "../../model/src/User/User";
-import { GAME_PHASE } from "../../model/src/game/gamePhase";
-import { MOVEMENT_TYPE, MovementOrder } from "../../model/src/movement";
-import Ship from "../../model/src/unit/Ship";
+import GameData from "@fieryvoid3/model/src/game/GameData";
+import { User } from "@fieryvoid3/model/src/User/User";
+import { GAME_PHASE } from "@fieryvoid3/model/src/game/gamePhase";
+import { MOVEMENT_TYPE, MovementOrder } from "@fieryvoid3/model/src/movement";
+import Ship from "@fieryvoid3/model/src/unit/Ship";
 
 class DeploymentHandler {
   deploy(serverGameData: GameData, clientGameData: GameData, user: User) {

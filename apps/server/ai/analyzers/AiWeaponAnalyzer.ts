@@ -1,7 +1,7 @@
-import GameData from "../../../model/src/game/GameData";
-import Ship from "../../../model/src/unit/Ship";
-import { SYSTEM_HANDLERS } from "../../../model/src/unit/system/strategy/types/SystemHandlersTypes";
-import Weapon from "../../../model/src/unit/system/weapon/Weapon";
+import GameData from "@fieryvoid3/model/src/game/GameData";
+import Ship from "@fieryvoid3/model/src/unit/Ship";
+import { SYSTEM_HANDLERS } from "@fieryvoid3/model/src/unit/system/strategy/types/SystemHandlersTypes";
+import Weapon from "@fieryvoid3/model/src/unit/system/weapon/Weapon";
 
 const weaponCanFire = (weapon: Weapon) => {
   if (
