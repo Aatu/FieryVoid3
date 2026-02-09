@@ -1,6 +1,6 @@
-import GameData from "../game/GameData";
+import type GameData from "../game/GameData";
 import Ship from "../unit/Ship";
-import ShipSystem from "../unit/system/ShipSystem";
+import type ShipSystem from "../unit/system/ShipSystem";
 import Weapon from "../unit/system/weapon/Weapon";
 import FireOrder from "./FireOrder";
 declare class WeaponFireService {

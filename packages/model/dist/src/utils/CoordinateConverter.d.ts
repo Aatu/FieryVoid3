@@ -32,7 +32,7 @@ export declare class CoordinateConverter {
     getHexHeightViewport(): number;
     getHexDistance(): number;
     fromGameToHex(gameCoordinates: Vector | IVector): Offset;
-    fromHexToGame(offsetHex: Cube | Offset | IOffset): Vector;
+    fromHexToGame(offsetHex: Cube | Offset | IOffset | undefined): Vector;
     fromViewPortToGame(pos: {
         x: number;
         y: number;

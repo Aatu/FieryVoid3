@@ -78,7 +78,7 @@ declare class Ship implements IHexPosition {
     censorForUser(user: User | null, mine: boolean, turn: number): void;
     endTurn(turn: number): void;
     advanceTurn(gameData: GameData): this;
-    getRequiredPhasesForReceivingPlayerData(): number;
+    getRequiredPhasesForReceivingPlayerData(): number | undefined;
     receivePlayerData(clientShip: Ship, gameData: GameData, phase: number): void;
     setShipLoadout(): void;
     getName(): string;

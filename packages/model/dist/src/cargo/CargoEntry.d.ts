@@ -12,7 +12,7 @@ export declare class CargoEntry<T extends CargoEntity = CargoEntity> {
     setAmount(amount: number): this;
     flipAmount(): this;
     serialize(): {
-        className: "Torpedo158MSV2" | "Torpedo158MSV" | "Torpedo158Nuclear" | "Torpedo72MSV" | "Torpedo72HE" | "Torpedo158HE" | "Ammo30mm" | "Ammo85mmHE" | "Ammo85mmAP" | "Ammo140mmAP" | "Ammo140mmHE" | "Ammo120mmAP" | "Ammo120mmHE";
+        className: "Ammo30mm" | "Ammo85mmHE" | "Ammo85mmAP" | "Ammo140mmAP" | "Ammo140mmHE" | "Ammo120mmAP" | "Ammo120mmHE" | "Torpedo158MSV2" | "Torpedo158MSV" | "Torpedo158Nuclear" | "Torpedo72MSV" | "Torpedo72HE" | "Torpedo158HE";
         amount: number;
     };
     static deserialize(data: SerializedCargoEntry): CargoEntry;

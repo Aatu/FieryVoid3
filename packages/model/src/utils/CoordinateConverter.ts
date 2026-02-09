@@ -88,6 +88,10 @@ export class CoordinateConverter {
     const hex1 = new Offset(0, 0);
     const hex2 = hex1.getNeighbourAtDirection(0);
 
+    if (!hex2) {
+      return 0;
+    }
+
     return distance(this.fromHexToGame(hex1), this.fromHexToGame(hex2));
   }
 
@@ -105,7 +109,12 @@ export class CoordinateConverter {
     return new Cube(x, y, z).round().toOffset();
   }
 
-  fromHexToGame(offsetHex: Cube | Offset | IOffset): Vector {
+  fromHexToGame(offsetHex: Cube | Offset | IOffset | undefined): Vector {
+
+    if (!offsetHex) {
+      return new Vector(0, 0, 0);
+    }
+
     if (offsetHex instanceof Cube) {
       offsetHex = offsetHex.toOffset();
     }

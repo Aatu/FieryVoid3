@@ -65,7 +65,7 @@ class ShipMovement {
       throw new Error("No moves found");
     }
 
-    return this.moves[this.moves.length - 1].clone();
+    return (this.moves[this.moves.length - 1] as MovementOrder).clone();
   }
 
   getStartMove(): MovementOrder {

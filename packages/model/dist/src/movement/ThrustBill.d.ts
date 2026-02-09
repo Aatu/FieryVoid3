@@ -25,7 +25,7 @@ declare class ThrustBill {
     isPaid(): boolean;
     totalFuelRequirement(): number;
     getAllUsableThrusters(direction: THRUSTER_DIRECTION): ThrustAssignment[];
-    sortThrusters(a: ThrustAssignment, b: ThrustAssignment): 0 | 1 | -1;
+    sortThrusters(a: ThrustAssignment, b: ThrustAssignment): 1 | -1 | 0;
     pay(): boolean;
     process(): boolean;
     useThrusters(direction: THRUSTER_DIRECTION, required: number): void;

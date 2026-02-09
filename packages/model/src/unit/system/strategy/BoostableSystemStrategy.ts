@@ -145,7 +145,7 @@ class BoostableSystemStrategy
         BoostableSystemStrategy
       )[0];
 
-    const targetBoostlevel = clientStrategy?.boostLevel;
+    const targetBoostlevel = clientStrategy?.boostLevel ?? 0;
 
     if (this.boostLevel > targetBoostlevel) {
       while (true) {

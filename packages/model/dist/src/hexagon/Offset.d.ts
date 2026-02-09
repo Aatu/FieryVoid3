@@ -18,7 +18,7 @@ declare class Offset {
         q: number;
         r: number;
     }): boolean;
-    getNeighbourAtDirection(direction: number): Offset;
+    getNeighbourAtDirection(direction: number): Offset | undefined;
     distanceTo(target: Offset): number;
     ring(radius: number): Offset[];
     spiral(radius: number): Offset[];

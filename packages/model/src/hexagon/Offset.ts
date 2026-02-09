@@ -50,7 +50,7 @@ class Offset {
   getNeighbours() {
     const neighbours: Offset[] = [];
 
-    NEIGHBOURS[this.r & 1].forEach((neighbour) => {
+    NEIGHBOURS[this.r & 1]?.forEach((neighbour) => {
       neighbours.push(this.add(new Offset(neighbour)));
     });
 

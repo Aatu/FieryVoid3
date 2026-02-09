@@ -117,7 +117,7 @@ class RequiredThrust {
 
   fulfill(direction: THRUSTER_DIRECTION, amount: number, thruster: ShipSystem) {
     this.fullfilments[direction].push({ amount, thrusterId: thruster.id });
-    if (this.requirements[direction] < this.getFulfilledAmount(direction)) {
+    if ((this.requirements[direction] || 0) < this.getFulfilledAmount(direction)) {
       throw new Error("Fulfilled too much!");
     }
   }
@@ -182,7 +182,7 @@ class RequiredThrust {
         return;
       }
 
-      const requirement = this.requirements[direction];
+      const requirement = this.requirements[direction] || 0;
 
       if (isNaN(requirement)) {
         return;

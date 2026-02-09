@@ -1,8 +1,8 @@
 import { expect, test } from "vitest";
-import WeaponArcStrategy from "../../../model/src/unit/system/strategy/weapon/WeaponArcStrategy";
-import Vector from "../../../model/src/utils/Vector";
-import Ship from "../../../model/src/unit/Ship";
-import ShipSystem from "../../../model/src/unit/system/ShipSystem";
+import WeaponArcStrategy from "@fieryvoid3/model/src/unit/system/strategy/weapon/WeaponArcStrategy";
+import Vector from "@fieryvoid3/model/src/utils/Vector";
+import Ship from "@fieryvoid3/model/src/unit/Ship";
+import ShipSystem from "@fieryvoid3/model/src/unit/system/ShipSystem";
 
 test("Ship is on weapon arc", () => {
   const arcStrategy = new WeaponArcStrategy([{ start: 330, end: 30 }]);

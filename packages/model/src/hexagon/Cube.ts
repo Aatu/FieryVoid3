@@ -89,7 +89,7 @@ class Cube {
   }
 
   moveToDirection(direction: number, steps: number = 1) {
-    return this.add(new Cube(NEIGHBOURS[direction]).scale(steps));
+    return this.add(new Cube(NEIGHBOURS[direction] as IVector).scale(steps));
   }
 
   add(cube: Cube) {
@@ -187,8 +187,8 @@ class Cube {
     return parseFloat(number.toFixed(PRECISION));
   }
 
-  normalize() {
-    return this.drawLine(new Cube(0, 0, 0), 1)[0];
+  normalize(): Cube {
+    return this.drawLine(new Cube(0, 0, 0), 1)[0] as Cube;
   }
 
   drawLine(target: Cube, distance: number | null = null) {

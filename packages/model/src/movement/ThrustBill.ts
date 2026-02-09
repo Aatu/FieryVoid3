@@ -207,7 +207,7 @@ class ThrustBill {
         return;
       }
 
-      const thruster = thrusters[thrusters.length - 1];
+      const thruster = thrusters[thrusters.length - 1] as ThrustAssignment;
       thruster.channel(1);
       this.directionsRequired[direction] -= 1;
       assigned += 1;

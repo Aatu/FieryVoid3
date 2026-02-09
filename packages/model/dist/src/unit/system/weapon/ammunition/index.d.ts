@@ -19,6 +19,6 @@ export declare const ammunition: {
 };
 export type AmmunitionType = keyof typeof ammunition;
 export declare const createAmmoInstance: (className: AmmunitionType) => Ammo;
-export declare const ammunitionClasses: (typeof torpedoes.Torpedo158MSV2 | typeof torpedoes.Torpedo158MSV | typeof torpedoes.Torpedo158Nuclear | typeof torpedoes.Torpedo72MSV | typeof torpedoes.Torpedo72HE | typeof torpedoes.Torpedo158HE | typeof conventional.Ammo30mm | typeof conventional.Ammo85mmHE | typeof conventional.Ammo85mmAP | typeof conventional.Ammo140mmAP | typeof conventional.Ammo140mmHE | typeof conventional.Ammo120mmAP | typeof conventional.Ammo120mmHE)[];
+export declare const ammunitionClasses: (typeof torpedoes.Torpedo158MSV | typeof torpedoes.Torpedo72MSV | typeof torpedoes.Torpedo158HE | typeof torpedoes.Torpedo72HE | typeof conventional.Ammo30mm | typeof conventional.Ammo140mmAP | typeof conventional.Ammo85mmHE | typeof conventional.Ammo85mmAP | typeof conventional.Ammo140mmHE | typeof conventional.Ammo120mmAP | typeof conventional.Ammo120mmHE | typeof torpedoes.Torpedo158MSV2 | typeof torpedoes.Torpedo158Nuclear)[];
 export type TorpedoType = keyof typeof torpedoes;
 export declare const createTorpedoInstance: (className: TorpedoType) => Torpedo;

@@ -35,18 +35,9 @@
     "@types/passport": "^1.0.17",
     "@types/passport-local": "^1.0.38",
     "@types/three": "catalog:",
-    "@types/uuid": "catalog:",
     "nodemon": "^3.1.9",
     "typescript": "catalog:",
     "vite": "catalog:",
     "vitest": "catalog:"
-  },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "bcrypt",
-      "esbuild",
-      "fsevents",
-      "nodemon"
-    ]
   }
 }

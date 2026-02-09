@@ -1,6 +1,6 @@
-import GameData from "../game/GameData";
+import type GameData from "../game/GameData";
 import Ship from "../unit/Ship";
-import ShipSystem from "../unit/system/ShipSystem";
+import type ShipSystem from "../unit/system/ShipSystem";
 import { SYSTEM_HANDLERS } from "../unit/system/strategy/types/SystemHandlersTypes";
 import Weapon from "../unit/system/weapon/Weapon";
 import FireOrder from "./FireOrder";
@@ -71,7 +71,7 @@ class WeaponFireService {
       undefined,
       [] as FireOrder[]
     );
-    return fireOrders && fireOrders.length > 0 ? fireOrders[0].targetId : null;
+    return fireOrders?.[0] ? fireOrders[0].targetId : null;
   }
 
   systemHasFireOrderAgainstShip(system: ShipSystem, target: Ship) {

@@ -45,7 +45,7 @@ class AmmunitionStrategy
     this.reloadingTime = reloadingTime;
 
     this.selectedAmmo = createAmmoInstance(
-      this.ammunitionClasses[this.ammunitionClasses.length - 1]
+      this.ammunitionClasses[this.ammunitionClasses.length - 1] as AmmunitionType
     );
   }
 
@@ -136,7 +136,7 @@ class AmmunitionStrategy
     this.selectedAmmo = data?.ammunitionStrategy?.selectedAmmo
       ? createAmmoInstance(data?.ammunitionStrategy?.selectedAmmo)
       : createAmmoInstance(
-          this.ammunitionClasses[this.ammunitionClasses.length - 1]
+          this.ammunitionClasses[this.ammunitionClasses.length - 1] as AmmunitionType
         );
 
     this.shotsInMagazine =
@@ -155,7 +155,7 @@ class AmmunitionStrategy
       index = 0;
     }
 
-    this.selectedAmmo = createAmmoInstance(this.ammunitionClasses[index]);
+    this.selectedAmmo = createAmmoInstance(this.ammunitionClasses[index] as AmmunitionType);
   }
 
   getSelectedAmmo() {
@@ -183,6 +183,12 @@ class AmmunitionStrategy
       clientSystem.getStrategiesByInstance<AmmunitionStrategy>(
         AmmunitionStrategy
       )[0];
+
+    
+    if (!clientStrategy) {
+      return;
+    }
+
     const changeSelectedAmmo = clientStrategy.selectedAmmo;
 
     if (changeSelectedAmmo) {

@@ -11,7 +11,7 @@ export const createShipInstance = (className: string): Ship => {
 
 export const createShipObject = (data: SerializedShip): Ship => {
   const { shipClass } = data;
-  if (!shipClass) {
+  if (!shipClass || !ships[shipClass]) {
     throw new Error("Ship class missing, can not construct a ship");
   }
 
@@ -25,7 +25,7 @@ export const createShipObject = (data: SerializedShip): Ship => {
 
 export const createBareShipObject = (data: SerializedShip) => {
   const { shipClass } = data;
-  if (!shipClass) {
+  if (!shipClass || !ships[shipClass]) {
     throw new Error("Ship class missing, can not construct a ship");
   }
 

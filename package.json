@@ -27,5 +27,13 @@
     "@changesets/cli": "^2.29.8",
     "openapi-typescript": "^7.10.1",
     "rimraf": "^6.1.2"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "bcrypt",
+      "esbuild",
+      "fsevents",
+      "nodemon"
+    ]
   }
 }

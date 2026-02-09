@@ -41,7 +41,7 @@ declare class ShipSystems {
     serialize(): SerializedShipSystems;
     endTurn(turn: number): void;
     advanceTurn(turn: number): this;
-    getRequiredPhasesForReceivingPlayerData(): number;
+    getRequiredPhasesForReceivingPlayerData(): number | undefined;
     receivePlayerData(clientShip: Ship, gameData: GameData, phase: GAME_PHASE): void;
     censorForUser(user: User | null, mine: boolean): void;
     callAllSystemHandlers<T>(name: SYSTEM_HANDLERS, payload: unknown): T[];

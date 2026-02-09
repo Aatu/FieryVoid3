@@ -8,7 +8,7 @@ declare class GameTerrain {
     getEntities(): GameTerrainEntity[];
     addEntity(entity: GameTerrainEntity): void;
     getGravityVectorForTurn(position: Vector, velocity: Vector, turn: number): Vector;
-    getParentEntity(position: Vector, time: number, turn: number): GameTerrainEntity;
+    getParentEntity(position: Vector, time: number, turn: number): GameTerrainEntity | undefined;
     serialize(): SerializedGameTerrain;
     deserialize(data?: SerializedGameTerrain): this;
 }

@@ -79,7 +79,7 @@ class ThrustChannelSystemStrategy extends ShipSystemStrategy {
     }
 
     this.strategies = strategies;
-    this.currentMode = strategies[0];
+    this.currentMode = strategies[0] as IThrustChannelStrategy;
 
     this.direction = direction || 0; // 0, 3, [4,5], [1,2], 6
     this.channeled = 0;
@@ -118,7 +118,7 @@ class ThrustChannelSystemStrategy extends ShipSystemStrategy {
       index++;
     }
 
-    this.currentMode = this.strategies[index];
+    this.currentMode = this.strategies[index] as IThrustChannelStrategy;
     this.getSystem().handlers.resetBoost();
   }
 
@@ -183,7 +183,7 @@ class ThrustChannelSystemStrategy extends ShipSystemStrategy {
 
     data?.thrustChannelSystemStrategy?.strategies?.forEach(
       (strategyData, i) => {
-        this.strategies[i].deserialize(strategyData);
+        this.strategies[i]?.deserialize(strategyData);
       }
     );
 

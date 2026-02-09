@@ -9,14 +9,10 @@
     "include": [
       "**/*.ts",
       "**/*.tsx",
-      "**/packages/sgp-frontend-core/src/**/*.css"
     ],
     "ignore": [
       "**/node_modules/**",
-      "**/dist/**",
-      "resources.d.ts",
-      "schema/historyApi.ts",
-      "schema/poolsApi.ts"
+      "**/dist/**"
     ]
   },
   "formatter": {

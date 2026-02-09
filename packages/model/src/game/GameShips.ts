@@ -2,6 +2,7 @@ import { createShipObject } from "../unit/createShipObject";
 import Ship, { SerializedShip } from "../unit/Ship";
 import { User } from "../User/User";
 import GameData from "./GameData";
+import GameSlot from "./GameSlot";
 
 class GameShips {
   private gameData: GameData;
@@ -65,7 +66,7 @@ class GameShips {
     if (!slot || slot.length === 0) {
       return [];
     }
-    const team = slot[0].team;
+    const team = (slot[0] as GameSlot).team;
 
     return this.ships.filter(
       (ship) =>

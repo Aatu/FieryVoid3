@@ -69,8 +69,8 @@ export class TorpedoFlightForIntercept extends TorpedoFlight {
     return this.path.length - this.pathIndex;
   }
 
-  public getCurrentHexPosition() {
-    return this.path[this.pathIndex];
+  public getCurrentHexPosition(): Offset {
+    return this.path[this.pathIndex] as Offset;
   }
 
   public getCurrentPosition() {
@@ -82,7 +82,7 @@ export class TorpedoFlightForIntercept extends TorpedoFlight {
     return this.path.reduce((closest, hex) => {
       const distance = hex.distanceTo(ship.getHexPosition());
       return distance < closest ? distance : closest;
-    }, Infinity);
+    }, Number.POSITIVE_INFINITY);
   }
 
   public advance() {

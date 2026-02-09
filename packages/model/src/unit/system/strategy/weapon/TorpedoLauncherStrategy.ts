@@ -179,7 +179,7 @@ export class TorpedoLauncherStrategy
 
   deserialize(data: Partial<SerializedTorpedoLauncherStrategy> = {}) {
     data?.torpedoLauncherSystemStrategy?.launchers.forEach(
-      (launcherData, index) => this.launchers[index].deserialize(launcherData)
+      (launcherData, index) => this.launchers[index]?.deserialize(launcherData)
     );
 
     this.shotsInMagazine =

@@ -42,8 +42,8 @@ class StandardRangeStrategy extends ShipSystemStrategy {
     return distance <= this.getMaxRange();
   }
 
-  getMaxRange() {
-    return this.rangesAndPenalties[this.rangesAndPenalties.length - 1].range;
+  getMaxRange(): number {
+    return this.rangesAndPenalties[this.rangesAndPenalties.length - 1]?.range ?? 0;
   }
 
   getRangeModifier({ distance: currentRange }: { distance: number }): number {

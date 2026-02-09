@@ -23,6 +23,6 @@ export declare class TorpedoFlightForIntercept extends TorpedoFlight {
     getCurrentPosition(): import("../utils/Vector").default;
     getClosestDistanceTo(ship: Ship): number;
     advance(): void;
-    getMaxIntercepts(): 1 | 3 | 6;
+    getMaxIntercepts(): 1 | 6 | 3;
     isStricking(target: Ship): boolean;
 }

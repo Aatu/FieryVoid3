@@ -34,7 +34,7 @@ declare const isInArc: (direction: number, start: number, end: number) => boolea
 declare const radianToDegree: (angle: number) => number;
 declare const degreeToRadian: (angle: number) => number;
 declare const getCompassHeadingOfPoint: (observer: IVector, target: IVector) => number;
-declare const hexFacingToAngle: (d: number) => 0 | 180 | 60 | 120 | 240 | 300;
-declare const angleToHexFacing: (d: number) => 0 | 1 | 2 | 4 | 3 | 5;
+declare const hexFacingToAngle: (d: number) => 60 | 0 | 180 | 120 | 240 | 300;
+declare const angleToHexFacing: (d: number) => 1 | 0 | 5 | 2 | 4 | 3;
 declare const shuffleArray: <T extends unknown[]>(a: T) => T;
 export { distance, distance3d, getSeededRandomGenerator, addToDirection, getDistanceBetweenDirections, getPointBetween, getPointBetween3d, getPointBetweenInDistance, getDistanceBetweenShipsInHex, getAngleBetween, addToHexFacing, getPointInDirection, getArcLength, isInArc, radianToDegree, degreeToRadian, getCompassHeadingOfPoint, hexFacingToAngle, angleToHexFacing, shuffleArray, };

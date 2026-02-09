@@ -269,7 +269,11 @@ class ShipSystems {
   }
 
   getSystemById(id: number): ShipSystem {
-    return this.systems[id];
+    const system = this.systems[id];
+    if (!system) {
+      throw new Error(`System with id ${id} not found`);
+    }
+    return system;
   }
 
   getSystems() {
