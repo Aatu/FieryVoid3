@@ -1,0 +1,24 @@
+{
+  "name": "@fieryvoid3/model",
+  "version": "1.0.0",
+  "main": "index.ts",
+  "license": "MIT",
+  "dependencies": {
+    "@dice-roller/rpg-dice-roller": "catalog:",
+    "bcrypt": "^5.1.1",
+    "dotenv": "^16.4.7",
+    "three": "catalog:",
+    "typescript": "catalog:",
+    "uuid": "catalog:",
+    "yup": "^1.6.1"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
+    "@types/three": "catalog:"
+  },
+  "scripts": {
+    "preinstall": "npx only-allow pnpm",
+    "typecheck": "tsc --noEmit",
+    "build": "tsc"
+  }
+}

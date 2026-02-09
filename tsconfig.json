@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "composite": true
+  },
+  "files": [],
+  "references": [
+    { "path": "packages/model" },
+    { "path": "apps/server" },
+    { "path": "apps/client" },
+  ]
+}

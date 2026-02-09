@@ -1,0 +1,37 @@
+{
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "target": "esnext",
+    "useDefineForClassFields": true,
+    "module": "ESNext",
+    "lib": [
+      "ESNEXT",
+      "DOM",
+      "DOM.Iterable"
+    ],
+    "skipLibCheck": true,
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    /* Linting */
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "composite": true,
+    "declaration": true,
+    "declarationDir": "./dist",
+    "emitDeclarationOnly": true,
+    "noUncheckedIndexedAccess": true,
+    "baseUrl": "src",
+  },
+  "include": [
+    "src",
+    "src/**/*.json"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
+}

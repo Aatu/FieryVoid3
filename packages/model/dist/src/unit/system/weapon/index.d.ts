@@ -1,0 +1,25 @@
+import TestWeapon from "./TestWeapon";
+import OverPoweredTestWeapon from "./OverPoweredTestWeapon";
+import * as coilguns from "./coilgun/index";
+import PDC30mm from "./pdc/PDC30mm";
+import * as railguns from "./railgun/index";
+import * as launchers from "./launcher/index";
+import AutoCannon85mm from "./autocannon/AutoCannon85mm";
+declare const merged: {
+    AutoCannon85mm: typeof AutoCannon85mm;
+    OverPoweredTestWeapon: typeof OverPoweredTestWeapon;
+    TorpedoLauncher158: typeof launchers.TorpedoLauncher158;
+    TorpedoLauncherDual72: typeof launchers.TorpedoLauncherDual72;
+    TorpedoLauncherDual158: typeof launchers.TorpedoLauncherDual158;
+    TorpedoLauncherQuadruple158: typeof launchers.TorpedoLauncherQuadruple158;
+    RailgunFixed120mm: typeof railguns.RailgunFixed120mm;
+    RailgunTurreted2x140mm: typeof railguns.RailgunTurreted2x140mm;
+    RailgunTurreted140mmUC: typeof railguns.RailgunTurreted140mmUC;
+    CoilgunLightFixed: typeof coilguns.CoilgunLightFixed;
+    RailgunTurreted64gw: typeof coilguns.RailgunTurreted64gw;
+    RailgunTurreted32gw: typeof coilguns.RailgunTurreted32gw;
+    MediumCoilgunTurretedUC: typeof coilguns.MediumCoilgunTurretedUC;
+    TestWeapon: typeof TestWeapon;
+    PDC30mm: typeof PDC30mm;
+};
+export default merged;

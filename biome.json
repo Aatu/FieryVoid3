@@ -1,0 +1,54 @@
+{
+  "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
+  "vcs": {
+    "enabled": false,
+    "clientKind": "git",
+    "useIgnoreFile": false
+  },
+  "files": {
+    "include": [
+      "**/*.ts",
+      "**/*.tsx",
+      "**/packages/sgp-frontend-core/src/**/*.css"
+    ],
+    "ignore": [
+      "**/node_modules/**",
+      "**/dist/**",
+      "resources.d.ts",
+      "schema/historyApi.ts",
+      "schema/poolsApi.ts"
+    ]
+  },
+  "formatter": {
+    "enabled": true,
+    "indentStyle": "space"
+  },
+  "organizeImports": {
+    "enabled": true
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": true,
+      "suspicious": {
+        "noConsoleLog": "error"
+      },
+      "correctness": {
+        "noUnusedImports": "error",
+        "noUnusedVariables": "error"
+      }
+    }
+  },
+  "javascript": {
+    "formatter": {
+      "quoteStyle": "single",
+      "semicolons": "asNeeded"
+    }
+  },
+
+  "css": {
+    "formatter": {
+      "enabled": true
+    }
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "name": "root",
+  "private": true,
+  "engines": {
+    "node": ">= 24",
+    "pnpm": "^10"
+  },
+  "scripts": {
+    "dev": "pnpm --filter=@veikkaus/sgp-dev-sandbox dev",
+    "lint": "biome lint .",
+    "format": "biome format .",
+    "typecheck": "pnpm -r typecheck",
+    "build:all": "pnpm --filter @veikkaus/sgp-frontend-core... run build && pnpm --filter !@veikkaus/sgp-frontend-core... run build",
+    "cleanbuild": "rimraf node_modules/* packages/*/node_modules apps/*/node_modules && pnpm -r i --force && pnpm recursive run clean && pnpm build:all",
+    "format:check": "biome format .",
+    "format:fix": "biome format . --write",
+    "sgp:generate-schema": "pnpm run sgp:generate-pools-api-schema && pnpm run sgp:generate-history-api-schema",
+    "sgp:generate-pools-api-schema": "NODE_TLS_REJECT_UNAUTHORIZED=0 pnpm openapi-typescript https://spp.pages.veikkaus.fi/server/openapi.json -o ./packages/sgp-frontend-core/src/services/api/schema/poolsApi.ts",
+    "sgp:generate-history-api-schema": "NODE_TLS_REJECT_UNAUTHORIZED=0 pnpm openapi-typescript https://spp.pages.veikkaus.fi/wager-history-api/openapi.json -o ./packages/sgp-frontend-core/src/services/api/schema/historyApi.ts",
+    "publish:add": "changeset add",
+    "publish:version": "changeset version",
+    "publish:commit": "pnpm cleanbuild && changeset publish"
+  },
+  "packageManager": "pnpm@10.8.0+sha512.0e82714d1b5b43c74610193cb20734897c1d00de89d0e18420aebc5977fa13d780a9cb05734624e81ebd81cc876cd464794850641c48b9544326b5622ca29971",
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
+    "@changesets/cli": "^2.29.8",
+    "openapi-typescript": "^7.10.1",
+    "rimraf": "^6.1.2"
+  }
+}
