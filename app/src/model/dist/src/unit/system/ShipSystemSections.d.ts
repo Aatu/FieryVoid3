@@ -1,0 +1,32 @@
+import SystemSection from "./systemSection/SystemSection";
+import Ship from "../Ship";
+import { IVector } from "../../utils/Vector";
+import ShipSystem from "./ShipSystem";
+declare class ShipSystemSections {
+    private ship;
+    sections: SystemSection[];
+    constructor(ship: Ship);
+    getSectionForSystem(system: ShipSystem): SystemSection | undefined;
+    getHitSectionHeading(shooterPosition: IVector, shipPosition: IVector, shipFacing: number): number;
+    getNextSectionForHit(heading: number, lastSection: SystemSection): SystemSection | undefined;
+    getSectionsThatCanBeHit(heading: number): SystemSection[];
+    getHitSections(shooterPosition: IVector, shipPosition: IVector, shipFacing: number, lastSection?: SystemSection | null): SystemSection[];
+    hasSectionWithStructure(type: typeof SystemSection): import("./structure").Structure | undefined;
+    hasFrontSectionWithStructure(): import("./structure").Structure | undefined;
+    hasStarboardFrontSectionWithStructure(): import("./structure").Structure | undefined;
+    hasStarboardAftSectionWithStructure(): import("./structure").Structure | undefined;
+    hasPortFrontSectionWithStructure(): import("./structure").Structure | undefined;
+    hasPortAftSectionWithStructure(): import("./structure").Structure | undefined;
+    hasAftSectionWithStructure(): import("./structure").Structure | undefined;
+    getPrimarySection(): SystemSection | undefined;
+    getFrontSection(): SystemSection | undefined;
+    getAftSection(): SystemSection | undefined;
+    getStarboardFrontSection(): SystemSection | undefined;
+    getStarboardAftSection(): SystemSection | undefined;
+    getPortFrontSection(): SystemSection | undefined;
+    getPortAftSection(): SystemSection | undefined;
+    getSection(location: typeof SystemSection): SystemSection | undefined;
+    getSectionBySystem(system: ShipSystem): SystemSection;
+    getSectionsWithStructure(): SystemSection[];
+}
+export default ShipSystemSections;

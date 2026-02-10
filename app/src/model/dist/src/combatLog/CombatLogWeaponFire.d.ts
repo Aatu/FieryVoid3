@@ -1,0 +1,44 @@
+import Ship from "../unit/Ship";
+import DamageEntry from "../unit/system/DamageEntry";
+import ShipSystem from "../unit/system/ShipSystem";
+import Ammo from "../unit/system/weapon/ammunition/Ammo";
+import { ICombatLogEntry } from "./combatLogClasses";
+import CombatLogDamageEntry, { SerializedCombatLogDamageEntry } from "./CombatLogDamageEntry";
+import CombatLogWeaponFireHitResult, { SerializedCombatLogWeaponFireHitResult } from "./CombatLogWeaponFireHitResult";
+export type SerializedCombatLogWeaponFire = {
+    logEntryClass: string;
+    fireOrderId: string;
+    targetId: string;
+    shooterId: string;
+    damages: SerializedCombatLogDamageEntry[];
+    notes: string[];
+    hitResult: SerializedCombatLogWeaponFireHitResult | null;
+    shotsHit: number;
+    totalShots: number;
+    ammoName: string | null;
+};
+declare class CombatLogWeaponFire implements ICombatLogEntry {
+    fireOrderId: string;
+    targetId: string;
+    shooterId: string;
+    damages: CombatLogDamageEntry[];
+    notes: string[];
+    hitResult: CombatLogWeaponFireHitResult | null;
+    shotsHit: number;
+    totalShots: number;
+    ammoName: string | null;
+    replayOrder: number;
+    static fromData(data: SerializedCombatLogWeaponFire): CombatLogWeaponFire;
+    constructor(fireOrderId: string, targetId: string, shooterId: string, ammo: Ammo | null);
+    addNote(note: string): void;
+    addDamage(damageEntry: CombatLogDamageEntry): void;
+    addHitResult(hitResult: CombatLogWeaponFireHitResult): void;
+    getHitResult(): CombatLogWeaponFireHitResult;
+    setShots(shotsHit: number, totalShots: number): void;
+    causedDamage(): boolean;
+    getDamages(target: Ship): DamageEntry[];
+    getDestroyedSystems(target: Ship): ShipSystem[];
+    serialize(): SerializedCombatLogWeaponFire;
+    deserialize(unknownData: Record<string, unknown>): this;
+}
+export default CombatLogWeaponFire;
