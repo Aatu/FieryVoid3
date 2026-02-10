@@ -165,7 +165,7 @@ test("Returns systems available for hit ignoring destroyed structures", (test) =
     )
   );
 
-  ship.systems.getSystemById(400).addDamage(new DamageEntry(100, 0));
+  ship.systems.getSystemById(400)?.addDamage(new DamageEntry(100, 0));
 
   expect(
     ship.systems
@@ -240,7 +240,7 @@ test("Ignores destroyed section when looking for overkill system", (test) => {
     )
   );
 
-  const structure = ship.systems.getSystemById(500);
+  const structure = ship.systems.getSystemById(500) as Structure;
   structure.addDamage(new DamageEntry(500, 0));
 
   expect(
@@ -288,7 +288,7 @@ test("Penetrates whole ship if no structures intevene", (test) => {
     )
   );
 
-  const structure = ship.systems.getSystemById(400);
+  const structure = ship.systems.getSystemById(400) as Structure;
 
   expect(
     ship.systems

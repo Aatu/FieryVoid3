@@ -47,18 +47,18 @@ test("Ship is not destroyed, because it is intact", () => {
 test("Ship is not destroyed, because its primary structure is not", () => {
   const ship = constructShip();
 
-  ship.systems.getSystemById(100).addDamage(new DamageEntry(400, 0));
-  ship.systems.getSystemById(500).addDamage(new DamageEntry(400, 0));
-  ship.systems.getSystemById(300).addDamage(new DamageEntry(400, 0));
-  ship.systems.getSystemById(400).addDamage(new DamageEntry(400, 0));
+  ship.systems.getSystemById(100)?.addDamage(new DamageEntry(400, 0));
+  ship.systems.getSystemById(500)?.addDamage(new DamageEntry(400, 0));
+  ship.systems.getSystemById(300)?.addDamage(new DamageEntry(400, 0));
+  ship.systems.getSystemById(400)?.addDamage(new DamageEntry(400, 0));
   expect(ship.isDestroyed()).toBe(false);
 });
 
 test("Ship is not destroyed, because not enough structures are", () => {
   const ship = constructShip();
 
-  ship.systems.getSystemById(100).addDamage(new DamageEntry(400, 0));
-  ship.systems.getSystemById(8).addDamage(new DamageEntry(400, 0));
+  ship.systems.getSystemById(100)?.addDamage(new DamageEntry(400, 0));
+  ship.systems.getSystemById(8)?.addDamage(new DamageEntry(400, 0));
   expect(ship.isDestroyed()).toBe(false);
   expect(ship.isDestroyedThisTurn()).toBe(false);
 });
@@ -66,9 +66,9 @@ test("Ship is not destroyed, because not enough structures are", () => {
 test("Ship is barely destroyed", () => {
   const ship = constructShip();
 
-  ship.systems.getSystemById(100).addDamage(new DamageEntry(400, 0));
-  ship.systems.getSystemById(8).addDamage(new DamageEntry(400, 0));
-  ship.systems.getSystemById(400).addDamage(new DamageEntry(400, 0));
+  ship.systems.getSystemById(100)?.addDamage(new DamageEntry(400, 0));
+  ship.systems.getSystemById(8)?.addDamage(new DamageEntry(400, 0));
+  ship.systems.getSystemById(400)?.addDamage(new DamageEntry(400, 0));
   expect(ship.isDestroyed()).toBe(true);
   expect(ship.isDestroyedThisTurn()).toBe(true);
 });
@@ -76,10 +76,10 @@ test("Ship is barely destroyed", () => {
 test("Ship is destroyed!", () => {
   const ship = constructShip();
 
-  ship.systems.getSystemById(100).addDamage(new DamageEntry(400, 0));
-  ship.systems.getSystemById(8).addDamage(new DamageEntry(400, 0));
-  ship.systems.getSystemById(500).addDamage(new DamageEntry(400, 0));
-  ship.systems.getSystemById(300).addDamage(new DamageEntry(400, 0));
-  ship.systems.getSystemById(400).addDamage(new DamageEntry(400, 0));
+  ship.systems.getSystemById(100)?.addDamage(new DamageEntry(400, 0));
+  ship.systems.getSystemById(8)?.addDamage(new DamageEntry(400, 0));
+  ship.systems.getSystemById(500)?.addDamage(new DamageEntry(400, 0));
+  ship.systems.getSystemById(300)?.addDamage(new DamageEntry(400, 0));
+  ship.systems.getSystemById(400)?.addDamage(new DamageEntry(400, 0));
   expect(ship.isDestroyed()).toBe(true);
 });
