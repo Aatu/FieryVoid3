@@ -1,5 +1,0 @@
-export var GAME_PHASE;
-(function (GAME_PHASE) {
-    GAME_PHASE[GAME_PHASE["DEPLOYMENT"] = 0] = "DEPLOYMENT";
-    GAME_PHASE[GAME_PHASE["GAME"] = 1] = "GAME";
-})(GAME_PHASE || (GAME_PHASE = {}));

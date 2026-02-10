@@ -1,8 +1,7 @@
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
 import TestDatabaseConnection from "../support/TestDatabaseConnection";
 import { User } from "@fieryvoid3/model/src/User/User";
-import { Offset } from "@fieryvoid3/model/src/hexagon";
-import Torpedo158MSV from "@fieryvoid3/model/src/unit/system/weapon/ammunition/torpedo/Torpedo158MSV";
+import { Offset } from "@fieryvoid3/model/src/hexagon/index";
 import TorpedoFlight from "@fieryvoid3/model/src/unit/TorpedoFlight";
 import Vector from "@fieryvoid3/model/src/utils/Vector";
 import GameController from "../../controller/GameController";
@@ -12,7 +11,7 @@ import CombatLogTorpedoAttack from "@fieryvoid3/model/src/combatLog/CombatLogTor
 import {
   Torpedo72HE,
   Torpedo72MSV,
-} from "@fieryvoid3/model/src/unit/system/weapon/ammunition/torpedo";
+} from "@fieryvoid3/model/src/unit/system/weapon/ammunition/torpedo/index";
 import CombatLogTorpedoIntercept from "@fieryvoid3/model/src/combatLog/CombatLogTorpedoIntercept";
 
 describe("Torpedo tests", () => {

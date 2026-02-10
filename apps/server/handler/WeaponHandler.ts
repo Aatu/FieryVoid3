@@ -29,6 +29,10 @@ class WeaponHandler {
           const target = serverGameData.ships.getShipById(fireOrder.targetId);
           const weapon = shooter.systems.getSystemById(fireOrder.weaponId);
 
+          if (!shooter || !target || !weapon) {
+            throw new InvalidGameDataError("Invalid fire order");
+          }
+
           if (!serverFireService.canFire(shooter, target, weapon)) {
             throw new InvalidGameDataError("Invalid fire order");
           }

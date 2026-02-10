@@ -4,12 +4,17 @@
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo",
     "target": "ES2022",
     "lib": ["ES2023"],
-    "module": "nodenext",
-    "moduleResolution": "nodenext",
+    "module": "es2022",
+    "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
     "isolatedModules": true,
     "moduleDetection": "force",
     "noEmit": true,
+    "skipLibCheck": true,
+    "paths": {
+      "@fieryvoid3/model": ["../../packages/model"],
+      "@fieryvoid3/model/*": ["../../packages/model/*"]
+    },
 
     /* Linting */
     "strict": true,
@@ -19,5 +24,13 @@
     "noUncheckedSideEffectImports": true,
     "esModuleInterop": true,
   },
-  "include": ["vite.config.ts"]
+  "include": [
+    "app.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "**/node_modules",
+    "**/dist"
+  ],
 }

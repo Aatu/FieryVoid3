@@ -6,7 +6,6 @@ import {
   InterceptionEntry,
   InterceptorCandidate,
 } from "@fieryvoid3/model/src/unit/InterceptorCandidate";
-import CombatLogTorpedoIntercept from "@fieryvoid3/model/src/combatLog/CombatLogTorpedoIntercept";
 import CombatLogTorpedoAttack from "@fieryvoid3/model/src/combatLog/CombatLogTorpedoAttack";
 
 export class TorpedoHandler {

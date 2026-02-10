@@ -1,6 +1,6 @@
 import { expect, test } from "vitest";
 import coordinateConverter from "@fieryvoid3/model/src/utils/CoordinateConverter";
-import { Offset } from "@fieryvoid3/model/src/hexagon";
+import { Offset } from "@fieryvoid3/model/src/hexagon/index";
 import HexagonMath from "@fieryvoid3/model/src/utils/HexagonMath";
 
 test("hex size and coordinate converter", (test) => {

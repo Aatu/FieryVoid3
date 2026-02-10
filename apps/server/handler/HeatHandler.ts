@@ -1,6 +1,6 @@
 import GameData from "@fieryvoid3/model/src/game/GameData";
 import Ship from "@fieryvoid3/model/src/unit/Ship";
-import { ForcedOfflineOverheat } from "@fieryvoid3/model/src/unit/system/criticals";
+import { ForcedOfflineOverheat } from "@fieryvoid3/model/src/unit/system/criticals/index";
 import ShipSystemLogEntryHeat from "@fieryvoid3/model/src/unit/system/ShipSystemLog/ShipSystemLogEntryHeat";
 import { SYSTEM_HANDLERS } from "@fieryvoid3/model/src/unit/system/strategy/types/SystemHandlersTypes";
 

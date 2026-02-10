@@ -2,7 +2,7 @@ import GameData from "@fieryvoid3/model/src/game/GameData";
 import { GAME_PHASE } from "@fieryvoid3/model/src/game/gamePhase";
 import GameSlot from "@fieryvoid3/model/src/game/GameSlot";
 import { GAME_STATUS } from "@fieryvoid3/model/src/game/gameStatus";
-import { MOVEMENT_TYPE } from "@fieryvoid3/model/src/movement";
+import { MOVEMENT_TYPE } from "@fieryvoid3/model/src/movement/index";
 import MovementOrder from "@fieryvoid3/model/src/movement/MovementOrder";
 import {
   createBareShipObject,

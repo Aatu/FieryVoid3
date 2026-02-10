@@ -4,14 +4,14 @@ import GameData from "@fieryvoid3/model/src/game/GameData";
 import GameSlot from "@fieryvoid3/model/src/game/GameSlot";
 import { User } from "@fieryvoid3/model/src/User/User";
 import MovementOrder from "@fieryvoid3/model/src/movement/MovementOrder";
-import { MOVEMENT_TYPE } from "@fieryvoid3/model/src/movement";
+import { MOVEMENT_TYPE } from "@fieryvoid3/model/src/movement/index";
 import Caliope from "@fieryvoid3/model/src/unit/ships/protectorate/Caliope";
 import Offset from "@fieryvoid3/model/src/hexagon/Offset";
 import Fulcrum from "@fieryvoid3/model/src/unit/ships/protectorate/Fulcrum";
 import { GAME_STATUS } from "@fieryvoid3/model/src/game/gameStatus";
 import { GAME_PHASE } from "@fieryvoid3/model/src/game/gamePhase";
 import { USER_AI } from "@fieryvoid3/model/src/User/AIUser";
-import { Constantin } from "@fieryvoid3/model/src/unit/ships/federation";
+import { Constantin } from "@fieryvoid3/model/src/unit/ships/federation/index";
 
 class CreateTestGameHandler {
   initializeShip(

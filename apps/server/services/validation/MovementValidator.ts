@@ -1,4 +1,4 @@
-import { MOVEMENT_TYPE } from "@fieryvoid3/model/src/movement";
+import { MOVEMENT_TYPE } from "@fieryvoid3/model/src/movement/index";
 import MovementOrder from "@fieryvoid3/model/src/movement/MovementOrder";
 import Ship from "@fieryvoid3/model/src/unit/Ship";
 import { THRUSTER_DIRECTION } from "@fieryvoid3/model/src/unit/system/strategy/ThrustChannelSystemStrategy";

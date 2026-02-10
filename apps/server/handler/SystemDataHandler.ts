@@ -1,6 +1,5 @@
 import GameData from "@fieryvoid3/model/src/game/GameData";
 import Ship from "@fieryvoid3/model/src/unit/Ship";
-import { User } from "@fieryvoid3/model/src/User/User";
 
 class SystemDataHandler {
   receiveSystemData(

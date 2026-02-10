@@ -1,9 +1,9 @@
 import { expect, test } from "vitest";
 import HitSystemRandomizer from "@fieryvoid3/model/src/unit/system/strategy/weapon/utils/HitSystemRandomizer";
-import { Reactor } from "@fieryvoid3/model/src/unit/system/reactor";
-import { Structure } from "@fieryvoid3/model/src/unit/system/structure";
-import { RailgunTurreted32gw } from "@fieryvoid3/model/src/unit/system/weapon/coilgun";
-import { PDC30mm } from "@fieryvoid3/model/src/unit/system/weapon/pdc";
+import { Reactor } from "@fieryvoid3/model/src/unit/system/reactor/index";
+import { Structure } from "@fieryvoid3/model/src/unit/system/structure/index";
+import { RailgunTurreted32gw } from "@fieryvoid3/model/src/unit/system/weapon/coilgun/index";
+import { PDC30mm } from "@fieryvoid3/model/src/unit/system/weapon/pdc/index";
 
 test("Chooses random system from available", () => {
   const systemRandomizer = new HitSystemRandomizer();

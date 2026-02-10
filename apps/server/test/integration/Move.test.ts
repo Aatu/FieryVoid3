@@ -4,8 +4,8 @@ import {
   MovementOrder,
   MovementService,
   RequiredThrust,
-} from "@fieryvoid3/model/src/movement";
-import { TestShip } from "@fieryvoid3/model/src/unit/ships/test";
+} from "@fieryvoid3/model/src/movement/index";
+import { TestShip } from "@fieryvoid3/model/src/unit/ships/test/index";
 import GameController from "../../controller/GameController";
 import { constructDeployedGame } from "../support/constructGame";
 import TestDatabaseConnection from "../support/TestDatabaseConnection";

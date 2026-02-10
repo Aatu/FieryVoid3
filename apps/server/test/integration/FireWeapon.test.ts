@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
 import TestDatabaseConnection from "../support/TestDatabaseConnection";
 import { User } from "@fieryvoid3/model/src/User/User";
-import { MovementService } from "@fieryvoid3/model/src/movement";
+import { MovementService } from "@fieryvoid3/model/src/movement/index";
 import FireOrder from "@fieryvoid3/model/src/weapon/FireOrder";
 import WeaponFireService from "@fieryvoid3/model/src/weapon/WeaponFireService";
 import WeaponHitChance from "@fieryvoid3/model/src/weapon/WeaponHitChance";

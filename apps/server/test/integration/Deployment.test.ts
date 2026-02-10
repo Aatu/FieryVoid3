@@ -1,6 +1,6 @@
 import { expect, test } from "vitest";
 import MovementOrder from "@fieryvoid3/model/src/movement/MovementOrder";
-import { MOVEMENT_TYPE, MovementService } from "@fieryvoid3/model/src/movement";
+import { MOVEMENT_TYPE, MovementService } from "@fieryvoid3/model/src/movement/index";
 import Offset from "@fieryvoid3/model/src/hexagon/Offset";
 import GameData from "@fieryvoid3/model/src/game/GameData";
 import TestShip from "@fieryvoid3/model/src/unit/ships/test/TestShip";

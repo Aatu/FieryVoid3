@@ -4,19 +4,19 @@ import {
   MOVEMENT_TYPE,
   MovementService,
   RequiredThrust,
-} from "@fieryvoid3/model/src/movement";
+} from "@fieryvoid3/model/src/movement/index";
 import Offset from "@fieryvoid3/model/src/hexagon/Offset";
 import GameData from "@fieryvoid3/model/src/game/GameData";
 import Ship from "@fieryvoid3/model/src/unit/Ship";
 import FuelTank from "@fieryvoid3/model/src/unit/system/cargo/FuelTank";
-import { OutputReduced } from "@fieryvoid3/model/src/unit/system/criticals";
+import { OutputReduced } from "@fieryvoid3/model/src/unit/system/criticals/index";
 import DamageEntry from "@fieryvoid3/model/src/unit/system/DamageEntry";
-import { Engine } from "@fieryvoid3/model/src/unit/system/engine";
-import { Reactor } from "@fieryvoid3/model/src/unit/system/reactor";
+import { Engine } from "@fieryvoid3/model/src/unit/system/engine/index";
+import { Reactor } from "@fieryvoid3/model/src/unit/system/reactor/index";
 import {
   Thruster,
   ManeuveringThruster,
-} from "@fieryvoid3/model/src/unit/system/thruster";
+} from "@fieryvoid3/model/src/unit/system/thruster/index";
 import MovementValidator from "../../services/validation/MovementValidator";
 import { SYSTEM_HANDLERS } from "@fieryvoid3/model/src/unit/system/strategy/types/SystemHandlersTypes";
 

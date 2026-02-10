@@ -3,7 +3,7 @@ import { InvalidGameDataError } from "../errors/index";
 import GameData from "@fieryvoid3/model/src/game/GameData";
 import { User } from "@fieryvoid3/model/src/User/User";
 import { GAME_PHASE } from "@fieryvoid3/model/src/game/gamePhase";
-import { MOVEMENT_TYPE, MovementOrder } from "@fieryvoid3/model/src/movement";
+import { MOVEMENT_TYPE, MovementOrder } from "@fieryvoid3/model/src/movement/index";
 import Ship from "@fieryvoid3/model/src/unit/Ship";
 
 class DeploymentHandler {

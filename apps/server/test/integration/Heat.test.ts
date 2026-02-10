@@ -1,5 +1,5 @@
 import { expect, test } from "vitest";
-import { MovementService } from "@fieryvoid3/model/src/movement";
+import { MovementService } from "@fieryvoid3/model/src/movement/index";
 import GameController from "../../controller/GameController";
 import { constructDeployedGame } from "../support/constructGame";
 import TestDatabaseConnection from "../support/TestDatabaseConnection";

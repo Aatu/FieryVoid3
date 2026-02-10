@@ -1,5 +1,4 @@
-import GameData from "@fieryvoid3/model/src/game/GameData";
-import { InvalidGameDataError, UnauthorizedError } from "../errors/index";
+import { InvalidGameDataError } from "../errors/index";
 import GameDataService from "../services/GameDataService";
 
 class ReplayHandler {

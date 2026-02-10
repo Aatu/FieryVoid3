@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "preinstall": "npx only-allow pnpm",
-    "start": "nodemon app.ts",
+    "start": "tsx watch app.ts",
     "typecheck": "tsc --noEmit",
     "test": "vitest"
   },
@@ -15,7 +15,6 @@
     "bcrypt": "^6.0.0",
     "cors": "^2.8.5",
     "express": "^5.2.1",
-    "express-async-errors": "^3.1.1",
     "express-session": "^1.19.0",
     "express-ws": "^5.0.2",
     "mariadb": "^3.4.0",
@@ -37,6 +36,7 @@
     "@types/passport-local": "^1.0.38",
     "@types/three": "catalog:",
     "nodemon": "^3.1.9",
+    "tsx": "^4.21.0",
     "typescript": "catalog:",
     "vite": "catalog:",
     "vitest": "catalog:"

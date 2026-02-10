@@ -1,18 +1,15 @@
-import { MovementOrder, RequiredThrust } from "@fieryvoid3/model/src/movement";
+import { MovementOrder, RequiredThrust } from "@fieryvoid3/model/src/movement/index";
 import Ship from "@fieryvoid3/model/src/unit/Ship";
 import ShipSystem from "@fieryvoid3/model/src/unit/system/ShipSystem";
 import { THRUSTER_DIRECTION } from "@fieryvoid3/model/src/unit/system/strategy/ThrustChannelSystemStrategy";
-import { SYSTEM_HANDLERS } from "@fieryvoid3/model/src/unit/system/strategy/types/SystemHandlersTypes";
 import { InvalidGameDataError } from "../../errors/index";
 
 class RequiredThrustValidator {
   private ship: Ship;
-  private move: MovementOrder;
   private requirement: RequiredThrust;
 
   constructor(ship: Ship, move: MovementOrder) {
     this.ship = ship;
-    this.move = move;
     this.requirement = new RequiredThrust().calculate(ship, move);
   }
 

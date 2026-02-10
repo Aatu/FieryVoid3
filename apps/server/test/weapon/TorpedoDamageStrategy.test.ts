@@ -5,7 +5,7 @@ import Engine from "@fieryvoid3/model/src/unit/system/engine/Engine";
 import Reactor from "@fieryvoid3/model/src/unit/system/reactor/Reactor";
 import PDC30mm from "@fieryvoid3/model/src/unit/system/weapon/pdc/PDC30mm";
 import MovementOrder from "@fieryvoid3/model/src/movement/MovementOrder";
-import { MOVEMENT_TYPE } from "@fieryvoid3/model/src/movement";
+import { MOVEMENT_TYPE } from "@fieryvoid3/model/src/movement/index";
 import Offset from "@fieryvoid3/model/src/hexagon/Offset";
 import Torpedo158MSV from "@fieryvoid3/model/src/unit/system/weapon/ammunition/torpedo/Torpedo158MSV";
 import TorpedoFlight from "@fieryvoid3/model/src/unit/TorpedoFlight";

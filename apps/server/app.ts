@@ -1,5 +1,4 @@
 import express, { Request, Response } from "express";
-import "express-async-errors";
 import session from "express-session";
 import cors from "cors";
 import expressWs from "express-ws";

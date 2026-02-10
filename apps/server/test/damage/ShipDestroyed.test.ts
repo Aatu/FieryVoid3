@@ -3,8 +3,8 @@ import Ship from "@fieryvoid3/model/src/unit/Ship";
 import Structure from "@fieryvoid3/model/src/unit/system/structure/Structure";
 import Engine from "@fieryvoid3/model/src/unit/system/engine/Engine";
 import DamageEntry from "@fieryvoid3/model/src/unit/system/DamageEntry";
-import { Reactor } from "@fieryvoid3/model/src/unit/system/reactor";
-import { PDC30mm } from "@fieryvoid3/model/src/unit/system/weapon/pdc";
+import { Reactor } from "@fieryvoid3/model/src/unit/system/reactor/index";
+import { PDC30mm } from "@fieryvoid3/model/src/unit/system/weapon/pdc/index";
 
 const constructShip = (id: string = "123") => {
   let ship = new Ship({

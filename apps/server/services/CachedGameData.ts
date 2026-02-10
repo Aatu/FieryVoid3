@@ -120,7 +120,7 @@ class CachedGameData {
 
     //process non locking reservations
     this.reservations = this.reservations.filter(
-      ({ resolve, reject, lock }) => {
+      ({ resolve, lock }) => {
         if (!lock) {
           (resolve as Resolve)({ key: null, gameData: this.gameData!.clone() });
           return false;
@@ -134,7 +134,7 @@ class CachedGameData {
     }
 
     //lock and resolve
-    const { resolve, reject, lock } = this.reservations.shift() as Reservation;
+    const { resolve, lock } = this.reservations.shift() as Reservation;
     let key = null;
 
     if (lock) {

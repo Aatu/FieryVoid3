@@ -7,7 +7,7 @@ import {
   MOVEMENT_TYPE,
   MovementOrder,
   ThrustBill,
-} from "@fieryvoid3/model/src/movement";
+} from "@fieryvoid3/model/src/movement/index";
 import Offset from "@fieryvoid3/model/src/hexagon/Offset";
 import ThrustChannelHeatIncreased from "@fieryvoid3/model/src/unit/system/criticals/ThrustChannelHeatIncreased";
 import OutputReduced from "@fieryvoid3/model/src/unit/system/criticals/OutputReduced";

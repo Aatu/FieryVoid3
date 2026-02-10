@@ -1,12 +1,13 @@
-# Coldvoid
+# Airship game
 
 
-## Running on server
+## Running locally
 
-### List running services
+The following commands should be ran in the root directory
 
-pm2 list
+`pnpm build` to install dependencies
+`pnpm build:database` to build the dockerized database
+`pnpm start:database` to start the database
+`pnpm start` to start both server and client or `pnpm start:all` to also start the database
 
-### Start static www
-
-### Start server
+`pnpm typecheck` to check typescript type errors and `pnpm test` to run tests. If these fail, fix them.

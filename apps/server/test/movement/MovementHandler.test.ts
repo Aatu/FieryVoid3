@@ -4,7 +4,7 @@ import {
   MOVEMENT_TYPE,
   MovementService,
   RequiredThrust,
-} from "@fieryvoid3/model/src/movement";
+} from "@fieryvoid3/model/src/movement/index";
 import Offset from "@fieryvoid3/model/src/hexagon/Offset";
 import GameData, { SerializedGameData } from "@fieryvoid3/model/src/game/GameData";
 import TestShip from "@fieryvoid3/model/src/unit/ships/test/TestShip";

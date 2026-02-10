@@ -2,13 +2,13 @@ import { expect, test } from "vitest";
 import Ship from "@fieryvoid3/model/src/unit/Ship";
 import Vector from "@fieryvoid3/model/src/utils/Vector";
 import MovementOrder from "@fieryvoid3/model/src/movement/MovementOrder";
-import { MOVEMENT_TYPE } from "@fieryvoid3/model/src/movement";
-import { Offset } from "@fieryvoid3/model/src/hexagon";
-import { Engine } from "@fieryvoid3/model/src/unit/system/engine";
-import { Reactor } from "@fieryvoid3/model/src/unit/system/reactor";
+import { MOVEMENT_TYPE } from "@fieryvoid3/model/src/movement/index";
+import { Offset } from "@fieryvoid3/model/src/hexagon/index";
+import { Engine } from "@fieryvoid3/model/src/unit/system/engine/index";
+import { Reactor } from "@fieryvoid3/model/src/unit/system/reactor/index";
 import ShipSystemSections from "@fieryvoid3/model/src/unit/system/ShipSystemSections";
-import { Structure } from "@fieryvoid3/model/src/unit/system/structure";
-import { Thruster } from "@fieryvoid3/model/src/unit/system/thruster";
+import { Structure } from "@fieryvoid3/model/src/unit/system/structure/index";
+import { Thruster } from "@fieryvoid3/model/src/unit/system/thruster/index";
 import { systemsToNameIdString } from "../helpers";
 
 const getShipWithStructures = (rolled = false) => {

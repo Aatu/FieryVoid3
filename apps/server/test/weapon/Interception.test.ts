@@ -1,11 +1,11 @@
 import { expect, test } from "vitest";
 import Ship, { ShipBase } from "@fieryvoid3/model/src/unit/Ship";
-import { PDC30mm } from "@fieryvoid3/model/src/unit/system/weapon/pdc";
-import { Reactor } from "@fieryvoid3/model/src/unit/system/reactor";
-import { Structure } from "@fieryvoid3/model/src/unit/system/structure";
-import { EwArray } from "@fieryvoid3/model/src/unit/system/electronicWarfare";
-import { MOVEMENT_TYPE, MovementOrder } from "@fieryvoid3/model/src/movement";
-import { Offset } from "@fieryvoid3/model/src/hexagon";
+import { PDC30mm } from "@fieryvoid3/model/src/unit/system/weapon/pdc/index";
+import { Reactor } from "@fieryvoid3/model/src/unit/system/reactor/index";
+import { Structure } from "@fieryvoid3/model/src/unit/system/structure/index";
+import { EwArray } from "@fieryvoid3/model/src/unit/system/electronicWarfare/index";
+import { MOVEMENT_TYPE, MovementOrder } from "@fieryvoid3/model/src/movement/index";
+import { Offset } from "@fieryvoid3/model/src/hexagon/index";
 import TorpedoFlight from "@fieryvoid3/model/src/unit/TorpedoFlight";
 import Torpedo158MSV from "@fieryvoid3/model/src/unit/system/weapon/ammunition/torpedo/Torpedo158MSV";
 import Vector from "@fieryvoid3/model/src/utils/Vector";
@@ -20,7 +20,7 @@ import Torpedo from "@fieryvoid3/model/src/unit/system/weapon/ammunition/torpedo
 import CombatLogTorpedoAttack from "@fieryvoid3/model/src/combatLog/CombatLogTorpedoAttack";
 import CargoBay from "@fieryvoid3/model/src/unit/system/cargo/CargoBay";
 import { CargoEntry } from "@fieryvoid3/model/src/cargo/CargoEntry";
-import { Ammo30mm } from "@fieryvoid3/model/src/unit/system/weapon/ammunition/conventional";
+import { Ammo30mm } from "@fieryvoid3/model/src/unit/system/weapon/ammunition/conventional/index";
 import AmmunitionStrategy from "@fieryvoid3/model/src/unit/system/strategy/weapon/AmmunitionStrategy";
 
 const createShips = () => {

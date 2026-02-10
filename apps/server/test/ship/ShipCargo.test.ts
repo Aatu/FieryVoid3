@@ -5,7 +5,7 @@ import { CargoEntry } from "@fieryvoid3/model/src/cargo/CargoEntry";
 import {
   Ammo30mm,
   Ammo85mmAP,
-} from "@fieryvoid3/model/src/unit/system/weapon/ammunition/conventional";
+} from "@fieryvoid3/model/src/unit/system/weapon/ammunition/conventional/index";
 import { BareTestShip } from "@fieryvoid3/model/src/unit/ships/test/TestShip";
 import {
   addCargos,

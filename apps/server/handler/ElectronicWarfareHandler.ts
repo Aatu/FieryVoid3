@@ -2,7 +2,7 @@ import GameData from "@fieryvoid3/model/src/game/GameData";
 import Ship from "@fieryvoid3/model/src/unit/Ship";
 import { UnableToAssignEw } from "@fieryvoid3/model/src/unit/ShipElectronicWarfare";
 import { User } from "@fieryvoid3/model/src/User/User";
-import { InvalidGameDataError, UnauthorizedError } from "../errors/index";
+import { InvalidGameDataError } from "../errors/index";
 
 class ElectronicWarfareHandler {
   receiveElectronicWarfare(

@@ -4,7 +4,7 @@ import Structure from "@fieryvoid3/model/src/unit/system/structure/Structure";
 import Engine from "@fieryvoid3/model/src/unit/system/engine/Engine";
 import Reactor from "@fieryvoid3/model/src/unit/system/reactor/Reactor";
 import PDC30mm from "@fieryvoid3/model/src/unit/system/weapon/pdc/PDC30mm";
-import { MOVEMENT_TYPE, MovementOrder } from "@fieryvoid3/model/src/movement";
+import { MOVEMENT_TYPE, MovementOrder } from "@fieryvoid3/model/src/movement/index";
 import Offset from "@fieryvoid3/model/src/hexagon/Offset";
 import DamageEntry from "@fieryvoid3/model/src/unit/system/DamageEntry";
 import HitSystemRandomizer from "@fieryvoid3/model/src/unit/system/strategy/weapon/utils/HitSystemRandomizer";

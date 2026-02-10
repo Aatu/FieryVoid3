@@ -5,12 +5,11 @@ import GameData, {
 import { GAME_PHASE } from "@fieryvoid3/model/src/game/gamePhase";
 import { GAME_STATUS } from "@fieryvoid3/model/src/game/gameStatus";
 import { SerializedMovementOrder } from "@fieryvoid3/model/src/movement/MovementOrder";
-import Ship, {
+import {
   SerializedShip,
-  ShipBase,
   ShipData,
 } from "@fieryvoid3/model/src/unit/Ship";
-import { IUser, User } from "@fieryvoid3/model/src/User/User";
+import { IUser } from "@fieryvoid3/model/src/User/User";
 import DbConnection from "./DbConnection";
 import { PoolConnection as Connection } from "mariadb";
 

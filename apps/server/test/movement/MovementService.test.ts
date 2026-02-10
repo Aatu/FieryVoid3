@@ -4,19 +4,19 @@ import {
   MOVEMENT_TYPE,
   MovementService,
   RequiredThrust,
-} from "@fieryvoid3/model/src/movement";
+} from "@fieryvoid3/model/src/movement/index";
 import Offset from "@fieryvoid3/model/src/hexagon/Offset";
 import GameData from "@fieryvoid3/model/src/game/GameData";
 import Ship from "@fieryvoid3/model/src/unit/Ship";
 import FuelTank from "@fieryvoid3/model/src/unit/system/cargo/FuelTank";
 import DamageEntry from "@fieryvoid3/model/src/unit/system/DamageEntry";
-import { Engine } from "@fieryvoid3/model/src/unit/system/engine";
-import { Reactor } from "@fieryvoid3/model/src/unit/system/reactor";
+import { Engine } from "@fieryvoid3/model/src/unit/system/engine/index";
+import { Reactor } from "@fieryvoid3/model/src/unit/system/reactor/index";
 import {
   Thruster,
   ManeuveringThrusterLeft,
   ManeuveringThrusterRight,
-} from "@fieryvoid3/model/src/unit/system/thruster";
+} from "@fieryvoid3/model/src/unit/system/thruster/index";
 import { SYSTEM_HANDLERS } from "@fieryvoid3/model/src/unit/system/strategy/types/SystemHandlersTypes";
 
 const startMove = new MovementOrder(

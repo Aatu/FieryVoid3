@@ -1,7 +1,5 @@
 import CombatLogTorpedoLaunch from "@fieryvoid3/model/src/combatLog/CombatLogTorpedoLaunch";
 import GameData from "@fieryvoid3/model/src/game/GameData";
-import { SYSTEM_HANDLERS } from "@fieryvoid3/model/src/unit/system/strategy/types/SystemHandlersTypes";
-import Torpedo from "@fieryvoid3/model/src/unit/system/weapon/ammunition/torpedo/Torpedo";
 import TorpedoFlight from "@fieryvoid3/model/src/unit/TorpedoFlight";
 
 class LaunchHandler {
